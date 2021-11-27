@@ -1,0 +1,573 @@
+
+
+
+
+          HANDLING COMPUTER VIRUS EMERGENCIES
+
+
+
+
+
+
+
+
+                                    Alan A. Fedeli
+                                    Manager, AntiVirus and Phone Fraud
+                                    IBM Business Recovery Services
+                                    Long Meadow Road
+                                    Sterling Forest, N.Y. 10979-0700
+
+                                    Fedeli@VNET.IBM.COM
+                                    914-759-2901, Fax 914-759-4690
+
+                                    July 18, 1994
+
+
+
+
+
+
+
+                             (c) Copyright, IBM Corporation, 1994
+
+
+
+
+
+  Computer Emergency Response Teams, CERTs, were spawned in the wake of the
+  Internet Worm in 1989, and government and industry have employed them
+  to deal with hackers, network attacks, and PC viruses.  Some have been
+  tested by their worst nightmares, and have learned a few lessons worth
+  sharing.  One nightmare is an outbreak of an infection with a newer virus
+  which is not detected by the anti-virus software broadly deployed within
+  their company.  Another nightmare is the realization that their company
+  may have distributed viruses via diskette or transmission to customers,
+  business partners, or the public.  The response to these situations
+  requires ethical behavior, solid information, and swift action: all
+  capabilities for which CERTs were designed.
+
+  This paper is based on IBM's direct experience in dealing with their own
+  virus incidents, and also, with managing virus incidents amongst IBM's
+  customers world wide.  IBM's Business Recovery Services, headquartered in
+  Sterling Forest, N.Y., manages IBM's central CERT and also markets IBM
+  AntiVirus Products and Services to customers.  These services quarterly
+  deliveries of programs and documentation for:
+     IBM AntiVirus for DOS and Windows*
+     IBM AntiVirus for OS/2**
+     IBM AntiVirus for NetWare***
+  The services also include:
+     Electronic bulletin board, including monthly signature updates
+     Guidance on incident management
+     Emergency support
+
+  For information about this service, call:
+                 1-800-742-2493.
+  To order individual copies of IBM AntiVirus, call:
+                 1-800-551-3579.
+
+
+
+
+
+
+
+
+          HANDLING COMPUTER VIRUS EMERGENCIES
+
+  CONTENTS:
+
+  A.   Background
+       (What corporations have been doing about harmful code.)
+
+  B.   Emergencies with Newer, Undetected Viruses.
+       (The best laid plans of mice and men...)
+
+  C.   Emergencies Requiring Recall from Customers and Others
+       (Delivering more than was asked for.)
+
+   1.  The new playing field for virus distribution.
+       (Everybody's doing it.)
+   2.  Ethical considerations.
+       (Tylenol revisited.)
+   3.  Preparing your organization before you infect others.
+       (Slalom gates and Chess Moves.)
+   4.  The situation without preparation.
+       (Who me?)
+   5.  The situation with preparation.
+       (Just another emergency.)
+   6.  The value of perfect information.
+       (He who knows, and knows that he knows.)
+   7.  Communicating with your victims, written vs. oral.
+       (You have the right to remain silent.)
+   8.  Who authors the recall communications?
+       (Why me?)
+   9.  Tracking results.
+       (You can lead a horse to water.)
+   10. Snatching victory from the jaws of defeat.
+       (Better to have infected and cleaned, than to have never...)
+   11. Building on each experience.
+       (Its getting better all the time.)
+   12. Plowing back preventive measures.
+       (Enough is enough.)
+
+
+  A. BACKGROUND
+     (What corporations have been doing about harmful code.)
+
+  Since the late 1980s, corporations have witnessed harmful code events,
+  and have taken some precautions as a direct result.  Key events include:
+  the Internet Worm of 1989 which was written by Robert Tappan Morris, the
+  Christma EXEC Worms experienced by universities and corporations, the
+  media attention to the Jerusalem or Friday the 13th virus in 1989, the
+  AIDS Trojan Horse which was distributed to conference attendees in 1990,
+  Internet breakins described by Clifford Stohl in The Cuckoo's Egg, and
+  the Michelangelo media hype in March, 1992.  These events are a mix
+  of PC viruses, network worms, and Trojan horses, which tend to blur the
+  harmful code issue, making it hard for the layman to understand what
+  is under attack, and what can and should be defended against.
+
+  A good starting point is to distinguish clearly between various harmful
+  code threats, and understand what can affect, or infect, various
+  platforms.  Some simple definitions:
+  Virus -  A program which, when executed, can add itself to other programs
+           without permission, and in such a way that the infected program,
+           when executed, can add itself to still other programs.
+  Worm -   A program which copies itself into nodes in a network, without
+           permission.
+  Trojan - A program which masquerades as a legitimate program, but does
+  Horse    something other than what was intended, but does not spread.
+
+  While viruses exhibit many other characteristic behaviors, such as:
+  causing pranks, changing or deleting files, displaying messages or screen
+  effects, hiding from detection by changing or encrypting themselves,
+  "modifying programs and spreading" are the necessary and sufficient
+  conditions for a program to be considered a virus.  Worms spread, as do
+  viruses, but worms don't modify or attach themselves to other code. If
+  they did, they would be viruses.  This distinction between viruses and
+  worms isn't appreciated, and the terms are frequently used synonymously.
+  But notice that worms tend to get stamped out quickly, since they don't
+  leave their residue in other programs, while viruses persist.  Perhaps
+  the distinction is more than semantics.  Trojan horses tend to be single
+  instances of harmful code, such as a modified payroll system, or an
+  unauthorized addition to software which is being distributed.
+
+  Given these distinctions, we may be curious as to what platforms are
+  vulnerable to harmful code.  The answer is, all platforms.  Viruses
+  can be written to infect software on micros, minis, or mainframes.
+  But what platforms have actively spreading viruses?  The answer is,
+  personal computers.  All known, actively spreading viruses are found
+  in the PC environment.  Does that mean that we don't have to brace
+  for harmful code in other platforms?  No, we have to be prepared to
+  deal with harmful code in all environments, but the preventive and
+  reactive approaches are different.
+
+  The standard corporate defense for harmful code is the Computer
+  Emergency Response Team, or CERT, a term coined in the wake of the
+  Internet Worm.  CERTs organize incident reporting and response, and
+  marshal knowledge of harmful code so that their companies are able
+  to address any and all emergencies, or day to day infections.  The
+  CERT will almost always recommend the following:
+  1. deploy anti-virus software for those PCs which have actively
+     spreading viruses (IBM compatibles, MacIntosh, Amiga, but not UNIX).
+  2. employ gateway filters and firewalls between the corporate network and
+     external networks to reduce the risk of network attacks and hacking.
+  3. address previously experienced system and network attacks, as they
+     tend to get repeated, sometimes with a nastier twist.
+  4. know where to report suspected incidents: to the central CERT of
+     course.
+
+  These recommendations and defenses will tend to be strong or weak
+  depending upon whether or not a company has been burned, what the media
+  has been saying lately, or how good a company's information is about
+  the risks of harmful code.  Reliable information is scarce since most
+  corporations don't advertise their virus experiences.  But operating in
+  a vacuum is dangerous, and always more costly than operating with good
+  information about what is to be feared.
+
+
+  B. Emergencies with Newer, Undetected Viruses.
+     (The best laid plans of mice and men...)
+
+  Why is there a problem?
+  With three new viruses created each day, it isn't enough to protect
+  against yesterday's viruses.  Anti-virus software must be kept current.
+  If you rolled out your virus protection 3 months ago, and have an
+  outbreak of a newer virus, you have an emergency on your hands.
+  Since your software doesn't detect this virus, you don't know how
+  widespread it has gotten, and you run the risk of it spreading within
+  your company and also outside your company.
+
+  How big is the problem?
+  Your risk of getting any virus within a corporation is still about one
+  half of one percent per year per PC.  Your risk of getting a newer virus
+  is far less.  So, you have lower probability of being infected, but
+  higher cost if infected.
+
+  What can we do to reduce the risk?
+  You can update your anti-virus software more regularly to minimize the
+  risk of being caught unprepared by newer viruses.  You can also ensure
+  that your anti-virus software has some capability of detecting newer
+  viruses.  In addition, you would want to know how forward thinking
+  your anti-virus vendor is in its advance technology for anticipating
+  new viruses.
+
+  How can we react if we get infected with a newer virus?
+  First, containment.  Try to stem the spread with normal quarantine
+  approaches.  Next, sample analysis.  Make sure you have a good virus
+  laboratory backing you up.  They should be able to do the reverse
+  engineering for you quickly so that you get an updated virus signature
+  to deploy.  Next, deploy the updated signature in all "hot spots" where
+  the infection may have spread, and plan to update as many of the PCs
+  in your company as makes sense.
+
+
+
+  C. EMERGENCIES REQUIRING RECALL FROM CUSTOMERS AND OTHERS
+     (Delivering more than was asked for.)
+
+  1. THE NEW PLAYING FIELD FOR VIRUS DISTRIBUTION.
+     (Everybody's doing it.)
+
+  It used to be that software came from a finite number of sources.
+  You got diskettes from the PC store, maybe from bulletin boards, or
+  you got new software in shrink wrap.  Now it seems everyone's got a
+  diskette in his pocket.  Whether it is for your taxes, your grocery bill,
+  or someone's slick demo, people are trading diskettes like baseball
+  cards (picture cards of American sports heroes exchanged by American
+  children).  And a mobile work force has sprung up with laptop wielding
+  warriors who add to the rate of sharing of PC programs and diskettes.
+
+  The playing field has changed, because as quickly as we can give out
+  some valuable program or information on diskettes, we can give a little
+  extra - a virus.  And neither the donor nor the recipient is always
+  careful enough to scan with current level anti-virus software.
+
+  The old paradigm which saw us amply deploy anti-virus software isn't
+  working any longer.  If 50% of your employees run effective anti-virus,
+  which used to be sufficient to prevent outbreaks, it won't do today.
+  We need higher deployment because we are becoming more vulnerable to
+  giving and getting infection.  We now have to shoot for coverage closer
+  to 90% to keep our risks manageable.
+
+  We also have to boost education.  We used to advertise "install and
+  forget" anti-virus software.  Well guess what, the users forgot alright.
+  If they weren't running the programs they were handing out, they didn't
+  get the warning from their anti-virus software.  Users have to be
+  reminded that they have anti-virus software on their PCs, and they are
+  to use it whenever they give or get diskettes or foreign software.
+
+
+  2. ETHICAL CONSIDERATIONS.
+     (Tylenol revisited.)
+
+  So you infect someone, what of it.  Hey, you were a victim too, you say.
+  You didn't write the virus; you just passed it along.  Anyway, how do
+  they know it came from you, and not someone else.  You hear viruses are
+  everywhere.  And this virus doesn't really do deliberate damage, right,
+  it just spreads.
+
+  Imagine if Johnson and Johnson took that position when arsenic-laced
+  Tylenol was found in drugstores.  When they discovered that some bottles
+  of this pain releiver were tampered with, they took the ethical route,
+  which also happened to be the correct financial route, and pulled their
+  product from the shelf.  So too with virus infections, the company
+  finding out that it infected others has the ethical obligation to do
+  the right thing: swift actions to prevent further spread or damage.
+  Not because you might get found out.  But because the people you deal
+  with trust you, and without that trust, you have nothing.  Your customers
+  expect it of you; you expect it of yourself.  There is no choice.
+
+  It may be easy to accept the point that we have to act ethically, but
+  it may be harder to implement the action.  Corporations tend to have
+  built in legal departments, media relations department, and other
+  layers of management and control which make it harder to act on impulse,
+  even if that impulse is right.  Sometimes, a corporation wishing to act
+  swiftly after infecting its customers, gets so bogged down in getting
+  its action approved, that it fails to make the proper notification in
+  a timely fashion.
+
+
+  3. PREPARING YOUR ORGANIZATION BEFORE YOU INFECT OTHERS.
+     (Slalom gates and Chess Moves.)
+
+  Whenever you see a slalom skier miss a gate, you can be sure that the
+  mistake he made occurred several gates back.  Likewise, whenever you see
+  a chess blunder, it is likely that the mistake occurred several moves
+  earlier, causing the blunder.  So too with corporations and emergency
+  incident response.  The better prepared the corporation is with incident
+  management, the more likely it is to escape unscathed if the worst
+  virus emergency befalls it.
+
+  The right preparation for handling a situation in which your company
+  has infected someone else, is the same preparation needed for good
+  harmful code incident management.  It is a Central CERT process which
+  is developed and matured to the point where ALL incidents are reported
+  to a central group which is knowledgeable and responsible.  Achieving
+  close to 100% central reporting is no meager task in a large, world wide
+  organization, but it is obtainable.  In our experience, companies
+  with a fully developed central reporting process handled their virus
+  emergencies well, those without central disciplines floundered.
+
+  The central CERT needs technical expertise, of course.  But equally
+  important in this central CERT is business judgement.  Senior management
+  skills should be associated with or part of the central CERT in order
+  to be prepared to handle emergencies with a mature viewpoint.
+
+
+  4. THE SITUATION WITHOUT PREPARATION.
+     (Who me?)
+
+  Without preparation and central incident management, a corporation will
+  have a virus infect others, and find out the hard way.  The infected
+  party will call the sending location, who will likely be uninformed
+  about the particular virus, or viruses in general.  After all, if he was
+  up on viruses, he would have been scanning, and less likely to pass
+  infected programs to others.  He will be working with what information
+  he has or can gather, and is likely to react slowly, over-react or under-
+  react.  For instance, if he thinks he infected 1,000 users, but really
+  only infected 10, he might go public in order to warn everybody.  Or,
+  if he has a virus which is unlikely to spread quickly or do immediate
+  damage, but he doesn't know this, his reaction might be stronger than
+  necessary.  On the other hand, if he underestimates the consequences,
+  he could opt for no warning, and then be accused of negligence.  He
+  may or may not know how to get help within his company or outside.
+
+  Examples:
+     A company is told by a customer that the promotional diskette it sent
+     them last week was infected by the FORM virus.  The "unprepared"
+     company apologizes, offers to send a replacement, and sends a note
+     out to 5,000 other recipients of this diskette, apologizing and
+     stating that they may have infected them.  They later find out that
+     the first report was in error, the customer's machine was infected,
+     and they infected the promotional diskette.
+
+     Another company is told by a customer that a demo diskette which they
+     were sent two weeks ago was infected by the JOSHI Virus, and the virus
+     spread and did irreparable damage to many of its PCs which were LAN
+     attached.  The company confirms that their golden master was infected
+     with the JOSHI, and sends this alert to 8,000 customers:
+      "Urgent! the demo diskette which we sent you two weeks ago was
+       infected with the JOSHI Virus.  Please shut down any PC which used
+       this diskette, remove it from the LAN, and scan and disinfect with
+       antivirus software.  We recommend shutting down your LAN server if
+       any PC which ran the demo diskette program was LAN attached.  We
+       apologize for any inconvenience."
+
+  This is obvious over-reaction by a company with good intentions, but
+  insufficient information about the viruses in general, and the specific
+  virus in question.
+
+
+  5. THE SITUATION WITH PREPARATION.
+     (Just another virus emergency.)
+
+  If the corporation has an active central CERT, and has been building
+  experience and swift handling in a central team, the case of infecting
+  a customer will appear to be just another emergency.  The person who
+  actually infected the customer will know to call "virus central," and
+  will be only too glad to get help, and get out of the loop.  The central
+  CERT will keep the infector in the loop.  The central CERT will apply
+  all its knowledge about the virus in question, ask the right questions,
+  and narrow the field as much as possible.  If a public statement proves
+  necessary, the CERT will recommend such action and draft the press
+  release.  More likely, the potential infected customers can be identified
+  and helped.  The central CERT will recommend the best process, guidance,
+  and anti-virus tools to prevent further spread or damage.
+
+  Examples:
+
+     A company is told by a customer that the promotional diskette it sent
+     them last week was infected by the FORM virus.  The "prepared" company
+     knows it scans its golden masters and knows that the diskette they
+     sent wasn't write protected, so it realizes the customer could
+     easily have infected the diskette.  Since this company also has
+     central incident management, and no other customers have reported an
+     infection, it checks its distribution process, which is clean.  It
+     await further evidence.  It then finds out the customer was in error.
+
+     Another company is told by a customer that a demo diskette which they
+     were sent two weeks ago was infected by the JOSHI Virus, and the virus
+     spread and did irreparable damage to many of its PCs which were LAN
+     attached.  The company confirms that their golden master was infected
+     with the JOSHI, even though their process is to carefully scan before
+     sending diskettes anywhere.  Acting on good information, it sends the
+     following alert to 8,000 customers:
+
+       "The diskette which we sent you two weeks ago may be infected with
+        the FORM virus.  If you used it in normal operation, it is not
+        likely the virus spread.  However, if you accidentally booted from
+        it, you likely infected your PC with the FORM virus.  While this
+        virus has no deliberate destructive payload, you will want to
+        clean it up quickly and prevent its spread.  As unexpected code,
+        it could cause problems, even data loss in some cases.  Please
+        return the diskettes, and we will send you a replacement copy,"
+
+  This communication is based on solid information, and serves as very
+  useful help to the recipient.  The incident is neither overblown nor
+  trivialized.
+
+
+  6. THE VALUE OF PERFECT INFORMATION.
+     (He who knows, and knows that he knows.)
+
+  Clearly, the more information the CERT has about viruses in general, and
+  dealing with infections, the better prepared it is to handle a sensitive
+  emergency.  But most companies don't experience enough harmful code
+  incidents to gain the knowledge to act with total confidence in these
+  situations.  Therefore, it could be critical to be well connected to an
+  experienced group with the kind of virus knowledge needed in these cases.
+  That trusted group, or "super CERT" should be directly handling many
+  virus incidents, have proven ability to reverse engineer viruses,
+  and also be a group which can handles situations in confidence.  This
+  group has to be reachable, and committed to helping you in an emergency.
+  In addition to being available for emergencies, this "super CERT" should
+  be authors of up to date analysis of viruses and virus prevalence trends.
+  If this information is made available to its clients, a greater degree of
+  self-sufficiency is possible.
+
+  Good technical information alone isn't enough in emergency situations.
+  There is also a need for mature business judgement within the central
+  CERT team to properly use the information.
+
+
+  7. COMMUNICATING WITH YOUR VICTIMS, WRITTEN VS. ORAL.
+     (You have the right to remain silent.)
+
+  Keeping values and objectives in mind, the manner of communications
+  during a virus emergency is important.  You don't want to be neglectful
+  if you have caused an infection to be spread, but you also don't want
+  to cause undue concern, reaction, and media attention.  Some good rules
+  of thumb are:
+   o Act swiftly, after confirming the facts.
+   o Technical information which needs scrupulous accuracy tends to
+     be better handled via written communication, e.g., E-Mail.
+   o "Apology" type information lends itself to oral communications,
+     e.g., a phone call or a visit.
+   o If you know your recipients, contact them directly, but you don't
+     need to advertise the full scope of the problem, beyond the
+     individual you are warning.  For example, "the diskette we sent
+     you may be infected" is preferable to "all diskettes which we sent
+     in March were infected."
+  o  Remember, written information is more likely to get into the press,
+     and that may be neither in your interest nor your client's.
+  o  Remember, media control is an objective, but it is secondary to
+     doing the right thing.
+  o  Golden rule test: are you handling your recall the way you would
+     want someone else who infected you or your company to handle a
+     recall.
+
+
+  8. WHO AUTHORS THE RECALL COMMUNICATIONS?
+     (Why me?)
+
+  Who should author the recall?  Should it be the CERT, since they know
+  more about viruses, the communications person, who owns the customer
+  relationship, or the group that was guilty of sending the infected
+  programs.  The most effective choice is the person who has a relationship
+  with the customer.  If you try to extract penance from the person who
+  infected your customers, you may get more defensiveness than you want.
+  The CERT knows viruses, but they aren't necessarily savvy about customer
+  sensitivity.  The sales representative, or person with the customer
+  relationship, should be able to work with the information provided
+  by the CERT and the person who spread the infection, and get the right
+  people involved with the proper sense of urgency.
+
+  While the sales representative authors the recall, the central CERT
+  has the experience from past emergencies.  The central CERT must use
+  that experience to advise and guide the individuals who will deal
+  directly with their customers during this emergency.
+
+  9. TRACKING RESULTS.
+     (You can lead a horse to water...)
+
+  The recall has as its objective to undo any potential damage that may
+  have been triggered by sending out infected software.  Ideally, you
+  want to get all suspect media back to prevent any further damage.
+  You might even hope that everyone in your company and any of the people
+  to whom infected software was sent would treat this as their number one
+  priority.  This is unlikely.  No matter how serious your recall is to
+  you and some other concerned people, there will be many others who will
+  treat this as a low priority.  The recall process has to accept this
+  variation in response, especially since you can't dictate the terms to
+  someone you just infected.  You must therefore be prepared to track and
+  monitor recall activity over a fairly long recall period.  This could
+  be months.  You track results to ensure the recall message went out,
+  to make sure the recall work is happening, and to give potentially
+  infected recipients every opportunity to avoid virus difficulty.  The
+  persistence and follow up will generally help discover an instance or
+  two where the first message was missed, and an infected PC or diskette
+  was being neglected.  The important aspect here is that it only takes
+  one miss in a recall to create a chain reaction.  Do everything that
+  is reasonably possible to retract the infected shipments.  If there is
+  a lack of cooperation after proper warning and reminders, you may not
+  be able to do anything further, but you have a right to feel confident
+  knowing you did everything possible to avoid inconvenience to your
+  customers.
+
+
+  10. SNATCHING VICTORY FROM THE JAWS OF DEFEAT
+      (Better to have infected and cleaned, than to have never infected...)
+
+  As scary as it is to find out you may have infected your customers
+  with a virus, it is often surprising to see the situation turn from
+  bleak to positive, if you handle the situation correctly.  Customers
+  have been delighted when told that they were the recipients of
+  infected diskettes.  They are very happy to see quick and honest action
+  to correct the problem, and keep them from any damage.  They often
+  understand that the spread of infection was accidental, and they also
+  wonder if they could have been so quick with a recall themselves.
+
+  Just as a recall is a learning experience for the infecting company,
+  it can be a learning experience for the infected company.  If it could
+  be infected by you, it could be infected by someone else.  What steps
+  should it take to be better defensed against viruses.  In a few cases
+  companies have indicated that they were considering suing for damages
+  because of receiving infected diskettes.  They soon realized that the
+  neglect they are accusing within the other company is matched by their
+  own neglect with anti-virus practices.
+
+  11. BUILDING ON EACH EXPERIENCE.
+      (It's getting better all the time.)
+
+  The first virus emergency and the first recall is the hardest.  You
+  are probably breaking new ground, and you might find it difficult to
+  get both the technical information and the contact information as
+  quickly as you'd like.  The more virus emergencies you experience,
+  the more comfortable you get with your actions.  While you don't want
+  to accept any emergency as a fact of life, getting complacent, as long
+  as they do occur, it is to your advantage to build upon each experience.
+  If you don't have any experience in handling such emergencies, it is
+  wise to hook up with someone who does, someone who can advise you.
+
+  In order to ensure you are building on each experience, post reviews
+  are useful, as are thorough notes and logs of what happened, and what
+  actions worked well, what actions didn't work well.
+
+
+  12. PLOWING BACK PREVENTIVE MEASURES.
+      (Enough is enough.)
+
+  If you are experiencing more than your share of virus emergencies,
+  and some might say one is too much, it may be time to correct your
+  corporation's anti-virus course.  What better ammunition than the
+  horror story of infecting customers to stir senior management into
+  action.  Take the time to share virus emergency post reviews with
+  those in a position to help you take corrective action.  But make
+  sure you know what actions you want to achieve.  Have a good plan.
+
+  Experiencing virus emergencies and infecting customers with regularity
+  is an indication of an out-of-control situation.  If you are finding
+  that the emergencies are caused by a new breed of employee who is just
+  beginning to share diskettes with others, than you have a course of
+  action to address that problem.  If you find emergencies are prompted
+  by distribution libraries, that may suggest an entirely different
+  solution.  Universal to any solution is an increase in awareness of
+  the virus problem, and greater deployment and use of anti-virus tools.
+  That coupled with an effective CERT can keep a corporation away from
+  the brink of disaster.  It can also address those emergencies which
+  may still occur with the best of corporate anti-virus defenses.
+
+
+ 
+
+

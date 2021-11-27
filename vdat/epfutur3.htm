@@ -1,0 +1,326 @@
+<HTML>
+<HEAD>
+
+<TITLE>The Future of Computer Viruses</TITLE>
+</HEAD>
+
+<BODY leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#C0C0C0" onLoad="init()" text="#000000" link="#800000" vlink="#800000" alink="#800000" background="epback01.gif">
+<h1 align="center"><font color="#004080">The Future of Computer Viruses</font></h1>
+<p align="CENTER"><font color="#004080"><i><a 
+href="mailto:jh@sophos.com">Dr. Jan Hruska</a>, Sophos Plc</i> </font>
+<p align="CENTER"><font color="#004080">October 1998 </font>
+<hr>
+<h2> Abstract </h2>
+<p>Computer viruses continue to be one of the principal headaches for today's 
+  increasingly interconnected corporations. This paper will look at virus history, 
+  outline the present state of affairs, discuss the ingredients of a successful 
+  defence strategy and consider how the problem is likely to develop in the future. 
+<h2> A look at the history </h2>
+<p>The history of computer viruses is relatively brief. After the first theoretical 
+  paper on the subject by Prof. Fred Cohen, published in 1984, it did not take 
+  long for the first virus to appear in the wild. In 1986 the <i>Brain</i> virus 
+  (written by the Alvi brothers in Lahore, Pakistan) caused relatively few infections, 
+  but gave everybody the taste of things to come. After a few more viruses appeared 
+  in 1987, the first anti-virus software was published and the new anti-virus 
+  industry was born. Relatively few of the early anti-virus companies are still 
+  around today. 
+<p>The virus writers continued producing new viruses and inventing new concepts: 
+  encryption, polymorphism, stealth, tunnelling, sparse infections, cavity infections, 
+  anti-debugging tricks etc. Interestingly enough, some of these 'advanced' concepts 
+  were tried very early on: <i>Brain</i> was a stealth virus, while <i>Cascade</i> 
+  was encrypted (though not polymorphic). Anti-virus software producers combated 
+  all these techniques retroactively, but successfully. The search for the ultimate 
+  undetectable virus by the virus-writing community has so far been unsuccessful. 
+<p>From the early days the virus writers tried to make virus writing as easy as 
+  possible (presumably to attract more followers). In 1992 the first virus construction 
+  kits appeared which enabled anybody who could point and click with the mouse 
+  to create a virus to their specifications. A succession of such kits followed. 
+<p>1992 was also the year of the great <i>Michelangelo </i>scare, mainly fuelled 
+  by the media and one or two of the less timid members of the anti-virus community: 
+  <i>Michelangelo </i>was predicted to erase the hard disks of 'millions' of PCs 
+  on 6th March 1992. On the day it turned out to be a non-event: the worldwide 
+  number of virus infections which triggered was probably in thousands rather 
+  than millions. 
+<p>Since the early days the virus writers have been trying to cause as many headaches 
+  as possible for the anti-virus companies. Knowing full well that polymorphic 
+  (i.e. self-mutating and encrypted) viruses are much more difficult to detect 
+  than non-polymorphic ones, they put their energies into creating them. Fortunately, 
+  writing polymorphic viruses is much more difficult than writing non-polymorphic 
+  ones and often produces viruses which do not replicate well. Virus writers once 
+  again tried to make polymorphic virus creation as easy as possible and released 
+  a succession of 'polymorphic toolkits', starting with the Dark Avenger's <i>Mutation 
+  Engine</i>. 
+<p>It was well known even in the early virus days that viruses written in macro 
+  languages were possible, providing that the language supported the constructs 
+  necessary to enable the replication of code to be written. It took the virus-writing 
+  community a relatively long time to produce the first macro virus. <i>Winword/Concept</i>appeared 
+  in August 1995 and was written in Microsoft WordBasic. Suddenly the world was 
+  faced with the need to virus-scan yet another set of objects, and an increasingly 
+  large set at that. It did not take long for the first Microsoft Excel virus 
+  to appear and it is now only a matter of time before viruses which infect other 
+  components of Office 97 (such as PowerPoint) are written. 
+<p>The first Windows&#160;95 virus was written in 1995 (<i>W95/Boza</i>) by the 
+  Australian virus-writing group VLAD. This stirred up the media. <i>W95/Boza</i> 
+  was badly written, did not replicate most of the time and stood absolutely no 
+  chance of becoming widespread. However, it was the first 'proof of concept' 
+  that viruses could be written for Windows&#160;95. 
+<p>In 1997 the first Office 97 virus appeared, capable of cross-infecting Office 
+  97 application objects. 
+<p>1998 was relatively rich in virus events: a virus capable of infecting Microsoft 
+  Access databases was discovered (<i>AM97/Accessiv</i>); a Java virus which can 
+  infect Java applications (but <b>not</b> applets) was written (<i>Strange Brew</i>); 
+  a virus capable of physically damaging computer hardware was widely distributed 
+  (<i>CIH</i>). While the former two events were interesting from the 'being first' 
+  point of view, neither are significant in any practical sense. <i>CIH</i> unfortunately 
+  is: more about that later. 
+<h2> Where we are today </h2>
+<h3> Virus numbers </h3>
+<p>Over 16000 viruses currently exist (August 1998, Fig. 1). Most of these are 
+  parasitic viruses (aka file or program viruses), accounting for 79% of the total, 
+  about 8% are pure boot sector viruses, 7% are multipartite viruses (infecting 
+  both boot sectors and programs) and 6% are macro viruses (Fig. 2). Parasitic 
+  viruses are currently responsible for only 3% of all infections, multipartite 
+  viruses for 6%, macro viruses for 46% and boot sector viruses for 45% (Fig. 
+  3). The most commonly encountered virus is <i>Winword/Cap</i>, responsible for 
+  about 15% of all infections reported to Sophos* between January and June 1998 
+  (Fig. 4). The second most common virus is <i>Excel/Laroux</i>, responsible for 
+  about 10% of infections over the same period. 
+<p>The number of individual viruses continues to grow. While most of them are 
+  either mutations or imitations of existing viruses, genuinely new viruses continue 
+  to appear. 
+<p align=center><img src="futurev1.gif" width="480" height="313" vspace="12"> 
+<p align=center><img src="futurev2.gif" width="480" height="268" vspace="12"> 
+<p align=center><img src="futurev3.gif" width="480" height="273" vspace="12"> 
+<p align=center><img src="futurev4.gif" width="435" height="272" vspace="12"> 
+<h3> Virus destructiveness </h3>
+<p>The virus-writing community is waging an ongoing war against PC users and the 
+  recent <i>CIH </i>virus is a clear sign that their efforts have reached a dangerous 
+  new dimension. In the early days, virus side-effects were in some cases laughed 
+  at and in most others taken as a relatively minor pain in the neck. After all, 
+  most of them could be remedied relatively easily: infected executables could 
+  be restored from backups, disks could be disinfected or reformatted, documents 
+  could be disinfected or restored from backups. When data-corrupting viruses 
+  appeared, users, interestingly, did not take much notice until viruses such 
+  as <i>Winword/Wazzu</i> started interfering with their <b>documents</b> (consider 
+  the effects of changing a contract clause from 'The party shall not be obliged...' 
+  to 'The party shall be obliged...'). Another example is the recent data-diddling 
+  <i>Laroux</i> variant. The seriousness of the side-effects reached a new peak 
+  when <i>CIH</i> appeared: this was the first virus which damages hardware (as 
+  well as erasing information on the hard disk), requiring the physical replacement 
+  of the BIOS chip. Admittedly, for technical reasons it does not do this on every 
+  PC, but since it is a potential danger for a significant number of PCs, it should 
+  be treated as something very serious. 
+<h3> Virus spread </h3>
+<p>The ease with which information flows between organisations today is a significant 
+  contributor to the increase in virus spread. This is not only true of the passive 
+  spread of viruses (A inadvertently sends a virus-infected document to B), but 
+  also for the active spread (A intentionally sends a virus-infected document 
+  to B or, more commonly, A gets a virus collection from one of the many virus-exchange 
+  sites on the web). 
+<p>The Internet has given the virus-writing community a vastly improved means 
+  of keeping in touch compared with the 'old style' virus exchange (VX) bulletin 
+  boards. VX BBSes had to have a telephone number, which implied a real threat 
+  from law enforcement agencies. The number could be traced to a physical address, 
+  the equipment could be seized and the perpetrators (sometimes) prosecuted. The 
+  Internet offers <b>much</b> more scope for anonymity and protection against 
+  the forces of law. In fact, it would be surprising if the UK's Computer Misuse 
+  Act was successfully applied again in a prosecution of a virus-related case: 
+  such is the ease with which the virus authors can hide. A number of USENET groups 
+  exist which offer active discussion forums for virus writers (and others), such 
+  as <a href="news:alt.comp.virus">alt.comp.virus</a>, <a href="news:alt.comp.source.code">alt.comp.virus.source.code</a> 
+  etc. Web sites with virus collections and virus-writing materials keep appearing 
+  faster than responsible Internet service providers manage to close them down: 
+  at a guess there are currently some 200 virus-related sites worldwide, of which 
+  some 10% could be classed as active. 
+<p>Virus spread has been further helped by a recurrence of the problem which used 
+  to plague magazines in the early 1990s: including infected floppy disks on the 
+  magazine cover. Nowadays the magazines are supplying cover CDs with thousands 
+  of programs, which, once decompressed, often contain up to 2 Gb of material. 
+  In 1998 there have been at least ten documented cases of tens or hundreds of 
+  thousands of infected CDs being shipped. Denying that an infected CD has actually 
+  been shipped is, of course, much more difficult than doing the same thing for 
+  floppy disks. Some magazines have adopted an apologetic attitude after supplying 
+  the readership with infected CDs, while others have refused to withdraw the 
+  magazine from sale on the grounds of cost (in one case when there was a CD infected 
+  with <i>CIH!</i>). Any virus achieves a critical mass by such mass distribution 
+  and has, of course, a very good chance of spreading far and wide. Unfortunately 
+  it is difficult to see how the situation is going to improve if magazines continue 
+  to ship CDs (which they will): proving that any piece of software which is written 
+  and compiled by a third party is virus-free is practically impossible in the 
+  same way that it is practically impossible to prove that the software is free 
+  from bugs (of the programming kind). There is no easy solution to this and one 
+  can only advocate extreme caution about using any software supplied on magazine 
+  cover CDs. 
+<h3> Anti-virus companies </h3>
+<p>The increasing virus numbers are a minor headache for anti-virus software users. 
+  They notice that the anti-virus software is getting bigger and bigger and takes 
+  longer and longer to run (although the latter is somewhat compensated for by 
+  the never-ending quest for faster computers). 
+<p>The increasing virus numbers are a <b>major</b> headache for anti-virus companies, 
+  who have to invest heavily in continuous research activity. Many try minimising 
+  the pain: some swallow or allow themselves to be swallowed by competitors in 
+  order to increase market share while halving research efforts (e.g. American 
+  company Network Associates taking over the British company Dr. Solomon's in 
+  August 1998). Other anti-virus companies are combining research efforts by using 
+  virus research obtained from several sources (e.g. Finnish Data Fellows using 
+  the Icelandic FPROT engine with the Russian AVP). Others have simply got out 
+  of the anti-virus field (e.g. IBM and Intel abandoning their anti-virus products 
+  and allying with Symantec). 
+<p>This trend is likely to continue as viruses become more numerous, the number 
+  of types of object that they infect increases and virus search engines become 
+  more complicated. In the end there may well be only two or three world-class 
+  companies whose revenues will be able to finance the ongoing research effort 
+  required to maintain an effective anti-virus product. 
+<h2> Effective defences </h2>
+<h3> Boot sector viruses </h3>
+<p>Far too many boot sector virus infections are still reported. There is really 
+  no excuse for getting infected by a pure boot sector virus. Since the early 
+  1990s most manufacturers have been shipping PCs which allow the user to switch 
+  the default boot sequence from <i>floppy drive followed by hard drive</i> to 
+  <i>hard drive followed by floppy drive</i>. This makes the PC immune to pure 
+  boot sector viruses. Almost 50% of virus infections today could be prevented 
+  by this simple operation which takes less than a minute to complete. Sadly, 
+  the high percentage of boot sector virus infections today is evidence that this 
+  technique continues to be ignored. 
+<p>A program which would set the safe boot sequence automatically (for example 
+  from a login script) is technically possible, but the way of storing the sequence 
+  information in the CMOS is not standard and depends on the BIOS manufacturer. 
+  This makes an automated approach difficult. New operating systems (Windows&#160;95, 
+  Windows&#160;NT and OS/2) complicate things further by prohibiting direct port 
+  access. The easiest solution is still to visit each PC physically. 
+<p>If the manufacturers have provided the ability to set the boot sequence, why 
+  is the default sequence not the reverse of the current one? There is no good 
+  logical explanation. 
+<h3> On-demand anti-virus software </h3>
+<p>On-demand anti-virus software which can be used to check disks or files has 
+  limited use in a multi-PC environment connected to the outside world where there 
+  are so many easy and quick ways of introducing potentially infected objects 
+  into the trusted domain. The two main anti-virus techniques are successfully 
+  applied in such environments: virus-checking gateways and on-access virus scanning. 
+<h3> Virus-checking gateways </h3>
+<p>Virus-checking gateways (Fig. 5) intercept email coming into the organisation, 
+  detaching the attachments, unpacking any encoded parts and sending them to the 
+  virus scanner. Infected objects are discarded or disinfected, while uninfected 
+  ones are passed through to the recipient. 
+<p align=center><img src="futurev5.gif" width="480" height="370" vspace="12"> 
+<p>When considering the use of a virus-checking gateway, one should watch out 
+  for the implications of the multitude of encoding standards as well as throughput 
+  performance. 
+<p><b>Encoding standards</b> 
+<p>There are numerous 'standards' for Internet mail attachments which convert 
+  binary information into 7-bit ASCII text in order to ensure their unaltered 
+  passage across the network via SMTP. This typically makes files bigger, so they 
+  are often compressed before conversion, using numerous available compression 
+  methods. The gateway can only verify attachments that are compressed and encoded 
+  using the algorithms it knows about. Furthermore, binary files can be manually 
+  encoded into printable text (e.g. UUENCODE) or encrypted (e.g. PGP) and included 
+  into the message. The gateway needs to recognise these parts, decode or decrypt 
+  them and check them. The problem is very complex (and practically impossible 
+  for encrypted files) and no available gateway can (or claims to) unpack all 
+  objects completely. 
+<p><b>Throughput performance</b> 
+<p>Gateway scanners (or, more precisely, gateway unpackers) normally invoke (third-party) 
+  virus scanners for checking of unpacked objects. A scanner needs to initialise 
+  its database every time it is run, which can take several seconds. This can 
+  have a large impact on the throughput performance of the gateway, which is best 
+  solved by using a program-level interface between the gateway and the scanner 
+  (such as Sophos' SAVI). Up to thirty-fold increases in performance over the 
+  conventional approach can be obtained. 
+<h3> On-access virus scanning </h3>
+<p>The use of a gateway <b>must</b> be supplemented by other anti-virus techniques 
+  since a gateway alone cannot detect viruses in carriers such as floppy disks, 
+  CDs etc. which are widely used. After all, it was a CD which spawned the <i>Winword/Concept</i> 
+  distribution. 
+<p align=center><img src="futurev6.gif" width="480" height="378" vspace="12"> 
+<p>On-access scanning provides virus detection at the workstation. On-access scanners 
+  normally intercept <i>file open</i> and <i>file close</i> operations**, virus 
+  checking the file and allowing the file access or execution to proceed only 
+  if no viruses are found. The questions of how a file is packed, whether it is 
+  compressed or encrypted, or where it comes from, become irrelevant: the virus 
+  will be caught on unpacking, decompression or decryption. If the file is, for 
+  example, compressed with ZIP, unZIPping it will cause every executable item 
+  to be checked as it is created and, if a virus is found, the on-access scanner 
+  will prevent access to the offending item. 
+<p>Since Windows&#160;3, Windows&#160;95 and Windows&#160;NT are not hampered 
+  by DOS's 640K memory limit, on-access virus scanning has become a feasible and 
+  practical option. The scanner is a VxD (Virtual Device Driver for Windows&#160;3 
+  and Windows&#160;95) or an FSFD (File System Filter Driver for Windows NT). 
+<p>On-access virus scanning is a powerful technique which depends on scanning 
+  to detect viruses. Scanners have to be updated as new viruses appear and no 
+  on-access virus scanner will catch a virus that it does not recognise as such. 
+  The burden of scanner updating is still present and unlikely to disappear in 
+  the future, although good anti-virus software usually provides an automated 
+  way of distributing updates in networked environments. 
+<h3> Write-protected motherboards </h3>
+<p>If the disaster does happen and the virus manages to evade all defences and 
+  land on the desktops, you want to minimise the hardware damage it can cause. 
+<p>We are likely to see more <i>CIH</i> style viruses in the future and it has 
+  never been more important than now to prevent damage which requires physical 
+  repair of the infected PCs. If the motherboards used in your PCs have a Flash 
+  BIOS (which is reprogrammable by the motherboard itself), the motherboards should 
+  also have a <b>working</b> hardware switchable write-enable jumper (or switch). 
+  <b>Beware: some motherboards have a jumper which does not actually work.</b> 
+  There is considerable variation in the layout, labelling and functionality of 
+  Flash BIOS amongst motherboards and advice should be sought from the board manufacturer. 
+<h2> What will the future bring? </h2>
+<p>The following are just some of the events which are likely to happen: 
+<h3> Virus glut </h3>
+<p>The pace at which new viruses are being created is increasing. When choosing 
+  an anti-virus partner (and it is increasingly necessary to look for a partner 
+  rather than just a supplier) make sure that they have the technical and financial 
+  resources as well as the will to stay in the front line of the battle against 
+  viruses. 
+<h3> Java and ActiveX </h3>
+<p>Both of these active components of the www world have (quite different) security 
+  mechanisms in place which are supposed to prevent virus spread. 
+<p>Java has two main potential weak spots: 
+<ul>
+  <li>Bugs in the implementation of the 'sandbox' model. 
+  <li>Future overenthusiastic expansion of which actions are allowed in the sandbox, 
+    while not considering the potential security implications. 
+</ul>
+<p>The security of ActiveX relies on only authenticated code being allowed to 
+  run. This is better than nothing, but it leaves a lot to be desired. It is also 
+  too easily overridden by the <b>user</b> (i.e. not preventable by the system 
+  administrator) in current Microsoft implementations. 
+<h3> More connectivity </h3>
+<p>The demand for bandwidth is increasing all the time, with more and more information 
+  being exchanged more and more rapidly. The danger of viruses increases with 
+  the rate of object exchange, which suggests a more dangerous future. 
+<h3> More powerful universal macros </h3>
+<p>The trend towards incorporating increasingly powerful application macro languages 
+  is common. The software manufacturers reason that supplying the macro capability 
+  makes applications more flexible, customisable and easy to use: this is true. 
+  Unfortunately, it also makes them less virus-proof. 
+<p>Another trend which is present is the standardisation of macro-languages: Microsoft 
+  achieved this within Office 97, with most member applications capable of using 
+  the powerful Visual Basic for Applications (VBA5). If this trend continues (as 
+  it looks likely to), in the future viruses may well be presented with only one 
+  universal environment instead of several incompatible ones. Virus writers must 
+  be rubbing their hands... 
+<h3> More CIH-like viruses </h3>
+<p>The <i>CIH</i> source code (including its Flash damaging routine) is widely 
+  available on the net, so it is only a matter of time before similar destructive 
+  routines appear in other viruses. 
+<h2> Conclusions </h2>
+<p>The virus problem is getting worse. Increasing pressures to connect to the 
+  outside world, exchange information and do it all rapidly, decreases the control 
+  over what is exchanged and increases the potential for malicious code to penetrate 
+  even the best protected environments. The virus-writing underworld seems determined 
+  to cause as much trouble as they can and are using the Internet to its maximum 
+  potential to help them spread the word while not exposing themselves to any 
+  dangers of being caught. Anti-virus companies are finding it more and more difficult 
+  to keep up the research effort and in the last year some have consolidated or 
+  abandoned their efforts. 
+<p>The future is not rosy, but given sufficient determination and resources to 
+  crack the virus problem, it should be possible to do it. 
+<p> 
+* Virus statistics are based on viruses reported to Sophos. An incident is logged 
+as one unit regardless of whether the virus was intercepted before causing an 
+infection or whether it infected one PC or 1000 PCs. Other anti-virus vendors 
+report similar percentages. 
+<p><font size="-1">** In practice, a few more things are checked. </font>
+<hr>
+<p>&nbsp;</p>
+</BODY>
+</HTML>

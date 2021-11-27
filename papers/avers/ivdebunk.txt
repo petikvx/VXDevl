@@ -1,0 +1,193 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+
+
+
+                         BILL LAMBDIN DEBUNKS INVIRCIBLE
+                                  August 1, 1995
+
+
+Here are the results of my test with InVircible 6.01C that I tested in
+March 1995.
+ 
+I'm releasing this report now because some people have stated that Vesselin
+Bontchev's paper INVIRCIB.ZIP is too complex.
+
+I released most of the data contained in this report to the Virus-L digest
+on March 3rd. Almost two months before Vesselin released his paper on IV.
+
+Allow me to place a caveat at the beginning of the report.
+
+I tried to approach Zvi Netiv (The author of InVircible) about these
+security problems (in August 1994). I would have preferred to work behind
+the scenes and close these security issues than to post messages that
+embarass Zvi or IV. Unfortunately Zvi wouldn't listen or take steps to
+close these security holes, so I wasn't given any other option.
+
+The results below are not opinion. They are facts.
+
+IV failed my modified files test. IV only reported 4 of 6 modified files.
+
+IVTEST runs two bait files. There are seven problems with this.
+	a. Not all viruses will infect the same bait files.
+        b. The largest bait file is too small. 8 Tunes refuses to infect
+           any files smaller than 9216 bytes. Tremor refuses to infect
+           any files smaller than 10240 bytes, and there are other
+           viruses that refuse to infect anything smaller than 30720 bytes.
+	c. let's use a virus like Icelandic.saratoga. This virus only
+           infects every 10th .EXE file run. Even if the .EXE file were
+           appropriate for Icelandic.Saratoga to infect, there is only a 1
+           in 10 chance of Saratoga infecting the bait file.
+	d. These bait files will not detect companion infectors.
+	e. These bait files will not detect path companion infectors.
+        f. Not all viruses are resident in memory.
+        g. boot sector viruses do not infect files.
+
+IV doesn't detect Tremor in RAM or on infected files When Tremor is active.
+        Tremor  is a static sized polymorph that happens to be fully
+        stealthed, and tunneling. Infected files increase in size by 4000
+        bytes. Hooks INT 21h, and steals 4228 bytes of RAM. Tremor is
+        currently spreading in the wild.
+
+
+IV doesn't detect companion infectors.
+
+IV doesn't detect path companion infectors.
+
+IV doesn't check the entire file, but only gathers a small signature
+        from file areas likely to be modified by a virus. This routine will
+        miss viruses, and will not report all files corrupted by viruses.
+
+IV doesn't have an option to check the integrity of all files. Many viruses
+        also infect files regardless of extension as they are loaded and
+        executed with DOS function call 4Bh when accessed through INT 21h.
+        Two good examples of executable files with non executable
+        extensions are the small programs in Side Kick, and PC-Tools
+        Desktop.
+
+IV doesn't detect 100% of all viruses (As Zvi claims). Since IV failed to
+        detect Tremor, and companion infectors; I can truthfully say there
+        is no way that IV could detect 100% of all viruses.
+
+IV doesn't remove 100% of all viruses (as Zvi claims). MPC.Sara overwrites
+        the entire file. There is no way that anyone can build the file
+        back to the functioning state when the entire file is gone! So I
+        can truthfully say that IV doesn't remove 100% of all viruses.
+	
+        In July 1995: Zvi Netiv admitted in the FIDO Virus conference that
+        IV is unable to remove the One Half virus, or any of the
+        overwriting viruses.
+
+IV doesn't heal itself (as Zvi claims). Trivial.Vootie.66.a overwrote
+        IV, and all bait files on the disk, and IV was unable to run
+	or heal itself. So IV was dead in the water.
+
+IV does place the integrity data files on the hard drive, leaving them
+        open to attack from viruses.
+
+IV does name all integrity data files the same. Any virus could me modified
+        to delete these integrity data files.
+
+If the integrity data files are corrupted or deleted, the generic
+        detection, and generic removal capabilities are removed.
+
+If the integrity Data files are deleted, IV asks if the user wants to
+        check the directory; instead of reporting a problem the
+        previous integrity data file was deleted. IV then mindlessly
+        generates a new integrity data file for the directory. I might add
+        this new integrity data file is generated AFTER infection. so IV
+        can't detect or remove the virus because IV doesn't have a file
+        signature that was generated before infection.
+
+IVSCAN only detects 15% of my virus collection. AVP, F-Prot, and TBAV
+        detect 98+% of my virus collection.
+
+The viruses listed above are only examples of the many viruses that IV 
+fails to detect or remove.
+
+If you want a second opinion to my results.
+ 
+Dr. Keith Jackson wrote a review of IV in Virus Bulletin in December 1994.
+
+Vesselin Bontchev has written a 3000 line paper on IV; INVIRCIB.ZIP.
+INVIRCIB.ZIP is available on several BBSs  including the Metaverse BBS
+(606) 843-9363.
+
+Some people will imply that I am on a vendetta to demolish InVircible.
+ 
+This is not the case.
+
+I wrote several messages on IV's behalf when Vesselin Bontchev labeled IV
+as a trojan.
+
+I wrote several messages on IV's behalf because I believed that Vesselin
+was too critical of IV in some sections of his paper INVIRCIB.ZIP.
+
+All I want is for the claims for the effectiveness of IV to resemble the
+capabilities of IV.
+
+Zvi has two ways to stop my criticisms of IV.
+
+	1. Patch the security holes in IV.
+        2. Remove the preposterous claims from the manual, and stop
+           posting these preposterous claims in virus conferences.
+
+At no time have I ever implied that IV is completely worthless. IV has some
+rather interesting concepts. However; I am unable to recommend IV in good
+conscience because of the security concerns described earlier.
+
+
+                                    GLOSSARY
+
+        Bait files: These are small do nothing programs that attempt to
+                entice viruses to infect them.
+
+        Boot Sector Virus: These viruses infect the boot sector of
+                diskettes, and the Master Boot Record, or boot sector
+                of hard drives.
+
+        Companion Infectors: These viruses generaly create small .COM files
+                with the same name of an .EXE files (These .COM files are
+                placed in the same directory). If you do not specify an
+                extension, DOS tries to load a .COM file with the same
+                filename first. The .COM file contains the virus with a
+                link to run the .EXE file after the virus has run.
+
+        Data file: These are small files (created by A-V software) that
+                contain information about the files on the computer.
+
+        Fully stealthed: The virus will temporarily disinfect infected host
+                files when the infected host files are opened for any
+                reason, then reinfect the file when the file is closed.
+
+        Overwriting Virus: These viruses overwrite the beginning of .COM
+                files generaly. The original file is corrupted and will
+                no longer run.
+
+        Path Companion Infectors: These viruses work much like Companion
+                Infectors described earlier. but the infected files are
+                placed in the DOS path.
+
+        Polymorph: The virus mutates on every infection, so the virus never
+                looks the same twice. A simple scan string to detect the
+                virus is useless.
+
+        Resident: Hook Interrupts and remain active in RAM.
+
+        Trojan: This is a program that appears to do something useful, but
+                is slyly doing something destructive.
+
+        Tunneling: Tunneling is a technique used by viruses to bypass
+                resident software that monitors or attempts to stop
+                disk access.
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+Comment: CS-251.ZIP (CHK-SAFE) is on the Metaverse, and Simtel mirrors.
+
+iQCVAwUBMB2m0ksggM2nhQQZAQF2sQP/TqYpRQ8UYxXd7/agpzguhvzsyf5ZlMUO
+meiRg5dNqeRvnfpSYWzqGFyAMVPxjtAa9LBb0GhBZJxF1G5hI5xzYAp2D6w3rMi7
+bX5fj7lgmW02cP8XdJsC0CyyTIEpclCqluYqkA1rSHwHYgYltT0zv0rwP1MSDKTZ
+GOThYHfPYaw=
+=7ESc
+-----END PGP SIGNATURE-----

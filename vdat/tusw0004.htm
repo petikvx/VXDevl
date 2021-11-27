@@ -1,0 +1,100 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Stealth Warrior - Combo Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>Combo Virus Tutorial<BR>
+by<BR>
+Stealth Warrior [SLAM]</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<CENTER><PRE>My E-Mail address: <A HREF="mailto:stealthwarrior@hotmail.com">stealthwarrior@hotmail.com</A></PRE></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>            
+ DISCLAIMER:      
+ Information included in this file is not to be used in any malicious or 
+ otherwise irresponsible manner. The author is not responsible for any 
+ damages, incidental or otherwise, resulting from using information from
+ this file. Responsibility is entirely placed on the reader (user).
+ 
+
+So, here's another quick tutorial, this time about 'combo' viruses.  
+What's a combo virus? It's a virus which can infect both COM and EXE files. 
+Sounds good, doesn't it? Well, it's not complicated and you can figure it out, 
+I'm sure. Here are just some guidelines and solutions to some problems which 
+may arise. Oh, this is still non-TSR oriented, OK? When you're through with 
+this, it's time to switch to TSR viruses :) First problem with non-TSR combo 
+viruses is how to determine whether to search for a COM file or an EXE file. 
+One way could be to use system clock - if it's an odd number, search for COM, 
+otherwise search for EXE. The other way is to search for EXE first, and if there 
+are none found, search for COM. Lately, EXE files are much more common than 
+COM files. So this virus would primarily travel with EXE files, but when there 
+are none, COM would be fine too.  Nice... 
+I'm sure you won't have any problems checking if an .EXE file is really 
+an EXE file... 
+What about restoring the header or first three bytes? This could be a 
+problem, since we don't know if it's a COM or an EXE. Or do we?
+There's a simple trick. You just use a kind of Boolean variable. How? 
+Look:
+                           
+              Virus_Start:             
+                           .
+                           .
+                           .
+              Infect_COM:  .
+                           .
+                           .
+                           WhatAmI=1
+                           .
+              Infect_EXE:  .
+                           .
+                           .
+                           WhatAmI=0
+                           .
+                           .
+                           .
+              WhatAmI db 1   ; 1=COM
+                             ; 0=EXE
+              Virus_End:
+
+So when you need to restore the file, just check the WhatAmI variable.
+
+                           WhatAmI=1?
+                           jne Restore_EXE
+               Restore_COM:.
+                           .
+                           .
+               Restore_EXE:.
+                           .
+                           .
+
+Simple, but effective! From now on, all infected files with your virus 
+will
+carry a kind of ID, saying: a)I'm a COM file
+                                  or
+                            b)I'm an EXE file
+
+This is all there is to it. I don't see a reason for not including both 
+COM and EXE infection in your new virus, do you?
+Until next tutorial... Keep learning and have fun!
+
+Greetings:
+-First a BIG greeting to all SLAM members! We're in the house!
+-Greetings to all virii writers in the world! (Keep up the good work!)</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

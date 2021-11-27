@@ -1,0 +1,909 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Problems in creating Goat files</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>The problems in creating
+goat files.<BR>
+Igor G. Muttik</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<P><B>Abstract </B></P>
+
+<P>Having more than 6000 of viruses for IBM PC the maintenance and updating
+of a virus library of samples is a difficult task. Parasitic file infectors
+are the majority of this great quantity and testing of their properties
+and creation of samples takes many efforts. To help solving of this problem
+the author has developed a special tool for antivirus researchers, which
+allows to create bait files (also called sacrificial goats). Theoretical
+points of bait creation (infectable objects, unusual infection conditions,
+environmental requirements) are discussed and detailed description of GOAT
+package is given. </P>
+
+<P>This paper is an attempt to summarize problems appearing during weeding
+of suspicious files and replicating of viruses. Safe testing environment
+based on hardware hard disk drive (HDD) protection is described. The paper
+also describes DOS peculiarities, appearing when working with long directories.
+</P>
+
+<P>Possible appearance of viruses targeted against antivirus research environments
+is discussed. </P>
+
+<P><B><FONT SIZE=+1>1. Virus samples </FONT></B></P>
+
+<UL>
+<P><B>1.1. What is &quot;a virus sample&quot;? </B></P>
+</UL>
+
+<P>A file-infector virus usually attaches itself to an executable file
+using appending or prepending technique. Such viruses are called parasitic
+infectors. Among antivirus researchers these viruses are usually transferred
+in the &quot;sample form&quot; -- the virus is attached to the do-nothing
+file of some fixed size (usually divisible with 10**N or 16**N) and simple
+contents (do- nothing or printing a short message on the screen). The result
+of infection of such a goat file is called &quot;a virus sample&quot;.
+We have: </P>
+
+<CENTER><P>Virus sample = Virus(Goat file) </P></CENTER>
+
+<P>or, simply: </P>
+
+<CENTER><P>Virus sample = Goat file + Virus </P></CENTER>
+
+<P>Can we &quot;standardize&quot; virus sample? Unfortunately, not, if
+speaking in general. All polymorphic viruses have zillions of instances
+and it is impossible to select some &quot;standard&quot; image of such
+a virus. Oligomorphic and encrypted viruses are difficult to &quot;standardize&quot;
+too. Even for non-encrypted viruses the problem is not simple -- they usually
+have some variables, stored inside their body (especially resident viruses)
+and, though, their image is variable. </P>
+
+<UL>
+<P><B>1.2. Types of goat objects </B></P>
+</UL>
+
+<P>We have many infectable objects in DOS environment. This includes: </P>
+
+<UL>
+<P><B>1) Files:</B></P>
+</UL>
+
+<UL>
+<P>- EXE/COM/OV? executable files (usually started by the user)<BR>
+- SYS drivers (called by DOS kernel at startup)<BR>
+- BAT files (run on the user request or from AUTOEXEC.BAT)<BR>
+- OBJ/LIB/source files (compiled into executables on the user request)<BR>
+- DLL/CPL/etc. (NE, LE, etc. - Windows, OS/2 executables)<BR>
+- DOC/WK?/etc. (including macro and OLE files) </P>
+
+<P><B>2) Pointers:</B></P>
+
+<P>- MBR partition table (a'la Starship)<BR>
+- DBR pointers (IO.SYS/MSDOS.SYS; IBMBIO.COM/IBMDOS.COM)<BR>
+- directory entries (ex., DIR-II family)<BR>
+- FAT pointers (ex., Necropolis) </P>
+
+<P><B>3) Startup code:</B></P>
+
+<P>- Flash ROM (called by microprocessor after RESET)<BR>
+- MBR code (called by ROM BIOS after POST)<BR>
+- DBR code on HDD (called by MBR code)<BR>
+- DBR code on floppy (called by BIOS)<BR>
+- DOS kernel code (called by DBR code) </P>
+</UL>
+
+<P>Each mentioned object can be infected and, therefore, requires preparation
+of a &quot;goat object&quot;. Fortunately, most types of unusual infection
+techniques are very rare or even not yet found. And creation of bait objects
+for bizarre viruses is a rare task -- great majority of known viruses are
+simple parasitic file infectors. Furthermore, creation of a goat BAT file
+(or source file) is rather easy -- one can use a text editor to make a
+bait for the virus. To create a goat floppy diskette we can use standard
+FORMAT utility. </P>
+
+<P>Antivirus researchers are mostly disappointed with a problem of &quot;virus
+glut&quot; [Skulason]. &quot;Virus glut&quot; means an increase of the
+number of known viruses at a rapid rate. Great majority of this amount
+is file viruses. So, in most cases, an attention of antivirus researchers
+is focused on the parasitic file infectors. We'll discuss only this type
+of viruses in the rest of the paper. </P>
+
+<UL>
+<P><B>1.3. Creation of goat files </B></P>
+</UL>
+
+<P>To try to replicate a virus one have to have a set of goat files. Most
+antivirus researchers have their own pre-created sets of files, produced
+using an ASM source or directly from the DEBUG utility. This approach has
+a drawback -- if new goat file is required it should be created manually.
+And if we need a lot of files (ex., for testing of polymorphic virus detection
+rate) -- the process must be repeated many times. </P>
+
+<P>Obviously, specific automated tool has many more options and capabilities.
+It can create even sets of files on one invocation. It is convenient to
+use a set of goat files with linearly increasing length (say, 1000, 2000,
+...20000). If the virus leaves alone short victims after infection -- this
+will be easily noticeable. And file growth can be calculated subtracting
+the size of the infected file from the original size. </P>
+
+<P><B><FONT SIZE=+1>2. Infection of a goat file </FONT></B></P>
+
+<UL>
+<P><B>2.1. &quot;Weeding problem&quot; </B></P>
+</UL>
+
+<P>From the point of view of an antivirus researcher all incoming suspicious
+samples should be classified in one of the following groups (for definition
+-- see VIRUS-L FAQ [FAQ]):</P>
+
+<UL>
+<P>- innocent file (includes garbage and damaged programs)<BR>
+- virus (includes germs, droppers, viruses of the 1-st generation)<BR>
+- trojan<BR>
+- intended<BR>
+- joke</P>
+</UL>
+
+<P>Mentioned classification problem is usually called &quot;weeding&quot;.
+There are automated and manual methods, used to weed a set of files. The
+following automated tools are used:</P>
+
+<UL>
+<P>- scanners, detecting viruses by name<BR>
+- heuristic scanner<BR>
+- TRASHCAN/DUSTBIN, detecting non-viruses, jokes, garbage and intendeds</P>
+</UL>
+
+<P>Manual &quot;weeding&quot; methods are used after automatic ones:</P>
+
+<UL>
+<P>- visual analysis (ex., presence of &quot;MZ&quot;, &quot;PK&quot; identifiers)<BR>
+- tracing in DEBUG (includes partial on-the-fly disassembling)<BR>
+- full disassembling</P>
+</UL>
+
+<P>We should take into account that the infected sample may be compressed
+with one of the EXE-packers (PKLITE, LZEXE, DIET, EXEPACK, COMPACK, PGMPACK,
+KVETCH, SHRINK, TINYPROG, WWPACK, AXE, IMPLODE, AVPACK, etc.). In such
+a case UNP and UUP programs should be used to remove the compression code
+before the manual analysis. </P>
+
+<P>Visual checks of incoming suspicious files are usually made using DEBUG
+or HIEW (Hackers View) -- wonderful viewer of executable files. Last one
+combines features of simple ASCII/HEX viewer with a built-in disassembler/assembler
+(both 86 and 32-bit modes) and binary file editor. I can hardly recommend
+this utility for all antivirus researchers. </P>
+
+<UL>
+<P><B>2.2. Safety problem </B></P>
+</UL>
+
+<P>Every antivirus researcher faces a problem, when he needs to start the
+infected (or just suspicious) program or trojan horse. The typical solution
+is to use a special goat PC (usually old PC/XT/AT). But the malware can
+easily destroy data on the hard disk of this PC. It can even cause malfunction
+of the hardware (ex., low-level format IDE disk, if any). It will take
+significant time and effort to restore your testing environment. The hardware
+protection of the hard disk of your PC can only be a 100%-reliable solution.
+To make hardware protection you will need some switch, which selects an
+operation mode -- &quot;normal&quot;/&quot;protected&quot;. </P>
+
+<UL>
+<UL>
+<P><B>2.2.1. Hardware protection using &quot;Turbo&quot; switch </B></P>
+</UL>
+</UL>
+
+<P>&quot;Turbo&quot; switch is rarely used in the computer operation. The
+reasons are the following. First, any user will usually select the highest
+possible speed to minimize response time of the software. Second, most
+available BIOSes support toggling of turbo mode using the keyboard (for
+example, AMI BIOS uses [Alt]-[Ctrl]-[+] to set the higher speed and [Alt]-[Ctrl]-[-]
+to set the lower speed). Therefore, you can easily replace your connection
+of &quot;Turbo&quot; switch to the motherboard with a simple jumper. Now
+your &quot;Turbo&quot; switch connector is free for use as hard-disk protection
+switch. Typically connector of &quot;Turbo&quot; switch has three contacts
+(and switch shorts two left contacts, or two right ones). The use of this
+switch to turn on/off the disk protection looks an elegant solution. </P>
+
+<P>Now find the jumper on your hard disk controller, which enables its
+operation (examine controller manual if needed). Most MFM, IDE and SCSI
+controllers have such a jumper. Remove this &quot;HDD-enable&quot; jumper
+and substitute it with the connector of &quot;Turbo&quot; switch (connector
+should replace the jumper on the controller and short the contacts instead
+of the jumper). </P>
+
+<P>Now, after described modification, you can easily turn off HDD simply
+pressing &quot;Turbo&quot; switch and return it to operation pressing it
+once more. </P>
+
+<P>LED indicator (or simple LED) of your PC (which usually shows the current
+frequency of processor operation) is wired to the turbo switch and reflects
+its state. You can easily configure the LED indicator to reflect current
+mode of operation (say, &quot;On&quot;/&quot;FF&quot;). </P>
+
+<UL>
+<UL>
+<P><B>2.2.2. Software shell for hardware protection </B></P>
+</UL>
+</UL>
+
+<P>To work without HDD you will need some media instead of it. Ideal solution
+is to use a ramdrive. You have to add the following statement to your CONFIG.SYS
+-- DEVICE=RAMDRIVE.SYS nnnn (where nnnn stands for the size of ramdrive
+in kilobytes; you may also need /e switch to use extended memory). Size
+of ramdrive &lt;2MB is usually not sufficient, so better select 2-4MB.
+</P>
+
+<P>First, copy all software, needed for virus testing (plus suspicious
+files) to your virtual disk. After your hard disk will be switched off
+all programs will be inaccessible, so make a good selection (in my case
+it took around 1MB or more). Now you are ready to disable hard disk. But
+DOS still thinks that HDD is present. Its internal buffers and cache utilities
+(if any) still remember the current contents of some portions of your hard
+disk in the computer memory. </P>
+
+<P>The most obvious solution is the elimination of all &quot;notes&quot;
+about hard disk presence. To simulate the absence of hard disk on the PC,
+I wrote a special program, which clears INT_41h and INT_46h (pointers to
+the HDD disk tables), and sets number of available hard disks (BIOS variable
+at [0:475h]) to zero. To reroute any access from hard disk (ex., drives
+C:, D:, E:) to the virtual disk, I use DOS' SUBST utility, which replaces
+drives C:, D: and E: with the virtual disk drive letter (F: in my case).
+SUBST also clears HDD cache contents. Finally, DOS environment variables
+(ex., COMSPEC and PATH) should be rewritten to point on the ramdrive objects.
+</P>
+
+<UL>
+<P><B>2.3. &quot;Replication problem&quot; </B></P>
+</UL>
+
+<P>The problem of infecting a goat file, having a sample of possible virus
+is called &quot;replicating&quot;. Very often one researcher asks the others
+-- &quot;I have a sample of what I think is a virus, but cannot replicate
+it. Have you tried? If anybody succeeded in doing this -- send me a sample,
+please...&quot; And that repeats very frequently. We see that &quot;replication
+problem&quot; is one of the most common problems. The question is to find
+correct computer environment and meet all virus infection conditions. Obviously,
+both problems can be solved with the help of full disassembly of the viral
+code, but that is not very practical approach, because it takes much time.
+Usually, suspicious files are simply tested in so-called &quot;goat computer&quot;.
+Only in case of problems (files do not replicate, but look suspicious)
+they are disassembled and analyzed in deep. We already saw one approach
+to the replication problem -- to ask for help from other researchers. There
+are also other options:</P>
+
+<UL>
+<P>- trying a lot of different goats<BR>
+- trying a lot of different environments<BR>
+- manual analysis (tracing, debugging, disassembling) to find out all infection
+conditions (i.e., requirements for the goat and environment). </P>
+
+<P><B>2.4. Infection conditions </B></P>
+</UL>
+
+<P>To replicate a virus we have to feed him a goat file, which meets virus
+internal infection conditions. This must be done in the environment, which
+is appropriate for the current virus. Fortunately, to make viruses more
+infective, they are usually made to operate in the wide range of environments.
+On the other hand, sometimes, numerous limitations are implemented to simplify
+the viral code (ex., Ping-Pong, Vindicator, Yale and Exeheader.Mz1 viruses
+work only on 88/86 processors; 3APA3A and MIREA.4156 viruses require 16
+bit FAT hard disk; AT144 virus requires 286 processor or higher; Green_Caterpillar
+virus needs CMOS clock; Lovechild virus requires only MS-DOS 3.2; Nightfall
+virus does not replicate without XMS driver [Brown]; EMMA virus requires
+presence of EMS [Kaspersky]; etc.). In the case of specific requirements
+only random environment selection or manual analysis of the virus internals
+may help to find the correct environment. </P>
+
+<P>Parasitic file infectors can theoretically infect all following types
+of files:</P>
+
+<UL>
+<P>- COM<BR>
+- EXE</P>
+
+<UL>
+<P>MZ/ZM (DOS executables)<BR>
+NE (Windows, OS/2 16-bit)<BR>
+LE, W3 (Windows VxD, Win386)<BR>
+LX (OS/2)<BR>
+PE (Windows, NT 32-bit)<BR>
+MP, P2, P3 (Pharlap DOS extenders)</P>
+</UL>
+
+<P>- SYS/COM (normal DOS drivers)<BR>
+- SYS/EXE (understood only by DOS 5.0, 6.0) </P>
+</UL>
+
+<P>There are following infection conditions (except file type):</P>
+
+<UL>
+<P>- file size<BR>
+- filename<BR>
+- attributes<BR>
+- file timestamp (date/time of creation/modification)<BR>
+- file contents</P>
+</UL>
+
+<P>Most common infection condition is file type (COM/EXE) and, second,
+size of the victim. Very short files are usually avoided, because their
+growth is too noticeable and also to avoid infection of do-nothing goat
+files (like primitive INT_20, 2-byte files). </P>
+
+<P>Most file infectors are targeted against simple DOS executables -- COM
+files and EXE files (with MZ or ZM marker). Some file infectors are capable
+to infect DOS drivers of SYS type (ex., SVC.4644, SVC.4661, SVC.4677, Alpha.4000,
+Astra, Astra_II, Cysta or Comsysexe, Terminator.3275, CCBB, Talon or Daemaen,
+Ontario, VLAD.Hemlock, Face.2521, etc.). All other formats of executables
+need reclamation of the virgin lands from virus writers. For example, there
+are only few known Windows viruses up to date (all infecting only executables
+in NE-EXE format). </P>
+
+<P>Speaking of the contents of goat files, we should mention that viruses,
+which check the internals of the victim file are rather rare. I do not
+mean a selfcheck to avoid multiple infections of the same file. I mean
+checking of virus-free areas (same as inspection of the uninfected file).
+Nevertheless, such viruses exist. Lucretia virus looks for an 0xE8 byte
+(Intel x86 CALL instruction) in the file and replaces the offset of the
+call to point on the viral body. Warlock virus avoids all files having
+0Eh byte at the start of program code (includes all LZEXE-packed programs).
+Raptor virus does not infect EXE files with SS in the header equal to 07BC,
+141D, ...2894 (13 entries). Behavior of Internal.1381 virus depends on
+the contents of EXE header too. Moreover, there are Zerohunter viruses,
+which look for a series of zeroes (412 bytes for Zerohunter.412 and 415
+for Zerohunter.415) in the file and infect the victim overwriting this
+block of zeroes, if found. Zerohunter viruses are typical representatives
+of the class of &quot;cavity viruses&quot; (like Helicopter.777, Grog.Hop,
+Gorlovka.1022/1024, Russian_Anarchy.2048, Locust.2486, Tony.338, etc.).
+</P>
+
+<P>There are also viruses of exeheader type -- Dragon, Hobbit, SkidRow,
+Mike, VVM, Bob, XAM, Mz1, Pure, etc. They infect only EXE files having
+a long block of zeroes (around 200-300 bytes) in the EXE header (it is
+512 bytes by default). They can be regarded as a subclass of cavity viruses.
+</P>
+
+<P>Many viruses do not infect some programs. They usually avoid command
+processor COMMAND.COM and certain antivirus or widely used programs (archivers,
+command-line shells, etc.). The following reason come to my mind: infection
+of COMMAND.COM is very noticeable and causes many incompatibilities, so
+virus writers simply filter-off COMMAND.COM to avoid compatibility problems.
+This approach has a drawback (from the virus writer's point of view), as
+the infection of COMMAND.COM with a resident virus guarantees that the
+computer will come up with a virus installed in memory, because COMMAND.COM
+is always automatically invoked during the boot process. Viruses try to
+avoid antivirus programs -- they normally check own integrity and virus
+will be detected in a minute. </P>
+
+<P>More difficult case -- if the virus infects only on certain days of
+week, or during the first 20 minutes of an hour (like Vienna.644.a does).
+For example, Kylie virus affects the victim if current year is not 1990.
+Fumble virus infects only on even dates. Virus called Invisible avoids
+certain COM files by doing checksum on the name of the victim. Viruses
+of Phoenix family (also called Live_after_Death) avoid some file sizes
+and about 1/8 of files are left uninfected. Russian Mirror (Beeper) virus
+infects only every third executed file. Some of these viruses are called
+&quot;sparse&quot; infectors. Random environment/goat selection may not
+help in this case and viruses have to be traced and/or disassembled. </P>
+
+<P>Many viruses require a JMP instruction in the beginning of victim file
+(ex., first versions of Yankee_Doodle, Russian_Tiny.143, Rust.1710, Screen.1014,
+Leapfrog.516, etc.) </P>
+
+<P>All mentioned exclusions and conditions must be taken into account when
+trying to create goat files suitable for the infection and if the virus
+does not replicate. </P>
+
+<UL>
+<P><B>2.5. Infection markers as an obstacle for infection </B></P>
+</UL>
+
+<P>Almost all viruses try to &quot;mark&quot; their victims to avoid multiple
+infections of the same file, because growing of files beyond some reasonable
+limit cannot go unnoticed (because of waste of disk space and delays for
+the reinfections) and may even cause infected file to hang (ex., COM file
+&gt;64k). Viruses use different &quot;infection markers&quot;:</P>
+
+<UL>
+<P>- detection of self-presence (check own code; full or partial)<BR>
+- sequence of bytes (text or binary designator; usually at specific position)<BR>
+- timestamp (62 seconds, &gt;2000 year, etc.)<BR>
+- file size (ex., Uruguay-#3, #4)<BR>
+- attribute (some viruses mark their victims as ReadOnly) </P>
+</UL>
+
+<P>Some viruses use perfectly legal markers -- for example, seconds value
+(say, all infected files have 33s) or file length (say, all infected files'
+lengths are divisible with 23). If, occasionally, our goat file will carry
+a &quot;marker&quot; of the virus, it will not be infected. Fortunately,
+most viruses use specific markers. In fact, viruses have to behave in such
+a way to be infective. Therefore, it is usually easy to make an infectable
+goat file if the first attempt of replication failed because of the coincidence
+with a legal virus marker. </P>
+
+<UL>
+<P><B>2.6. Checking of goat files after attack </B></P>
+</UL>
+
+<P>After a try to infect a goat we have to detect possible changes. If
+we see a file growth (in a directory listing) -- the reason is obvious:
+longer files are virus children. One additional test is recommended --
+to check whether virus child is itself replicating. In some cases (because
+of the errors in the virus) it is not and, though, must be classified as
+intended, not a virus. Visual checks after the attack are made just like
+before the attack -- see 2.1. </P>
+
+<P>If the virus has stealth or semi-stealth properties -- the detection
+of infected samples is somewhat more complex. The best approach is to preserve
+all goat files, involved in the test and inspect them after clean reboot
+(copy them to a floppy disk if your HDD is disabled as described in 2.2).
+More simple, but not that reliable method -- try to remove the virus from
+the interrupt chains using, say MARK/RELEASE programs by TurboPower Software
+(MARK should be installed before the first start of the virus, it remembers
+the whole interrupt table; RELEASE should be started after the attack to
+restore old interrupt table and remove the virus from the interrupt chain).
+Unfortunately, this approach might not work if the virus uses tunneling.
+In principle, we can use an integrity checker to compare test files before
+and after the virus attack. This generic method can even detect almost
+all stealth viruses if used in the low-level disk access mode. For example,
+this mode is available in Russian integrity checker ADInf. </P>
+
+<P><B><FONT SIZE=+1>3. &quot;Polymorphics detection rate&quot; </FONT></B></P>
+
+<UL>
+<P><B>3.1. Huge quantities of goats </B></P>
+</UL>
+
+<P>In the products reviews we frequently read something like that: &quot;...
+the 'Polymorphic' test-set contains a mammoth 4796 infected files&quot;
+[TOP] or &quot;When tested against the 500 positively replicating Mutation
+Engine (MtE) samples, all but two were correctly detected as infected&quot;
+[Jackson]. Why all these tests need so many samples of the same virus?
+The answer is simple -- because of great variability of polymorphic viruses
+(more correctly -- because of the variability of the virus decryptor).
+Any scanner coping with the polymorphics have to decrypt the body of the
+virus and locate a search-string. Other approach is to try to distinguish
+the viral decryptor from a normal non-viral code. Both methods can produce
+both false positives and false negatives. They are, of course, rather rare,
+but practically (and even theoretically) unavoidable. To find out the misses
+of the scanner number of tested samples should be very big. That is why
+almost all comparisons of the scanners are performed using huge quantities
+of samples. That is, of course, rather time consuming and not very convenient,
+but unavoidable practice. </P>
+
+<P>How can we speedup the tests and preparation of samples? The first idea
+is to put virus samples on the fast media -- virtual disk looks the ideal
+selection. But can we enhance DOS' access to the drive? </P>
+
+<UL>
+<P><B>3.2. DOS slowdown when working with long directories </B></P>
+</UL>
+
+<P>When experimenting with creation of hundreds of files I have noticed
+a very interesting peculiarity. After creating some number of files in
+the directory (in my case it was around 700 files) all additional files
+needed much more time to be created! Obviously, some internal resource
+of DOS was exhausted. To shed the light on this effect I have run the same
+task -- creation of 100*N goat files (N=1..10) using GOATS (with zero size
+increase; i.e., all goats were identical), but varied number of BUFFERS
+(as written in CONFIG.SYS). Note, that disk cache (SMARTDRV) was not active,
+because files were created on the virtual disk. Collected data is given
+in the table: </P>
+
+<PRE>    Time needed to create given number of files (in seconds +/-1).
+          FILES   100  200   300   400   500   600   700  800   900   1000
+ BUFFERS
+         15        6   12    19    28*   40    51    64   80    96    118
+         48        6   12    19    27    35    45    55   70*   90    112
+         58        6   12    19    26    35    45    55   70    82*   103
+         68        6   12    19    26    35    45    55   70    82     98
+         Note: &quot;*&quot; -- shows number of files, when significant slowdown occurs.
+
+ 1. We see that total time depends much on the number of BUFFERS.
+ 2. At some place significant slowdown always occurs (compare columns to see).
+ 3. Moment of this slowdown depends on the number of BUFFERS.
+ 4. For creation of 1000 files 68 BUFFERS are sufficient.
+ 5. For 48 BUFFERS slowdown occurred at around 720 files.
+ 6. For 58 BUFFERS slowdown occurred at around 870 files.
+</PRE>
+
+<P>Thus, addition of 10 BUFFERS (10*512=5120 bytes) shifts the limit on
+(870-720=150) files. We can calculate how much bytes are needed per file
+-- 5120/150=34.1. Surprisingly, it is very close to the directory entry
+size! That is an additional evidence that slowdown occurs when there is
+no more space in BUFFERS to store current directory (and DOS needs to reload
+it from disk). </P>
+
+<P>I have also found an interesting fact (not yet known to me) -- the creation
+of files in a fresh directory takes much less time, than the creation of
+the same amount of files in the same directory after removing of 1000 files!
+And the time for creation of 1000 files in used directory is approximately
+three times more, comparably to a fresh directory! That is because DOS
+scans a directory only until it encounters zero entry. And for used directory
+there are no such entries (at least near the beginning) and DOS has to
+scan the whole list of deleted entries. </P>
+
+<P>Thus, we have to create bait files in a set of fresh directories of
+moderate size. Same applies to the tests of scanners against huge virus
+collections -- fresh and short directories will be scanned faster. </P>
+
+<P><B><FONT SIZE=+1>4. GOAT software package </FONT></B></P>
+
+<P>After discussing some theoretical points, let's turn to the realization
+of these ideas in the GOAT package [GOAT]. This package is a set of tools
+for antivirus researchers, which help to create bait files (also called
+sacrificial goat files or, simply, goat files). </P>
+
+<P>The purpose of the programs can be explained using the following table:
+</P>
+
+<PRE> You need                                                       Use
+
+ Bait file with some special internal structure              GOAT.COM
+ A series of bait files of different sizes                   GOATS.COM
+ Files of the same size, but with different contents         GOATSET.BAT
+ Many identical files to infect them with polymorphic virus  FLOCK.COM
+</PRE>
+
+<P>Using GOAT.COM you can manually select the size, the name of a sacrificial
+goat file and vary its internals to meet the criteria, which the virus
+uses when deciding &quot;to infect or not to infect&quot; the victim file.
+You can enter the size of a sacrificial goat file in any of given formats:
+decimal, hexadecimal or in kilobytes. Size of the victim files can be as
+small as 2 bytes and as much as many gigabytes (it is stored in 32-bit
+variable). GOAT.COM is very flexible -- it can create COM, EXE, SYS(COM)
+and SYS(EXE) files, with code at the beginning, in the middle, or at the
+very end of the goat file. Files can be filled with zeroes, NOPs, two types
+of pattern and even filled with random garbage. You can add stack segment
+for the EXE files, vary header size, and ... many other options are available.
+GOATS.COM file is intended to create a series of bait files with linearly
+increasing length. Length increase step is changeable. GOATS.COM has the
+same flexibility as GOAT.COM. </P>
+
+<P>FLOCK.COM is a creator of up to 1000000 identical files. You can infect
+them with a polymorphic virus to test its behavior and properties. FLOCK.COM
+uses the same engine as GOAT.COM and GOATS.COM. Thus, all flexibility of
+GOAT.COM is available too. </P>
+
+<P>GOATSET.BAT produces some sort of &quot;a standard set&quot; of files
+of the same size. These files are different (internal contents or attribute
+is variable). GOATSET.BAT needs GOAT.COM for the execution. GOAT.COM should
+be located in the current directory accessible via PATH environment variable.
+</P>
+
+<P>A small batch file RUN-ALL.BAT will help you to run (or infect, if you
+have a resident virus) all generated bait files. </P>
+
+<UL>
+<P><B>4.1. Synopsis and switches </B></P>
+</UL>
+
+<P>Usage of the main program -- GOAT.COM looks like this (others are similar):
+</P>
+
+<PRE>         GOAT  Size  [Filename]  [/switch]  [/switch] ...
+
+         Size - decimal, hexadecimal, or in kbytes
+                 (Example: 10000, 3E00h, FF00h, 31k, 512K, 2048k)
+         Filename - file to create. If no - makes GOAT000, GOAT001, ...
+</PRE>
+
+<P>Short reference of all available switches is given below in the alphabetical
+order: </P>
+
+<PRE> /Annnn  - set device Attribute (default=0C853h)
+ /B      - place code at bottom of file (default - at start)
+ /C[n]   - set selfcheck level (by default equal to 2, the highest)
+                 (/C means /C0; i.e., no selfchecking at all)
+ /Dnnn   - create maximum 'nnn' subdirectories (default=10)
+                 (recognized only by FLOCK.COM, ignored by GOAT and GOATS)
+ /E      - create EXE file (if size &gt; 65280 - done automatically)
+ /Fnnn   - create maximum 'nnn' files in a subdirectory (default=500)
+                 (recognized only by FLOCK.COM, ignored by GOAT and GOATS)
+ /H, /?  - Help screen
+ /Inn    - use fill byte 'nn' instead of standard zero-fill
+                 (ex., decimal /i100 or hexadecimal notation /iE5h)
+ /J      - remove JMP at code start (default - JMP present)
+ /Knnnn  - add 'nnnn' bytes of STACK segment to the bottom of EXE file
+                 (stack segment is filled with 'STACK' by default)
+ /Mnnnn  - place code in the middle of the file exactly at nnnn
+                 position ('nnnn' is 32-bit value, but see limitations below)
+ /N[nnnn]        - fill goat file with pseudorandom bytes. The parameter
+                 (if given) is a random number generator seed.
+                 RNG uses multiplicative congruental method with 2**32 period
+ /O      - do not make long EXE (&gt;256K) with internal overlay structure
+ /P      - fill free file space with pattern 00, 01, .. FE, FF, 00, ..
+ /R      - make file ReadOnly (default - normal)
+ /S      - make short (32 bytes) EXE header (default - 512 bytes)
+ /Tnn    - set timestamp seconds field = nn (&lt;63, even: 0, 1Eh, 62, ..)
+ /V      - set SS:SP equal to CS:IP
+ /W      - make word pattern (0000, 0001, ...FFFF, 0000)
+ /X      - suppress signature defined in the INI file using &quot;Motto=&quot;
+ /Y      - create device driver (SYS file)
+ /Z      - make 'ZM' EXE header instead of 'MZ'
+ /9      - fill free file space with NOPs (default - with zeroes)
+</PRE>
+
+<P>GOAT.COM, GOATS.COM and FLOCK.COM programs use the same set of command
+line switches. Most switches are self-explanatory. </P>
+
+<P>Pattern inside the goat file always reflects the current offsets in
+the file (i.e., it is &quot;anchored&quot; to the absolute location in
+the file). For example, at the file offset 1A2Bh you will see bytes &quot;2B&quot;,
+&quot;2C&quot;, &quot;2D&quot;, ... (for byte pattern). Word pattern at
+the same location will look like this -- &quot;2B&quot;, &quot;1A&quot;,
+&quot;2C&quot;, &quot;1A&quot;, etc. Sometimes pattern filling is very
+useful. </P>
+
+<P>Switch /Knnnn adds stack segment at the bottom of the EXE file. Size
+of the stack segment is limited -- 16 &lt; nnnn &lt; 65536. Obviously,
+SP always points on the bottom of stack segment (i.e., SP=nnnn). Small
+and odd values in /K switch should be avoided, because they can hang computer
+or cause &quot;Exception #13&quot; (QEMM frequent warning), when SP goes
+through the stack segment boundary (i.e., half of a word is written at
+SS:0000 and other half -- at SS:FFFF). </P>
+
+<P>Switches /Fnnn and /Dnnn are recognized only by FLOCK.COM (GOAT.COM
+and GOATS.COM simply ignore them). You can specify the desired number of
+files and subdirectories to create. By default, 10 subdirectories with
+500 files in each are created. </P>
+
+<UL>
+<P><B>4.2. Size limitations </B></P>
+</UL>
+
+<P>By default GOAT.COM, GOATS.COM and FLOCK.COM programs produce sacrificial
+file of COM type. This applies to any given size, which meets the following
+criterion: </P>
+
+<CENTER><P>2 &lt; Size_of_COM &lt; 65280 </P></CENTER>
+
+<P>The magic number 65280 is a maximum size of COM file, which must fit
+in a segment size (64k=65536) without PSP size (256): </P>
+
+<CENTER><P>65536 - 256 = 65280. </P></CENTER>
+
+<P>When placing the code at the bottom of the COM file, which size is around
+64K, code may lay too close to SS:SP (SS=CS for COM files; SP=FFFE) and
+the program may hang when run, because stack will likely overwrite the
+code. Therefore, if the spacing between IP and SP is less than 64 bytes,
+the goat generation is aborted and output file is not created (You will
+see a warning -- &quot;Goat IP will be too close to SP. Abort!&quot;).
+</P>
+
+<P>When the size specified in the command line is greater than 65280 (or
+equal to), EXE file is generated automatically (you do not need to write
+/E or /S switch explicitly). Such a file will have a normal 512-bytes EXE
+header in the beginning. When you need to create EXE file shorter than
+65280 bytes, use /E (or /S, /Z or /Knnnn) command line switch. </P>
+
+<UL>
+<P><B>4.3. INI file </B></P>
+</UL>
+
+<P>You may like to put your preferences (signature, switches, filename
+templates, etc.) into a separate file -- GOAT.INI (common for GOAT.COM,
+GOATS.COM and FLOCK.COM). Use any text editor to create or modify INI file.
+The sample GOAT.INI file is given below: </P>
+
+<PRE> GOAT.INI
+ Motto=&quot;Antivirus test file.&quot;   ;all output bait files will carry this string.
+ GOATfiles=FPROT                ;files will be FPROT000.COM, FPROT001.COM, ..
+                                ;(default=GOAT)
+ GOATSfiles=ESASS               ;files will be ESASS000.COM, ESASS001.COM, ...
+                                ;(default=GOAT)
+ FLOCKfiles=S&amp;S                 ;files will be S&amp;S000.COM, S&amp;S001.COM, ...
+                                ;(default=GOAT)
+ FLOCKdirs=HEAP                 ;directories created - HEAP000, HEAP001,
+                                ;HEAP002
+                                ;(default=DIR)
+ STACKfill=&quot;*MYSTACK&quot;           ;fill stack with '*MYSTACK*MYSTACK*MYSTACK'
+                                ;(default=STACK)
+ SYSname=&quot;DRIVERXX&quot;             ;this string is inserted into SYS header
+                                ;(default=GOATXXXX)
+ Switches=/F200/D50             ;make 50 dirs, 200 files in each. 10000 in
+                                ;total
+ Switches=/C1                   ;to turn off registers check and avoid
+                                ;warning &quot;Your PC might be infected...&quot;
+ Switches=/iF6h                 ;always fill free file space with 0F6h byte
+ Switches=/O                    ;never make overlaid EXE files
+</PRE>
+
+<P>GOAT.INI may be located in the current directory or in the path of started
+program. The first location has priority over the second. GOAT.INI may
+not exist. In that case programs use built-in defaults. </P>
+
+<P>Filename and subdirectory templates are limited to 5 symbols, because
+p rograms always add '000' and then start incrementing this number until
+it becomes '999'. Any string exceeding the limit of 5 symbols will result
+in the following error message: </P>
+
+<CENTER><P>&quot;Error in the INI file line #nnn&quot; </P></CENTER>
+
+<UL>
+<P><B>4.4. Bait file internals </B></P>
+</UL>
+
+<P>The bait files created with GOAT.COM, GOATS.COM and FLOCK.COM (if they
+have the same size) are absolutely identical in their internal structure
+and properties. </P>
+
+<P>Created sacrificial goat file contains a small program, which displays
+its type (COM, EXE or SYS), size in hexadecimal and in decimal (only when
+goat file is of enough size, i.e., space for code itself is at least 70
+bytes). Sacrificial goat file consists of the two parts: the small portion
+of code (70 bytes or, if space not allows, just 2 bytes) and a block of
+zeroes, NOPs or pattern of variable size (00..FF, 0000...FFFE or random
+pattern). Zeroes (or NOPs or pattern) take all space of the file, free
+from the code. EXE files have additionally an EXE-header. Non-used part
+of the EXE header is always filled with zeroes. SYS files have additionally
+a device header, strategy and interrupt routines. </P>
+
+<P>The output of a sample goat file (the size of the sample was 100 bytes)
+is the following: </P>
+
+<CENTER><P>&quot;Goat file (COM). Size=00000064h/0000000100d bytes.&quot;
+</P></CENTER>
+
+<P>File type (COM/EXE/SYS) and real numbers are inserted into the goat
+file message at the moment of creation. </P>
+
+<UL>
+<P><B>4.5. Naming of goats </B></P>
+</UL>
+
+<P>Usually GOAT.COM, GOATS.COM and FLOCK.COM programs create output sacrificial
+files in the following order: GOAT000.COM, GOAT001.COM, GOAT002.COM, etc.
+Same applies to EXE files: GOAT000.EXE, GOAT001.EXE, GOAT002.EXE, etc.
+If some file in a row (say GOAT050.COM or GOAT050.EXE) already exists --
+the next file number is selected automatically (it will be GOAT051.COM
+or GOAT051.EXE). Thus, we cannot generate both GOAT050.COM and GOAT050.EXE
+in the same directory. This rule does not apply for SYS files (ex., GOAT000.COM
+and GOAT000.SYS are allowed). This naming strategy is used to give some
+freedom for companion viruses. </P>
+
+<P>Note, that definitions, given in the INI file may change default file
+(and subdirectory) naming. </P>
+
+<UL>
+<P><B>4.6. Bait device drivers </B></P>
+</UL>
+
+<P>There are two formats of DOS device drivers -- old format (a'la COM,
+understood by all DOS versions &gt;2.0) and new format (a'la EXE, introduced
+in MS-DOS 3.0). Drivers of old type can only be started from CONFIG.SYS
+using DEVICE statement. The entry point is defined in special SYS header.
+Drivers of new (EXE) type can additionally be started as a normal executables
+from the DOS command prompt. Drivers of EXE type have two entry points
+-- one for invocation from CONFIG.SYS/DEVICE (as written in the SYS header,
+which goes after EXE header) and the other is defined by CS:IP fields in
+the EXE header (this one works only when file is started from the command
+line). The other advantage of EXE format driver -- it is not limited to
+64K, like old type of drivers. Such new drivers can exceed 64K, but pointers
+to Strategy and Interrupt routines must fit into first 64k (they are limited
+to 16-bits). </P>
+
+<P>To create device driver (SYS) file use switch /Y. Goat drivers of the
+old (COM) style will print message &quot;Goat file (SYS). Size=...&quot;
+when DOS requests an initialization of the driver (during CONFIG.SYS processing).
+Files in new format (SYS&amp;EXE) will do the same, but will print this
+message also when run from the DOS command line as a normal EXE file. In
+both cases this driver file prints the same message. Note, that EXE device
+drivers bear a &quot;(SYS)&quot; designator inside, but are always named
+as EXE files (to enable start from the command line as a normal executable).
+</P>
+
+<P>Minimal size of the device driver is around 150 bytes (including SYS
+header). This limit increases for SYS&amp;EXE files (it should include
+additionally the size of the EXE header -- 32 bytes for /S; 512 bytes for
+/E). </P>
+
+<P><B><FONT SIZE=+1>5. &quot;A standard set&quot; of goat files. </FONT></B></P>
+
+<P>Let's imagine that we know that we have a sample of the virus (ex.,
+we got the sample from knowledgeable antivirus researcher), but we have
+no information about properties of the virus. This situation frequently
+occurs in practice. First, we test it against a set of files of different
+lengths (say, 1000, 2000, ...10000 bytes). Now we see that the virus infected
+8 files (3000, ...10000) and conclude that the virus avoids short victims
+(&lt;3000). The &quot;standard set&quot; of goat files may help you to
+find out which files are preferred by the virus (ex.: virus may infect
+only COM files starting with JMP). Checking &quot;a standard set&quot;
+after virus attack, you can easily understand which files are infectable.
+</P>
+
+<P>Now we have another question -- does the virus infect all files longer
+than 3000 bytes regardless of their contents? We have to test the virus
+against a set of files of fixed size, but different contents. To simplify
+this task GOAT package has the generator of &quot;a standard set&quot;
+of baits of given size -- it is called GOATSET.BAT. Yes, this file is really
+a DOS batch file, issuing a series of calls to GOAT.COM with different
+parameters. GOATSET.BAT makes COM, EXE and SYS files. Files are filled
+with zeroes or NOPs (90h), with initial JMP (0E9h) or without it. Some
+files carry ReadOnly attribute. EXE files are with normal (512 bytes) and
+short (32 bytes) EXE headers, with MZ and ZM markers. </P>
+
+<P>GOATSET.BAT needs only one command line parameter -- size of the files
+in the set. After invocation 52 files of the same size are generated --
+12 COM, 34 EXE, 2 SYS and 4 SYS&amp;EXE files. GOATSET.BAT also writes
+a report file GOATSET.LOG and places there a full description of the generated
+bait files set. </P>
+
+<P>Being a BAT file, GOATSET.BAT is fully customizable. It can be easily
+changed with any text editor. </P>
+
+<P><B><FONT SIZE=+1>6. Future threats </FONT></B></P>
+
+<UL>
+<P><B>6.1. Anti-goat viruses </B></P>
+</UL>
+
+<P>Fortunately, there are only few viruses, that try to avoid infecting
+goat files. One of them is Sarov.1400. It uses primitive algorithm to avoid
+victims with many repeated bytes. </P>
+
+<P>Corresponding code is: </P>
+
+<PRE> 0100 8B161C00   MOV     DX,[001C]       ;LOAD RELATIVE OFFSET IN FILE
+ 0104 33C9       XOR     CX,CX
+ 0106 D1EA       SHR     DX,1
+ 0108 B80042     MOV     AX,4200 ;LSEEK TO CHECKED FILE AREA
+ 010B E80F01     INT     21
+ 010E BAD804     MOV     DX,04D8 ;BUFFER LOCATION
+ 0111 B43F       MOV     AH,3F   ;READ 100 BYTES FROM FILE
+ 0113 B96400     MOV     CX,0064 ;SIZE OF BLOCK TO CHECK
+ 0116 8BFA       MOV     DI,DX   ;DI -&gt; BUFFER
+ 0118 CD21       INT     21
+ 011A 268A05     MOV     AL,ES:[DI]      ;GET FIRST BYTE (ES=DS)
+ 011D 47 INC     DI      ;SKIP TO NEXT BYTE
+ 011E F3AE       REPZ    SCASB   ;COMPARE WITH THE FIRST
+ 0120 7455       JZ      DON'T_INFECT   ;ALL BYTES ARE THE SAME!
+ INFECT_THE_FILE:        ...
+</PRE>
+
+<P>Without any doubt, more and more anti-goat viruses will appear in future.
+We can also expect appearance of more viruses, which avoid victims placed
+on virtual disk. Or viruses, which do not infect files with certain typical
+lengths (divisible with 10**N and 16**N). Fortunately, most virus writers
+have not yet realized that such features are a very strong weapon. I would
+say, comparable with polymorphicity, because in most cases full disassembly
+of the virus will be required and that takes time. Moreover, such anti-goat
+tricks are programmed much more easily than any polymorphic engine. </P>
+
+<UL>
+<P><B>6.2. Armoring tricks, virus/trojan conversion </B></P>
+</UL>
+
+<P>There are a lot of viruses, which try to complicate their investigation.
+Viruses use anti-tracing techniques: SVC.4644, Ieronim, XPEH (family of
+viruses), Zherkov (called also Loz), Magnitogorsk, HideNowt, OneHalf.3544,
+OneHalf.3577, Cornucopia, etc. A wonderful set of antitracing capabilities
+is found in Compact Polymorphic Engine (CPE 0.11b), which is actually a
+virus creation tool. </P>
+
+<P>Some viruses, when they detect that they are being traced switch to
+the &quot;trojan&quot; mode and try to damage files, floppies and/or hard
+disks. That looks like a revenge of virus writer for an attempt of antivirus
+researcher to catch the virus. Many viruses have such a behavior -- for
+example, recently found RDA.Fighter.5871/5969/7408 (overwrites random sectors
+on the HDD) [Daniloff], rather old Maltese Amoeba (destroys 4 sectors on
+each of the first 30 cylinders of all drives), CLME.Ming.1952 (overwrites
+34 first sectors on all drives), DR&amp;ET.1710 (erases 128 first sectors
+on HDDs), Gambler.288 (destroys first 10 sectors on drive C:), Kotlas (removes
+original non-infected copy of MBR), SumCMOS.6000 (tries to corrupt HDD).
+</P>
+
+<P>The most nasty idea -- to use destructive capabilities (a'la trojan)
+if the virus senses the antivirus environment. For example, when virus
+detected goat files. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

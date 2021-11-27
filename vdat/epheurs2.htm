@@ -1,0 +1,452 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Heuristic Scanners: Artificial Intelligence?</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>HEURISTIC SCANNERS: ARTIFICIAL
+INTELLIGENCE?<BR>
+Righard Zwienenberg</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<P>Though not explicitly stated, heuristic anti-virus methods have been
+in use for almost as long as the virus threat has existed. In the 'old
+days', FluShot(+) was a very popular monitor, alerting the user when it
+detected 'strange and dangerous' actions. This can be regarded as simple
+heuristic analysis, because FluShot did not know if the action was legitimate
+or not. It just warned the user. </P>
+
+<P>During the last couple of years, several resident behaviour-blockers
+have been developed, used, and dismissed again. In most cases, the user
+finds warnings irritating, aggravating and incomprehensible. The only resident
+protection they normally use - if any - is a resident scanner. This makes
+life easier for the users, because the resident scanner clearly indicates
+that a file or disk is infected by a certain virus when it pops up its
+box. The disadvantage, which the user doesn't see, is that it does not
+detect new viruses. </P>
+
+<P>Also, the less popular (but very important) Integrity Checkers may be
+regarded as heuristic tools. They warn the user when the contents of files
+have been changed, when files have grown in size, received new time and
+date stamps, etc. They often display a warning such as: 'file might be
+infected by an unknown virus' in the case of a changed executable. Especially
+in a development environment, Integrity Checkers can be really irritating.
+The user already knows that his executable has changed, because he just
+changed and recompiled the source code. But how is the Integrity Checker
+to know that? Using a list of executables to skip is not safe, because
+a virus may indeed have infected an executable on the list. In that case,
+the change was not caused by a recompilation. However, the integrity checker
+can't tell the difference! </P>
+
+<P>Based on these early attempts, the first generation of scanners with
+minor heuristic capabilities were developed. The heuristics they used were
+very basic and usually generated warnings about peculiar file date and
+file time stamps, changes to file lengths, strange headers, etc. Some examples:
+</P>
+
+<UL>
+<UL>
+<P>EXAMPLE1. COM 12345 01-01-1995 12:02:62<BR>
+EXAMPLE2. COM 12345 01-01-2095 12:01:36<BR>
+EXAMPLE3. EXE Entry point at 0000:0001 </P>
+</UL>
+</UL>
+
+<P>The heuristics of the current, second, generation of scanners are much
+better. All the capabilities of the first generation scanners have obviously
+been retained, but may new heuristic principles have been added: code analysis,
+code tracing, strange opcodes, etc. For example: </P>
+
+<PRE>        0F  POP CS
+
+Strange opcode-an 8086-only instruction!
+
+        C70600019090    MOV WORD PTR [100],9090
+        C606020190      MOV WORD PTR [102],90
+        E9              JMP 0100
+
+Tracing through the code shows that it jumps back to the entrypoint:
+
+        B9              MOV CX,....
+        BE....          MOV SI,....
+        89F7            MOV DI,SI
+        AC              LODSB
+        34A5            XOR AL,A5
+        AA              STOSB
+        E2              LOOP ....
+
+This is obviously decryption code.
+</PRE>
+
+<P>A (third generation?) scanner type based exclusively on heuristics exists,
+performing no signature, algorithmic or other checks. Maybe this is the
+future, but the risk of a false alarm (false positive, true negative) is
+quite high at the moment. In large corporations, false alarms (false positives)
+can cost a lot of time and thus money. </P>
+
+<P>We are not going to examine this scanner type except to note that it
+may lead us into a new generation, or area, of system examination and protection:
+Rule-based Examination Systems. </P>
+
+<P><B>RULE-BASED EXAMINATION SYSTEMS </B></P>
+
+<P>Rule-based systems are as such not a novelty. They already exist, also
+in the security field. In this field they are often characterised by applying
+very few, but very broad, rules. </P>
+
+<P>What we are going to look at here are Rule-based Examination Systems
+seen as large heuristics analysers. </P>
+
+<P>Looking at this sequence of opcodes: </P>
+
+<PRE>        B8DCFE          MOV AX,FEDC
+        CD21            INT 21
+        3D98BA          CMP AX,BA98
+        75..            JNE getint21
+        E9..            JMP wherever
+        getint21:
+        B92135          MOV AX,3521
+        CD21            INT 21
+</PRE>
+
+<P>everyone in the field of computer security can see that we may have
+a virus here (or at least suspicious or badly programmed code). The problem
+is how to convert something we see in a split second into one or more specific
+and relevant behaviour characteristics, which we can feed into an examination
+system. This in turn is able to tell us whether or not we are looking at
+a virus. </P>
+
+<P>With most of the rules used by the first generation of heuristic scanners,
+this was not at all difficult. Most were simple comparisons (&lt;,&gt;,==,!=)
+of the type: 'If a file date exceeds the current date, or is after the
+year 2000, give an alert';'If the seconds field of the file time shows
+62 seconds, we can conclude that this is pretty strange and give an alert'.
+This generation of heuristics, of course, did not have the power the analyse
+the code in the example shown above. </P>
+
+<P>The second generation of heuristic scanners has more possibilities.
+Bearing those in mind, defining a rule to cover the example above is not
+difficult, but imagine a complex decryption routine preceding the actual
+(virus/Trojan/suspicious) code or-most likely- legitimate code. For example:
+</P>
+
+<PRE>        re-vector int 3
+        re-vector int 1
+        disable keyboard
+        get int1 offset into di
+        get int1 offset into si
+        add counter-1 to si to point to encrypted data
+        add counter-2 to di to point to encrypted data
+        get word into ax
+        perform some calculations with ax to decrypt word
+        store word
+        increase counter-1
+        increase counter-2
+        look if end of encrypted code has been reached
+        jmp back if more code to decrypt
+        enable keyboard...
+</PRE>
+
+<P>In case this is just one of the instances generated by a complex mutation
+engine, it will be hard to derive a heuristic rule directly to detect a
+virus using this engine. </P>
+
+<P>One of the solutions, maybe the best one, is to include a code emulator
+in the analysing system as illustrated in the figure above (missing --Ed.),
+which shows a part of a working network security system. The file to be
+checked is first given to a checksummer. If the file is already known to
+the system, a hash code is generated across the file, and this is compared
+to a stored value. If these are identical, no further action is taken,
+and the file is declared clean. If not, the file is fed to the emulator,
+and the results from the code emulation are given to an analyser as described
+below. </P>
+
+<P>Including a code emulator is possible, and as a matter of fact has already
+been done. It should have special knowledge of a variety of possible tricks
+used in malicious code; it should know when to stop emulating (e.g. at
+the end of a decryption routine); it should be able to realise when anti-debug
+tricks are used, etc.<BR>
+Both in order to obtain portability, and to avoid obvious pitfalls, it
+must adhere to one basic and important rule:<BR>
+Never actually execute an instruction, only emulate it. </P>
+
+<P>In short, the task of the emulator is first to make sure that the code
+is decrypted (in case it was encrypted), and then to derive and combine
+crelevant behaviour characteristics to pass on to the analyser, which analyses
+and organises these behaviour characteristics and compares the results
+of the analysis with a set of rules. </P>
+
+<P><B>ARTIFICIAL INTELLIGENCE </B></P>
+
+<P>From the point of view of the developer it would be nice if such a system
+were able to learn about behaviour characteristics and generate new rules
+automatically. If the system bypasses an instance of virus/Trojan/suspicious
+code because the current rules are no longer sufficient, special examination
+tools should be able to extract the necessary information from the code
+in question and create new rules enabling the system to detect this trojan/virus/suspicious
+code, and hopefully every other form derived from this one. In other words:
+Artificial Intelligence. </P>
+
+<P>For security reasons, these additional tools with their special functionality
+should not be given to users. Evil-minded knowledgeable persons could use
+them to do an in-depth disassembly to research the possibilities of bypassing
+the rules generated by the system. Security through obscurity may not be
+safe, but it does help... </P>
+
+<P><B>EMULATOR DESIGN ISSUES </B></P>
+
+<P>When designing a code emulator for forensic purposes, a number of special
+requirements must be met. </P>
+
+<P>One problem to tackle is the multiple opcodes and multiple instructions
+issue: </P>
+
+<PRE>        87 C3           XCHG AX,BX
+        93              XCHG BX,AX
+        87 D8           XCHG BX,AX
+
+The result is the same, but different opcodes are used.
+
+        PUSH AX         PUSH AX
+        PUSH BX         MOV AX,BX
+        POP AX          POP BX
+        POP BX
+</PRE>
+
+<P>These give the same result. More than the five different code sequences
+shown above exist to exchange the contents of registers AX and BX. The
+technique of expressing the same functionality using many different sets
+of opcode sequences is used by encryptors generated by polymorphic engines.
+Some being over 200 bytes in size, they only contain the functionality
+of a cleanly coded decryptor of 25 bytes. Most of the remaining code is
+redundant, but sometimes seemling redundant code is used to initiate registers
+for further processing. </P>
+
+<P>It is the job of the emulator to make sure that the rule-based analyser
+gets the correct information, i.e. that the behaviour characteristics passed
+to the analyser reflect the actual facts. No matter which seris of instructions/opcodes
+are used to perform 3D02h/21h, the analyser only has to know that the behaviour
+of that piece of code is: </P>
+
+<UL>
+<P>Open a file for (both reading and) writing. </P>
+</UL>
+
+<P>On the one hand, this may not seem that difficult. Most viruses do perform
+interrupt calls, and when they do, we just have to evaluate the contents
+of the register to derive the behaviour characteristic. On the other hand,
+this is only correct if we talk about simple, straightforward viruses.
+For viruses using different techniques (hooking different interrupts, using
+call/jmp far constructions) it may be very difficult for the emulator to
+keep track of the instruction flow. In any case, the emulator must be capable
+of reducing instruction sequences to the bare functionality in a well-defined
+manner. We call the result of this reduction a behaviour characteristic,
+if it can be found in a pre-compiled list of characteristics to which we
+attach particular importance. </P>
+
+<P>Another problem is that the emulator must be capable of making important
+decisions, normally based on incomplete evidence (we obviously want to
+emulate as little code as possible before reaching a conclusion regarding
+the potential maliciousness of the software in question). </P>
+
+<P>Let us illustrate this with a small example: </P>
+
+<PRE>        MOV AX, 4567
+        INT 21
+        CMP AX, 7654
+        JNE jmp-1
+        JMP jmp-2
+</PRE>
+
+<P>This is an example of an 'Are you there?' call used by a virus. When
+tracing through the code, the emulator obviously doesn't know whether jmp-1
+or jmp-2 leads to the code which installs the virus in case it is not already
+there. So, should the emulator continue with the jmp-1 flow or the jmp-2
+flow? Now, a simple execution of the code will result in just one of these
+flows being relevant, whereas a forensic emulator must be able to follow
+all possible program flows simultaneously, until either a flow leads to
+a number of relevant behaviour characteristics being detected, at which
+time the information is passed to the analyser, or a flow has been followed
+to a point where one of the stop-criteria built into the emulator is met.
+The strategy used in this part of the emulator is a determining factor
+when it comes to obtaining an acceptable scanning speed. </P>
+
+<P>Hopefully, this has illustrated some of the problems associated with
+designing a forensic emulator. It is a very diffcult and complex part of
+this set-up. </P>
+
+<P>Once the emulator has finished its job it passes information, a list
+of behaviour characteristics which it has found in the code, on to the
+analyser. </P>
+
+<P><B>BEHAVIOUR RULES </B></P>
+
+<P>Before the analyser is able to compare the behaviour characteristics
+found by the emulator to information in its behaviour database, this database
+needs to be defined. Assume that we have a COM and an EXE file infecting
+virus with the following behaviour: </P>
+
+<PRE>        !       MODIFY FILE ATTRIBUTE REMOVING READ-ONLY FLAG
+        !       OPEN A FILE FOR (BOTH READING AND) WRITING
+        !*      WRITE DATA TO END OF FILE
+        !*      MODIFY ENTRY POINT IN HEADER or WRITE TO BEGINNING OF FILE
+        -       MODIFY FILE DATE AND FILE TIME
+        -       CLOSE FILE
+        -       MODIFY FILE ATTRIBUTE
+
+If we want to develop a behaviour rule for this virus, it will look like
+this:
+
+        1.      MODIFY_FILE_ATTRIBUTE + OPEN_FILE + WRITE_DATA_TO_EOF +
+                MODIFY_EP_IN_HEADER
+
+        2.      MODIFY_FILE_ATTRIBUTE + OPEN_FILE + WRITE_DATA_TO_EOF +
+                WRITE_DATA_TO_BOF
+
+where rule 1 is a rule for the EXE-file, and rule 2 for the COM file.
+</PRE>
+
+<P>Since a lot of viruses and virus source codes are widely available,
+a number of different instruction sequences resulting in this functionality
+will probably show up. Normally, derived viruses contain minor changes
+to bypass a single scanner by just changing the order of two or more instructions,
+but sometimes larger code sequences can be changed without changing the
+functionality of the virus. It is trivial to change the code, so it will
+first modify the entry-point in the header of change the start-up code,
+and afterwards write the virus code. In order to detect these changes (variants)
+the next rules may be added: </P>
+
+<PRE>        3.      MODIFY_FILE_ATTRIBUTE + OPEN_FILE + MODIFY_EP_IN_HEADER +
+                WRITE_DATA_TO_EOF @CODE LINE =
+
+        4.      MODIFY_FILE_ATTRIBUTE + OPEN_FILE + WRITE_DATA_TO_BOF +
+                WRITE_DATA_TO_EOF
+
+Another example (an MBR infector):
+
+        -       PERFORM SELF CHECK
+        !       HOOK INT13
+        !       BECOME RESIDENT
+        !       INTERCEPT READ/WRITE TO MBR
+        !       READ MBR
+        -*      WRITE MBR TO OTHER LOCATION
+        !*      WRITE NEW MBR
+
+Rule:
+        HOOK_INT13 + INTERCEPT_READ/WRITE_TO_MBR + WRITE_NEW_MBR
+</PRE>
+
+<P>The signs in front of the descriptors in the examples above hint at
+the weighing procedure used by the analyser to attach significance to the
+behaviour characteristics supplied by the emulator A. '-' means that the
+characteristic does not have to be present, an '!' that it must be present
+(but does not in itself indicate malicious code). A '*' indicates a high
+weighing value. This '-*' means that the characteristic does not have to
+be present in the sequence of actions, but if it is, this is a highly important
+fact. </P>
+
+<P>If rules 1-4 above are examined more closely, it can be concluded that
+they describe behaviour found in a number of viruses from different families.
+</P>
+
+<P>A single behaviour rule may detect an unlimited number of viruses. That
+is the power behind using behaviour characteristics. While at present we
+in most cases need a new signature or new (changed) algorithm to detect
+a new variant of a virus or a new virus family, the behaviour characteristics
+will continue to do their work. This is extremely important, because it
+removes the necessity for the virus researcher and the anti-virus developer
+to react to a new virus unless its technologically innovative. And those
+are few and far between. </P>
+
+<P>Of course, some viruses will be developed which will not be caught by
+any of the rules in the behaviour database. These must be taken care of
+just like we do right now with any new virus; but instead of creating a
+signature, we create a new rule. </P>
+
+<P>With a little luck, a new virus behaves like a virus already covered
+by a rule. If we attach a level of importance to each part of a behaviour
+characteristic, we can use this in the analyser to arrive at a conclusion.
+Depending on the level of importance of each individual component of a
+behaviour characteristic detected, the system may decide to give a message
+to the user, such as 'may be infected by an unknown virus', or 'suspicious
+code'. </P>
+
+<P>The reason for attaching a level of importance to each individual part
+of a behaviour characteristic is that it makes it easier to sort out cases
+where combinations of individually innocent behaviour characteristics put
+together constitute malicious code-or vice versa. Filedate, from Norton's
+Utilities, is able to change file date and time; as a matter of fact, this
+is the purpose of the utility. The ATTRIB command is developed to change
+file attributes. Evidently, changing file attributes is in itself insufficient
+evidence of malicious behaviour. A virus needs to write to a file as well.
+So a file write is mandatory for code to be considered suspicious and is
+heavily weighted. A change of attributes is not that important, and thus
+given a lower weighting. </P>
+
+<P>If the user so wishes, the file or part of the (decryptor) code on which
+the analysing system triggered can be checked by a signature scanner to
+see if a virus can be identified. </P>
+
+<P><B>CREATING RULES AUTOMATICALLY </B></P>
+
+<P>An important part of the system is a Rule Building Utility. Whenever
+a new virus or Trojan emerges, it may be processing by this utility, which
+is similar to the emulator, albeit with some important differences. The
+emulator only collects behaviour information without knowing anything about
+the importance of a particular type of behaviour, or if the behaviour is
+suspicious. </P>
+
+<P>The Rule Building Utility has to learn the level of importance of behaviour
+characteristics, has to know which behaviour is mandatory for a virus or
+Trojan, which behaviour is used by a virus but may be omitted, etc. Because
+research and development time is very expensive, the utility must be able
+to remember this for similar behaviour characteristics, and only ask for
+additional unknown information when needed,, saving the researcher valuable
+time. </P>
+
+<PRE>        Behaviour A:            Behaviour B:
+        SEARCH FIRST FILE       SEARCH FIRST FILE
+        DELETE FILE             DELETE FILE
+        SEARCH NEXT FILE        CREATE FILE
+                                WRITE CODE INTO FILE
+                                SEARCH NEXT FILE
+</PRE>
+
+<P>When rules have been defined for behaviour B and a file (behaviour A,
+which was reported being suspicious) is processed, the utility must be
+able to realise that this behaviour is not as indicative of potential maliciousness
+as behaviour A. (Typo? Should be B? --Ed.) As a matter of fact, if behaviour
+A is taken on its own, it might well be a DEL *.* command. </P>
+
+<P>At first, the utility will, ask for input frequently, because it needs
+to build up its database. However, over a period of time this type of utility
+should make life easier for the researcher. </P>
+
+<P><B>CONCLUSION </B></P>
+
+<P>The number of viruses is increasing rapidly: this is a known fact. The
+time will soon arrive when scanning using signatures and dedicated algorithms
+will either use too much memory or just become too slow. With storage media
+prices dropping fast, lots of systems now come equipped with very large
+hard disks, which will take more and more time, and thus money, to scan
+using traditional techniques. A properly designed rule-based analysing
+system feeding suspicious code into a scanner, which can identify the suspicious
+code as a known virus or Trojan, or perhaps dangerous code needing further
+investigation, is bound to save a lot of time. </P>
+
+<P>Although it is impossible to prove that code is not malicious without
+analysing it from one end to the other, we in Computer Security Engineers
+Ltd believe it possible to reduce significantly the time used to check
+files by using all the available system knowledge instead of only small
+bits of it, as it is done today. Using virus scanning as the primary, or
+in many cases the only, anti-virus defence is an absurd waste of time and
+money, and furthermore blatantly insecure! </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

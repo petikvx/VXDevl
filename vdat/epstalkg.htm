@@ -1,0 +1,304 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Stalking the Stealth Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>Stalking the Stealth
+Viruses<BR>
+By Christopher O'Malley</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<P>Like computer users around the world, Greg Buckley heard the warnings
+about the dreaded Michelangelo &quot;virus,&quot; a malicious software
+program designed to wipe out the contents of an infected PC's hard disk
+on March 6, the artist's birthday. But unlike most, Buckley, a plumbing
+contractor in Boynton Beach, Fla., was a victim. He turned on his PC that
+fateful Friday to find all of his accounting files gone. But if 1992 was
+the year Michelangelo pushed computer viruses into the spotlight, 1993
+may be the year viruses go under cover. A new generation of highly sophisticated
+&quot;stealth&quot; viruses has begun circulating among PCs, spreading
+with little or no evidence of their presence. More ominous still, some
+of these viruses are mutating strains that alter their makeup as they spread,
+posing a more insidious that than fixed viruses such as Michelangelo, Stoned,
+Jerusalem. By definition, computer viruses are clandestine creatures. These
+programs conceal their instructions inside other software programs, secretly
+attaching themselves to other files and floppy disks or lodging in the
+special start-up area of a disk known as the boot sector. Once a program
+or disk has become &quot;infected&quot; with one of these invisible stowaways,
+it executes the virus's instructions -- some destructive, some merely annoying--without
+prompting or warning. The virus spreads when an infected program is copied
+to another computer or an infected disk is read during start-up.</P>
+
+<P>Traditionally, a virus leaves telltale signs of its presence. Many viruses
+noticeably increase the size of files or reduce the amount of available
+memory, symptoms that can provide early warnings of an infection. Other
+viruses make changes to critical start-up areas of a disk that can e inspected
+for unwanted alterations, such as the &quot;boot record&quot; and &quot;partition
+table&quot; on IBM PC-compatible systems. And most viruses bear a kind
+of digital signature--a unique string of software codes that can be easily
+detected by so-called anti- virus scanning programs, which seek out and
+remove viruses.</P>
+
+<P>Unlike conventional viruses, however, the newer stealth strains employ
+a variety of cloaking techniques to make themselves invisible to both the
+human eye and the electronic scrutiny of anti-virus programs. The longer
+these viruses remain undetected, the further they can spread and the more
+damage they can do.</P>
+
+<P>While their camouflaging methods vary, stealth viruses- -almost all
+of which have been detected since 1990--employ two basic techniques to
+avoid detection: getting &quot;under&quot; the operating system and subverting
+a computer's disk operations to conceal the presence of a virus, and digitally
+encrypting the virus itself to thwart scanners looking for a familiar signature
+or pattern.</P>
+
+<P>Disk deceptions are the most common stealth ploys. The 4096 virus, also
+known as Frodo or Hundred Years virus, is one prominent example. This virus,
+which originated in Israel, infects program files (typically files ending
+with the extension .EXE or .COM) on IBM-compatible PCs. In the process,
+the virus adds 4,096 bytes to the length of each file. But that increase
+never shows up on a computer screen; the virus stores the original file-size
+data at the end of the infected file and summons it whenever the DIR (directory)
+command requests a list of file, so all the files appear to be in the original
+lengths. The 4096 virus also has a number of built-in defenses against
+disk mapping and debugging programs, making those tools virtually useless
+in detecting it.</P>
+
+<P>These defenses buy the 4096 virus time to slowly and surreptitiously
+weave a web of improper links among program and data files, damaging both.
+The virus also has a trigger date: On or after Sept. 22 of any year (the
+birthday of Frodo, a character in the Lord_of_the_Rings books), the 4096
+virus will cause system crashes. A number of other new file- type viruses,
+including a Bulgarian strain called Dir-2, a German virus called Whale,
+and a virus of unknown origin known as Crazy Imp, play similar tricks on
+the DOS file system.</P>
+
+<P>Many viruses that infect the boot, or start-up, areas of a DOS disk
+have also taken on stealthy sophistication. These boot-type viruses infect
+the hidden programs a PC reads when it's turned on or restarted, loading
+themselves into memory before anything else can take place. Ordinarily,
+a disk-editing or anti-virus program can simply inspect these special disk
+areas and remove a virus caught nesting there. But some of the latest boot
+viruses can fool these programs into thinking all is well when the start-up
+areas are in fact corrupted.</P>
+
+<P>The Joshi virus, probably the most widespread of all stealth viruses
+to date, infects the boot sector of floppy disks and the partition table
+of hard disks. But when a program attempts to read these areas, Joshi intercepts
+the probe and directs it to a copy of the original boot sector or partition
+table stored on another part of the disk. Joshi, developed in India, is
+not a particularly malicious virus-- every Jan. 5 it displays the message
+TYPE HAPPY BIRTHDAY JOSHI on the screen and freezes the computer until
+the user obliges. But some stealth boot viruses, such as NoInt from Canada
+(a stealth variation of the Stoned virus), can cause file damage or loss
+as they maneuver around the operating system. </P>
+
+<P>The most formidable virus threat today comes from new &quot;super stealth&quot;
+strains that combine these hide-and-seek games with complex encryption
+schemes that conceal, and even dynamically alter, the viral code itself.
+The technology of digital encryption is not new--businesses often use encryption
+to protect sensitive data--but it takes on a darker dimension when applied
+to viruses. Essentially, the encryption process uses a mathematical algorithm
+and a random-number generator to disguise bytes of binary code (ones and
+zeros) as a new series of numbers. Most computers have timer or counter
+chips that can easily generate random numbers, so a virus program simply
+needs an encryption algorithm and the instructions to use it. Once encrypted,
+a virus is extremely difficult to detect because its unique signature has
+been wiped away.</P>
+
+<P>The recently discovered Tequila virus, traced to Switzerland, is one
+of the more common super-stealth strains. Tequila is both a file- and boot-type
+infector that hides any increases in file sizes and uses a sophisticated
+encryption method to avoid being detected or disassembled. The Telecom
+and Holocaust viruses, both from Spain, are similarly encrypted. Tequila
+and Holocaust can cause errors and possibly damage files; Telecom, which
+also goes by the name Spanish Telecom-2, will eventually overwrite hard-disk
+files.</P>
+
+<P>The latest virus-encrypting technology is the Dark Avenger Mutating
+Engine, a byproduct of the notorious Dark Avenger author (or authors) from
+Bulgaria (see the Bulgarian Connection). The Mutating Engine is not a virus
+itself but an elaborate encryption program that can be attached to almost
+any virus to create a polymorphic virus--a virus that can take many forms.
+Polymorphic viruses are not only encrypted, they change their encryption
+frequently so as to never look the same twice. The Mutating Engine is an
+incredible efficient encoder, allowing no more than three bytes (out of
+hundreds of thousands) to remain constant from one encryption to the next.
+It also tosses in meaningless instructions to further ensure a unique result.</P>
+
+<P>Though the Dark Avenger Mutating Engine was the first documented earlier
+this year, several polymorphic viruses have already been developed with
+it. None of these Bulgarian viruses are terribly destructive: Pogue plays
+music between 8 a.m. and 9 a.m., Fear can cause a computer to freeze up
+which an infected program is run, and Dedicated simply keeps cloning itself.
+But the potential for more lethal polymorphic viruses is intimidating,
+and the trend toward nastier viruses is growing.</P>
+
+<P>The Michelangelo virus is a testament to this negative trend. The Stoned
+virus from which it evolved is believed to be the most prevalent virus
+in the United States and is certainly on of the most innocuous, flashing
+YOUR PC IS NOW STONED on the screen when you boot an infected disk. But
+if Stoned is typical of the prankish mentality behind many viruses of the
+1980s, Michelangelo and its wanton destruction may be the prototype for
+the 1990s.</P>
+
+<P>The Casino virus, discovered about the same time last year as Michelangelo,
+may best embody this growing mean- spiritedness among virus writers. Triggered
+on the 15th of January, April, or August, Casino informs the victim that
+it has destroyed the file allocation table, which is used by DOS to track
+the location of files on a disk. But the virus has saved a copy of the
+file in memory, and it offers &quot;a last chance to restore your precious
+data&quot; by playing a slot machine game. If you lose, it wipes out the
+file allocation table, making it impossible to access any if the files
+on the disk. A variant called Casino-B destroys the file table regardless
+of your luck.</P>
+
+<P>&quot;We're starting to see the angry young men come out now,&quot;
+says Robert Bales, executive director of the National Computer Security
+Association in Mechanicsburg, Pa. NO one knows for sure who writes computer
+viruses or why, but the sophistication of today's virus suggest the authors
+are talented young programmers with time on their hands and a taste for
+mischief. Viruses have originated in almost every country, including the
+United States, but many of the most common and dangerous ones come from
+Eastern Europe, particularly Bulgaria. In many of these countries are scores
+of well-trained computer programmers who have few opportunities to practice
+their art commercially. In addition, software piracy is rampant in many
+cases, allowing viruses to spread rapidly. Anti-virus forces are fighting
+back with innovations of their own. Many anti-virus packages, including
+Symantec's Norton Anti-Virus and Central Point's Anti-Virus, not only scan
+for known viruses, but also employ &quot;sentry&quot; programs that stay
+in memory and watch for suspicious activity, such as changes to files and
+boot areas, to try to catch unknown and stealth viruses at work. The programs
+usually intercept the virus and repair infected files. </P>
+
+<P>A few anti-virus programs, including Certus International's Novi and
+Fifth Generation Systems' Untouchable, claim to be so good at monitoring
+a system for viral activity that no upgrades are necessary, as they often
+are for simple scanners. It's the sheer quantity of new viruses being developed
+all the time that necessitates these upgrades: The number of unique viruses
+soared from fewer than a dozen in 1986 to more than 1,000 by early 1992,
+and that number is expected to double by year's end, according to Patricia
+Hoffman, an independent virus researcher who maintains a database of all
+known computer viruses.</P>
+
+<P>Scanning for virus signatures is still the backbone of nearly all anti-virus
+products; adapting the scanning techniques to snare encrypted and polymorphic
+viruses is not the impossible task it might seem. All encrypted viruses,
+even polymorphic ones, must leave a tiny portion of themselves--the &quot;kernel&quot;
+program that decodes the scrambled virus--unencrypted so the virus can
+still operate. At least one scanning program, a popular shareware program
+called Scan from McAfee Associates, already can detect the presence of
+viruses cloaked by the Dark Avenger Mutating Engine.</P>
+
+<P>A number of creative hardware devices are helping stem the viral tide
+as well. ThunderByte PC Immunizer, from Glynn International of Brookline,
+Mass., is a $249 circuit board that plugs into an IBM-compatible PC and
+attaches via a cable to the system's hard-disk controller board. This connection
+physically prevents viruses from modifying program files or start-up areas
+of a hard disk. Virus Trap, a $295 board from JAS Technology of Warrenton,
+Va., offers similar protections. To reduce the risk of viruses entering
+a PC in the first place, Corporate Management Group of Austin, Texas, sells
+a series of floppy-disk-drive locks that the company characterizes as &quot;chastity
+belts&quot; for computers.</P>
+
+<P>In their current form, however, anti-virus software and hardware products
+are flawed solutions, for no other reason than the fact that PC users must
+make the effort to buy and use them. Incororating anti-virus technology
+into the operating system may be more effective. That would make the safeguards
+automatic and eventually extend them to almost everyone who uses a PC.
+Microsoft, which supplies the DOS operating system used by nearly all IBM-compatible
+PCs, says it is working on adding some file-system and boot-sector protections
+to a future version of DOS and to the next major release of its Windows
+graphical user interface.</P>
+
+<P>But the operating system approach has its disadvantages. To accommodate
+anti-virus features, the operating system will probably use more system
+memory, and keeping anti-virus features up to date might mean more frequent
+upgrades of the operating system. Making virus protection the domain of
+an operating system like MS-DOS could also have the effect of painting
+a bull's-eye for virus writers. &quot;Frankly, we're a little concerned
+it would look like we're throwing down the gauntlet,&quot; says Mack McCauley,
+manager of DOS and Windows development at Microsoft.</P>
+
+<P>Nonetheless, beta versions of DOS 6.0, expected to be completed by early
+1993, reportedly include Central Point's anti-virus software. Many PC vendors
+now include anti-virus software with their systems as well. </P>
+
+<P>A more comprehensive and permanent answer to the virus dilemma may lie
+in redesigning PC hardware to close some of the openings that make a PC
+so vulnerable to rogue programs in the first place. Today's PCs allow any
+type of software-- including viruses--to run unchecked, with unfettered
+access to critical disk and memory information. This hands-off approach
+is one element of the &quot;open architecture&quot; that has helped increase
+competition and cut the price of PCs. But it's also an open invitation
+to virus writers.</P>
+
+<P>At George Washington University in Washington, D.C., Lance Hoffman,
+a professor of electrical engineering and computer science, and graduate
+student Paul Clark have proposed a new start-up procedure for PCs that
+would use solid-state memory cards instead of disks. This plan would eliminate
+the risk of boot-type viruses and make it easier to cleanse a computer
+that's been infected with file-type viruses.</P>
+
+<P>Others have suggested that hardware makers design systems that would
+physically prevent viruses from writing to boot sectors or program files.
+Virus expert Richard Levin, author of The_Computer_Virus_Handbook and an
+anti-virus program called Checkup, is promoting a built-in mechanism that
+would allow you to selectively protect boot sectors and program files by
+turning a keyed switch located in the front of the computer. (The key lock
+currently found on the faceplate of some PCs is simply a keyboard lock.)
+His system would still allow free access to data files. &quot;PC users
+are entitled to security, and it should come with the computer,&quot; says
+Levin. &quot;I think it's despicable that we're preying on people's misfortunes
+when we could stop this problem tomorrow if we really wanted to.&quot;</P>
+
+<P>American Megatrends, a leading maker of PC motherboards, has taken a
+step in that direction. AMI recently modified its basic input-output system
+(BIOS)--software on a programmable memory chip that directs traffic between
+the operating system and the hardware--to prevent boot-sector viruses like
+Michelangelo from writing to the boot sector of the disk. Award Software
+is doing the same with its BIOS software, and Phoenix Technologies plans
+to add the boot- protect feature in a future version.</P>
+
+<P>But PC security can be a hard sell. Hardware makers say there's still
+little demand for security features and that PC users may balk at a hardware
+solution that forces them to change their ways. Dell Computer Corp. in
+Austin, Texas, for example, is considering adding virus checkers to the
+read- only memories of some of its forthcoming systems, but the company
+doesn't foresee any fundamental hardware changes in the near future. &quot;The
+reality is that many users are willing to take the risk of getting a virus
+rather than have something that interferes with their day-to-day use of
+the computer,&quot; says Michael O'Dell, vice president of product development
+at Dell. </P>
+
+<P><B>Potential danger </B></P>
+
+<P>The risk of encountering a virus is still remote. Only about one PC
+in 1,000 contracts a virus every three months, according to an ongoing
+study being conducted by the High Integrity Computing Lab at IBM's Thomas
+J. Watson research center in Hawthorne, N.Y. In the grander scheme of security
+issues, viruses still take a backseat to human errors and equipment failures.</P>
+
+<P>The potential for damage posed by computer viruses, however, is unparralleled.
+The proliferation of computer networks and dial-up information services
+makes sharing software--and spreading viruses--much easier. The new emphasis
+on stealth technology makes it more likely than ever that a virus could
+quietly spread across a large number of computers and wreak havoc on the
+machines that manage many aspects of daily life, from a corporation's quarterly
+budgets to a hospital's records.</P>
+
+<P>There's a less apparent danger as well. &quot;Viruses threaten to rattle
+the underlying confidence people now have in computers,&quot; says Peter
+Tippett, president of Certus International, a Cleveland-based publisher
+of anti-virus software. &quot;And if people stop relying on computers,
+that's everybody's problem.&quot;</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

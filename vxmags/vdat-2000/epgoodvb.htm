@@ -1,0 +1,166 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Dozen Reasons Why A Good Virus Is A BAd Idea</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>Dozen Reasons Why A &quot;Good&quot;
+Virus Is A Bad Idea</FONT></FONT></B>
+<HR WIDTH="100%"></P></CENTER>
+
+<P><B>I. Technical points:</B></P>
+
+<P><B>1.</B> Once released, one has no control on how the virus will spread;
+it may reach an unknown system (or the one which could have even not existed
+at the time the virus is created) and on which it might cause non-intentional
+damage. Any virus that claims to be beneficial, must contain measures to
+prevent this. For instance, if it infects a particular object, it must
+at least keep a cryptographically strong checksum of this object, in order
+to make sure that it does not infect anything else by mistake. And this
+is only a simplistic example; in reality the precautions must be much more
+elaborated. </P>
+
+<P>A virus that claims to be beneficial should provide means to be controlled.
+It should be possible to easily prevent the infection even of a system
+that has never heard about the virus; it should be possible to remove the
+infection easily from any infected system, without causing any harm; and
+it should be possible to send a message to all instances of the virus to
+terminate themselves, restoring the infected systems to their uninfected
+state - or to update themselves. Such a message should propagate faster
+than the virus itself. In some sense, those messages will be &quot;viruses&quot;
+for the &quot;computational environment&quot; consisting of all existing
+copies of the virus, just like the virus is a virus in the &quot;normal&quot;
+computational environment (the one that the user uses). If such a solution
+is implemented, this is still dangerous, although the danger is of a different
+kind. Suppose that a system uses the beneficial virus and relies on it.
+Then a malicious attacker could send a message to the virus to terminate
+itself, thus causing harm to the system (a denial of service attack). Therefore,
+the message should be cryptographically authenticated. In short, the virus
+should be able to authentify itself to the system and the system should
+be able to authentify itself to the virus. </P>
+
+<P>The user of the beneficial virus should actively invite (e.g. install)
+the virus on his/her system. It is not enough if the virus asks for permission,
+because this forces the user to take some measures in order to keep their
+system virus-free. By default (i.e. if no measures are taken), the virus
+should not infect that system. Only if the virus finds some kind of &quot;invitation&quot;,
+it should infect the system. There must be a way to turn off the prompting
+- the user must both be able to set the default action to &quot;no, don't
+infect&quot; (by removing the invitation or not installing it in the first
+place) and to &quot;yes, keep infecting without asking&quot;. And again,
+cryptographic means should be used to ensure that what the virus sees as
+invitation is indeed one and not some kind of mistake. </P>
+
+<P>No uncontrollable mutations of virus should happen, either of random
+(errors) or deterministic (intentional changes) nature. </P>
+
+<P><B>2.</B> The anti-virus programs will have to distinguish between &quot;good&quot;
+and &quot;bad&quot; viruses, which is essentially impossible. Also, the
+existence of useful programs which modify other programs at will, will
+make the integrity checkers essentially useless, because they will be able
+only to detect the modification and not to determine that it has been caused
+by a &quot;good&quot; virus. Therefore, a virus that claims to be beneficial,
+must not modify other programs. </P>
+
+<P><B>3.</B> A virus will eat up disk space and time resources unnecessarily
+while it spreads. The virus is a self-replicating resource eater. Therefore,
+a virus that claims to be beneficial, should keep only one instance of
+itself per infected machine and the costs of the time and other resources
+used by it must be negligible, compared to the benefits it brings to the
+user. </P>
+
+<P><B>4.</B> A virus could contain bugs which might damage something or
+harm somebody. Any program could be buggy, but the buggy virus is a self-spreading
+buggy program which is out of control. </P>
+
+<P><B>5.</B> A virus will disable the few programs on the market which
+check themselves for modifications and halt themselves if they have been
+changed. It is important to repeat again that a virus that claims to be
+beneficial, *must not modify* other programs. </P>
+
+<P>Summary of technical points against &quot;good&quot; viruses: </P>
+
+<UL>
+<P>-impossibility to control it or possibility to lose control over it
+<BR>
+-uncertainty in discerning &quot;good&quot; from &quot;bad&quot; viruses
+<BR>
+-resource wasting -bugs which are harder to detect and easier to spread
+around <BR>
+-modification of programs </P>
+</UL>
+
+<P>The above points apply to any practical system of use today, i.e. the
+systems which are based on von Neumann's architecture. </P>
+
+<P><B>II. Ethical/legal points:</B></P>
+
+<P><B>6.</B> It is unethical to modify somebody's data without his or her
+active authorization. In several countries this is also illegal. The user
+of a beneficial virus must actively invite the virus to infect his or her
+machine. The virus must wait for an invitation, not bother the user with
+asking for permission or sneaking in without one. </P>
+
+<P><B>7.</B> Modifying a program could mean that the owner of the program
+loses his or her rights for technical support, ownership, or copyright.
+An example of such a possibility could be the case reported recently to
+VTC - Hamburg. The company refused technical support to somebody whose
+system was infected - they insisted that their product is re-installed.
+</P>
+
+<P><B>8.</B> An attacker can use a &quot;good&quot; virus as a means of
+transportation to penetrate a system. That is why a &quot;good&quot; virus
+must be able to authentify itself to the system, and the system must be
+able to verify that it is exactly what it claims to be. A person with malicious
+intents can furthermore get a copy of the &quot;good&quot; virus and modify
+it to include something malicious. Actually, an attacker could trojanize
+-any- program, but a &quot;good&quot; virus will provide the attacker with
+means to transport his malicious code to a virtually unlimited population
+of computer users. The possibility to transport malicious code is one of
+the things that makes a virus &quot;bad&quot;. </P>
+
+<P><B>9.</B> Declaring some viruses as &quot;good&quot; will just give
+an excuse to the crowd of virus writers to claim that they are actually
+doing &quot;research&quot;. Working with potentially dangerous things -
+either poisonous substances or self -repli- cating programs - should be
+left to people who have (a) the moral and ethical stability and (b) the
+technical expertise to do it. </P>
+
+<P><B>10.</B> Anything useful that could be done by a virus, could also
+be done with a normal, non-replicating program. Any virus that claims to
+be beneficial must do something that either cannot be done by a non-viral
+program, or is not done as effectively as with a viral one to avoid problems
+stated in previous points. </P>
+
+<P>The summary of ethical/legal points against &quot;good&quot; viruses:
+</P>
+
+<UL>
+<P>-modification of data/programs without active authorization of user
+<BR>
+-possibility to lose ownership rights on infected program <BR>
+-possibility to modify a &quot;good&quot; virus with malicious code to
+transport such a code further <BR>
+-the question of responsibility of persons writing viruses <BR>
+-the question of suitability of &quot;good&quot; viruses to perform a certain
+task </P>
+</UL>
+
+<P><B>III. Psychological points:</B></P>
+
+<P><B>11.</B> A virus activity ruins the trust that the user has in his
+or her machine. The impression that a virus steals user's control of the
+machine can cause the user to lose his or her belief that she or he can
+control it. It may be a source of permanent frustrations. </P>
+
+<P><B>12.</B> For most people the word &quot;computer virus&quot; is already
+loaded with negative meaning. They will not accept a program called like
+that, even if it claims to do something useful. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

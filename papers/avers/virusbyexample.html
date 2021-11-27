@@ -1,0 +1,1045 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+
+
+
+   
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+   
+  <meta name="GENERATOR" content="Mozilla/4.79 [en] (Win98; U) [Netscape]">
+
+   
+  <meta name="Author" content="Uzi Paz">
+
+   
+  <meta name="Description" content="Antivirus programs are important for the defense against viruses, but the more effective defense is by awareness. We try to help bydiscussing many representative examples.">
+
+   
+  <meta name="KeyWords" content="security, klez, CIH, loveletter, viruses, worm,  trojan, hacker, defend, protect, zonealarm, norton, mcafee, antivirus"><title>Defense against viruses - Defense by Awareness and Awareness by Examples</title></head><body alink="#ff0000" bgcolor="#fffbf0" link="#0000ee" text="#000000" vlink="#551a8b">
+
+
+<center>
+<h2>
+<font color="#ff0000">Defense Against Viruses - Awareness by Examples</font></h2>
+</center>
+
+
+<p><br>
+<b><font color="#663366">Author: </font></b><font color="#009900">Uzi
+Paz</font>
+<br>
+<b><font color="#663366">E-Mail:</font></b><font color="#009900"> For
+e-mail contact: user is uzi4wg and domain is uzipaz.com&nbsp;</font><img src="virusbyexample_files/e-mail.gif" alt="my e-mail address as a picture" nosave="" align="texttop" height="16" width="120">
+<br>
+<b><font color="#663366">First version date: </font></b><font color="#009900">29
+Aug 2002</font>
+<br>
+<b><font color="#663366">This version:</font></b><font color="#009900">
+3 Nov 2002</font>
+<br>
+<b><font color="#663366">Legal Notice:</font></b><font color="#009900">
+While as far as I know all the information here is exact and</font>
+<br>
+<font color="#009900">correct, because I'm giving this information
+as a free service, I'm taking no</font>
+<br>
+<font color="#009900">responsibility. Any comments and&nbsp; corrections,
+are welcomed.</font>
+<br>
+<font color="#663366"><b>Parent Page:</b> <a href="http://www.uzipaz.com/">http://www.uzipaz.com</a>.</font>
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">1. Introduction</font></font></b>
+</p>
+<p><font color="#000000">There are so many tricks which worms, and viruses
+use in order to penetrate and activate themselves on the victim's computer.
+While antivirus programs are very important, and usually, if they are always
+kept updated, they can defend from the more common viruses, this is not
+enough. Sometimes viruses spread so fast, that they might reach your computer
+before the antivirus programs are able to identify them. It is thus not
+recommended to count solely on the antivirus programs to provide the proper
+defense, and to defend your computer from viruses by not activating them
+on your computer. A virus can do its deeds only if it is activated (executed).
+This might happen because you doubleclicked an attachment, or because it
+used some security hole in your e-mail program to activate itself automatically.
+In order to prevent a virus from activating itself automatically, you need
+to apply security updates, security patches, or to configure your programs
+so that risky features will be disabled. Yet, many viruses will try to
+convince you to execute them by using various tricks, including many psychological
+tricks. In this article, we try to raise your awareness to this issue by
+providing representive examples, and explaining them, so that you will
+be more cautious to identify suspicious files and thus not to activate
+them.</font>
+</p>
+<p><font color="#000000">The most common channel of infection is e-mail.
+It could be an innocent looking message, sometimes from someone you know
+- might be your boss or a good friend. Could be someone you truly trust.</font>
+<br>
+<font color="#000000">In many cases, the content of the message looks
+unsuspicious. You may or may not be requested politely to open an attachment.
+Not something suspicious, only a word document or a picture, or a text
+attachment, nothing that a typical user will suspect as being a virus.
+Viruses, in many cases, are sending themselves from infected computers,
+usually under the e-mail address of the owner of that computer, to e-mail
+addresses that the virus finds either in the addressbook on that computer,
+or in cached web pages, or in anywhere in the computer. Sometimes, under
+another forged e-mail address that the virus found in the infected computer.</font>
+<br>
+<font color="#000000">This way, a virus use an infected computer to
+spread further into other computers and infect them as well.</font>
+</p>
+<p><font color="#000000">We believe that a few examples, will clarify the
+various tricks.</font>
+</p>
+<p><font color="#000000">Since all the examples below are of famous viruses,
+those viruses are already detected and removed by all updated antivirus
+programs. Yet, their methods will clarify to you how it is possible to
+trick you, and new viruses might try to trick you in similar ways, and
+yet, not be identified by your antivirus program. We shall first discuss
+those few examples of ways in which viruses succeed in penetrating into
+your computer and activating themselves, and then, in the last section,
+we shall make some more generic recommendations.</font>
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">2. What is the meaning of infection</font></font></b>
+</p>
+<p><font color="#000000">Viruses, worms, and Trojan horses, are executable
+codes. Namely, they contain instructions for the computer to do unwelcomed
+or malicious things. The code of a worm or a virus also has instructions
+as to how to send copies of it to other computers. This way, viruses and
+worms are spread: they simply instruct the infected computer to send copies
+of them to other computers - either directly or indirectly. Trojan horses,
+on the other hand, do not have the ability to self-replicate. We will not
+enter here further into the differences between worms, viruses, and Trojan
+horses, but will just comment that the exact distinction between viruses
+and worms, is not within a consensus, and throughout this article, we shall
+use the term "virus" as a generic term referring to either a virus or a
+worm.</font>
+</p>
+<p><font color="#000000">Of course, the code is meaningless if the computer
+does not act according to it. Look, for example, at the following line:</font>
+</p>
+<p><font face="Courier New,Courier"><font color="#000000">DEL c:\Windows\System\*.dll</font></font>
+</p>
+<p>If typed in an MSDOS window and you press &lt;enter&gt;, or if is written
+in a batch file (a file with an extension .bat) that will be executed,
+it will delete many crucial files from your operating system directory,
+and will thus force you to reinstall your operating system. Certainly a
+harmful act. But if this line is written as a part of a web page (just
+as I did in this page) it is harmless, because your computer does not treat
+those lines here, as instructions for it to follow, but just as lines that
+should be shown as part of a web page.
+</p>
+<p>It is not the lines themselves that are harmful then, but rather the
+lines of code, plus the environment which tells the computer to follow
+the instructions within, which is the harmful thing.
+<br>
+There is a semantical question as to whether the lines themselves being
+on your computer should be considered as an infection, or only if they
+are in the right environment to instruct the computer what to do. In any
+case, this is only a semantical question. What should be clear though,
+is that a virus code, is harmless, if it is located in an environment which
+will not cause the computer to follow the instructions within.
+</p>
+<p>So a virus code, once is able to instruct an infected computer, will
+try to spread itself by telling the infected computer to send replicas
+of it, to new computers, but it must send copies of itself, in a special
+format, that will cause the new computers to activate the replicas (follow
+the instructions within), either directly, by using a security hole in
+the remote computers, or indirectly, by convincing the user of the remote
+computer, to innocently tell the computer to follow the instructions within
+that code. Once it is activated in the new computer, the code will instruct
+this computer to spread it further in a similar way to more computers.
+<br>
+Most viruses will prefer to remain active also after the user shuts
+down or restarts the computer, so they use one of various techniques to
+tell the computer to execute their code once it restarts.
+<br>
+The virus may also include some payload, namely, besides spreading
+itself, it may include instructions to do some other harm to the computer.
+Sometimes only in very specific dates or situations.
+<br>
+We will now learn this issue further, by using various examples.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">3. Example: The "Loveletter"
+worm - e-mail infection</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You get an e-mail message from a friend from work. The subject is "ILOVEYOU".
+<br>
+
+"interesting" - you think to yourself. You look at the message and
+there is a message inviting you to look at an attachment with the filename:
+loveletter-for-you.txt . You become curious and open it. The icon was not
+the typical one for Notepad messages, but seems like something that represents
+text, and you haven't pay attention to it.&nbsp; Nothing seems to happen
+when you opened the attachment, but in fact, at this stage, you are already
+infected by the Loveletter virus, and within a short time your computer
+starts to send messages in your name to all addresses in your addressbook,
+and, yes, the subject of those messages is "ILOVEYOU". This is just a message
+similar to what you got.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+
+The full name of the attached file on that message was:
+loveletter-for-you.txt.vbs . The
+VBS filename extension is for Visual Basic Script, and once you doubleclick
+a file with this attachment it is normally opened by the Microsoft Virtual
+Scripting Host, which will execute the code within. Former versions of
+Microsoft Outlook and of Outlook Express, and also some other e-mail programs,
+under the default configuration of Windows, will not show the extension
+of a file. The existence of the ".TXT" extension, had to alert you but
+didn't (sorry! my choice of the script). The icon of that attachment, is
+not the same as a typical text file which is opened by Notepad, but the
+icon looks innocent, and symbolize something of a text nature. E-mail is
+not the only way this virus is spread, see the next example.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">4. Example: The "Loveletter"
+worm - IRC infection</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You use mIRC to chat in IRC. This is a very popular chatting set of
+networks. You enter an IRC channel (a chat room). Then you get from one
+of the permanent participants in this chatroom a private message named:
+<br>
+love-letter-for-you.htm , i.e. a web page. You become curious and open
+it, Internet Explorer loads to open this HTML message, and Internet Explorer
+says something about the need to enable ActiveX to open this page. "The
+heck" - you think to yourself - "if Internet Explorer tells me that it
+needs something to open the file, why should I argue". You confirm IE to
+enable ActiveX. Yet, nothing seems to be in that file, so you continue
+to use IRC. What you don't know, is that when you opened the HTML page
+and allowed IE to use ActiveX, you became infected with the Loveletter
+virus, and yes, a short time later, your computer starts to send under
+your name those "loveletter" e-mail messages to all people in your addressbook,
+and when you use IRC, it will also send that WWW page to other members
+of that IRC channels when they enter the chat.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+HTML pages, may contain embedded objects, and try to automatically
+open them when they are opened. Internet Explorer has a very complicated
+architecture which defines what is secured and can automatically be opened,
+and what should not. ActiveX content is usually executable, but Microsoft
+has a way to decide whether it can trust it to be decent or not. Under
+default configuration of Internet settings (Internet Explorer), if an HTML
+message asks for your permission to open an ActiveX object, you should
+be suspicious. In this case, this was the virus spreading itself, under
+the name of another member of the IRC channel, because his computer was
+infected.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">5. Example: The "Sircam" virus</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You get an e-mail message from your boss. In this message he requests
+for your advice regarding some document which is attached as a Word document.
+You are accustomed to exchanging MS-Word documents with your boss and colleagues
+at work, so there is nothing suspicious in it. In your case, you already
+set Windows to show you the filename extensions of known filetypes, so
+that you expect to see the right filename extension in that attachment,
+and the document has the name: "A response to Wigner's suggestions.doc"
+which seems quite reasonable, because Wigner corp. are big customers in
+your company. You open the word document, and it is opened in MS-Word,
+and looks really innocent. You just don't understand what was the advise
+your boss wanted from you, as this document is a letter that was already
+sent to Wigner 6 months ago.
+<br>
+Of course, this attachment was infected with the Sircam virus, and
+once you opened it, besides showing you the original word document, it
+also started to take Word and Excel files from computer, to add to them
+the virus code, and to post them to addresses that it finds in your computer,
+with a request for advice.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The real filename of the attachment that you got, was not DOC, but
+rather something like .pif or .lnk (might be other similar types). So that,
+for example, in the case mentioned above, the virus on your boss computer,
+arbitrarily chose some file "A response to Wigner's suggestions.doc" and
+appended this document to its code in a file with the name "a response
+to Wigner's suggestions.doc.pif". When you opened that attachment, the
+virus first activated itself, and then launched the original Word document
+to MS-Word, so that it will look as if the attachment was really that Word
+document. The interesting thing about these filename extensions, is that
+they are not showed, even if you configured your operating system to show
+filename extensions also for known filetypes.
+<br>
+These extensions are set by default to override that configuration.
+In another document, <i><font face="Courier New,Courier">security and filename
+extensions</font></i> [1], I enter much deeper into this topic than in
+this document, where I just give (at the end of this article) advices how
+to suspect that a file is a virus.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">6. Example: The "Concept" virus</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You got a Word document from your boss or from a colleague, doesn't
+matter. You got it via e-mail or in a floppy disk, doesn't matter either.
+They gave it to you. They did gave you this file, so it was not the virus
+who sent it to you. Yet, since their computer was infected by a macro virus,
+the virus infected all Word documents, in their PC. They weren't aware
+of that. But once you opened the document on your computer, the viral code
+has been activated, and&nbsp; infected all other Word documents on your
+computer. If you send one of those by e-mail or via a diskette or put it
+in some electronic library, and other will read it on their own computer,
+they'll become infected too. When you read the document you weren't worry
+much about macro viruses, because you instructed MS-Word not to run unsafe
+macros. The concept virus used a security hole that allowed the viral macros
+to override MS-Word's security settings, and to thus activate itself.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The document here is indeed a Word document. Just that it contains
+Word macros, and those macro commands can execute arbitrary commands. As
+we said, there is a security setting in MS-Word to ignore (not run) those
+macro commands, but this setting had a security hole, and if you didn't
+update your office tools with the relevant security updates, you could
+get infected. The Concept virus, attack only Word6, and Word 7 and Mac
+word documents, but similar security holes existed in newer versions of
+Microsoft Office as well. There are security fixes for them, and if you
+use Office updated as suggested above, then your MS-Word application will
+ignore those macros and will thus not activate the virus. Similar macros
+exists also for other Office files, such as Excel spreadsheets. In this
+example we discussed a legitimate document, which was infected. You cannot
+simply discard it. You should, however, read it in a safe environment,
+namely, with MS-Office updated with the latest security updates, and only
+after you scanned it with an antivirus program. Antivirus programs, may
+be able to remove viruses from files while restoring the files to their
+uninfected state.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">7. Example: The "SubSeven" Trojan</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script #1:</font></i>
+<br>
+You are browsing a newsgroup dedicated to posting of some movies, one
+of the movies is not viewable, and some people complain, and in return
+someone posts a viewer which he claims is able to view also this movie.
+<br>
+You try to install it, but for some reason it seems that the installation
+didn't succeed. What you installed, was in fact a Subseven Trojan, which
+opens a backdoor on your computer to allow others to get full access to
+your computer.
+</p>
+<p><i><font face="Courier New,Courier">script #2:</font></i>
+<br>
+You are looking for a cracked version of a program (an illegal version
+of a program) on Kazaa. by searching for a program with that name, and
+indeed it is offered in a few places. You take one of them and try to install
+on your computer. What you are not aware, is that this was not that program,
+but rather the Subseven Trojan.
+</p>
+<p><i><font face="Courier New,Courier">script #3:</font></i>
+<br>
+You are using IRC, and someone you are familiar with on that IRC channel
+- a known helper, is offering a nice program, that is related to a discussion
+held there. Since you trust this person, you download and install the application,
+which does not work. What you don't know what you installed was the Subseven
+Trojan, and that the "person" that posted it, was not the one who usually
+use that nickname, but rather someone who forged his name to that name
+of the person you trusted.
+</p>
+<p><i><font face="Courier New,Courier">script #4:</font></i>
+<br>
+You are reading a forum on the Web. One of the more reliable people
+on that forum sends an executable file to that forum. He uses the name
+player.jpg for that file, but instruct people to rename it to player.exe
+before running it (the forum does not allow sending executables). You need
+the application he was speaking about, and you are thus running it. You
+didn't take into account the fact, that in this specific forum system,
+it is very easy for someone to disguise himself as someone else, and that
+in this specific case, the person who posted this Trojan, forged his nickname,
+and described this Trojan program as if it does something different.
+</p>
+<p><i><font face="Courier New,Courier">script #5:</font></i>
+<br>
+You are looking for some defense program, and you look at a web site,
+that allow readers to contribute their own programs to it. You find something
+that according to the description fits your needs, and try to run it at
+your own computer. nothing seems to happen, but in fact, you are not aware
+that you have just installed a Subseven Trojan on your computer, and that
+this Trojan opens a secret backdoor for others to get free access to your
+computer, without your consent.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The common in all those examples, is that the poster of the file or
+the person who put it in the place where you took it from could be anonymous,
+or could easily forged his identity. This allowed that person to put a
+malicious program, and to present it as a useful one. Trojan horses are
+not capable of spreading themselves automatically. But they can still be
+put by people, if those people can remain anonymous (e.g. by giving false
+identification). The Subseven Trojan is just an example of such a malicious
+program, although a very common one. There are other similar programs,
+that can be posted under any executable name, and can do their deeds secretly.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">8. Example: The "Nimda" worm
+- e-mail first type of infection</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You get some e-mail message from someone that you know, and open it
+using your Outlook Express, or Microsoft Outlook (but you didn't patch
+them with the latest security fixes). The body of the message seems empty
+and you don't see any attachment. What you are not aware, is that once
+you opened the message, a virus embedded in a hidden attachment exploited
+a security hole in your mail program and Internet Explorer in order to
+activate itself on your computer.
+</p>
+<p><i><font face="Courier New,Courier">Discussion:</font></i>
+<br>
+The Nimda virus, is a very sophisticated virus which uses various tricks
+to spread itself. It uses a security hole in Outlook Express, Microsoft
+Outlook and Internet Explorer, in order to activate itself automatically
+upon opening the message. If the trick works, the attachment will not be
+visible.
+<br>
+This security hole is one of a few security holes that allow automatic
+activation of content in Outlook or Outlook Express. Another virus which
+is called KAK, uses a different security hole to do a similar thing. All
+of those security holes have patches which should be installed. In all
+cases, it is enough that the infected message will be opened in the Preview
+Pane of Outlook or Outlook Express in order for the virus to activate itself.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">9. Example: The "Nimda" worm
+- e-mail second type of infection</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You get a message from someone that you know and you open it with your
+e-mail program. This time you may use any of various e-mail programs including
+Outlook and Outlook Express that are fully fixed with the latest security
+fixes. Inside that message you find a file with an icon of HTML message
+(Internet Explorer), and which is called "Readme". Certainly looks like
+an HTML message. You open it, and this activates the Nimda virus.
+</p>
+<p><i><font face="Courier New,Courier">Discussion:</font></i>
+<br>
+This time your e-mail did not open the attachment automatically. The
+real name of the attachment was "Readme.exe" but your e-mail program is
+configured to hide filename extensions for known filetypes. A file of type
+.exe can set its icon to an icon that it holds internally, and this virus
+tricks users to think that it is a legitimate HTML message.
+</p>
+<p>HTML messages and the way many e-mail programs and web browsers deal
+with them, are a source for security holes. New security holes are found
+from time to time, and new security patch to fix them are released later.
+Usually viruses which use security holes in the way HTML (and HTML extensions)
+are handled, became common after security fixes were released. There is
+no guaranty that this will remain true.
+</p>
+<p>Anyway, in this case, it is not an HTML message, but rather an executable
+code which holds the virus.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">10. Example: The "Nimda" worm
+- infection while browsing</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You visit a web site that you trust with the use of Internet Explorer
+version 5.00 with the latest security fixes. You are not aware that while
+visiting it, you got infected with the Nimda virus.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+Version 5.00 of Internet Explorer is no longer updated with fixes to
+security holes. You need to upgrade it to version 5.01 and above. A security
+hole that allows a web site to automatically execute a code on your computer
+regardless of your security settings, exists there. In this case, the person
+who updates the web pages on the remote site, got infected with the Nimda
+virus. Then he worked on some HTML web page, and after finishing it, he
+loaded the web page to the remote site not knowing that the worm has infected
+the web page, by adding itself as an embedded code to that web page.
+<br>
+When you browse the web page, with a version of Internet Explorer which
+is not fixed with the security patch relevant for this security hole, it
+will execute the internally embedded viral code on your computer.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">11. Example: The "Opaserv" worm</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You have just bought a new laptop, and wished to be able to connect
+it to your Desktop computer. You connect them, and in order to allow the
+moving of files from one computer to another, you enable file and print
+sharing on both computers. A few days later you find out that there is
+a high volume communication going through your desktop computer although
+you have no idea what is it. You run an online antivirus program and clean
+it, but shortly later you find that it again infected your computer. You
+didn't use e-mail during that time.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+What you were not aware when you enabled file and print sharing, is
+that you enabled it not only to/from your laptop computer but also sharing
+them with the rest of the Internet. Your computer is opened wide for anyone
+with a bit of knowledge.
+<br>
+The importance to limit or disable "file and print sharing" over the
+Internet, is very high. The Bymer is another worm that uses this. The Nimda,
+among other means of infections also uses this way to spread.
+<br>
+It is also common among intruders to take control or to access the
+victim's computer by first putting a backdoor program in the victim's computer
+with the use of such a sharing.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">12. Example: The "Benjamin" worm</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+Kazaa is a popular file sharing program which is popular for sharing
+(mainly illegal) music and program files between different computer which
+are connected to its network.
+<br>
+You use Kazaa to locate some program, and find it on some remote computer.
+You download and install the program but it seems not to work. You are
+then try to locate a different place for this program, but at the same
+time you notice that your hard disk becomes rather fulll, and that the
+folder which is used for sharing files to others starts to grow with more
+and more files that you have never put there.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The "Benjamin" worm, on infected computers, fills the sharing folders
+with many copies of itself. Many of them have attractive names, and just
+like you got infected with it by taking it from a remote computer because
+you thought that it is what its name suggests, also other people will download
+it from your Kazaa shared folder, thinking that these are the programs
+that they wish to install.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">13. Example: the "klez.h" worm</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The infection methods of the Klez.h worm are similar to the e-mail
+infection methods of the Nimda worm, and for this reason, I skipped the
+"script" part here. The main difference, is that the Klez.h worm spread
+from infected computers, to addresses that it finds there, under forged
+e-mail addresses that it also finds there. This means that you might get
+an infected e-mail that seems to be coming from someone that you either
+know or don't know, but in fact, it came from someone else.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">14. Example: infection with some
+PE infector</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script and discussion:</font></i>
+<br>
+You take a diskette which contains files in an executable file format
+(any file format which on your environment, might execute commands). You
+use the diskette on a friend's computer and then go back and use it on
+your own computer. You don't have to execute anything in the other computer,
+but you weren't used the write-protect tab on that diskette. While you
+put the diskette on the remote (infected) computer, and, say, copied something
+from it, the virus has infected the files on your diskette. When you are
+back to your computer, and open one of those files, even though you believe
+that they are the same ones that you put on it on your own computer before
+you used it on other's computers, those files are already infected, and
+will infect your computer. The moral here, is that it is important to slide
+the write-protect tab on the diskettes (so that it will have two opened
+windows in it), before putting it into a computer which you cannot fully
+trust for being cleaned. Unless of course you need to copy things to that
+diskette. Of course, if you copy something to that diskette, even if the
+copied files are of no executable format, you can trust the files on the
+diskette, only as much as you can trust the remote computer to be cleaned
+from viruses.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">15. Example: boot sector infections</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script and discussion:</font></i>
+<br>
+Such viruses are no longer common, but I still wish you to be aware
+of the method that they use.
+<br>
+Each diskette (and also most of the other medias) has besides files,
+also what is called "boot record" or "boot sectore" (the term "boot sector"
+is the one used in the case of floppy diskettes). Not only files in the
+diskette can be executed, but also the boot sector can as well. The boot
+sector commands will be executed only if the computer tries to boot from
+the floppy diskette. This means that once your diskette has "visited" a
+non-trusty computer (i.e. a computer which you cannot fully trust to be
+free from viruses) if you by mistake left in in your floppy drive, and
+booted, and your PC is configured to first try to boot from the floppy,
+you might become infected even if the diskette is not bootable, and has
+no files in it.
+<br>
+Our recommendation here, are that if it is possible, to configure your
+BIOS so that your PC will boot only from C:\, and to change this setting
+only if needed and for the task needed. If the BIOS is configured to first
+boot from the floppy, and you need to leave it unchanged, then at least
+don't forget the floppy inside it. As in the former case, when using your
+diskette on other's computer, write-protect the diskette unless needed
+otherwise.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">16. Example: the truncation trick
+(e.g. shoho)</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You use a recent version of Outlook Express, and it does show the filename
+extensions for all filetypes.
+<br>
+You receive a message with the following attachment "readme.txt". You
+know that this version of your e-mail program, shows you all filetypes.
+You try to open the attachment, and become infected with the Shoho virus.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+If the filename was "readme.txt" then there was no problem. Yet, the
+trick was to use a name which begins with, say:
+<br>
+readme.txt but after the .txt there are many blank characters followed
+by, say ".scr".
+<br>
+something like:
+<br>
+"readme.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+.scr"
+<br>
+but with more blanks in between the false extension (.txt) and the
+true one (.scr). Many programs including recent version of Microsoft Outlook
+and Outlook Express, and various other kinds of programs (not only e-mail),
+will truncate lines longer than some size, and in this way you will not
+see the true filename extension but only part of it.
+<br>
+An easy trick to know whether the filename continue beyond its visible
+part, is by starting to mark it for copying (copying the name). If the
+line will be marked also after the visible part it means that there are
+blanks after the visible part of the name. If the text marking will refuse
+to go beyond the apparent filename, it means that the text really ends
+there.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">17. Example: Aplore infections
+through IRC</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You have just entered to an IRC chat, and got a message referring you
+to some link for free stuff. Your browser asks you if you wish to run the
+content from its current location and you refuse. Then the web page, seems
+to load, and you get a message that in order to view the web page your
+browser needs to install a plugin. It gives you some information about
+the certification for the plugin, and asks you whether you wish to install
+the plugin. You confirm. At this stage, your computer became infected with
+the Aplore worm.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+The message about the need to install a plugin did not initiated by
+your browser, but rather part of the web page, which the virus runs at
+the infected computer. The certification is bogus, and the instruction
+to install the plugins are no more than instructions to install the worm.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">18. A fully legal and yet immoral
+worm (FriendGreet)</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You have just gor some greeting card from a friend. The message had
+a link to a web site which looks decent.
+<br>
+In order to see the greeting card, the web-site asks you to install
+a plugin. You open it, and you see a long "end user license agreement (EULA)"
+for the plugin. You do not bother to read the license in its entire, but
+press "I agree". Then you are able to view this greeting card.
+<br>
+The next day, your friends will thank you for sending them greeting
+cards. You do not remember sending them anything.
+</p>
+<p><i><font face="Courier New,Courier">discussion:</font></i>
+<br>
+When you accept a legal contract without reading it first, don't blame
+anyone else. Yes - we know that these end user license agreements are boring
+and extremely long. Yes, we are aware that CAPITALIZED BLOCK of text is
+harder to read carefully although formally it is considered as an emphasis.
+Nevertheless more and more companies are finding the fact that many people
+do not bother to read these EULAs before accepting them, as a real gold
+mine.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">19. Example: The PrnDial Trojan</font></font></b>
+</p>
+<p><i><font face="Courier New,Courier">comment:</font></i>
+<br>
+I must apologize for not putting the "o" between the P and the R in
+the name of the Trojan, but had I put it there, then web search engines
+might have filter this article off.
+</p>
+<p><i><font face="Courier New,Courier">script:</font></i>
+<br>
+You are visiting some "gray area" web page, and among the many warning
+and confirmation message that you get from your browser, you hit by mistake
+OK on one that offered you to install a program for viewing some pictures
+(guess what).
+</p>
+<p>Since then your computer became filled with this type of pictures and
+related advertisements, but it get much worse when you see the phone bill.
+It is outrageously high, might become a two months salary.
+</p>
+<p><i><font face="Courier New, Courier, monospace">discussion:</font></i>
+<br>
+The issue has to do mainly with those who may hit the "OK" on variouas
+dialogues automatially, without bothering to see what is written there.
+It might also be relevant to those who do not know English very well, and
+assume that if&nbsp; Internet Explorer requests something, then it is OK.
+This subsection is also relevant to those who believe that the worse thing
+that can happen to you if&nbsp; your computer has become infected, is that
+you will have to reinstall it. What was installed here, is the PRNDial
+Trojan (I ommited the O as usual here), which makes a phone connections
+to international ISPs through premium services. This allows the company
+which you have visited its web site, to earn extra money (taken via your
+phone bills). This might be a Trojan. But it also might be a program which
+tells you how it works, (but you didn't notice the fact that it dials).
+<br>
+Be careful, and educate your teenage kid to do these things safe regardless
+of the fact that some of you also educate not to do it at all.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">20. Example: The CIH virus</font></font></b>
+</p>
+<p><i><font face="Courier New, Courier, monospace">discussion:</font></i>
+<br>
+The CIH virus is also known as the Chernobyl virus.&nbsp;&nbsp; The
+reason for mentioning it here, is not the way it infects your computer,
+but rather to let you know of things that a virus can do. For quite some
+time, the virus is only busy with spreading. On certain dates, it may activate
+its payload. Basically it will try to delete part of your hard drives.
+This by itself can cause you quite a problem, and if you cannot recover
+that part, the worst thing is that you lost some information, and have
+to reinstall everything. I'm not underestimating this damage, but there
+are many destructive viruses, and this is not new. The other thing that
+it tries to do, is to erase the BIOS. Before we exaplain what is the BIOS
+and how should we tackle that, let me tell you that once it erased the
+BIOS, in many cases, we cannot even reinstall the operating system, and
+even many computer labs cannot fix it, but only send it to bigger labs
+or replace hardware parts.
+</p>
+<p>The BIOS is in fact the first program that the computer executes. It
+does not lie in the hard disk, because when the computer executes it, it
+still cannot even recognize the hard disk. In fact, one of the tasks of
+this program is to help the computer recognize the various parts, such
+as display card, memory, CD-ROM drive, and hard disks. Only after running
+this program, the computer is able to run the operating system from the
+hard disk or to access the CD-ROM or floppy. In the past, this was a fixed
+program which was installed as part of the motherboard. Later, in order
+to allow the upgrade of the BIOS to newer so that it is possible to add
+new features, and support of newer hardware, companies started to build
+their motherboard (the component of the computer which connects all the
+other parts of the computer and help them to "talk" with each other), so
+that it is possible to change the BIOS program. This puts our computer
+also at a risk that programs can delete the BIOS. If this happens, then
+even the first step of the boot will fail. Many modern computers have the
+ability to write-protect the EPROM (the component in the motherboard which
+holds the BIOS program) so that it is impossible to rewrite the BIOS or
+erase it iwithout first removing the write-protection. The instructions
+may vary from one motherboard to another.&nbsp; Some motherboards have
+dual-bios, which contains besides the rewriteable BIOS also another BIOS
+which is more nbasic but fixed, and which allows you to reinstall the other
+BIOS in case it was erased or corrupted.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">21. Overall discussion</font></font></b>
+</p>
+<p>In this article we showed some examples of viruses that use security
+holes to activate themselves automatically, while in other examples we
+saw how viruses try to cheat us to activate them on our computer. Once
+a virus is active, it may instruct the computer to load it every time the
+computer restarts. They may instruct the computer to spread them further,
+and they may even contain some malicious and harmful payload which will
+be activated at a specific day, or when a specific condition is met.
+<br>
+Applying security fixes, or upgrading the relevant programs to versions
+without a security hole, is very important. When it comes to Microsoft,
+applying the patches can be easily done by using the Windows Update feature,
+and applying the "critical updates" mentioned there. The exploitation of
+security holes in Microsoft's products is very popular among modern viruses.
+<br>
+Another subject which is not discussed here is the configuration of
+the software so that risky features are disabled.
+<br>
+Using an updated antivirus program is important, because we cannot
+trust ourselves to know all the tricks, and to fix all security holes.
+</p>
+<p>Of no less importance is our own knowledge and awareness about the possible
+tricks that viruses use.
+<br>
+As we saw, the fact that an e-mail message came from someone we trust
+is not enough for us to trust its content. It might be that a virus posted
+itself under this person's name, and it might also be that that person
+did post the file, but without being aware that the file contained a virus.
+Being suspicious is always important.
+<br>
+Of course, we cannot recommend people not to accept attachments via
+e-mail or software from the web, because, this might prevent you from using
+many legitimate services, but being suspicious is still important.
+<br>
+If you are not sure that this is a genuine attachment/file sent by
+its claimed poster, you should ask. Even if you know that you should expect
+to receive such a file from someone, it is still wise to first save it
+in a file and then scan it with an updated antivirus program before opening
+it. While a virus must be executable, and if the attachment/message is
+not in an executable format, it can safely be opened, it is important to
+understand the various tricks used by viruses/Trojans to hide their executable
+nature. I would recommend to read my document "Security and Filename Extensions"
+on <a href="http://www.geocities.com/uzipaz/eng/safe.html" target="_blank">http://www.geocities.com/uzipaz/eng/safe.html</a>
+.
+<br>
+You should be aware hw each file will be opened and about the way your
+application treat different files.
+</p>
+<p>You should know that unless you know that a filename of some properties
+will be opened by a program in a safe environment, that will not allow
+it to run harmful commands, you should treat it with enough suspiciousness.
+Files with filenames such as .jpg, .tiff, .txt, etc. are likely to be opened
+by programs which will not be able to execute any viral code if exists
+in them. If you need to use one of them, and you believe it to be safe,
+still check it with your antivirus program(s).
+</p>
+<p>Although in this article we do not wish to give detailed recommendations
+on how to secure your PC against viruses and Trojans, we shall still provide
+some recommendations:
+</p>
+<p>1) If you have Internet Explorer version 5.0 please update it first
+to version 5.01, or 5.5 or 6.0 and then upgrade to the latest service pack
+and only then update with the latest security patches. All of those upgrades
+can be done via "Windows Update".
+<br>
+2) If you have Outlook Express version 6 or above, you may, from the
+Tools/Options/Security tab, set it to warn you whenever an application
+tries to use Outlook Express in order to post a message under your name.
+This might be useful in any case you became infected with a virus which
+uses Outlook Express to spread itself via e-mail.
+<br>
+3) If you use Microsoft Outlook or Outlook Express, it is recommended
+to consider setting it to run HTML in the "Restricted sites" security zone.
+<br>
+&nbsp;
+</p>
+<p><b><font color="#ff0000"><font size="+1">22. References for viruses mentioned
+here</font></font></b>
+<br>
+&nbsp;
+<br>
+&nbsp;
+<table border="0" cellpadding="3" cellspacing="0" width="100%">
+
+  <tbody>
+    <tr>
+
+      <td>Loveletter:</td>
+
+
+      <td><a href="http://www.f-secure.com/v-descs/love.shtml" target="_blank">http://www.f-secure.com/v-descs/love.shtml</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Sircam:</td>
+
+
+      <td><a href="http://www.europe.f-secure.com/v-descs/sircam.shtml" target="_blank">http://www.europe.f-secure.com/v-descs/sircam.shtml</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Concept:</td>
+
+
+      <td><a href="http://www.europe.f-secure.com/v-descs/concept.shtml" target="_blank">http://www.europe.f-secure.com/v-descs/concept.shtml</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>SubSeven:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_10171.htm" target="_blank">http://vil.nai.com/vil/content/v_10171.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Nimda:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99209.htm" target="_blank">http://vil.nai.com/vil/content/v_99209.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Opaserv:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99729.htm" target="_blank">http://vil.nai.com/vil/content/v_99729.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Benjamin:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99495.htm" target="_blank">http://vil.nai.com/vil/content/v_99495.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Klez.h:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99455.htm" target="_blank">http://vil.nai.com/vil/content/v_99455.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Shoho:</td>
+
+
+      <td><a href="http://www.europe.f-secure.com/v-descs/shoho.shtml" target="_blank">http://www.europe.f-secure.com/v-descs/shoho.shtml</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Aplore:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99437.htm" target="_blank">http://vil.nai.com/vil/content/v_99437.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>FriendGreet:</td>
+
+
+      <td><a href="http://www.symantec.com/avcenter/venc/data/w32.friendgreet.worm.html" target="_blank">http://www.symantec.com/avcenter/venc/data/w32.friendgreet.worm.html</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>PrnDial:</td>
+
+
+      <td><a href="http://vil.nai.com/vil/content/v_99071.htm" target="_blank">http://vil.nai.com/vil/content/v_99071.htm</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>CIH:</td>
+
+
+      <td><a href="http://www.europe.f-secure.com/v-descs/cih.shtml" target="_blank">http://www.europe.f-secure.com/v-descs/cih.shtml</a>
+.</td>
+
+    </tr>
+
+
+    <tr>
+
+      <td>Other viruses:</td>
+
+
+      <td><a href="http://www.geocities.com/uzipaz/eng/vilp.html" target="_blank">http://www.geocities.com/uzipaz/eng/vilp.html</a>
+.</td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+</p>
+<center>
+<table bgcolor="#ffff00" border="0" cellpadding="5" cellspacing="0" width="100%">
+
+  <tbody>
+    <tr>
+
+      <td>
+      <div align="right"><a href="http://www.uzipaz.com/eng/secind.html">Back to my main security page</a></div>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+</center>
+
+
+
+</body></html>

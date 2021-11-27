@@ -1,0 +1,177 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Why Write Viruses?</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER>
+  <P><B><FONT COLOR="#004080"><font size="+3">Why Write Viruses?</font><FONT SIZE=+1><BR>
+by Anonymous</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"><p></P></CENTER>
+
+<P>Many people wonder why people bother to make virus's. In this following
+artical written by me I think you should be able to find out why for yourself.
+Also those experienced with writting virus's should be able to get some
+valuable tips for your future projects. </P>
+
+<P>Most virus's you see today are made for one of two reason. Other to
+prove a point to the world that you or your group are capable of writing
+virus's or to get revenge on someone. On the first part, most virus's don't
+really do much, some will cuase guru's, some will write stuff to the screen,
+and some will kill certain areas of the disk. These are pretty well harmless,
+recoverable and killable with virus checkers. </P>
+
+<P>The Revenge virus is made to literally get even with someone that has
+done you wrong. And in most cases it will simply format everything (Twice
+so that all data is unrecoverable). Some will even change or erase certain
+files on a system in such a way to benifit it's creator (Ie: increase cheques
+or kill records). In any case, you can see that these go far beyond the
+methods used by regular virus's seen today. </P>
+
+<P>The very advanced programmer (always an ASM programmer) can and should
+write virus's that give him power. Virus's themselves are pretty well easy
+to make. If lets say one gets onto a communication system such as BCtel
+or a public bulleting board system. As long as the virus runs on the machine
+and the programmer has made the virus to work correctly, the programmer
+could call up connect then type in an ASC password to activate his virus.
+Once the virus (already in memory of the host machine) has been fed the
+correct password it will wait for commands. The commands are whatever you
+have specified the virus to do. Ie: steal files, increase access, view
+accounts (To steal passwords) etc etc. </P>
+
+<P>Even more advanced is to make a small compiler virus that works exactly
+the same as the communications virus that I just mentioned in the last
+paragraph. With one major exception, once you enter your ASC password,
+the virus waits for you to upload you program that will be run right after
+the communication transfer has finished. Since all modem have masks which
+mask out unwanted character, you will never be able to upload straight
+machine langauge. Instead, you upload ASC letters and numbers used to represent
+machine langauge. Then once the data (program) has been sent, the virus
+translates it into Machine langauge and jumps to the start of it to begin
+executing the code that you just uploaded. This kind of virus gives you
+total power. But as I said before, you MUST know your virus inside and
+out, know how to program inside and out and know what you are attacking/conqouring
+inside and out. Why you want to do this is so that you can find out what
+machine it has installed itself on (ie:BCtel, BBS) and then find out what
+type of machine and DOS it has, then thouroughly plan your attack before
+you write the machine code. Once its done you simply call up the host,
+punch in your virus password and upload the program you have designed.
+</P>
+
+<P>Now you are probably saying that if you write a virus there will be
+a virus checker for it available sooner or later. Depends on how smart
+you are, the best virus's are invisible ones. Here is how you make it invisible.
+There are three things to take into consideration when making a virus invisible.
+</P>
+
+<UL>
+<P>1:Do not allow its code to be overwritten <BR>
+2:Do not let its code be accessed in any way shape or form <BR>
+3:When 1 or 2 happens check memory and then move the virus. </P>
+</UL>
+
+<P>ok, one and two are simple: all you do is check the PC (program counter)
+and then search the next couple of lines to see if you virus is going to
+be accessed), done with CMP's. The second one is a little more difficult
+becasue your entire virus must become VARIABLE. You must check mmory to
+find a NEW place that can hold your virus. Next you must move you virus
+there and reroute all control to that new location. </P>
+
+<P>Why make a virus invisible, well if it runs and hides everytime you
+try to access it with software or other stuff, it will be impossible to
+kill it becuase everytime you try to access it it will run away. The only
+real way to kill a virus like this is with a hardware monitor being run
+by someone who knows what they are looking for. Real nasty eh? But very
+effective if you want to maintain control. </P>
+
+<P>Future virus's. Most chip code is written on a computer, compiled and
+then burnt into proms/eproms/etc. If say by chance someone knew what they
+were doing, they could write a virus for the computer that would tag preassembled
+chip code onto anything that gets compiled by the chip compiler. In doing
+this their code get written to the chip along with your virus generated
+code. This process is used and is most difficult unless you know what you
+are doing but is most effective in controlling HARDWARE, such as cash registers,
+video games, VCR's etc etc. Here are a few examples. Say your virus managed
+to tag code for a cash register. Your virus code is made to scan all input
+for the sequence 3412092392102. You walk into a bank machine and simply
+press all those numbers (ignoring errors and whatever) and all of a sudden.
+POW, your virus code starts executing. Pretty neat eh? they have been using
+this technique in arcade video games for years to give you unlimited lives
+and to get to the options screens by using joystick movements. Another
+thing you could do is set it up again for input but for cash input, say
+$1.99 $1.98 $1.97, once somebody goes into a store and buys the correct
+number of prices in the correct order your virus begins, say it takes of
+50% of the total price or simply misses some of the items you buy after
+the correct virus code has been established. Again you must know what you
+are attacking/conqouring when writing a virus, as you can see virus's EQUAL
+power. </P>
+
+<P>The most overused virus I have encountered is the one that tags itself
+to the bootblock. If it is a small enuf virus it can even fit on the bootblock.
+Why the bootblock, becuase no matter what, that is the first thing executed
+on the disk, even before virus checkers. Now, say you virus is a big fucker.
+well you could use a trick that most priates use when they throw a demo
+or trainer onto a game disk, simply write you virus onto the disk in a
+free area (have a block check to make sure it doesn't overwrite anything),
+then rewrite the bootblock so that it accesses the blocks that you have
+just written your virus to. Once your virus has loaded, simply go to the
+spot on the disk where the original bootblock was suppose to go and continue
+executing the disk. This method is like a simple insert, you simply insert
+your virus inbetween the bootblock and the original first run program.
+</P>
+
+<P>Tag virus's are nasty, and most effective. These work simular to the
+bootblock/firstrun program insert virus. With one exception they work on
+files rather than the disk themselves. The change the executable file in
+such a way so that when it loads the very first line jumps to the end of
+the original file to the virus, runs it, and goes back to the original
+file program. So knowing this you know know that you must change the first
+line of the file and then tag your virus onto the end of it. This is very
+basic and if you are smart enuf, you should be able to insert you virus
+anywhere withing an executable file. </P>
+
+<P>Once you have a virus loaded you are probably trying to figure out how
+to keep it running while the original program loads executes and exits.
+This has got to be the simplest. The machine has what is called exceptions.
+Read about them thouroughly. These exceptions are like small multitasking
+programs in themself. Each execption has an address to the code which it
+should execute all the time. you simply change this address to the start
+of your virus code located in memory. In doing this your virus will continue
+to run until the exception is given another address to execute. Don't worry
+though, most programmers are good programmers and they always restore what
+they change, meaning eventually they will stop using their execption and
+restore it back to its orignal form being your virus. Again, invisibility
+is most important, a virus that runs before it is accessed by any external
+force if one that runs forever. </P>
+
+<P>If by chance you have a password activated virus and want it to do its
+operations forever (perhaps a revenge virus) have your virus check the
+system battery backed up clock. When you first log on and enter the password
+have your virus write to the system clock, there is will be stored, (bbattery
+backed up too) and then everytime the virus is run (this must be programmed
+before hand) have it check the system clock for the virus password. if
+it is there have the virus do whatever its suppose to do. That's how you
+use the system clock to your advantage. </P>
+
+<P>Anyways, that's my short hour spew on virus's. I may or may not make
+another one with more detail, perhaps even some source code depending on
+what the demand for it is like. As far as all of you computerites scared
+of what I just finished writing, well it serves you fucking well right.
+You can't go around replacing people with machines, look at all the thousands
+starving, loosing there lives becuase of replacement. Stupid fools, never
+let TOYS run your system because TOYS can be b/roken. And ______ has just
+pointed everyone in the world in the right direction. Have fun cleaning
+it all up assholes. </P>
+
+<P>If you want to learn more about making virus's you will first have to
+find me, then ask, then lay some cash on me (or wench or alcohol), and
+I'll tell ya what you need to know. Happy Hacking. </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

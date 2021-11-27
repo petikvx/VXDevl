@@ -1,0 +1,1710 @@
+<HTML><HEAD><TITLE>Viruses and the Macintosh</TITLE></HEAD>
+<body text=#000000 bgcolor=#ffffff>  
+<H2>Viruses and the Macintosh</H2>
+<pre>
+by David Harley
+Version 1.6: 12th September 1999
+
+  Significant changes from the previous version are flagged with +
+  symbols in the first two columns at the start of the relevant line
+  or section. Amendments of minor grammatical or syntactical errors
+  are not flagged unless they affect factual accuracy or clarity.
+
+++Sections tagged with [DH] or [SL] usually denote personal opinions
+  or other data which the originator didn't feel the other
+  maintainer should be held responsible for. Untagged sections using
+  the first person are usually hangovers from when DH was sole
+  maintainer of the FAQ.
+
+++Sadly for the rest of us, Susan Lesch has decided to take a break
+  from co-maintaining this FAQ and from maintaining her "Mac Virus"
+  website, and this version of the FAQ is mainly intended to reflect
+  those changes. Susan has done the lion's share of the maintenance of
+  this document for the last couple of years, and done a fantastic job.
+  I shall miss her input, and the Mac community will be the poorer for
+  the absence of her website. Thank you, from all of us.
+
+++I can't promise to give the FAQ the time I'd need to keep it as 
+  topical as it has been, so the next revision will be focused on
+  updating core material and checking URLs rather than news. What happens 
+  after that depends on a number of plans that are still taking shape.
+  
+  David Harley
+
+
+Table of Contents
+=================
+
+  1.0  Copyright Notice
+  2.0  Preface
+  3.0  Availability of this FAQ
+  4.0  Mission Statement
+  5.0  Where to get further information
+     5.1  Computer Virus FAQs
+     5.2  EICAR
+     5.3  "Robert Slade's Guide to Computer Viruses"
+     5.4  Web sites
+     5.5  Virus Bulletin
+     5.6  Macro virus information resources
+     5.7  Other resources
+  6.0  How many viruses affect the Macintosh?
+  7.0  What viruses can affect Mac users?
+     7.1  Mac-specific system and file infectors
+     7.2  HyperCard Infectors
+     7.3  Mac Trojan Horses
+     7.4  Macro viruses, trojans, variants
+     7.5  Other Operating Systems, emulation on a Mac
+     7.6  AutoStart 9805 Worms
+     7.7  Esperanto.4733
+  8.0  What's the best antivirus package for the Macintosh?
+     8.1  Microsoft's Protection Tools
+     8.2  Disinfectant Retired
+     8.3  Demo Software
+     8.4  Other freeware/shareware packages
+     8.5  Commercial Packages
+     8.6  Contact Details
+  9.0  Welcome Datacomp
+  10.0  Hoaxes and myths
+     10.1  Good Times virus
+     10.2  Modems and Hardware viruses
+     10.3  Email viruses
+     10.4  JPEG/GIF viruses
+     10.5  Hoaxes Help
+  11.0  Glossary
+  12.0  General Reference Section
+     12.1  Mac Newsgroups
+     12.2  References and Publications
+  13.0  Mac Troubleshooting
+
+
+1.0  Copyright Notice
+=====================
+
+  Copyright on this document remains with the author(s), and all
+  rights are reserved. However, it may be freely distributed and
+  quoted - accurately, and with due credit.
+
+  It may not be reproduced for profit or distributed in part or as a
+  whole with any product for which a charge is made, except with the
+  prior permission of the copyright holder(s). To obtain such
+  permission, please contact the maintainer of the FAQ.
+
+  Primary author and maintainer of this document is David Harley, 
+  Comments and additional material have been received with gratitude 
+  from Ronnie Sutherland, Henri Delger, Mike Groh and Eugene Spafford.  
+  Thanks to Bruce Burrell, Michael Wright, Peter Gersmann, David Miller,
+  Ladd Van Tol, Eric Hildum, Jeremy Goldman, Kevin White, Bill
+  Jackson, Robert Slade, Robin Dover, and John Norstad for their
+  comments and suggestions. Special thanks to Susan Lesch for her 
+  contributions, editing, and maintenance chores as co-maintainer.
+
+
+2.0  Preface
+============
+
+  This document is intended to help individuals with computer
+  virus-related problems and queries, and clarify the issue
+  of computer viruses on Macintosh platforms. It should *not* be
+  regarded as being in any sense authoritative, and has no legal
+  standing. The authors accept no responsibility for errors or
+  omissions, or for any ill effects resulting from the use of any
+  information contained in this document.
+
+  Corrections and additional material are welcome, especially if
+  kept polite.... Contributions will, if incorporated, remain the
+  copyright of the contributor, and credited accordingly within
+  the FAQ.
+
+  David Harley <D.Harley@icrf.icnet.uk>
+
+
+3.0  Availability of this FAQ
+=============================
+++The latest version of this document is currently still available from
+  <http://www.macvirus.com/reference/> However, the primary source is now    
+  <http://www.sherpasoft.com/MacSupporters/>
+
+  It's also available from Henri Delger's Prodigy Anti-Virus Center
+  file library, as is the alt.comp.virus FAQ.
+
+++There are HTML versions at:
+  <http://www.cis.ohio-state.edu/hypertext/faq/usenet/computer-virus
+        /macintosh-faq/faq.html>
+  <http://www.faqs.org/faqs/computer-virus/macintosh-faq/>
+  <http://emt.doit.wisc.edu/macvir/macvir.html>
+
+++I have no control over the content of these sites, and can't guarantee
+  that they're up-to-date.
+
+
+4.0  Mission Statement
+======================
+
+  This document is a little different to the alt.comp.virus FAQ,
+  which David Harley also co-maintains (at time of writing). It is
+  concerned with one platform only, and though it deals with the
+  Macintosh platform at more length than the alt.comp.virus FAQ can
+  be expected to, it is a great deal shorter. Nor is there the same
+  degree of urgency about the Mac virus field, though the risk
+  element may be somewhat underestimated in general, at present. This
+  FAQ originated from a concern over the spread of macro viruses, a
+  theme that is taken up below. Since questions about Macs and
+  viruses tend to appear more often in the Mac groups than
+  alt.comp.virus or Virus-L, distribution of this FAQ is wider.
+
+
+5.0  Where to get further information
+=====================================
+
+5.1  Computer Virus FAQs
+------------------------
+  Computer Virus FAQ for New Users
+  A mainly non-Mac virus FAQ posted to news.newusers.questions,
+  alt.newbie, alt.newbies, alt.answers, and news.answers.
+  <http://www.faqs.org/faqs/computer-virus/new-users/>
+
+  alt.comp.virus FAQ
+  This is posted to alt.comp.virus approximately fortnightly. It
+  includes a document that summarizes and gives contact information
+  for a number of other virus-related FAQs; (not much Mac-specific
+  material). The latest version is available from:
+  <http://www.sherpasoft.com/acvFAQ/>
+
+  VIRUS-L/comp.virus FAQ
+  The Virus-L/comp.virus FAQ (also fairly low on Mac-specific
+  information) is regularly posted to the comp.virus newsgroup
+  (version 2.0 at time of writing). This FAQ is very long and very
+  thorough. The document is subject to revision, so the file name may
+  change. The latest version may be found at:
+  <ftp://ftp.infospace.com/pub/virus-l/comp.virus-FAQ.09-Oct-95>
+  <ftp://ftp.datafellows.com/pub/misc/anti-vir/vlfaq200.zip>
+
+5.2  EICAR
+----------
+++Dr Solomon's Anti-Virus Toolkit, Virex, and NAV (Norton AntiVirus
+  for Macintosh) now support the EICAR test. This article by
+  Paul Ducklin of Sophos explains the EICAR test file:
+  <http://www.eicar.org/anti_virus_test_file.htm>. [SL]
+
+5.3  "Robert Slade's Guide to Computer Viruses"
+-----------------------------------------------
+  The disk included with the 2nd Edition of this excellent general
+  resource includes most of the information available at the
+  University of Hamburg (see 5.5). The book also contains a
+  reasonable quantity of Mac-friendly information. The disk includes
+  a copy of Disinfectant 3.6, which is now out-of-date -- 3.7.1 is
+  the latest and final release. For more information about this book:
+  <http://www.amazon.com/exec/obidos/ISBN=0387946632/> [Springer]
+
+++Very few books primarily about computer viruses deal at any length
+  with Mac viruses (I can't think of one, at present). Some general
+  books on the Mac touch on the subject, but none I can think of add
+  anything useful. Some of the "Totally Witless User's Guide
+  to......." books dealing with security in general include
+  information on PC -and- Mac viruses. Unfortunately, the quality of
+  virus-related information in such publications is generally low, and
+  there are few or no books on computer viruses in general which are 
+  both recent -and- accurate.
+
+
+5.4  Web sites
+--------------
+  Many major vendors have a virus information database online on
+  their Web sites. Symantec (www.symantec.com), Network Associates
+  (www.nai.com), Sophos (www.sophos.com) and Dr. Solomon's
+  (www.drsolomon.com) include Macintosh virus information.
+
+  Precise URLs tend to come and go, but you might like to try the
+  following:
+
+  Symantec Antivirus Research Center
+  Virus Encyclopedia based on Project VGrep: huge, and now has a
+  search engine. Probably the most complete [SL]. But not always the
+  most accurate [DH]. ;-)
+  <http://www.symantec.com/avcenter/vinfodb.html>
+
+  Network Associates, formerly McAfee Associates:
+  Virus Information Library
+  <http://www.nai.com/vinfo/>
+  Macintosh Viruses
+  <http://www.nai.com/vinfo/f_13707.asp>
+
+  Sophos Plc
+  <http://www.sophos.com/>
+
+  About.com "Macintosh Virus Desriptions"
+  Part of work in progress by Ken Dunham
++ <http://antivirus.about.com/library/blenmac.htm> (new domain name)
+
+  Mac Virus
+++Updated and detailed but somewhat unstructured. 
+  [Site closed 5th September 1999]
+  <http://www.macvirus.com/reference/viruses.html>
+
+  Dr Solomon's "Mac Viral Zoo"
+  Starting to go out of date
+  <http://www.drsolomon.com/products/virex/zoo/maczoopg.html>
+
+5.5  Virus Bulletin
+-------------------
+  The expensive (but, for the professional, essential) periodical
+  Virus Bulletin includes Mac-specific information from time to time.
+  However, if you have no interest in PC issues, you probably won't
+  consider it worth the expense.
+
+  Virus Bulletin Ltd
+  The Pentagon
+  Abingdon
+  OX14 3YP
+  England
+
+  +44 1235 555139
+  <http://www.virusbtn.com/>
+
+  The proceedings of the 1997 Virus Bulletin conference contained a
+  paper by David Harley which significantly expands on many of the
+  issues addressed in this FAQ. Contact Virus Bulletin for further
+  information on the annual conference and on obtaining the
+  proceedings. The paper can also be found (by permission of Virus
+  Bulletin) at the author's website:
+  <http://www.sherpasoft.com/MacSupporters/>
+
+5.6  Macro virus information resources
+--------------------------------------
+  University of Hamburg Virus Test Center Macro Virus List is the
+  definitive listing. All known macro viruses, some only found in
+  research labs, some in the wild. Doesn't include information on
+  individual viruses apart from name and platform.
+  <ftp://agn-www.informatik.uni-hamburg.de/pub/texts/macro/>
+  <http://agn-www.informatik.uni-hamburg.de/vtc/eng.htm>
+
+  Other Sources:
+  <http://www.drsolomon.com/>
+  <http://www.datafellows.com/vir-info/>
+  <http://www.symantec.com/avcenter/>
+  <http://www.nai.com/>
+  <http://www.avpve.com/>
+  <http://www.sophos.com/> (under Virus Information)
+
+  [The following absolute URLs may change: such is the way of Web
+  administrators..... If you get an error message, try the first part
+  of the URL, e.g. <http://www.nai.com/> and drill down from there.]
+
+  Dr Solomon's Software Ltd.
+  <http://www.drsolomon.com/vircen/enc/>
+
+  Central Command
+  <http://www.avpve.com/viruses/macro/>
+
+  Network Associates
+  <http://www.nai.com/vinfo/f_3057.asp>
+
+  Data Fellows
+  <http://www.datafellows.com/macro/word.htm>
+
+++Richard Martin put together an FAQ on the subject of Word viruses.
+  It's well out-of-date, though, and was always inaccurate in some 
+  respects. 
+  <ftp.gate.net/pub/users/ris1/word.faq> 
+
+++This URL may be out of date. There is a copy of what I believe to be 
+  the last released version at www.sherpasoft.com:
+  <http://www.sherpasoft.com/anti-virus/wordvirus.FAQ>
+
+5.7  Other resources
+--------------------
+  There are excellent pages on HyperCard viruses at HyperActive
+  Software. There is information on HyperCard infectors, a link to
+  Bill Swagerty's free Vaccine utility for detecting and cleaning
+  them, a note on false positives reported by commercial software,
+  inoculation, and a free HyperCard virus detection service.
+  <http://www.hyperactivesw.com/Virus1.html>
+
+  The CIAC virus database includes entries for PC, Macintosh, and a
+  number of other platforms. The Macintosh section also includes a
+  number of joke programs and one or two apparent hoaxes.
+  <http://ciac.llnl.gov/ciac/CIACVirusDatabase.html>
+
+  Virus Test Center, Hamburg: AntiVirus Catalog/CARObase early work
+  <ftp://ftp.informatik.uni-hamburg.de/pub/virus/texts/catalog/>
+  <ftp://ftp.informatik.uni-hamburg.de/pub/virus/texts/carobase/>
+  <ftp://ftp.informatik.uni-hamburg.de/pub/virus/texts/viruses/>
+  These links may be out-of-date: if they don't work, try
+  <ftp://agn-www.informatik.uni-hamburg.de>
+
+  Last we checked [03-Sep-97], these sites probably need updating,
+  though some older files do have historical value. Info-Mac mirrors
+  have Macintosh information, but includes some outdated virus
+  information and software at this writing; still, always worth a
+  visit.
+  <ftp://ftp.ucs.ubc.ca/pub/mac/info-mac/vir/>
+  <http://hyperarchive.lcs.mit.edu/HyperArchive/Abstracts/vir
+        /HyperArchive.html>
+
+  Also of interest, again sometimes outdated:
+  <http://wwwhost.ots.utexas.edu/mac/pub-mac-virus.html>
+  <http://www.unt.edu/virus/macgeneral.html>
+
+  Kevin Harris's Virus Reference was last updated 31-Aug-95. This
+  HyperCard stack requires HyperCard 2.1 or later.
+  <ftp://mirrors.aol.com/pub/info-mac/vir/virus-reference-216-hc.hqx>
+
+6.0  How many viruses affect the Macintosh?
+===========================================
+
+  There are around 40 Mac-specific viruses and related threats.
+
+  Mac users with Word 6 or versions of Excel supporting Visual Basic
+  for Applications, however, are vulnerable to infection by macro
+  viruses which are specific to these applications. Indeed, these
+  viruses can, potentially, infect other files on any hardware
+  platform supporting these versions of these applications. I don't
+  know of a macro virus with a Mac-specific payload that actually
+  works at present, but such a payload is entirely possible.
+++Office 98 applications are in principle vulnerable to most of the
+  threats to which Office 97 applications are vulnerable. I'll return
+  to this subject when and if time allows. [DH]
+
+  Word Mac version 5.1 and below do not support WordBasic, and are
+  not, therefore, vulnerable to direct infection. Not only do these
+  versions not only understand embedded macros, but they can't read
+  the Word 6 file format unaided. There is, however, at least one
+  freeware utility which allows Word 5.x users to read Word 6 files.
+  This will not support execution of Word 6 (or WinWord 2) macros in
+  Word 5.x, so I would not expect either an infection routine or a
+  payload routine to be able to execute within this application.
+
+  However, Word 5.x users may contribute indirectly to the spread of
+  infected files across platforms and systems, since it is perfectly
+  possible for a user whose own system is uninfectable to act as a
+  conduit for the transmission of infected documents, whether or not
+  s/he reads it personally.
+
+  Files infected with a PC-specific file virus (this excludes macro
+  viruses) can only execute on a Macintosh running DOS or DOS/Windows
+  emulation, if then. They can, of course, spread across platforms
+  simply by copying infected files from one system to another.
+
+  DOS diskettes infected with a boot sector virus can be read on a
+  Mac with Apple File Exchange, PC Exchange, DOS Mounter etc. without
+  (normally) risk to the Mac. However, leaving such an infected disk
+  in the drive while booting an emulator such as SoftPC can mean that
+  the virus attempts to infect the logical PC drive with
+  unpredictable results.
+
+  I am aware of at least one instance of a Mac diskette which, when
+  read on a PC running a utility for reading Mac-formatted disks
+  after being infected with a boot-sector infector, became unreadable
+  as a consequence of the boot track infection.
+
+  Some Mac viruses may damage files on Sun systems running MAE or
+  AUFS.
+
+
+7.0  What viruses can affect Mac users?
+=======================================
+
+  Not all variants are listed here. It was originally intended to
+  reference all the major variants at least by name eventually, but
+  since the information is of academic interest at best to most users
+  (and available elsewhere anyway), it's no longer considered a
+  priority. The main problem affecting Mac users nowadays is the
+  spread of macro viruses, and I can't possibly find time to
+  catalogue them individually, so they are only considered generally.
+  Native Mac viruses are rather rarely seen nowadays, and most people
+  don't need to know about them in detail -- in fact, what they need
+  most is to know that their favoured antivirus software will deal
+  with them. Note that I'm not primarily in the business of hands-on 
+  virus analysis, and cannot accept responsibility for descriptive errors 
+  based on third-party information. [DH]
+
+  The following varieties are listed below:
+  7.1  Mac-specific system and file infectors
+  7.2  HyperCard Infectors
+  7.3  Mac Trojans
+  7.4  Macro viruses, trojans, variants
+  7.5  Other Operating Systems, emulation on a Mac
+  7.6  AutoStart 9805 Worms
+  7.7  Esperanto 4733
+
+7.1  Mac-specific system and file infectors
+-------------------------------------------
+  AIDS - infects application and system files. No intentional damage.
+  (nVIR B strain)
+
+  Aladin - close relative of Frankie
+
+  Anti (Anti-A/Anti-Ange, Anti-B, Anti Variant) - can't spread under
+  system 7.x, or System 6 under MultiFinder. Can damage applications
+  so that they can't be 100% repaired.
+
+  CDEF - infects desktop files. No intentional damage, and doesn't
+  spread under system 7.x.
+
+  CLAP: nVIR variant that spoofs Disinfectant to avoid detection
+  (Disinfectant 3.6 recognizes it).
+
+  Code 1: file infector. Renames the hard drive to "Trent Saburo".
+  Accidental system crashes possible.
+
+  Code 252: infects application and system files. Triggers when run
+  between June 6th and December 31st. Runs a gotcha message ("You
+  have a virus. Ha Ha Ha Ha Ha Ha Ha Now erasing all disks...
+  [etc.]"), then self-deletes. Despite the message, no intentional
+  damage is done, though shutting down the Mac instead of clicking to
+  continue could cause damage. Can crash System 7 or damage files,
+  but doesn't spread beyond the System file. Doesn't spread under
+  System 6 with MultiFinder beyond System and MultiFinder. Can cause
+  various forms of accidental damage.
+
+  Code 9811: hides applications, replacing them with garbage files
+  named "something like 'FIDVCXWGJKJWLOI'." According to Ken Dunham
+  who reported this virus in November, "The most obvious symptom of
+  the virus is a desktop that looks like electronic worms and a
+  message that reads 'You have been hacked by the Pretorians.'"
+
+  Code 32767: once a month tries to delete documents. This virus is
+  not known to be in circulation.
+
+  Flag: unrelated to WDEF A and B, but was given the name WDEF-C in
+  some anti-virus software. Not intentionally damaging but when
+  spreading it overwrites any existing 'WDEF' resource of ID '0', an
+  action which might damage some files. This virus is not known to be
+  in circulation.
+
+  Frankie: only affects the Aladdin emulator on the Atari or Amiga.
+  Doesn't infect or trigger on real Macs or the Spectre emulator.
+  Infects application files and the Finder. Draws a bomb icon and
+  displays 'Frankie says: No more piracy!"
+
+  Fuck: infects application and System files. No intentional damage.
+  (nVIR B strain)
+
+  Init 17: infects System file and applications. Displays message
+  "From the depths of Cyberspace" the first time it triggers.
+  Accidental damage, especially on 68K machines.
+
+  Init 29 (Init 29 A, B): Spreads rapidly. Infects system files,
+  applications, and document files (document files can't infect other
+  files, though). May display a message if a locked floppy is
+  accessed on an infected system 'The disk "xxxxx" needs minor
+  repairs. Do you want to repair it?'. No intentional damage, but can
+  cause several problems - Multiple infections, memory errors, system
+  crashes, printing problems, MultiFinder problems, startup document
+  incompatibilities.
+
+  Init 1984: Infects system extensions (INITs). Works under Systems 6
+  and 7. Triggers on Friday 13th. Damages files by renaming them,
+  changing file TYPE and file CREATOR, creation and modification
+  dates, and sometimes by deleting them.
+
+  Init-9403 (SysX): Infects applications and Finder under systems 6
+  and 7. Attempts to overwrite whole startup volume and disk
+  information on all connected hard drives. Only found on Macs
+  running the Italian version of MacOS.
+
+  Init-M: Replicates under System 7 only. Infects INITs and
+  application files. Triggers on Friday 13th. Similar damage
+  mechanisms to INIT-1984. May rename a file or folder to "Virus
+  MindCrime". Rarely, may delete files.
+
+  MacMag (Aldus, Brandow, Drew, Peace): first distributed as a
+  HyperCard stack Trojan, but only infected System files. Triggered
+  (displayed a peace message and self-deleted on March 2nd 1988, so
+  very rarely found.
+
+  MBDF (A,B): originated from the Tetracycle, Tetricycle or
+  "tetris-rotating" Trojan. The A strain was also distributed in
+  Obnoxious Tetris and Ten Tile Puzzle. Infect applications and
+  system files including System and Finder. Can cause accidental
+  damage to the System file and menu problems. A minor variant of
+  MBDF B appeared in summer 1997: Disinfectant and Virex have been
+  updated accordingly.
+
+  MDEF (MDEF A/Garfield, MDEF B/Top Cat, C, D): infect System file
+  and application files (D doesn't infect System). No intentional
+  damage, but can cause crashes and damaged files.
+
+  MDEF-E and MDEF-F: described as simple and benign. They infect
+  applications and system files with an 'MDEF' resource ID '0', not
+  otherwise causing file damage. These viruses are not known to be in
+  circulation.
+
+  nCAM: nVIR variant
+
+  nVIR (nVIR A, B, C - AIDS, Fuck, Hpat, Jude, MEV#, nFlu): infect
+  System and any opened applications. Extant versions don't cause
+  intentional damage. Payload is either beeping or (nVIR A) saying
+  "Don't panic" if MacInTalk is installed.
+
+  nVIR-f: nVIR variant.
+
+  prod: nVIR variant
+
+  Scores (Eric, Vult, NASA, San Jose Flu): aimed to attack two
+  applications that were never generally released. Can cause
+  accidental damage, though - system crashes, problems printing or
+  with MacDraw and Excel. Infects applications, Finder, DA Handler.
+
+  SevenDust-A through G (MDEF 9806-A through D, also known as 666, E
+  was at first called "Graphics Accelerator"): a family of five
+  viruses which spread both through 'MDEF' resources and a System
+  extension created by that resource. The first four variants are not
+  known to be in circulation. Two of these viruses cause no other
+  damage. On the sixth day of the month, MDEF 9806-B may erase all
+  non-application files on the current volume. The SARC encyclopedia
+  calls MDEF 9806-C, "polymorphic and encrypted, no payload," and
+  MDEF 9806-D, "encrypting, polymorphic, symbiotic," and says the
+  symbiotic part, "alters a 'WIND' resource from the host
+  application." SevenDust E, not to be confused with the legitimate
+  ATI driver "Graphics Accelerator", began as a trojan horse released
+  to Info-Mac and deleted there on or about September 26, 1998. Takes
+  two forms, 'INIT' resource ID '33' in an extension named
+  "\001Graphics Accelerator" and an 'MDEF' resource ID '1' to '255'.
+  Between 6:00 a.m. and 7:00 a.m. on the sixth and twelfth day of any
+  month, the virus will try to delete all non-application files on
+  the startup disk. John Dalgliesh describes "Graphics Accelerator"
+  on his Web page for AntiGax, a free anti-SevenDust E utility; any
+  errors here in translation are not his. SevenDust F uses a trojan
+  "ExtensionConflict", common extensions names, and creator 'ACCE'.[SL]
+
+  T4 (A, B, C, D): infects applications, Finder, and tries to modify
+  System so that startup code is altered. Under System 6 and 7.0,
+  INITs and system extensions don't load. Under 7.0.1, the Mac may be
+  unbootable. Damage to infected files and altered System is not
+  repairable by Disinfectant. The virus masquerades as Disinfectant,
+  so as to spoof behaviour blockers such as Gatekeeper. Originally
+  included in versions 2.0/2.1 of the public domain game GoMoku.
+
+  T4-D spreads from application to application on launch by appending
+  itself to the 'CODE' resource. Deletes files other than the System
+  file from the System Folder, and documents, and is termed dangerous.
+  The D strain is not known to be in circulation [SL].
+
+  WDEF (A,B): infects desktop file only. Doesn't spread under System
+  7. No intentional damage, but causes beeping, crashes, font
+  corruption and other problems.
+
+  zero: nVIR variant.
+
+  Zuc (A, B, C): infects applications. The cursor moves diagonally
+  and uncontrollably across the screen when the mouse button is held
+  down when an infected application is run. No other intentional
+  damage is done.
+
+7.2  HyperCard infectors
+------------------------
+  These are a somewhat esoteric breed, but a couple have been seen
+  since Disinfectant was last upgraded in 1995, and most of the
+  commercial scanners detect them.
+
+  Dukakis - infects the Home stack, then other stacks used
+  subsequently. Displays the message "Dukakis for President", then
+  deletes itself, so not often seen.
+
+  HC 9507 - infects the Home stack, then other running stacks and
+  randomly chosen stacks on the startup disk. On triggering, displays
+  visual effects or hangs the system. Overwrites stack resources, so
+  a repaired stack may not run properly.
+
+  HC 9603 - infects the Home stack, then other running stacks. No
+  intended effects, but may damage the Home stack.
+
+  HC "Two Tunes" (referred to by some sources as "Three Tunes") -
+  infects stack scripts. Visual/Audio effects: 'Hey, what are you
+  doing?' message; plays the tune "Muss I denn"; plays the tune
+  "Behind the Blue Mountains"; displays HyperCard toolbox and pattern
+  menus; displays 'Don't panic!' fifteen minutes after activation.
+  Even sources which describe this virus as "Three Tunes" seem to
+  describe the symptoms consistently with the description here, but
+  we will, for completeness, attempt to resolve any possible
+  confusion when time allows. This virus has no known with the PC
+  file infector sometimes known as Three Tunes.
+
+  MerryXmas - appends to stack script. On execution, attempts to
+  infect the Home stack, which then infects other stacks on access.
+  There are several strains, most of which cause system crashes and
+  other anomalies. At least one strain replaces the Home stack script
+  and deletes stacks run subsequently. Variants include Merry2Xmas,
+  Lopez, and the rather destructive Crudshot. [Ken Dunham discovered
+  the merryXmas virus. His program merryxmasWatcher 2.0 was very
+  popular and still can eradicate the most common two strains,
+  merryXmas and merry2Xmas. merryxmasWatcher 2.0 is outdated for the
+  rest this family.]
+
+  Antibody is a recent virus-hunting virus which propagates between
+  stacks checking for and removing MerryXmas, and inserting an
+  inoculation script.
+
+  Independance (sic) Day - reported in July, 1997. It attempts to
+  to be destructive, but fortunately is not well enough written to be
+  more than a nuisance. More information at:
+  <http://www.hyperactivesw.com/Virus1.html#IDay>
+
+  Blink - reported in August, 1998. Nondestructive but spreads;
+  infected stacks blink once per second starting in January, 1999.
+
+7.3  Mac Trojan Horses
+----------------------
+  These are often unsubtle and immediate in their effects: while
+  these effects may be devastating, Trojans are usually very
+  traceable to their point of entry. The few Mac-specific Trojans are
+  rarely seen, but of course the commercial scanners generally detect
+  them.
+
+  ChinaTalk - system extension - supposed to be sound driver, but
+  actually deletes folders.
+
+  CPro - supposed to be an update to Compact Pro, but attempts to
+  format currently mounted disks.
+
++ ExtensionConflict - supposed to identify Extensions conflicts, but
+  installs one of the six SevenDust a.k.a. 666 viruses.
+
+  FontFinder - supposed to lists fonts used in a document, but
+  actually deletes folders.
+
+  MacMag - HyperCard stack (New Apple Products) that was the origin
+  of the MacMag virus. When run, infected the System file, which then
+  infected System files on floppies. Set to trigger and self-destruct
+  on March 2nd, 1988, so rarely found.
+
+  Mosaic - supposed to display graphics, but actually mangles
+  directory structures.
+
+  NVP - modifies the System file so that no vowels can be typed.
+  Originally found masquerading as 'New Look', which redesigns the
+  display.
+
+  Steroid - Control Panel - claims to improve QuickDraw speed, but
+  actually mangles the directory structure.
+
+  Tetracycle - implicated in the original spread of MBDF
+
+  Virus Info - purported to contain virus information but actually
+  trashed disks. Not to be confused with Virus Reference.
+
+  Virus Reference 2.1.6 mentions an 'Unnamed PostScript hack' which
+  disables PostScript printers and requires replacement of a chip on
+  the printer logic board to repair. A Mac virus guru says:
+
+  "The PostScript 'Trojan' was basically a PostScript job that
+  toggled the printer password to some random string a number of
+  times.  Some Apple laser printers have a firmware counter that
+  allows the password to only be changed a set number of times
+  (because of PRAM behavior or licensing -- I don't remember which),
+  so eventually the password would get "stuck" at some random string
+  that the user would not know.  I have not heard any reports of
+  anyone suffering from this in many years."
+
+  AppleScript Trojans - A demonstration destructive compiled
+  AppleScript was posted to the newsgroups alt.comp.virus,
+  comp.sys.mac.misc, comp.sys.mac.system, it.comp.macintosh,
+  microsoft.public.word.mac, nl.comp.sys.mac, no.mac, and
+  symantec.support.mac.sam.general on 16-Aug-97, apparently in
+  response to a call for help originally posted to alt.comp.virus on
+  14-Aug-97 and followup on 15-Aug-97. On 03-Sep-97, MacInTouch
+  published Xavier Bury's finding of a second AppleScript trojan
+  horse, which, like the call for help followup, mentioned Hotline
+  servers. It reportedly sends out private information while running
+  in the background. A note to users from Hotline Communications CEO
+  Adam Hinkley is posted at
+  <http://www.macvirus.com/news/press/970903a.html>.
+  AppleScripts should be downloaded only from known trusted sources.
+  It is nigh impossible for an average person to know what any given
+  compiled script will do.
+
+7.4  Macro viruses, trojans, variants
+-------------------------------------
+  At the time of the longstanding second-to-last upgrade of
+  Disinfectant (version 3.6 in early 1995), there were no known macro
+  viruses in the wild, apart from HyperCard infectors. In any case,
+  Disinfectant was always intended to deal with system viruses, not
+  trojans or macro/script viruses. However, many users are unaware of
+  these distinctions and still assume that Disinfectant is a complete
+  solution, even after its effective demise (in fact, there were
+  people still relying on Gatekeeper long after its author disowned
+  it....).
+
+++Unfortunately, the number of known macro viruses runs into several
+  thousand, though the number in the wild is far fewer.
+
+  Most macro viruses (if they have a warhead at all) target Intel
+  platforms and assume FAT-based directory structures, so they
+  usually have no discernible effect on Macs when they trigger.
+  Viruses that manipulate text strings within a document may work
+  just as well on a Macintosh as on a PC.
+
+  In any case, the main costs of virus control are not recovery from
+  virus payloads, but the costs of establishing detection and
+  protection (or of not establishing them). The costs of not
+  establishing these measures can be considerable, irrespective of
+  damage caused on infected machines, especially in corporate
+  environments. Secondary distribution of infected documents may
+  result in:
+
+  * civil action - for instance, inadvertent distribution of an
+    infected document to external organisations may be in breach of
+    contractual obligations
+
+  * legal action in terms of breach of data-protection legislation
+    such as the UK Data Protection Act or the European Data Protection
+    directive. The eighth principle of the Data Protection Act, for
+    instance, requires that security measures are taken to protect
+    against unauthorised access to, and alteration, disclosure and
+    destruction of personal data, or its accidental loss.
+
+  * damage to reputation - no legitimate organisation wants to be
+    seen as being riddled with viruses.
+
+  Since Word 6.x for Macintosh supports WordBasic macros, it is as
+  vulnerable as Word 6.x and 7.x on Intel platforms to being infected
+  by macro viruses, and therefore to generating other infected
+  documents (or, strictly speaking, templates). Working Excel viruses
+  are now beginning to appear also, and any future Macintosh
+  application that supports Visual Basic for Applications will also
+  be vulnerable. Note also that the possibility of virus-infected
+  files embedded as objects in files associated with other
+  applications: this possibility exists on any platform that supports
+  OLE.
+
+++Office 98 is in general vulnerable to infection by most viruses which
+  affect corresponding applications in Office 97. 
+
+  Macro viruses are therefore highly transmissible via
+  Macintoshes, even if they don't have a destructive effect on
+  Motorola platforms, if there is an equivalent application
+  available on the Macintosh. For instance, although Word for
+  Windows versions before vs. 6 support WordBasic, Word
+  versions for the Mac up to and including version 5.1 do not.
+  [Thus Word 5.1 users can not be directly infected, but may,
+  like anyone, pass on infected documents to vulnerable systems.]
+
+++[reference to Green Stripe removed]
+
+  Network Associates, Symantec, and Intego all make known-virus
+  scanners that detect a range of macro viruses. Microsoft make
+  available a free 'protection tool' whose effectiveness is often
+  overestimated. (See below.)
+
+  For further information on specific macro viruses, try one of the
+  information resources given earlier.
+
+7.5  Other Operating Systems, emulation on a Mac
+------------------------------------------------
+  Any Mac running any sort of DOS or Windows emulation such as
+  Virtual PC, SoftPC, SoftWindows, RealPC, or a DOS compatibility
+  card is a potential target for any PC virus, including Boot Sector
+  Infectors/Multipartites; (effects will vary). It is highly
+  recommended that anyone with such a system should run a reputable,
+  up-to-date PC antivirus program under emulation, as well as a good
+  Mac antivirus program. [Dr. Solomon's for the Mac detects PC boot
+  sector infectors as well as Mac viruses, but doesn't detect PC file
+  viruses (apart from macro viruses), and so is not sufficient
+  protection for a Mac with DOS emulation.]
+
+  Recommendations for defending PC systems or PC emulation on Macs
+  are slightly out-of-scope for this FAQ. In fact, I don't know of
+  any formal testing for PC antivirus software in the context of PC
+  emulation on Macs. I've done some informal testing (referred to in
+  another paper), but am not prepared to make vendor-specific
+  recommendations on the basis of such testing. F-Prot, AVP, and Dr
+  Solomon's are particularly well-regarded PC antivirus packages, of
+  which some components on some platforms are available as freeware
+  or for evaluation, but their efficacy in the context of PC
+  emulation is not well tested or documented.
+
+  To find a commercial or shareware package relevant to PCs, check
+  through the independent comparative reviews sites:
+  University of Hamburg Virus Test Center
+  <http://agn-www.informatik.uni-hamburg.de/vtc/naveng.htm>
+  University of Tampere Virus Research Unit
+  <http://www.uta.fi/laitokset/virus/>
+  Secure Computing
+  <http://www.westcoast.com/>
+  Virus Bulletin
+  <http://www.virusbtn.com/>
+
++ About.com has an aggregation of PC anti-virus reviews links.
+  <http://antivirus.about.com/msub12.htm>
+
+  Robert Michael Slade's lists may also be helpful.
+  <http://www.freenet.victoria.bc.ca/techrev/quickref.html>
+  <http://www.freenet.victoria.bc.ca/techrev/rms.html>
+
+7.6  AutoStart 9805 Worms
+-------------------------
+  AutoStart 9805 is not a virus, but a worm: that is, it replicates
+  by copying itself, but doesn't attach itself parasitically to a
+  host program. The original took hold rapidly in Hong Kong and
+  Taiwan in April 1998, and has been reported on at least four
+  continents. In addition to the original worm, there are five
+  variants. Virus Bulletin, July, 1998, includes a comprehensive
+  analysis of AutoStart and some of its variants.
+
+  CIAC Bulletin I-067 is based on Eugene Spafford's information
+  release on the original AutoStart worm. Unfortunately,this is now a
+  little out-of-date, particularly as regards the update status of
+  the antivirus software it mentions. Nor does it mention any of the
+  subsequently discovered variants.
+  <http://www.ciac.org/>
+
+  Symptoms: Perhaps the most noticeable symptom of the worms is that
+  an infected system will _lock up and churn with unexplained disk
+  activity_ every 6, 10, or 30 minutes.[SL]
+
+  Affected platforms: any PowerMac. Macintoshes and clones driven by
+  Motorola 680x0 series CPUs can't run the replicative code. It works
+  under any version of Mac OS, if QuickTime 2.0 or later is installed
+  and CD-ROM AutoPlay is enabled in the "QuickTime Settings" Control
+  Panel.
+
+  Transmission media: HFS or HFS+ volumes (hard disks, diskettes,
+  most types of removable media, even disk images). Audio CDs can't
+  transmit the virus, and it isn't necessary to disable "Audio CD
+  AutoPlay".
+
+  Transmission method: infected media contain an invisible
+  application file named "DB" or "BD" or "DELDB" in the root
+  directory (type APPL, creator ????). This is an AutoStart file:
+  i.e. it will run automatically if CD-ROM autoplay is enabled. If
+  the host Mac isn't already infected, it copies itself to the
+  Extensions folder. The new copy is renamed "Desktop Print Spooler"
+  or "Desktop Printr Spooler", or "DELDesktop Print Spooler"
+  respectively (type appe, creator ????). Unlike the legitimate
+  Desktop Printer Spooler extension, the worm file has the invisible
+  attribute set, and isn't listed as a running process by the system
+  software, though it can be seen with Process Watcher or Macsbug.
+  After copying itself, it reboots the system and is now launched
+  every time the system restarts. At approximately 6, 10, or 30
+  minute intervals, it examines mounted volumes to see if they're
+  infected: if not, it writes itself to the root directory and sets
+  up AutoStart (however, AutoStart won't work on a server volume).
+
+  Damage: files with names ending "data", "cod" or "csa" are targeted
+  if the data fork is larger than 100 bytes. Files with names ending
+  "dat" are targeted if the whole file is c. 2Mb or larger. Targeted
+  files are attacked by overwriting the data fork (up to the 1st Mb)
+  with garbage.
+
+  Besides the original, there are five variants: AutoStart 9805-B,
+  which is less noticeable but can cause irreparable damage to files
+  of type 'JPEG', 'TIFF', and 'EPSF'; AutoStart 9805-C and AutoStart
+  9805-D which do not intentionally damage data; AutoStart 9805-E
+  which spreads like B and is most similar to the original; and
+  AutoStart 9805-F which is most similar to A and E.
+  Dr Solomon's, Sophos, and Symantec had descriptions on the Web:
+  <http://www.drsolomon.com/vircen/valerts/mac/>
+  <http://www.sophos.com/virusinfo/analyses/autostart9805.html>
+  <http://www.symantec.com/avcenter/data/autostart.9805.html> 
+++Dead Mac Virus link cleaned.
+
+  Detection: updates to deal with the worms are available for Virex
+  (http://www.drsolomon.com/products/virex/), for NAV and SAM
+  (http://www.symantec.com/avcenter/download.html), and for Rival
+  (http://www.intego.com/). 
+
+++The last versions of VirusScan for Mac and Disinfectant did not detect
+  AutoStart. [Reference to Dr Solomon's for Mac removed, as the product is
+  no longer supported.]
+
+  Prevention: uninfected systems can be protected by disabling the
+  AutoStart option in QuickTime settings (QuickTime 2.5 or later only
+  - earlier versions don't have a disable option). This should also
+  prevent infection by future malware exploiting the same loophole,
+  but will fail if a setup is booted from a volume with an infected
+  Extensions Folder [SL].
+
+  Removal: the easiest and safest method for most people will be to
+  use the updated version of their favoured anti-virus software, as
+  it becomes available.
+
+  The worms can be also be removed manually.
+  * Reboot with extensions disabled (hold down the shift key till an
+    alert box tells you that extensions are off).
+  * Use Find File to search all volumes for all instances of a file
+    called "DB" or "BD" or "DELDB" with the invisibility attribute set
+    (hold down Option key when clicking on "Name" pop-up menu to select
+    for visibility). Trash 'em.
+  * Use Find File to find and trash an invisible "Desktop Print
+    Spooler", "Desktop Printr Spooler", or "DELDesktop Print Spooler"
+    file (-not- Desktop Printer Spooler, which is a legitimate and
+    usually necessary system file).
+  * Empty the trash.
+  * Disable AutoStart in QuickTime Settings Control Panel.
+  * Restart.
+
+7.7  Esperanto.4733
+-------------------
+++This probably doesn't belong here. It's a PC file infector which
+  works with a number of PC executable file formats. When it was
+  first seen, it was reported to be a multiplatform virus capable of
+  executing under some circumstances on Macintoshes. Subsequent
+  reports indicate that this belief results from misinformation on
+  the part of the author. However, at least two reputable PC
+  anti-virus vendors still list it as capable of activating on a
+  Macintosh. No Mac scanner is known to attempt to detect it.
+
+8.0  What's the best antivirus package for the Macintosh?
+=========================================================
+
+  As ever, we can't give a definitive answer to this. The best choice
+  depends on subjective criteria and individal needs. Nonetheless,
+  Here are some thoughts on the main contenders.
+
+8.1  Microsoft's Protection Tools
+---------------------------------
+  Microsoft's Macro Virus Protection Tools originally detected
+  Concept (Nuclear and DMV were also mentioned in the documentation,
+  but were not identified specifically by the tools). Principally,
+  they merely warned users that the document they are about to open
+  contained macros and offered the choice of opening the file without
+  macros, opening it with macros, or cancelling the File Open. Later
+  implementations built into the application are better on
+  identifying a few specific viruses and on integration into Word
+  itself, but should not be relied on for 100% effective detection,
+  blocking and disinfection of macro viruses. More information from
+  Microsoft may be available at the addresses below.
+  <http://www.microsoft.com/office/antivirus/> (no longer accessible)
+  MSN: GO MACROVIRUSTOOL
+  AOL: the Word forum
+  CompuServe: the Word forum
+  Microsoft Product Support Services
+  206-462-9673 (WinWord)
+  206-635-7200 (Word Mac)
+  email: wordinfo@microsoft.com
+
+  NB The Protection Tool traps some File Open operations, but not
+  all. There are a number of ways of opening a document which bypass
+  it, some of which are rather commonly used (e.g. double-clicking or
+  using the Recent Documents list).
+
+  The Protection Tool can be used to scan for Concept-infected files,
+  but there are a number of possible problems with it.
+
+  * Earlier versions could only handle a limited size of directory
+    tree, and ran very slowly if a large number of files required
+    scanning. Speed is certainly still a problem: I can't say about the
+    overflow problem.
+  * Files created in Word for Windows won't be scanned until they've
+    been opened in Word 6 for Mac (this is a system issue, not a bug in
+    the code). However, Microsoft suggest that you open the file in
+    Word for the Macintosh and save it before scanning. This will do
+    the job, but will also infect your system, if the file is infected.
+    If it's infected with a virus -other- than Concept, this could
+    create problems if the Protection Tool is bypassed on a subsequent
+    file open.
+  * Infected files embedded in OLE2 files or e-mail files will not be
+    detected.
+  * The Microsoft tools are not useful on non-English Windows systems
+    (which may be run under Virtual PC or Real PC). SCANPROT cannot
+    handle non-English documents, and will hang during the scanning
+    process if it encounters a document created with a non-English
+    version of Word. Microsoft's Excel add-in for the Laroux macro
+    virus causes multiple file open buttons to appear in non-English
+    versions of Excel, and so it has worse effects than the macro virus
+    itself. Again this applies to Windows emulation; however, most
+    virus protection and detection products are only tested in an
+    English language environment, and may cause problems on non-English
+    systems. [Thanks to Eric Hildum for this information.]
+
+  Windows 95 users should be aware that SCANPROT is not recommended
+  for use with MS Word 7.0a for Windows with internal detection
+  enabled, as these two tools will cancel each other out.
+
+  The Excel add-in for Macs removes only Laroux A and B.
+  <http://www.microsoft.com/macoffice/laroux.htm>
+
+  Office 98 moves the goalposts again. This issue will probably be
+  addressed again here in more depth. In brief, Office 98 does a
+  better job of implementing a primarily generic approach [i.e. "If
+  it contains macros, it's suspicious: sort it out yourself...."],
+  but whether this is enough is a question demanding more space and
+  time than I have to spare right now [DH].
+
+  Microsoft's home page has recommended using an ICSA-certified
+  antivirus utility and sidesteps any hint of responsibility for any
+  macro virus or SCANPROT related problems.
+  (1) not everyone is happy with the current implementation of ICSA (NCSA)
+  certification
+  (2) ICSA certification is not at present Mac-aware.
+
+8.2  Disinfectant
+-----------------
+  [On May 6th 1998, John Norstad, author of this widely-used freeware
+  package announced that it was to be retired. 3.7.1 is the latest
+  and last version, and it won't be updated to detect AutoStart 9805
+  or any subsequent Macintosh malware. The main reason for this is
+  that he doesn't have the resources to extend its capabilities to
+  detect macro viruses, which have become by far the most significant
+  virus problem for most Macintosh users.
+
+  This is probably a wise decision, given the number of people who
+  still overestimate the effectiveness of the package in the face of
+  the macro virus threat. However, the entire Macintosh community
+  owes John Norstad a debt of gratitude for making it freely
+  available for so long, an act of altruism which has probably
+  contributed very significantly to the comparative rarity of native
+  Macintosh viruses.]
+
+  Disinfectant was an excellent anti-virus package with exemplary
+  documentation, and didn't cost a penny: however, it didn't detect
+  all the forms of malware that a commercial package usually does,
+  including HyperCard infectors, most Trojans, jokes or macro
+  viruses. Unlike some commercial packages, it didn't scan compressed
+  files, either: compressed files had to be expanded before scanning.
+  Self-extracting archives were probably best scanned before
+  unpacking, then again when unpacked.
+
+  Disinfectant has been available up to now from the following
+  sources, but this may not continue to be the case.:
+  <ftp://ftp.acns.nwu.edu/pub/disinfectant/>
+  CompuServe
+  GEnie
+  America Online
+  Calvacom
+  Delphi
+  BIX
+  Info-Mac mirrors in the ../vir/ directory
+
+  The Disinfectant README was updated to README-IMPORTANT on 6 May
+  1998, with the message, "because of the widespread and dangerous
+  Microsoft macro virus problem," "...All Disinfectant users should
+  switch..." to another program. README-IMPORTANT was updated again
+  on 11 October 1998, adding, "In addition to the Autostart worm and
+  the Microsoft macro viruses, several other new Mac viruses have
+  appeared since Disinfectant's retirement in May. This makes it even
+  more important that Disinfectant users switch..." to one of the
+  commercial products.
+  <ftp://ftp.nwu.edu/pub/disinfectant/README-IMPORTANT>
+  There is a copy of the retirement announcement on the Web:
+  <http://charlotte.acns.nwu.edu/jln/d-retire.ssi>
+
+8.3  Demo Software
+------------------
+  Symantec has a 30-day fully-functioning trialware NAV (Norton
+  AntiVirus for Macintosh). Update it with current definitions.
+  <http://www.symantec.com/nav/fs_navmac5.html>
+
+  Network Associates has a 30-day fully-functioning evaluation
+  version of Virex 5.9.1. The Virex trial includes the application,
+  not the control panel.
+  <ftp://ftp.nai.com/pub/antivirus/mac/virex/>
+  Update the demo with current definitions:
+  <ftp://ftp.nai.com/pub/antivirus/datfiles/mac/virex/>.
+
+  Sophos also has a 30-day evaluation, also fully-functioning,
+  which includes the SWEEP application. The demo supports both
+  English and Japanese.
+  <http://www.sophos.com/downloads/eval/savmac.html>
+
+  Intego has a limited-function French demo of Rival, "miniRival."
+  <http://www.intego.com/demo.html>
+
+  Disinfector 1.0 is described by its author as shareware. However,
+  it's strictly speaking a limited-runtime demo -- it stops
+  functioning after 20 trial runs on one system. It's described as a
+  beta release, but the author expects users to register it at a
+  charge of $30 [subsequently reduced to $15]: in return, they get a
+  version which can be used an unlimited number of times. It only
+  detects a handful of Mac system viruses which the author claims
+  that commercial vendors have not detected, and have not been
+  reported in the wild. In the early days of virus/antivirus
+  technology, a number of utilities were made available which
+  addressed only one or a few viruses, and a proliferation of free
+  AutoStart worm detectors continues that honourable tradition.
+  However, charging for this particular utility puts it into the same
+  arena as the commercial scanners which detect a far wider range of
+  threats and for which full support is available, an area in which
+  it cannot at present compete. Disinfector was briefly available at
+  Info-Mac, but has since been removed.
+
+  There have also been a number of proposals since John Norstad
+  announced the retirement of Disinfectant, suggesting that if the
+  code was made public, it would be possible to maintain and further
+  develop Disinfectant, possibly still as a freeware product. This is
+  misguided, for a number of reasons.
+
+  * It misses one of the main points of Norstad's announcement, which
+    is to acknowledge the dangers of continuing to develop a scanner
+    which detects only one class of virus, when so many people have
+    laboured so long under the misapprehension that it was a complete
+    solution.
+  * Disinfectant -has- been developed further. VirusScan is based on
+    Disinfectant technology (under licence), and NAI are in a much
+    better position to develop it as commercial-grade software than a
+    group of well-meaning individuals without the specialised skills
+    and resources of a mainstream anti-virus development team. Indeed,
+    it may be that the terms of that agreement would prevent Norstad
+    from making the code public even if he wanted to (I doubt that he
+    does....).
+  * Making the code public, even to a limited circle, would increase
+    the chances of its falling into irresponsible hands. In fact, the
+    online documentation has long stated that the code for the
+    detection engine is not available, though some of the interface
+    code was. (I'm paraphrasing from memory: I may well check out
+    exactly what it says for the next update of the FAQ.)
+  * To think that a committee of well-intentioned amateurs (or a
+    single ambitious amateur can develop Disinfectant to the same high
+    standard that it achieved through its lifetime demonstrates a
+    profound underestimation of the difficulties of maintaining (let
+    alone creating) a first-class known-virus scanner. [DH]
+
+8.4  Other freeware/shareware packages
+--------------------------------------
+  For other freeware\shareware Mac packages, try Info-Mac mirrors
+  like:
+  <ftp://ftp.ucs.ubc.ca/pub/mac/info-mac/vir/>
+
+  The University of Texas holds some older documentation on Mac
+  viruses.
+  <http://wwwhost.ots.utexas.edu/mac/pub-mac-virus.html>
+
+  Tracker INIT and DelProtect INIT, both by Ioannis Galidakis, were
+  first released on 19-Nov-98. Tracker is a behavior blocker something
+  like the retired program GateKeeper. DelProtect protects against
+  malicious file deletion. Tracker is now at version 1.1. Scanner 1.1x
+  also by Ioannis Galidakis was released 15-Jan-99, and is a free,
+  generic, heuristic 68k virus scanner for advanced Macintosh users.
+  <http://www.crosswinds.net/athens/~jgal/>
+
+  John Dalgliesh has created Agax, an extensible, free anti-virus
+  program which replaces his program AntiGax, and uses plug-ins called
+  "Additives." At this time, Agax will detect and try to clean only
+  SevenDust, CODE 9811, and the AutoStart worms (the worm additive was
+  in beta testing at the time of this writing). The author's Web page
+  and documentation invite Mac programmers to contribute additives.
+  <http://www.cse.unsw.edu.au/~s2191331/agax/agax.html>
+
+  The Exorcist, free from Laffey Computer Imaging, may give some (by
+  one description, about 90%) protection from the SevenDust family.
+  <http://www.laffeycomputer.com/software.html>
+
+  Gatekeeper was not a scanner, but a generic tool. It is no longer
+  supported by its author, but is still available on some sites. It
+  is probably not safe to use or rely on on modern systems, and I
+  believe the author recommends that people don't attempt to use it,
+  though I've been unable to contact him to get confirmation.
+
+  In January 1997 Padgett Peterson, author of the PC utility
+  DiskSecure, released the first version of his MacroList macro
+  detection tool, which has been tested by the author on Macs (System
+  7.5 on SE/30, IIci and PowerMac) as well as Windows PCs, using
+  considerably more macro viruses than Microsoft seem to have heard
+  of..... The MacroList template is accessed by a button in the
+  standard toolbar. This is not a virus scanner, but allows disabling
+  of automacros, listing of any macros found in the current document
+  etc. Version 1.10 was due for release by the time of writing
+  (February 1997), and an adaptation for Office97 is in progress.
+  Watch the Web page for further details. [v1.1 and the Office 97
+  "late beta" were available as at 18th March 1997.] MacroList is
+  freeware, but please be sure to read the TRIALS link.
+  <http://www.freivald.org/~padgett/>
+  (under Anti-Virus Hobby) - NB change of URL.
+
+  WormGuard by Clarence Locke is a free on-access extension that
+  affords AutoStart worm protection:
+  <http://hyperarchive.lcs.mit.edu/cgi-bin/NewSearch?key=WormGuard>
+
+  The following free scanners may remove AutoStart 9805 and its B, C,
+  D, E, and F variants and may be useful in the absence of a
+  commercial application. There are a few reported instances of
+  failures by some of these programs to identify or remove the
+  AutoStart worms, and it is likely that D might be mis-identified as
+  C, and E may be mis-identified as the original worm. [SL]
+
+  WormScanner by James Walker
+  <http://members.aol.com/jwwalker/pages/worm.html>
+  Autostart Hunter by Akira Nagata
+  <http://www.nettaxi.com/citizens/yukoswrd/> (English)
+  <http://www.parkcity.ne.jp/~eyukoswrd/index_mac.html> (Japanese)
+  BugScan by Mountain Ridge Dataworks (also detects SevenDust E)
+  <http://www.mrdataworks.com/bscan.htm>
+  Worm Gobbler by Jim Kreinbrink
+  <http://www.lineaux.com/>
+  Innoculator by MacOffice
+  <http://www.macoffice.com/innoculator.htm>
+  WormFood by Doug Baer
+  <http://hyperarchive.lcs.mit.edu/cgi-bin/NewSearch?key=WormFood>
+  Eradicator with update, by Uptown Solutions Ltd.
+  <http://www.uptown.com/>
+
+  As stated above, one-shot solutions to a very small subset of a
+  particular class of threat have a long and honourable history, and
+  are very welcome when a new threat catches the antivirus developers
+  on the hop (it can take some time to incorporate detection of new
+  threats into the product update cycle). NB The maintainer does not
+  currently have the time or resources to do full detection testing of 
+  these products (or any other). [DH]
+
+8.5  Commercial Packages
+------------------------
+  Commercial packages include NAV (Norton AntiVirus for Macintosh)
+  [NAV supersedes SAM (Symantec Antivirus for Macintosh)], Virex for
+  Macintosh, Rival, and Sophos Anti-Virus for Macintosh (SAV).
+
+  Virex, NAV, and SAM all address a full range of threats, including
+  Trojans and macro viruses, and can do scheduled scanning as well as
+  on-access (memory-resident) scanning.
+
+++Sophos Anti-Virus for Macintosh (SAV) was upgraded in January 1999
+  to include the SWEEP on-demand scanner. The shipping version can be
+  downloaded for free evaluation. English and Japanese are supported.
+  <http://www.sophos.com/downloads/eval/> Stand-alone on-access scanning
+  is not yet available in the release version, but is now in beta. 
+  Server-based on-access scanning is already available for Mac clients
+  on NT or NetWare networks.
+  The program offers customizable reporting and notification from an
+  attractive interface. So far, compressed archives must be
+  decompressed before scanning; I am assured that archive scanning
+  will be in future versions. Complete documentation is in PDF format.
+  <http://www.sophos.com/support/docs/>
++ Sophos combines an intercept driver (InterCheck) and a scanner
+  application (SWEEP). Sales are not retail, but direct or through
+  the Sophos Distributor network. Free technical support is all-year
+  round, any time of day. Virus identity updates are available from
+  the Web between monthly CD-ROMs. Major developments in the Sophos
+  product are expected, including smooth large-scale deployment and
+  ease of updating over networks.[SL]
+
+  Norton AntiVirus for Macintosh (NAV) launched May 18, 1998. New
+  features included LiveUpdate virus definition updates over the
+  Internet, enhanced macro virus protection, automatic file repair, a
+  bootable CD-ROM for emergencies, faster scanning for PPC, and a
+  universal SafeZone.
+
+  NAV, SAM, and Virex offer checksumming/integrity checking
+  (detecting possible infection by unknown viruses, by monitoring
+  changes in infectable files) - the correct checksums or
+  fingerprints for individual files are kept in a database file. All
+  three applications check files compressed with StuffIt.
+
+  NAV, formerly SAM, is particularly oriented towards behaviour
+  blocking: the Intercept tool can be configured to raise an alert at
+  the slightest whiff of a 'suspicious' operation. Unfortunately,
+  this can be counterproductive in real life, since an over-stringent
+  alert policy is apt to result in the facility being turned off
+  altogether. However, configuration is very flexible.
+
+  SAM (Symantec AntiVirus for Macintosh) support was discontinued
+  May 1; the last update is for July '99. From Symantec's advice:
+   "In order to maintain the safety and security of your data
+    from viruses without interruption, we recommend that you
+    upgrade to NAVM 5.0.3 before May 1st. For presales and
+    upgrade questions, please contact customer service. They
+    can be reached at 800-441-7234 or online at:"
+    <http://www.symantec.com/custserv/>
+
+  [SAM 4.5.x needs the 4.5->4.5.1 application patch to run current
+  definitions, and the 4.5.3 Intercept patch to resolve a compatibility
+  issue with Microsoft Office 98, and Segment Loader errors when
+  Intercept loads.
+  <http://service.symantec.com/sam/>
+  <http://service1.symantec.com/SUPPORT/num.nsf/docid/19978714255>
+  SAM application Minimum and Preferred memory allocations must be
+  increased from their shipping defaults to 5000K or greater. The
+  (May 1998) SAM definitions files included a Read Me with
+  instructions. More information may be available from Symantec SAM
+  support on the Web.]
+
+  Symantec issued a Norton AntiVirus 5.x->5.0.3 patch for Mac OS 8.5,
+  fixing the problem with copying files on AppleShare networks.
+  <http://www.symantec.com/techsupp/files/navm/
+  norton_antivirus_for_macintosh.html>
+
+  Virex offers very fast scanning is easy to update, and includes
+  checksumming for the detection of unknown viruses. It's also
+  possible to buy an administration package. The basic package
+  includes a control panel for scanning on file or diskette access
+  which can be locked independently of the administration package.
+  Installation and interface are easy and efficient. Virex 5.8 scans
+  ZIP archives, has a contextual menu plug-in module, and interface
+  enhancements.
+
+  Virex 5.9.1 was released on 18-Jan-99, for compatibility with
+  Mac OS 8.5 and Virex Administrator 1.4, and can be downloaded.
+  <http://www.drsolomon.com/download/home/>. Registered users who
+  bought McAfee VirusScan during the past six months or so, and
+  registered users of Virex 5.8 and 5.9 could still upgrade:
+  <http://www.nai.com/products/antivirus/virex_mac.asp>.
+  Virex Administrator version 1.4 was released by NAI on 23-Dec-98.
+  Virex and Virex Administrator had these home pages:
+  <http://www.drsolomon.com/products/virex/index.cfm>
+  <http://www.drsolomon.com/products/vadmin/index.cfm>
+++A new release is in beta.
+
+  Dr Solomon's Software acquired Virex and netOctopus from Datawatch
+  Corp. on 10-Oct-97. Network Associates (NAI) acquired Dr Solomon's
+  on 13-Aug-98. Netopia, Inc., acquired what is now named Timbuktu
+  netOctopus in late '98 or early '99. 
+
+++VirusScan 3.0.1 is the final version for Macintosh, and may be
+  updated for macro viruses into 1999, but will never have AutoStart
+  worm definitions or definitions for the new System viruses like
+  SevenDust E. VirusScan customers need to take advantage of a free
+  upgrade to Virex as soon as possible. 
+
+++Dr. Solomon's for Macintosh went through various stages of neglect
+  through late 1998 and support appears to have vanished altogether in
+  1999, when customers started to receive Virex disks instead of Dr.
+  Solly's updates.
+
+  Rival 3.0.4 is available from Intego.
+  <http://www.intego.com/>
+
+++F-Secure for Macintosh is one of the best-kept secrets in anti-virus.
+  The last time I saw it, it detected macro viruses only. You might be
+  lucky and find some reference to it at:
+  <http://www.datafellows.com> 
+
+8.6  Contact Details
+--------------------
+  Network Associates
+  (for Virex, Dr Solomon's Anti-Virus Toolkit, and VirusScan)
+
+  Network Associates Corporate Headquarters
+  3965 Freedom Circle
+  McCandless Towers
+  Santa Clara, CA 95054
+  United States
+  Customer Care:
+  Voice +1 408 988 3832
+  Fax   +1 408 970 9727
+  Fax-back automated response system
+  +1 408 988 3034
+  BBS   +1 408 988 4004
+  America Online keyword: MCAFEE
+  CompuServe: GO NAI
+  support@nai.com
+  ftp://ftp.nai.com/pub/antivirus/mac/
+  http://www.nai.com/
+
+  Dr. Solomon's Software Ltd.
+  (for Dr. Solomon's Anti-Virus Toolkit)
+
+  Alton House
+  Gatehouse Way
+  Aylesbury
+  Buckinghamshire HP19 3XU
+  United Kingdom
+  UK Support: support@uk.drsolomon.com
+  US Support: support@us.drsolomon.com
+  UK Tel: +44 (0)1296 318700
+  USA Tel: +1 781-273-7400, 1-888-DRSOLOMON
+  CompuServe: GO DRSOLOMON
+  Web: http://www.drsolomon.com
+  FTP: ftp://ftp.drsolomon.com
+
+  Symantec Corporation (for NAV and SAM)
+
+  10201 Torre Avenue
+  Cupertino CA 95014
+  United States
+  +1 408 725 2762
+  Fax: +1 408 253 4992
+  US Support:  541-465-8420
+  AOL:  SYMANTEC
+  European Support:  31-71-353-111
+  Australian Support:  61-2-879-6577
+  http://www.symantec.com/
+  ftp://ftp.symantec.com/
+
+  Intego (for Rival)
+
+  10, rue Say
+  75009 Paris
+  France
+  +33 1 49 95 07 80
+  Fax: +33 1 49 95 07 83
+  Email: rival@intego.com
+  http://www.intego.com/
+
+  Sophos Plc (for Sophos Anti-Virus)
+
+  The Pentagon
+  Abingdon
+  Oxon
+  England OX14 3YP
+  US Support: +1-888-SOPHOS-9
+  UK Support: +44-1235-559933
+  http://www.sophos.com/
+
+++Details on DataFellows will be included when I've determined the current
+  status of F-Secure for Macintosh.
+
+
+9.0  Welcome Datacomp
+=====================
+
+  From time to time there are reports from Mac users that the message
+  'Welcome Datacomp' appears in their documents without having been
+  typed. This is the result of using a Trojanised 3rd-party
+  Mac-compatible keyboard with this 'joke' hard-coded into the
+  keyboard ROM. It's not a virus - it cannot infect anything. The
+  only cure is to replace the keyboard (be polite but firm with the
+  dealer if you were sold this as a new keyboard!).
+
+
+10.0  Hoaxes and myths
+======================
+
+  Some of these are PC-specific, rather than Mac-specific, while some
+  have no basis in reality on any system. [I look forward to hearing
+  about the first Turing machine infector....] They are included here
+  (a) because Mac support staff are accustomed to being asked about
+  them (b) because anything that -might- work on a real PC -might-
+  also work with DOS emulation, in principle.
+++This section may vanish in the near future, or at least contract. 
+  The hoax business has changed a lot since this FAQ began.
+
+10.1  Good Times virus
+----------------------
+  There is *no* Good Times virus that trashes your hard disk and
+  launches your CPU into an nth-complexity binary loop when you read
+  mail with "Good Times" in the Subject: field.
+
+  You can get a copy of the latest version of Les Jones' FAQ on the
+  Good Times Hoax on the World Wide Web:
+  <http://www.public.usit.net/lesjones/goodtimes.html>
+
+  There's a Mini-FAQ available as:
+  <http://www.public.usit.net/lesjones/gtminifaq.html>
+
+10.2  Modems and Hardware viruses
+---------------------------------
+  There is no modem virus that spreads via an undocumented subcarrier
+  - whatever that means.... There is no virus that causes damage to
+  hardware.
+
+10.3  Email viruses
+-------------------
+  Any file virus can be transmitted as an E-mail attachment. However,
+  the virus code has to be executed before it actually infects.
+  Sensibly configured mailers and browsers don't allow this: check
+  yours. In particular, check that your Web browser doesn't
+  automatically pass Word documents to Word 6 to open, since this may
+  result in embedded macros being launched.
+
+10.4  JPEG/GIF viruses
+----------------------
+  There is no known way in which a virus could sensibly be spread by
+  a graphics file such as a JPEG or .GIF file, which does not contain
+  executable code. Macro viruses work because the files to which they
+  are attached are not 'pure' data files.
+
+10.5  Hoaxes Help
+-----------------
+  If you should receive a virus warning, look at these sites before
+  forwarding it along (in fact, it's probably never justified to pass
+  on a virus alert indiscriminately, and reputable antivirus
+  companies don't do this. In fact, the information that such and
+  such a virus exists is not, in itself, useful to the average
+  computer user, even if it does. A statement like, "Please forward
+  to everyone!" is one mark of a hoax.
+
+  Computer Virus Myths home page
+  <http://www.kumite.com/myths/
+
+  CIAC
+  <http://www.ciac.org/ciac/CIACHoaxes.html>
+
+  Data Fellows
+  <http://www.datafellows.com/news/hoax.htm>
+
+  Scams and Hoaxes FAQ: Messages you DON'T want to post
+  <http://www.faqs.org/faqs/net-abuse-faq/scams/>
+
+  Corporates who haven't sorted out their hoax management strategy
+  might get some mileage out of my mini-paper on "Dealing with
+  Internet Hoaxes", though it's getting a bit long in the tooth. It
+  is, however, one of the few papers on the subject which deals with
+  it from an adminstrator's/manager's point of view as well as from
+  an everyday user/victim's. [DH]
+++<http://www.sherpasoft.com/anti-virus/hoaxes.txt>
+  I'm slightly surprised to find that I'm managing an EICAR project
+  in this area: watch this space.
+
+
+11.0  Glossary
+==============
+
+  * Change Detectors/Checksummers/Integrity Checkers - programs that
+    keep a database of the characteristics of all executable files on a
+    system and check for changes which might signify an attack by an
+    unknown virus.
+  * Cryptographic Checksummers use an encryption algorithm to lessen
+    the risk of being fooled by a virus that targets that particular
+    checksummer.
+  * Dropper - a program that installs a virus or Trojan, often
+    covertly.
+  * Generic - catch-all name for antivirus software that doesn't know
+    about individual viruses, but attempts to detect viruses by
+    detecting virus-like code, behaviour, or changes in files
+    containing executable code.
+  * Heuristic scanners - scanners that inspect executable files for
+    code using operations that might denote an unknown virus.
+  * Monitor/Behaviour Blocker - a TSR that monitors programs while
+    they are running for behaviour which might denote a virus.
+  * Scanner (conventional scanner, command-line scanner, on-demand
+    scanner) - a program that looks for known viruses by checking for
+    recognisable patterns ('scan strings', 'search strings',
+    'signatures') or using a more flexible algorithmic approach for
+    detection of polymorphic viruses, which can't be found by a search
+    for a simple scan string. These are not usually associated with the
+    Macintosh platform, but there are Word Macro viruses which exhibit
+    mutation.
+  * Trojan (Trojan Horse) - a program intended to perform some covert
+    and usually malicious act that the victim did not expect or want.
+    It differs from a destructive virus in that it doesn't reproduce,
+    (though this distinction is by no means universally accepted).
+  * Virus - a program (a block of executable code) that attaches
+    itself to, overwrites or otherwise replaces another program in
+    order to reproduce itself without the knowledge of the computer
+    user. Most viruses are comparatively harmless, and may be present
+    for years with no noticeable effect: some, however, may cause
+    random damage to data files (sometimes insidiously, over a long
+    period) or attempt to destroy files and disks. Others cause
+    unintended damage. Even benign viruses (apparently non-destructive
+    viruses) cause significant damage by occupying disk space and/or
+    main memory, by using up CPU processing time, by introducing the
+    risk of incompatibilities and conflicts, and by the time and
+    expense wasted in detecting and removing them.
+
+
+12.0  General Reference Section
+===============================
+
+12.1  Mac Newsgroups
+--------------------
+  comp.sys.mac.apps
+  comp.sys.mac.comm
+  comp.sys.mac.misc
+  comp.sys.mac.system
+
+  comp.virus
+  alt.comp.virus
+
+  The focus on these two groups tends to be IBM-compatible, but Mac
+  issues are certainly aired. Alt.comp.virus is unmoderated, and the
+  quality of the advice and opinions aired there is very variable -
+  there are many reputable and expert posters, and many mischievous
+  and misleading contributions. Caveat lector.... comp.virus lies 
+  dormant for years at a time, but is well worth watching when there's
+  anything there.
+
+12.2  References and Publications
+---------------------------------
+  Sensei Consulting Macintosh WAIS Archives
+  <http://wais.sensei.com.au/searchform.html>
+
+  "Inside the Apple Macintosh" - Peter Norton & Jim Heid (Brady) (The
+  2nd Edition is pre-PowerMac, and I haven't seen a later one, but
+  there's some surprisingly useful stuff in there).
+
+  "Inside Macintosh" (Addison Wesley). Essential reading for Mac
+  programmers. (Umpteen volumes of fairly low-level info. Expensive
+  (in the UK, at any rate), and whenever you get near some useful
+  info, it refers you to one of the volumes you haven't got. However,
+  the series has been re-vamped since I acquired my copies, and this
+  may be less than just. It's possible to download them in Acrobat
+  and in some cases other formats from:
+  <http://devworld.apple.com/>
+  where you can also order hardcopy and CD versions. Lots of other
+  useful files.
+
+  "Power Macintosh Emergency Handbook" (Apple Computer)
+  <ftp://ftp.info.apple.com/Apple.Support.Area/Manuals
+       /PMac_Emergency_Handbook.pdf>
+
+  MacFixIt "Troubleshooting for the Macintosh"
+  <http://www.macfixit.com/>
+
+  "Sad Macs, Bombs and other Disasters"
+  Ted Landau (Addison Wesley)
+  <http://www.macfixit.com/sadmacs3promo.html>
+
+  MacInTouch home page (info and services)
+  <http://www.macintouch.com/>
+
+  MacWEEK.com (Have run MacInTouch columns about the AutoStart worms.)
+  <http://macweek.zdnet.com/>
+  Macworld magazine
+  <http://www.macworld.com/>
+  TidBITS (Have done many good articles on Mac/macro virus issues.)
+  <http://www.tidbits.com/>
+
+
+13.0  Mac troubleshooting
+=========================
+
+  Since the initial release of this document, a number of people have
+  E-mailed me asking for help with a possibly virus-related problem.
+  While I'll always help if I can, I should point out (1) I'm an
+  experienced Mac user and an IT support professional, but I don't
+  claim to be a Mac expert (2) pressure of work and other commitments
+  and a huge E-mail turnover means that I can't promise a quick or
+  in-depth response [DH]. Whether you mail direct or post to a
+  relevant newsgroup, it's helpful if you can supply a few details,
+  such as:
+
+  * Which model of Macintosh you're using. It may be useful to know
+    how much RAM it has, the size of the hard disk, and any peripherals
+    you're using.
+  * Which version of MacOS you're using.
+  * Which applications you're using, and which version. If you're
+    using Word, it may be critical to know whether you're using version
+    6 or later, or an earlier version.
+  * Which, if any, antivirus packages you use, and what version
+    number. If you're using NAV, for instance, what version?
+  * List any error messages or alerts that have appeared.
+  * List any recent changes in configuration, additional hardware
+    etc.
+  * List any diagnostic/repair packages you've tried, and the
+    results.
+  * List any other steps you've taken towards determining the cause
+    of the problem and/or trying to fix it, e.g. rebuilding the
+    desktop, booting without extensions, zapping PRAM etc.
+
+  Here are a few steps that it might be appropriate to try if virus
+  scanning with an up-to-date scanner finds nothing. This section
+  will be improved when and if I have time.
+
+  Rebuilding the desktop is by no means a cure-all, but rarely does
+  any harm. It may be worth disabling extensions when you do this,
+  especially if the operation doesn't seem to be completed
+  successfully.
+
+  To disable extensions, restart the machine with the shift key held
+  down until you see an Extensions Off message. If you're rebuilding
+  the desktop, release the shift key and hold down Command (the key
+  with the Apple outline icon) & Options (alt) until requested to
+  confirm that you want to rebuild.
+
+  Disabling extensions is also a good starting point for tracking
+  down an extensions conflict. If booting without extensions appears
+  to bypass the problem, try removing extensions with Extensions
+  Manager (System 7.5) - remove one at a time, and replace it before
+  removing the next one and booting with that one removed. Remember
+  that if removing one stops the problem, it's still worth putting it
+  back and trying all the others to see if you can find one it's
+  conflicting with. Extensions Manager also lets you disable control
+  panels. If you don't have Extensions Manager, try Now Utilities or
+  Conflict Catcher.
+
+  Parameter RAM (PRAM) contains system information, notably the
+  settings for a number of system control panels. 'Zapping' PRAM
+  returns possibly corrupt PRAM data to default values. A likely
+  symptom of corrupted PRAM is a problem with date and time (but
+  could be a symptom of a corrupted system file). With system 7, hold
+  down Command-Option-P-R at bootup until the Mac beeps and restarts.
+  You may have restore changes to some control panels before your
+  system works properly. If the reset values aren't retained, the
+  battery may need replacing.
+
+
+--
+End "Viruses and the Macintosh" version 1.6 by David Harley
+</pre>
+</BODY></HTML>
+
+

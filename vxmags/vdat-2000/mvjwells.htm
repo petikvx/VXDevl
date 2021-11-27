@@ -1,0 +1,401 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Concept: Understanding the virus and its impact</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Concept: Understanding
+the Virus and Its Impact<BR>
+</FONT><FONT SIZE=+1>By Joe Wells</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<P><B><FONT COLOR="#004080">Part One: Understanding the Virus </FONT></B></P>
+
+<P>This virus is known by several names: Concept. Prank Macro. WM-Concept.
+WinWord.Concept. WordMacro.Concept. WW6. WW6Macro. Here we will use the
+name Concept. </P>
+
+<P>Concept is a macro virus. The virus is written is WordBASIC, which is
+an interpreted programming language similar to Visual Basic for Applications.
+WordBASIC is built into the Microsoft Word (MS-Word) environment. More
+specifically, Concept is written in the English-language implementation
+of this macro language. This being the case, Concept will run neither outside
+of the MS-Word environment, nor within the MS-Word environment if WordBASIC
+has been implemented in another language. </P>
+
+<P>Even as DOS viruses run in the DOS environment, Concept runs in the
+MS-Word environment. This makes Concept appear to be cross-platform. Since
+it runs on systems that MS-Word runs on, then it runs on systems with Windows
+3.x, Windows 95, Windows NT, Macintosh, etc. However, Concept is actually
+neither a Windows nor a Macintosh virus. It is an MS-Word virus. MS-Word
+is, virtually, the operating system that Concepts replicates within. </P>
+
+<P><B><FONT COLOR="#004080">Infected Data Files? </FONT></B></P>
+
+<P>Before Concept, the statement &quot;viruses do not infect data files&quot;
+was generally accepted. Some say that Concept has now proven that axiom
+wrong. Has it? Well, consider: The reason that this statement was widely
+accepted hinges on the keyword infect. Infect is taken to mean that a functional
+copy of the virus has been attached to a file. Data files are not executed,
+so even if virus code is attached to data files it is not executed and
+is therefore not functional. Data files with virus code attached are viewed
+as corrupted, rather than infected. So what about Concept? </P>
+
+<P>Well, applications with macro languages have confused the issue. Because
+we now have files that can contain both data and executable code. However,
+the data and executable portions of these files are separate and if Concept
+wrote to the data portions of the file it would never be executed. Concept
+must infect by adding its macros as executable code in the data file. So
+technically, the data file, or at least the data portion of the file, is
+not infected and the axiom is still defensible. </P>
+
+<P>Three Macros </P>
+
+<P>Concept contains three macros. Two are related to function and one is
+simply a placeholder. Note however that the two functional macros are copied
+with new names, one during each of two different infection phases, so that
+a total of five macro names are associated with the virus. Here are the
+macros names: </P>
+
+<UL>
+<P>* AutoOpen Functional Exists also as AAAZAO<BR>
+* FileSaveAs Functional Exists also as AAAZFS<BR>
+* PayLoad Place holder </P>
+</UL>
+
+<P>Notice that last two characters of each of the macros beginning with
+AAAZ correspond to the functional versions: AO to Auto Open and FS to File
+Save. </P>
+
+<P>Concept infects in two distinct phases and thus exists in two distinct
+forms. Here are the two forms: </P>
+
+<PRE>   Infected Template                    Infected Document
+
+   Contains macros:                     Contains macros:
+
+      * AAAZAO                             * AAAZAO
+      * AAAZFS                             * AAAZFS
+      * FileSaveAs                         * AutoOpen
+      * PayLoad                            * PayLoad
+
+   Infected by document during          Infected by template during
+   AutoOpen.                            FileSaveAs.
+   Infects documents during FileSaveAs. Infects the default template during
+                                        AutoOpen.
+</PRE>
+
+<P><B><FONT COLOR="#004080">Phase One </FONT></B></P>
+
+<P>During phase one, (the initial system infection) the default template
+file (Normal.dot) is infected when a previously infected document file
+is opened. </P>
+
+<P>AutoOpen is one of five auto macros that are automatically run by MS-Word
+environment. It is a template macro and runs whenever a template containing
+it, or a document based on that template, is opened. </P>
+
+<P>Concept's version of AutoOpen contains code to examine the environment,
+infect the default template file, modify the profile, and display a message
+box. This macro is copied once as AAAZAO and once as AutoOpen to a Word
+document during the execution of a copy of the FileSaveAs macro. </P>
+
+<P>This macro first checks the Word environment to see if it is already
+infected or if infecting it would be too much trouble. To check for infection
+it looks for a PayLoad macro. If no PayLoad is found, but a FileSaveAs
+is found, then the virus considers infection to be too much trouble. In
+either of these two cases, the macro aborts. </P>
+
+<P>Next the macro attempts to retrieve a variable that appears to be an
+attempt at a generation counter. However, due to a programming error, the
+value will always be zero. (See details below.) </P>
+
+<P>Next four macros are added to the default (global) template as shown
+in the left box above. </P>
+
+<P>Finally the generation counter (which is equal to zero) is incremented
+and saved to the MS-Word ini file. At this point the generation counter
+is also displayed in a message box. This box will always display the numeral
+one, because of a programming error. The error is simply that the macro
+retrieves profile variable named WW6Infector, but saves it under a different
+name, WW6I. </P>
+
+<P>The result is that WW6Infector is never initialized and is thus always
+zero and that WW6I is always stored as one. </P>
+
+<P>Under both Word for Windows and Word for Windows95 the generation variable
+is stored in an initialization file is named WINWORD6.INI. This file will
+contain the string &quot;WW6I= 1&quot; if a particular copy of Word has
+ever been infected. </P>
+
+<P><B><FONT COLOR="#004080">Phase Two </FONT></B></P>
+
+<P>During phase two, (the virus's spread on a given system) document files
+are infected as they are saved. The FileSaveAs function is called by MS-Word
+both when saving an existing document with a new name (using Save As) and
+when initially saving a new document (the Save As dialog box comes up for
+a new document whether the Save As or Save command is used.). </P>
+
+<P>The macro FileSaveAs exists in an infected template file and contains
+code to infect MS-Word documents as they are saved. This macro is copied
+once as AAAZFS and once as FileSaveAs to the default template during the
+execution of the AutoOpen macro. </P>
+
+<P>This macro adds its own functionality to the standard FileSaveAs dialog
+box. In addition to calling the standard dialog, four macros are added
+to the document as shown in the right box above. The effect is that the
+documents become Concept droppers, since their infective function (AutoOpen)
+will only run on an uninfected system. </P>
+
+<P>To summarize the two phases: </P>
+
+<UL>
+<P>* Infected documents only infect default template files. Initial system
+infection.<BR>
+* Infected template files only infect documents. Spreading on a system.
+</P>
+</UL>
+
+<P><B><FONT COLOR="#004080">PayLoad </FONT></B></P>
+
+<P>Like most viruses, Concept is not intentionally destructive. The macro
+PayLoad is never executed. Even if it were, it contains no code, only a
+comment. It says: &quot;That's enough to prove my point.&quot; </P>
+
+<P>What was the programmer's point? We can only speculate. It may be that
+macro viruses are possible. Or that MS-Word specific viruses are possible.
+Or that OLE2 viruses are possible. Or that MS-Word has security holes.
+If the programmer's point was one of these, he or she has indeed proven
+it. </P>
+
+<P><B><FONT COLOR="#004080">Detection and Removal </FONT></B></P>
+
+<P>The only sure way to detect all instances of the virus is to use an
+antivirus product. Be warned, however, that not all antivirus products
+detect the virus, and some that do, don't do so by default. If you have
+an antivirus product, be sure that Concept is in its list of viruses and
+that the product is set to scan files with DOC and DOT extensions. Check
+the software's documentation or call their technical support for this information.
+</P>
+
+<P>The only safe way to remove the virus from a system is to use an antivirus
+product. Be warned again, that not all antivirus products are able to remove
+the virus. Moreover, some that do repair the virus may not correctly repair
+all documents. </P>
+
+<P>Whether or not you have antivirus software, you should be aware of the
+following information about Concept-specific symptoms to watch out for.
+</P>
+
+<P>The first indication that the system is infected is when the virus displays
+its generation message box. </P>
+
+<P>To verify that a system is infected, the user can view MS-Words list
+of active macros. This is done by opening the Tools menu and selecting
+the Macros option. The Macro dialog box will appear as is seen below. Note
+that this is how the Macros dialog box will look right after the system
+has just been infected, that is, right after the generation message box
+has appeared. Later, right after an infected version of MS-Word is started,
+the Macro dialog will not contain the AutoOpen macro. </P>
+
+<P>Note that the macros can be highlighted and deleted from this dialog.
+This will remove the macros from the default template file, but opening
+any infected documents will re-infect the template. </P>
+
+<P><B><FONT COLOR="#004080">Prevention </FONT></B></P>
+
+<P>Three methods of preventing infection by Concept, from within the MS-Word
+environment itself, have been proposed. Each is problematic. </P>
+
+<P>First, some have recommended that you create your own macro named PayLoad.
+This is because Concept checks for a macro by that name and, if one is
+found, it does not infect. This idea has some problems. Some antivirus
+software (especially Concept-specific, macro-based solutions) may think
+that a system is infected if it sees the PayLoad macro name. In like manner,
+a user might see the macro and panic. In addition, this method will prevent
+only Concept, not other macro viruses. </P>
+
+<P>You could use your own FileSaveAs macro to convince Concept that infection
+is too much trouble. This would avoid antivirus false alarms and panicked
+users, but would still only work with Concept. </P>
+
+<P>The second suggestion has been to activate a Word feature that prompts
+the user before saving changes to the global template. This is done by
+opening the Tools menu, selecting Options, and clicking on the Save tab
+in the Options dialog box. In the Save dialog box, check the box with the
+caption &quot;Prompt to Save Normal Template.&quot; While this has no effect
+on infected documents, it will prevent the global template from getting
+infected, thereby preventing Concept from spreading. </P>
+
+<P>The problem here is that the user must prevent the change to the template.
+The message they will see gives no clue to the possibility of virus activity.
+The message says &quot;Changes have been made that affect the global template,
+Normal.dot. Do you want to save those changes?&quot; and offers the user
+three choices: &quot;Yes&quot; (the default), &quot;No&quot;, and &quot;Cancel.&quot;
+If the user is not aware that this prompt is there to stop viruses they
+will probably make the wrong choice. Moreover, it the user is aware that
+this may indicate a virus, and the changes to the template are valid, they
+may still make the wrong choice and not save the needed changes. </P>
+
+<P>The third suggestion involves using a macro to turn off auto macros
+(others have suggested turning off all macros). This is done using MS-Word's
+built-in macro called DisableAutoMacros. There are reportedly two methods
+to do this. I tested both methods under Windows95 and Word for Windows95.
+One method worked, one didn't. </P>
+
+<P>Reportedly, one can add the switch /mDisableAutoMacros to the Winword.exe
+command line. In my tests this didn't work. Concept still infected the
+system. </P>
+
+<P>Another way is to call the macro with a non-zero parameter. This I did
+by adding my own AutoExec macro to run when MS-Word starts. My macro looked
+like this: </P>
+
+<UL>
+<P>Sub Main </P>
+
+<P>DisableAutoMacros 1 </P>
+
+<P>End Sub </P>
+</UL>
+
+<P>This method worked. An infected document would open, but the AutoOpen
+macro would not run and the global template would not become infected.
+</P>
+
+<P>A problem with this method (besides the command line switch not working)
+is that there are five auto macros you disable with this function. Besides
+AutoOpen and AutoExec, there are also AutoClose, AutoExit, and AutoNew.
+This is fine unless you need some of these functions in your documents
+or you receive a document that uses valid auto macros. </P>
+
+<P>An additional problem with all three of these approaches is that they
+do not detect the virus. The user is never told that the system is infected.
+So Concept can still make the rounds finding systems it can infect. Detecting
+and identifying the virus requires using an antivirus product. </P>
+
+<P><B><FONT COLOR="#004080">Part Two: Understanding its Impact </FONT></B></P>
+
+<P>Some virus experts are predicting that macro viruses will soon become
+the most serious part of the virus problem. All available data seems to
+indicate that Concept is the most common virus in the world. And it became
+such in less than one year. </P>
+
+<P>The first description of Concept that I saw was posted by Sarah Gordon,
+of Command Software, to her fellow virus experts. This was on August 9,
+1995. On the next day, the name &quot;Concept&quot; (in the form WinWord.Concept)
+was suggested by C. Jimmy Kuo, of McAfee Associates. Since the virus was
+not limited to Word for Windows, an alternate name, WordMacro.Concept,
+was preferred by others. During a CARO (Computer Antivirus Research Organization)
+meeting at the September 1995 Virus Bulletin Conference, the &quot;official&quot;
+name was shortened to Concept. </P>
+
+<P>The name Concept is quite fitting. True, macro viruses were not a new
+concept and had been foretold and discussed within the antivirus community.
+Still, dealing with Concept did indeed represent a new concept for antivirus
+product developers. Even now, nearly one year later, some antivirus products
+still fail to detect and/or repair the virus. </P>
+
+<P>Handling Concept involved more than simply releasing a byte signature
+or a new detection database. Most antivirus products have had to make major
+code changes to their products. This is especially true of intelligent
+scanners that trace or emulate execution. To apply such an approach to
+analyzing MS-Word document files and to check therein for macros is quite
+complex. Doing so properly requires an intimate knowledge of undocumented
+OLE2. </P>
+
+<P>OLE2 stream analysis is a far cry from simply tracing a jump or calculating
+a code segment and instruction pointer. Even emulating an 8088 processor
+seems easy by comparison. Add to this the fact that this is a highly competitive
+field where customers expect short response times. Quick fixes and less
+than optimum answers are inevitable. </P>
+
+<P>Ten months after their first article on Concept, the magazine Virus
+Bulletin pointed out this fact about macro viruses. </P>
+
+<P>&quot;The format of the files they infect (Word documents) is many times
+more complex than that of standard DOS executables.... For the moment we
+have an intriguing mix of scanners, Word bolt-ons, macros of various sorts,
+and combinations of these.&quot; Virus Bulletin May, 1996. </P>
+
+<P>Even later, in their July 1996 issue, Virus Bulletin reported that eight
+of twenty-four scanners they tested (using each scanner's default mode)
+failed to detect Concept. This means that one third of these antivirus
+products are missing the world's most common virus. </P>
+
+<P>What also took the antivirus community by surprise was Concept's rapid
+spread. This spread was accelerated partially by the fact that was unexpected,
+but mostly by the fact that it was distributed on CD-ROM's (by Microsoft
+and by Digital Equipment Corporation). </P>
+
+<P>Reports that I receive to include in my WildList also shed light on
+Concept's commonality. One participant's first report listed a few scattered
+virus incidents, then added &quot;and Concept is everywhere!&quot; Other
+participants often send lists that look much like this one from Blend Qatipi
+in Tirana, Albania: </P>
+
+<UL>
+<P>AntiEXE More than 10 times </P>
+
+<P>V-Sign 3 times </P>
+
+<P>Boot.437 1 time </P>
+
+<P>Concept Macro Virus Very frequent (first time Jan. 1996) </P>
+
+<P>Concept has also topped Virus Bulletin's prevalence table from March,
+1996 onward. </P>
+</UL>
+
+<P>Unfortunately, Concept's impact on major corporations has been neither
+researched nor documented. Statements I've heard, however, do not bode
+well. Things like: </P>
+
+<UL>
+<P>&quot;We have Concept all over the place and can't get rid of it.&quot;
+A major software developer. </P>
+
+<P>&quot;Concept was in all the Fortune 100 companies I visited in New
+York.&quot; A virus expert. </P>
+
+<P>&quot;They [a U.S. government department] have Concept everywhere.&quot;
+An antivirus developer. </P>
+</UL>
+
+<P>Concept is a major, international problem. While it's true that Concept
+is not destructive, the fact that it is so widespread represents a very
+real threat. Because it is so common, its primary impact may be similar
+to that of the Stoned virus. </P>
+
+<P>Stoned is not destructive and it too was once the most common virus.
+The result was that a large number of virus writers patterned their new
+creations after Stoned. Some of these other viruses are intentionally destructive
+and have become more common than Stoned. </P>
+
+<P>In like manner, Concept may serve as a pattern for a whole new breed
+of virus writers. Virus writers of the past were generally intelligent,
+bored, students in their mid-teens with a knowledge of assembly language.
+The next generation of virus writers may well be intelligent, disgruntled,
+company contractors in their mid-twenties with a knowledge of Visual Basic
+for Applications. </P>
+
+<P>Yet consider this: Concept has been around for about one year at this
+writing and we have not as yet seen any other macro virus become common.
+Also, Concept did indeed get lucky by being shipped worldwide in CD's in
+a world where both users and antivirus developers were unprepared. </P>
+
+<P>So are Concept and other macro viruses foreshadows of a dark future?
+We don't know. We don't have sufficient data to extrapolate. I'm afraid
+we'll all have to wait and see. </P>
+
+<P>Joe Wells, 8 July 1996 </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

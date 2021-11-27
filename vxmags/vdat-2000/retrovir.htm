@@ -1,0 +1,636 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Retroviruses - How viruses fight back</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER>
+  <P><B><FONT COLOR="#004080"><font size="+3">- Retroviruses -</font><FONT SIZE=+1><BR>
+How viruses fight back</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"><p></P></CENTER>
+
+<P>Mikko Hypponen, who works in Data Fellows Ltd's F-PROT- support, presented
+the following treatise in the Virus Bulletin '94 conference. </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>&quot;The GoldBug virus has extensive anti-anti-virus routines. It can
+install itself while several resident anti-virus monitors are running.
+It will prohibit most popular anti- virus programs from running, and will
+also by-pass several integrity checking programs&quot; -from the original
+source code of the GoldBug virus </P>
+
+<P><B>Abstract </B></P>
+
+<P>This paper will discuss the methods viruses use or might use in the
+future to attack anti-virus programs. Attacks of this kind are becoming
+more common, as virus writers seem to be constantly looking for ways to
+make their viruses more efficient and vigorous. This paper also suggests
+how to make anti-virus products more resistant to such attacks. The scope
+of this paper is limited to PC-compatible machines. </P>
+
+<P><B>Introduction </B></P>
+
+<P>There is a constant battle going on between computer virus authors and
+virus fighters. virus writers are looking for ways to create more complicated,
+more difficult-to-analyse and more inconspicuous viruses. At the same time,
+anti-virus people are building methods to address these threats. </P>
+
+<P>It's not surprising that virus authors have realised that anti-virus
+tools are one of their creations' worst enemies. The logical step for them
+has been to make ...their viruses fight back, either directly or indirectly..
+</P>
+
+<P>Several viruses explicitly target anti-virus programs. The attack routines
+may be generic or targeted against a specific program. Many virus authors
+obviously consider an attack to be the best defence, when the objective
+is to keep the virus alive in order to spread it as widely as possible.
+</P>
+
+<P>There is a battle going on in computer systems world-wide - it's survival
+of the fittest, one might say. Hopefully, this paper will provide some
+ideas how to make anti-virus applications fitter than viruses. </P>
+
+<P><B>A virus that fights back </B></P>
+
+<P>For the purposes of this paper, a retrovirus is defined as follows:
+</P>
+
+<P>Retrovirus is a computer virus that specifically tries to by-pass or
+hinder the operation of an anti-virus program or programs. The attack may
+be specific to a known product or a generic one. </P>
+
+<P>Retroviruses are sometimes known as anti-anti-viruses. Anti- anti-viruses
+should not be confused with anti-virus-viruses, which are viruses that
+will disable or disinfect other viruses. To avoid confusion, the term retrovirus
+will be used here. </P>
+
+<P>The creation of a virus which incorporates retro-routines is not necessarily
+a difficult task. In most cases, virus writers have access to the anti-virus
+programs they want to by-pass. All they need to do is experiment by trial
+and error until they find a way to attack the anti-virus program in a way
+the anti-virus developer has not foreseen. </P>
+
+<P>Some virus authors have gone all the way and disassembled the offending
+anti-virus programs in order to find the most effective way to attack them.
+They often look for methods to attack a product in a way that would be
+most difficult to circumvent in future versions of the product. </P>
+
+<P>As the virus authors are pretty efficiently connected to each other
+via different types of electronic networks, information on how to attack
+specific products spreads quickly. </P>
+
+<P>It should be noted that virus writers typically have access to only
+those anti-virus products that are available as freeware or shareware.
+Some virus exchange BBS systems are known to make pirated copies of commercial
+products available, but the shareware products seem to be targeted most
+often. </P>
+
+<P>It can be expected that more retroviruses, using more advanced retro-routines,
+will be seen in the future. </P>
+
+<P><B>Rules of the game </B></P>
+
+<P>Viruses using retro-routines started to show up during late 1980's -
+before that, there was no point in creating retroviruses, as anti-virus
+products weren't widely used. As the popularity of anti-virus programs
+has grown, so has the number of viruses that attempt to subvert them in
+some way. </P>
+
+<P>Several approaches are possible, including: </P>
+
+<UL>
+<P>- modifying the code of an anti-virus program file or the image in memory
+</P>
+
+<P>- detecting when an anti-virus program is activating, and either hiding
+itself, stopping the execution of the program or triggering a destructive
+routine </P>
+
+<P>- altering the computing environment in a way that affects the operation
+of an anti-virus program </P>
+
+<P>- using methods in the virus code that cause problems for anti-virus
+programs </P>
+
+<P>- exploiting a specific weakness or a backdoor in an anti- virus program
+</P>
+
+<P>- using generic methods that generally make it difficult or potentially
+dangerous to detect, identify or disinfect the virus </P>
+</UL>
+
+<P>The basic principle is that the virus must somehow hinder the operation
+of an anti-virus program in such a way that the virus itself benefits from
+it. </P>
+
+<P>Methods like encryption, stealth, polymorphic routines, code armouring,
+anti-debugging tricks and confusion code can also be considered attacks
+against anti-virus programs. However, they are often generic in type and
+therefore outside the scope of this paper. </P>
+
+<P><B>Attacks against non-resident scanners </B></P>
+
+<P>Non-resident scanners are probably the most commonly used anti-viral
+products. They are also the favourite target of real-world retroviruses.
+</P>
+
+<P>There are several different ways a scanner can be attacked against.
+</P>
+
+<P><B>Deletion and replacement </B></P>
+
+<P>A virus can locate the anti-virus program and delete it. A more sophisticated
+attack would be a modification or a patch that would alter the operation
+of the scanner in a way that would be beneficial to the virus. A virus
+could locate the search strings used by the scanner and overwrite them,
+making the scanner unable to find any virus, but still appear to be functional.
+</P>
+
+<P>A virus can replace the scanner program with a Trojan horse which could
+trigger a damage routine when run or just simply display an error message
+and abort. Such an error message would also make the scanning product look
+bad in the eyes of the users, especially if the error message would be
+something like 'only 620kB of free DOS memory, unable to run' or 'BRUN30
+GW-Basic run-time library not found, aborting'. </P>
+
+<P>If the virus stays resident in memory, it can do similar attacks when
+it sees that an anti-virus program is executed. It can also by-pass a self-check
+routine of an anti-virus program by patching it only after the application
+has finished the check on its own code. </P>
+
+<P><B>Modification of parameters </B></P>
+
+<P>There is at least one known case of a virus that modifies the command-line
+parameters when it sees a specific anti- virus program to be started (see
+below). This technique allows the virus to modify the operation of the
+scanner to its advantage without patching the actual program code. </P>
+
+<P>A similar attack in which the virus modifies the configuration file
+of an anti-virus program might also be possible - these files are often
+left unencrypted and are not checked for such modifications. </P>
+
+<P><B>Altering the output </B></P>
+
+<P>If the visual interface of the anti-virus program isn't complex (ie.
+command-line driven), it might be feasible for a retro-virus to mimic the
+operation of the program. This way, the user might not notice anything
+strange. </P>
+
+<P>A variation of the theme would be that the virus would patch the texts
+displayed by the product. If the text string 'Virus found!&quot; were to
+be changed to 'All clear!', a typical user wouldn't probably doubt anything.
+</P>
+
+<P>In many installations, anti-virus programs are run automatically and
+the alarms are set off depending on the exit codes (errorlevels) returned
+by a program. A successful attack on such a system might consist of a retrovirus
+that would always set the return-code of an anti-virus program to zero.
+</P>
+
+<P><B>False false alarms </B></P>
+
+<P>Scanners are prone to false alarms ie. detecting a virus in a clean
+file. Viruses can use this as one way to attack. If a virus incorporates
+code sections from popular applications, it is quite possible that an anti-virus
+vendor without a proper false-positive testing routine might include a
+search string that would cause a large amount of false positives. </P>
+
+<P>One way to implement this kind of an attack would be to include an encryption
+routine to a virus, but borrow the decryption code from some known application
+- the encryption would limit the traditional search strings to only strings
+that would cause false positives, and this in itself would cause problems
+for some scanning products. </P>
+
+<P><B>Problems with packed files </B></P>
+
+<P>Several scanners are able to scan inside compressed executables that
+have been packed with some of the most popular EXE-packers. Some scanners
+do not scan packed files at all, but only flag them as packed so the user
+is aware of them. This provides one way a virus could cause problems for
+a scanner. If a virus used a section of fake code that would make an infected
+program look like it had been packed, it could by-pass the scanning by
+such a product completely. The virus could also replicate in packed form,
+making it even more difficult for some scanners to detect. </P>
+
+<P>A similar attack might be possible against products that actually unpack
+the programs and scan underneath the packing. In order to uncompress the
+program, the scanner fetches program info from the unpacking code. If this
+code contained irrational values, it could cause some scanners to crash
+or run out of memory. </P>
+
+<P><B>One man's data is another man's code </B></P>
+
+<P>Almost all scanners default to scanning only the executable files instead
+of all files. File type is usually determined by the extension (ie. COM,
+EXE, SYS). </P>
+
+<P>Since a virus can control the system in any way it wants, one way to
+by-pass a scanner would be to change the file extensions of all infected
+files to non-executable ones, for example from EXE to XEX. While the virus
+is resident in memory, it can use stealth techniques to hide this change
+- but it will also make sure that all executables copied to floppies have
+the valid extension, to ensure that the virus gets a chance to spread.
+The advantage of such a method is that even if the machine is booted up
+from a clean diskette and all executables are scanned with a scanner that
+can detect the virus, it will only be found in the initial carrier file.
+</P>
+
+<P><B>Exploitation of technical limits </B></P>
+
+<P>A virus writer could analyse in detail how a scanner actually does the
+scanning and develop infection methods that cause detection problems for
+a specific scanner. The virus doesn't have to be difficult to find - it
+is enough that it is very slow to search for. </P>
+
+<P>The Command Bomber virus is an example of this: it inserts its code
+in the middle of the host file and builds a complicated series of branching
+commands to transfer the flow of the program code to the actual code. The
+detection of such virus would force some scanners to scan the whole file
+from the beginning to the end - which would be enough to make them unusably
+slow. </P>
+
+<P><B>Attacks against resident scanners and behaviour blockers </B></P>
+
+<P>Resident anti-virus programs are vulnerable to special attacks. Since
+DOS does not provide any kind of memory protection, a program can modify
+the memory space of another program. This makes it possible for a virus
+to locate and patch or disable a resident scanner or a behaviour blocker.
+</P>
+
+<P><B>Unloading the protection </B></P>
+
+<P>Some anti-virus TSRs can be unloaded from memory (actually, they will
+have to be unloadable if the product is wanted to be Novell-certified).
+If such mechanisms exist, they can also be called by a virus. Viruses use
+this method quite successfully with some products for which it is known
+to work. </P>
+
+<P><B>Through the back door </B></P>
+
+<P>Practically every TSR scanner has a back door, which is used by the
+non-resident scanner of the same package. This back door either turns off
+the checking done by the TSR or provides an alternative access method to
+the file system. If such a back door did not exist, the TSR part would
+clash with the normal scanner, as the TSR would notice an infection when
+the non-resident part would open an infected file for scanning. </P>
+
+<P>A virus can use such back doors for its own benefit, either disabling
+the resident part or by using the clean path to file system provided by
+the TSR. </P>
+
+<P>Yet another way for a virus to attack a resident scanner is to observe
+the display routines, and trap the alarm messages displayed by the TSR.
+If the user never sees the alarm messages of the TSR, the protection is
+not doing its job. </P>
+
+<P><B>Attacks against disinfectors </B></P>
+
+<P>A retrovirus can attack programs that try to disinfect boot sectors
+and files. The purpose of such an attack might be to cause the disinfector
+to damage the host files while disinfecting. If a disinfection program
+does not do an exact identification on a virus before disinfecting it,
+any virus that contains a known search string for another virus can cause
+such damage during the disinfection process. </P>
+
+<P><B>Cleaning the clean </B></P>
+
+<P>There even exists a virus called Mirror, which is the exact opposite
+of a stealth-virus: when Mirror is resident in memory, it makes all programs
+look like they have been infected by it. This can be potentially dangerous
+when disinfection is attempted, but this technique poses no danger if the
+disinfection is done in a proper way, ie. after a clean boot. </P>
+
+<P><B>Complicating the recovery </B></P>
+
+<P>The recovery process of an infected machine can be severely complicated
+if the virus denies access to the hard drive. Several MBR-viruses (for
+example, members of the Monkey family) do this by modifying the partition
+data in such a way that no logical DOS drives can be found when the machine
+is booted from a clean floppy. A recovery attempt done by overwriting the
+MBR code with the FDISK /MBR or a similar command will not return access
+to the hard drive. </P>
+
+<P>The ExeBug virus family uses another way to make it difficult to boot
+up an infected machine from a clean diskette. The virus modifies the BIOS
+Setup information to indicate that the machine does not have A: drive at
+all. Such machine will always boot up from the hard drive. Once the booting
+has started and the virus code is executed, the virus will check if there
+is a diskette in drive A:. If so, it will continue the booting from there.
+In most cases the user is unable to notice this, and thinks that the machine
+has been booted clean when the virus is already resident. </P>
+
+<P>Yet another way to complicate the recovery process is to set the BIOS
+boot-up password on with a random password during an activation routine.
+The method of doing this is documented on most new BIOS brands. </P>
+
+<P>Some integrity checkers are capable of performing a generic disinfection.
+This means that they try to restore the original file according to the
+information the checker has previously saved (typically length, checksum,
+first and last bytes). Such generic routines won't work if a virus makes
+extensive changes to the program files, for example by encrypting the host
+file during infection. </P>
+
+<P><B>Attacking heuristic cleaners </B></P>
+
+<P>Viruses use a different kind of an attack against heuristic disinfection
+programs. A heuristic cleaner works by loading the infected file to memory
+and emulating the program code. It uses a combination of disassembly, emulation
+and sometimes execution to trace the flow of the virus and to emulate what
+the virus is normally doing. When the virus restores the original first
+instructions of the host file and jumps back to the original entry point,
+the cleaner stops the emulation. The repaired start of the program is copied
+back to the program file on disk, and the part of the program that was
+'executed' will be removed. [Veldman] </P>
+
+<P>The inherent risk of heuristic cleaning is that if the cleaner tries
+to emulate everything, the virus may assume control inside the emulated
+environment and finally escape from it - after which it can propagate further
+or trigger a destructive retaliation routine. There are documented cases
+of at least one virus doing this, see below. </P>
+
+<P><B>Attacks against integrity checkers </B></P>
+
+<P>The operation of integrity checking programs varies between vendors
+but they almost always rely upon some form of a database which contains
+details of objects (typically files and boot sectors) to be checked. </P>
+
+<P><B>Deleting the database </B></P>
+
+<P>Several viruses have attacked integrity checkers by locating the integrity
+database and deleting it. In some cases, the result of deleting the database
+files is that the integrity checker will blindly assume that the original
+checksums have not been calculated yet, and proceeds to initialise the
+database without informing the user that something might be amiss. This
+was exactly the case with the Peach virus. </P>
+
+<P>Peach attacked an integrity checker which worked by creating a checksum
+file, containing checksums of all executable programs. Peach attacked by
+deleting this file. After the database was deleted and the checker was
+executed again, it recreated the file, calculating new checksums from the
+infected files and failing to report any changes in the system. </P>
+
+<P>It should be noted that the Peach virus will not be successful against
+newer versions of this integrity checker, as the name of the checksum file
+has been changed in newer versions of the product. Similar types of attack
+still seem to be possible, though. </P>
+
+<P>Even if a checksumming package did report to the user that the database
+has been deleted without approval, it would be difficult to find the affected
+files if no recent backup of the database exists. </P>
+
+<P><B>Making checked unchecked </B></P>
+
+<P>A similar attack works also against programs that do not store the integrity
+data in a separate database, but add it to the end of the executable files
+themselves. Since there is no info about which files have been checksummed,
+a virus can just remove the validation data without any side effects -
+and the checker will not complain that the file has changed. </P>
+
+<P>Several generic attack methods against integrity checkers are discussed
+in length in. </P>
+
+<P><B>Real world retroviruses </B></P>
+
+<P>When we look at viruses that attack specific anti-virus products directly,
+we notice that they mostly seem to target McAfee Associate's ViruScan (SCAN.EXE),
+Microsoft Anti-virus from MS-DOS 6 (MSAV.EXE), Central Point Antivirus
+(CPAV.EXE) and the resident parts of these applications (VSHIELD and VSAFE).
+This is not surprising, as these are some of the most popular anti-virus
+products, and thus good targets for retroviruses. </P>
+
+<P>Here are some examples of known viruses that incorporate retro-routines:
+</P>
+
+<PRE>  CPW virus family:
+          tries to delete programs called TOOLKIT, GUARD, CHKVIRUS,
+          SCAN, CLEAN, CPAV and VSAFE
+
+          deletes CHKLIST.CPS files created by CPAV
+
+  Cybertech:
+          deletes CHKLIST.CPS files
+
+          removes the validation information added by SCAN and CPAV
+
+  Firefly:
+          uninstalls VSAFE from CPAV or MSAV
+
+          contains a segment of nested loops to confuse F-PROT's
+          heuristic scanning
+
+          deletes files called IM, VIRX, PCRX, VIRSTOP, MSAV, NAV,
+          SCAN, CLEAN, TBAV, TBCSCAN, TBCLEAN, TBCHECK, TBMEM,
+          TBSCANX, TBFILE, VC, and VCHECK
+
+  GoldBug:
+          by-passes VSAFE.COM and DISKMON.EXE
+
+          deletes or stops the execution of programs called SCAN,
+          CLEAN, NETSCAN, CPAV, MSAV, TNTAV - and deletes the
+          contents of CMOS memory at the same time
+
+          specifically by-passes the TBAV boot-sector check
+
+          deletes CHKLIST.* files, by-passing CPAV and MSAV
+
+  Lemming:
+          disables TBDriver from TBAV by patching it in memory
+
+          when TBScan is executed, adds the command-line parameter
+          'co', which will allow the stealth routines of the virus
+          to operate
+
+          patches text strings inside TBScan's code to make the
+          operation of the program look like it has been started
+          without the 'co' switch
+
+  Lockjaw virus family:
+          deletes F-PROT, SCAN, IM, CPAV
+
+          uninstalls VSAFE
+
+  MtE.Groove and MtE.Encroacher:
+          tries to delete files belonging to the following products:
+          Central Point Anti-Virus, Certus Novi, Fifth Generation
+          Systems Untouchable, Norton Anti-Virus, Dr. Solomon's
+          Antivirus Toolkit and VDS Virus Secure.
+
+  November_17th.890:
+          overwrites the first 256 sectors of first hard disk
+          whenever SCAN is run
+
+  Peach:
+          deletes CHKLIST.CPS files
+
+  Sandra:
+          tries to delete files belonging to CPAV, NAV, Untouchable,
+          Dr. Solomon's Antivirus Toolkit and Integrity Master
+
+          will not infect if FluShot is installed
+
+  Satanbug:
+          tries to remove the validation codes added by SCAN
+
+          guards its own are-you-there interrupt call to make it
+          difficult to detect the virus in memory with it [CM-Base]
+
+  Tequila:
+          deletes files that have validation codes added by SCAN
+
+          does not infect EXE-files which have the letters SC or V
+          in their names
+
+  Tremor:
+          hooks INT 13h via a VSAFE back-door
+
+          modifies its own memory allocation when F-PROT is executed
+          [VB2]
+
+  Varicella:
+          tries to escape and go resident during the cleaning
+          process of TBClean
+</PRE>
+
+<P><B>Is there a real problem with retroviruses? </B></P>
+
+<P>Do retroviruses pose a realistic threat to current anti- virus products?
+The most popular anti-virus tool nowadays is a stand-alone scanner, which
+by itself is almost always helpless against any new virus. Are there any
+special risks in a virus that, in addition to being a new one, also specifically
+tries to by-pass a product? </P>
+
+<P><B>Dangers of optimised virus analysis systems </B></P>
+
+<P>If a retrovirus exploits a specific flaw or the back door of a product,
+it cannot be considered a very special case, as the detection of a new
+virus requires usually an update to the product anyway. At the same time,
+it is possible to upgrade the product so that the attack method used by
+the virus can be circumvented or made obsolete. </P>
+
+<P>The main problem in this case is whether the anti-virus vendor notices
+what the virus is trying to do. Today, when several new viruses are found
+every day, there is a limited time in which to analyse any single virus.
+Virus analysis systems are automated as much as possible, and a virus typically
+only gets a cursory look - which is usually enough to add detection, identification
+and disinfection. Such ana- lysis will not reveal any special features
+the virus may contain. This also explains why there are no anti-virus products
+which can provide detailed information about each and every virus. </P>
+
+<P>If a retrovirus is run through a standard analysis system, and the product
+is tested by running it against a sample that is not resident in memory,
+the retro-features of a virus may not become known until they are observed
+directly in the real world - after which the virus will certainly get more
+attention, but this might already be a bit too late. The virus may also
+start its attack behaviours only after a certain latency time. </P>
+
+<P><B>Opening the door to other viruses </B></P>
+
+<P>It should also be noted that a virus which disables an anti- virus product
+in some way may also make the system vulnerable to other viruses, which
+the product might otherwise have handled fine. </P>
+
+<P>In many cases this is the only benefit a retrovirus gains from unloading
+a resident scanner. The scanner can't be unloaded before it is resident.
+If the virus is known to the scanning engine, a resident scanner will not
+let the virus run. If the virus is unknown to the scanner, it can operate
+even when the scanner is resident. The case is different with behaviour
+blockers, as they are not trying to find known viruses. </P>
+
+<P>There is very little a product can do against an attack which consists
+of deleting or replacing the program file itself - if the virus gets control
+before the anti-virus, the virus makes the rules. </P>
+
+<P><B>How should an anti-virus product protect itself? </B></P>
+
+<P>It is obvious that viruses can utilise a variety of tricks against anti-virus
+products. However, anti-virus programs can fight back just as efficiently.
+</P>
+
+<P><B>Making the program difficult to locate </B></P>
+
+<P>First of all, the anti-virus program itself should be renameable by
+the user. This alone would make it a lot harder for a virus to locate its
+enemy. Unfortunately, many anti-virus products refuse to run if they find
+that their program files have been renamed. </P>
+
+<P>As the virus can try to locate the anti-virus program by its contents
+as well as by name, the structure or contents of the program file should
+change with each update. </P>
+
+<P>The best way to make sure that no retrovirus is making its tricks is
+the old, well-known recipe: boot from a clean diskette and run a fresh
+copy of the anti-virus program from diskette. </P>
+
+<P><B>Self-checks </B></P>
+
+<P>Since many attack routines work by modifying an anti-virus program,
+it is imperative that all anti-virus programs make thorough checks on their
+own code. A cursory check against modifications that would result from
+an infection is not enough: if the code is not protected internally against
+patching, the integrity of the whole program code should be checked during
+start-up. </P>
+
+<P>It is not enough to ensure that the program code has not been changed.
+As demonstrated earlier in this paper, it is enough for a retrovirus to
+modify the texts or configuration info belonging to the application. </P>
+
+<P>Even though the size of an anti-virus application probably changes during
+every update, a clever retro-virus can still locate the code it wants to
+patch by using a search string. This can be overcame by encrypting the
+application. The protection will be even better if the encryption method
+or key is changed with every update. Another, easier way to achieve the
+same results is to provide the executable in packed form, as the packing
+algorithm will invalidate search strings between different versions of
+the same program. </P>
+
+<P><B>Resident security </B></P>
+
+<P>Since it is often much easier to patch a program in memory rather than
+on disk, an anti-virus application should make checksum checks on its memory
+image to ensure that no unwanted changes have taken place. This is especially
+important with resident anti-virus utilities. </P>
+
+<P>The communication channels to a resident part of an anti- virus program
+should be carefully thought out. If the TSR needs to have an uninstallation
+routine, it should be implemented so that other programs will find it difficult
+to request the uninstallation without the user noticing it. </P>
+
+<P><B>Prohibiting disassembly </B></P>
+
+<P>It can be expected that determined virus writers will try to disassemble
+anti-virus products in order to find out what makes them tick. Thus, some
+anti-debug and armouring code to protect the application might be a good
+idea - although nothing will stop a dedicated cracker. </P>
+
+<P>At least three different scanners are known to have been analysed by
+crackers, up to the point of extracting all search strings of the program.
+Such attack can be harmful in several ways: the virus writers get to see
+exactly what they will have to change in a virus to make a new, undetectable
+variant, and well-chosen search strings are also closely guarded trade
+secrets. </P>
+
+<P>Popular, easy-to-get programs are the most probable targets for attack
+routines. This makes commercial products theoretically more safe than shareware
+or freeware products. </P>
+
+<P><B>Conclusions </B></P>
+
+<P>Retroviruses are nothing new - the first ones were found in the late
+1980's. There are several attack methods that will certainly be used in
+future viruses - and some of these can be quite efficient. Therefore, extreme
+care should be taken by producers of anti-virus software to avoid the possible
+pitfalls. </P>
+
+<P>It's time to make sure your anti-virus product is not vulnerable to
+an attack it could avoid. </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

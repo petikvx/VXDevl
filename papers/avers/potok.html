@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="VBS/Potok, Potok, stream, Lord Nikon, russian, NTFS, mass mailing"><title>Streaming Infections</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2">S<u>treaming Infections </u></font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>I<u>ntroduction: </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; About one year ago, two Czech virus writers put some
+of their time into the making of the first computer virus which takes advantage
+of the NTFS facility called "streams". Win2K/Stream.3628 infects PE files
+by replacing their body with a copy of itself, while saving the original
+content of the file in an additional stream within the NTFS structure of
+the file.
+<br>&nbsp;&nbsp;&nbsp; However, this technique didn't became too popular,
+and no other similar viruses were written. Until recently...
+<br>&nbsp;
+</p><p><b>P<u>otok? </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; "Potok" is a russian word, which means "stream".
+It also means "stream" in some other slavic languages too, but the part
+that interests us most is that "Potok" is also the name of a recent mass
+mailing VBS virus, which happens to use NTFS streams as well. Written by
+someone that goes by the nick "Lord Nikon", the virus is not extremely
+complex, only about 253 lines in the main VBS source, of which a good deal
+are comments. Most of the comments are part of a "development diary"
+<br>of the author, which starts on 21st of July. The last entry in the
+log is dated 30th of July, the date when the author also mailed his creation
+to a couple of various AV developers around the world.
+<br>&nbsp;&nbsp;&nbsp; Apparently, the virus author used code pieces from
+the VBS samples included in a MSDN article called "A Programmer's Perspective
+on NTFS 2000" which between other things, contains some hints on how to
+recognize NTFS volumes from VBS, and how to operate with streams.
+<br>&nbsp;
+</p><p><b>A<u>rrival </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Like most of the other self-mailing VBS viruses,
+VBS/Potok arrives in a computer in the form of an email message which has
+the virus code attached. The attached filename in infected emails is "driver.doc{46
+spaces}.vbs".
+</p><p><img src="potok_files/potok.gif" height="284" width="580">
+</p><p>&nbsp;&nbsp;&nbsp; Fig. 1: VBS/Potok.A infected email
+</p><p>&nbsp;&nbsp;&nbsp; When run, the "driver.doc[...].vbs" file will first
+make a copy of itself in the Windows directory, copy that will further
+be used during the mass mailing step. Then, if not already there, it will
+create an empty file named "odbc.ini" in the same folder, and it will check
+if the drive hosting the virus copy is an NTFS-formatted volume. If the
+drive is not NTFS, at this point the virus simply exits. However, if the
+drive is NTFS, it will proceed to dump four other scripts in 4 associated
+streams of the "odbc.ini" file, named "main", "mail", "user" and "group",
+each one of them holding various pieces of the virus code.
+<br>&nbsp;&nbsp;&nbsp; After that, the virus creates another file in the
+"system32" subdirectory of the operating system root. This file, named
+"go.vbs" contains code which is designed to basically reverse the virus
+source splitting in the above mentioned 4 streams. After creating "go.vbs",
+the main virus component waits 10 seconds, then proceeds to execute it.
+<br>&nbsp;&nbsp;&nbsp; So, "go.vbs", carries the infection process further.
+It creates (yet!) another file, named "notepad.vbs" in the "system32\ras"
+directory, and fills it with the contents of the "main", "mail", "user"
+and "group" streams of the "odbc.ini" virus holder. Next, it also waits
+10 seconds, and passes the control to "notepad.vbs".
+<br>&nbsp;&nbsp;&nbsp; Now, if you think that "notepad.vbs" again creates
+a file, and dumps various things into it, sleeps 10 seconds, then executes
+it, you are wrong. "notepad.vbs" is actually the last file in this process,
+and holds the virus replication code as well for some other code explained
+below. The replication code will mainly instantiates an "Outlook.Application"
+object, pretty much like the LoveLetter virus does, then for the first
+50 entries in the first Outlook address list it will create e-mails with
+the a message presumably from Microsoft, and the subject "New Generation
+of drivers", having the "driver.doc[...].vbs" file attached.
+<br>&nbsp;&nbsp;&nbsp; Next, the virus attempts to backdoor the local machine.
+For that, it tries to create an account named "Lord_Nikon" with the password
+"password", which will obviously only work if the account running the virus
+has administrative privileges. It will also attempt to add the "Lord_Nikon"
+account to the "Administrators" as well for the russian-equivalent of the
+"Administrators" user groups.&nbsp; Interesting detail, the virus first
+attempts to create the "Lord_Nikon" account as well for executing the other
+account-related operations through the use of two objects named "WinNT://server"
+and "WinNT://server/group". On my test machines this operation fails, but
+the virus contains a second method to accomplish this task, based on the
+external "net.exe" application. It runs two commands, "net user Lord_Nikon
+password /add" and "net localgroup Administratotrs Lord_Nikon /add" which
+on the other side work quite well, at least the first one, therefore backdoor-ing
+the system
+<br>with the "Lord_Nikon" account. As you can see, the author also inserted
+a typo the second command, therefore the "Lord_Nikon" account won't be
+added
+<br>in the Administrators group.
+</p><p>&nbsp;&nbsp;&nbsp; After that, "notepad.vbs" terminates execution, and
+along with it, the virus execution cycle is finished. Since the virus keeps
+no track of the mails it sends, executing it again on the same machine
+will cause it to attempt to send itself via e-mail one more time, as well
+for attempting to perform all the other backdoor-ing operations.
+<br>Given the two "net..." commands open two Win32 console windows, it's
+less likely that the virus can go unnoticed, and the fact that it doesn't
+delete "go.vbs" or "notepad.vbs" also decreases its chance not to be detected
+by AV scanners.
+<br>&nbsp;&nbsp;&nbsp; An interesting thing is that most of the virus dropping/recombination
+routines are massively split into pieces using the VB operator "_". This
+must have been used as an anti-heuristic measure, but unfortunately for&nbsp;
+"Lord Nikon", many AV products have no problem in detecting it heuristically,
+no matter the line splitting.
+<br>&nbsp;
+</p><p><b>D<u>etection / Removal </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Hopefully, by now most of the AV products should
+have been updated to also search within the NTFS streams associated with
+a file. In this particular case,
+<br>there is no other chance to find if the "odbc.ini" file has been touched
+by the virus, and cleaning it also requires the product to wipe the "main",
+"mail", "user" and "group" streams. Besides that, detection and removal
+of the "go.vbs" and "notepad.vbs" files is trivial.
+<br>&nbsp;&nbsp;&nbsp; One should also keep in mind that a machine infected
+by the virus might also have an extra "Lord_Nikon" user account, so checking
+it is a must after a compromise with "Potok".
+<br>&nbsp;
+</p><p><b>T<u>he virus author's diary </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; As mentioned in the introduction, the virus contains
+a couple of comments from the author, apparently written during the time
+he has developing it. My thanks go to Dmitry Gryaznov from NAI, who took
+some time to translate the comments and provided further information regarding
+some of the details from the "diary".
+<br>"Lord Nikon" claims that he started coding the first version of the
+virus around July 16th, and finished it on July 30th. During that two weeks,
+he seems to have worked through the nights, or at quite early hours, if
+we are to believe some of the entries in the log. I'd say given the amount
+of time the author seems to have needed to finish the virus, he/she must
+have probably been a novice in VBS programming, with very few previous
+experience.
+<br>&nbsp;
+</p><p><b>C<u>onclusions </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; "Potok" is not necessarily a breakthrough in virus
+development, but it shows an interesting path which can further lead to
+more complicated things in the future.
+<br>At the time of speaking, the vast majority of computer users are not
+running NT/2K systems, and a part of those actually running such machines
+still have FAT/FAT32 drives.
+<br>&nbsp;&nbsp;&nbsp; Therefore, I believe right now a virus which depends
+on NTFS streams to replicate has few chances to reach the level of spread
+of a virus like LoveLetter or VBSWG.J. However, this kind of techniques
+can be used as additions to the main operations of the viral code to complicate
+detection and disinfection.
+<br>&nbsp;&nbsp;&nbsp; I'd say that if an antivirus product doesn't yet
+support NTFS streams scanning and disinfection, it's not such a big problem,
+at least not yet. But with more viruses attempting use them, and with the
+forthcoming of WindowsXP, an NT-based OS which after all supports NTFS
+and NTFS streams, it's good to keep an eye on
+<br>the viral developments in this area, just in case.
+</p><p><tt><b>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</b><font color="#3366ff">VBS/Potok@mm</font></tt>
+<br><tt><b>Aliases:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">VBS/Stream</font></tt>
+<br><tt><b>Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</b>Mass mailing VBS virus</tt>
+<br><tt><b>Payload:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>backdoors
+the system by creating an user named "Lord_Nikon"</tt>
+<br><tt><b>Removal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>remove
+"system32\go.vbs", "system32\ras\notepad.vbs", and the streams "main",
+"mail", "user" and "group" from the "odbc.ini" file from the Windows directory.
+Also delete the "Lord_Nikon" user account.</tt>
+</p><p>(c) Virus Bulletin Ltd, 2001
+</p></body></html>

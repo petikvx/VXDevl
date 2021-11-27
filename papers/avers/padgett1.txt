@@ -1,0 +1,280 @@
+Enclosed is my *original* text for the article which appeared
+in a butchered form in the November, 1993 Issue of _Signal_, the
+Armed Forces Communications and Electronics Assn. International Journal.
+
+(Example, the opening line that appeared in print was "Tactical computers,
+employed in growing numbers among U.S. forces, suffer from many of the
+same vulnerabilities to virus-infested software as do  commercial systems."
+- Made me sick, didn't get paid either 8*(
+						Warmly,
+							Padgett
+
+
+
+-------------8<--cut here-------------------------------------------
+
+                Tactical Computer Vulnerabilites:
+		What the "Bad Guys" Already Know
+
+                                        A. Padgett Peterson, P.E.
+
+     During the span from Vietnam to Desert Storm, the 
+battlefield has been transformed from one of "point and shoot" to 
+a world of "designate and eradicate". Triggers have been replaced 
+by joysticks as "wargames" take on a whole new meaning.
+
+     Today, the modern soldier places the same reliance on his 
+display and keyboard as we once did on  M-16s yet it is difficult 
+to field-strip and inspect a computer. Where once we trusted our 
+eyes, now we must trust electronics, yet blind trust is 
+dangerous.
+
+     The need for reliance on low-cost ruggedized commercial 
+units for data processing is nowhere so evident as on the Army 
+ATCCS (Army Tactical Command and Control System) program which is 
+partly dependent on ruggedized Intel-based computers with COTS 
+(commercial off the shelf) hardware and software. Significant 
+cost savings are realized by starting with a proven architecture 
+and adding those elements required for military use.
+
+     In the November, 1992 Signal ("Fluid Battle Scenes Bank on 
+Fast Adaptive Schemes" page 23) it is mentioned that the same 
+lightweight computer is also being used for the Marine class C 
+computer and the Army National Guard. One might expect that the 
+low-cost effectiveness will increase the deployment of such 
+units.
+
+     Security is provided by any number of COMSEC modules that 
+can provide a guarantee of confidentiality for all transmissions. 
+Yet the knowledgeable person has to wonder if this is enough.
+
+     While the protection of transmissions from interception is 
+of strategic importance, the speed of modern battle makes the 
+time involved for adversarial interception/decryption/analysis 
+excessive for use in tactical situations. In this case the 
+opponent is better served by denial of the information to anyone 
+than by interception, something that computer viruses and logic 
+bombs are very good at - and the Intel platform has been proven 
+vulnerable to such attacks.
+
+     An electronic equivalent of the neutron bomb (and not 
+controlled by any convention of warfare), the simplest form of 
+denial is via EMP (electro-magnetic pulse) or HERF (high energy 
+radio frequency) attack. At present these are not very 
+directional and can wreak the same havoc on friendly as 
+unfriendly forces unless the source is very close to the target.
+
+Faraday cages can provide shielding but a radio signal must still 
+be received and the antenna can provide the route that EMP needs 
+to vulnerable CMOS devices.
+
+     Directed attacks via software, while more complex to develop 
+and more difficult to introduce, have the advantage of doing only 
+what they have been told to do. Where EMP is the neutron bomb of 
+electronic warfare, malicious software can provide a surgical 
+strike. Like any covert operation, a major problem is insertion. 
+Unlike human actions however, there is no requirement for 
+exfiltration.
+
+     The mistake many people make is to equate the hordes of 
+more-annoying-than-harmful computer viruses seen thus far with 
+what a professional *could* create. The same mistake would be to 
+equate the capability of a member of a street gang to a delta 
+force operative.
+
+     Another would be to assume that since there are no 
+widespread viruses that infect the GOSIP/POSIX/Intel system, 
+these computers are safe from software attack. This is also far 
+from the truth.
+
+     First, consider that some of the first virus experiments 
+conducted by Dr. Fred Cohen a number of years ago were on a VAX-
+11/750. Secondly, there have been in recent years a number of 
+laboratory experiments involving UNIX viruses.
+
+     More importantly, while the bulk of the 1500+ viruses that 
+affect the IBM-PC are confined to the MS-DOS operating system, a 
+smaller number (but which account for over 50% of all reported 
+infections and whose incidence in 1993 is rising sharply) are not 
+so limited and can infect machines using OS/2, UNIX, POSIX, or 
+even those using no operating system at all such as a rack 
+mounted embedded controller.
+
+     All that is necessary for this form of attack to succeed if 
+for the system to use an Intel iapx instruction set CPU such as a 
+386 or 486 and to have an "IBM-Compliant" ROM BIOS (what is 
+really meant by "100% compatible"). At risk of slight  
+oversimplification, if you can put a floppy with MS-DOS in the 
+machine, and it will boot from that floppy, it is probably 
+vulnerable.
+
+     Further, if the machine has a fixed disk, whether or not the 
+disk is readable by MS-DOS, it can be infected by present 
+viruses. That a UNIX machine so infected will probably not run 
+properly is because STONED or MICHELANGELO do things incompatible 
+with the operating system and is not a result of the infection 
+itself. A directed attack by a professional would not have that 
+limitation.
+
+     The vulnerability ? The fact that at the BIOS level the 
+computer is fully functional with the ability to perform all 
+necessary activities from displaying messages to erasing the hard 
+disk. It just is not yet an MS-DOS/POSIX/OS-2/Unix machine and 
+yet no error checking beyond the most rudimentary is done at this 
+point.
+
+     Yet very few people really understand this situation (at the 
+National Computer Security Association Anti-Virus developer's 
+conference in Washington D.C. people came from all over the world 
+including the Soviet block and encompassed most of the top names 
+in the industry. All fit in a medium sized conference room). 
+Further, every time that a popular magazine conducts a "survey" 
+of anti-viral products, this ignorance is demonstrated yet again 
+(ignorance is curable).
+
+     One of the topics at the 1991 "Ides of March" computer virus 
+and security conference in New York was the question of the 
+viruses found on Desert Storm computers and whether or not it was 
+sabotage. The consensus was that if it had been a deliberate 
+professional attack, all of the networked battlefield computers 
+would have shut down on January 15th. That the Michelangelo Virus 
+of 1992 fizzled just like Saddam was more due to luck and the 
+amateur quality of the code than any inherent protection.
+
+     What would such an attack look like ? Well, if a computer 
+can be booted with MS-DOS then any MS-DOS program would run on 
+it. "Chuck Yeager's Flight Simulator" or "F-119 Stealth Fighter" 
+are popular examples that fit on a single floppy disk. With a few 
+hours programming, it would be easy to create an "extra added 
+attraction".
+
+     Virus screening ? McAfee SCAN, Central Point CPAV, Norton's 
+NAV, or even the MSAV that comes with MS-DOS 6.0 (just to mention 
+domestic products) are easy to obtain and avoid. So is any other 
+signature scanner and few realize the implications of "Scanning 
+for known viruses". Heuristic scanners are better but still easy 
+for a professional to accommodate.
+
+     For that matter, even anti-virals can be used to create 
+mayhem. I know of one case of a network that was brought down 
+when the system administrator detected what was thought to be a 
+virus on a server, used a popular tool to eradicate it, and on 
+re-boot discovered that the multi-gigabyte network had 
+disappeared along with the "virus". Fortunately, quick work with 
+a Texas Instruments "TI Programmer" calculator was able to 
+restore the system, but this is a skill not taught by Novell.
+
+     Of course since the battlefield computers run POSIX or some 
+other brand of UNIX, the incorrect consensus is that they are 
+immune from infection. Not at all. Worse, they are denied even 
+the limited protection provided by the products mentioned above 
+unless MS-DOS is loaded.
+
+     So a bored GI passes a few hours with the battlefield 
+computer doing "something else" and a couple of extra bytes are 
+added to the bootstrap routine (if not a game then an upgrade 
+kit/ language tutorial/ etc. The mechanisms for introduction of 
+malicious software are myriad).
+
+     The big day arrives and the battle short switch is thrown 
+(or St. Kitts reports -142 degrees or...) and all around the 
+battlefield tactical computers decide to take a day off. Fix them 
+? -sure and probably within a few hours but in today's world the 
+battle will have already been lost.
+
+     Not very likely ? Not unless active steps are taken to avoid 
+the possibility. Certainly the "Turing Halting Rule" that makes 
+it hard to tell a virus from a program until it is run is still 
+operative but there are some elements in a computer that *should* 
+not change and *any* change is detectable (the problem with some 
+early antiviral programs was that they generated so many false 
+alarms that they were quickly turned off. Some know better now).
+
+     Can software alone do the job ? Here the Turing Rule works 
+in favor of the good guys since the virus/trojan/bomb will never 
+know when or how someone is going to check. To hide any changes, 
+software must be resident and *that* is detectable if you know 
+what to look for. The infection may still take place but at least 
+it will be detected immediately. Further modern "expert systems" 
+could detect/announce/restore automatically. These exist but have 
+never been successful in the marketplace.
+
+     Along with everything else, the MICHELANGELO hype did plant 
+the phrase "655360 total bytes memory" response in many people's 
+minds. Simple and effective - on MICHELANGELO and quite a few 
+others. What was never mentioned was that a change of just one 
+byte would have made this test fail and March 6th might have been 
+very different. This type of change is what a computer is very 
+good at discerning but someone must tell it to look.
+
+     Of course some people still do not get the idea. During the 
+MICHELANGELO incident, a major hardware supplier sent out a 
+number of infected disks. After the fact they used the excuse 
+that "the anti-virus software was out of date". The real question 
+should have been why they did not notice that "something" on the 
+disk had changed - nothing was noticed since the manufacturer did 
+not know what was supposed to be on the disk and reliance was 
+placed on a signature scanner. A signature scanner that looked 
+for "known viruses". 
+
+     In the same way a battlefield computer should have a very 
+precise configuration and be verifiable. The same Turing problem 
+that makes it impossible to prevent infection also makes it 
+impossible for an infection to prevent detection. Immediate 
+detection prevents surprise and without surprise any tactical 
+advantage that malicious software might have is lost and 
+counterable.
+
+     Could hardware do the job better ? To some extent, but 
+unless you have a truly dedicated machine with all of the 
+software in ROM (one of the things we are trying to get away from 
+since updates are difficult and expensive), the vulnerability is 
+still there, the entry point has just been moved. The real 
+question now becomes "what is good enough". In my opinion it is a 
+question of risk management. Up to a point, software is effective 
+- and that point is usually one of risk of physical compromise. 
+If the equipment itself is at risk of capture and confidentiality 
+is the utmost requirement, hardware is better and should include 
+full encryption with an off-disk key. If however, availability 
+and integrity is what is needed (and with a reasonable level of 
+confidentiality), simply the ability to select the boot disk in 
+CMOS and software for the balance of the protection is Good 
+Enough (quantum economics).
+
+     Either approach, via hardware or software relies on one of 
+two things: either the adversary must not know that the defense 
+is there (and this is not perfect since he may unwittingly avoid 
+traps) or the defense must be perfectly constructed with a 
+complete understanding of the architecture and be uniquely 
+configured to each machine to avoid a single-point vulnerability. 
+Difficult ? Not particularly for someone who knows what they are 
+doing but impossible for someone who does not. The hard part is 
+telling one from the other, lots of snake oil, smoke, and colored 
+lights in the marketplace.
+
+     Certainly, the military is at special risk, it goes with the 
+territory. The good news is that it is possible to "have your 
+cake and eat it too". For example simple code change to the BIOS 
+boot selection process - something that has nothing to do with 
+later operation, could ensure that the boot process only continue 
+from the fixed disk. If it is necessary to boot from a floppy for 
+maintenance, this can be done AFTER validation/protection 
+routines are complete. To make things easier, the BIOS today is 
+contained on a single ROM chip.
+
+     Of course this is just one step in a layered approach to 
+protection, but like many other things is much easier to design 
+in than to add-on, not difficult nor does it have to violate the 
+COTS requirements, just different.
+
+     Recently, I was contacted by a representative from the 
+French wing of the CCC (Chaos Computer Club) and asked about "The 
+Little Black Book of Computer Viruses" by Mark Ludwig which 
+includes several instances of viral source code. I told them that 
+the book is full of errors but anyone good enough to spot the 
+errors did not need the book. Still nothing else technical on the 
+subject has been published. That leaves only "It can't happen 
+here." Right.
+
+-----------------------------------------------------------------
+

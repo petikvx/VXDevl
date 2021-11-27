@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu, Andreas Marx">
+   <meta name="GENERATOR" content="Mozilla/4.79 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="Windows XP, problems, bugs, features, UPnP, firewall, guide, administrator, .manifest files"><title>Expect the uneXPected</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2"><u>&nbsp;Expect the uneXPecte</u>d</font></b><b><u><font size="+2"></font></u></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt; and
+<br><i>Andreas Marx</i>, GEGA IT-Solutions GbR, Germany, &lt;<a href="mailto:amarx@gega-it.de">amarx@gega-it.de</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p>&nbsp;&nbsp;&nbsp; Long gone are the days when Windows 3.11 was the
+latest and the greatest OS version from Microsoft, or when Microsoft's
+flagship servers were running Linux. Nowadays, if you care to "fingerprint"
+them with a tool such as 'Queso' or 'nmap', you'll see that most will be
+running a flavor of Windows, probably 2000. I say probably, because it's
+hard to determine exactly which Windows version is a system running based
+only on the replies of its TCP/IP stack. However, I have no doubt that
+a lot of them are also probably running the newly released XP version,
+as well as there's no doubt that some servers carrying MS's name might
+still be running some version of Linux.
+</p><p>&nbsp;&nbsp;&nbsp; But it is also obvious that with time passing, more
+and more systems connected to the Internet will be running XP, especially
+after the "traditional" 6 months transition period will be finished.
+<br>&nbsp;&nbsp;&nbsp; The fact is that as for any new operating system
+which brings a lot new features and connectivity options, XP is also probably
+carrying a certain amount of bugs, some already know, and some unknown.
+Since the release of Windows XP, we have come by a set of problems of which
+the most important are described in this article - some of them have been
+already fixed by Microsoft, while the rest are not fixed as they are more
+or less regarded as "features", or to work this way "by design".
+</p><p>&nbsp;&nbsp;&nbsp; We intend this article to be an useful reference
+for IT staff or system administrators which have to deal with XP systems
+in their networks, or for the casual XP user which according to a Microsoft
+quote, is running "the most secure Windows version ever" on his computer.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;1. .manifest file</u>s</b>
+</p><p>&nbsp;&nbsp;&nbsp; It is maybe not known that if you create an empty
+file with the long ".manifest" extension but carrying the same name as
+an executable on your disk, (eg. "notepad.exe.manifest") and save it in
+the same directory as the respective program, then Windows XP will actively
+refuse to execute it anymore, with the more than cryptic message:
+</p><p><img src="expectunexpect_files/manifest.gif" height="139" width="368">
+</p><p>&nbsp;&nbsp;&nbsp; If you attempt the start the respective program from
+the command prompt, you'll get a more or less generic message of the same
+form which says: "The system cannot execute the specified program.".
+</p><p>&nbsp;&nbsp;&nbsp; Curious things, ".manifest" files are new additions
+to Windows XP - their main purpose is to allow developers to specify the
+so-called "shared assemblies" between modules and applications.
+</p><p>&nbsp;&nbsp;&nbsp; Unfortunately, the problem with them is that in order
+to make a system unusable, someone doesn't need to have the right to change
+important system files - the permission to add an innocent empty ".manifest"
+file into the right place is more than enough. Moreover, ".manifest" files
+are supposed to be located into a special sub-folder of the Windows XP
+installation directory. So, there should be no proper reason for one to
+exist let's say, in the "system32" directory.
+</p><p>&nbsp;&nbsp;&nbsp; Such a problem will most likely be very hard to diagnose,
+especially given that no existing file on disk was modified, or any change
+was done to the registry.
+<br>That's why you may want to look for 0-byte sized ".manifest" files
+if you ever happen to encounter one of the messages listed above.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;2. Universal Plug'n'Pla</u>y</b>
+</p><p>&nbsp;&nbsp;&nbsp; By default, on the TCP port 5000 and UDP port 1900
+of Windows XP systems there's a service listening for connections called
+the "SSDP Discovery Service".
+<br>Basically, this provides an interface between the network and the "Universal
+Plug and Play Device Host", the service taking care of Plug'n'Play devices.
+The main purpose here is of course to allow your computer to automatically
+discover and use PnP devices connected into the network.
+</p><p>&nbsp;&nbsp;&nbsp; On December 20th, 2001, eEye Digital Security released
+an advisory which covers three major bugs in the UPnP implementation included
+in Windows XP. These three bugs allow a remote attacker to launch a DoS
+attack against the respective system, to use the system to make connections
+to other arbitrary addresses on the Internet, and the worst of all, to
+execute code on the system with SYSTEM privileges.
+</p><p>&nbsp;&nbsp;&nbsp; Microsoft's response can be found in the MS01-059
+Security Bulletin, in the form of a 585KB executable that replaces a couple
+of system files, between them, 'ssdpapi.dll' and 'ssdpsrv.dll'. This package
+takes care of the vulnerability and protects the affected systems against
+the three type of attacks.
+</p><p>&nbsp;&nbsp;&nbsp; Given that it took the author of CodeRed about month
+to write the worm after a public exploit for the respective vulnerability
+was released, we wonder how much
+<br>will it take until we see a similar thing exploiting the XP UPnP hole.
+And unfortunately, such a thing will not only have a much larger target
+base than CodeRed (the number of Windows XP systems on the Internet should
+outrank the number of Windows 2000 systems running IIS), but it should
+also be more compatible than CodeRed, and technically, be able to spread
+much faster.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;3. Outlook Express 6.0 and the German versio</u>n</b>
+</p><p>&nbsp;&nbsp;&nbsp; Installed and configured by default into Windows
+XP, Outlook Express 6.0 and Internet Explorer 6.0 have the task of acting
+as "e-mail", "news", "web" and "ftp" access clients.
+</p><p>&nbsp;&nbsp;&nbsp; Of them, it is interesting to note that Outlook Express
+6.0 includes some basic "virus-protection" option which can prevent the
+user from accessing attachments with a certain set of extensions belonging
+to executable or script files, such as .VBS, .EXE or .BAT.
+</p><p>&nbsp;&nbsp;&nbsp; This is intended as some form of simple protection
+against e-mail viruses, and despite the fact that it greatly reduces the
+usability of the product, might actually prove useful in some cases.
+</p><p>&nbsp;&nbsp;&nbsp; Whenever the user receives an attachment of a file
+with one of these extensions, Outlook will display the following "status"
+message:
+</p><p><img src="expectunexpect_files/oe60eng.gif" height="147" width="440">
+</p><p>&nbsp;&nbsp;&nbsp; However, apparently the team that translated OE6.0
+into German, made a little mistake, so instead of "removed access" the
+German OE6.0 says "deleted".
+</p><p>&nbsp;&nbsp;&nbsp; So, an unsuspecting user can imagine the attachment
+was actually deleted from the message thus creating a false sense of security.
+Now, the problem with that is first of all, that it's not true. If the
+security option is disabled, the attachment can be accessed back without
+problems. Secondly, the attachment could have very well been something
+useful to the receiver, and this way he/she can be tricked into believing
+the attached file was lost. And eventually, if the attachment was infected
+with a virus, we can imagine the surprise of the user which is certain
+that the virus was "deleted" from his mails, while an antivirus product
+able to scan the OE6 mailbox reports the virus to still be present in the
+message.
+</p><p>&nbsp;&nbsp;&nbsp; Of course, a proper fix would be required in this
+case, which translates to the right meaning in the German Outlook 6.0,
+but until then, users should be aware of this fact.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;4. The Windows XP Personal Firewal</u>l</b>
+</p><p>&nbsp;&nbsp;&nbsp; Between the many security features Windows XP can
+provide, of great interest, especially to home users who connect their
+systems to the Internet through a dial-up, cable or DSL link, is XP's embedded
+Personal Firewall (PF).
+</p><p>&nbsp;&nbsp;&nbsp; Once activated, the Windows XP Personal Firewall
+does a very simple, yet very effective thing - it will prevent remote machines
+from initiating connections towards the protected system on a large array
+of TCP/IP ports, thus, greatly reducing the possibility of external attacks.
+Of course, the PF can be explicitly permitted to allow certain ports to
+pass the lock, which is very useful if someone wants to run, eg., a ftp
+server.
+</p><p>&nbsp;&nbsp;&nbsp; The only problem with the Personal Firewall, is that
+under various circumstances, it will automatically open a server port for
+outside connections, along with it, allowing remote access to the machine
+virtually from anywhere on the Internet, without even noticing the user.
+This problem takes place when someone has the PF running, and tries to
+activate the XP Remote Desktop Server. During this process, XP will automatically
+add the Remote Desktop port to the 'allowed' server ports, and silently
+give remote parties the ability to initiate a Remote Desktop session with
+the machine.
+<br>&nbsp;&nbsp;&nbsp; Of course, one would also require a valid username
+and passport to initiate the Remote Desktop session, but still, the first
+step has been done, and along with it, a door was open into the security
+defenses of the machine, without any warning at all to the unsuspecting
+user.
+</p><p>&nbsp;&nbsp;&nbsp; Microsoft was notified about this problem in November
+2001, and the issue was said to be under investigation, maybe scheduled
+for fixing in the future.
+</p><p>&nbsp;&nbsp;&nbsp; Another thing which we should mention is that the
+effect could not be reproduced on all of our test configurations. It didn't
+take place on a test English installation of XP, but it was initially found
+and reproduced on the German MSDN Windows XP Home and Pro versions.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;Some conclusion</u>s</b>
+</p><p>&nbsp;&nbsp;&nbsp; The recommendations to practice caution with Windows
+XP are virtually everywhere on the web. That's why we are not going to
+add any fuel to the topic.
+</p><p>&nbsp;&nbsp;&nbsp; On the contrary, all of the problems mentioned in
+this article can be avoided through very simple means, and an informed
+user should have no problems either dealing off with the translation issues
+in the German Outlook 6.0. So, if you want to install and take advantage
+of all the new things in XP, just go ahead.
+</p><p>&nbsp;&nbsp;&nbsp; But <font color="#ff0000">_wait_</font>! Don't forget
+at least to take care of the UPnP problem by installing the patch or disabling
+the SSDP service. If you have a firewall, cut the TCP port 5000 and the
+UDP port 1900 - there's absolutely no reason someone from the Internet
+should connect a Plug'n'Play device into your network.
+</p><p>&nbsp;&nbsp;&nbsp; Also, especially if you use an isolated computer,
+it would be better to install a separate, more configurable Personal Firewall
+with more features than XP's built in implementation which is only designed
+to provide a basic line of security.
+</p><p>&nbsp;&nbsp;&nbsp; And eventually, if you notice any of the strange
+error messages pointed in the ".manifest" section of this article, you
+may want to take a look for any such files in the system or Windows directories,
+as most likely, they have no proper reason to be in there.
+<br>&nbsp;
+<br>&nbsp;
+</p><p>(c) Virus Bulletin Ltd, 2002
+</p></body></html>

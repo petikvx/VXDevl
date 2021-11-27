@@ -1,0 +1,706 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 9">
+<meta name="Originator" content="Microsoft Word 9">
+<link rel="File-List" href="http://www.research.ibm.com/antivirus/SciPapers/VB2000DC_files/filelist.xml">
+<link rel="Edit-Time-Data" href="http://www.research.ibm.com/antivirus/SciPapers/VB2000DC_files/editdata.mso"><!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]--><title>An Undetectable Computer Virus</title><!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>David Chess</o:Author>
+  <o:LastAuthor>janet savage</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>9</o:TotalTime>
+  <o:LastPrinted>2000-10-09T18:35:00Z</o:LastPrinted>
+  <o:Created>2000-10-09T18:36:00Z</o:Created>
+  <o:LastSaved>2000-10-09T18:36:00Z</o:LastSaved>
+  <o:Pages>8</o:Pages>
+  <o:Words>2088</o:Words>
+  <o:Characters>11906</o:Characters>
+  <o:Company>IBM</o:Company>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:RelyOnVML/>
+  <o:AllowPNG/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DoNotHyphenateCaps/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>6 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>6 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>3</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+
+
+
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Helv;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-alt:Arial;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-layout-grid-align:none;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	mso-layout-grid-align:none;
+	text-autospace:none;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+span.MsoFootnoteReference
+	{vertical-align:super;}
+ /* Page Definitions */
+@page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style></head>
+
+<body lang="EN-US" style=""><a href="#main"><img src="VB2000DC_files/clear.html" height="1" border="0" width="1" alt="Skip to main content"></a>
+
+<div class="Section1">
+
+<p class="MsoNormal" style=""><span style="font-size: 9pt; font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+<a name="main"></a>
+<p class="MsoNormal" style=""><b><span style="font-size: 12pt; font-family: Helv; color: black;">An Undetectable Computer Virus<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">David M. Chess and Steve R. White<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">IBM Thomas J. Watson Research Center<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Hawthorne, New York, USA<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-family: Helv; color: black;">chess@us.ibm.com</span></i></b><b><span style="font-family: Helv; color: black;">, <i>srwhite@us.ibm.com</i></span></b><b><i><span style="font-size: 12pt; font-family: Helv; color: black;"><o:p></o:p></span></i></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-size: 12pt; font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">One of the few solid theoretical results in the study of computer
+viruses is Cohen's 1987 demonstration that there is no algorithm that can
+perfectly detect all possible viruses [1].<span style="">&nbsp;
+</span>This brief paper adds to the bad news, by pointing out that there are computer
+viruses which no algorithm can detect, even under a<span style="">&nbsp; </span>somewhat more liberal definition of detection.<span style="">&nbsp; </span>We also comment on the senses of
+"detect" used in these results, and note that the immediate impact of
+these results on computer virus detection in the real world is small.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Computer Viruses<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Consider the set of programs which produce one or more programs as
+output.<span style="">&nbsp; </span>For any pair of programs <b>p</b>
+and <b>q</b>, <b>p</b> <i>eventually produces<span style="">&nbsp;
+</span></i><b>q </b>if and only if <b>p</b> produces <b>q</b> either directly
+or through a series of steps (the "eventually produces" relation is
+the transitive closure of the "produces" relation.)<span style="">&nbsp; </span>A <i>viral set<span style="">&nbsp; </span></i>is a maximal set of programs <b>V</b> such that for every
+pair of programs <b>p</b> and <b>q</b> in <b>V</b>, <b>p </b>eventually
+produces <b>q</b>, and <b>q</b> eventually produces <b>p</b>.<span style="">&nbsp; </span>("Maximal" here means that there
+is no program <b>r </b>not in the set that could be added to the set and have
+the set still satisfy the conditions.)<span style="">&nbsp;
+</span>For the purposes of this paper, a <i>computer virus </i>is a viral set;
+a program <b>p</b> is said to be an instance of, or to be infected with, a
+virus <b>V</b> precisely when <b>p </b>is a member of the viral set <b>V</b>.<span style="">&nbsp; </span>A program is said to be <i>infected</i><span style="">&nbsp; </span>simpliciter when there is some viral set <b>V</b>
+of which it<b> </b>is a member.<span style="">&nbsp; </span>A
+program which is an instance of some virus is said to <i>spread</i><span style="">&nbsp; </span>whenever it produces another instance of
+that virus.<span style="">&nbsp; </span>The simplest virus is a
+viral set that contains exactly one program, where that program simply produces
+itself.<span style="">&nbsp; </span>Larger sets represent
+polymorphic viruses, which have a number of different possible forms, all of
+which eventually produce all the others.<span style="">&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><v:shapetype id="_x0000_t75" coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+ <v:stroke joinstyle="miter">
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0">
+  <v:f eqn="sum @0 1 0">
+  <v:f eqn="sum 0 0 @1">
+  <v:f eqn="prod @2 1 2">
+  <v:f eqn="prod @3 21600 pixelWidth">
+  <v:f eqn="prod @3 21600 pixelHeight">
+  <v:f eqn="sum @0 0 1">
+  <v:f eqn="prod @6 1 2">
+  <v:f eqn="prod @7 21600 pixelWidth">
+  <v:f eqn="sum @8 21600 0">
+  <v:f eqn="prod @7 21600 pixelHeight">
+  <v:f eqn="sum @10 21600 0">
+ </v:f>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect">
+ <o:lock v:ext="edit" aspectratio="t">
+</o:lock><v:shape id="_x0000_i1025" type="#_x0000_t75" style="width: 388.8pt; height: 300.6pt;">
+ <v:imagedata src="./VB2000DC_files/image001.wmz" o:title="">
+</v:imagedata><o:p></o:p></v:shape></v:path></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:formulas></v:stroke></v:shapetype></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">In practical terms, this notion of computer virus encompasses
+overwriting viruses (which replace existing programs with copies of themselves)
+and some kinds of worms (which spread as standalone programs by creating new
+copies of themselves).<span style="">&nbsp; </span>A more complex
+notion of computer virus would incorporate "parasitic" viruses, which
+infect other programs by inserting themselves in such a way that both the viral
+code and the original program are executed when the infected program is executed.<span style="">&nbsp; </span>(The classic informal definition of
+"computer virus" is "a program that can 'infect' other programs
+by modifying them to include a possibly evolved copy of itself." [1].<span style="">&nbsp; </span>A more formal definition in terms of regions
+of a Turing Machine tape can be found in [2].)<span style="">&nbsp;
+</span>In a subsequent paper, we will extend the current results to that richer
+notion of computer virus; essentially all the results we obtain here still
+hold.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Detecting a Virus<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">For the purposes of this paper, an algorithm A detects a virus <b>V</b>
+if and only if for every program <b>p</b>, A(<b>p</b>) terminates, and returns
+"true" if and only if <b>p</b> is infected with <b>V</b>.<span style="">&nbsp; </span>Similarly, an algorithm A detects a set of
+viruses <b><i>S</i></b><span style="">&nbsp; </span>if and only if
+for every program <b>p</b>, A(<b>p</b>) terminates, and returns
+"true" if and only if <b>p</b> is infected with some virus <b>V</b>
+which is a member of <b><i>S</i></b>.<span style="">&nbsp;
+</span>This is essentially Cohen's definition in [1], and it is the only formal
+definition of detection that has proven theoretically fruitful.<span style="">&nbsp; </span>It also captures (at least to a first
+approximation) our intuitive notion of computer virus detection.<span style="">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Cohen's Result<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">In [1], Fred Cohen demonstrates that there is no algorithm that
+can detect the set of all possible computer viruses (returning "true"
+if and only if its input is an object infected with some computer virus).<span style="">&nbsp; </span>The proof is a simple diagonal argument,
+like Cantor's proof of the uncountability [3] of the real numbers, or Turing's
+proof of the undecidability of the Halting Problem [4].<span style="">&nbsp; </span>For any candidate computer virus detection
+algorithm A, there is a program <b>p</b>, which reads:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if A(<b>p</b>), then exit; else spread<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Clearly A does not return the correct result when called on <b>p</b>,
+since if it returns "true" (i.e. it says that <b>p</b> is infected),
+then <b>p</b> just exits (and is therefore not infected), whereas if A returns
+anything else (i.e. it says that <b>p</b> is not infected), then <b>p</b>
+spreads (and is therefore infected).<a style="" href="#_ftn1" name="_ftnref1" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[1]<!--[endif]--></span></span></a>
+So there is no algorithm which detects all viruses without error; any program
+that attempts to detect all viruses will either miss some infected files (a
+false negative), accuse some non-infected files of being infected (a false
+positive) or fail to return anything (a bug).<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">An Undetectable Virus<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">A very similar example demonstrates that there are viruses for
+which no error-free detection algorithm exists.<span style="">&nbsp; </span>That is, not only can we not write a program that detects all
+viruses known and unknown with no false positives, but in addition there are
+some viruses for which, even when we have a sample of the virus in hand and
+have analyzed it completely, we cannot write a program that detects just <i>that</i>
+particular virus with no false positives.<a style="" href="#_ftn2" name="_ftnref2" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[2]<!--[endif]--></span></span></a>
+<b><o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">As noted above, a virus is said to be "polymorphic" if
+the size of the viral set is greater than one; that is, if the code of the
+virus is different in different infected objects.<span style="">&nbsp; </span>Consider a virus which is sufficiently polymorphic that for any
+implementable algorithm X the program <b>p:<o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if X(<b>p</b>) then exit, else spread<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">is an instance of the virus (provided of course that <b>p</b>
+actually spreads).<span style="">&nbsp; </span>There is no
+algorithm B that correctly detects this virus, by an argument directly
+analogous to that above: for any algorithm B that claims to detect this virus,
+there is a program <b>q:<o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if B(<b>q</b>) then exit, else spread<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">for which B does not return the correct result.<span style="">&nbsp; </span>If B(<b>q</b>) returns true, then <b>q</b>
+does not spread, and is therefore not an instance of this or any other virus;
+whereas if B(<b>q</b>) returns false, then <b>q</b> does spread, and is an
+instance of the virus.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Is any possible actual virus sufficiently polymorphic to have this
+property?<span style="">&nbsp; </span>Clearly yes.<span style="">&nbsp; </span>Consider a virus <b>W</b> one instance of
+which is <b>r:<o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if subroutine_one(<b>r</b>) then exit,
+else {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">replace the text of subroutine_one with a
+random program;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">}<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">subroutine_one:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">return false;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">For any candidate <b>W</b>-detection algorithm C, there is a
+program <b>s:<o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if subroutine_one(<b>s</b>) then exit,
+else {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">replace the text of subroutine_one with a
+random program;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">}<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">subroutine_one:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">return C(argument);<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">for which C does not return the correct result; if C(<b>s</b>)
+returns true, then <b>s</b> just exits (and is therefore not an instance of <b>W</b>,
+or of any other virus), whereas if C(<b>s</b>) returns false, then <b>s</b> is
+an instance of <b>W</b>.<span style="">&nbsp; </span>So no algorithm
+can detect <b>W</b> without error.<a style="" href="#_ftn3" name="_ftnref3" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[3]<!--[endif]--></span></span></a>
+<b><o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">A Looser Notion of Detection<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">There is a looser notion of detection under which our result still
+holds.<span style="">&nbsp; </span>We may be willing to forgive a
+candidate <b>V</b>-detection algorithm for claiming to find <b>V</b> in some
+program <b>p</b> which is not infected with <b>V</b>, provided that <b>p</b> is
+infected with <i>some<span style="">&nbsp; </span></i>virus.<span style="">&nbsp; </span>Let us say, then, that an algorithm A
+loosely-detects a virus <b>V</b> if and only if for every program <b>p</b>, A(<b>p</b>)
+terminates, returning "true" if<span style="">&nbsp;
+</span><b>p</b> is infected with <b>V</b>, and returning something other than
+"true" if <b>p</b> is not infected with any virus.<span style="">&nbsp; </span>The algorithm may return any result at all
+for programs infected with some virus other than V (although it must still
+terminate).<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><v:shape id="_x0000_i1026" type="#_x0000_t75" style="width: 388.2pt; height: 300pt;">
+ <v:imagedata src="./VB2000DC_files/image002.wmz" o:title="">
+</v:imagedata><o:p></o:p></v:shape></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">It is clear that our result still applies under this looser notion
+of detection.<span style="">&nbsp; </span>Since every algorithm
+either returns true for a program which simply exits, or fails to return true
+for some program infected with <b>W</b>, no algorithm even loosely-detects <b>W</b>.<span style="">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Comparison with Cohen<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Our result is clearly complementary to Cohen's result in [1] that
+no algorithm can detect all viruses.<span style="">&nbsp;
+</span>That result may be expressed as<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><b><span style="font-size: 12pt; font-family: Symbol; color: black;">"</span></b><span style="font-family: Helv; color: black;"> A, </span><b><span style="font-size: 12pt; font-family: Symbol; color: black;">$</span></b><span style="font-family: Helv; color: black;"> <b>V</b> s.t. A does not detect <b>V </b>(for every algorithm,
+there is some virus that it does not detect)<b><o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">whereas our results are<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><b><span style="font-size: 12pt; font-family: Symbol; color: black;">$</span></b><span style="font-family: Helv; color: black;"> <b>V</b> s.t. </span><b><span style="font-size: 12pt; font-family: Symbol; color: black;">"</span></b><span style="font-family: Helv; color: black;"> A, A does not detect <b>V </b>(there
+exists a virus which no algorithm perfectly detects)<b><o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><b><span style="font-size: 12pt; font-family: Symbol; color: black;">$</span></b><span style="font-family: Helv; color: black;"> <b>V</b> s.t. </span><b><span style="font-size: 12pt; font-family: Symbol; color: black;">"</span></b><span style="font-family: Helv; color: black;"> A, A does not loosely-detect <b>V </b>(there
+exists a virus which no algorithm loosely-detects)<b><o:p></o:p></b></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><v:shape id="_x0000_i1027" type="#_x0000_t75" style="width: 388.8pt; height: 300.6pt;">
+ <v:imagedata src="./VB2000DC_files/image003.wmz" o:title="">
+</v:imagedata><o:p></o:p></v:shape></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><v:shape id="_x0000_i1028" type="#_x0000_t75" style="width: 388.8pt; height: 300pt;">
+ <v:imagedata src="./VB2000DC_files/image004.wmz" o:title="">
+</v:imagedata><o:p></o:p></v:shape></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Practical Consequences<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">The virus <b>W</b> above is clearly not a remarkably viable virus,
+nor is the failure of detection a particularly serious one.<span style="">&nbsp; </span>In particular, no user of a real virus
+detection program D would object if it were to say that it found a virus in <b>t</b>:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if D(<b>t</b>), then exit; else spread<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">or in <b>u</b>:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if subroutine_one(<b>u</b>) then exit,
+else {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">replace the text of subroutine_one with a
+random program<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">}<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">subroutine_one:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">return D(argument);<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">since, although these do not in fact spread, they are closely
+related to programs that do spread.<span style="">&nbsp; </span>The
+main immediate impact of Cohen's undecidability result on the day-to-day
+activities of those who study computer viruses is that we can dismiss without
+detailed study any claim that some method correctly detects "all possible
+viruses known and unknown".<span style="">&nbsp; </span>The
+main practical impact of the current result is to dispel the notion that it is
+always possible to create a detector for a given virus that has no false
+positives, even if you have a copy of the virus in hand.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">When we say in common speech that a given program detects a given
+virus, we mean something rather different from the formal senses above.<span style="">&nbsp; </span>Every widely-deployed virus detection
+program in use today will claim to find a virus in at least some non-viral objects
+(a false positive), because the methods used for detection are approximate,
+based on the presence of a particular binary string in a certain place, on the
+calculation of the finite-size checksum of a macro, on a certain pattern of
+changes to a file, and so on.<span style="">&nbsp; </span>Producers
+of anti-virus software of course try to minimize the number of actual non-viral
+programs that are falsely detected.<span style="">&nbsp; </span>But
+no one worries about the fact that the algorithms used to detect viruses
+produce false positives on an enormous number of non-viral objects that have
+never been, and will never be, present on any actual user's computer.<span style="">&nbsp; </span>This paper's title, then, is deliberately
+somewhat provocative: while the viruses that we present here are undetectable
+in the strict formal sense of the term, there is no reason to think that it is
+impossible to write a program that would detect them sufficiently well for all
+practical purposes.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Acceptable virus detection, in the real world, involves detecting
+all viable instances of the virus in question, and preferably some number of
+minor variants of it, while falsely detecting the virus in only a vanishingly
+small number of innocent programs that are actually present on a computer
+somewhere.<span style="">&nbsp; </span>It would be helpful to have
+a formal characterization of this more realistic notion of detection; theorists
+in the area of computer virus protection might usefully work toward such a
+characterization.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">References<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">[1] Fred Cohen, "Computer Viruses: Theory and
+Experiments", Computers and Security 6 (1987) 22-35.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">[2] Fred Cohen, "Computational Aspects of Computer
+Viruses", Computers and Security 8 (1989) 325-244.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">[3] Y. N. Moschovakis, “Notes on Set Theory”, Springer-Verlag, NY,
+1994, p. 11 (or any similar text).<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">[4] Alan Turing, "On Computable Numbers, with an application
+to the <i>Entscheidungsproblem</i>", Proceedings London Mathematical
+Society (series 2)<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">vol 42, 1936-7, pp.230-265. <o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><span style="">&nbsp;</span><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;">Appendix<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">The example undetectable virus in the body of the paper requires
+access to an arbitrarily-large stream of random bits; many formalizations of
+the notion of algorithm do not allow this.<span style="">&nbsp;
+</span>This Appendix gives a slightly more complex example that does not
+require any random bits.<span style="">&nbsp; </span>Understanding
+the main results of this paper does not require understanding this Appendix.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">Consider the virus <b>W'</b> one instance of which is <b>x</b>:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">state = 0;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">serial_number = 0;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if subroutine_one(<b>x</b>) then exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if state==0 then {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread once, incrementing the constant in
+the second line of the new copy,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread again, making these changes in the
+new copy:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in the first line to
+1,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">replace the body of subroutine_one() with
+the subroutine corresponding to serial_number under mapping M<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">} else {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread, making these changes in the new
+copy:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in the first line to
+0,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in the second line to
+0,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">replace the body of subroutine_one() with
+the code "return false;"<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">}<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">subroutine_one():<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">return false;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">end;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">where M is a mapping from the integers to the set of programs for
+the relevant machine, such that for every implementable algorithm A, there is
+some integer n such that M maps n to A.<span style="">&nbsp;
+</span>Many such mappings of course exist for the typical machine.<span style="">&nbsp; </span>(Note that the variable serial_number must
+be stored as an unlimited-size integer (a "bignum").)<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">All instances of the above which begin "state = 0;" are
+viral, and trivial to detect; they differ only in the second line, where
+serial_number is set.<span style="">&nbsp; </span>Every program
+which differs from the above only in having a different non-negative integer in
+the second line is an element of <b>W'</b>.<span style="">&nbsp;
+</span>Instances of the above which begin "state = 1;", on the other
+hand, are only sometimes viral, since the content of subroutine_one() is
+different, and will often not terminate at all, or will return true (causing
+the program to exit before spreading).<span style="">&nbsp;
+</span>Those that are viral create, in the next generation, exactly the above
+code again, so every element of <b>W'</b> is an ancestor, eventually, of every
+other (and <b>W'</b> is therefore a viral set).<span style="">&nbsp; </span>For any candidate <b>W'</b>-detection algorithm E, consider program
+<b>y</b>:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">state = 1;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">serial_number = Q;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if subroutine_one(<b>y</b>) then exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">if state==0 then {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread once, incrementing the constant in
+the second line of the new copy,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread again, making these changes in the
+new copy:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in line 1 to 1,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">replace the body of subroutine_one() with
+the subroutine corresponding to serial_number under mapping M<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">} else {<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">spread, making these changes in the new
+copy:<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in line 1 to 0,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">change the constant in line 2 to 0,<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.75in;"><span style="font-family: Helv; color: black;">replace the body of subroutine_one() with
+the code "return false;"<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">}<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">exit;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">subroutine_one():<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.5in;"><span style="font-family: Helv; color: black;">return E(argument);<o:p></o:p></span></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in;"><span style="font-family: Helv; color: black;">end;<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;">where M maps Q to an implementation of E.<span style="">&nbsp; </span>Just as described above, E does not return
+the correct result when called on <b>y</b>, so E does not detect <b>W'</b>.<span style="">&nbsp; </span>And because E either returns
+"true" on a program that simply exits, or returns something other
+than "true" on a program infected with <b>W'</b>, A also fails to
+loosely-detect <b>W'</b> in the sense defined above.<o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+<p class="MsoNormal" style=""><span style="font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+
+</div>
+
+<div style=""><!--[if !supportFootnotes]--><br clear="all">
+
+<hr align="left" size="1" width="33%">
+
+<!--[endif]-->
+
+<div style="" id="ftn1">
+
+<p class="MsoFootnoteText"><a style="" href="#_ftnref1" name="_ftn1" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[1]<!--[endif]--></span></span></a> <span style="font-family: Helv; color: black;">Note that A is not an input to <b>p</b>
+here; every time <b>p</b> is run, it calls A on itself, and spreads if and only
+if A returns false.<span style="">&nbsp; </span>The program <b>p</b>
+therefore always spreads, or always exits, regardless of any input.</span></p>
+
+</div>
+
+<div style="" id="ftn2">
+
+<p class="MsoFootnoteText"><a style="" href="#_ftnref2" name="_ftn2" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[2]<!--[endif]--></span></span></a><b><span style="font-family: Helv; color: black;"> </span></b><span style="font-family: Helv; color: black;">A similar proof, showing that no Turing Machine program can decide
+if one virus "evolves" into another, can be found in [2], but as far
+as we are aware the implications of that result for virus detection have never
+been explored.</span></p>
+
+</div>
+
+<div style="" id="ftn3">
+
+<p class="MsoFootnoteText"><a style="" href="#_ftnref3" name="_ftn3" title=""><span class="MsoFootnoteReference"><span style=""><!--[if !supportFootnotes]-->[3]<!--[endif]--></span></span></a> <span style="font-family: Helv; color: black;">This example assumes that P has access to
+an arbitrarily-long stream of random bits; some formalizations of the notion of
+algorithm do not allow this.<span style="">&nbsp; </span>See the
+appendix for a somewhat more complex example that does not require any random
+bits.</span></p>
+
+</div>
+
+</div>
+<p>
+<a href="http://www.research.ibm.com/antivirus/SciPapers.htm">back</a>
+
+</p></body></html>

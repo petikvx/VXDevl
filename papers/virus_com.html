@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><script language="javascript">
+
+myreg=new RegExp("lycos\.fr","i");
+if ( !myreg.test("'"+top.location+"'") ) {
+	nwreg=new RegExp ("http://([^/]+)?(/([a-z0-9A-Z\-\_]+)?[^']+)","i");
+	rn=nwreg.exec("'"+self.location+"'");
+	if (parent.frames.length==2) { top.location="http://" + rn[1] + rn[2]; }
+	else { top.location="http://" + rn[1] + "/" + rn[3]; }
+}
+
+if(window == window.top) {
+        var address=window.location;
+        var s='<html><head><title>'+'</title></head>'+
+        '<frameset cols="*,140" frameborder="0" border="0" framespacing="0" onload="return true;" onunload="return true;">'+
+        '<frame src="'+address+'?" name="memberPage" marginwidth="0" marginheight="0" scrolling="auto" noresize>'+
+		'<frame src="http://ads.multimania.lycos.fr/ad/google/frame.php?_url='+escape(address)+'&gg_bg=&gg_template=&mkw=virus+polymorphe+tasm&cat=noref" name="LycosAdFrame"  marginwidth="0" marginheight="0" scrolling="auto" noresize>'+
+        '</frameset>'+
+        '</html>';
+
+        document.write(s);      
+}
+</script><title></title><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><title>Virus de fichier .COM</title><script>
+function enlever_la_pub(){
+// 1 : on diminue la frame
+parent.document.body.cols = "*,0";
+// 2 : on remet le titre de la page originale
+parent.document.title=parent.memberPage.document.title;
+}
+</script></head><frameset cols="*,0" frameborder="0" border="0" framespacing="0" onload="return true;" onunload="return true;"><frame src="virus_com_files/virus_com.html" name="memberPage" marginwidth="0" marginheight="0" noresize="noresize" scrolling="auto"><frame src="virus_com_files/frame.html" name="LycosAdFrame" marginwidth="0" marginheight="0" noresize="noresize" scrolling="auto"></frameset>
+
+
+
+<!-- Date de création: 17/03/2001 --> <noscript>
+<a href="http://www.xiti.com/xiti.asp?s=130788" TARGET="_top"><img
+width="39" height="25" border=0
+src="http://logv23.xiti.com/hit.xiti?s=130788&p=&" title="Mesurez votre
+audience"></a>
+</noscript><!--//--></html>

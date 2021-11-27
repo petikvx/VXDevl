@@ -1,0 +1,213 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Searching for specific patterns: Scanning</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="SearchingForSpecificPatternsScanning"></A><B><FONT COLOR="#004080"><FONT SIZE=+2>Searching
+For Specific Patterns: Scanning</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><A NAME="AboutScanners"></A><B><FONT SIZE=+1>About Scanners</FONT></B></P>
+
+<P>Virus scanners are products designed to help identify viruses within
+files, boot sectors, partition tables, memory, and other hiding places;
+to name them; and potentially to help remove them. Scanners cannot be your
+only approach to maintaining a virus&shy;free environment, for they are
+destined to failure, and can be time&shy;consuming to run. </P>
+
+<P>Nevertheless, the scanning job is an important one, and it is reasonable
+to wonder whether the scanner you are using is adequate for the job. It
+is reasonable because of the astonishing claims made by some vendors. One
+vendor bragged that their product &quot;is now on its third upgrade and
+well into its second year on the market. The product has had a chance to
+mature and grow in order to satisfy end&shy;user's needs. We are also pround
+(sic) to announce that [truly big and famous company] has recently signed
+a corporate license agreement with us to use [product name] internally.
+&quot; Unfortunately for this truly big and famous company and other shoppers,
+the product was only able to detect viruses in four of 95 test files, each
+of which was infected with a different virus. </P>
+
+<P>We believe that ability to detect a virus, even if the name provided
+is not quite in keeping with local custom, is probably the most important
+feature of a scanner. Assuming a choice between two scanners which detect
+every virus ever developed, we would then choose the most precise or fastest,
+providing it made a clamor or displayed a message on the screen when it
+found something. </P>
+
+<P><A NAME="WhyaScannerProsandCons"></A><B><FONT SIZE=+1>Why a Scanner:
+Pros and Cons</FONT></B></P>
+
+<P>Many users swear by scanners as a means of helping to detect viruses.
+Others seem to swear at them. Here's a quick look at their pros and cons.
+</P>
+
+<P><B><U>Pros</U></B> </P>
+
+<P>A scanner is critical for providing a precise identification of a virus
+in your system. Without a precise identification, we cannot know the best
+course of action for removing it, and we cannot be sure we have removed
+it completely. </P>
+
+<P>Unlike the &quot;change checkers&quot; described previously, or the
+TSRs to be described in the next section, the scanner is the only kind
+of anti&shy;virus program that can spot a virus before it has run. Thus
+if you use it to check new software before running it, you can prevent
+even one of your files from becoming infected. </P>
+
+<P><B><U>Cons</U></B> </P>
+
+<P>Not all vendors tell the truth. I was once shown a scanner at a trade
+show that &quot;defeated all known viruses. &quot; I asked if it defeated
+X, Y, or Z, pulling a few names from my hat that I thought they might not
+have heard of. No, no, no were the replies. &quot;What does it catch&quot;,
+I asked. &quot;DataCrime&quot; was the reply. &quot;Which version?&quot;,
+I asked. The programmer wasn't sure. But I was assured that I could add
+scan codes, to catch other viruses. &quot;Where do I get those scan codes?&quot;,
+I inquired. The programmer was not sure. The moral of the story is that
+a scanner might not catch quite as many viruses as the marketing folks
+would have you believe. Be sure that the scanner you are about to purchase
+catches the viruses you have some reasonable probability of getting this
+year. </P>
+
+<P>Scanners are always out of date. Most scanners are usually somewhat
+incomplete when they are released. No virus researcher has access to every
+virus on earth. But even if your scanner was absolutely current one month
+ago, and caught every virus that existed on earth the day it was released,
+there are now 60 or more viruses that it cannot catch. While your odds
+of getting a brand new virus are very, very small, you must recognize that
+scanners will not catch everything. </P>
+
+<P>Some scanners may not clean from memory the scan codes they use in searching
+for viruses. If you run two scanners in an uninfected machine, you have
+some chance of a false alarm when running the second scanner. </P>
+
+<P><A NAME="HexBinaryStrings"></A><B><FONT SIZE=+1>Hex (Binary) Strings</FONT></B></P>
+
+<P>It is sometimes said that a program is stored in &quot;binary&quot;.
+As with most assertions, this is not quite true. When you try using the
+TYPE command to view one of your COM or EXE files, what you are looking
+at is <U>tokens</U>, or symbols which can be translated into instructions
+your machine can understand. A total of 256 different symbols can be used,
+sometimes called &quot;the extended character set&quot;, ASCII, or ANSI.
+When these characters are stored, they are not stored as you see them,
+of course, but rather as magnetic patterns of positive and negative pulses,
+according to rules followed by your hard disk or floppy controller. </P>
+
+<P>By using a base of 16 rather than 10, it is possible to refer to each
+of these 256 values using just two characters. The 256 values can be assigned
+numbers, which can range from 0 to 255 in decimal (base 10) or from 00
+to FF in hexadecimal. </P>
+
+<P>A program that is looking for a virus can look for some unique sequence
+of code within each of your programs. In the case of the Jerusalem virus,
+we are likely to be able to find the 4 byte hexadecimal pattern 8E D0 BC
+00 07 50 B8 C5 in many of our different strains. </P>
+
+<P>Using a short scan code can result in some confusion, as a scanner can
+call each of several viruses by the same generic name. Using longer scan
+codes poses a different problem, however. While it ensures that we have
+precisely identified the virus, a virus that is slightly different might
+not be detected at all! So a clever scanner might look for a simple common
+string, and then if found, look for additional information from its database
+of known strings. If one is found, it can identify the virus precisely.
+If only the simple common string is found, then the scanner might confess
+as follows: &quot;Jerusalem&shy;related virus detected in file. &quot;
+</P>
+
+<P>Many viruses encrypt parts of themselves when they infect files, in
+order to defeat the scanners that are looking for them. Each encrypted
+copy of the virus looks a bit different to a scanner, and only the decryption
+algorithm provides a solid clue to the scanner as to what virus is here.
+Because decryption algorithms can be legitimate code, this becomes a difficult
+problem. The Fish 6 virus is encrypted, but you can still find it by looking
+for 7 or 8 byte patterns. </P>
+
+<P><A NAME="UsingaScanner"></A><B><FONT SIZE=+1>Using a Scanner</FONT></B></P>
+
+<P>If you plan to use a scanner, you must follow these instructions if
+you hope to achieve success in detecting viruses: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Cold boot the machine to be scanned from an uninfected
+write&shy;protected floppy disk. Because a virus cannot get past the write
+protection mechanism of a floppy drive, you are thus assured that no virus
+has moved into memory, from whence it can defeat your scanner. </FONT></LI>
+
+<LI><FONT SIZE=-1>Run the scanner from the disk you just booted from, and
+do so before running any other programs &frac34; especially programs that
+are on a drive other than the one you just booted from. Any device driver
+called by your hard disk's CONFIG. SYS can contain a virus. </FONT></LI>
+
+<LI><FONT SIZE=-1>Scan the disk you just booted from, to ensure that it
+is not infected. </FONT></LI>
+
+<LI><FONT SIZE=-1>Watch your screen carefully during the scanning process,
+if your scanner does not pause when it detects a virus. </FONT></LI>
+
+<LI><FONT SIZE=-1>Follow the instructions for your scanner carefully. Failure
+to issue the correct command line may result in a partial scan, and you
+might inadvertently skip the scanning of a directory which contains a virus.
+</FONT></LI>
+</UL>
+
+<P><A NAME="ProblemswithScanning"></A><B><FONT SIZE=+1>Problems with Scanning</FONT></B></P>
+
+<P>The scanning paradigm has problems with both virus detection and removal,
+and these problems are growing over time. There are other problems, as
+well, leading us to the conclusion that a new paradigm is necessary. </P>
+
+<UL>
+<LI><FONT SIZE=-1>Scanning takes time. It takes a finite amount of time
+to scan a machine for viruses perhaps 5 minutes or more. If the country's
+70 million employees who use PCs spend 5 minutes a day scanning, and earn
+$15 an hour, the annual cost of scanning (260 days a year) is $22,659,000,000.
+The costs of scanning exceed the purchase price of anti-virus software
+after just a few weeks of scanning.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Scanning is mis-timed. If a machine is scanned every
+day at 9 AM, and infected one day at 9:05 AM, the virus has an entire day
+to spread throughout the machine and the organization. A virus can spread
+surprisingly far in this length of time. Even if the scanner is able to
+detect this virus, scanning presumes that the virus has already infected
+some disks or files. Traditional scanning is thus a means of detecting
+a problem that has already occurred, rather than a way of preventing a
+problem.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Scanners need constant upgrading. With 10 new viruses
+each day, full detection via a scanner requires daily upgrades to the product.
+But most organizations find upgrades a nightmare, and will not be able
+to upgrade this frequently. Organizations need something that does not
+require frequent upgrades.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Scanners are Slowing. The more viruses a scanner must
+search for, the more places within a file it must search, and the more
+files it must search across, the slower the search must be. Since strings
+must be stored in memory, and memory is limited, we will soon see two-pass
+products, which load one set of strings, scan, then load a second set and
+scan. While vendors have used indexed searching techniques to speed their
+task, and computers are faster than they once were, their drives are also
+getting larger. Tomorrow's scanners will inevitably be slower than today's
+and yesterday's.</FONT> </LI>
+
+<P><FONT SIZE=-1>Scanner Maintenance is Beyond the Capability of Vendors.
+If there are only 10,000 viruses today, and the average virus requires
+only 1 hour to analyze, write detection instructions, and test those instructions,
+then creating just the detection instructions is a 10,000 hour job about
+4 person years. To compound the problem, polymorphic viruses can each require
+weeks of analysis by the world's most skilled programmers to determine
+how to detect it. It is no wonder that during the past year, many vendors
+have either failed or been absorbed by bigger companies. Today, the U.S.
+has only a few vendors with American-made products: IBM, McAfee, Symantec/Norton,
+Norman Data Defense Systems and RG Software. The programming strain of
+the traditional scanning paradigm has been one of the causes of this shrinking
+in the anti-virus vendor industry.</FONT> </P>
+</UL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

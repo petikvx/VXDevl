@@ -1,0 +1,784 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Macro Viruses - Dr. Solomon</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>MS-Word Macro Viruses<BR>
+(Dr. Solomon)</FONT></FONT></B></P></CENTER>
+
+<TABLE CELLSPACING=30 WIDTH="90%" >
+<TR>
+<TD>
+<DIV ALIGN=right><P><B>23 January 1997</B></P></DIV>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>Macro viruses are the latest development in the battle against computer
+viruses. First encountered in the autumn of 1995 they have quickly caught
+the imagination of the press and virus-author alike. Their introduction
+into the virus world has caused a stir because they have broken some of
+the established &quot;rules&quot;:</P>
+
+<UL>
+<LI>They are the first ever viruses to infect documents rather than executable
+files. The first macro viruses seen infected Microsoft Word for Windows
+documents. In January 1996 the first AmiPro macro virus (APM Green Stripe)
+appeared. It should be remembered that other word processors could be at
+risk in the future. XM.Laroux, which appeared in July 1996, is the first
+working macro virus which infects Microsoft Excel for Windows spreadsheets.</LI>
+
+<LI>They are the first ever multi-platform viruses - not just capable of
+infecting PC systems, but Macintosh as well.</LI>
+</UL>
+
+<P>This document provides an overview to some of the better known macro
+viruses: 
+<HR><A HREF="#Atom">WM.Atom</A> | <A HREF="#Concept">WM.Concept</A> | <A HREF="#Concept.B.Fr">WM.Concept.B.Fr</A>
+| <A HREF="#Divina">WM.Divina</A> | <A HREF="#DMV">WM.DMV</A> | <A HREF="#FormatC">WM.FormatC</A>
+| <A HREF="#Friendly">WM.Friendly</A> | <A HREF="#Green">APM.Green Stripe</A>
+| <A HREF="#Hot">WM.Hot</A> | <A HREF="#Imposter">WM.Imposter</A> | <A HREF="#mdma">WM.MDMA</A>
+| <A HREF="#WM.Nop">WM.NOP</A> | <A HREF="#Nuclear">WM.Nuclear</A> | <A HREF="#Nuclear.B">WM.Nuclear.B</A>
+| <A HREF="#Polite">WM.Polite</A> | <A HREF="#Wazzu">WM.Wazzu</A> | <A HREF="#Wiederoffnen">WM.Wiederoffnen</A>
+| <A HREF="#WM.AntiDMV">WM.AntiDMV</A> | <A HREF="#WM.Colors">WM.Colors</A>
+| <A HREF="#colors.b">WM.Colors.B</A>| <A HREF="#WM.Nop">WM.Nop</A> | <A HREF="#WM.Phantom">WM.Phantom</A>
+| <A HREF="#WM.Telefonica">WM.Telefonica</A> | <A HREF="#Xenixos">WM.Xenixos</A>
+| <A HREF="#laroux">XM.Laroux</A>| <A HREF="#extra">WM.Extra</A>| 
+<HR><A NAME="Atom"></A></P>
+
+<H3>WM.ATOM</H3>
+
+<P>Description<BR>
+ATOM consists of four macros: AutoOpen, FileOpen, FIleSaveAs, and ATOM;
+all of these are execute-only.</P>
+
+<P>When an infected document is opened, ATOM infects the global template
+(if the auto macros are disabled, the virus is rendered ineffective). ATOM
+does not turn off prompting when saving the global template; so if prompting
+is turned on, you will be prompted to save changes to the global template
+at the end of the Word for Windows session.</P>
+
+<P>After the global template is infected, ATOM calls its first destructive
+payload. If the current date is 13 December, the virus deletes all files
+in the current directory. </P>
+
+<CENTER><P><IMG SRC="atom.gif" ALT="Atom" HEIGHT=121 WIDTH=297></P></CENTER>
+
+<P>Once the virus is active (that is, it has infected the global template),
+it infects all documents which are saved via the FileSaveAs command, or
+which are opened via the FileOpen command. If the seconds field of the
+current time is 13, at the time of infection , the virus encrypts the document
+being saved with the password &quot;ATOM#1&quot;.</P>
+
+<P>
+<HR><BR>
+<A NAME="Concept"></A></P>
+
+<H3>WM.Concept</H3>
+
+<P>Description:<BR>
+This was the first virus to infect data files. Concept infects Microsoft
+Word 6 documents (*.DOC) and the NORMAL.DOT template. The virus makes use
+of the well-developed macro language, Word Basic, in an attempt to exploit
+the fact that computer users exchange documents far more often than programs.</P>
+
+<P>When an infected document is opened under Microsoft Word for the first
+time, the virus gets control as an AutoOpen macro; and infects the NORMAL.DOT
+template (or any other template, if it has been selected as a global default
+template). A message box, with the text '1', appears on the screen:</P>
+
+<CENTER><P><IMG SRC="concept1.gif" ALT="Dialog Box Containing a '1'" HEIGHT=122 WIDTH=165></P></CENTER>
+
+<P>After this, every document saved using the File|SaveAs is infected with
+the virus. This normally happens when a newly-created document is saved
+to disk.</P>
+
+<P>If Tools|Macros is selected and the macros are listed, the presence
+of the macros named AAAZFS, AAAZAO, AutoOpen, PayLoad and FileSaveAs indicates
+that the Microsoft Word system is infected with WM.Concept.</P>
+
+<CENTER><P><IMG SRC="concept2.gif" ALT="Macro List In Word, Including PayLoad" HEIGHT=341 WIDTH=338></P></CENTER>
+
+<P>This virus works under versions of Microsoft Word for Windows 3.x, Windows
+95, Windows NT and Macintosh. This made it the first ever multi-platform
+virus.</P>
+
+<P>WM.Concept virus is a very common 'in the wild' virus. This is largely
+due to Microsoft accidentally shipping it on a CD ROM called <I>Microsoft
+Windows 95 Software Compatability Test</I> to hundreds of OEM companies,
+in August 1995. Another company distributed more WM.Concept-infected documents
+on 5,500 copies of a CD ROM called <I>Snap-on Tools for Windows NT</I>
+shortly afterwards.</P>
+
+<P><BR>
+
+<HR><BR>
+<A NAME="Nuclear"></A></P>
+
+<H3>WM.Nuclear</H3>
+
+<P>Description<BR>
+A Microsoft Word for Windows DOC file, containing a description of WM.Concept,
+was uploaded to one of the publicly accessible ftp directories at the US
+internet provider netcom.com . The file turned out to be infected with
+a new macro virus WM.Nuclear.</P>
+
+<P>Similar to WM.Concept, the WM.Nuclear virus infects NORMAL.DOT when
+an infected document is opened. It then infects all the documents being
+saved using File/SaveAs. Unlike WM.Concept, all macros in Nuclear are &quot;execute-only&quot;;
+that is, they are protected (encrypted) in such a way you cannot view,
+or modify, their source code (the macros names can still be viewed using
+Tools/Macro). In spite of this, we were able to decrypt the macros, to
+analyse and understand the virus.</P>
+
+<P>An infected document (or NORMAL.DOT) contains nine macros named AutoExec,
+AutoOpen, DropSuriv, FileExit, FilePrint, FilePrintDefault, FileSaveAs,
+InsertPayload and PayLoad. The main effect of the virus, besides replication,
+is that if a document is being printed, and the system clock seconds counter
+is in between 55 and 59 seconds (that is, with a probability of approximately
+1/12th), two lines are added to the document and are subsequently printed
+at the end of the last page:</P>
+
+<PRE>        And finally I would like to say:
+
+        STOP ALL FRENCH NUCLEAR TESTING IN THE PACIFIC!
+
+</PRE>
+
+<P>The virus was also supposed to drop a &quot;normal&quot; (that is, COM/EXE/NewEXE
+infecting) virus named PH33R (pronounced 'fear'), but due to a whole set
+of bugs it fails to achieve this.</P>
+
+<P>Another of WM.Nuclear's payloads is designed to trigger on 5 April,
+in any year; this destructive macro, called Payload, was supposed to damage
+(truncate to 0 bytes) the system files IO.SYS, MSDOS.SYS and COMMAND.COM.
+Once again, however, this payload fails to work, due to bugs in the code.</P>
+
+<P>The virus also causes some side effects such as error messages if you
+choose &lt;Cancel&gt; from File/Print or File/SaveAs.</P>
+
+<P>
+<HR><BR>
+<A NAME="Hot"></A></P>
+
+<H3>Hot</H3>
+
+<P>Description:<BR>
+WM.Hot creates an entry in the WINWORD6.INI configuration file, with a
+'hot date', 14 days in the future, when its payload will trigger.</P>
+
+<P>The virus activates randomly, within a few days of the 'hot date'; when
+the user tries to open a document, its contents are erased instead.</P>
+
+<P>The payload is disabled if C:\DOS\EGA5.CPI is found to exist. A comment
+in the virus source code suggests that this is a 'feature' designed to
+protect the virus author and his friends.</P>
+
+<P>
+<HR><BR>
+<A NAME="DMV"></A></P>
+
+<H3>WM.DMV</H3>
+
+<P>Description:<BR>
+WM.DMV is the name of a Word for Windows macro virus written for &quot;demonstration&quot;
+purposes by an American computer user. He subsequently made his virus available
+for all to download via the World Wide Web.</P>
+
+<P>The author of this virus also attempted to write an Excel macro virus;
+but this fails to work because of a bug.</P>
+
+<P>
+<HR><BR>
+<A NAME="Divina"></A></P>
+
+<H3>WM.Divina</H3>
+
+<P>Description<BR>
+Like WM.DMV, WM.Divina virus contains just an AutoClose macro; this macro
+is an execute-only. When an infected document is loaded under Word for
+Windows, and then closed, the virus infects NORMAL.DOT. Any document closed
+after this will be infected.</P>
+
+<P>The virus has two payloads:</P>
+
+<P>(1) If a document is being closed during the 17th minute of any hour,
+a set of dialogue boxes are displayed, with pauses and beeps in between.
+The first says </P>
+
+<PRE>        &quot;ROBERTA TI AMO!&quot;
+
+</PRE>
+
+<P>Then</P>
+
+<PRE>        &quot;Virus 'ROBERTA' is running. Hard Disk damaged. Start
+
+        antivirus?&quot;.
+
+</PRE>
+
+<P>Next comes </P>
+
+<PRE>
+
+        &quot;Exit from system and low level format are recommended.&quot;
+
+</PRE>
+
+<P>and finally </P>
+
+<PRE>        &quot;Exit from System?&quot;.
+
+</PRE>
+
+<P>After this the virus exits Windows. So, while the virus has no destructive
+payload as such, it might well succeed in persuading an average user to
+reformat his/her hard disk.</P>
+
+<P>(2) Another payload triggers on 21st May, if a document is being closed
+between 10th and 20th, or between 40th and 50th minute of any hour. Two
+dialogue boxes are displayed: </P>
+
+<PRE>        &quot;DIVINA IS THE BEST!&quot;
+
+</PRE>
+
+<P>followed by a box titled &quot;Virus 'DIVINA' in esecuzione&quot; and
+containing some message in Italian. After that the virus quits Windows.</P>
+
+<P>Judging by the language, style, variables and subroutine names, it is
+certain that WM.Divina was written by the same person who wrote WM.AntiDMV.
+WM.AntiDMV is fairly widespread in Italy, Malta and Spain (but should have
+stopped replicating after June 1, 1996). Thus, AntiDMV could infact be
+'WM.AntiDivina'.</P>
+
+<P>
+<HR><BR>
+<A NAME="Xenixos"></A></P>
+
+<H3>WM.Xenixos</H3>
+
+<P>Description<BR>
+This virus was distributed in a file named 'NEMESIS.ZIP' on an Internet
+newsgroup, back in February 1996, and so has received broad initial distribution.</P>
+
+<P>Its further spread has been somewhat limited by the fact that it is
+written to exploit only the German-language version of Microsoft Word for
+Windows. It will infect the global template file of an English Word for
+Windows user, but will NOT replicate further.</P>
+
+<P>WM.XENIXOS watches for attempts to print files while it is active; and
+about half the times this happens it adds the phrase</P>
+
+<PRE> &quot;Brought to you by the Nemesis Corporation, &copy; 1996&quot;
+
+</PRE>
+
+<P>to the end of the document printing.</P>
+
+<P>When files are saved, the virus encrypts them with the file password
+&quot;xenixos&quot; just over half the time. WM.Xenixos replaces the Tools|Macros
+command with code that will display an error message instead of the activating
+Word for Windows' built-in macro viewer/editor, so it is not so easy to
+see that the virus macros are in place.</P>
+
+<P>One other interesting effect is that WM.Xenixos tries to plant, and
+arrange to have activated, a variant of the DOS multipartite virus known
+as Neuroquila, when files are saved after March 1. It succeeds in planting
+this DOS virus, but not in running it. The Neuroquila variant planted has
+a bug, so it only infects boot sectors and not (in addition) programs.
+</P>
+
+<P>AUTOEXEC.BAT is altered to call the Neuroquila virus. 
+<HR><BR>
+<A NAME="Imposter"></A></P>
+
+<H3>WM.Imposter</H3>
+
+<P>Description<BR>
+At the beginning of March, 1996, a new virus (very closely related to WM.Concept)
+was discovered in England by Dr Solomon's Virus Lab. researchers.</P>
+
+<P>It contains code similar to that found in both the WM.DMV and WM.Concept
+viruses. In fact, one of its macros is always named DMV. Like WM.Concept,
+it contains a Payload macro, but this one says</P>
+
+<PRE> &quot;just to prove another point&quot;.
+
+</PRE>
+
+<P>It was named WM.Imposter due to its attempt to appear as either WM.DMV
+or WM.Concept and (hopefully) fool anti-virus products, an attempt at which
+it is generally unsuccessful.</P>
+
+<P>
+<HR><BR>
+<A NAME="mdma"></A></P>
+
+<H3>WM.MDMA</H3>
+
+<P>Description<BR>
+WM.MDMA is a macro virus, infecting Microsoft Word for Windows documents.
+The virus is encrypted and uses just an AutoClose macro.</P>
+
+<P>This virus, which has been reported 'in the wild', includes different
+payloads for DOS/Windows 3.x, Windows NT, Windows 95 and Macintosh. The
+payload triggers on the first day of any month.</P>
+
+<P>The payloads for each operating system are as follows.</P>
+
+<P>On machines running DOS/Windows 3.x, the virus overwrites AUTOEXEC.BAT
+with the following commands:</P>
+
+<PRE>   @echo off
+
+    deltree /y c:
+
+   @echo You have just been phucked over by a virus
+
+</PRE>
+
+<P>which, after the first re-boot, will clear the entire hard disk (if
+DELTREE is found) and display the above message.</P>
+
+<P>On machines running Windows NT, the virus deletes all files in the root
+directory.</P>
+
+<P>On machines running Windows 95, the virus modifes system settings -
+'Sticky Keys, High Contrast and Network Logon sequence. It also deletes
+the file C:\SHMK, *.HLP, in C:\WINDOWS\ and all *.CPL files in C:\WINDOWS\SYSTEM\.
+</P>
+
+<P>On Macintosh machines, the virus attempts to delete all files on the
+disk.</P>
+
+<P>After the payload has terminated, the virus displays a message box entitled
+MDMA_DMV, containing the following text:</P>
+
+<PRE>   You are infected with MDMA_DMV. Brought to
+
+   you by MDMA (Many Delinquent Modern Anarchists).
+
+</PRE>
+
+<P>
+<HR><BR>
+<A NAME="Wazzu"></A></P>
+
+<H3>WM.Wazzu</H3>
+
+<P>Description<BR>
+WM.Wazzu contains only one macro, AutoOpen. Since the name of the AutoOpen
+macro is the same in all language versions of Word for Windows, this is
+the first virus that will replicate equally effectively in all international
+versions of Word for Windows.</P>
+
+<P>WM.Wazzu has an interesting payload. When the infected document is opened,
+the virus calls a routine three times; each time there is a 20% probability
+that the virus will move one word to a random place in the document. There
+is then a 25% probability that the virus will also insert the word 'wazzu'
+at a random point in the document. The virus then returns to the beginning
+of the document.</P>
+
+<P>
+<HR><BR>
+<A NAME="Nuclear.B"></A></P>
+
+<H3>WM.Nuclear.B</H3>
+
+<P>Description<BR>
+A variant of WM.Nuclear, altered from the original virus apparently by
+some curious and inept, user messing around with it, was discovered in
+a corporation in France in early March 1996.</P>
+
+<P>Since the original WM.Nuclear virus was encrypted, it is likely that
+the user obtained the unencrypted source from where it was posted (on an
+Internet newsgroup created for the distribution of viruses and the promotion
+of virus writing) and worked from that to create this new variant.</P>
+
+<P>WM.Nuclear.B does not try to plant the 'PH33R' virus, but calls other
+destructive routines from the original virus instead at that point.</P>
+
+<P>This variant does not replicate in encrypted form, so it will be much
+easier for others to learn from, and it is to be expected that advanced
+macro virus programming techniques from this virus will start showing up
+much more often in future viruses.</P>
+
+<P>
+<HR><BR>
+<A NAME="Polite"></A></P>
+
+<H3>WM.Polite</H3>
+
+<P>Description<BR>
+In late March 1996, a new macro virus named WM.Polite was discovered in
+the USA. It installs only FileClose and FileSaveAs replacement macros,
+and so avoids detection by anything watching auto macros.</P>
+
+<P>WM.Polite is rather odd, in that it prompts the user each time before
+it infects a document (it displays a dialog with the title 'Propogation
+of the virus', containing the text 'Shall I infect the file?'). Unfortunately,
+it does not ask when it originally infects the global template. It is not
+expected to survive and spread well 'in the wild'.</P>
+
+<P>
+<HR><BR>
+<A NAME="WM.Colors"></A></P>
+
+<H3>WM.Colors</H3>
+
+<P>Description<BR>
+WM.Colors infects Word for Windows documents. When an infected document
+is opened under Word for Windows, the virus infects the global template(usually
+NORMAL.DOT). Subsequently, every document created using File|New, or saved
+via File|Save or File|SaveAs, is infected by the virus. The virus contains
+the following macros:</P>
+
+<P>AutoOpen, AutoClose, AutoExec, FileNew, FileExit, FileSave, FileSaveAs,
+ToolsMacro.</P>
+
+<P>If macros with such names existed prior to infection, they are overwritten
+by the virus.</P>
+
+<P>Surprisingly enough, the AutoExec macro in the virus is an empty macro;
+it does nothing. The possible aim of this could be to overwrite an existing
+AutoExec macro, which could contain anti-virus routines (for example, supplied
+by Microsoft).</P>
+
+<P>WM.Colors can propagate even with AutoMacros disabled (by invoking Word
+for Windows as WINWORD.EXE/mDisableAutoMacros, or by using one of Microsoft's
+recent anti-virus template tools). As soon as a user chooses File|New,
+File|Save, File|SaveAs, File|Exit or Tools|Macro, the virus gets control
+and infects NORMAL.DOT.</P>
+
+<P>Unlike other known Word for Windows viruses (WM.Concept, WM.Nuclear,
+WM.DMV), WM.Colors virus cannot be spotted by using Tools|Macro to list
+active macros. The virus intercepts Tools|Macro and effectively disables
+it, while still using it for infection. For this reason, WM.Colors can
+be called the first macro virus with some stealth capabilities. Nevertheless,
+one can use File|Templates|Organizer|Macros to view the names of virus
+macros and even to delete them.</P>
+
+<P>As in the case of WM.Nuclear (the first encrypted macro virus), all
+macros in WM.Colors are Execute-Only, and thus cannot be viewed/edited
+by means of Word for Windows.</P>
+
+<P>The virus also enables AutoMacros and disables Word for Windows' prompt
+save changes to NORMAL.DOT.</P>
+
+<P>The virus maintains a counter named 'countersu' in the (windows) section
+of WIN.INI file. Every time a virus macro is called (with the exeption
+of AutoExec), the counter is incremented by one. That is, every time a
+user opens, creates, saves, closes a document, attempts to use Tools|Macro
+or exits Word, the counter is incremented. When the counter reaches 299,
+and each 300th time thereafter (that is, 299, 599, 899, and so on), the
+virus triggers. It then changes Windows colors settings(text, background,
+buttons, borders, etc.) to randomly selected colors. So that the next time
+Windows is started the user is puzzled by the most unusual and weird color
+pallette.</P>
+
+<P>
+<HR><BR>
+<A NAME="WM.Telefonica"></A></P>
+
+<H3>WM.Telefonica</H3>
+
+<P>Description<BR>
+Discovered in late April 1996, WM.Telefonica is another German-only Word
+for Windows virus. It tries to create and execute an encrypted COM file,
+via debug, in 1 out of 60 infections.</P>
+
+<P>It replicates using MacroCopy to replicate its set of seven macros,
+including FileNew, FileOpen, FileClose, AutoOpen and Autoexec.</P>
+
+<P>This virus was first reported attached to a document which was an order
+form, in German, for a set of erotic videos.</P>
+
+<P>
+<HR><BR>
+<A NAME="WM.Phantom"></A></P>
+
+<H3>WM.Phantom</H3>
+
+<P>Description<BR>
+WM.Phantom, another multi-language macro virus, was discovered in early
+May 1996, in Germany.</P>
+
+<P>The only macro attached, AutoOpen, is language independent. It is also
+encrypted. WM.Phantom can only replicate through this AutoOpen macro.</P>
+
+<P>When decrypted, it appears to have been written by children in a high
+school. It displays some silly messages, including </P>
+
+<PRE> &quot;Hi sexy!&quot;
+
+</PRE>
+
+<P>and </P>
+
+<PRE>&quot;Guess who?&quot;.
+
+</PRE>
+
+<P>
+<HR><BR>
+<A NAME="Friendly"></A></P>
+
+<H3>WM.Friendly</H3>
+
+<P>Description<BR>
+This virus (German in origin) was discovered in mid-May 1996. It shows
+signs of having been written by the same person as WM.Telefonica. It creates
+an INI file entry </P>
+
+<PRE>[FRIENDS]</PRE>
+
+<P>in which it sets: </P>
+
+<PRE>        Author=Nightmare Jocker
+
+</PRE>
+
+<P>WM.Friendly attempts to be bi-lingual by containing a complete set of
+its macros in English, as well as a complete set in German! This brings
+the total macro count to 20 macros. Unfortunately for the author, who apparently
+did not have a copy of Word for Windows in English to test with, his English
+set of macros are improperly saved; as a result, the virus does not work
+under English versions of Word for Windows after all.</P>
+
+<P>When WM.Friendly replicates under German Word for Windows, it plants
+a copy of a variant of the old DOS virus Little Brother.</P>
+
+<P>
+<HR><BR>
+<A NAME="Concept.B.Fr"></A></P>
+
+<H3>WM.Concept.B.Fr</H3>
+
+<P>Description<BR>
+In early March 1996, someone translated the FileSaveAs macro’s name, from
+WM.Concept, into the French equivalent, producing a French-only version
+of WM.Concept. This infected a large site within France. This is the only
+difference between it and the original WM.Concept virus.</P>
+
+<P>
+<HR><BR>
+<A NAME="FormatC"></A></P>
+
+<H3>WM.FormatC</H3>
+
+<P>Description:<BR>
+This is NOT a virus, but a macro trojan (it does not replicate). It does,
+however, format the user's C drive as soon as the document is opened. </P>
+
+<P>This trojan was posted to a Usenet newsgroup.</P>
+
+<P>
+<HR><BR>
+<A NAME="Wiederoffnen"></A></P>
+
+<H3>WM.Wiederoffnen</H3>
+
+<P>Type: <I>Word macro trojan</I></P>
+
+<P>Description:<BR>
+WM.Wiederoffnen is NOT a virus, but a macro trojan. It comes in a Microsoft
+Word for Windows 2 document, but also works perfectly under Word for Windows
+6.</P>
+
+<P>WM.Wiederoffnen intercepts the AutoClose macro and, when the document
+is closed plays tricks with AUTOEXEC.BAT.</P>
+
+<P>
+<HR><BR>
+<A NAME="Green"></A></P>
+
+<H3>APM.Green Stripe</H3>
+
+<P>Description:<BR>
+This virus infects Ami Pro document files (*.SAM); for every SAM file a
+corresponding SMM (Ami Pro macro) file with the same name, in the same
+directory; it links SAM to SMM in such a way that opening SAM file invokes
+execution of the SMM macro. The SMM macro files are hidden and cannot be
+seen with a simple DIR command (although DIR/AH will work).</P>
+
+<P>When an infected document is opened, the virus gets control and infects
+all *.SAM files in the current directory, which is always Ami Pro's default
+DOCS directory (...\AMIPRO\DOCS). The process is very noticeable since
+all the document files are opened and then closed, one by one; and a user
+is able to see them quickly appearing and disappearing on the screen.</P>
+
+<P>Then the virus intercepts File/Save and File/SaveAs commands. On File/SaveAs,
+the virus infects the document being saved; and this is the only way the
+virus can propagate to another PC. Since both SAM and SMM files are necessary
+for the virus, and since a SAM file contains an absolute pathname as a
+reference to the appropriate SMM file, if the user simply copies either
+SAM, or both SAM and SMM files, to a floppy disk and then opens the SAM
+file under Ami Pro on a different PC, the virus will not run. However,
+when a document (SAM) is copied using File/SaveAs both SAM and SMM files
+are transferred and the pathname link is changed accordingly.</P>
+
+<P>File/Save was supposed to be used for the virus' payload. On File/Save,
+the virus should replace all occurences of its in the document with it's.
+However, in our experiments, this did not appear to work.</P>
+
+<P>Unlike other (Word for Windows) macro viruses, this Ami Pro macro virus
+is very unlikely to be transmitted via e-mail. This is due to the fact
+that Ami Pro keeps macros in separate SMM files, while only SAM files are
+sent as a e-Mail attachments.</P>
+
+<P>The name of the virus, APM.Green Stripe, is taken from the virus itself.
+Its main macro procedure is called 'Green_Stripe_virus'.</P>
+
+<P>Detection of APM.GreenStripe is made easier by a number of factors.</P>
+
+<P>1) As mentioned above, when an infected document is opened, it is very
+noticeable; the screen keeps blinking as numerous documents are loaded
+and then closed.</P>
+
+<P>2) After loading a document, the user can use Tools/Macros/Edit to see
+whether the document has an appropriate macro file (with the same name,
+but with the extension SMM) assigned to it, to be executed on open. The
+report will contain the names of all infected (and now deleted) SMM files.
+Then the user can run Ami Pro; and for each SMM file listed in the report,
+load the SAM file with the same name (there will be an error message reporting
+that the appropriate SMM file was not found), then use Tools/Macros/Edit
+and un-check the Assign box(es).</P>
+
+<P>
+<HR><A NAME="WM.Nop"></A></P>
+
+<H3>WM.NOP</H3>
+
+<P>Description<BR>
+WM.NOP is a Word for Windows macro virus, reportedly ‘in the wild’ in Germany.</P>
+
+<P>In order to spread, this virus requires the German version of Microsoft
+Word for Windows 6.0, or above; under other language versions of Word for
+Windows, the virus will infect NORMAL.DOT but will not spread further.</P>
+
+<P>Documents infected with WM.NOP contain the macros AutoOpen and NOP.
+When an infected document is opened under Word for Windows, the virus gets
+control via the AutoOpen macro and infects the NORMAL.DOT global template.
+In an infected NORMAL.DOT, the AutoOpen macro becomes NOP; and the NOP
+macro becomes DateiSpeichern [German for FileSave].</P>
+
+<P>WM.NOP has no payload.</P>
+
+<P>
+<HR><A NAME="WM.AntiDMV"></A></P>
+
+<H3>WM.AntiDMV</H3>
+
+<P>Description<BR>
+WM.AntiDMV is a Word for Windows macro virus, reportedly 'in the wild'
+in Italy, Malta and Spain and probably some other Mediterranean countries.
+</P>
+
+<P>This virus was designed to spread until 1 June 1996; and should, therefore,
+have stopped spreading at this time. However, it is possible that many
+infected documents and templates may exist ‘in the wild’.</P>
+
+<P>WM.AntiDMV contains only one macro, AutoOpen. If an infected document
+is opened under Microsoft Word for Windows, the current year is before
+1997 and the current month is before the 6 June, the virus infects NORMAL.DOT.
+The virus also removes the macro AutoClose from documents and templates,
+if it exists. </P>
+
+<P>It is the time-limited feature, plus the removal of the AutoClose macro,
+which prompted the name of the virus; it effectively removes the DMV virus.</P>
+
+<P>
+<HR><BR>
+<A NAME="laroux"></A></P>
+
+<H3>XM.Laroux</H3>
+
+<P>Description<BR>
+XM.Laroux (a Microsoft for Excel macro virus) is the first macro virus
+for Microsoft Excel which actually works.</P>
+
+<P>So far (July 1996) there have been only two reported cases of the virus,
+on different continents (one in Africa, another in Alaska). This virus
+is not currently considered to be widespread.</P>
+
+<P>The virus intercepts Excel's Auto_Open automacro. When an infected spreadsheet
+is opened, the virus activates and checks whether the system is already
+infected. If not, the virus creates an Excel file named PERSONAL.XLS in
+the Excel default startup directory, XLSTART (for example, C:\MSOFFICE\EXCEL\XLSTART)
+and copies itself there. The spreadsheets and macros from that directory
+are automatically loaded whenever Excel is run. From then on, every spreadsheet
+being opened, or created, on an infected system will become infected with
+the virus.</P>
+
+<P>XM.Laroux does not have any intentional payload; it just replicates.
+The virus works under Excel for Windows, versions 5 and 7; running under
+Windows 3.x, Windows 95 and Windows NT. It does not work on Macintosh.</P>
+
+<P>Infected spreadsheets contain a hidden sheet named 'laroux'.</P>
+
+<P>Here is a fast check to tell whether you have the virus:</P>
+
+<P>in Excel, go to Tools|Macro. If you see the macros 'auto_open' and 'check_files'
+and/or 'personal.xls!auto_open' and 'personal.xls!check_files', this indicates
+that your system is infected. Tools|Macro|Delete may be used to remove
+the virus macros.</P>
+
+<P>
+<HR><A NAME="extra"></A></P>
+
+<H3>WM.Extra</H3>
+
+<P>Description<BR>
+WM.Extra (also known as 'Clock') carries its macros in encrypted form (execute-only).
+The virus was written for the German version of Microsoft Word for Windows,
+but it still replicates under other versions. It has been seen 'in the
+wild' in Germany.</P>
+
+<P>The virus has a non-destructive payload. If the following conditions
+are met:</P>
+
+<PRE>        year &gt; 1996
+
+        minute &gt; 39
+
+        day &gt; 25
+
+</PRE>
+
+<P>it displays a digital clock every two minutes.</P>
+
+<P>
+<HR><BR>
+<A NAME="#colors.b"></A></P>
+
+<H3>WM.Colors.B</H3>
+
+<P>Description<BR>
+In early April 1996, a prominent anti-virus researcher investigated what
+appeared at first to be an outbreak of the ordinary WM.Colors macro virus
+(see description for WM.Colors), in Portugal. When a sample of the virus
+involved was examined, he discovered that it contained the WM.Colors virus,
+except that the macro replacing AutoOpen was not from WM.Colors, it was
+the one found in WM.Concept!</P>
+
+<P>One likely explanation of how this 'hybrid' was formed is that a PC
+infected with WM.Colors was subsequently exposed to a document infected
+with WM.Concept. This replaced WM.Colors' AutoOpen macro with its own;
+and when the other code in WM.Colors caused WM.Colors to replicate, it
+copied the WM.Concept version of the AutoOpen macro to the target instead
+of its own AutoOpen, without checking. In any case, the virus still replicates,
+in its new form.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>

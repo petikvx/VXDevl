@@ -1,0 +1,728 @@
+<HTML>
+
+<!-- Mirrored from vx.netlux.org/texts/html/notvirus.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:25 GMT -->
+<HEAD>
+<title>VX Heavens : What's NOT a Virus</TITLE>
+</HEAD>
+<body text=#000000 bgcolor=#ffffff>
+<H2>What's NOT a Virus</H2>
+by Chengi Jimmy Kuo, Director, AV Research<BR>
+McAfee Associates Inc.<br>
+from a paper delivered at the NCSA Conference,<BR>
+Washington, DC, April 1-2, 1996<br>
+<P><BR>
+<b>Contents</b>
+<UL>
+<A HREF="#INTRO">Introduction</A><BR>
+<A HREF="#NOT1.0">1.0) PC Architecture</A>
+<UL>
+<A HREF="#NOT1.1">1.1) I Don't Have 640K</A><BR>
+<A HREF="#NOT1.2">1.2) Happy Birthday on November 13th</A>
+</UL>
+<A HREF="#NOT2.0">2.0) Windows 95</A>
+<UL>
+<A HREF="#NOT2.1">2.1) LongFileName Directory Entries</A><BR>
+<A HREF="#NOT2.2">2.2) Windows 95 Writes to Diskette OEM Fields</A><BR>
+<A HREF="#NOT2.3">2.3) I Didn't Have a Label For My Harddisk, But Now I do</A><BR>
+<A HREF="#NOT2.4">2.4) Windows 95 Says You Have a Boot Sector Virus</A><BR>
+<A HREF="#NOT2.5">2.5) SUHDLOG.DAT</A>
+</UL>
+<A HREF="#NOT3.0">3.0) Windows</A>
+<UL>
+<A HREF="#NOT3.1">3.1) 386SPART.PAR</A><BR>
+<A HREF="#NOT3.2">3.2) Black box as mouse pointer</A>
+</UL>
+<A HREF="#NOT4.0">4.0) DOS</A>
+<UL>
+<A HREF="#NOT4.1">4.1) DIR | MORE</A><BR>
+<A HREF="#NOT4.2">4.2) PEAT and \REPEAT\REPEAT\REPEAT\...</A>
+</UL>
+<A HREF="#NOT5.0">5.0) Software Applications</A>
+<UL>
+<A HREF="#NOT5.1">5.1) Where's Waldo?</A><BR>
+<A HREF="#NOT5.2">5.2) Word Perfect</A><BR>
+<A HREF="#NOT5.3">5.3) What's UNWISE.EXE?</A>
+</UL>
+<A HREF="#NOT6.0">6.0) AntiVirus Software</A>
+<UL>
+<A HREF="#NOT6.1">6.1) ChipAway Virus Enabled</A><BR>
+<A HREF="#NOT6.2">6.2) Traces of a Virus Found in Memory</A><BR>
+<A HREF="#NOT6.3">6.3) Virus Found in ANTIVIR.DAT</A><BR>
+<A HREF="#NOT6.4">6.4) Loading Bootstrap...</A><BR>
+<A HREF="#NOT6.5">6.5) Something is Writing to Your Boot Sector...</A>
+</UL>
+<A HREF="#NOT7.0">7.0) Macintosh</A>
+<UL>
+<A HREF="#NOT7.1">7.1) Welcome Datacomp</A><BR>
+<A HREF="#NOT7.2">7.2) August 27, 1956</A>
+</UL>
+<A HREF="#NOT8.0">8.0) Hoaxes</A>
+<UL>
+<A HREF="#NOT8.1">8.1) Good Times</A><BR>
+<A HREF="#NOT8.1.1">8.1.1) GT-Spoof</A><BR>
+<A HREF="#NOT8.1.2">8.1.2) FormatC</A><BR>
+<A HREF="#NOT8.2">8.2) Viruses Destroying Hardware</A><BR>
+<A HREF="#NOT8.3">8.3) Internet Cleanup Day</A>
+</UL>
+<A HREF="#ACK">Acknowledgments</A><BR>
+<A HREF="#APPA">Appendix A: The Directory Entry</A><BR>
+<A HREF="#APPB">Appendix B: The DOS Boot Record</A><BR>
+<A HREF="#APPC">Appendix C: Beep Codes</A><BR>
+</UL>
+<HR>
+<A NAME="INTRO"></A>
+<H2>Introduction</H2>
+The "Virus Lab" is a misnomer. But "Where They Explain to You Why it's NOT a
+Virus" just doesn't have the same ring. However, each day, far more cases of
+"Not A Virus" are reported by customers than actual cases of virus infections.
+This phenomenon is true at all levels of customer support. So, instead of
+talking about some neat, new antivirus technology, I hope to be able to help
+you with something useful in your everyday work.
+<P>
+Urban legends have inundated the computer virus world such that any computer
+malady is blamed on a computer virus being in the system. But there are
+multitudes of situations blamed on viruses which are not. This paper is based
+on many customer situations through McAfee's Technical Support, questions
+raised on the Internet, with experience and contribution from the Tech Support
+or Customer Support of other companies in the industry.
+<P>
+<HR>
+<A NAME="NOT1.0"></A>
+<H2>1.0) PC Architecture</H2>
+<A NAME="NOT1.1"></A>
+<H3>1.1) I Don't Have 640K</H3>
+At memory location 40:13 is a word representing how much base memory is in the
+machine. The value usually found at 40:13 is 280h which means the machine has
+its full complement of 640K (655,360). Utilities such as CHKDSK or MEM can be
+used to fetch this value.
+<P>
+Starting with the introduction of the IBM PS/2 in 1987, IBM and then others,
+started to fake the total memory count by one K or two by decrementing this
+number and using the space for additional system storage space. For IBM, this
+area was referred to as the Extended BIOS Data Area (EBDA). The IBM PS/2s
+reserved 1K.
+<P>
+It is true that most boot sector viruses do steal memory from 40:13 and place
+themselves at the memory it has reserved by doing so. So, when a user sees
+something other than 640K, he usually jumps up a nd down about having a virus.
+<P>
+Since DOS supplies other methods to reserve memory, in finer granularity than
+1K, most software solutions will use DOS to reserve memory. However, many
+things which I call "hardware related software" (such as drivers for monitors,
+drivers for ROM addons, etc.), that require the use of some memory but cannot
+address DOS to reserve memory, will also "steal" a K or two using this
+architected way of reserving memory.
+<P>
+Officially, the architecture for this mechanism includes the requirement to
+store a word at xxxx:0 with the value of how many K is reserved in that block.
+Thus correct implementation of this scheme has values like this (assuming 640K
+available in system):
+<PRE>    40:13           Address         Value
+    0280h           (full 640K)
+
+    027Fh           9FC0:0000       1
+
+    027Eh           9F80:0000       1
+                    9FC0:0000       1
+                    or
+                    9F80:0000       2
+
+    etc.
+</PRE>
+So, if less than 640K is reported, check the memory using the table above. If
+there is a boot sector virus in memory, chances are, you will also find the
+values 55h AAh near the top of memory at a memory address of xxxx:xxFE.
+<P>
+<HR>
+<A NAME="NOT1.2"></A>
+<H3>1.2) Happy Birthday on November 13th</H3>
+On November 13th, some PCs around the world will play the Happy Birthday song
+through the PC speaker.
+<P>
+A "former" programmer at American Megatrends managed to sabotage a BIOS run.
+The specific information is listed below:
+<PRE>    BIOS Manufacturer:      American Megatrends
+    BIOS Version:           M82C498 Evaluation BIOS v1.55
+    BIOS Category:          IBM PC/AT
+    BIOS ID Bytes:          FC 01 00
+    BIOS Date:              04/04/93
+</PRE>
+If you have one of these BIOS chips, you can contact AMI to get a replacement.
+<P>
+<HR>
+<A NAME="NOT2.0"></A>
+<H2>2.0) Windows 95</H2>
+<A NAME="NOT2.1"></A>
+<H3>2.1) LongFileName Directory Entries</H3>
+The way Windows 95 manages its LongFileNames is to use a trick associated with
+volume labels. According to documentation (See <A HREF="#APPA">Appendix A</A>.),
+if the volume label bit is set, all other information in that directory entry
+is ignored.
+<P>
+Here is a sample of a Windows 95 directory as interpreted by DEBUG
+(uninteresting parts chopped out to save space):
+<PRE>0E0  41 50 00 72 00 6F 00 67-00 72 00 0F 00 20 61 00   AP.r.o.g.r... a.
+0F0  6D 00 20 00 46 00 69 00-6C 00 00 00 65 00 73 00   m. .F.i.l...e.s.
+100  50 52 4F 47 52 41 7E 31-20 20 20 11 00 00 00 00   PROGRA~1   .....
+110  00 00 00 00 00 00 CC 80-17 1F 81 1E 00 00 00 00   ................
+180  41 45 00 78 00 63 00 68-00 61 00 0F 00 15 6E 00   AE.x.c.h.a....n.
+190  67 00 65 00 00 00 FF FF-FF FF 00 00 FF FF FF FF   g.e.............
+1A0  45 58 43 48 41 4E 47 45-20 20 20 10 00 78 BC 81   EXCHANGE   ..x..
+1B0  17 1F 17 1F 00 00 BC 81-17 1F 38 16 00 00 00 00   ..........8.....
+1C0  43 4F 4D 4D 41 4E 44 20-43 4F 4D 20 00 00 00 00   COMMAND COM ....
+1D0  00 00 6E 20 00 00 40 4E-EB 1E 3D 42 C6 6A 01 00   ..n ..@N..=B.j..
+</PRE>
+Here is the output of DiskEdit as it interprets the above information:
+<PRE>Name     .Ext    Size     Date     Time  Cluster Arc R/O Sys Hid Dir Vol
+------------------------------------------------------------------------
+      AP        7536741  3-12-80 12:03 am      0     R/O Sys Hid     Vol
+PROGRA~1              0  8-23-95  4:06 pm   7809     R/O         Dir
+      AE     4294967295 15-31-7   7:63 pm      0     R/O Sys Hid     Vol
+EXCHANGE              0  8-23-95  4:13 pm   5688                 Dir
+COMMAND  COM      92870  7-11-95  9:50 am  16957  Arc
+</PRE>
+This behavior by Windows 95 is often misinterpreted by unsuspecting users as a
+virus which creates HUGE illegal files onto their drives, or as a virus which
+corrupts file entries.
+<P>
+All it actually is, is people looking at absolutely correct information with
+inappropriate tools.
+<P>
+<HR>
+<A NAME="NOT2.2"></A>
+<H3>2.2) Windows 95 Writes to Diskette OEM Fields</H3>
+With Windows 95, when you insert a diskette into the drive, it will write to
+the diskette OEM Name field (see <A HREF="#APPB">Appendix B</A>). I believe
+this is done for volume change detection. If the diskette is not
+write-protected, Windows 95 will write 4 random characters plus the 3 letters
+"IHC".
+<P>
+This activity has sometimes been interpreted as a virus constantly writing to
+diskettes. After all, the user has done nothing of note to cause a write to the
+diskette.
+<P>
+[Curiosity item: IHC and 4 spaces makes one believe that at one point,
+"OGACIHC" was the string being written in this location. "Chicago" was
+Microsoft's codename for Windows 4.0 which was later renamed to Windows 95.]
+<P>
+<HR>
+<A NAME="NOT2.3"></A>
+<H3>2.3) I Didn't Have a Label For My Harddisk, But Now I do</H3>
+Every disk is allowed to have a label. One can assign a label to a disk by
+using the LABEL command supplied with DOS. When the LABEL command is used, it
+creates a directory entry with the volume label bit enabled.
+<P>
+The first entry with a label bit in the root directory is interpreted to be the
+label of the disk.
+<P>
+If we look at <A HREF="#APPA">Appendix A</A>, you will note that if the label
+bit is set, all other fields are ignored. Windows 95 uses this trick for its
+LongFileName entries.
+<P>
+If you did not initially give your disk a label, the first LongFileName will
+then satisfy the LABEL criteria. And your disk will now bear a weird looking
+LABEL name.
+<P>
+<HR>
+<A NAME="NOT2.4"></A>
+<H3>2.4) Windows 95 Says You Have a Boot Sector Virus</H3>
+Windows 95 has a dialogue box which will show up on certain occasions. It is
+true most of the time that if the box shows up, you do indeed have a virus.
+However, the mechanism behind this determination is that the INT 13h vector has
+been changed.
+<P>
+Again, the most likely thing is indeed that a boot sector virus was responsible
+for this change. However, installation of certain security related software may
+also result in the report of this message.
+<P>
+<HR>
+<A NAME="NOT2.5"></A>
+<H3>2.5) SUHDLOG.DAT</H3>
+SUHDLOG.DAT is a file found on Windows 95 systems. It contains images of the
+master boot record (partition sector) and boot sectors of your hard disks.
+Therefore, if a boot sector virus had once gotten on the machine, it will be
+saved in the file SUHDLOG.DAT. Depending on the technology used by the scanner
+involved, scanning the file might produce a warning of a boot virus in the
+file.
+<P>
+Why is this not a virus? After all, it does indicate that a boot virus had at
+one point been on the machine.
+<P>
+If this occurs, it means a virus was once on the machine. It does not mean that
+the file is infected by a boot sector virus. After all, a boot sector virus is
+being reported in a file. But do boot clean and check the system. Also, delete
+the file.
+<P>
+<HR>
+<A NAME="NOT3.0"></A>
+<H2>3.0) Windows</H2>
+<A NAME="NOT3.1"></A>
+<H3>3.1) 386SPART.PAR</H3>
+This is a hidden file to mark the swap space used by Windows 3.x. Swap space
+allows an operating system (or normal executable) to write things that are not
+currently being used, onto disk and free up RAM memory for things that need to
+be there.
+<P>
+Sometimes, a scanner will detect a virus in this file. There are a number of
+possible causes for this:
+<OL>
+<LI>There's actually a virus on the system. It was captured in memory and
+written to this file.</LI>
+<P>
+<LI>One scanner is picking up another scanner's strings which were only
+supposed to be alive in memory. That is, even if the first scanner is otherwise
+known as a well-behaved scanner that encoded its strings, at some point, the
+scanner decrypted the strings so it could use them. It was unlucky to have had
+that piece of memory swapped out at that point. When that scanner finished, it
+cleaned its memory. But there's no chance to "clean" the swap file.</LI>
+<P>
+<LI>A scanner is picking up itself in memory, similar to 2). But actually more
+likely than 2).
+<P>
+To remove or adjust its size, use the interface found in 386 Enhanced settings
+in the Control Panel. One last note, a "really big" swap file does not
+necessarily mean faster speed. There is an optimal setup for your machine
+depending on how you use it.</LI>
+</OL>
+<HR>
+<A NAME="NOT3.2"></A>
+<H3>3.2) Black box as mouse pointer</H3>
+The arrow used by Windows to show where the mouse currently points is something
+called a sprite. There's a whole different science for how to deal with
+sprites.
+<P>
+In this case, Windows simply wasn't able to read in the sprite associated with
+its current environment. Thus, the sprite is just a black box.
+<P>
+<HR>
+<A NAME="NOT4.0"></A>
+<H2>4.0) DOS</H2>
+<A NAME="NOT4.1"></A>
+<H3>4.1) DIR | MORE</H3>
+Pipes, the concept of allowing output from one program to be used as input to
+another program, was an afterthought of DOS introduced in DOS 2.0. The method
+of implementation was to direct the output of one process to be written to a
+file. The first program finishes execution. Then the second program runs. It
+reads from this temporary file and uses it as its input stream.
+<P>
+This temporary file is created in the directory designated by the TEMP
+environment variable.
+<P>
+As it happens, DOS creates 2 temporary files for the process "DIR | MORE".
+These two files have names generated as some random set of 8 characters. Thus,
+each invocation creates 2 differently named files.
+<P>
+No one happenstance generates more phone calls and questions than this one.
+<P>
+[I happen to use NDOS, a derivative of 4DOS. It also creates temporary files in
+the directory designated by the TEMP environment variable. But, this set of
+circumstances only creates one file and it is always a constant name.]
+<P>
+<HR>
+<A NAME="NOT4.2"></A>
+<H3>4.2) PEAT and \REPEAT\REPEAT\REPEAT\...</H3>
+This is the issue of infinitely recursive subdirectories. Looking at
+<A HREF="#APPA">Appendix A</A>, you will see that one of the fields represents
+the cluster number of the subdirectory. Thus, if you replace the cluster number
+of a subdirectory with the cluster number of the directory itself, you can
+generate this scenario.
+<P>
+Well, that's not all that easy to do, except... if you're in the root
+directory. Any subdirectory with its cluster number set to 0 will point back to
+the root directory. So, if you overlay a random data file over the root
+directory, a random byte will have the subdirectory bit set and if there
+happens to be a NULL in the cluster field, you will create this situation.
+<P>
+<HR>
+<A NAME="NOT5.0"></A>
+<H2>5.0) Software Applications</H2>
+<A NAME="NOT5.1"></A>
+<H3>5.1) Where's Waldo?</H3>
+A version of CorelDraw 5.0 had the capability of presenting the message
+"Where's Waldo?" to the user. If you hear this from a user, ask first if he's
+using CorelDraw.
+<P>
+No virus currently presents this message to the user.
+<P>
+<HR>
+<A NAME="NOT5.2"></A>
+<H3>5.2) Word Perfect</H3>
+Ever since Macro Viruses for Word for Windows came into being, there have been
+many people attributing any Word Perfect problem to "Is this a new Word Perfect
+virus?"
+<P>
+Until you hear otherwise, the answer is, "No."
+<P>
+Presently, Word Perfect manages its macros in a separate file from that of the
+text. Since it's the macros that would contain a virus, should there ever be
+one, and since people don't generally pass macros when they pass around Word
+Perfect documents, chances of a Word Perfect virus becoming a threat to users
+is close to nil.
+<P>
+<HR>
+<A NAME="NOT5.3"></A>
+<H3>5.3) What's UNWISE.EXE?</H3>
+It's probably the worst marketing choice for a program name I've ever come
+across.
+<P>
+The truth is, UNWISE.EXE is a program called Wise Uninstall which is included
+with some Windows shareware programs.
+<P>
+<HR>
+<A NAME="NOT6.0"></A>
+<H2>6.0) AntiVirus Software</H2>
+<A NAME="NOT6.1"></A>
+<H3>6.1) ChipAway Virus Enabled</H3>
+A particular antivirus product instituted in BIOS has inappropriately chosen
+the activation messages of "ChipAway Virus Enabled." When this phrase is seen
+during the bootup process, it represents that this product has been activated.
+<P>
+<HR>
+<A NAME="NOT6.2"></A>
+<H3>6.2) Traces of a Virus Found in Memory</H3>
+While this message is the message presented by McAfee's Scan, it represents the
+concept of one antivirus product finding another antivirus' strings in memory.
+One of the best known of this circumstance is the combination of Scan and
+CPAV/MSAV. Running CPAV and then SCAN will usually generate this message.
+<P>
+<HR>
+<A NAME="NOT6.3"></A>
+<H3>6.3) Virus Found in ANTIVIR.DAT</H3>
+In 6.2, we showed circumstances where one antivirus product locates another in
+memory. There is also the circumstance of one antivirus finding strings in
+another antivirus' data files or TSR executables. This is especially true now
+that there are heuristic analyzers.
+<P>
+What the heuristic analyzers are perhaps finding are viral snippets that are
+used to identify viruses. But it is not the complete virus.
+<P>
+A similar situation arises when some antivirus packages are used to scan data
+files when "Scan All Files" is chosen. In this situation, the viruses
+"detected" are usually some kind of polymorphic virus. This brings forth the
+issue, "Should you be scanning all files?" My answer is, each product is
+presented to you with a default mode. Careful thinking is applied to choose the
+right set of defaults. Yet no product that I'm aware of has a default setting
+of scanning all files. All products recommend a certain configuration. Think
+about that.
+<P>
+[The chance that an antivirus package is distributed with a virus is actually
+relatively high if you are not downloading the package from a known and trusted
+site. Antivirus packages have been known to be trojanized many times in
+secondary redistribution channels.
+<P>
+Be safe. Download originals from official supported sites.]
+<P>
+<HR>
+<A NAME="NOT6.4"></A>
+<H3>6.4) Loading Bootstrap...</H3>
+This is a message placed by SCAN in the MBR bootup process after it has cleaned
+certain boot sector viruses. Because the user has just completed an encounter
+with a virus, he is very alert to any new strangeness he encounters. Seeing
+this new message, he immediately believes this is something laid by the virus.
+<P>
+This message has been removed as of last summer.
+<P>
+<HR>
+<A NAME="NOT6.5"></A>
+<H3>6.5) Something is Writing to Your Boot Sector...</H3>
+Antivirus products vary in technology. One technology implemented by some
+antivirus products is called behavior blocking. However, use of this technology
+often involves giving too much power to users who do not understand the
+capabilities nor the circumstances.
+<P>
+The most common behavior blocking issue raised to our technical support is,
+"Something is writing to my boot sector!" This could be a virus. But it could
+be that the user just typed FORMAT.
+<P>
+I would recommend, in a corporate environment, you allow users to decide for
+themselves whether they wish to run a behavior blocker. If the user is unaware
+that he is using behavior blocking technology, you will be confronted with more
+non-virus cases than situations where it actually stopped a virus. Yet, you may
+decide that you would be able to live with a 10 to 1 non-viral to viral ratio
+because the one virus infection that it catches costs more to clean up than the
+on-going support.
+<P>
+The choice of using an antivirus is the determination that the cost of running
+an antivirus is less than the cost of cleaning up after virus infections.
+Therefore, only you can evaluate the cost for your organization.
+<P>
+<HR>
+<A NAME="NOT7.0"></A>
+<H2>7.0) Macintosh</H2>
+<A NAME="NOT7.1"></A>
+<H3>7.1) Welcome Datacomp</H3>
+Users of Apple's Macintosh have been mystified by the occasional occurrence of
+the string "welcome datacomp" appearing amidst their typed text, knowing that
+they hadn't typed it. This has been traced to a particular make and model of a
+third-party Macintosh-compatible keyboard. This string is apparently programmed
+into the keyboard's ROM.
+<P>
+From the alt.comp.virus FAQ:
+<BLOCKQUOTE>
+"It appears to be a practical joke, coded into the keyboard's ROM, that causes
+the keyboard to output that text (as if it was typed) after a period of
+keyboard inactivity. The only practical fix is to replace the keyboard."
+</BLOCKQUOTE>
+<HR>
+<A NAME="NOT7.2"></A>
+<H3>7.2) August 27, 1956</H3>
+If your Mac has this date, it's time to replace the battery. This is the
+default, time-0 for the Mac.
+<P>
+<HR>
+<A NAME="NOT8.0"></A>
+<H2>8.0) Hoaxes</H2>
+<A NAME="NOT8.1"></A>
+<H3>8.1) Good Times</H3>
+"If you see Good Times in the subject header of your message, delete it!"
+<P>
+Actually, this is good advice, because the rest of the message is bound to be
+worthless.
+<P>
+A message warning of the Good Times virus first appeared in November of 1994.
+The warning for the virus reports that if you read a message with "Good Times"
+in the title, your hard disk will be damaged beyond repair as well as a number
+of other wondrous things. When the reports first surfaced, the report was
+easily and quickly dismissed. Nothing can have such effects across the spectrum
+of operating systems and processors as claimed by this omnipotent e-mail virus.
+<P>
+However, fall of 1995 saw a resurgence of messages warning again of the Good
+Times virus. It is believed that news stories regarding macro viruses lent more
+credence to the e-mail aspects of the report. But, the story remains a hoax.
+The things it claims to be possible across the spectrum of e-mail programs
+remain an impossibility.
+<P>
+The reports continue to spread. And in effect, the message itself has become
+the virus.
+<P>
+<HR>
+<A NAME="NOT8.1.1"></A>
+<H3>8.1.1) GT-Spoof</H3>
+To try to give credibility to the Good Times story, some virus writers
+immediately created a virus using one of the virus creation programs with the
+name "Good Times" inside the virus. The antivirus community, seeking to insure
+that no confusion came about from this, named this virus GT-Spoof.
+<P>
+<HR>
+<A NAME="NOT8.1.2"></A>
+<H3>8.1.2) FormatC</H3>
+FormatC is a trojan horse written as a Word document. It is a Word document
+which contains one macro which does a call to execute the DOS command FORMAT.
+It was written and posted to an Internet newsgroup.
+<P>
+Because it was written during the initial hoopla over Word macro viruses, many
+people have also included FormatC in their list of Word macro viruses. Also,
+many people freely associate trojan horses as viruses. Thus FormatC is often
+referred to as a virus. It is not. It is a trojan horse.
+<P>
+It is being discussed here because it may have had a bearing on lending
+credibility to the Good Times scare.
+<P>
+<HR>
+<A NAME="NOT8.2"></A>
+<H3>8.2) Viruses Destroying Hardware</H3>
+Because every unknown computer malady has been associated with viruses, many
+pieces of damaged hardware have been attributed to viruses as well. In order to
+explain the issue of viruses destroying hardware, we must step back and explain
+the concept of software destroying hardware.
+<P>
+The truth behind the ability of software to destroy hardware is that generic
+software cannot destroy generic hardware. However, every piece of hardware has
+recommended parameters of use. Thus, in order to damage hardware, one either
+uses the hardware outside its recommended parameters or wears it out through
+repetitive overuse.
+<P>
+No virus has yet to do this. Chances of any virus successfully accomplishing
+this (and spreading) are not high. In real terms, this issue is myth, not fact.
+<P>
+Remember, the only possible ways to destroy hardware through software is
+through a directed attack or through repetitive overuse.
+<P>
+<HR>
+<A NAME="NOT8.3"></A>
+<H3>8.3) Internet Cleanup Day</H3>
+All I can say is that it was wonderful to use my Internet connections on Feb
+29th. To those who complied with Internet Cleanup Day, thank you.
+<P>
+<HR>
+<A NAME="ACK"></A>
+<H2>Acknowledgments</H2>
+<UL>
+Dave Chess, IBM<BR>
+Shane Coursen, Symantec<BR>
+Sarah Gordon, Command<BR>
+Tom Simondi<BR>
+Heather Stern, McAfee; and many others at McAfee<BR>
+</UL>
+<HR>
+<A NAME="APPA"></A>
+<H2>Appendix A: The Directory Entry</H2>
+A directory file consists of sequential 32 byte entries:
+<PRE>Byte    Description
+0-7     Filename
+
+        Byte 0 indicates the status of the directory entry.
+
+        Value   Meaning
+        00h     This entry has never been used.  (Directory searches can stop here.)
+        05h     The actual first character is an E5h.
+        E5h     This entry has been erased (it's free).
+        2Eh     Dot.  This is the entry which holds information about this directory cluster.
+                If the second character is also 2Eh, then this entry is dot-dot, or the parent
+                directory. If the parent directory is the root directory, then cluster number
+                will be 0000h.
+
+8-10    Filename extension
+
+11      File Attribute
+
+        The file attribute is a bit mapped value.
+
+        Bit     Meaning
+        01h     1 = Read-only file. If function 3Dh or 6Ch is used to open the file for output,
+                an error code is returned.
+        02h     1 = Hidden file. This file is excluded from normal directory searches.
+        04h     1 = System file. This file is excluded from normal directory searches.
+        08h     1 = Volume ID in the first 11 bytes. This file is excluded from normal
+                directory searches. No other fields are interpreted. Windows 95 marks
+                this bit for its LongFileName entries.
+        10h     1 = Subdirectory file. This entry points to a subdirectory and thus is not
+                searched.
+        20h     1 = (Archive bit) File has been written to and closed. BACKUP and RESTORE
+                uses this bit to determine if a file has been changed since the last BACKUP.
+
+12-21   Reserved (OS/2 uses some of these bytes)
+
+22-23   File Creation or Last Changed Time
+
+        The time is encoded into 16 bits:
+
+        Bits    Meaning
+        0-4     Seconds (in 2 second increments)
+        5-10    Minutes (0-59)
+        11-15   Hours (0-23)
+
+24-25   File Creation or Last Changed Date
+
+        The date is encoded into 16 bits:
+
+        Bits    Meaning
+        0-4     Day (1-31)
+        5-8     Month (1-12)
+        9-15    Year + 1980 (0-119: 1980-2099)
+
+26-27   First Cluster of the File. One uses this number to index through the File
+        Allocation Table to determine the chain of the full file. (Standard Intel 16 bit value).
+
+28-31   File Size (standard Intel 32 bit value)
+</PRE>
+<HR>
+<A NAME="APPB"></A>
+<H2>Appendix B: The DOS Boot Record</H2>
+A Boot Record is found on each DOS volume.  It describes the media.
+<PRE>Byte    Description
+0-2     Code
+</PRE>
+The boot up process passes execution to the sector which is read in. Thus, this
+code must be able to do something intelligible.
+<P>
+Prior to DOS 4 or 5, the following definition was documented but was not being
+checked by DOS. Sometime around DOS 4 or 5, DOS started requiring this:
+<PRE>        Byte    Value           Description
+0       EB              Short jump opcode
+1       any             Distance of short jump
+2       90              NOP
+
+or
+
+0-2     E9 xx xx        Jump instruction
+
+3-10    OEM Name        Anyone can write anything they want here.
+11-12   Bytes per sector
+13      Sectors per cluster (must be a power of 2; maximum = 128; real maximum = 64)
+14-15   Reserved sectors at beginning
+16      Number of File Allocation Tables
+17-18   Maximum number of Root Directory Entries
+19-20   Total sectors on media
+
+21      Media Descriptor
+
+        Bit     Description
+        0       1 = 2 sided     0 = not 2 sided
+        1       1 = 8 sector    0 = not 8 sector
+        2       1 = removable   0 = not removable
+        3-7     reserved = 1
+
+        Value   Description
+        F8h     Fixed disk
+        F9h     5.25", double sided, 15 sectors/track
+        FCh     5.25", single sided, 9 sectors/track
+        FDh     5.25", double sided, 9 sectors/track
+        FEh     5.25", single sided, 8 sectors/track
+        FFh     5.25", double sided, 8 sectors/track
+        FEh     8", single sided, 26 sectors/track
+        FDh     8", double sided, 26 sectors/track
+        FEh     8", double sided, 8 sectors/track
+
+        Note: There are more notes on 8" diskettes,
+        but I don't think they're that pertinent.
+
+22-23   Number of sectors used by a File Allocation Table
+24-25   Sectors per track
+26-27   Heads
+28-31   Hidden sectors
+32-35   Huge sectors
+36      Physical drive number
+37      Reserved
+38      Boot signature
+39-42   Serial number
+43-53   Volume label
+54-61   Filesystem type
+
+        Value           Description
+        "FAT12   "      12 bit FAT (8 byte string, last 3 are spaces)
+        "FAT16   "      16 bit FAT (8 byte string, last 3 are spaces)
+
+62-     Start of code   Usually where the code at 0 jumps to.
+</PRE>
+<HR>
+<A NAME="APPC"></A>
+<H2>Appendix C: Beep Codes</H2>
+A Beep Code is audible output from the machine intended to deliver information
+when no visible means are possible. Beep codes different, depending on the
+manufacturer.
+<P>
+<STRONG>IBM POST Audio Error Codes:</STRONG>
+<PRE>1 short beep            All OK or Display error
+2 short beeps           POST error - Error code on CRT, or Display error
+No beep                 Power, motherboard
+Continuous beep         Power, motherboard
+Repeating short beeps   Power, motherboard, stuck keyboard key
+1 long, 1 short beep    motherboard, clock speed too fast
+1 long, 2 short beeps   Display adapter (MDA, CGA)
+1 long, 3 short beeps   Enhanced Graphics Adapter (EGA) video RAM
+3 long beeps            3270 keyboard card
+</PRE>
+
+<STRONG>AMI BIOS Audio POST Codes:</STRONG>
+<PRE>1 short beep            DRAM refresh failure
+2 short beeps           Parity circuit failure
+3 short beeps           Base 64K RAM failure
+4 short beeps           System timer failure
+5 short beeps           Processor failure
+6 short beeps           Keyboard controller Gate A20 error
+7 short beeps           Virtual mode exception error
+8 short beeps           Display memory Read/Write test failure
+9 short beeps           ROM BIOS checksum failure
+10 short beeps          CMOS Shutdown Read/Write error
+11 short beeps          Cache Memory error
+1 long, 3 short beeps   Conventional/extended memory failure
+1 long, 8 short beeps   Display/retrace test failed
+</PRE>
+</BODY>
+
+<!-- Mirrored from vx.netlux.org/texts/html/notvirus.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:25 GMT -->
+</HTML>
+<HR></CENTER>
+<FONT SIZE=-2>
+Last Modified June 15, 1996

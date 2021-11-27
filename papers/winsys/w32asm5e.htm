@@ -1,0 +1,551 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"><html><head><title>Win32 Assembler Tutorial by T$ - Chapter 4k [deinmeister.de]</title>
+
+<meta name="description" content="programming multitasked win32 executables with assembler for windows 95, 98 and NT, further details">
+<meta name="keywords" content="windows,assembler,nasm,masm,tasm,32bit,32 bit,programming,program,code,system">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="w32asm5e_files/dmde.css">
+<link rel="home" href="http://www.deinmeister.de/index.html" title="Home"><link rel="contents" href="http://www.deinmeister.de/sitemap.htm" title="Sitemap"><link rel="author" href="http://www.deinmeister.de/edito.htm#2" title="Author"><link rel="copyright" href="http://www.deinmeister.de/edito.htm#3" title="Copyright"><link rel="first" href="javascript:f();" title="First page"><link rel="prev" href="javascript:p();" title="Previous page"><link rel="next" href="javascript:n();" title="Next page"><link rel="last" href="javascript:l();" title="Last page"><link rel="up" href="javascript:u();" title="Chapter"><link rel="shortcut icon" href="http://www.deinmeister.de/favicon.ico"></head>
+
+<body class="code">
+<script src="w32asm5e_files/enav.js" type="text/javascript"></script><form name="navform" class="n" title="Fast navigation bar"><table border="0"><tbody><tr><td><strong>Topic: </strong><select name="part" size="1" onclick="SetNavigationText(document.navform.part.selectedIndex);" onchange="CSetNavigationText(document.navform.part.selectedIndex)" class="nav"><option>deinmeister.de</option><option>Programming</option><option>Win32Assembler-Tutorial</option><option>Downloads</option><option>Software configuration</option><option>Hardware tips</option><option>Cartoons&amp;Co</option></select></td><td><strong>Page: </strong><select name="page" size="1" onchange="LoadURL()" class="nav"><option> - - - - - - - - Pages related to the selected topic: - - - - - - - - </option><option>Index</option><option>Teil 1: The basics</option><option>Teil 2: Windows and Messages</option><option>Teil 3: DirectDraw and Sound Capture</option><option>Teil 4: Threads and Synchronisation</option><option>Teil 5: PE file format, memory management, ...</option><option>Win32 Assembler FAQ</option></select></td><td><input type="button" value="&lt;&lt;" onclick="p();" accesskey="1"> <input type="button" value="Index" onclick="u();" accesskey="0"> <input type="button" value="&gt;&gt;" onclick="n();" accesskey="2"></td></tr></tbody></table><hr></form>
+
+<div class="ger"><span class="dcl">---&gt;</span>Diese Seite gibts auch in <a href="http://www.deinmeister.de/w32asm5.htm">Deutsch</a>.</div>
+
+<div class="t">
+<center><h2>Win32 Assembler Tutorial Chapter 4k</h2></center>
+<p>This time the number really fits: 4k aka 4096 bytes are an amount of
+data really related to the topics in this chapter: First, it is the
+size of the pages used by the x86 CPU paging capabilities, which is
+used for memory and process protection as well as memory mapping under
+all common 32 Bit operating systems, including Win32, of course.
+Second, it is the size limit for 4k intro programming competitions, and
+thus refers to size optimization tricks explained here. Third and last,
+the file systems often organizes the data in 4k chunks as well.<br>
+Because the current tutorial contains many snippets instead of dealing
+with a single topic, it does not come with an example app. But don´t
+worry, there are a lot of examples within the text instead as well as
+sample code in the <a href="http://www.deinmeister.de/asmtut4.zip" class="zip">ZIP archive</a>.</p>
+</div>
+
+<div class="t">
+<h3>Triple Topic Table:</h3>
+<ul>
+<li><a href="#a">Program segments, paging, DLLs and the PE file format</a></li>
+<li><a href="#b">Win32 specific size optimizing tricks</a></li>
+<li><a href="#c">More about files</a></li>
+</ul>
+</div>
+
+<div class="t">
+<a name="#a"><h2>The PE file format</h2></a>
+<p>The PE (Portable Executable) file format is used for .exe, .dll,
+.scr , .cpl and similar files. It consists of its headers and its
+sections.</p>
+<h3>The headers are (in exactly this order): </h3>
+<ul>
+<li><em>An MS DOS Exe file header (64 bytes).</em><br>Important for
+Win32 are only 2 fields: The first 2 bytes must contain the string "MZ"
+which indicates that the file is a (DOS) executable and the last 4
+bytes of the DOS exe header contain the offset locating the real PE
+header within the file. <ul><li><em>The rest of the MS DOS executable.</em><br>This part is
+also called the MS DOS stub, it executes when the file is started under
+DOS. By default it contains a program telling something like "This file
+requires Windows".</li>
+ </ul></li>
+<li><em>The PE header</em>, consisting of an ID ( 00004550h )
+specifying that this is a Win32 executable and the real PE header sized
+20 bytes. It contains information about the CPU the file was compiled
+for, how many sections are in the file, the size of the following
+optional header as well as some other info (primary for debuggers).</li>
+<li><em>The optional header</em>, which is definitely required for
+valid Win32 PE files. It contains information about the size and
+position of data, uninitialized data and code, the section alignment in
+file and memory as well as the minimum operating system version
+required for the file. It also contains information about the amount of
+memory required for loading the file into memory, about the amount of
+memory to reserve for the stack and the heap, the complete size of all
+headers which is the offset to the sections as well, flags telling if
+there is an (DLL) entry point in the code, the entry point offset
+itself, the start address of the whole executable called <em>Image Base</em>, and the size of the data directory (currently 16 entries).
+ <ul><li>The end of the so-called optional header is filled with the <em>data directory</em>.
+This directory contains information about where to find the data needed
+by the OS for initializing the file after it has been loaded to memory.
+The PE loader uses this table for localizing the data containing
+startup information because it cannot be identified by name or position
+(this gets explained later). Each entry contains both an offset to the
+data to and the size of this data. Unused entries are filled with 0.
+The data this directory points to are <em>Imports</em>, <em>Exports</em>, <em>Resources</em> and other data.</li>
+ </ul></li>
+</ul>
+Phew, up to now about (64 +?) + (4 + 20) + (96 + 16*8) = 312+ bytes are
+already occupied, just by the header (and most of its data is rather
+useless or unused at all).
+</div>
+
+<div class="t">
+<h3>The Sections</h3>
+<p>The sections are the real interesting part of a PE file. All the
+code, data and/or resources of the program is stored there. Every
+section contains of 2 parts: The section header and the section data
+itself.</p>
+<p>Each section header is 40 bytes long, following directly one after
+another. The section headers are located after the optional header.
+They contain the name of the section which can be any name you want as
+long as it is not longer than 8 bytes (unused bytes are padded with
+zeroes). For example, nothing prevents you from naming your code
+section <samp>.badcode</samp> or the resource section <samp>.blah</samp> .<br>The
+section header also contain the size of the data contained in the
+section, the offset of the section itself in the PE file and the
+starting address in the address range of the current process where the
+section should be loaded into.<br>The last interesting field contains
+memory-access flags, each marked by one of 32 bits, of the section
+after being loaded in memory like:</p>
+<ul>
+<li><em>Code</em><br>The section contains program code.</li>
+<li><em>Initialized data</em><br>The section contains initialized data.</li>
+<li><em>Uninitialized data</em><br>The section contains uninitialized data.</li>
+<li><em>Shared</em><br>The first important flag. When a PE file is
+loaded several times, a shared section is loaded only once into
+physical memory and the page table entries of processes containing this
+section point to the same physical memory. If this flag is not set, the
+section is copied into a separate part of physical memory each time it
+is loaded. Especially for files used by many different processes
+(typically DLLs) it is a good idea to set this flag to speed up PE
+loading and reduce memory consumption.</li>
+<li><em>Executable</em><br>This flag indicates that the sections can be executed. Is only useful if the section does or will contain code.</li>
+<li><em>Readable</em><br>Allows read accesses to the section. Note that this is not the same as Executable.</li>
+<li><em>Writeable</em><br>Allows write accesses to the section.</li>
+</ul>
+<p>One may notice that there is nothing that determines what each
+section is good for. Every segment in your source code typically
+produces one section, additional sections are used for exporting or
+importing external functions and variables as well as for resources
+added to the program. A PE file needs at least one section (otherwise
+it would be empty) and can have as many as possible unless the address
+space is filled up.<br>The size each section occupies in the file is the size of its data rounded up to the next multiple of the <em>section alignment in the file</em> field defined in the header. This field is also called PE File Alignment and is a power of 2 between <em>512</em> and <em>65536</em>.
+Thus every section in the PE file uses at least 512 bytes, even if it
+contains only one byte of data. The only exception is the last section
+since you are allowed to strip off the unused part of the last section.<br>There is another alignment field called memory alignment or <em>object alignment</em>. It must be a multiple of <em>4096</em>,
+the page size of the x86 CPUs and must not be less than the file
+alignment. It must be a multiple of the page size because the paging
+mechanism used for memory protection and memory sharing by the OS works
+at page size granularity.<br>If you want to keep the file small, use a
+file alignment of 512 bytes; if you want it to load a bit faster set
+both the file and the object alignment to 4096. In this case, the PE
+loader does not need to expand the sections up to the next object
+alignment boundary since they already have the size needed.</p>
+<p>Most PE files use a set of predefined sections. These typically use
+the same names, though their behaviour is still determined by the
+entries in the PE header and/or the data directory within the optional
+header.<br>The following predefined sections are common:</p>
+<ul>
+<li>the <em>code section</em>, typically called <em>.code</em> or <em>.text</em><br>
+A section containing code is determined by the <dfn>BaseOfCode</dfn>
+field in the additional header. It is required for applications, but
+optional for DLLs (DLLs only containing data do not need it).<br>If
+used in an application, it must also contain the program entry point.
+For a DLL, a program entry point is optional. If it is specified, it
+gets called whenever the DLL is loaded, unloaded or a thread in the
+current process is created or terminated. When the code requires
+external modules loaded by default, specified by the EXTERN directive
+in the code, this section contains the addresses of the imported
+functions as well. They are often in front of the entry point and,
+depending on the library or compiler used, are all preceded by the
+opcode for a near jump. When the code calls a load-time imported
+function it either makes a direct call to the jump opcode which then
+jumps into the function or it directly calls the imported address.<br>Most compilers set the access rights for the code section to <dfn>Code + Shared + Executable + Readable</dfn>. If you want to use self-modifying code here, you must also set the <dfn>Writeable</dfn> flag and clear the <dfn>Shared</dfn> flag.</li>
+<li>A <em>data section</em> often called <em>.data</em> with <dfn>Readable + Writeable</dfn> access containing initialized data.</li>
+<li>An <em>uninitialized data section</em> often called <em>.udata</em> or <em>.bss</em> with <dfn>Readable + Writeable</dfn> access without containing initialized data.</li>
+<li>An <em>read-only data section</em> often called <em>.rdata</em>, same as .data, but without Writeable access, but typically <dfn>Shared</dfn> instead.</li>
+<li>A section containing <em>resources</em> called <em>resource</em> or <em>.rsrc</em>, normally Readable and Shared, used by the resource loading functions.</li>
+<li>An <em>exports</em> or <em>.edata</em> section if function entry
+points or data other than resources are public for external use by
+other programs. This is common for DLLs containing code and/or data,
+but only a few applications do this.</li>
+<li>An <em>imports</em> or <em>.idata</em> section. Each imported
+function and data address of external PE files, typically DLLs, which
+should be available at load time is marked with an entry within the
+imports section. It contains of an entry for each file and is
+terminated by an empty entry. Each entry points to a table pointing to
+the function / data field name (must be the same name as in the export
+section of the file to use) and a table containing the offsets to the
+addresses there the imported addresses should be placed (this is either
+the data or the code segment). The names or ordinals of the file(s) and
+its imported functions are also included in the imports section.</li>
+<li>A <em>relocation</em> section <em>.relocs</em>, containing
+information if the PE file can´t be loaded to the default base address.
+This section is pretty useless if no exports are included.</li>
+</ul>
+</div>
+
+<div class="t">
+<h3>Other notes about PE files, their mapping into memory and the paging mechanism.</h3>
+<p>The sections can be ordered in any way possible. It is not even
+required by the PE format that the section headers are in the same
+order as the sections itself.</p>
+<p>The predefined sections mentioned above are the ones created by most
+linkers. However, this is not a strict rule. According to the PE file
+format, the sections contain just data which is mapped to memory
+according to its description in its header. The use of the data itself
+is determined by the PE header fields.<br>Thus, it is possible to use a section for several purposes.</p>
+<p>There is also an API function called <em>VirtualProtect</em> which
+can be used to set access rights on any specified memory location.
+Memory allocated via GlobalAlloc or LocalAlloc is by default <dfn>Readable + Writeable + Executable</dfn>, so one can execute code copied into it without any other actions required.</p>
+<p>Since the linear address space of a process can be mapped into the
+physical memory or swap file using any possible pattern, physical
+memory fragmentation will never cause memory allocation to fail.
+However, your linear address space can still be fragmented. So it is
+better to allocate memory used permanently before memory which will be
+freed and allocated again. If you want to resize an already locked
+block of memory, allow the memory mapper to relocate the memory, either
+by unlocking it before resizing it and relocking it again (locking
+memory is practically the same as locking surfaces or buffers in
+DirectX and returns a valid pointer to the memory) or by calling the
+GlobalReAlloc/LocalReAlloc function the following way:</p>
+<pre>;for MASM and TASM: replace <b>dword</b> with <b>dword ptr</b> or <b>large</b>
+
+push dword GMEM_MOVEABLE        ;this flag allows the memory manager to move the block to another address if needed
+push dword NewSizeOfMemoryBlock ;the new size the block should have
+push dword MemoryHandle         ;was obtained by a previous call to GlobalAlloc or GlobalReAlloc
+call [GlobalReAlloc]            ;for MASM and TASM, remove the brackets</pre>The
+same goes for memory allocated by LocalAlloc/LocalReAlloc. The function
+returns the new handle for the memory, which is the pointer to the
+memory as well. Use this instead of the old one, the memory position
+may have changed. By the way, in Win32 there is no difference between
+Local and Global memory functions due to the fact that there is only
+one huge 4G segment.
+<p>The address within the process address space where the data in the PE file should be loaded to is given by the <em>ImageBase</em>
+value in the PE header. However, if the address is already occupied by
+other mapped files or allocated memory, the PE file data has to be
+loaded to another address. The relocation info is needed for converting
+the affected memory references. For executables not exporting functions
+or data, relocation will not occur because it will always be the first
+file to be loaded into the address space of a process (with one
+exception: If the image base is less than 4MB, the file will be
+relocated to 4MB, the default address). So there is no need for
+relocation info in such executables. However, DLLs will in most cases
+be relocated since they are never the first file in memory, so chances
+are not that high that the default address is still unused.<br>
+I´ve encountered problems with some linkers which caused relocation to fail. Setting a new base address using the <dfn><b>-base</b> ImageBase</dfn> command line switch solves the problem.</p>
+</div>
+
+<div class="t">
+<a name="b"><h2>Size optimizing for Win32</h2></a>
+<p>The simplest way to reduce size is using an executable packer.
+However, these do not reduce file size well at file sizes below 10k.
+Another way would be using a dropper, a program which only purpose is
+to unpack and start a program included in it. This works a bit better
+if the dropper is written in DOS, thus the entire PE file including its
+headers can be compressed. Both variants do not reduce the size of the
+original executable itself and are not discussed here.</p>
+<p>The first point to look at is the PE file structure.<br>The entire
+PE header (DOS MZ header + DOS code + PE headers + section headers) is
+padded up to the next 512 byte boundary. So without having any section
+in it, the PE file is already 512 or 1k bytes large (with padding). The
+minimum section alignment in the file is 512 bytes, so every section
+adds at least 512 bytes to the file. The only exception is the last
+section which does not need to be padded, thus the smallest section
+should be the last one.</p>
+<p>Without reorganizing the entire header, the only way for downsizing
+the PE file is using as few sections as possible. It is even possible
+to put the imports and the resources into the same segment as the code
+and the data. Code and data are in the same section if the source code
+uses the same segment for code and initialized data (like code segment
+variables). And due to the fact that CS and DS/ES map to the same
+addresses we do not even need a CS segment override. This works with
+all assemblers and linkers. If the imports are in the same section as
+the code depends either on the import library (*.lib) files or the
+assembler, depending on the import method chosen. So far, I have not
+seen a resource compiler / assembler / linker combination allowing the
+resources to exist within an other section, but often resources are not
+needed. Executables do not need relocation info, so the relocation
+section can be removed from the .exe without causing problems (some
+linkers already do this).</p>
+<p>Hardcore coder hint: The padded area in the PE header, the code of
+the DOS stub and all section padding bytes are not used by the PE
+loader at all, so you can stuff data or code in them. Stuffing the
+code/data section is trivial, just include the additional data into
+your source code until it reaches the alignment border. If you want to
+use the other unused fields (several hundred bytes), make sure to add
+the section access rights you need. Loading the executable into memory
+again is the easiest way and does not require adjusting the access
+right flags, but consumes quite a lot of code. Or just use the already
+mapped file (the header is loaded at the Image Base) and access the
+memory directly, but keep in mind that the sections are aligned
+according to the ObjectAlignment field, thus the position in memory may
+not be the same as in the file.</p>
+<p>The second size optimization method is the same as under DOS:
+Keeping the code itself as compact as possible, making it smaller byte
+per byte.<br>Only Win32 and 32 bit specific tips are mentioned here,
+others are the same as under DOS, so it is recommended reading other
+size optimizing tutorials as well and, most important, get a deep look
+into the x86 instruction list and get a feeling what an asm mnemoic
+will translate to.</p>
+<p>One byte-consuming part in Win32 are function calls. Keeping the
+pushes as small as possible, using registers is recommended. Many
+parameters can be 0, if we have a register containing 0 we can push the
+0 using a single byte. The instruction for zeroing a register consumes
+less bytes (e.g. xor eax,eax uses 1 byte) than saved by using the
+zeroed register as the push operand. There are also special cases where
+function calls can be optimized. If there is a construct like
+</p><pre>	call [function_address]
+	ret</pre>replace it by (damn, this is so trivial)
+<pre>	jmp [function_address]</pre>
+
+<p>Lets take a look at our program entry point. It is defined as:<br><br>
+<code>&nbsp;WinMain( hInstance, hPrevInstance, lpszCmdLine, nCmdShow);</code><br><br>
+Thus our program is just treated as an ordinary function with the following dword values on the stack:</p>
+<pre>	[esp+16]: nCmdShow    ;value determining if the program window should be displayed normal, fullscreen or minimized
+	[esp+12]: lpszCmdLine ;address of the command line
+	[esp+8]:  0           ;always 0 in Win32
+	[esp+4]:  hInstance   ;instance handle of the current process
+	[esp+0]:  stacked EIP ;return address
+</pre>
+There is a function call which can be replaced using this knowledge: <dfn>ExitProcess</dfn>
+at the end of a program. A ret does also end the program (if you
+wonder: a function usually ends using a ret instruction ;-) , so this
+here is my Guiness Book entry, the smallest complete Win32 application:
+<pre>	ProgramEntryPoint: ret
+
+	end ProgramEntryPoint
+</pre>
+The code is exactly one byte long (there is no need to clean the stack because it is thrown away by the OS)!<br>One
+thing which may be problematic is that loaded DLLs are not informed
+that the program is terminated so that they cannot do cleanup stuff.
+But this should not be a problem for 4k code.
+<p>Another Win32 goodie causes all open handles left after a process
+termination to be closed automatically. So there is no need for closing
+them manually. But for performance reasons you should still close them
+yourself as soon as possible if code size optimization is not your main
+goal.</p>
+<p>In the case that DirectX is used (or other functions using the COM
+calling syntax), using a macro like the one used in the last two
+tutorials expands to about 20 bytes of code each time it is used.
+Replacing the macro with the following code</p>
+<pre>DXcall:
+	push edx
+	mov edx,[edx]
+	add edx,ecx
+	mov edx,[edx]
+	jmp edx
+</pre>
+and replacing each use of the macro by something like
+<pre>	mov ecx, MethodToUse
+	mov edx, InterfaceToUse
+	call DXcall
+</pre>
+reduces the code size remarkably.
+<p>In 32 Bit code, registers are either 8 or 32 bit by default. Thus,
+data addresses are always 4 bytes long. Some arithmetic instructions
+allow to define a 4 byte immediate number (an immediate is a number
+which is a part of the instruction like in <samp>add eax,8</samp>) as
+a single signed byte if it is in the range of a signed byte. MASM and
+TASM use the short form, if possible, by default while NASM always
+defaults to using 4 bytes. In this case NASM code requires a byte
+override for producing the short form:</p>
+<pre>	add eax, <strong>byte</strong> 8
+</pre>
+<p>Altering only a part of a dword operand also reduces the size of
+immediates. However, if you alter a word instead of a dword there is
+only one byte saved instead of two because a 16 bit operand size
+override prefix byte is used.</p>
+<p>Allocating memory can be made smaller as well. Instead of allocating
+it with GlobalAlloc or LocalAlloc, allocating the memory from the stack
+uses less code. It works the same way as allocating local variables on
+the stack:</p>
+<pre>	sub esp,SizeOfMemoryBlock ;note that the stack grows downwards
+	                          ;esp now points to the allocated memory block
+</pre>
+If you need to free the allocated memory (only required if a <dfn>ret</dfn> instruction follows), just use:
+<pre>	add esp,SizeOfMemoryBlock
+</pre>
+There is one important issue about using the stack that way: In the PE header are two fields called <em>StackReserveSize</em> and <em>StackCommitSize</em>.
+The first one determines the maximum size the stack can grow to without
+the danger of overwriting other data in the address space of the
+process. This is done by marking the amount of memory as reserved by
+the memory manager. The second one contains the amount of memory used
+for the stack which already maps to physical memory.<br>When using the
+stack for allocating memory, make sure that at least the StackReserve
+parameter is big enough to cover all the memory, the maximum amount of
+stacked data and some additional space for reserve. For faster
+execution, the StackCommit should be as large as the maximum stack size
+(including stack-allocated memory) expected. Keep in mind that the
+Stack parameters should not be too large, otherwise they reduce the
+amount of free address space too much (the free address space is
+currently 2 or 3 GB less the size of the mapped PE file and the stack
+reserve size).<br>Allocating memory from the stack has the disadvantage
+that the memory cannot be resized or freed while there is still data on
+the stack which should be retrieved using <strong>pop</strong> or <strong>ret</strong>.
+
+<p>A problem which also occurs often is running out of registers, thus
+memory variables have to be used. Using a predefined variable in the
+data or code segment costs 5 bytes for accessing it, a relative address
+still costs at least one byte more than accessing a register. So using
+all 8 general purpose registers may help. 8 registers? Yes, <strong>esp</strong> is a general purpose register, isn´t it? It can be used the same way as esi,edi or ebp.<br>And there are some handy instructions for using it as a memory pointer: <strong>push</strong> works similar to stosd and <strong>pop</strong>
+similar to lodsd, with the difference that esp always works downwards
+during a push and upwards during a pop, unaffected by the direction
+flag. On the other hand, push and pop are much more flexible because
+they accept nearly any operand and not only eax like lodsd or stosd
+(but lodsd/stosd are smaller).</p>
+<p>It is a common misbelief that modifying esp or the memory it points
+to by any other way than using push, pop, call, ret or int will cause
+the program to crash. Fact is, only when using esp as a stack pointer
+it must be sure that esp points to the right address. It is also
+possible to set esp to another address as long as there is allocated
+memory below that address and use that memory as the stack. One can use
+esp as a pointer to memory to fill at esp with descending addresses and
+still use esp as a stack pointer since the memory area already filled
+by the loop is above the address esp points to and the memory used as a
+stack is below it. As a conclusion, the following issues must be taken
+care of when using esp:</p>
+<ul>
+<li>esp can be used like any other register and without limitations as long as <strong>push</strong>, <strong>pop</strong>, <strong>call</strong> or <strong>ret</strong> are not used.</li>
+<li>If esp should still be used for storing temporary data or calling
+functions, it must be sure that the memory area below the address esp
+points to <ul><li>must have read/write access</li>
+ <li>does not contain data which is important afterwards</li>
+ <li>has to be large enough for all stacked data</li>
+ </ul></li>
+<li>If stacked data is needed after changing esp (most likely within a
+function terminated by ret), esp must be restored to the value it
+contained before.</li>
+</ul>
+Since push, pop, call and ret occur only according to their positions
+in the code, it is easy to track down the current value of esp and
+wether it points to a valid address or not. But hardware interrupts can
+occur at any time, and they cannot be masked out using the interrupt
+flag (the interrupt flag can only be modified by the kernel). In Win32,
+this is not a problem: Interrupt routines are a part of the kernel or
+are executed in other VMs, thus the stack pointer will be switched to
+another memory area when an interrupt occurs and it is restored with
+the interrupt return as well.
+</div>
+
+<div class="t">
+<a name="c"><h2>Console Apps and File I/O</h2></a>
+<p>So far, all sample applications in the tutorials have been GUI or
+Windowed Mode apps. But there are also Console Applications. A console
+is a simple window which can be used to read input from the keyboard
+and write text to it. It is the same window as the one used for the
+DOS-box. Every program can have a console, the only difference is that
+console apps do not need to create them manually (by calling
+AllocConsole), they are started with an already attached console. It is
+just a single flag in the PE header that tells the PE loader wether to
+create a console or not. When a console app is started from a console
+it uses the console it was started from, blocking it for other actions
+until the program ends.</p>
+<p>There are two ways for getting input from and writing chars to a
+console. So-called low-level functions work directly with the input
+buffer and the output buffer, using the 2-dimensional cursor position
+specified. And there are functions which use the standard handles <em>STDIN</em>, <em>STDOUT</em> and <em>STDERR</em>. Standard handles can be used like file handles in the file access functions.</p>
+<p>A standard handle can be obtained by either calling <em>GetStdHandle</em> or <em>CreateFile</em>
+with the predefined filenames for the handle. Although console output
+looks completely ugly with its textmode layout, it can be very handy
+for debugging purposes. Not only that it is an independent window which
+can be read from and written to easily and which can be placed onto
+another monitor in a multi-screen environment, there is also the power
+of redirecting input and output to a file on disk or to other standard
+files like COM or LPT. It is also possible to use it for sending or
+reading data to or from another process if the console app was started
+by another application. Last goodie to mention is that it is easily
+changeable into a GUI app which can output its info to a file on disk
+instead of the console just by changing a flag in the linker and some
+of the parameters of CreateFile.</p>
+<p>For getting a handle to STDOUT which can be redirected use the following code:</p>
+<pre>	;for MASM and TASM: replace <b>dword</b> with <b>dword ptr</b> or <b>large</b>
+
+	push dword STD_OUTPUT_HANDLE ;if you want to use STDERR use STD_ERROR_HANDLE	instead
+	call [GetStdHandle]          ;remove brackets for MASM and TASM
+	                             ;eax contains the requested standard handle or -1 if it failed
+</pre>
+The same can be done for getting an always non-redirected handle using:
+<pre>	push dword 0
+	push dword FILE_ATTRIBUTE_NORMAL
+	push dword CreationFlag        ;see below
+	push dword 0
+	push dword FILE_SHARE_READ + FILE_SHARE_WRITE ;can also be 0 in most cases
+	push dword GENERIC_WRITE
+	push dword address_of_filename ;same as <b>offset filename</b>
+	call [CreateFileA]
+	                               ;eax contains the requested handle or -1 if it failed
+</pre>
+The following file names can be used with CreateFile:
+<ul>
+<li><em>CON</em> for opening the console for input or output (depends
+on if either GENERIC_WRITE or GENERIC_READ is specified). CreationFlag
+must be OPEN_EXISTING.</li>
+<li><em>CONOUT$</em> or <em>CONIN$</em> are also valid names for retrieving a handle for the console</li>
+<li><em>COMx</em> or <em>LPTx</em> for writing to the according serial or parallel port nr. <em>x</em>. In this case, CreationFlag must be OPEN_EXISTING and FILE_SHARE_READ + FILE_SHARE_WRITE must be replaced by 0</li>
+<li>any valid filename if you want to write directly to a file on disk</li>
+</ul>
+The following creation flags can be used with CreateFile if the filename indicates a normal file:
+<ul>
+<li><em>CREATE_NEW</em> if the file should only be created once</li>
+<li><em>CREATE_ALWAYS</em>	 if a new file should be created each time the program runs</li>
+<li><em>TRUNCATE_EXISTING</em> if the file should only be written to if it already exists</li>
+<li><em>OPEN_EXISTING</em> is the same as TRUNCATE_EXISTING except that
+the old file content is not erased. Together with the SetFilePointer
+function, one can add new data to the file at every program start while
+keeping the old one as well.</li>
+</ul>
+Writing to the console, file, port or whatever can be done by:
+<pre>	push dword 0
+	push dword AddressOfVariableToFillWithTheNumbersOfBytesActuallyWritten ;may be also be 0
+	push dword LengthOfStringToWrite
+	push dword AddressOfStringToWrite
+	push dword handle ;as retrieved by GetStdHandle or CreateFile
+	call [WriteFile]
+</pre>
+Note that there is no need to mark the end of the string by a 0 since
+the string length is already given to the function. If a new line
+should start, just include the byte value for a line break into the
+string.
+</div>
+
+<div class="t">
+<h2>Other notes</h2>
+<p>Now you should know most issues needed for writing or porting
+assembler programs to Win32. Most additional stuff required is
+contained in the several SDKs, quite well explained and there are also
+many sources and examples for special topics around (mostly in C, but
+quite easy to read). There won´t be more chapters of this tutorial
+since figuring out how to use the Win32 API should not be a problem for
+anyone who read the entire tutorial and most algorithms are not
+language-specific, so they do not belong into this tutorial (and I ´m
+not going to give sources about them, since the only real way to
+understand them is by implementing them yourself).</p>
+<p>The following issues should always be kept in mind:</p>
+<ul>
+<li>Although the Win32 API standardizes how hardware is accessed, it
+does not standardize the hardware itself. If the code relies on a
+specific feature which may not be available on all machines, make sure
+that there is a way to do it otherwise or, if it is a feature available
+on nearly all machines, it is a good idea to tell the user about it by
+telling the problem.<br>
+This applies especially to soundbuffer latency, availability of
+multimedia APIs, available screen resolutions and their bit depths.</li>
+<li>Other programs execute at the same time as yours. Thus the
+availability of CPU power, physical memory and disk space can vary a
+lot while your program is running. Special cases are if your program is
+deactivated, minimized or requested to terminate by external operation.
+On newer OSses, the entire OS may even be suspended for hours or days.</li>
+<li>It is a good rule to check if an API call failed or not.
+Additionally, many errors are not critical (e.g., if a DirectDraw
+Surface is lost due to the application being minimized) and can be
+handled without causing the program to exit unexpectedly.</li>
+<li>In some cases the headers, samples or include files may not be
+correct. E.g., in an older version of the NASM Win32.inc there were a
+few constants defined using wrong values for them. Checking other
+headers or includes helps finding such bugs.</li>
+</ul>
+</div>
+
+<p>Happy coding and watch out for other articles written by me
+<br>
+<br>T$
+</p>
+
+<div class="mail">Mail the Author: <a href="mailto:webmeister@deinmeister.de?subject=Homepage">webmeister@deinmeister.de</a></div>
+<hr>
+<div class="nv"><a href="http://www.deinmeister.de/e_index.html">Homepage</a> <a href="http://www.deinmeister.de/codindex.htm">Programming</a> <a href="http://www.deinmeister.de/wasmtute.htm" class="c">Win32Asm</a> <a href="http://www.deinmeister.de/downlds_e.htm">Downloads</a> <a href="http://www.deinmeister.de/e_pcconfig.htm">Software</a> <a href="http://www.deinmeister.de/e_pchw.htm">Hardware</a> <a href="http://www.deinmeister.de/cartoon/unfug_e.htm">Cartoons</a> <a href="http://www.deinmeister.de/sitemape.htm">Sitemap</a></div>
+</body></html>

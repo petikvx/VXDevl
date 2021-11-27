@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (WinNT; U) [Netscape]">
+   <meta name="AUTHOR" content="Costin Raiu">
+   <meta name="CREATED" content="19990425;15282577">
+   <meta name="CHANGEDBY" content="Costin Raiu">
+   <meta name="CHANGED" content="19990425;15282577">
+<style>
+	<!--
+		@page { margin-left: 1.25in; margin-right: 1.25in; margin-top: 1in; margin-bottom: 1in }
+	-->
+	</style></head>
+
+<body>
+
+<div style="margin-bottom: 0in;"><b><font size="+1"></font></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b><font size="+2">Between East and West</font></b></div>
+
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+
+<p style="margin-bottom: 0in;"><i>Costin Raiu, &lt;<a href="mailto:craiu@gecad.ro">craiu@gecad.ro</a>&gt;</i>
+</p><div style="margin-bottom: 0in;"><i>GeCAD, Romania</i></div>
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>A little bit of geography:</b>
+
+</p><p style="margin-bottom: 0in;">Romania, a small country by the Black Sea.
+Between Bulgaria and Russia, two of the greatest virus scenes in Europe,
+one might expect the same situation over here. Well, yes and no...
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>In the ancient times:</b>
+
+</p><p style="margin-bottom: 0in;">Before 1989, when the Great Revolution replaced
+the communist party with a democratic government, there were effectively
+no Pcs, and no computer viruses. However, the Revolution changed everything
+- many foreign companies started to invest in Romania, and they also brought
+computers, as part of their business. That's why, only 1 year later, the
+first Romanian virus was found - Jos.1000. This virus contained a "political"
+message - when someone typed "jos" as part of a word, the virus's INT9
+routine automatically inserted " Iliescu" which was the name of Romania's
+President at that time. For those who wonder what "jos" means, the English
+equivalent would be "down", so the complete message can be translated as
+"Down with Iliescu". This virus also contained the following string:
+
+</p><p style="margin-bottom: 0in;"><i>"JABBERWOCKY (#), the first Romanian Political
+Virussian"</i>
+
+</p><p style="margin-bottom: 0in;">That's why some AVs still detect this virus
+as "Jabberwocky", or "Jabb.1000". At the same time, another virus appeared
+- if Jos.1000 was only able to infect .COM files, the "new" Alexander.1843,
+named from an encrypted string inside the virus, "Alexander - Constanta,
+Romania", was also able to infect .EXE files. This virus contained code
+similar to that found in Dark Avenger's "Eddie" viruses, for example the
+memory residency routine. "Alexander" probably found the Eddie virus somewhere,
+and wanted to code his own... While writing it, he also took some routines
+from the Bulgarian virus, and added his own payload. Today, there are 3
+versions of this virus: the "standard" 1843 bytes version, and other two
+versions, 1951 and 2104 bytes long. As a side note, "Constanta" is a Romanian
+city, probably the hometown of the author.
+
+</p><p style="margin-bottom: 0in;">The next step was probably BadSectors.3428
+- the first Romanian semi-stealth virus. It was the summer of 1992 when
+I first saw it, and I spent about 5 hours to analyze it, and write a short
+detector/cleaner. This virus was extremely infections, since it infected
+files by hooking an impressive number of DOS functions. For example, it
+was enough to perform a simple DIR command with the virus resident to infect
+all the executable files in the current directory, or the directory targeted
+by the DIR command. Combined with its limited stealth abilities, we can
+explain why the number of victim computers was so high. The author of the
+BadSectors virus also wrote other versions - while the 3428 version carried
+the "BadSectors 1.2" string, 3 other versions, 3150, 3422 and 3626 bytes
+are also known. (versions 1.0, 1.1 and 1.3) They weren't however as successful
+as the 3428 version...While BadSectors was in its golden days, other viruses
+started to show up. Modified versions of "Mannequin.778" and "Jinx.846",
+which weren't detected by any of the AV products used at that time, were
+the first viral encounter for many unsuspecting users. This brings us to
+the time when the first boot sector viruses are starting to be reported.
+6 March 1992 was a day to remember for some of us, while the virus itself
+got a very high attention in the media - warnings on the national TV channel
+were broadcasted, and many companies have chosen not to use their computers
+on that day to prevent the virus from activating. To make a parallel -
+I must happily announce that there were no Michaelangelo reports this year
+(1998) in Romania, and we don't consider it to be an issue anymore.
+
+</p><p style="margin-bottom: 0in;">But let's get back to the old days: Michaelangelo
+was soon followed by Parity_Boot.A,.B, Ripper and Stoned which were the
+highspots of 1993, along with Hi.460 which was one of the most reported
+viruses at that time. The "Mr" family, with it's impressive number of members
+was also very common, but not a match for "Hi". Actually, Hi.460 was so
+popular that about 4 or 5 other viruses based on it's code were found ItW
+in 1993 and in the years to follow...
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>The polymorphics:</b>
+
+</p><p style="margin-bottom: 0in;">1994 was the year when the first Romanian
+polymorphic virus was discovered. Prodigy.1200, or UU.1200, as called by
+some AV programs, used some simple polymorphism techniques to avoid detection
+by conventional signatures. It was soon followed by Alia.1023, another
+polymorphic virus, which was actively reported ItW at that time. Alia.1023
+was also the first Romanian virus to include antiemulation/antiheuristics
+code - the variable coprocessor instruction embedded in it's polymorphic
+decryptor, which is not a problem for today's code emulators, proved to
+be a very powerful defense. An 1300 bytes version is also known, but this
+second version didn't had the same success as the 1023 bytes version, most
+probably because of it's numerous bugs. While Prodigy and Alia were using
+only simple polymorphism tricks, the much larger Dumb.4722, found at the
+end of '95 was almost impossible to detect using signatures, wildcards
+or cryptanalysis. It's name, suggested by the following string:
+
+</p><p style="margin-bottom: 0in;"><i>"I dunno what you think about me but i
+am NOT dumb !"</i>
+
+</p><p style="margin-bottom: 0in;">was also used as a nickname by the author,
+who gave an interview for a local IT newspaper a few months ago. In the
+interview, he accused Romanian AV developer for making good money from
+his work and said to have stopped writing viruses anymore. Dumb.4722 was
+uploaded to several BBS systems (which were very popular in those days)
+in a form of a dropper which claimed to be a graphic viewer utility.
+
+</p><p style="margin-bottom: 0in;">The next Romanian polymorphic virus was Breath.3457
+- this one's a little bit more complicated than Dumb.4722, and was strongly
+promoted by its author via BBS using various shareware programs as droppers.
+As anyone can see, spreading viruses via BBS was very common for most virus
+writers.
+
+</p><p style="margin-bottom: 0in;">Another romanian polymorphic virus is Calu.2429,
+which also includes some anti-emulation code and tricks. It was found at
+the middle of '96, and so far it's the last Romanian polymorphic virus
+- there are some (uncomfirmed) reports of a new advanced polymorphic virus
+floating around, but it might be just a story, so let's hope the number
+of romanian polymorhpic viruses will remain unchanged for a long time...
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>Romanian ItW viruses:</b>
+
+</p><p style="margin-bottom: 0in;">Many viruses are constantly found ItW, including
+the Leonard.1194 and .1176 which are quite common right now. OneHalf.3544.a
+is still one of the most widespread viruses - I usually get infected (or
+damaged) hard-disks each month. A few months ago, we had reports of infections
+with the 3544.g strain, which is not very different from the base version,
+but not as many as those of OneHalf.3544.a... Unsnared.814 (VB November
+'96) was also one of the most reported viruses only a few time ago, but
+now it's not a problem anymore, with so many AVs able to detect and clean
+it. Other common viruses are Burglar.1150.A, DS.3783 (see VB March '97),
+Pieck.4444 and the recent Romanian viruses Teapa.1609, Scapny.795 and Equinox.855.
+
+</p><p style="margin-bottom: 0in;">There are few AV researchers who know that
+Romania is probably the only country which has a local WildList - the RoWildList.
+The RoWildList was started in the summer of '96 by Gabriel Pislaru, a member
+of the international WildList. At the beginning of '97, Gabi forwarded
+the RoWildList's maintenance to a fellow researcher, and the list is still
+active, showing the evolution of the viral activity in Romania. You can
+download some of the RoWL issues from
+
+</p><p style="margin-bottom: 0in;"><a href="ftp://ftp.gecad.ro/pub/RoWildList/">ftp://ftp.gecad.ro/pub/RoWildList/</a>
+
+</p><p style="margin-bottom: 0in;">For example, the RoWildList was used as test-base
+in a recent AV comparative review supported by the Romanian PC-REPORT publication.
+
+</p><p style="margin-bottom: 0in;">So far we only mentioned file viruses - however,
+you should be surprised to hear that today's leaders are not COM, EXE or
+Macro viruses as one might think, but boot viruses. "R.P.", a prodigious
+Romanian virus author, wrote about 20 boot viruses, the so-called "RP."
+family, including RP.Dec_17th which is constantly reported (or more precisely,
+it's payload) every year. "R.P." also wrote the so-called "Dodgy" boot
+virus, the first Romanian boot virus able to correctly replicate from Windows95
+using the same method as the "Hare" viruses to intercept floppy accesses.
+With over 4 subversions, "Dodgy" is still reported in Romania, and word-wide.
+"Dodgy" is also one the few Romanian retro viruses, as it contains specific
+activation routines related to my AV program, RAV. The payload from "Dodgy",
+which is pretty effective, still brings 3 or 4 damaged disks each month
+to our data-recovery division.
+
+</p><p style="margin-bottom: 0in;">Recentely, a very unfortunate event helped
+it to reach more victims - one local IT publication distributed a Dodgy
+dropper on one of it's CDs, as a program called "RENEDEMO". They however
+published an excuse in the next issue, and indications on how to manually
+remove the virus from infected systems. This was probably their second
+mistake, as most of their readers don't have the required computer skills
+to correctly accomplish (or understand) the removal instructions. The fact
+that the CD containing the dropper was scanned with a well-known (not Romanian)
+AV package, also used as an "excuse" is not making the things better for
+users (who might have lost their trust in that AV program) or the editors
+of that publication, which eventually stopped including free software sent
+by readers on their CD's.
+
+</p><p style="margin-bottom: 0in;">The virus writer "R.P." also wrote the "RP.Bugs",
+"RP.Remember" and "RP.New_Gen" viruses, which were also reported ItW. They
+were not as successful as "Dodgy", thought.
+
+</p><p style="margin-bottom: 0in;">Another common boot virus over here is "Multi_Ani",
+also suspected to be of Romanian origin ("Multi_Ani" is the Romanian translation
+for "Happy New Year") Computers infected by both Multi_Ani and some RP
+variant are also very common. So far, we have no reports of Win32 viruses,
+or viruses able to infect PE files, such as the "Win95.Anxiety" family
+which is known to be ItW in Russia or the Czech Republic.
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>Macro viruses:</b>
+
+</p><p style="margin-bottom: 0in;">The macro virus issue begun back in the winter
+of '95, when an IT publication printed the source for Concept - this quickly
+produced 5 or 6 versions, depending on the number of tabs or spaces used
+by the person who typed in the source. After 4 years, we still get reports
+of Concept infections, but not as many as 2 years ago. Nowadays, NPad and
+CAP are leading the field, but the number of Excel97 reports (XM97/Laroux
+versions mostly) is also showing a small increase... So far, no macro virus
+has been written in Romania, but we expect one to show up at any moment.
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>Laws and the future:</b>
+
+</p><p style="margin-bottom: 0in;">The virus scene can now be described as "calm",
+compared to the situation 2 or 3 years ago. The boot viruses are still
+a problem, and macro viruses (especially Office97 macro viruses) are showing
+a notable increase in the past few months. In Romania there are 3 major
+AV developers, and therefore 3 different antivirus programs, namely RAV
+- developed by GeCAD, the company I work for, AVX developed by SoftWin
+and SUMI Software's AspVirin. (more informations and shareware versions
+can be obtained from <a href="http://www.gecad.ro/">http://www.gecad.ro/</a>
+for RAV, <a href="http://www.softwin.ro/">http://www.softwin.ro/</a> for
+AVX and <a href="http://www.sumi.ro/">http://www.sumi.ro/</a> for AspVirin)
+Other foreign products are also available for users, but they don't have
+the same success as the above 3 mentioned programs - this is understandable,
+since for example, RAV has a 6-years old market. The laws are unfortunately
+the main problem when it comes to virus writing in Romania. Actually, there
+are no laws that can be used against virus authors, and the copyright law
+is only a few months old. Worse, there are even virus-writing discussion
+lists, such as virus-l @pcnet.ro which is a common place for meeting virus
+authors, such as the person going under the nickname of "Lord Julus", which
+is also the author of a recently polymorphism-oriented article in the virus
+e-zine "29A#2". His polymorphic engine, called "Lord's Multiple Opcode
+Fantasies" and mentioned in that article, is probably just a story as I
+haven't seen any virus based on it, at least yet. The author of the "R.P."
+viruses is for example known, as he signed his sources with his real name,
+and then distributed them among some of his "friends". The sources eventually
+ended in various BBS boards, and some of our users have sent them to us
+for "analysis". As incredible as it might sound, "R.P." came to visit our
+stand at several computer fairs, and each time brought some of his new
+creations to prove that his viruses can't be detected by any known AV software
+! However, there's really nothing we can do about this problem, as I said
+before, there are no laws against virus writing and distribution. Since
+most virus authors are using pirated AV software to make their creations
+undetectable, heuristics are probably the only defense we have against
+them.
+
+</p><p style="margin-bottom: 0in;">As for the future, I expect a decrease in
+the number of boot infection reports, along with a small decrease in the
+number of macro viruses reports as an effect of the more advanced macro
+virus detection engines used in today's AV software. If nothing new shows
+up (like a new kind of virus, or a new highly insecure virus platform from
+large software vendors) the situation should be easy to keep under control
+for many years from now on.
+</p><div style="margin-bottom: 0in;"></div>&nbsp;
+
+<div style="margin-bottom: 0in;"></div>
+
+
+<p style="margin-bottom: 0in;">Costin Raiu, 1997
+</p></body></html>

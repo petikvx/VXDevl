@@ -1,0 +1,285 @@
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor="black" text="white" vlink="red" alink="red" link="red">
+<table border="0">
+<tr>
+   <td>&nbsp;</td>
+   <td><center><script language="JavaScript1.2">dqm__codebase = "Script/"</script>
+               <script language="JavaScript1.2" src="sample1_data.js"></script>
+               <script language="JavaScript1.2" src="Script/tdqm_loader.js"></script>
+               <script language="JavaScript1.2">generate_mainitems()</script>
+   </center></td>
+</tr>
+</table>
+<br>
+<pre>
+
+Dark-Avenger, mai 2003
+
+             +----------------------------------------------------------------+
+             |  Métamorphisme: Désassembleur - Métamorphiseur - Réassembleur  |
+             +----------------------------------------------------------------+
+
+
+1. Index:
+---------
+
+      1. Index
+      2. Introduction
+      3. Rappel sur les opcodes
+      4. Création d'un pseudo assembleur
+      5. Désassembler les instructions
+      6. Métamorphiser
+      7. Réassemblage des instructions
+      8. Conclusion
+
+2. Introduction:
+----------------
+
+Le métamorphisme contrairement au polymorphisme change l'apparence, la structure interne
+d'un programme. Nous allons essayer d'écrire un moteur de mutations métamorphique.
+
+3. Rappel sur les opcodes:
+--------------------------
+
+Codage des registres:
+---------------------
+
+Code_Registre_1: eax --> 0h
+---------------- ebx --> 3h
+                 ecx --> 1h
+                 edx --> 2h
+                 esi --> 6h
+                 edi --> 7h
+                 ebp --> 5h
+                 esp --> 4h
+
+Code_Registre_2: eax --> 8h
+---------------- ebx --> Bh
+                 ecx --> 9h
+                 edx --> Ah
+                 esi --> Eh
+                 edi --> Fh
+                 ebp --> Dh
+                 esp --> Ch
+
+Reg --> Reg:
+------------
+
+ - xchg reg, reg   --> si reg != eax: 87h xyh
+                       si reg == eax: 90h or Code_Registre_1
+ - push reg        --> 50h or Code_Registre_1
+ - pop reg         --> 50h or Code_Registre_2
+ - inc reg         --> 40h or Code_Registre_1
+ - dec reg         --> 40h or Code_Registre_2
+ - mov reg, reg    --> 8Bh xyh
+ - add reg, reg    --> 03h xyh
+ - sub reg, reg    --> 2Bh xyh
+ - test reg, reg   --> 85h xyh
+ - cmp reg, reg    --> 3Bh xyh
+ - and reg, reg    --> 23h xyh
+ - or reg, reg     --> 0Bh xyh
+ - xor reg, reg    --> 33h xyh
+
+Imm32 --> Reg:
+--------------
+
+ - add eax, imm32  --> 05h xxh xxh xxh xxh
+ - or eax, imm32   --> 0Dh xxh xxh xxh xxh
+ - adc eax, imm32  --> 15h xxh xxh xxh xxh
+ - sbb eax, imm32  --> 1Dh xxh xxh xxh xxh
+ - and eax, imm32  --> 25h xxh xxh xxh xxh
+ - sub eax, imm32  --> 2Dh xxh xxh xxh xxh
+ - xor eax, imm32  --> 35h xxh xxh xxh xxh
+ - cmp eax, imm32  --> 3Dh xxh xxh xxh xxh
+ - test eax, imm32 --> A9h xxh xxh xxh xxh
+ - push imm32      --> 68h xxh xxh xxh xxh
+ - mov reg, imm32  --> Byh xxh xxh xxh xxh (avec y = Code_Registre_2)
+ - add reg, imm32  --> 81h Cyh xxh xxh xxh xxh (avec y = Code_Registre_1)
+ - sub reg, imm32  --> 81h Eyh xxh xxh xxh xxh (avec y = Code_Registre_2)
+ - xor reg, imm32  --> 81h Fyh xxh xxh xxh xxh (avec y = Code_Registre_1)
+ - cmp reg, imm32  --> 81h Fyh xxh xxh xxh xxh (avec y = Code_Registre_2)
+ - test reg, imm32 --> F7h Cyh xxh xxh xxh xxh (avec y = Code_Registre_1)
+
+Nomenclature:
+-------------
+
+xxh xxh xxh xxh représente l'imm32 avec les octets inversés.
+
+xyh est calculé de cette façon:
+
+    x = Ch si la destination est eax ou ecx
+        Dh si la destination est ebx ou edx
+        Eh si la destination est esp ou ebp
+        Fh si la destination est esi ou edi
+
+    y = Code_Registre_1 si le registre de destination est esp, esi, eax ou edx
+        Code_Registre_2 si le registre de destination est ebp, edi, ecx ou ebx
+
+Exemples:
+---------
+
+  Coder &lt;sub eax, 12345678h&gt;: 2Dh 78h 56h 34h 12h
+  Coder &lt;test ebx, 12345678h&gt;: F7h C3h 78h 56h 34h 12h
+  Coder &lt;mov esi, eax&gt;: 8Bh F0h
+  Coder &lt;or ebx, edx&gt;: 0Bh DAh
+  Coder &lt;xor ecx, edi&gt;: 33h CFh
+
+4. Création d'un pseudo assembleur:
+-----------------------------------
+
+Tout d'abord, il faut codifier les registres:
+
+  eax --> 00
+  ebx --> 01
+  ecx --> 02
+  edx --> 03
+  esi --> 04
+  edi --> 05
+  ebp --> 06
+  esp --> 07
+
+Il faut maintenant codifier les instructions:
+
+Reg --> Reg:
+------------
+
+ - xchg reg, reg   --> 00h
+ - push reg        --> 01h
+ - pop reg         --> 02h
+ - inc reg         --> 03h
+ - dec reg         --> 04h
+ - mov reg, reg    --> 05h
+ - add reg, reg    --> 06h
+ - sub reg, reg    --> 07h
+ - test reg, reg   --> 08h
+ - cmp reg, reg    --> 09h
+ - and reg, reg    --> 0Ah
+ - or reg, reg     --> 0Bh
+ - xor reg, reg    --> 0Ch
+
+Imm32 --> Reg:
+--------------
+
+ - add eax, imm32  --> 0Dh
+ - or eax, imm32   --> 0Eh
+ - adc eax, imm32  --> 0Fh
+ - sbb eax, imm32  --> 10h
+ - and eax, imm32  --> 11h
+ - sub eax, imm32  --> 12h
+ - xor eax, imm32  --> 13h
+ - cmp eax, imm32  --> 14h
+ - test eax, imm32 --> 15h
+ - push imm32      --> 16h
+ - mov reg, imm32  --> 17h
+ - add reg, imm32  --> 18h
+ - sub reg, imm32  --> 19h
+ - xor reg, imm32  --> 1Ah
+ - cmp reg, imm32  --> 1Bh
+ - test reg, imm32 --> 1Ch
+
+De plus, il nous faut une instruction qui ne fait rien: 90h
+
+Pour terminer, nous devons définir comment serons stockés ces instructions en mémoire:
+
+ db &lt;opcode&gt;, &lt;Reg_Dest&gt;, &lt;Reg_Src&gt;
+ db &lt;opcode&gt;, &lt;Reg_Dest&gt;, &lt;Imm32&gt;
+
+Exemples:
+---------
+
+  Coder &lt;mov esi, edi&gt; en pseudo assembleur: db 05h, 04h, 05h
+  Coder &lt;mov ecx, 12345678h&gt; en pseudo assembleur: db 17h, 02h, 78563412h
+  Coder &lt;push ebp&gt; en pseudo assembleur: db 01h, 90h, 06h
+  Coder &lt;pop ebx&gt; en pseudo assembleur: db 02h, 01h, 90h
+  Coder &lt;push 12345678h&gt; en pseudo assembleur: db 16h, 90h, 78563412h
+  Coder &lt;dec ebx&gt; en pseudo assembleur: db 04h, 90h, 01h
+
+5. Désassembler les instructions:
+---------------------------------
+
+Comme un exemple vaut mieux qu'un long discours, reportez vous au fichier 'Dasm32.inc'.
+
+6. Métamorphiser:
+-----------------
+
+Nous allons essayer d'établir des règles de métamorphisation, c'est à dire que nous allons
+essayer d'établir des règles qui nous permettent de modifier une instruction en une autre,
+équivalente sans changer le bon fonctionnement d'un programme.
+
+Par exemple, si on remplace un <mov reg1, reg2> par <push reg2><pop reg1>, le programme
+continuera à fonctionner normalement.
+
+Nous ne ferons pas attention à la taille de l'instruction de départ, c'est à dire qu'une
+instruction qui faisait 5 octets pourra être transformée en une instruction de 10 octets
+sans qu'on se préoccupe de modifier la taille des sauts contenus dans le reste du programme.
+Bien entendu, pour une utilisation réelle, il va falloir modifier la taille des sauts, mais
+se sera le sujet d'un autre article ;)
+
+Voici les 2 règles (que nous avons déterminés) qui permettent de modifier une instruction en
+un de ses équivalents, sans changer le bon fonctionnement d'un programme:
+
+     a. ne pas modifier les registres
+     b. ne pas modifier la pile
+
+Simple n'est-ce pas ? A partir de ça, nous pouvons en déduire que si on ajoute une valeur
+à un registre on devra la soustraire plus loin dans le programme, mais AVANT que le registre
+soit utilisé, hormis certains cas spéciaux (mov, ...).
+
+Exemples:
+---------
+
+   &lt;mov eax, ebx&gt; &lt;==&gt; &lt;xor eax, edx&gt;&lt;mov eax, ebx&gt;
+   &lt;mov eax, ebx&gt; &lt;==&gt; &lt;push ebx&gt;&lt;add ebx, edx&gt;&lt;mov eax, edx&gt;&lt;sub eax, edx&gt;&lt;pop ebx&gt;
+   &lt;add esi, imm32&gt; &lt;==&gt; &lt;add esi, (imm32+imm)&gt;&lt;sub esi, imm&gt;
+   &lt;xchg ebp, esp&gt; &lt;==&gt; &lt;push ebp&gt;&lt;mov ebp, esp&gt;&lt;pop esp&gt;
+
+1. Les règles de modifications les plus simples sont les suivantes:
+   ----------------------------------------------------------------
+
+ Déterminer --> Opération à effectuer: Mov/Xchg/Or/And/...
+                Registre à modifier: registre source ou registre de destination ?
+                Type de modification: Add/Sub/Xor ?
+                Elément modificateur: registre(!=source, !=destination) ou imm ?
+
+ mode opératoire --> a. modifications sur le registre choisit
+                     b. opération
+                     c. modifications inverses sur les registre sources et de destination
+
+2. Voici maintenant d'autres règles, dans le cas où on veut modifier les registres dans
+   lesquels ont lieux les opérations:--------------------------------------------------
+   ----------------------------------
+
+ Déterminer --> Opération à effectuer: Mov/Xchg/Or/And/...
+                Registres à remplacer: registre source ou destination ?
+                Registre de remplacement: n'importe lequel !=source et !=destination
+
+
+ mode opératoire --> a. préserver le registre à utiliser
+                     b. mettre le contenu du registre à remplacer dans le registre à utiliser
+                     c. opération
+                     d. restaurer le contenu du registre utilisé
+
+Il est à noter que l'on peut utiliser 1. à l'étape b. et c. et que les deux registres
+(source et destination), peuvent être modifiés simultanéments.
+
+Ces deux règles étant établies, nous pouvons commencer à coder. L'idée, est d'utiliser la
+syntaxe extrèmement simple de notre pseudo-assembleur pour appliquer nos règles. Pour le
+code voyez le fichier 'Morph32.inc'.
+
+7. Réassemblage des instructions:
+---------------------------------
+
+A nouveau, je vous renvoie a un fichier: 'Reasm32.inc'.
+
+8. Conclusion:
+--------------
+
+Y'a t-il quelquechose de plus à ajouter ? ;-p)
+
+</pre>
+</body>
+</body>
+</html>

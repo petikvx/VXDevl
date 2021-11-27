@@ -1,0 +1,1126 @@
+
+Dark-Avenger, Janvier 2003
+
+        _________________________________________________________________
+       (_________________________________________________________________)
+          (_____)(_____)       |                 |       (_____)(_____)
+           |   |  |   |   +----o-----------------o----+   |   |  |   |
+           |   |  |   |   | De l'écriture d'un moteur |   |   |  |   |
+           |   |  |   |   |        de mutations       |   |   |  |   |
+           |___|  |___|   +---------------------------+   |___|  |___|
+          (_____)(_____)                                 (_____)(_____)
+
+
+1. Index:
+---------
+
+     1. Index
+     2. Introduction
+     3. La routine de cryptage
+        3.1 Taille de la routine
+        3.2 WORDs VS DWORDs
+        3.3 Les différentes routines de cryptage possibles
+            3.3.1 Cryptage par substitution
+            3.3.2 Cryptage par clef changente
+            3.3.3 Cryptage par clef longue
+            3.3.4 Cryptage par permutation
+        3.4 Forme générale d'une routine de cryptage
+        3.5 Possibilités de permutation des instructions
+        3.6 Possibilités de remplacement des instructions
+        3.7 Conclusion
+     4. Le générateur de nombres aléatoires
+        4.1 Les générateurs mathématiques
+            4.1.1 Notions de mathématiques
+                  4.1.1.1 Congruences
+                  4.1.1.2 Nombres premiers, premiers entre eux
+                  4.1.1.3 Groupes, groupes cycliques
+            4.1.2 Un générateur purement mathématique
+        4.2 Les générateurs utilisant les caractéristiques du système
+            (en cours d'écriture)
+        4.3 Conclusion
+     5. Générer du junk code
+        5.1 Les instructions de 1 octet
+        5.2 La fabrication des instructions standards
+            5.2.01 Xor reg, reg1 / Xor reg, imm32
+            5.2.02 Add reg, reg1 / Add reg, imm32
+            5.2.03 Sub reg, reg1 / Sub reg, imm32
+            5.2.04 Cmp reg, reg1 / Cmp reg, imm32
+            5.2.05 Mov reg, reg1 / Mov reg, imm32
+            5.2.06 Xchg reg, reg1
+            5.2.07 Mov reg, [reg1] / mov [reg], reg1
+            5.2.08 Or reg, reg1
+            5.2.09 Dec reg / Inc reg
+            5.2.10 Test reg1, reg2 / Test reg1, imm32
+        5.3 La fabrication des jmp, jnz, call, Loop, ...
+        5.4 Conclusion
+     6. Conclusion
+
+2. Introduction:
+----------------
+
+Cet article est destiné à toutes les personnes qui maîtrisent déjà parfaitement
+la construction d'un moteur de mutation (i.e ME) et veulent améliorer leur propre
+ME. Il a été écrit pour des ME Win32.
+
+3. La routine de cryptage:
+--------------------------
+
+    3.1 Taille de la routine:
+    -------------------------
+
+Attention, je parle ici seulement de la routine de cryptage SANS junk code. Il me
+semble qu'une routine de plus de 0,5 Ko est une aberration car elle sera très difficile
+à dissimuler correctement, surtout si votre générateur de junk code est mauvais. De plus,
+la taille influence la vitesse d'exécution du programme l'utilisant; donc plus elle est
+petite plus le cryptage (resp. décryptage) se fait rapidement. Mais bon, vous pouvez
+décider d'écrire une routine de plus de 0,5 Ko, mais alors vous avez tout intêrèt à ce qu'elle
+soit complexe (mathématiquement parlant) et que votre générateur de junk code soit excellent!
+
+    3.2 WORDs VS DWORDs:
+    --------------------
+
+LA question! A mon avis, crypter et décrypter en utilisant des DWORDs plutôt que des WORDs
+permet une plus grande diversité dans les clés de cryptage. Imaginons que la clef soit en
+WORDs, il existe alors 2^16 clefs différentes. Si elle est en DWORDs, il existera alors 2^32
+clefs différentes. Coder sur des DWORDs semble donc plus avantageux. Enfin bon, encore une
+fois, ce n'est qu'une question de goûts!
+
+    3.3 Les différentes routines de cryptage possibles:
+    ---------------------------------------------------
+
+La routine de cryptage est la chose la plus importante de votre ME. c'est sur elle que repose
+l'efficacité de votre ME. Ne la négligez donc pas et faîtes preuve d'originalité. Voici un bref
+aperçu de différentes routines de cryptage. Toutes ces routines sont réversibles et sont écrites
+dans le cas ou la source (l'@ du code à crypter) et la destination (l'@ du buffer contenant le
+code cryptés) sont différents.
+
+        3.3.1 Cryptage par substitution:
+        --------------------------------
+
+C'est la forme de cryptage la plus simple. A chaque caractère du message on ajoute, soustrait,
+xor, ..., un nombre pour créer un nouveau caractère. Par exemple A devient C, C devient E, ...
+
+   Setup:
+       mov ecx, Taille_du_code_à_crypter_en_dwords
+       lea esi, @_de_début_du_code_à_crypter
+       lea edi, @_du_buffer_contenant_le_code_crypté
+       mov ebx, Clef_de_cryptage
+   EncryptLoop:
+       lodsd
+       xor eax, ebx
+       stosd
+       loop EncryptLoop
+
+        3.3.2 Cryptage par clef changente:
+        ----------------------------------
+
+L'idée est la même que précédemment, sauf qu'à chaque fois, par exemple, on ajoute, soustrait, ...
+un certain nombre à la clef de cryptage.
+
+   Setup:
+       mov ecx, Taille_du_code_à_crypter_en_dwords
+       lea esi, @_de_début_du_code_à_crypter
+       lea edi, @_du_buffer_contenant_le_code_crypté
+       mov ebx, Clef_de_cryptage
+   EncryptLoop:
+       lodsd
+       xor eax, ebx
+       stosd
+       add ebx, 1
+       loop EncryptLoop
+
+        3.3.3 Cryptage par clef longue:
+        -------------------------------
+
+L'idée est toujours la même que précédemment, sauf que la, la clef de cryptage peut avoir la
+taille du code à chiffrer.
+
+   Setup:
+       mov ecx, Taille_du_code_à_crypter_en_dwords
+       lea esi, @_de_début_du_code_à_crypter
+       lea edi, @_du_buffer_contenant_le_code_crypté
+       lea ebx, @_de_début_de_la_clef_de_cryptage
+       mov edx, Taille_de_la_clef_de_cryptage
+   EncryptLoop:
+       lodsd
+       xor eax, [ebx]
+       add ebx, 4
+       cmp ebx, edx
+       jb Next
+       lea ebx, @_de_début_de_la_clef_de_cryptage
+   Next:
+       stosd
+       loop EncryptLoop
+
+        3.3.4 Cryptage par permutation:
+        -------------------------------
+
+On change d'idée! Ici, des blocs d'instructions seront permutés. Donc pas de clef de cryptage.
+
+   Setup:
+       mov ecx, Taille_du_code_à_crypter_en_dwords
+       lea esi, @_de_début_du_code_à_crypter
+       lea edi, @_du_buffer_contenant_le_code_crypté
+   EncryptLoop:
+       lodsd
+       mov ebx, eax
+       lodsd
+       stosd
+       mov eax, ebx
+       stosd
+       loop EncryptLoop
+
+    3.4 Forme générale d'une routine de cryptage:
+    ---------------------------------------------
+
+Voici la forme générale d'une routine de cryptage. Les @ de la source et de la destination sont
+différentes.
+
+ [01]   Setup:                                            ;
+ [02]      mov reg1, Taille_du_code_à_crypter_en_dwords   ;
+ [03]      lea sreg, @_de_début_du_code_à_crypter         ;
+ [04]      lea dreg, @_du_buffer_contenant_le_code_crypté ;
+ [05]      mov reg2, Clef_de_cryptage                     ;
+ [06]   EncryptLoop:                                      ;
+ [07]      mov reg3, [sreg]                               ;
+ [08]      xor reg3, reg2                                 ;
+ [09]      add sreg, 4                                    ;
+ [10]      mov reg4, [sreg]                               ;
+ [11]      xor reg4, reg2                                 ;
+ [12]      add sreg, 4                                    ;
+ [13]      mov [dreg], reg4                               ;
+ [14]      add dreg, 4                                    ;
+ [15]      mov [dreg], reg3                               ;
+ [16]      dec reg1                                       ;
+ [17]      add reg2, imm32                                ;
+ [18]      cmp reg1, 0                                    ;
+ [19]      jnz EncryptLoop                                ;
+
+
+Comme vous pouvez le constater, cette routine combine le cryptage par permutation et par clef
+changeante. Il va de soit que les @ source et destinations peuvent êtres les mêmes.
+
+    3.5 Possibilités de permutation des instructions:
+    -------------------------------------------------
+
+Les @ [02], [03], [04], [05], peuvent être placées dans n'importe quel ordre.
+Les @ [08], [09], peuvent êtres permutées.
+Les @ [11], [12], peuvent êtres permutées.
+Les @ [07], [10], [13], [14], [15], [18] et [19] ne peuvent pas être permutées.
+L'@ [16], peut être placée n'importe où entre les lignes [06] et [18].
+L'@ [17], peut être placée n'importe où entre les lignes [11] et [18].
+
+    3.6 Possibilités de remplacement des instructions:
+    --------------------------------------------------
+
+1. mov reg1, Taille_du_code_à_crypter_en_dwords:
+------------------------------------------------
+
+ a) push Taille_du_code_à_crypter_en_dwords
+    pop reg1
+
+ b) push (Taille_du_code_à_crypter_en_dwords xor imm32)
+    pop reg1
+    xor reg1, imm32
+
+ c) mov reg1, (Taille_du_code_à_crypter_en_dwords xor imm32)
+    xor reg1, imm32
+
+ d) mov reg1, (Taille_du_code_à_crypter_en_dwords + imm32)
+    sub reg1, imm32
+
+ e) xor reg1, reg1
+    or reg1, Taille_du_code_à_crypter_en_dwords
+
+ f) etc, etc, ...
+
+2. lea sreg, @_de_début_du_code_à_crypter:
+------------------------------------------
+
+ a) mov sreg, offset @_de_début_du_code_à_crypter
+
+ b) push offset @_de_début_du_code_à_crypter
+    pop sreg
+
+ c) mov sreg, (offset @_de_début_du_code_à_crypter - imm32)
+    add sreg, imm32
+
+ d) lea sreg, (@_de_début_du_code_à_crypter xor imm32)
+    xor sreg, imm32
+
+ e) mov sreg, 0
+    or sreg, offset @_de_début_du_code_à_crypter
+
+ f) etc, etc, ...
+
+3. lea dreg, @_du_buffer_contenant_le_code_crypté:
+--------------------------------------------------
+
+Voir 2.
+
+4. mov reg2, Clef_de_cryptage:
+------------------------------
+
+Voir 1.
+
+5. mov reg3, [sreg]:
+--------------------
+
+ a) push dword ptr [sreg]
+    pop reg3
+
+ b) xor dword ptr [sreg], imm32
+    mov reg3, dword ptr [sreg]
+    xor reg3, imm32
+
+ c) etc, etc, ...
+
+6. xor reg3, reg2:
+------------------
+
+ a) xor reg3, imm32
+    xor reg3, reg2
+    xor reg3, imm32
+
+ b) xor reg2, imm32
+    xor reg3, reg2
+    xor reg3, imm32
+
+ c) etc, etc, ...
+
+7. add sreg, 4:
+---------------
+
+ a) inc sreg
+    add sreg, 3
+
+ b) add sreg, 10
+    sub sreg, 6
+
+ c) add sreg, 10
+    dec sreg
+    sub sreg, 5
+
+ d) etc, etc, ...
+
+8. mov reg4, [sreg]:
+--------------------
+
+Voir 5.
+
+9. xor reg4, reg2:
+------------------
+
+Voir 6.
+
+10. add sreg, 4:
+----------------
+
+Voir 7.
+
+11. mov [dreg], reg4:
+---------------------
+
+ a) push reg4
+    pop [dreg]
+
+ b) add reg4, imm32
+    mov [dreg], reg4
+    sub dword ptr [dreg], imm32
+
+ c) etc, etc, ...
+
+12. add dreg, 4:
+----------------
+
+Voir 7.
+
+13. mov [dreg], reg3:
+---------------------
+
+Voir 11.
+
+14. dec reg1:
+-------------
+
+ a) sub reg1, 1
+
+ b) add reg1, 10
+    sub reg1, 11
+
+ c) etc, etc, ...
+
+15. add reg2, imm32:
+--------------------
+
+ a) sub reg2, reg3
+    add reg2, imm32
+    add reg2, reg3
+
+ b) add reg3, imm32
+    add reg2, reg3
+    sub reg3, imm32
+    sub reg2, reg3
+
+ c) etc, etc, ...
+
+16. cmp reg1, 0:
+----------------
+
+ a) test reg1, reg1
+
+ b) etc, etc, ...
+
+17. jnz EncryptLoop:
+--------------------
+
+ a) jg EncryptLoop
+
+ b) jnle EncryptLoop
+
+ c) jge EncryptLoop
+
+ d) jnl EncryptLoop
+
+ e) jb EncryptLoop
+
+ f) jnae EncryptLoop
+
+ g) jc EncryptLoop
+
+ h) etc, etc, ...
+
+    3.7 Conclusion:
+    ---------------
+
+Ceci n'est qu'un apperçu des possibilités que vous avez pour changer l'apparence de votre routine
+de cryptage. A vous de faire preuve d'imagination!
+
+4. Le générateur de nombres aléatoires:
+---------------------------------------
+
+Encore une des choses les plus importantes. Ecrire un bon générateur de nombres aléatoires est
+une tâche assez difficile contrairement à ce qu'il pourrait paraître.
+
+A mon avis, on peut classer les générateurs de nombres aléatoires en deux catégories:
+
+               - Les générateurs purements mathématiques.
+               - Les générateurs utilisant les caractéristiques de
+                 l'environemment d'exécution.
+
+Nous allons maintenant étudier ces deux types de générateurs.
+
+    4.1 Les générateurs mathématiques:
+    ----------------------------------
+
+Probablement le type de générateur le plus complexe car il utilise des formules mathématiques
+plus ou moins simples faisant souvent intervenir les congruences et les nombres premiers.
+
+        4.1.1 Notions de mathématiques:
+        -------------------------------
+
+Attention, a^b se lit "a puissance b", <= (resp. >=) se lit "inférieur ou égal" (resp. "supérieur
+ou égal"), a = b mod p se lit "a est congru à b modulo p", a mod b est utilisé pour dire que
+l'on utilise le reste de la division de a par b (abus de langage ;). De plus, quand j'écris
+*(mod p) je pense "multiplier modulo p" et j'écris +(mod p) pour "additionner modulo p".
+
+            4.1.1.1 Congruences:
+            --------------------
+
+Théorême n°1:
+-------------
+
+Z est un anneau Euclidien, c'est à dire que pour a et b donnés, il existe q et r uniques tels
+que:
+                     a = bq + r avec 0 <= r < |b|
+
+Définition n°1:
+---------------
+
+a et b sont congrus modulo n si b-a est un multiple de n ou encore b-a = k*n
+
+Théorême n°2:
+-------------
+
+si x = x' mod n et y = y' mod n alors:
+
+                 x+y = x'+y' mod n
+                 x*y = x'*y' mod nq
+
+            4.1.1.2 Nombres premiers, premiers entre eux:
+            ---------------------------------------------
+
+Définition n°1:
+---------------
+
+Un nombre p différent de 1 est premier s'il admet exactement deux diviseurs, 1 et lui-même.
+
+Théorême n°1:
+-------------
+
+Tout nombre N admet au moins un facteur premier (sauf N=0 et N=1).
+
+Théorême n°2:
+-------------
+
+Tout entier peut se décomposer en produit de facteurs premiers (sauf 0 et 1).
+
+Equation:
+---------
+
+                     a^(N-1) = 1 mod N
+
+Si l'équation est vérifiée, alors N (impair) est probablement premier.
+Si l'équation n'est pas vérifiée alors N est décomposable en produit de facteurs premiers.
+
+Définition n°2:
+---------------
+
+PGCD(a, b) est le plus grand commun diviseur de a et de b.
+
+Proposition n°1:
+----------------
+
+Si a>=0 et b>0 alors PGCD(a, b) = PGCD(b, a mod b)
+
+Définition n°3:
+---------------
+
+a et b sont premiers entre eux s'ils n'ont pour diviseur commun que 1.
+
+Définition n°4:
+---------------
+
+Les propriétés suivantes sont équivalentes:
+
+                1) a et b sont premiers entre eux
+                2) PGCD(a, b) = 1
+                3) il existe (u, v) tel que au + bv = 1
+                4) pour tout z appartenant à Z, il existe (x, y) appartenant à Z tel que:
+                   ax + by = z
+
+Théorême n°3:
+-------------
+
+Si p est un nombre premier alors x^p = x mod p pour tout x. De plus, si PGCD(x, p) = 1, alors
+x^(p-1) = 1 mod p
+
+            4.1.1.3 Groupes, groupes cycliques:
+            -----------------------------------
+
+Définition n°1:
+---------------
+
+Un ensemble G muni d'une loi interne T, c'est à dire un doublet (G, T) est un groupe si:
+
+                1) la loi T est associative (ie. (aTb)Tc = aT(bTc)
+                2) il existe un élément neutre e dans (G, T) (ie. aTe = eTa = a)
+                3) tout élément de (G, T) est symétrisable (ie. aTa' = a'Ta = e)
+
+Définition n°2:
+---------------
+
+Un groupe G est dit cyclique, de générateur x si chaque élément de G  est de la forme x^n pour
+un entier n (ex: on a un groupe avec la loi * : x^3 = x*x*x, on a aussi un groupe avec la loi + :
+x^3 = x+x+x).
+
+Définition n°3:
+---------------
+
+L'ordre |G| d'un groupe fini (ie. G contient un nombre fini d'éléments) est le nombre d'éléments
+de celui-ci.
+
+Proposition n°1:
+----------------
+
+G = ({1, ..., n-1}, +(mod n)), g est un générateur si PGCD(n, g) = 1
+
+Extension de la proposition n°1:
+--------------------------------
+
+Si n=p, p étant un nombre premier, alors tout nombre a (0<a<p) est un générateur du groupe
+{0, ..., p-1} muni de la loi +(mod p).
+
+Proposition n°2:
+----------------
+
+Si p est premier, alors {1, ..., p-1} muni de la loi *(mod p) est un groupe cyclique.
+
+Proposition n°3:
+----------------
+
+Si g est un générateur de G, alors g^1 mod p = g et g^p mod p = g.
+
+Proposition n°4:
+----------------
+
+Soit g un générateur de G. Si PGCD(a, p-1) = 1, alors g^a est aussi un générateur.
+
+
+        4.1.2 Un générateur purement mathématique:
+        ------------------------------------------
+
+Soit a et b deux nombres entiers positifs, tels que a<b et PGCD(a, b) = 1 et c un nombre graine.
+Voici les étapes permettant de générer une suite de nombres pseudo-aléatoires:
+
+               1) d = (a*c) mod b
+               2) e = (c*d) mod b
+               3) f = (d*e) mod b
+                  ...............
+
+Dès que l'on retombe sur la graine c, la boucle est bouclée.
+
+exemple: posons par exemple a=19 , b=23 et c=7.
+--------
+
+               1) (a*c) mod b = 18
+               2) (c*18) mod b = 20
+               3) (18*20) mod b = 12
+                  ..................
+
+On arrête dès que l'on trouve (x*y) mod b = 7.
+
+
+    4.2 Les générateurs utilisant les caractéristiques du système:
+    --------------------------------------------------------------
+
+    4.3 Conclusion:
+    ---------------
+
+Lequel de ces deux types utiliser? A mon avis c'est une question de goût. L'avantage des
+générateurs purements mathématiques est qu'ils ne dépendent pas du système d'exploitation
+utilisé.
+
+5. Générer du junk code:
+------------------------
+
+Toutes les idées développées ici ont pour but de cacher le fonctionnement réel de la routine
+de cryptage pour la rendre difficile à détecter par un AV. De plus je vais essayer au maximum
+de vous montrer comment générer du junk code ressemblant à du code normal pour rendre la tâche
+de celui qui étudie notre morceau de code plus difficile.
+
+    5.1 Les instructions de 1 octet:
+    --------------------------------
+
+Je pense que ce type d'instructions n'a pas à être généré par le ME. Avez-vous déjà vu
+beaucoup de programmes utiliser les instrucytions cli, sti, cmc, wait, ...? Je pense que
+non. Donc générer de telles instructions risque plus d'éveiller les soupçons d'un AV que
+'cacher' le fonctionnement de notre code.
+Néanmoins il est nécessaire que notre ME puisse générer les instructions 'push X', 'pop 'X',
+'int 03h', mais cela doit être fait avec parcimonie. Générer 10 'push X', 'pop X' à la
+suite pourrait sembler louche! De plus vous devez faire très attention lors de la génération
+de ces instructions, que celles-ci ne plantent pas votre routine de cryptage. Je m'explique,
+imaginons que vous vouliez générer les instruction suivante en les entrelaçant avec du junk
+code:
+
+    push imm32                              ;
+    push Taille_du_code_à_crypter_en_dwords ;
+    pop reg1                                ;reg1 = Taille_du_code_à_crypter_en_dwords
+
+Mais à la place de ça, si vous générez les instructions suivantes, vous risquez d'avoir de
+sérieux problèmes:
+
+    push Taille_du_code_à_crypter_en_dwords ;
+    push imm32                              ;junk
+    pop reg1                                ;reg1 = imm64
+
+Donc faîtes très attention quand vous manipulez la pile!
+
+Voici un tableau récapitulant les différentes instructions de manipulations de la pile en
+assembleur, en hexadécimal et en binaire:
+
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | Assembleur | Hexadécimal | Binaire  |    | Assembleur | Hexadécimal | Binaire  |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push eax   |     50      | 01010000 |    | pop eax    |     58      | 01011000 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push ebx   |     53      | 01010011 |    | pop ebx    |     5B      | 01011011 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push ecx   |     51      | 01010001 |    | pop ecx    |     59      | 01011001 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push edx   |     52      | 01010001 |    | pop edx    |     5A      | 01011010 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push esi   |     56      | 01010110 |    | pop esi    |     5E      | 01011110 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push edi   |     57      | 01010111 |    | pop edi    |     5F      | 01011111 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push ebp   |     55      | 01010101 |    | pop ebp    |     5D      | 01011101 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | push esp   |     54      | 01010100 |    | pop esp    |     5C      | 01011100 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | pusha      |     60      | 01100000 |    | popa       |     61      | 01100001 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+    | pushf      |     9C      | 10011100 |    | popf       |     9D      | 10011101 |
+    +------------+-------------+----------+    +------------+-------------+----------+
+
+Après examen de ce tableau, vous pouvez voir que toutes les instructions push/pop sont de la
+forme 01010xxx et 01011xxx sauf les instructions pusha/popa qui sont de la forme 0110000x et
+les instructions pushf/popf qui sont de la forme 1001110x. Mais poussons l'analyse plus loin.
+On peut voir que les instructions push/pop utilisant le même registre possèdent les mêmes trois
+derniers bits. On en déduit donc le 'code' représentant les registres:
+
+        eax = 000
+        ebx = 011
+        ecx = 001
+        edx = 010
+        esi = 110
+        edi = 111
+        ebp = 101
+        esp = 100
+
+Pour générer un push, il suffit donc d'effectuer les opérations suivantes:
+
+        mov reg, 01010000b ;
+        or reg, 00000xxxb  ;avec xxx le code du registre à utiliser
+
+De même pour un pop:
+
+        mov reg, 01011000b ;
+        or reg, 00000xxxb  ;avec xxx le code du registre à utiliser
+
+Pour générer un pusha ou un popa:
+
+        mov reg, 01100000b ;
+        or reg, 0000000xb  ;avec x = 1 si popa et x = 0 si pusha
+
+Pour générer un push imm32, avec xxh xxh xxh xxh représentant l'imm32:
+
+        68h xxh xxh xxh xxh
+
+Exemple: coder push 12345678h
+--------
+       On commence par écrire 68h xxh xxh xxh xxh, puis on remplace les xxh de la gauche vers
+       la droite par l'inverse de 12345678h, ce qui nous donne 78h 56h 34h 12h.
+
+Pour générer un push dword ptr [reg]:
+
+        FFh 3Xh
+
+Avec X = code du registre (reg) à utiliser.
+
+    5.2 La fabrication des instructions standards:
+    ----------------------------------------------
+
+        5.2.1 Xor reg, reg1 / Xor reg, imm32:
+        -------------------------------------
+
+Voici comment est codé un xor reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Xor eax, reg1: 0011 0011 1100 0xxxb
+     - Xor ebx, reg1: 0011 0011 1101 1xxxb
+     - Xor ecx, reg1: 0011 0011 1100 1xxxb
+     - Xor edx, reg1: 0011 0011 1101 0xxxb
+     - Xor esi, reg1: 0011 0011 1111 0xxxb
+     - Xor edi, reg1: 0011 0011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Xor eax, edx
+--------
+       Commençons par écrire en binaire Xor eax, reg1: 0011 0011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg1, soit de edx. Ce qui nous donne:
+       Xor eax, edx = 0011 0011 1100 0010b.
+
+Voici comment est codé un xor reg, imm32 où reg est un registre 32 bits:
+
+        - si reg = eax, 35h xxh xxh xxh xxh
+        - si reg = ebx, 81h F3h xxh xxh xxh xxh
+        - si reg = ecx, 81h F1h xxh xxh xxh xxh
+        - si reg = edx, 81h F2h xxh xxh xxh xxh
+        - si reg = esi, 81h F6h xxh xxh xxh xxh
+        - si reg = edi, 81h F7h xxh xxh xxh xxh
+
+Exemple: coder Xor edx, 12345678h
+--------
+       Pour commencer Xor edx, xxxxxxxxh va s'écrire 81h F2h xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Xor edx, 12345678h
+       sera encodé comme 81h F2h 78h 56h 34h 12h
+
+        5.2.2 Add reg, reg1 / Add reg, imm32:
+        -------------------------------------
+
+Voici comment est codé un Add reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Add eax, reg1: 0000 0011 1100 0xxxb
+     - Add ebx, reg1: 0000 0011 1101 1xxxb
+     - Add ecx, reg1: 0000 0011 1100 1xxxb
+     - Add edx, reg1: 0000 0011 1101 0xxxb
+     - Add esi, reg1: 0000 0011 1111 0xxxb
+     - Add edi, reg1: 0000 0011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Add eax, edx
+--------
+       Commençons par écrire en binaire Add eax, reg1: 0000 0011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg1, soit de edx. Ce qui nous donne:
+       Add eax, edx = 0000 0011 1100 0010b.
+
+Voici comment est codé un Add reg, imm32 où reg est un registre 32 bits:
+
+        - si reg = eax, 05h xxh xxh xxh xxh
+        - si reg = ebx, 81h C3h xxh xxh xxh xxh
+        - si reg = ecx, 81h C1h xxh xxh xxh xxh
+        - si reg = edx, 81h C2h xxh xxh xxh xxh
+        - si reg = esi, 81h C6h xxh xxh xxh xxh
+        - si reg = edi, 81h C7h xxh xxh xxh xxh
+
+Exemple: coder Add edx, 12345678h
+--------
+       Pour commencer Add edx, xxxxxxxxh va s'écrire 81h C2h xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Add edx, 12345678h
+       sera encodé comme 81h C2h 78h 56h 34h 12h
+
+        5.2.3 Sub reg, reg1 / Sub reg, imm32:
+        -------------------------------------
+
+Voici comment est codé un Sub reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Sub eax, reg1: 0010 1011 1100 0xxxb
+     - Sub ebx, reg1: 0010 1011 1101 1xxxb
+     - Sub ecx, reg1: 0010 1011 1100 1xxxb
+     - Sub edx, reg1: 0010 1011 1101 0xxxb
+     - Sub esi, reg1: 0010 1011 1111 0xxxb
+     - Sub edi, reg1: 0010 1011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Sub eax, edx
+--------
+       Commençons par écrire en binaire Sub eax, reg1: 0010 1011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg1, soit de edx. Ce qui nous donne:
+       Sub eax, edx = 0010 1011 1100 0010b.
+
+Voici comment est codé un Sub reg, imm32 où reg est un registre 32 bits:
+
+        - si reg = eax, 2Dh xxh xxh xxh xxh
+        - si reg = ebx, 81h EBh xxh xxh xxh xxh
+        - si reg = ecx, 81h E9h xxh xxh xxh xxh
+        - si reg = edx, 81h EAh xxh xxh xxh xxh
+        - si reg = esi, 81h EEh xxh xxh xxh xxh
+        - si reg = edi, 81h EFh xxh xxh xxh xxh
+
+Exemple: coder Sub edx, 12345678h
+--------
+       Pour commencer Sub edx, xxxxxxxxh va s'écrire 81h EAh xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Sub edx, 12345678h
+       sera encodé comme 81h EAh 78h 56h 34h 12h
+
+        5.2.4 Cmp reg, reg1 / Cmp reg, imm32:
+        -------------------------------------
+
+Voici comment est codé un Cmp reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Cmp eax, reg1: 0011 1011 1100 0xxxb
+     - Cmp ebx, reg1: 0011 1011 1101 1xxxb
+     - Cmp ecx, reg1: 0011 1011 1100 1xxxb
+     - Cmp edx, reg1: 0011 1011 1101 0xxxb
+     - Cmp esi, reg1: 0011 1011 1111 0xxxb
+     - Cmp edi, reg1: 0011 1011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Cmp eax, edx
+--------
+       Commençons par écrire en binaire Cmp eax, reg1: 0011 1011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg1, soit de edx. Ce qui nous donne:
+       Cmp eax, edx = 0011 1011 1100 0010b.
+
+Voici comment est codé un Cmp reg, imm32 où reg est un registre 32 bits:
+
+        - si reg = eax, 3Dh xxh xxh xxh xxh
+        - si reg = ebx, 81h FBh xxh xxh xxh xxh
+        - si reg = ecx, 81h F9h xxh xxh xxh xxh
+        - si reg = edx, 81h FAh xxh xxh xxh xxh
+        - si reg = esi, 81h FEh xxh xxh xxh xxh
+        - si reg = edi, 81h FFh xxh xxh xxh xxh
+
+Exemple: coder Cmp edx, 12345678h
+--------
+       Pour commencer Cmp edx, xxxxxxxxh va s'écrire 81h FAh xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Cmp edx, 12345678h
+       sera encodé comme 81h FAh 78h 56h 34h 12h
+
+
+        5.2.5 Mov reg, reg1 / Mov reg, imm32:
+        -------------------------------------
+
+Voici comment est codé un Mov reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Mov eax, reg1: 1000 1011 1100 0xxxb
+     - Mov ebx, reg1: 1000 1011 1101 1xxxb
+     - Mov ecx, reg1: 1000 1011 1100 1xxxb
+     - Mov edx, reg1: 1000 1011 1101 0xxxb
+     - Mov esi, reg1: 1000 1011 1111 0xxxb
+     - Mov edi, reg1: 1000 1011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Mov eax, edx
+--------
+       Commençons par écrire en binaire Mov eax, reg1: 1000 1011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg1, soit de edx. Ce qui nous donne:
+       Mov eax, edx = 1000 1011 1100 0010b.
+
+Voici comment est codé un mov reg, imm32 où reg est un registre 32 bits:
+
+        - si reg = eax, B8h xxh xxh xxh xxh
+        - si reg = ebx, BBh xxh xxh xxh xxh
+        - si reg = ecx, B9h xxh xxh xxh xxh
+        - si reg = edx, BAh xxh xxh xxh xxh
+        - si reg = esi, BEh xxh xxh xxh xxh
+        - si reg = edi, BFh xxh xxh xxh xxh
+
+Exemple: coder Mov edx, 12345678h
+--------
+       Pour commencer Mov edx, xxxxxxxxh va s'écrire BAh xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Mov edx, 12345678h
+       sera encodé comme BAh 78h 56h 34h 12h
+
+        5.2.6 Xchg reg, reg1:
+        ---------------------
+
+Voici comment est codé un Xchg reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+       a) xchg eax, ebx --> 93h     --> 1001 0011b
+       b) xchg eax, ecx --> 91h     --> 1001 0001b
+       c) xchg eax, edx --> 92h     --> 1001 0010b
+       d) xchg eax, esi --> 96h     --> 1001 0110b
+       e) xchg eax, edi --> 97h     --> 1001 0111b
+       f) xchg ebx, ecx --> 87h D9h --> 10000111 11011001b
+       g) xchg ebx, edx --> 87h DAh --> 10000111 11011010b
+       h) xchg ebx, esi --> 87h DEh --> 10000111 11011110b
+       i) xchg ebx, edi --> 87h DFh --> 10000111 11011111b
+       j) xchg ecx, edx --> 87h CAh --> 10000111 11001010b
+       k) xchg ecx, esi --> 87h CEh --> 10000111 11001110b
+       l) xchg ecx, edi --> 87h CFh --> 10000111 11001111b
+       m) xchg edx, esi --> 87h D6h --> 10000111 11010110b
+       n) xchg edx, edi --> 87h D7h --> 10000111 11010111b
+       o) xchg esi, edi --> 87h F7h --> 10000111 11110111b
+
+        5.2.7 Mov reg, [reg1] / mov [reg], reg1:
+        ----------------------------------------
+
+Voici comment est codé un Mov reg, [reg1] où reg et reg1 sont des registres 32 bits:
+
+     - Mov eax, [reg1]: 1000 1011 0000 0xxxb
+     - Mov ebx, [reg1]: 1000 1011 0001 1xxxb
+     - Mov ecx, [reg1]: 1000 1011 0000 1xxxb
+     - Mov edx, [reg1]: 1000 1011 0001 0xxxb
+     - Mov esi, [reg1]: 1000 1011 0011 0xxxb
+     - Mov edi, [reg1]: 1000 1011 0011 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder Mov eax, [edx]
+--------
+       Commençons par écrire en binaire Mov eax, [reg1]: 1000 1011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg2, soit de edx. Ce qui nous donne:
+       Mov eax, [edx] = 1000 1011 0000 0010b.
+
+Voici comment est codé un Mov [reg], reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Mov [eax], reg1: 1000 1001 00xx x000b
+           - reg1=ebx: xx x = 01 1
+           - reg1=ecx: xx x = 00 1
+           - reg1=edx: xx x = 01 0
+           - reg1=esi: xx x = 11 0
+           - reg1=edi: xx x = 11 1
+     - Mov [ebx], reg1: 1000 1001 00xx x011b
+           - reg1=eax: xx x = 00 0
+           - reg1=ecx: xx x = 00 1
+           - reg1=edx: xx x = 01 0
+           - reg1=esi: xx x = 11 0
+           - reg1=edi: xx x = 11 1
+     - Mov [ecx], reg1: 1000 1001 00xx x001b
+           - reg1=eax: xx x = 00 0
+           - reg1=ebx: xx x = 01 1
+           - reg1=edx: xx x = 01 0
+           - reg1=esi: xx x = 11 0
+           - reg1=edi: xx x = 11 1
+     - Mov [edx], reg1: 1000 1001 00xx x010b
+           - reg1=eax: xx x = 00 0
+           - reg1=ebx: xx x = 01 1
+           - reg1=ecx: xx x = 00 1
+           - reg1=esi: xx x = 11 0
+           - reg1=edi: xx x = 11 1
+     - Mov [esi], reg1: 1000 1001 00xx x110b
+           - reg1=eax: xx x = 00 0
+           - reg1=ebx: xx x = 01 1
+           - reg1=ecx: xx x = 00 1
+           - reg1=edx: xx x = 01 0
+           - reg1=edi: xx x = 11 1
+     - Mov [edi], reg1: 1000 1001 00xx x111b
+           - reg1=eax: xx x = 00 0
+           - reg1=ebx: xx x = 01 1
+           - reg1=ecx: xx x = 00 1
+           - reg1=edx: xx x = 01 0
+           - reg1=esi: xx x = 11 0
+
+xxx représentant le code du registre reg1 à utiliser.
+
+Exemple: coder Mov [eax], edx
+--------
+       Commençons par écrire en binaire Mov [eax], reg1: 1000 1001 00xx x000b. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg2, soit de edx. Ce qui nous donne:
+       Mov [eax], edx = 1000 1001 0001 0000b.
+
+        5.2.8 Or reg, reg1:
+        -------------------
+
+Voici comment est codé un Or reg, reg1 où reg et reg1 sont des registres 32 bits:
+
+     - Mov eax, reg1: 0000 1011 1100 0xxxb
+     - Mov ebx, reg1: 0000 1011 1101 1xxxb
+     - Mov ecx, reg1: 0000 1011 1100 1xxxb
+     - Mov edx, reg1: 0000 1011 1101 0xxxb
+     - Mov esi, reg1: 0000 1011 1111 0xxxb
+     - Mov edi, reg1: 0000 1011 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser vu en 5.1.
+
+Exemple: coder or eax, edx
+--------
+       Commençons par écrire en binaire or eax, reg1: 0000 1011 1100 0xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg2, soit de edx. Ce qui nous donne:
+       or eax, edx = 0000 1011 1100 0010b.
+
+        5.2.9 Dec reg / Inc reg:
+        ------------------------
+
+Voici comment est codé un Dec reg:
+
+     - inc eax: 40h
+     - inc ebx: 43h
+     - inc ecx: 41h
+     - inc edx: 42h
+     - inc esi: 46h
+     - inc edi: 47h
+
+Voici comment est codé un Inc reg:
+
+     - dec eax: 48h
+     - dec ebx: 4Bh
+     - dec ecx: 49h
+     - dec edx: 4Ah
+     - dec esi: 4Eh
+     - dec edi: 4Fh
+
+        5.2.10 Test reg1, reg2 / Test reg1, imm32:
+        ------------------------------------------
+
+Voici comment est codé un Test reg1, reg2 où reg1 et reg2 sont des registres 32 bits:
+
+     - Test eax, reg2: 1000 0101 1100 0xxxb
+     - Test ebx, reg2: 1000 0101 1101 1xxxb
+     - Test ecx, reg2: 1000 0101 1100 1xxxb
+     - Test edx, reg2: 1000 0101 1101 0xxxb
+     - Test esi, reg2: 1000 0101 1111 0xxxb
+     - Test edi, reg2: 1000 0101 1111 1xxxb
+
+xxx représentant le code du registre reg1 à utiliser.
+
+Exemple: coder test ecx, edx
+--------
+       Commençons par écrire en binaire or ecx, reg1: 1000 0101 1100 1xxxb. Il nous suffit
+       maintenant de remplacer les xxx par le code de reg2, soit de edx. Ce qui nous donne:
+       or eax, edx = 1000 0101 1100 1010b.
+
+Voici comment est codé un Test reg1, imm32 où reg1 est un registre 32 bits:
+
+     - Test eax, imm32: A9h XXh XXh XXh XXh
+     - Test ebx, imm32: F7h C3h XXh XXh XXh XXh
+     - Test ecx, imm32: F7h C1h XXh XXh XXh XXh
+     - Test edx, imm32: F7h C2h XXh XXh XXh XXh
+     - Test esi, imm32: F7h C6h XXh XXh XXh XXh
+     - Test edi, imm32: F7h C7h XXh XXh XXh XXh
+
+XXh XXh XXh XXh représentant l'imm32.
+
+Exemple: coder test edx, 12345678h
+--------
+       Pour commencer test edx, xxxxxxxxh va s'écrire F7h C2h xxh xxh xxh xxh.
+       xxxxxxxxh = 12345678h. Or Il faut inverser les octets, donc Test edx, 12345678h
+       sera encodé comme F7h C2h 78h 56h 34h 12h
+
+    5.3 La fabrication des jmp, jnz, call, Loop, ...:
+    -------------------------------------------------
+
+Il faut distiguer deux types de sauts: les saut en avant et les saut en arrière.
+
+Saut en avant:             Start:
+--------------               .....
+                             .....
+                             jmp Next
+                             .....
+                             .....
+                           Next:
+                             .....
+                             .....
+
+Saut en arrière:           Start:
+----------------             .....
+                             .....
+                             jmp Start
+                             .....
+                             .....
+
+Voyons maintenant les différents instructions de saut possibles:
+
+     a) JMP SHORT    --> EBh data8
+     b) JMP NEAR     --> E9h data16
+     c) JBE/JNA      --> 76h data8
+     d) JLE/JNG      --> 7Eh data8
+     e) JB/JNAE/JC   --> 72h data8
+     f) JL/JNGE      --> 7Ch data8
+     g) JZ/JE        --> 74h data8
+     h) JNE/JNZ      --> 75h data8
+     i) JAE/JNB/JNC  --> 73h data8
+     j) JGE/JNL      --> 7Dh data8
+     k) JA/JNBE      --> 77h data8
+     l) JG/JNLE      --> 7Fh data8
+     m) JCXZ         --> E3h data8
+     n) JNO          --> 71h data8
+     o) JO           --> 70h data8
+     p) JP/JPE       --> 7Ah data8
+     q) JNP/JPO      --> 7Bh data8
+     r) JNS          --> 79h data8
+     s) JS           --> 78h data8
+     t) LOOP         --> E2h data8
+     u) CALL SHORT   --> E8h data8
+
+Instructions de retour pour le 'CALL':
+
+     v) RETN --> C3h
+     w) RETF --> CBh
+     x) IRET --> CFh
+
+Nous allons maintenant voir comment sont calculés les dataX (dataX représente un nombre de X
+bits signé). Le saut est calculer à partir de la fin de l'instruction. Par exemple, un 'jmp 00'
+est un saut à la prochaine instruction. Un 'jmp 02' est un saut passé de deux octets après la
+fin de l'instruction. Pour calculer dataX, il existe deux formules suivant que le saut est en
+avant ou en arrière.
+
+Saut en avant: taille du saut = @ de destination - @ de départ - 2
+--------------
+
+Saut en arrière: taille du saut = (@ de départ - @ de destination + 2) * -1
+----------------
+
+Simple n'est ce pas? Tout ce que vous avez à faire est d'écrire JS 00 puis mémoriser l'@ où
+vous avez écrit l'instruction, générer le junk code, mémoriser l'@ de fin du junk code, appliquer
+la formule, remplacer les 00 par le résultat du calcul et vous avez terminé!
+
+    5.4 Conclusion:
+    ---------------
+
+Si votre générateur est capable de générer ces instructions, c'est déjà pas mal. N'oubliez surtout
+pas de générer une comparaison avant de créer un saut conditionnel, sinon votre code pourrait
+paraître louche!
+
+6. Conclusion:
+--------------
+
+Et voilà, c'est terminé. J'espère que cet article vous aura donné des idées. Le prochain sujet
+sera sur l'écriture de moteurs de mutations génétiques. En attendant, codez bien!
+

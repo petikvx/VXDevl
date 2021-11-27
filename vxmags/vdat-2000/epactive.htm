@@ -1,0 +1,341 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Computer Viruses - ActiveX and Java: The Next Virus Carriers?</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>ActiveX and Java: The
+Next Virus Carriers?</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>At the Chaos Computer Club in Hamburg, Germany, a club member puts the
+finishing touches on a new kind of virus - a virus that can seek out an
+Internet user’s personal bank account information and actually transfer
+funds from the account, without a personal identification or transaction
+number [1]. Science fiction? Unfortunately not.</P>
+
+<P>While only a demonstration and not an &quot;in the wild&quot; virus,
+this hacker’s virus is particularly alarming for reasons that go beyond
+its potentially invasive effect. First, the virus is carried by a control
+developed using Microsoft Corp.’s&reg; ActiveX™, which is in growing use
+on web pages throughout the world. Second, the virus loads automatically
+(via the ActiveX control) as the user browses the world wide web.</P>
+
+<P>And the Hamburg creation is no fluke. An ActiveX control called &quot;Exploder,&quot;
+widely discussed in security circles, can shut down Microsoft&reg; Windows
+95 and turn off your computer if it has an energy conservation BIOS. Although
+this infection is more of an inconvenience than a major problem, this control
+illustrates the power of these new viruses. Any type of workstation, whether
+Mac, PC, Unix, or VAX, is at risk, even if you have a firewall between
+your workstation and the Internet.</P>
+
+<P>What’s more, this security breach does not seem to be limited to ActiveX.
+Similar capabilities are now being attributed to Java™, a competing programming
+language developed by Sun Microsystems. Application macros, Navigator plug-ins,
+and Macintosh&reg; applications can also contain malicious code. This paper
+specifically addresses concerns raised over offending ActiveX and Java
+applets. </P>
+
+<P><B><FONT SIZE=+1>How the Viruses Work</FONT></B></P>
+
+<P>ActiveX and Java were created for web page designers to incorporate
+a wide array of impressive effects on web pages, giving movement and added
+dimension to the previously &quot;flat&quot; web pages. For example, the
+stock prices that scroll across the bottom of your screen at some sites
+or the animation that adorns an increasing number of web sites are created
+using ActiveX or Java. ActiveX controls and Java applets are also behind
+a host of useful applications--from developing personalized interfaces
+to identifying the current version of software you are using and recommending
+upgrading with downloadable software.</P>
+
+<P>To operate properly, these ActiveX controls and Java applets need to
+gain access to your hard disk. Insufficient memory and bandwidth problems
+necessitate this approach. Although this desktop access provides a wealth
+of beneficial applications of these controls and applets, malicious code
+developers have the same access. They are now using it to read and delete
+or corrupt files, access RAM, and even access files on computers attached
+via a LAN.</P>
+
+<P>For the Hamburg example above, the ActiveX control searches the user’s
+hard disk for installation of Intuit’s Quicken™, popular personal financial
+software actively used by more than 9 million people worldwide. Having
+located the Quicken files, the control orders a transfer of funds that
+is added to the software’s list of queued transfers, to be completed unbeknownst
+to the user when bills are next paid [1].</P>
+
+<P>Infections like these require the traditional definition of a virus
+to be expanded. Until now, a computer virus was thought to be a malicious
+code that spreads by duplicating itself via attachment to executable files,
+or more recently, to text files. Here, the spread of the virus was an unwitting
+consequence of actions like FTP downloading or reading attachments to e-mail.
+With the new threat, viruses in ActiveX controls and Java applets can spread
+with no explicit action taken by the user. Now, simply surfing the web
+can be dangerous.</P>
+
+<P>Examined with a larger view, evolution of the virus threat has mirrored
+the evolution of our computing habits. Prior to the explosive use of the
+Internet, viruses propagated with distribution of software programs on
+floppy diskettes. Then, as software became increasingly available on line,
+viruses used this medium to spread. As e-mail use increased, viruses first
+appeared attached to nonexecutable files such as Microsoft&reg; Word files.
+And now, as web pages become increasingly sophisticated, they are becoming
+a means to spread viruses. As the desktop computer has evolved from a computing
+tool to a communication tool, the virus spread has followed this shift.</P>
+
+<P>Of the two new carriers of viruses, ActiveX is perceived to be the greater
+threat because of its design. Essentially a compact version of Object Linking
+and Embedding (OLE), ActiveX has direct access to native Windows calls,
+linking it to any system function. And ActiveX is not limited to users
+of Internet Explorer; a Netscape Navigator plug-in now available hosts
+ActiveX. Java, by contrast, is &quot;sandboxed&quot; or insulated from
+operating system services by the Java Virtual Machine. Nevertheless, due
+to variations in Java Virtual Machine implementation, Java is gaining access
+to system functions in many cases. </P>
+
+<P>Moreover, since a Java applet can be attached to e-mail, a browser will
+automatically activate the applet. In fact, both Netscape and Microsoft
+are incorporating Java into their browsers, enabling applet-borne viruses
+to proliferate.</P>
+
+<P><B><FONT SIZE=+1>The Threat: Real or Imagined?</FONT></B></P>
+
+<P>How real is this threat today? While incidents are fairly isolated at
+the time of this writing, concern is growing, as security experts and users
+alike begin to see a pattern of virus growth that is vaguely familiar.
+During the early days of virus detection in the 1980s, experimental sites
+became established that contained growing databases of viruses. This pattern
+is being repeated today as various groups begin accumulating offending
+ActiveX controls and Java applets. </P>
+
+<P>And experts are beginning to speak out. Joel Snyder, writing about Java
+for <U>Internet World</U> magazine, warns that &quot;the data in your files,
+in your computer’s RAM, and on your LAN would be open to anyone...even
+if you have a firewall. You could lose [valuable information] or see it
+published on the front page of your local paper [2].&quot; Internet security
+guru Edward Felten and computer security expert Gary McGraw have published
+a book on <U>Java Security: Hostile Applets, Holes, and Antidotes</U> that
+expounds on several security flaws in Java discovered by a Princeton University
+team [3]. Writing on ActiveX for <U>IT/IS BackOffice</U> magazine, Marcus
+Goncalves states &quot;Plain and simple, the Web environment needs to be
+more secure,&quot; in his article entitled &quot;ActiveX: You had better
+be careful [4]!&quot;</P>
+
+<P>&quot;The situation is scary,&quot; says Stephen Cobb, Director of Special
+Projects for the National Computer Security Association (NCSA). &quot;Enterprise
+IT managers...have to set up policy now to prevent users from downloading
+malicious applets and viruses.&quot;</P>
+
+<P><B><FONT SIZE=+1>Solutions to the Threat</FONT></B></P>
+
+<P>Solutions to the security threat of ActiveX controls and Java applets
+run the gamut of client-side and server-side options. The most obvious
+client-side solution is to simply disable Java and ActiveX altogether on
+user workstations. To disable Java in Netscape, for example, you select
+&quot;Security Preferences&quot; from the &quot;Options&quot; menu and
+click on the &quot;Disable Java&quot; box. But this solution is less than
+optimal for several reasons. As users grow accustomed to the added dimensionality
+of ActiveX controls and Java applets, disabling all of them frustrates
+users. As these applications are increasingly applied as key components
+of web pages, disabling them eliminates some applications of value to users.</P>
+
+<P>The next step in client-based security involves Microsoft Authenticode™,
+a certification system for ActiveX controls and Java applets in an upcoming
+Java Development Kit (JDK). Says Microsoft Senior Vice President Brad Silverberg,
+Authenticode is &quot;the only commercial technology in use today that
+identifies who published executable code you might download from the Internet,
+and verifies that it hasn’t been altered since publication [5].&quot; </P>
+
+<P>With Authenticode, developers of ActiveX controls or Java applets register
+their software with a third party (VeriSign). For individual applicants,
+VeriSign runs a screening test via Equifax, a processor of credit card
+applications, and issues a Class 2 Authenticode certificate if the individual
+passes the screening. For company applicants, VeriSign runs a Dunn &amp;
+Bradstreet check that results in a Class 3 certificate. </P>
+
+<P>Other firms have announced plans to provide code signing for Java applets.
+JavaSoft has included digital signature capability in the Java Development
+Kit, JDK 1.1, which shipped Feb. 18, 1997 [6]. Netscape Communicator plans
+to include support for signed objects that make Java applet software distribution
+more secure [7].</P>
+
+<P>Although each modification to an ActiveX control or Java applet in the
+wild must be re-certified with Authenticode, no checking or testing for
+malicious coding is done in any of the certification processes. Hence,
+the certification is not an endorsement of the code’s function or intent.
+It comes down to each client choosing who they trust to produce virus-free
+ActiveX controls and Java applets. This is a very difficult determination
+to make, and varies by user within a company. Many users, already accustomed
+to clicking &quot;continue&quot; on all warning messages they receive on
+the web, will simply accept all applets and controls without regard to
+the consequences.</P>
+
+<P>From the system administrator viewpoint, these client-side solutions
+have limitations and costs. Stipulations to disable ActiveX and Java are
+difficult to enforce among all company users and carry more management
+overhead. Authenticode places difficult decision-making on security issues
+in the client’s lap, leading to inconsistent security. And virus infections
+are many times more expensive to eradicate once viruses have infiltrated
+the user level. These points are at the crux of the advantages of the alternative
+to client-based security--server-based solutions to these threats.</P>
+
+<P>Says analyst Ira Machefsky, writing for Giga Information Group, &quot;sites
+should move to server-based security mechanisms whenever possible to save
+system overhead and improve the quality and auditability of their active
+component security policy [8].&quot; Indeed, server-based solutions provide
+single point implementation of a security policy, which users cannot subvert
+at their desktop. </P>
+
+<P><B><FONT SIZE=+1>InterScan WebProtect™ and InterScan Web VirusWall™</FONT></B></P>
+
+<P>As of this writing, the only server-based solutions that provide security
+for both ActiveX and Java components are found in Trend Micro’s InterScan
+family of products: WebProtect [5] for Microsoft Proxy Server and Web VirusWall™,
+a component of InterScan VirusWall for Internet gateways. The web scanning
+technology underlying these products is also the &quot;only blocking mechanism
+that selectively filters ActiveX code from unknown sources, while letting
+known vendor code pass through,&quot; according to David Willis, writing
+about WebProtect for <U>Network Computing</U> [6]. WebProtect and Web VirusWall
+act as a filter, blocking Java applets, uncertified ActiveX controls, FTP-
+and HTTP-borne viruses, CABinet, and Win 32 portable executables. Working
+with Authenticode, WebProtect and Web VirusWall enables the system administrator
+to establish a companywide policy regarding acceptance of ActiveX controls
+from various sources and uniformly implement this policy. At the same time,
+intelligent scanning--ignoring certain file types known not to be able
+to transmit viruses (e.g., GIF, JPEG, MPEG, and AVI)--ensures that there
+is minimal effect on server performance and transmission speed. </P>
+
+<P>WebProtect operates as an add-on to Microsoft Proxy Server, which administrators
+can easily incorporate in a site architecture and customize to meet site-specific
+needs. In its review of three client-side and three server-based solutions
+to either ActiveX controls or Java applets or both, <U>Giga</U> Information
+Group recommends WebProtect. &quot;All sites can benefit from Trend Micro’s
+InterScan WebProtect to centrally manage Java and ActiveX security from
+a proxy server [5].&quot;</P>
+
+<P><B><FONT SIZE=+1>The Next Step</FONT></B></P>
+
+<P>Despite the capabilities of WebProtect and Web VirusWall, more sophisticated
+security is needed. These products are limited to on-off blocking options,
+and to provide more flexible security, expansion of the certification process,
+as well as advanced Web VirusWall-type software, will be necessary. Under
+this scenario, Authenticode would not only perform basic checks on code
+authors, but also provide basic information on what the code will do. For
+example, if the code reads and writes certain data to the user’s hard drive,
+this would be stated in the application for certification, and the certificate
+would indicate these key functions of the code.</P>
+
+<P>In parallel, an advanced version of Trend’s web scanning technology
+would use emulation and rule sets to identify suspicious behavior and block
+offending ActiveX and Java. WebVirusWall or WebProtect would execute the
+ActiveX controls and Java applets in an isolated environment called a clean
+room between the entrance to the local area network and users. This emulation
+would check for malicious effects, isolated from users’ desktops. At the
+same time, Trend’s software would compare the stated functions of the code
+that came on the certificate with its actual activities. Using rule sets
+similar to those Trend uses today in other virus protection products and
+administrator input of company policies, WebProtect or Web VirusWall would
+either block or pass each ActiveX control or Java applet. </P>
+
+<P>This combination of enhanced Authenticode and advanced WebProtect-type
+emulation/assimilation would balance performance with security in several
+ways. First, a set of &quot;smart&quot; rules would enable quick identification
+of offending codes. Further, comparison of each code with a virus database
+would ferret out malicious codes without the need for rule application
+and testing. This database would be maintained by adding offending codes
+as they are identified. Ultimately, such a database could be part of a
+security service that could replace traditional product-based antivirus
+security.</P>
+
+<P><B><FONT SIZE=+1>References</FONT></B></P>
+
+<OL>
+<LI>John Gilles, &quot;Crackers Shuffle Cash with Quicken, ActiveX,&quot;
+February 7, 1997.</LI>
+
+<LI>Joel Snyder, &quot;Uninvited Guests,&quot; <U>Internet World</U>, November
+1996, pp 104.</LI>
+
+<LI>Jeremy Carl, &quot;One to Whom Internet Security is Academic,&quot;
+<U>Web Week</U>, January 20, 1997, p. 58. </LI>
+
+<LI>Marcus Goncalves, &quot;ActiveX: You had better be careful,&quot; <U>IT/IS
+BackOffice</U>, December 1996, p. 26-28.</LI>
+
+<LI>Brad Silverberg, letter dated February 20, 1997 on <A HREF="http://www.microsoft.com/security.">www.microsoft.com/security.</A></LI>
+
+<LI>&quot;Update on Java Security and ActiveX,&quot; February 25, 1997,
+<A HREF="http://www.javasoft.com/sfaq/index.html#activex.">www.javasoft.com/sfaq/index.html#activex.</A>
+</LI>
+
+<LI>&quot;Netscape Communicator Complements Java Applet Security and Delivers
+Broad Platform Support for Java Applications,&quot; February 26, 1997,
+<A HREF="http://www.netscape.com/newsref/pr/newsrelease357.html">www.netscape.com/newsref/pr/newsrelease357.html</A>.
+</LI>
+
+<LI>Ira Machefsky, &quot;Planning Assumption--Java and ActiveX Security
+Options--A Growing Web of Products,&quot; PA, I-96-1234,Giga Information
+Group, January 1, 1996.</LI>
+
+<LI>David Willis, &quot;State of Security,&quot; <U>Network Computing</U>,
+January 5, 1997.</LI>
+</OL>
+
+<P><B><FONT SIZE=+1>Bibliography</FONT></B></P>
+
+<P>In addition to the references above, the following sources are useful:</P>
+
+<DIR>
+<LI>Edward Felten and Gary McGraw, <U>Java Security: Hostile Applets, Holes,
+and Antidotes</U>, (see <A HREF="http://www.cs.princeton.edu/sip">www.cs.princeton.edu/sip</A>)</LI>
+
+<LI>Trend Micro, Inc., &quot;Viruses and the Internet,&quot; October 1995
+(see <A HREF="http://www.antivirus.com">www.antivirus.com</A>). </LI>
+</DIR>
+
+<P>Additional articles from the Giga Information Group include the following:</P>
+
+<UL>
+<LI>Ira Machefsky, &quot;A Three-Tier Architecture for Web Proxy Servers,&quot;
+PA, T-96-00080, Giga Information Group.</LI>
+
+<LI>Evan Bauer, &quot;Enterprise Security Rules for Java Applets and ActiveX
+Controls,&quot; PA, I-96-09097, Giga Information Group. </LI>
+
+<LI>Ira Machefsky, &quot;Block that Virus! Keeping Internet Borne Viruses
+Out of the Enterprise,&quot; PA, P-96-10106, Giga Information Group. </LI>
+
+<LI>Ira Machefsky, &quot;Digital Signatures: The Sure Path to On-Line Document
+Security,&quot; PA, T-96-10116, Giga Information Group. </LI>
+</UL>
+
+<P>In addition, Ira Machefsky of Giga recommends the following background
+articles and Internet resources:</P>
+
+<UL>
+<LI>&quot;How Secure is Java?&quot; <U>UNIX Review</U>, October 1996. </LI>
+
+<LI>&quot;Credit Fraud Criminals Steal Identities,&quot; <U>San Jose Mercury
+News</U>, August 21, 1996. </LI>
+
+<LI>Princeton University Safe Internet Programming Home Page,<A HREF="http://www.cs.princeton.edu/sip">
+http://www.cs.princeton.edu/sip. </A></LI>
+
+<LI>Georgia Tech Hostile Applets Home Page, <A HREF="http://www.math.gatech.edu/~mladue/HostileApplets.html">http://www.math.gatech.edu/~mladue/HostileApplets.html.
+</A></LI>
+
+<LI>Microsoft Authenticode Initiative, <A HREF="http://www.microsoft.com/intdev/security/misf8-f.htm">http://www.microsoft.com/intdev/security/misf8-f.htm</A>.
+</LI>
+
+<LI>JavaSoft Frequently Asked Questions--Applet Security, <A HREF="http://www.javasoft.com/sfaq/index.html">http://www.javasoft.com/sfaq/index.html</A>.
+</LI>
+</UL>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

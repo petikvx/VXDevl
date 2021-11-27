@@ -1,0 +1,324 @@
+
+   
+   
+   Article compliments of [INLINE] March 1995 Distributed through the
+   Internet by Alternative Computer Technology of Pittsburgh, PA. (c)
+   1995 Virus Bulletin This article may not be reprinted in any form
+   without permission of the Virus Bulletin.
+     _________________________________________________________________
+   
+                             VIRUSES ON WINDOWS NT
+                                       
+  by Ian Whalley
+  
+   
+     _________________________________________________________________
+   
+   
+   
+   The question of the susceptibility of Windows NT to viruses is one
+   which is being raised increasingly frequently, as companies begin to
+   switch over to Microsoft's new operating system. However, until now,
+   there have been (to my knowledge) no documented tests of viruses on
+   systems running Windows NT. To correct this, I carried out a series of
+   tests, the results of which form the basis of this article.
+   
+  NT: A Brief History
+  
+   
+   
+   Windows NT is Microsoft's high-end product, designed for
+   processor-intensive applications and networking. Unlike their previous
+   products bearing the Windows logo, it is specifically designed with
+   networking in mind. This is in accordance with the widespread belief
+   that in the 1990s, computer users will be even more keen to
+   interconnect their machines, by utilising the peer-to-peer or
+   client-to-server architecture supported by NT.
+   
+   There are currently two operating systems in the 32-bit marketplace to
+   which MS-DOS users might move: Windows NT and IBM's OS/2 Warp. UNIX,
+   with its idiosyncrasies and multitude of mutually incompatible
+   versions, is not a realistic possibility for most applications.
+   
+   The attractions of Windows NT are many: it has the weight of Microsoft
+   behind it, it supports a wide variety of networks, and it can run on
+   several platforms (IBM PCs, DEC Alpha and MIPS are all supported).
+   However, its biggest disadvantage is the high machine specification
+   required. Minimum configuration is a 386/20 with 10MB RAM and an 80MB
+   hard disk, but even with this it is barely possible to do anything
+   other than boot up and say, 'Oh look, it looks just like Windows'.
+   
+   Running applications on such a system is not a practical option. No NT
+   developer would consider working on anything less than a 486/66 with
+   20MB RAM and a 300MB hard disk. Having said that, NT is gaining in
+   popularity, especially with the pull of Windo ws 95, which is
+   tailor-made to cohabit with NT.
+   
+  Part 1: The Current Threat - Putting the Boot In
+  
+   
+   
+   When a PC boots, the initial stages of that boot are independent of
+   the operating system (OS) which the PC will run. Clearly, the hardware
+   has no prior knowledge of this OS. If a user attempts to boot a PC
+   with an infected diskette in the A: drive, that virus will infect the
+   hard disk. With this in mind, I carried out the tests described below,
+   using a mimimally-configured machine.
+   
+   When NT is installed on a PC from DOS (i.e. the user boots DOS,
+   accesses the CD-ROM, and proceeds with NT installation), the machine
+   becomes 'dual-boot'. When the PC boots from then on, the user may
+   select NT or DOS as the operating system for that session.
+   
+   During installation, Windows NT takes a copy of the original partition
+   boot sector (the first sector of the active partition, which contains
+   a copy of DOS), storing it in the root directory of that partition as
+   the file 'BOOTSECT.DOS'. I have had one report of a machine infected
+   with Form having Windows NT installed: in this case, the virus is
+   present in 'BOOTSECT.DOS' after installation is complete, and will
+   become active if DOS is selected from the boot menu.
+   
+  Forming an Opinion
+  
+   
+   
+   When I infected a previously clean Windows NT machine with Form,
+   everything booted up well. The virus was in the partition boot sector,
+   and the original code in the expected position at the end of the
+   physical disk. However, after using the machine for a while, and
+   rebooting a couple of times, further access was not possible.
+   
+   The original copy of the boot sector had been overwritten by the
+   system paging file during my last session; consequently, when the
+   virus directed execution to that sector, it did not find a valid
+   partition boot sector, and the machine hung. I encounter ed this
+   problem at an early stage because the hard disk in the machine was
+   barely large enough to support NT, so the paging file was using almost
+   every sector on the disk not taken up with the operating system.
+   
+   Booting from the Windows NT set-up disks, selecting the 'repair a
+   damaged installation' option, and deselecting all subsequent options
+   with the exception of 'examine boot sectors' enabled operations to
+   continue. This worked whether or not I gave it the emergency repair
+   disk. There is in this case no need to resort to a virus scanner to
+   remove the virus - the set-up disks can do it for you.
+   
+  Master Boot Sector Viruses
+  
+   
+   
+   When planning this article, I intended to give detailed information on
+   what happens to NT when the machine is infected with various Master
+   Boot Sector (MBS) viruses, and advice on what to do for each (see
+   Figure 1 for a list of viruses used for testing purposes, and the
+   results). The advice, it transpired, is simple. If your NT machine
+   becomes infected with a MBS virus, and you have not taken adequate
+   precautions, you may have great difficulty in restoring your system.
+   The reason for this, which at first sight may appear apocalyptic, is
+   that for most viruses tested, NT fails to boot. Everything appears
+   normal until the screen changes colour and NT begins internally to map
+   logical partitions on the hard disks to internal device names. Then
+   the system hangs with a 'blue-screen error'.
+   
+   This means that the kernel has encountered a fatal error and canot
+   continue. I have only once before seen an error of this type under
+   Windows NT; the culprit then was an incorrectly-configured SCSI card.
+   A 'blue-screen error' can record one of two thin gs: either
+   INACCESSIBLE_BOOT_DEVICE, or 'This system may be infected with a
+   virus'. Whilst the second is marginally more helpful, the effect of
+   both is the same - you cannot boot NT.
+   
+   To make matters worse, attempting to fix the problem with the set-up
+   disks was not successful, even with the aid of the emergency repair
+   disk. This is surprising: why should the repair facility only look (as
+   seems to be the case) at the partition boot sectors, and not at the
+   most frequently attacked parts of the PC, the MBS?
+   
+   The distinction between viruses which allow NT to boot and those which
+   do not is currently unclear. Differences may lie in which areas of the
+   MBS are overwritten, or the manner in which they hook interrupts.
+   Whatever the reason, if the machine boots su ccessfully, I have been
+   unable to replicate the virus with which it is infected. This is
+   unsurprising: the viruses will be relying on knowledge of how DOS
+   loads, and how it subsequently manages the interrupts. NT breaks all
+   these 'rules', rendering the virus impotent. In this case, the user
+   will probably not realise he has a problem.
+   
+  What to Do
+  
+   
+   
+   So what can you do if your NT machine becomes infected with a boot
+   sector virus which prevents the system booting? Here, Windows NT comes
+   to our rescue to some extent.
+   
+   Following discussions with a user in the US, and with Microsoft, some
+   interesting things about Windows NT systems have come to light.
+   Firstly, if your partition boot sector has been corrupted on an NTFS
+   partition (New Technology Filing System - the mor e efficient Windows
+   NT replacement for DOS FAT and OS/2 HPFS), it is possible to retrieve
+   a copy of the original of that sector.
+   
+   When NT formats an NTFS partition, it copies the first logical sector
+   (partition boot sector) to the exact centre of the partition. This can
+   be retrieved using a DOS utility such as Norton Disk Editor, and
+   copied over the infected one. It is necessary to boot DOS to do this,
+   but that is to be expected, due to the lack of NT disk utilities.
+   
+   This works because current DOS boot sector viruses are not aware of
+   this copy, so they cannot corrupt it. If Windows NT leads to partition
+   boot sector viruses of its own, they may well take steps to alter the
+   copy as well as the original. Windows NT, i n addition to the copy of
+   the partition boot sector, may have a copy of the MBS. I do not know
+   where this copy originates, but on every such machine I have seen, one
+   has been stored somewhere on the disk. Interestingly, it is not
+   necessarily aligned with a sector boundary, so it does not appear to
+   have been placed there by a sector-to-sector copy. It is possible that
+   it is part of the secure area of the registry. Consequently, if all
+   else fails, the disk can be searched for the MBS copy, and the
+   corrupted MBS replaced with that.
+   
+   This uncovers another seemingly undocumented feature of Windows NT -
+   the fact that it is possible to create a boot diskette which is
+   sufficient to load NT without executing either of the boot sectors on
+   the fixed disk.
+   
+   Such a diskette must be formatted within NT (its boot sector structure
+   is different from a disk formatted under DOS), and have the following
+   hidden files from the root directory of the active partition copied
+   onto it: NTLDR, NTDETECT.COM, BOOT.INI and, if present, BOOTSECT.DOS.
+   
+   Using this diskette, it is possible to boot a Windows NT machine even
+   when it is infected with a virus. Then you can use a Windows NT virus
+   scanner to remove the virus. Of the viruses tested, only the Monkey
+   variants prevented a boot under these condit ions - this is because
+   Monkey does not preserve the partition table.
+   
+   If a system file becomes infected, this diskette will not enable you
+   to avoid executing the infected file. However, it is doubtful whether
+   an executable infected with a DOS virus and used in the Windows NT
+   boot process could do any damage. Once Windows NT has booted, you can
+   carry out whatever repairs are necessary.
+     _________________________________________________________________
+   
+Part 2: The Future
+
+  The Bad News
+  
+   
+   
+   What of viruses specific to Windows NT? In the words of a Pogo cartoon
+   strip, 'We have met the enemy and he is us'. For what have we done? In
+   our search for ever more elaborate methods of using and linking
+   computers in the modern environment, we may ha ve handed virus writers
+   the 'keys to our kingdom'. Until now, the most difficult task for PC
+   viruses has been to spread not on any given machine, but to other
+   computers. Viruses to date have not been network- aware; they rely on
+   the human factor - people passing disks around, or exchanging
+   executables over networks.
+   
+   Windows NT offers users the carrot of 'invisible' networking. When I
+   click on an icon on my NT desktop, that application could be on my
+   hard disk, on the hard disk in the machine across the room, or on the
+   hard disk of a computer I reach by an ISDN link across the country.
+   Networking is also largely invisible to the application: if I instruct
+   a word processor to save my document on drive G, it does not know if
+   that drive is local or remote; nor does it care.
+   
+   It has thus become easy for viruses to spread across organisations
+   like wildfire. Even current DOS executable file viruses should find it
+   easy to infect remote executables under NT, but I have not yet had an
+   opportunity to test that.
+   
+   "with each process operating in its own protected address space, such
+   viruses will not have the power they have today" But wait! Imagine a
+   virus, tailored for the new world of Microsoft networking; a file
+   virus which, when triggered, examines drive mappings set up by the
+   currently logged-in user. When it finds a mapping to a drive share
+   which has been left writeable, it examines files there. Likely
+   candidates are found, and examined to see if they can be modified.
+   
+   If write access is available to the security identifier under which we
+   are operating, the file is modified in much the same way as DOS
+   viruses, and bingo! a remote machine is infected. As soon as any of
+   those executables is run, the process starts again. Furthermore, it is
+   not even necessary for a drive mapping to exist. Our Gedankenvirus
+   could query the network, eval uate remote machines and drive shares
+   available on those machines. Then, using the UNC (Universal Naming
+   Convention), it could gain access to the shared drives, an proceed as
+   described above.
+   
+   Luckily, Windows NT fares better against memory-resident viruses: with
+   each process operating in its own protected address space, such
+   viruses will not have the power they have today. Hooking interrupts in
+   a pure NT application is impossible, unless th e application is a
+   device driver, in which case it can accomplish much the same thing.
+   
+   While booting a Windows NT machine, countless device drivers are
+   started - one extra would not be noticed. It is not difficult to
+   install a driver which sits just above the level of physical disk
+   drivers, and intercepts reads and writes to and from those devices.
+   Once installed, the question of access privileges does not arise; a
+   kernel-mode driver runs as the system. Byte swapping on random disk
+   writes, surreptitiously presenting the calling application with a
+   different sector from that requested, reducing system performance by
+   spin-locking the kernel for milliseconds, even gradually removing data
+   from disks; all this and more is possible.
+   
+   The networking aspect of Windows NT has the greatest possibilities
+   from the virus author's point of view. We are moving to an era of
+   desktop computing where the visions of cyberpunk authors could become
+   more real. Since Brunner wrote of his 'tapeworm' in 1975, we have had
+   the Internet Worm of 1988: with today's technology, such a beast may
+   become possible on compute rs to which many have access; those in the
+   office, rather than computers in the ivory tower. .
+   
+  The Slightly Better News
+  
+   
+   
+   We have handed virus writers access to the virtual equivalent of an
+   Aladdin's cave - but all is not lost. Virus writers could do all this;
+   but they are, in the words of the same Pogo cartoon, 'surrounded by an
+   insurmountable opportunity'.
+   
+   Developing for Windows NT is not cheap. The average virus writer's
+   machine is not capable of running Windows NT, even if he had access to
+   the software. Whilst 486 PCs are cheap now (with prices dropping all
+   the time), the required amount of memory easi ly costs more than the
+   remainder of the hardware. Windows NT workstation v3.5 comes on 22
+   installation disks, or on one CD-ROM.
+   
+   Even after NT is installed, the virus writer will come up against the
+   obstacle of how to obtain information. Countless books on DOS exist to
+   tell the reader all he needs to write a virus (undocumented
+   interrupts, etc), but there is a dearth of such kno wledge for NT.
+   Windows 95 will doubtless produce a flood of books on its internal
+   workings, many of which are similar to NT. However, while information
+   is at the moment at an enormous premium, it will not always be so.
+   
+  Conclusion
+  
+   
+   
+   I warn again: be careful with your NT machine. Where possible, use the
+   CMOS to disable booting from floppy by default. Creating a clean boot
+   disk is easy, but once within NT the only tool available is to attempt
+   to disinfect the specific virus contracted.
+   
+   A more general, and thus advisable, course is using Norton Disk Editor
+   (or something similar) in DOS to copy all boot sectors: keep them safe
+   on a diskette. This should be done after running the disk manager for
+   the first time, as it stamps a value int o the MBS the first time it
+   is run. NT may become upset if this value is not present on subsequent
+   boots.
+   
+   If anything dire does happen to your system, try booting DOS from a
+   clean diskette once more and using the same utility to copy the
+   sectors back. This way you can be sure that your critical sectors are
+   back as they should be. The fun really starts when the virus has not
+   preserved a copy of the original MBS. Forewarned is forearmed.
+     _________________________________________________________________
+   
+   Return to Main Menu
+

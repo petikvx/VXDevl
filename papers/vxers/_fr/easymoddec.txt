@@ -1,0 +1,368 @@
+
+  +===================================================+
+  |  De l'écriture de décrypteurs faciles à modifier  |
+  +===================================================+
+
+
+
+1. Index:
+---------
+
+  1. Index
+  2. Introduction
+  3. Design de la routine à générer
+  4. Intra-permutations
+     4.1 Analyse du groupe [ [00], [05] ]
+     4.2 Analyse du groupe [ [05], [08] ]
+     4.3 Analyse du groupe [ [08], [20] ]
+         4.3.1 Analyse du sous-groupe [ [09], [10]]
+         4.3.2 Analyse du sous-groupe [ [05], [08] ]
+         4.3.3 Analyse du sous-groupe [ [15], [16] ]
+         4.3.4 Analyse du sous-groupe [ [17], [18] ]
+         4.3.5 Analyse du sous-groupe [ [19] ]
+     4.4 Analyse du groupe [ [20], [23] ]
+     4.5 Analyse du groupe [ [24] ]
+  5. Inter-Permutations
+  6. Nombre de représentations possibles de la routine
+  7. Représentation génétique de la routine
+  8. Prototypage de notre moteur de mutations
+
+2. Introduction:
+----------------
+
+Comme je l'ai signalé dans "De l'écriture d'un moteur de mutations génétiques",
+la génération de la routine de décryptage est notre point faible, car si on
+implémente celle-ci de manière classique, la routine de décryptage sera
+ENTIEREMENT changée de génération en génération, ce que l'on ne veut pas. Elle
+doit changer, oui, mais UN PETIT PEU SEULEMENT. Pour cela, j'avais proposé deux
+solutions, à savoir utiliser un désassembleur interne ou l'inclure dans le gène.
+Pour mon GME, j'ai décidé d'impléménter la deuxième façon. Voici donc un aperçu
+de la manière dont je vais m'y prendre.
+
+3. Design de la routine à générer:
+----------------------------------
+
+Comme on utilise une clef de cryptage longue, la routine de décryptage
+aura donc cette forme:
+
+[00]  SetUp:
+[01]    mov reg1, StartOfCode
+[02]    mov reg2, StartOfGene
+[03]    mov reg3, SizeOfCode
+[04]    mov reg4, SizeOfGene
+[05]  SaveGeneParams:
+[06]    push reg2
+[07]    push reg4
+[08]  DecryptLoop:
+[09]    mov reg5, byte ptr[reg2]
+[10]    xor byte ptr[reg1], reg5
+[11]    dec reg3
+[12]    dec reg4
+[13]    inc reg1
+[14]    inc reg2
+[15]    test reg4, reg4
+[16]    jnz DecryptNext
+[17]    pop reg4
+[18]    pop reg2
+[19]    jmp SaveGeneParams
+[20]  DecryptNext:
+[21]    test reg3, reg3
+[22]    jnz DecryptLoop
+[23]  StartOfCode:
+[24]    add esp, 8
+
+Nous pouvons maintenant remarquer que cette routine peut être découpée
+en cinq blocs:
+
+  Groupe 1 --> [ [00], [05] ]
+
+  Groupe 2 --> [ [05], [08] ]
+
+  Groupe 3 --> [ [08], [20] ]
+
+  Groupe 4 --> [ [20], [23] ]
+
+  Groupe 5 --> [ [24] ]
+
+Nous pouvons maintenant distinguer deux types de permutations que nous
+appelerons:
+
+        - Intra-permutations: permutations d'instructions dans un même bloc.
+
+        - Inter-permutations: permutations des blocs entre eux.
+
+4. Intra-permutations:
+----------------------
+
+Nous allons maintenant examiner chacun des blocs un par une.
+
+     4.1 Analyse du groupe [ [00], [05] ]:
+     -------------------------------------
+
+[00]  SetUp:
+[01]    mov reg1, StartOfCode
+[02]    mov reg2, StartOfGene
+[03]    mov reg3, SizeOfCode
+[04]    mov reg4, SizeOfGene
+[05]  SaveGeneParams:
+
+Ce groupe est totalement permutable, on peut donc générer les 4
+instructions le composant dans n'importe quel ordre. Il existe donc
+24 façons différentes de le représenter.
+
+     4.2 Analyse du groupe [ [05], [08] ]:
+     -------------------------------------
+
+[05]  SaveGeneParams:
+[06]    push reg2
+[07]    push reg4
+[08]  Decryptloop:
+
+Ce groupe est totalement permutable à condition toutefois de permuter
+aussi les lignes [17] et [18]. Il existe donc 2 façons différentes de
+le représenter.
+
+     4.3 Analyse du groupe [ [08], [20] ]:
+     -------------------------------------
+
+[08]  DecryptLoop:
+[09]    mov reg5, byte ptr[reg2]
+[10]    xor byte ptr[reg1], reg5
+[11]    dec reg3
+[12]    dec reg4
+[13]    inc reg1
+[14]    inc reg2
+[15]    test reg4, reg4
+[16]    jnz DecryptNext
+[17]    pop reg4
+[18]    pop reg2
+[19]    jmp SaveGeneParams
+[20]  DecryptNext:
+
+Ce groupe est le plus délicat est peut lui-même être divisé en 5 sous-groupes:
+
+   Sous-Groupe 1 --> [ [09], [10]]
+
+   Sous-Groupe 2 --> [ [11], [14] ]
+
+   Sous-Groupe 3 --> [ [15], [16] ]
+
+   Sous-Groupe 4 --> [ [17], [18] ]
+
+   Sous-Groupe 5 --> [ [19] ]
+
+         4.3.1 Analyse du sous-groupe [ [09], [10]]:
+         -------------------------------------------
+
+[09]    mov reg5, byte ptr[reg2]
+[10]    xor byte ptr[reg1], reg5
+
+Ce groupe n'est pas permutable. Il existe donc 1 seule façon de le représenter.
+
+         4.3.2 Analyse du sous-groupe [ [05], [08] ]:
+         --------------------------------------------
+
+[11]    dec reg3
+[12]    dec reg4
+[13]    inc reg1
+[14]    inc reg2
+
+Ce groupe est totalement permutable. Il existe donc 24 façons différentes
+de le représenter.
+
+         4.3.3 Analyse du sous-groupe [ [15], [16] ]:
+         --------------------------------------------
+
+[15]    test reg4, reg4
+[16]    jnz DecryptNext
+
+Ce groupe n'est pas permutable. Il existe donc 1 seule façon de le représenter.
+
+         4.3.4 Analyse du sous-groupe [ [17], [18] ]:
+         --------------------------------------------
+
+[17]    pop reg4
+[18]    pop reg2
+
+Les instructions de ce groupes sont permutées si et seulement si les instructions
+[06] et [07] ont été permutées. Il existe donc 2 façons de le représenter.
+
+         4.3.5 Analyse du sous-groupe [ [19] ]:
+         --------------------------------------
+
+[19]    jmp SaveGeneParams
+
+Ce groupe n'est pas permutable. Il existe donc 1 seule façon de le représenter.
+
+Ces cinq sous-groupes peuvent être totalements permutés entre eux, si on les relie
+entre eux pour qu'ils continuent à s'exécuter dans le bon ordre. Il existe donc
+120 manière de positionner ces 5 sous-groupes.
+
+     4.4 Analyse du groupe [ [20], [23] ]:
+     -------------------------------------
+
+[20]  DecryptNext:
+[21]    test reg3, reg3
+[22]    jnz DecryptLoop
+[23]  StartOfCode:
+
+Ce groupe n'est pas permutable. Il existe donc 1 seule façon de le représenter.
+
+     4.5 Analyse du groupe [ [24] ]:
+     -------------------------------
+
+[24] add esp, 4
+
+Ce groupe n'est pas permutable.
+
+5. Inter-Permutations:
+----------------------
+
+Les Cinqs groupes principaux peuvent être totalements permutés entre eux,
+si on les relie entre eux pour qu'ils continuent à s'exécuter dans le bon
+ordre. Il existe donc 120 façons de les positionner.
+
+6. Nombre de représentations possibles de la routine:
+-----------------------------------------------------
+
+D'après nos petits calculs précédents, on arrive à 16588800 routines de
+décryptage différentes, ce qui est relativement peu. On peut toutefois
+ajouter quelques autres représentations en utilisant non pas à chaque
+fois un XOR, mais en utilisant aussi ADD et SUB. Ce qui élève le
+nombre de représentations possibles à 497664000. J'en convient, cela
+fait pâle figure à côté des 2^800 représentations possible de notre
+virus si celui-ci utilise un gène de 100 octets. Pour élever encore
+ce nombre, nous allons 'morpher' les instructions, c'est à dire
+qu'une même instruction pourra avoir plusieurs représentations. Voici
+donc les équivalents que nous allons utiliser:
+
+    mov reg, imm32              --> push imm32/pop reg
+    push reg                    --> mov [esp+4], reg/sub esp, 4
+    mov reg1, byte ptr[reg2]    --> none
+    <math> byte ptr[reg1], reg2 --> none
+    dec reg                     --> sub reg, 1
+    inc reg                     --> add reg, 1
+    test reg, reg               --> or reg, reg\cmp reg, reg\cmp reg, 0\test reg, 0
+    jnz xxx                     --> none
+    pop reg                     --> mov reg, [esp]/pop Greg
+    jmp xxx                     --> xor reg, reg/test reg, reg/jz xxx
+                                --> sub reg, reg/test reg, reg/jz xxx
+                                --> xor ecx, ecx/jcxz xxx
+                                --> sub ecx, ecx/jcxz xxx
+    sub esp, 8                  --> pop reg/pop reg
+
+En utilisant ces équivalents, nous élevons le nombre de représentations
+possibles à un plus de 2^26 * 5^5 * 3^5. Attention, ces chiffres ne
+tiennent pas compte de la possibilité de changer les registres d'une
+génération à une autre... Je pense que cela doit suffire pour permettre
+un jeu de l'évolution satisfaisant.
+
+7. Représentation génétique de la routine:
+------------------------------------------
+
+Pour conserver une trace de notre routine, nous avons besoins de seulement
+2 choses:
+
+      - les registres utilisés
+
+      - l'agencement des instructions
+
+J'ai bien dit 'agencement' des instructions est non pas les instructions...
+J'ai pris le parti de ne pas conserver la forme de chaque instructions, car
+la forme va être choisit aléatoirement à chaque génération, et c'est ce
+que je considère comme les mutations de la routine originale. De plus, les
+registres et les groupes ne seront pas permutés à chaque générations, mais
+seulement de temps en temps.
+
+Nous allons donc codifier les registres comme ceci:
+
+        DWORD WORD BYTE CODE
+     a.  eax   ax   al  0000
+     b.  ebx   bx   bl  0011
+     c.  ecx   cx   cl  0001
+     d.  edx   dx   dl  0010
+     e.  esi   si   dh  0110
+     f.  edi   di   bh  0111
+     g.  ebp   bp   ch  0101
+     h.  esp   sp   ah  0100
+
+Attention, les registres ebp et esp ne seront jamais utilisés. Je ne les
+ait inclus que pour ch et ah. Il y aura donc seulement 5 de ces registres
+qui seront utilisés pour créer la routine de décryptage.
+
+La codification des instructions correspond au numéro de la ligne ! Par exemple,
+si dans notre gène nous voyons 07, nous saurons que nous devrons générer un
+[push reg2] et de même pour les autres instructions.
+
+Le gène aura donc l'allure suivante:
+
+        registres à utiliser                   routine de décryptage                reste du gène
++---------------------------+  +--------------------------------------------+ +-------------------
+|                           |  |                                            | |
+v                           v  v                                            v v
+reg1reg2b reg3reg4b reg5reg6b  xxh xxh .................................. xxh yyh yyh yyh ....
+^                           ^  ^                                            ^
+|                           |  |                                            |
++---------------------------+  +--------------------------------------------+
+             3 octets                                24 octets
+
+
+Nous verrons plus loin à quoi sert reg6. Les 27 premiers octets d'un gène
+concernerons donc toujours la routine de décryptage.
+
+8. Prototypage de notre moteur de mutations:
+--------------------------------------------
+
+Voici un prototype possible de notre moteur de mutations:
+
+ DWORD Me_Main(DWORD Options,
+               BYTE *pGene,
+               BYTE *pBuffer,
+               BYTE *pStartOfCode,
+               DWORD iSizeOfGene,
+               DWORD iSizeOfCode,
+               DWORD iRndNumber,
+               DWORD iSeed,
+               DWORD iPrimeNumber1,
+               DWORD iPrimeNumber2
+              )
+
+ Paramètres:
+ -----------
+
+ DWORD Options       --> options
+ BYTE *pGene         --> pointeur sur le début d'un gène
+ BYTE *pBuffer       --> pointeur sur le buffer dans lequel placer la
+                         routine de décryptage et le code crypté
+ BYTE *pStartOfCode  --> pointeur sur le début du code à crypter
+ DWORD iSizeOfGene   --> taille du gène en octets
+ DWORD iSizeOfCode   --> taille du code à crypter en octets
+ DWORD iRndNumber    --> nombre quelconque choisit par l'appelant
+ DWORD iSeed         --> graine (facultatif)
+ DWORD iPrimeNumber1 --> grand nombre premier (facultatif)
+ DWORD iPrimeNumber2 --> grand nombre premier (<iPrimeNumber1) (facultatif)
+
+ Remarques:
+ ----------
+
+ Options peut prendre les valeurs suivante:
+
+         a. 0 --> laisser faire le ME
+
+         b. 1 --> forcer la mutation des registres
+
+         c. 2 --> forcer la permutation de la routine
+
+         d. 3 --> forcer la génération du garbage (reg6 utilisé !)
+
+         e. 4 --> b et c
+
+         f. 5 --> b et d
+
+         g. 6 --> c et d
+
+         h. 7 --> b, c et d
+
+ Attention, dans le cas de b, c, e, f, g et h, le gène de retour sera modifié.
+
+

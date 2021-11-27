@@ -1,0 +1,607 @@
+<html>
+<!-- Mirrored from vx.netlux.org/texts/html/Threat.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:25 GMT -->
+<head><title>VX Heavens : A Tour of the Worm</title>
+<meta http-eguiv="Content-Type" content=text/html; charset=koi8-r">
+<TITLE>Where There's Smoke, There's Mirrors: The Truth about Trojan Horses on the Internet</TITLE>
+</head>
+<body text=#000000 bgcolor=#ffffff>
+<H2>Web Browsers √ Threat or Menace?</h2>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=25>
+<TR VALIGN=TOP ALIGN=left>
+<td>
+John F. Morar, David M. Chess<br>
+<I>IBM TJ Watson Research Center<br>
+Yorktown Heights, NY<br></I>
+<p align=center>Presented at Virus Bulletin Conference, Munich, Germany, October 1998 </CENTER>
+
+<H3><P>Abstract</P></B></H3>
+
+
+<P>Java, ActiveX and similar technologies contribute valuable functionality to Web Browsers by allowing users to automatically (and often invisibly) download code over the Internet. Once downloaded, this code automatically executes locally. Each of these technologies addresses the question "What can this downloaded code do to my environment?" with imbedded security tools. These tools vary significantly between the various technologies and offer different configuration options at the browser level. This talk provides a tutorial discussion of security models for Java, Java Script and ActiveX and their impact on computer viruses and Trojan horses.  </P></FONT>
+
+<B><FONT FACE="Arial" SIZE=4><P>Why run code from the Web? </P></B></FONT>
+
+<FONT SIZE=3>
+
+<P>If the only benefit of downloading code from the web and running it locally was fancier dancing icons, then this would be a very short paper: it would say, &quot;don▓t do it&quot;. On the Internet today, servers provide real-time services to thousands of clients simultaneously. They do it over relatively slow networks and they provide the services on an ad-hoc basis, i.e. the clients were not designed with these specific services in mind. Today▓s servers download code and data to clients. Clients execute the code and perhaps return processed data. Downloading code specific to the service being provided and executing as much of the application as practical on the client helps insulate end users from network latency and server computational bottlenecks far better than the alternative of using the client as a terminal to accept input and display output. Similarly, automatically downloading program upgrades or browser extensions helps increase the seamless nature of the computing experience, and potentially saves much time and hassle for the user.</P>
+</FONT>
+
+<B><FONT FACE="Arial" SIZE=4><P>What are the possible consequences of downloading code and running it locally?</P>
+</B></FONT>
+
+<FONT SIZE=3>
+<P>Downloading a program and running it locally provides that program the ability to do almost anything you can do when you sit at your computer. For example it might be able to:  </P>
+
+<UL>
+<LI>Modify your local information</LI>
+<LI>Access other computers as if it were you</LI>
+<LI>Send e-mail signed by you</LI>
+<LI>Execute a virus or Trojan horse</LI>
+<LI>Purchase goods or transfer funds as if it were you</LI>
+<LI>Change security settings</LI>
+<LI>And good stuff too</LI></UL>
+
+<P>Of course, if your e-mail program requires that you type in a password before it will electronically sign your mail, and if that password is not stored anywhere on your system, then a rogue program cannot send e-mail on your behalf. However, it might be able to discover your password by monitoring the next time you type it in. The point here is not to be alarmist, but to illustrate that executing code obtained from someone else, allowing &quot;guest code&quot; into your system, is serious business, and deserves serious consideration. Even if the author intended no harm, it is possible that the code has a bug or feature that could unintentionally harm the host running it. For instance, the guest program might create a directory called <I>temp</I>for storing temporary data while it is running, and then clean up when it has finished by removing the <I>temp</I>directory. If you already had a directory called <I>temp</I>which you used for storing valuable, but temporary data, your data could be erased when the guest program runs. </P>
+</FONT>
+<B><FONT FACE="Arial" SIZE=4><P>Two approaches to safety: Fortification vs. Mortification</P>
+</B></FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Fortification: I don▓t need to trust you because you can▓t hurt me!</P></b>
+</FONT>
+
+<FONT SIZE=3><P>One approach to safety is to insulate the host from the guest program by limiting what the guest program can do. There are many ways the guest program can be limited. For instance:</P>
+
+<UL>
+<LI>Limit what the program can try to do (require the program to be written in a limited-function language)</LI>
+<LI>Limit what the program can actually do (use access controls to limit the program to actions that you approve of) </LI>
+<LI>Search the code for viruses or Trojan horses before letting it run (virus scanners and the like)</LI>
+<LI>Manually limit the code▓s behavior by asking the operator for permission (ask the user)</LI></UL>
+
+<I><P ALIGN="CENTER">Limiting what a program can try to do</P>
+</I><P>Every Web browser interprets limited function languages designed to protect the client from unwanted Web server interactions. Perhaps the best known example of a limited browser language is HyperText Markup Language (HTML). HTML has an instruction set which has been carefully limited to displaying text and graphics, transporting files to the client, and retrieving text typed into forms displayed at the client.  There are no HTML commands to read or write specific files stored on the system, or to perform mathematical calculations.  The continual desire for increased web browser functionality has led to extensions to HTML like, Dynamic HyperText Markup Language (DHTML) and Extensible Markup Language (XML) which are based on the same limited function concept, but provide additional capabilities without crossing the line into a full function language.  Scripting languages such as JavaScript and VBScript go even further toward allowing full programmability of Web pages, without allowing full access to the system▓s resources.</P>
+
+<I><P ALIGN="CENTER">Limiting what a program can actually do</P>
+</I>
+
+<P>Java is a language that was designed with security in mind. One of the design criteria for the language was that programs could be monitored to control their access to system resources. For instance, when a Java program attempts to read or write a file, the Java Security Manager is always called, to determine whether or not the operation should be allowed.  If the Java program is an untrusted &quot;Applet&quot; running within your Web Browser, and your browser is sensibly configured not to allow untrusted Applets to read and write files, the operation will fail, and the program will not be allowed to do the reading or writing.  The Security Manager is consulted for a variety of operations, including access to the environment and the filesystem, interaction with the network, and the creation of dialog boxes.  Limiting Java Applets to a predefined set of limits is sometimes referred to as &quot;running in the sandbox&quot;. </P>
+
+<I><P ALIGN="CENTER">Searching the code for viruses or Trojans before letting it run</P>
+</I>
+
+<P>Several vendors provide anti-virus programs that integrate with Web browsers or the operating system. When the browser initiates a download of a file type that has been identified by the anti-virus program for scanning, the file will be scanned after it is downloaded but before it is released to the browser. If the file is identified as containing a known virus or Trojan horse, or something sufficiently like one, the anti-virus program takes appropriate actions.  Since most virus incidents are caused by already-known viruses, looking for known viruses can be a very effective strategy.  Looking for known Trojan horses can also be effective in some cases, but effective Trojan horse prevention requires more than this.</P>
+
+<I>
+<P> ALIGN="CENTER">Manually limit the code▓s behavior by asking the operator for permission</I>
+
+<P>Web browsers are frequently configured to consult with the user before performing any one of a variety of actions. In fact, if all of the notifications are turned on, the browser can easily become unusable due to the sheer number of questions to which the user must respond. The most notorious of the popups is the notification that a web site is trying to read or set a cookie. Under some conditions access to cookies take place at a rate of over 100 per minute. Appropriately used, user prompts can be valuable; however, they are frequently abused, either by overwhelming the user with questions she no longer reads before answering, or asking questions the user is not qualified to answer with authority.  A good security system would allow the user to set an overall policy once, and then seldom or never again prompt the user for decisions about specific actions.</P>
+
+<P>Fortification is a powerful technology; if programs can be limited to doing only what they are supposed to do, Trojan horses and related security attacks can be prevented.  On the other hand, perfect fortification is impossible; if we knew how to keep programs from doing anything undesirable, we could eliminate not only Trojan horses, but program bugs of all kinds.  This is obviously not something we know how to do!  More realistic, and therefore imperfect, fortification systems have to strike a balance between requiring the user to make numerous and complex policy decisions, imposing such broad controls that guest programs are prevented from doing anything useful at all, and imposing insufficient controls that allow free reign to attackers.  </P>
+
+</FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Mortification: This is going to hurt you more than it hurts me!</P></b>
+</FONT>
+
+<FONT SIZE=3><P>Mortification is defined as </FONT><FONT FACE="Arial" SIZE=2>A feeling of shame, humiliation, or wounded pride. </FONT><FONT SIZE=3>Those are the tools you will typically have at your disposal if you try to obtain redress for the actions of a program whose author can be proven through a digital signature. If the signer has a valuable reputation, then they are likely to be interested in your opinion. If the signer is a large corporation with their corporate reputation on the line they have lots of incentive to do the right thing. If the signing party is &quot;Jim the K001 hack3r d00d&quot;, then your imprecations are likely to fall on deaf ears, unless you have both the evidence and the energy to actually take him to court.</P>
+
+<P>There are two parts to trusting programs that you run from others: deciding whom to trust, and enforcing your decisions. Signing authorities recognize and help fulfill the need for the first; browser writers recognize and provide lots of technologies to help you with the second. </P>
+
+<I><P ALIGN="CENTER">Digital signatures</P>
+</I>
+
+<P>A digital signature is a number delivered along with a digital object. A digital signature can be used to verify the origin and authenticity of the digital object it came with. </P>
+
+<P>Here is a brief outline of how the system works. In order for an author to digitally sign an object she must first obtain a digital identity. She does this by obtaining a private/public key pair. She keeps the private key hidden where no one else can find it. She publishes the public key where it is easily accessible by all. </P>
+
+<P>When she has an object she wants to digitally sign, she privately feeds her digital object and her private key into a program that generates a number called a digital signature. (At this point she is finished with her private key so she hides it away again.) Generating the digital signature and attaching it to a digital object is called digitally signing the object.</P>
+
+<P>When she sends her signed digital object to someone else, they can separate the digital signature from the object. They can then feed the object, the digital signature, and her public key to a program that uses a mathematical algorithm to ascertain if they all belong together. If they do, then the receiver can be confident that this digital signature was indeed generated by someone in possession of the private key that matches the public key in his possession. If he knows who the public key came from, then he knows where the digital object came from and that it has not been modified since she signed it (assuming that no one else has a copy of her private key; an issue that we▓ll mention below).  The power of the digital signature comes from the fact that, while it▓s easy to check that a given signature matches a given digital object and public key, it▓s essentially impossible, given a public key and a digital object, to generate a matching signature, if you don▓t have the corresponding private key as well.</P>
+
+<I><P ALIGN="CENTER">Public key management</P>
+</I>
+
+<P>Key management is critical to the usefulness of a digital signature system. If I go to IBM and pick up their public key then I can verify that any digitally signed program they send me is authentic. Since I trust IBM to be competent and honorable, I am willing to trust the code that came from them once I authenticate it. Of course, there are many other reputable sources for code; will I have to go obtain public keys from all of them as well? This is the problem of public key management. There are literally millions of sources of information on the Web. No one will be able to visit millions of people or organizations to pick up each public key. Digital certificate authorities address this potentially thorny problem. </P>
+
+<I><P ALIGN="CENTER">Digital certificate authorities</P>
+</I>
+
+<P>Digital certificate authorities let you submit a digital object with your public key, name, address and other information necessary to identify you or your organization. They will take this digital object and attempt to verify the information it contains. If they are satisfied that the information is correct, they will sign your object with their private key and give it back to you. This signed object, declaring that a given public key really belongs to you, is known as a certificate. The next time you send out a digital object, you can attach this digital certificate to the object and then sign the entire package. When the receiver of this package tries to verify its authenticity, he will first view the contents of the digital certificate. There he will see the name and address of the document signer (you). Of course, he cannot yet be sure that this information is valid. As long as a certificate authority that he is familiar with has signed the certificate, he can verify the authenticity of the certificate using the authority▓s public key. Now he knows that the public key of the author (obtained from the certificate) corresponds to the name and address in the certificate. He uses that public key obtained from the certificate to verify that the entire object has been delivered to him without modification.  </P>
+
+<I><P ALIGN="CENTER">How it works in practice</P>
+</I>
+
+<P>Fortunately for all of us, the rather complex manual steps outlined above have been automated in modern Web browsers. When a signed program is received, your browser starts by showing you the digital certificate displayed on your screen, along with the name of the digital certificate signing authority. You can choose to accept or reject the program. You can also direct the browser to remember the author▓s public key and automatically accept anything signed with the same key in the future.   Web browsers commonly come equipped with the public keys of a number of popular certificate authorities, to bootstrap the process.</P>
+
+<I><P ALIGN="CENTER">What can go wrong?</P></I>
+
+<P>Perhaps the greatest danger in this system is that an author▓s private key can be stolen. Anyone in possession of the author▓s private key can sign packages just as if they came from the private key▓s rightful owner. If the private key▓s owner knows that their key has been stolen they can notify the signature authority. The signature authority will then label the public key as revoked and so inform any browser which inquires about that public key. The greatest threats are private keys that have been compromised unknown to the rightful owner. Forged documents signed with these keys will be accepted as authentic.</P></FONT>
+
+<B><FONT FACE="Arial" SIZE=4>
+
+<P>Two approaches for one problem. Which way is best?</P></B></FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Proactive vs. Reactive</P></b></FONT>
+
+<FONT SIZE=3><P>Building fortifications to prevent a program from performing activities that could result in objectionable consequences is a fundamentally proactive approach. The difficulty with being proactive is that it requires anticipating all possible outcomes in advance. The conditions necessary to insure that all possible outcomes will be acceptable are frequently very restrictive. For instance, suppose you found a program on the Web that helped you search for an address in an online phone book, and then automatically added the search results to a file named <I>Addresses</I> on your hard drive. How bad could it be, just one little file? If you give this program the ability to add lines to one little file on the system it could add, &quot;<I>format d:</I>&quot; to a little file called <I>autoexec.bat</I>. Generally speaking, programs that write to your hard drive pose an unacceptable risk of damage. Unless you trust the author, or can analyze the code yourself, you probably would not want to allow this program to run, even if you desired the function. This is the way the Java sandbox model works: Java would monitor the program, see that it is attempting to write to the hard drive, and then prevent it from doing so.  </P>
+
+<P>An alternative approach to protecting your files would be to allow you to specify, for each file that a program might want to access, whether or not the access should be allowed.  This would be difficult in practice, though.  Making the decision in advance for each of thousands of files would be infeasible; on the other hand, asking the user to make snap decisions of the form &quot;Should this Web page be allowed to alter the file c:\setup\stark\rebla97.ini?&quot; is not a good basis for system security. </P>
+
+<P>Of course, programs received from a trusted party have the ability to cause damage just the same as programs received from untrusted parties. It does not matter how much you trust an author, given enough opportunities, any author will eventually write a program that causes a problem for you. The reason you trust the author is because you believe the risk is acceptably small. If a problem occurs, then you know who the author is and you can complain, or at least let the author know about the problem so he can fix it. Trust is a fundamentally reactive approach in that no effort is expended until there is a problem. One potential problem with relying entirely on trust and retribution is that the same malicious program that damages your data may also erase your record of where it came from.</P>
+
+<P>As is usually the case, the best results are achieved by building on the strengths of each approach. In the next section we will discuss the classes of programs that current browsers execute, and the security models which are applied to each of them in an attempt to exercise both fortification and levels of trust.</P>
+</FONT>
+
+<B><FONT FACE="Arial" SIZE=4><P>Programs browsers execute</P></B></FONT>
+
+<FONT SIZE=3><P>In the next sections, we consider some of the features of two popular Web browsers, Microsoft Internet Explorer Explorer and Netscape Navigator, as they relate to the security of downloaded programs.  Browsers run many different programs. In order to organize the discussion we will use the following (somewhat arbitrary) taxonomy to divide the programs browsers run into three classes.</P>
+
+<UL>
+<LI>Programs that are functionally within in the browser</LI>
+<ul><LI>Interpreters for HTML, DHTML, XML, </LI>
+<LI>JavaScript, Java applets, etc.</LI></UL>
+</ul>
+
+<P>Programs that are functionally within the browser all interpret limited function or access-controlled languages in an effort to make them safe for arbitrary input received from untrusted sources. These programs are all configured within the browser and are each subject to security concerns. Java Applets are an interesting case, because the limitations on the language can be tailored to each applet based on its origin (i.e. who signed it).<BR>
+</P>
+
+<UL>
+<LI>Programs installed to extend the browser</LI>
+<ul><LI>Navigator plug-ins such as the RealAudio plug-in</LI>
+<LI>Internet Explorer ActiveX controls</LI></UL>
+</ul>
+
+<P>The writers of both Internet Explorer and Netscape Navigator realize that one of the great strengths of Web browsers is their ability to be extended. More often than not, extensions to browsers require unrestricted access to the operating system in order to accomplish their goals. Programs that extend browsers enjoy full function interfaces to the operating system and to the internals of the browsers. Navigator plug-ins have no architected mechanism for enforcing digital signing, in contrast to Internet Explorer ActiveX controls which can optionally be required to have digital signatures before they are installed. Once an ActiveX control is installed however, it has free run of the machine.</P>
+
+<UL>
+<LI>Programs started by the browser but executed by the OS</LI>
+<ul><LI>Programs already installed e.g. download a doc file and start Microsoft Word to process it</LI>
+<LI>Arbitrary downloaded programs</LI></UL>
+</ul>
+
+<P>The browsers we are considering will only start locally installed programs in response to a Web server request if they locate an entry for the associated data type in a locally maintained database. This database associates typed input data with the programs that are to be used to process the input data. Entering a program in this database is typically refereed to as registering the program.  For instance, Microsoft Word or the Word Viewer may be registered as the program associated with files whose extension is &quot;doc&quot;.</P>
+
+<P>Browsers can also start normal executable programs downloaded over the web. When a user clicks on a link pointing to a file with MIME type &quot;file/executable&quot; (as indicated by the server when it delivers the file), the browser will look in the database to ascertain what to do with the file. The default action entry for file/executable is typically to ask the user if the program should be launched, or saved to disk.</P>
+
+<P>In either of the above cases, the registration database can be configured such that to the browser startsstart programs automatically without prompting the user.</P>
+
+<P> Summaries of the languages and interfaces browsers employ along with their characteristics are outlined in Fig. 1.</P>
+</FONT>
+
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=567>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=25><P></P></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=25>
+<FONT SIZE=3><P>Function</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=25>
+<FONT SIZE=3><P>External controls</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=25>
+<FONT SIZE=3><P>Digital signatures</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=25>
+<FONT SIZE=3><P>User prompt </FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" HEIGHT=25>
+<FONT SIZE=3><P>Where</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>HTML, DHTML</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>Limited</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>Navigator, IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>XML, Style sheets</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Limited</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Navigator, IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>JavaScript</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>Limited</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=6>
+<FONT SIZE=3><P>Navigator, IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>Java Applets</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>cConfigurable</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" HEIGHT=8>
+<FONT SIZE=3><P>Navigator, IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>ActiveX</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>Full function</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Navigator Plug-ins</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Full function</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>configurableYes</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Navigator</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>VBScript</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>Limited</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" BGCOLOR="#ffffff" HEIGHT=4>
+<FONT SIZE=3><P>IE</FONT></TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Downloaded</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Full function</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>None</FONT></TD>
+<TD WIDTH="15%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>No</FONT></TD>
+<TD WIDTH="16%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>configurable</FONT></TD>
+<TD WIDTH="18%" VALIGN="TOP" HEIGHT=4>
+<FONT SIZE=3><P>Navigator, IE</FONT></TD>
+</TR>
+</TABLE>
+
+<B><FONT SIZE=3><P>Figure 1 shows languages and interfaces browsers employ.</P>
+</FONT></b>
+
+<B><FONT FACE="Arial" SIZE=4><P>Striking a balance: The nightmare of configuration</P>
+</B></FONT>
+
+<FONT SIZE=3>
+<P>This section gives just some of the details of how to find out your browser▓s current security settings, and how to modify them to meet your needs.  The main lesson to come away with, beyond the details of menus and mouse-clicks, is that the security and configuration infrastructures of these systems are extremely complex, and not simple to understand or correctly utilize.  We can only hope that they will become simpler with time!</P>
+</FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Caveats</P></b></FONT>
+
+<FONT SIZE=3>
+<P>The examples and conclusions in these sections are based on experimentation with the browsers and operating systems in question, and a (generally fruitless) attempt to find relevant details in the published documentation.  Because of the complexity of the systems, the number of different programs explicitly and implicitly involved, and the many different versions of these programs currently in use, your mileage may vary: where we found a setting on by default, you may find that it▓s off.  Where we got one result from one order of software installation, you may get the opposite result if you install the programs in some other order.  Such is the nature of workstation software in 1998.  The following roadmaps were developed under Windows 98, using Internet Explorer 4.01 and Netscape Navigator 4.05.</P>
+</FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Working with programs that are functionally contained within the browser</b></P>
+</FONT>
+
+<FONT SIZE=3>
+<B><font face="arial" size=3>Figure 2. To reach this dialog in Internet Explorer follow View<FONT FACE="Symbol">&#174;</FONT> Internet Options<FONT FACE="Symbol">&#174;</FONT> Security <FONT FACE="Symbol">&#174;</FONT>
+ Custom<FONT FACE="Symbol">&#174;</FONT>Settings </b> </b>
+
+<P>This section gives navigation instructions to the areas in Internet Explorer and Netscape Navigator that control the security settings of built-in scripting languages.  Again, your mileage may vary, and we encourage you to verify our findings on your own system.</P>
+
+<P>To configure programs in Internet Explorer that are functional within the browser, go to View<FONT FACE="Symbol">&#174;</FONT> Internet Options<FONT FACE="Symbol">&#174;</FONT> Security <FONT FACE="Symbol">&#174;</FONT>
+ Custom<FONT FACE="Symbol">&#174;</FONT>Settings where you will find the dialog box displayed below. From within this dialog box you can set the level of Java permissions for the security zone selected when the dialog box was entered. Choosing <I>Custom</I> provides granular control over which permissions you wish to make available in the Java sandbox. You can choose from Enable, Prompt or Disable for the following permissions:</P>
+
+<b><P>Access to all files<br>
+Access to all network addresses<br>
+Execute<br>
+Dialogs<br>
+System information<br>
+Printing<br>
+Protected scratch space<br>
+User selected file access<br></b>
+
+<P>The Low safety, Medium safety and High safety options offered in this dialog are various combinations of the above custom settings.  In Navigator, the Java settings dialog box is accessed using Edit<FONT FACE="Symbol">&#174;</FONT>
+Preferences<FONT FACE="Symbol">&#174;</FONT>
+Advanced.</P>
+<P>Unlike Internet Explorer, Navigator requires applets be signed before additional privileges can be obtained. The only global user-settable options are to enable/disable Java and to enable/disable JavaScript.</P>
+</FONT>
+<FONT FACE="Arial" SIZE=3><b><P>Working with programs that extend the browser</P></b>
+</FONT>
+
+<FONT SIZE=3>
+<P>Both Internet Explorer and Netscape Navigator allow the user to add new functionality to the browser by downloading and installing new code to extend the browser▓s function.  Unlike the scripting languages we just glanced at, these browser extensions are generally in machine language (rather than HTML, Java, or JavaScript), and once you allow one onto your system, it has full access to all your system resources.</P>
+
+<P>ActiveX is the primary means for extending the functionality of Internet Explorer. You can view the currently installed ActiveX controls and Java Classes from within Internet Explorer by following View<FONT FACE="Symbol">&#174;</FONT>
+ Internet Options<FONT FACE="Symbol">&#174;</FONT> Settings<FONT FACE="Symbol">&#174;</FONT>
+View Objects which will cause the dialog in Fig. 3 to be displayed.</P>
+
+
+<B><P>Figure 3. To reach this dialog box enter View<FONT FACE="Symbol">&#174;</FONT>
+ Internet Options<FONT FACE="Symbol">&#174;</FONT>
+Settings<FONT FACE="Symbol">&#174;</FONT>
+View Objects. This figure shows the effect of right clicking on MSNBC.</P>
+
+</B><P>Fig. 3 shows all of the currently installed ActiveX and Java Classes. If As displayed in Fig. 3, you can right clicking on any of thosee entries to you will get a menu that offers options to Update, Remove or view Properties for that entry. </P>
+
+<P>Figure 4. This dialog obtained by selecting Properties in the dialog displayed in Fig. 3.</P>
+
+</B><P>Fig 4. Shows the result of selecting the Properties option for the MSNBC ActiveX control shown in Fig. 3. The General tab shows the program type, status and origin. </P>
+
+<P>Figure 5. This dialog was obtained by selecting the Dependency Tab in Fig. 4.</P>
+
+</B><P>Fig. 5 shows the dialog obtained by choosing the Dependency tab in Fig. 4. All of the files associated with the chosen ActiveX control are listed in Fig 5.  Had this been a Java Class both the package and Namespace would have been displayed. These are the files that would be erased if the Remove item (Fig 3.) were selected. </P>
+
+<P>Figure 6. This dialog was obtained by choosing the Remove item in the dialog displayed in Fig. 3.</P></B>
+
+<P>Fig. 6 shows the result of choosing the Remove item (Fig. 3). In this case the ActiveX control had been executed before the remove item was selected. Since this ActiveX control is currently loaded it cannot be removed. One approach to resolving this is to restart windows and remove the ActiveX control before any program loads it. </P>
+
+<P>The installed Plug-ins in Netscape Navigator are displayed by choosing Help<FONT FACE="Symbol">&#174;</FONT>
+About Plug-ins from the Navigator main window. The dialog displayed will be similar to that shown in Fig. 7 below. All of the Navigator compatible plug-ins in the plug-in directory are loaded when Navigator is started. In order to remove a plug-in first go the standard windows uninstall wizard and see if there is an uninstall program listed for it. If there is none and there are no uninstall instructions in a readme file, you can note the name of the DLL used by the plug-in as shown in Fig. 7.  After stopping Navigator, you can erase the DLL. When Navigator is re-started the plug-in will not be present.</P>
+
+
+<B><P>Figure 7.  This dialog was obtained by following Help<FONT FACE="Symbol">&#174;</FONT>
+About Plug-ins from the Navigator main window.</P></B>
+
+<P>The installed Plug-ins in Netscape Navigator are displayed by choosing Help<FONT FACE="Symbol">&#174;</FONT>
+About Plug-ins from the Navigator main window. The dialog displayed will be similar to that shown in Fig. 7 below. All of the Navigator compatible plug-ins in the plug-in directory are loaded when Navigator is started. In order to remove a plug-in first go the standard windows uninstall wizard and see if there is an uninstall program listed for it. If there is none and there are no uninstall instructions in a readme file, you can note the name of the DLL used by the plug-in as shown in Fig. 7.  After stopping Navigator, you can erase the DLL. When Navigator is re-started the plug-in will not be present.</P>
+</FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Safe for Scripting</FONT></b>
+
+<FONT SIZE=3><P>One of the challenges in complex environments is to understand the implications of how all the pieces work together. This is particularly complicated in a dynamic browser environment where programs may interact with each other in unanticipated ways. One example of this effect is the way JavaScript or VBScript programs interact with ActiveX controls under Now that we have looked at programs that extend the browser, the "Scripting" section of Figure 2 is worth a short digression.  In Internet Explorer. By design, , Web-downloaded programs written in JavaScript or VBScript are restricted so they cannot directly access many system resources (such as files and environment variables) as discussed in the earlier section on limited function languages.  But these programs can invoke, or attempt to invoke, ActiveX controls which have unrestricted access to your operating system. .  In the previous section we discussed the techniques Internet Explorer employs to prevent you from installing ActiveX controls unless they were signed by a party you trust. It is not unusual to visit sites where you will receive JavaScript or VBScript programs along with one or more signed ActiveX controls that augment the functionality of the JavaScript or VBScript. In such cases you have received programs from a party you trust. In order for the ActiveX control to interact with its JavaScript or VBScript companion it must contain an internal parameter set by the ActiveX control▓s author that indicates the ActiveX control is safe for scripting. The level of complexity becomes more apparent when you consider that once an ActiveX control is marked as safe for scripting, any JavaScript or VBScript program from any source can attempt to interact with it. There is a configuration setting in the Internet Explorer security settings (shown in Fig. 2) which allows you to prevent JavaScript or VBScript from interacting with ActiveX controls even those controls marked Safe for Scripting, however the (as shipped) default for Internet Explorer is to allow interaction.
+
+<P>In theory, ActiveX authors should never mark a control as "Safe for Scripting" unless the control will never, regardless of what arguments it is passed, do anything undesirable to your system.  In practice, achieving this is a very difficult task: some ActiveX authors probably do not take the requirement as seriously as they should, and others no doubt attempt to, but fail. C; creating perfectly secure code is very difficult, and even moderately secure code requires considerable expertise and testing.  When you install an ActiveX control that is marked Safe for Scripting, not only are you trusting the author himself not to have any ill intent, but you are assuming that his code cannot be abused by others to do you harm.  For instance, if an ActiveX control contains a function that will take an arbitrary string of characters and execute it as an operating system command, that control should never be marked "Safe for Scripting". If an attacker found such an ActiveX control on the Web signed by someone you trust they could, since an attacker could  create a Web page that first caused the ActiveX control to be installed the control (and, if the control was signed by someone you trusted, you would allow that installation) and then abused the control's execution function to erase critical files on your system, or format your hard drive.  Subtler features that make a control unsafe for scripting include the ability to read and write files, access environment variables, alter the Registry, and so on. </P>
+
+<P>Any code that accepts arbitrary input over the Web requires careful scrutiny and testing. Browsers accept arbitrary input from untrusted sources in many different ways, however, such products receive intense scrutiny from many people who publish their results. Such public scrutiny helps build a high level of confidence in these products. Every time one installs a &quot;Safe for Scripting&quot; control they are expressing confidence  We can have some confidence that the browser manufacturers themselves have successfully blocked untrusted Web programs from doing these things, if only because their products undergo intense scrutiny from many people; but every time we install a new "Safe for Scripting" control, we are expressing confidence that this at control is similarly secure, and does not open any holes in our their system that an attacker canould exploit.  . That confidence may not always be justified.</P>
+
+<P>Netscape plug-ins raise some similar concerns, more subtly.  Suppose aIf a Netscape plug-in designed to display a particular kind of image, for instance,  had a bug that would cause it to execute data read from the image under certain circumstances. An, an attacker could cause his own code to run on your system with full privileges simply by including a carefully-designed image on his Web page.  While we know of no such bugs being actively exploited today, this again illustrates that the ability to easily extend a browser's function is a two-edged sword: we can get useful new facilities, but we also have a new source of possible security exposures on our systems.</P>
+</FONT>
+<FONT FACE="Helv" SIZE=2>
+</FONT>
+<FONT SIZE=3></FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Working with programs started by the browser but executed by the operating system</P>
+</b></FONT>
+
+<FONT SIZE=3>
+<P>As we noted above, there are various situations in which clicking on a link (or otherwise interacting with the Web) can cause your browser to run external code, either a program that was already present on your system (using Word to open a downloaded document file, for instance), or a freshly-downloaded program from some Web site.  Both of the browsers we are looking at provide some level of control over this process, although the details can be hard to determine.</P>
+
+<P>IIn order to ascertain which programs Internet Explorer will start when it encounters input data from a Web server, you can examine the Windows program registration database.</P>
+
+<P>One way to view this database in Windows 95 or Windows 98 is to open the <B>Windows Explorer</B> and select <B>View<FONT FACE="Symbol">&#174;</FONT>
+Folder Options<FONT FACE="Symbol">&#174;</FONT>
+File Types.  </B>A dialog box similar to the one shown on the left in Fig 8 will be displayed.  The dialog box on the right was obtained by pressing the <B>Edit</B> button.  It allows changes to be made to the settings for the selected program; Microsoft Word in this case. This dialog lets you associate a program with a file type and/or a MIME type. In the above example, Microsoft word (winword.exe) will be called to open any file with file type <B>DOC</B>. (One way to trigger an open request is to double-click the file in Windows Explorer). </P>
+
+<B><P>Figure 8. To display the left dialog box follow View<FONT FACE="Symbol">&#174;</FONT>
+Folder Options<FONT FACE="Symbol">&#174;</FONT>
+File Types, to show the box to the right press Edit in the left box. </P>
+</B>
+
+<P>This dialog lets you associate a program with a file type and/or a MIME type. In the above example, Microsoft word (winword.exe) will be called to open any file with file type <B>DOC</B>. (One way to trigger an open request is to double-click the file in Windows Explorer). This same database entry is also used to indicate that any Web object whose MIME &quot;content type&quot; is &quot;application/msword&quot; will be opened with winword.exe as well. In order to unregister a program, press the remove button in the left dialog. If you wished to change the program associated with the <B>DOC</B> file type you would press the <B>Edit</B> button in the right dialog after which yet another dialog would appear for you to replace the fully qualified winword.exe path with the path you wish to change it to. </P>
+
+<P>The most important setting in both of these dialogs is the check box labeled <B>Confirm open after download</B>. Leaving this box unchecked (as is shown in Fig 8.) instructs Internet Explorer that when you click on a link to a Word file, it should download the file and launch winword.exe to open that file without first asking the user. 
+
+<B><P>Figure 9. To display the left dialog box follow Edit<FONT FACE="Symbol">&#174;</FONT>
+Preferences<FONT FACE="Symbol">&#174;</FONT>
+Applications, to show the box to the right press Edit in the left box.</P></B>
+
+<P>Since most people click on links without knowing what is behind them, it is easy to inadvertently open a word file over the Web when this box is left unchecked.  We urge all readers of this paper to take a look through the &quot;File Types&quot; section of any Windows 95 or Windows 98 machines at hand, and see if the <B>Confirm open after download </B>settings seem reasonable and prudent.</P>
+
+<P>It is also notable that Internet Explorer uses the same program registration database as Windows does. One result of this integration is that there is no obvious way to view the <B>Confirm open after download</B> setting from within Internet Explorer; the operating system▓s configuration registry must be consulted instead.</P>
+
+<P>In order to ascertain which programs Netscape Navigator will start when it encounters input data from a Web server, you can examine its program registration database by choosing <B>Edit<FONT FACE="Symbol">&#174;</FONT>
+Preferences<FONT FACE="Symbol">&#174;</FONT>
+Applications</B> from the Navigator main window, which will display a dialog similar to that shown in Fig. 9. These dialogs work similarly to the Windows dialogs shown in Fig. 8, but they are contained within the browser itself, rather than the operating system.  On the other hand, Netscape appears to be using the same underlying database as Internet Explorer (changes made to some settings in the Navigator dialogs are reflected in the corresponding operating system dialogs).  Netscape simply provides another interface, within the browser, to these settings.
+
+</FONT>
+
+<FONT FACE="Arial" SIZE=3><b><P>Working with digital signatures: Whom does my browser trust?</b></P></FONT>
+
+<FONT SIZE=3><P>Internet Explorer and Netscape both include a lot of technology to manage digital signatures. The first thing you will want to find out is whom your browser trusts now. </P>
+
+<P>In Internet Explorer, go to View<FONT FACE="Symbol">&#174;</FONT>
+Internet Options<FONT FACE="Symbol">&#174;</FONT>
+Content where you will see a dialog that looks similar to that shown in Fig. 10. In the Certificates section of the content page, you have the option of looking at Personal, Authorities or Publishers.  Personal keys are used to identify you to servers you connect to so they can authenticate whom they are connected to. Authorities shows the signing authorities you are trusting to validate certificates. Publishers show the certificates of publishers whom you have decided to trust. </P>
+
+<B><P>Figure 10. You can reach this dialog by View<FONT FACE="Symbol">&#174;</FONT>
+Internet Options<FONT FACE="Symbol">&#174;</FONT>
+Content</P>
+</B>
+
+<b><p>Figure 11. After pressing the Publishers</B>
+
+<p>When the Authorities button is pressed a dialog similar to that shown in the right half of Fig. 10 is displayed. The Certificate Authorities dialog box is where you indicate which certificate authorities you are willing to trust to verify the authenticity of certificates you receive.  The Certificates Authorities dialog box has four distinct sections for deciding where the certificate authorities will be trusted.</P>
+
+<UL>
+<LI>Network server identification</LI>
+<LI>Network client identification</LI>
+<LI>Secure e-mail</LI>
+<LI>Software Publishing</LI></UL>
+
+<P>To make a certificate authority active in one of these areas choose the area from the drop down box at the top of the window. Then scroll to the certificate authority you wish to use and make sure the box is checked. For the purposes of the discussions in this paper, only the <B>Software Publishing</B> section has any relevance. </P>
+
+<P>Figure 11 shows a dialog box that was displayed after pressing the<B> </B>Publishers<B> </B>button seen in the dialog shown on the left side of Fig. 10. In this example, there are two publishers who are being trusted.  If an ActiveX control signed by a trusted publisher is encountered either of these two arrives, it will be executed without notifying the user. </P>
+
+<P>If a Java applet arrives which requests privileges less than or equal to those which have been permanently granted to that signature then it too will be executed without notifying the user.  To stop trusting a signer, simply highlight that line and press the <B>Remove</B> button. The cessation of extended Java privileges will take place immediately. If, however, you have already executed, or allowed the installation of, ActiveX components from the signer you removed, those components will still be present in the <B>Downloaded Internet Files</B> directory and will continue to be used until you remove them. If a Java applet arrives signed by either of these users which requests privileges less than or equal to those which have been permanently granted to that signature then it too will be executed without notifying the user.  To stop trusting a signer, simply highlight that line and press the <B>Remove</B> button. The cessation of extended Java privileges will take place immediately. If, however, you have already executed, or allowed the installation of, ActiveX components from the signer you removed, those components will still be present in the <B>Downloaded Internet Files</B> directory and will continue to be used until you remove them. </P>
+
+<B><P>Figure 12. Communicator<FONT FACE="Symbol">&#174;</FONT>Security Info<FONT FACE="Symbol">&#174;</FONT>Java/JavaScript</P></B>
+
+<P>In Netscape Navigator, go to Communicator<FONT FACE="Symbol">&#174;</FONT>
+Security Info<FONT FACE="Symbol">&#174;</FONT>
+Java/JavaScript where you will see a dialog that looks similar to that shown in Fig. 12 that lists all of the software publishers to whom you have granted extended Java privileges. You can view certificates for each entry in the list by highlighting the entry and pressing the <B>Edit Privileges</B> button. If you try this you will see a dialog similar to that shown in Fig. 13 which shows two cases. On the left is a case in which enhanced privileges are being granted to the signer.</P>
+
+<P>On the right is a case in which privileges are being explicitly denied to that signer. In the right hand case any Java Applet signed by this signer will not be permitted to modify stored files and if such an applet is run a pop up dialog that says <I>privilege denied</I> will be presented instead of offering the user an opportunity to grant the privilege. </P>
+
+<b>Figure 13. To see these dialog boxes, press the Edit button in the dialog box shown in Fig. 12.</b>
+
+
+<B><P>Figure 14. To see this dialog box press the More Info button in the dialog displayed in Fig. 13. </P>
+</B>
+
+<b>Figure 15. Dialog box requesting extended Java privileges.  To display this type of dialog box, go to a site with Java Applets which need extended privileges.</b>
+
+<P>Figure 14 shows the dialog box obtained by pressing the More Info button in the left hand dialog box of Fig. 13. Using the <B>More Info</B> button allows you to see a detailed listing of the Java privileges which the signer has been granted or denied.</P>
+
+<P>When a signed Java Applet executing under Internet Explorer needs privileges beyond those which you have configured it will put up a dialog box similar to the one shown in Fig. 15 requesting additional privileges.</FONT>
+
+<FONT FACE="Arial" size=3> </P>
+
+<b><P>Working with digital signatures: How to grant trusted status.</P></b>
+</FONT>
+<FONT SIZE=3>
+The dialog box shows the file name and location, the name of the requester, and the name of the certificate authority who verified the authenticity of the signature. The requested permissions are listed, along with the option to always trust content signed with this certificate. Pressing <B>More Info</B> provides a detailed listing of the permissions being requested.</P>
+
+<P>Closing this dialog box by pressing <B>Yes</B> without checking the <B>Always trust content </B>box will grant the requested privileges to the signer for this session. If the signer sends a second signed applet requesting the same permissions, it will also be allowed to run without warning the user for the duration of that session. The buttons and the dialog box are essentially the same when a signed ActiveX control is encountered. However, the end result is quite different. There is no ability to trust an ActiveX control for just one session. When you press <B>Yes,</B> without checking <B>Always trust content </B>box, you are effectively trusting that particular ActiveX control forever, or until you go track it down and manually remove it from your system. (For information on removing ActiveX controls see Fig. 3).</P>
+
+<P>The corresponding dialog shown by Netscape Navigator is similar, however there are a few additional options to choose from. Figure 16 shows the corresponding dialog in Navigator where you have the ability to Grant or Deny the privileges. For more information on what it means to Deny a privilege, see the discussion concerning Fig. 13. The help button in this dialog is also quite informative.</P>
+
+
+
+<B><P>Figure 16.</b>This is the Navigator dialog presented when a Java Applet is requesting extended privileges.</P></B>
+
+<P><font size=3>The corresponding dialog shown by Netscape Navigator is similar, however there are a few additional options to choose from. Figure 16 shows the corresponding dialog in Navigator where you have the ability to Grant or Deny the privileges. For more information on what it means to Deny a privilege, see the discussion concerning Fig. 13. The help button in this dialog is also quite informative.</P>
+
+</FONT><B><FONT FACE="Arial" SIZE=3><b><P>Surprises you may encounter:</P></b>
+</B></FONT><FONT SIZE=3>
+<P>During our explorations of browser configuration options, we encountered a few things that surprised us.  </P>
+
+<I><P ALIGN="CENTER">ActiveX controls that keep coming back</P>
+</I><P>In Internet Explorer, you can permanently grant permission to a signer of ActiveX controls by checking the   <B>Always trust content </B>check box. If, at a later time, you use the Downloaded Program Files dialog discussed in Fig. 3 to remove an ActiveX control that you no longer want on your system, you may find it reappearing.  The reason is that since the signer of that control is still in your Publishers certificates database, the control is silently downloaded and re-installed every time you visit a page that uses it. This is the expected behavior and is consistent with the system design, however, the overall result may be confusing to some users. As discussed in the text supporting Fig. 11, you must remove the signer as well as the control to prevent this effect.</P>
+
+<I><P ALIGN="CENTER">Netscape Navigator can run ActiveX controls</P>
+</I><P>
+<p><b>Figure 17. To reproduce this pop up visit www.msnbc.com</b>
+
+<p>Muddying the distinction between Netscape plug-ins and ActiveX controls for Internet Explorer is a Netscape plug-in that allows Netscape users to use some ActiveX controls.  This plug-in is used by various sites around the Web, and it is not always clear from the site offering the control just what it is going to do.  Readers who want to explore this further can try the following roadmap:</P>
+
+<UL>
+<LI>Visit the site </FONT>
+<A HREF="http://www.msnbc.com/"><FONT SIZE=3>WWW.MSNBC.COM</FONT></A></LI>
+<FONT SIZE=3>
+<LI>Press Get the Plug-in and follow the ddirections to install the nwrap plugin.</LI>
+<LI>Revisit </FONT><A HREF="http://www.msnbc.com/"><FONT SIZE=3>WWW.MSNBC.COM</FONT></A><FONT SIZE=3> and you will be running ActiveX from Netscape Navigator as illustrated in Fig. 18 below.</LI>
+<LI>Revisit </FONT><A HREF="http://www.msnbc.com/"><FONT SIZE=3>WWW.MSNBC.COM</FONT></A><FONT SIZE=3> and you will be running ActiveX from Netscape Navigator via the nwrap plugin as shown by the about plug-ins listing.<BR></LI></UL>
+
+<P>
+<b>Figure 18. To display this dialog use Help-->About Plug-ins</b>
+
+<I><P ALIGN="CENTER"><P ALIGN="CENTER">Internet Explorer executes word without asking user</P>
+</I>
+<P>As we saw above, the Windows setting <B>Confirm open after download </B>can have an important effect on how much warning you get before Internet Explorer receives and opens a potentially-active document from the Web.  We were surprised to find, for instance, that with at least one combination of default-installed software, the browser would open Word documents in Word without any warning; given that Word documents can contain viruses and Trojan horses, we found this disturbing.  Readers may wish to replicate our result with the following roadmap:</P>
+
+<UL>
+<LI>Install Windows 98.</LI>
+<p>
+<LI>Install Microsoft Office 97 , Professional, Service Release 1, and accept all of the defaults for a typical installation. While using word on local files, click on the check box that offers to stop reminding me every time I open a local word file which contains macros.</LI>
+<p><LI>During the office installation, PowerPoint, Excel and Word All major Office components wereare registered for immediate execution, so when a user clicks on a link to a word document you are only depending on Word itself to warn you about macros, however, that warning was turned off in the previous step by a user who was tired of being reminded every time he opened a macro containing file locally.  Now, documents behind web links are it is opened in word without any prior notification.</LI>
+<p><LI>IE can be configured to prompt before execution, by checking &quot;Confirm open after download&quot; as shown illustrated in Fig. 8.above.</LI></UL>
+
+<I><P ALIGN="CENTER">Java Applets can make popups with any message they like</P>
+</I>
+
+<P>In order to interact with the user, untrusted Java Applets and JavaScript programs can both create popups and other dialog boxes on the display.  Java Applets in particular can format pop ups as they wish, except for the warning in the lower left-hand corner.</P>
+
+<P>
+<B><P>Figure 19. Java Applet pop up window.</P>
+</B>
+
+This warning may be too subtle in some circumstances; how would the typical user react to the above dialog box with a message in it such as &quot;Timeout Warning: enter your password now or you will be logged off&quot;?</P>
+</FONT>
+
+<B><FONT FACE="Arial" SIZE=3><P>What about viruses and Trojan horses?</P>
+</B></FONT>
+
+<FONT SIZE=3>
+
+<P>A Trojan horse is any program that purports to carry out some useful function, but in fact does something nasty to you; something the author or distributor of the program intended, but that you would not have permitted had you known it was about to happen.  Fortification measures aim at preventing untrusted programs from doing anything untoward.  Trust systems allow you to give more power to programs received from parties in whom you have confidence; if your confidence is well placed, none of those parties will ever send you a program that erases all your files and prints &quot;ha ha, I got you!&quot;.  As long as no one that you trust <B>accidentally</B> signs and sends you a malicious program, your exposure to Trojan horses should be acceptably low.</P>
+
+<P>Computer viruses change the Trojan horse landscape.  Because computer viruses spread through innocent transmission of programs, they can travel along lines of intentional communication, and through webs of trust.  Even if you never accept programs or documents from strangers, if someone that you trust is infected with a virus, and you receive and execute a program, or receive and open a document, from that person, you can become infected and suffer whatever malicious payload the virus carries.  Viruses exploit trust in order to spread themselves.  </P>
+
+<P>In September of 1998, the most common Web-borne viruses are Word and Excel macro viruses, spread through documents distributed on Web sites, by information providers who are not aware that their files are infected.  These viruses involve Web browsers only to the extent that a browser can be used to download an infected document, and a browser configured not to prompt the user before invoking Word or Excel can cause a system to become infected with a single click of the wrong link.  But no viruses are known that directly exploit Web browsers.  There are no known JavaScript or VBScript viruses, no DHTML viruses, and only a single Java virus.  </P>
+
+<P>The single known Java virus, an academic experiment known as &quot;Strange Brew&quot;, is an interesting case study.  Since Java is a general-purpose language, anything (including viruses) that can be written in assembler, or C, or C++, can also be written in Java.  But Java as it runs in a Web browser imposes security restrictions that other languages do not.  In order to spread itself, Strange Brew needs access to the filesystem; the ability to read and write files.  Since untrusted Java applets do not have this ability, the Strange Brew code would fail if an infected applet were to be run in a properly-configured Web browser.  (Because of the details of its operation, Strange Brew itself would almost certainly fail even if run in an improperly-configured Web browser.  It is intended to spread only between Java applications run by a standalone Java interpreter outside of a browser; but that might not be true of future Java-language viruses.)  </P>
+
+<P>In today▓s world, people do not share Java programs, either applets or applications, often enough to make a Java virus a viable candidate for worldwide spread.  While you may run Java applets from the Web, it▓s unlikely that you personally have write-access to applets that many other people use.  In the future, if Java applications become a common way of distributing programs, Java viruses might become as large a concern as EXE viruses (program-infecting viruses) are today.  They would still not be able to spread as untrusted applets in your browser, though, because the Java security manager will block their access to the filesystem.</P>
+</FONT>
+
+<B><FONT FACE="Arial" SIZE=4><P>Version numbers are important</P>
+</B></FONT>
+
+<FONT SIZE=3>
+
+<P>All of our discussion of security models, the restrictions that browsers put on untrusted code, the way to configure your system, and so on , assume that the browsers and operating systems in fact work the way that they are designed.  But no complex program works exactly as designed; in the last year, a number of bugs with security implications have been found in both of the browsers that we are considering.  Users can try these roadmaps to get to up-to-date list of security-related bugs:</P>
+
+<P>From Navigator choose Help <FONT FACE="Symbol">&#174;</FONT>
+Security then click on <U>netscape security notes</FONT><FONT SIZE=6>  </P>
+</U></FONT><FONT SIZE=5>
+
+<UL>
+</FONT><FONT SIZE=3><LI>February 19, 1998 Preferences Bug</LI>
+<LI>June 24, 1998 The Million Question Vulnerability </LI>
+<LI>August 14, 1998  Long Filename Mail Vulnerability, </LI>
+<LI>August 14, 1998 ClassLoader Java Vulnerability </LI></UL>
+
+<P>Microsoft▓s current IE security issues page http://www.microsoft.com/ie/security/</P>
+
+<UL>
+<LI>January 16, 1998 MK Overrun</LI>
+<LI>March 31, 1998  Embed issue</LI>
+<LI>April 21, 1998 Speed Dial issue</LI>
+<LI>August 11, 1998 Outlook Express file attachment security issue</LI>
+<LI>August 18, 1998 &quot;Window.External&quot; Jscript vulnerability </LI>
+<LI></LI></UL>
+
+</FONT>
+
+<B><FONT FACE="Arial" SIZE=4><P>Conclusions</P>
+</B></FONT>
+
+<FONT SIZE=3>
+<UL>
+<LI>The ability to executing programs in Web browsers pays big dividends</LI>
+<LI>There are many avenues for executing code from the web</LI>
+<LI>Safety is a concern, proper configuration is important</LI>
+<LI>Take the best of both trust and fortification </LI>
+<LI>Browser configuration is complicated</LI>
+<LI>There is less public scrutiny of browser extensions (individual ActiveX controls, Netscape Plug-ins, etc) than of the browsers themselves. Your browser is no safer than its weakest add-on</LI>
+<LI>The system is working. Abuses are not overwhelming. </LI></UL>
+
+<P>The ability to execute downloaded code was not added to Web browsers on a whim, or simply to give security people nightmares.  Plug-ins, ActiveX controls, Java programs, JavaScript scripts, and the other kinds of downloaded code we have mentioned all fill some real or perceived need of computer users.  Certainly it▓s more convenient to upgrade a piece of software with a single click on a Web site than it is to send off a form in the mail and receive a pile of diskettes and an Upgrade Guide two weeks later.  It▓s faster to interact with a small custom program running on your own system than to wait while your input, and the resulting output, travel back and forth across two continents between you and some server.</P>
+
+<P>But this function and convenience comes at a price.  Part of that price is in additional complexity of our systems.  There are currently many different ways to accept downloaded code, and many different ways to provide security when running it.  We can only hope that these things will become simpler with time, as competing standards converge.  At the present time, configuring the security of a Web browser, or even figuring out what the current security-relevant settings are, can be a daunting task.  Even if you have convinced yourself that the browser itself is properly configured and reasonably secure, if you have downloaded browser extensions (one of the many useful kinds of downloaded code), each one has the potential to open security holes of its own; and browser extensions may not be as carefully tested and externally scrutinized as the browsers themselves.</P>
+
+<P>On the other hand, it is also clear that at the present moment the system is working.  Virtually all of the browser-based attacks and security worries we have outlined are primarily theoretical; Web users are <B>not </B>currently being victimized by malicious programs taking advantage of misconfigured browsers to erase files or steal secrets.  Still, if the systems that you use to browse the Web have access to resources and data that are valuable to you, we strongly recommend that you become aware of the security status of those systems and the browsers they use.  Security begins at home.</P>
+</FONT>
+
+
+
+</TD></TR></TABLE>
+
+</BODY>
+
+<!-- Mirrored from vx.netlux.org/texts/html/Threat.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:25 GMT -->
+</HTML>

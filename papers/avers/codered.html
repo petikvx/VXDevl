@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="CodeRed, description, Microsoft, IIS, buffer overflow, bug, Bady, Code Red, SecurityFocus, exploit, WhiteHouse, Chinese"><title>Holding the Bady</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2">H<u>olding the Bady</u></font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>I<u>ntroduction:</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; After working for over fours years with macro and
+script viruses, I recently came by a piece of malware which caused me to
+get back to my old toolbox, and
+<br>take the dust off my old dissasemblers and debugging tools. Last time
+I did that was actually not such a long time ago, and it was due to another
+curious piece of binary data - the executable from the macro virus Class.EZ.
+<br>&nbsp;&nbsp;&nbsp; However, this time the reason was not only a little
+bit different, but proved to be much, much tricky, and harder to figure
+out in its deeper internals.
+<br>&nbsp;
+</p><p><b>T<u>he bug:</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; On June 18th, 2001, Microsoft released its 33rd security
+bulletin for this year, which deals with a simple buffer overflow in one
+of the DLLs used by the Indexing Service, "idq.dll". Credited to the people
+from eEye Digital Security, the bug proves once again that Windows NT and
+the server software running on NT systems are not by far spared by the
+most common security vulnerabilities from Unix systems, the buffer overflows.
+<br>&nbsp;&nbsp;&nbsp; The original security advisory from eEye didn't
+include an exploit, but it didn't took long until a couple were written,
+and started to crawl around. One of them was even posted to SecurityFocus'
+web site, in the exploits section for this specific vulnerability, therefore
+becoming generally available to the masses.
+<br>&nbsp;&nbsp;&nbsp; However, by far the most interesting exploit came
+in the form of a computer worm, which not only exploits the vulnerability,
+but it replicates the exploit further, to other servers from the Internet.
+Initially, it was named generically 'Code Red', but the common name which
+was selected by the AV industry for it was 'Bady', either in the form of
+'Win32/Bady.worm' or the more complex, but even more CARO-compliant name,
+'worm://Win32/Bady.A'
+<br>&nbsp;
+</p><p><b>T<u>he Worm:</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; The worm code is Win32 Intel assembler, and is 3569
+bytes long, if we count the data used and carried along with the executable
+code by the worm. Due to the nature of this exploit, one of the most trickiest
+parts was probably to transfer the control to the worm code from the instructions
+that receive control after they smash the stack. Actually, it is so tricky,
+that it can only work on very specific conditions, thus limiting the possibility
+of the worm to spread wide, and also, it was so tricky that it made me
+loose 4 hours until I realized why the worm simply crashed my test system,
+and didn't want to work. Basically, the worm sends 224 'N' (0x43) bytes
+via a HTTP GET request, and it appends a few bytes of executable code after
+them. The small piece of executable code is encoded in the URL it is sent
+for processing to the ISAPI server extensions, and it looks like the following:
+<br>&nbsp;
+</p><blockquote>%u9090%u6858%ucbd3%u7801%u9090%u6858%ucbd3%u7801%u9090%u6858%ucbd3%u7801
+<br>%u9090%u9090%u8190%u00c3%u0003%u8b00%u531b%u53ff%u0078%u0000%u00</blockquote>
+
+<p><br>&nbsp;&nbsp;&nbsp; The buffer overflow will fill the stack with
+the 224 'N' bytes expanded to 2-byte UNICODE representations of the form
+{0x4e, 0x0}, which are used as return address when the subroutine in which
+the buffer overflow took place returns.
+<br>&nbsp;&nbsp;&nbsp; After that, the execution flow will hopefully hit
+one of three 8-bytes long sequences designed to prepare (again!) the stack
+for another jump, which is designed to hit the real worm code. The jump
+is performed in a quite tricky manner, and it relies on the fact that at
+a certain address in memory we can find a specific instruction, a 2-bytes
+long 'call ebx'. However, the respective instruction, which is supposed
+to be located in the memory image of the standard system module 'msvcrt.dll'
+(Microsoft Visual C Runtime Library) at offset 7801CBD3h, is in its place
+only if the respective library is version 6.10.8637, exactly the one distributed
+with Windows 2000, Service Pack 0 and 1, which is exactly 295000 bytes
+long. So, if someone installed SP2 on the machine, the worm will be unable
+to spread. The same is true if the machine is running Windows NT 4.0, and
+in all these cases, the WWW Publishing Service of IIS will simply crash
+when attacked.
+<br>&nbsp;&nbsp;&nbsp; However, if the system runs the 'good' version of
+'msvcrt.dll', the worm correctly performs the jump, and reaches its main
+code, which begins to take the steps necessary to make the worm code carry
+the infection further.
+<br>&nbsp;&nbsp;&nbsp; First, it will allocate stack space to store 134
+(86h) DWORDs, and it will also take care to wipe it using 0CCh bytes. Next,
+the worm tries to obtain the address of the very useful API GetProcAddress,
+using a method which is actually very common to most PE infectors. For
+that, the worm scans the memory range 7E00000h-7800000h, incrementing in
+steps of 64K, looking for a 'MZ' signature. Obviously, this check attempts
+to find the memory image of 'kernel32.dll', which is for example found
+at offset 77e80000h in the initial release of Windows 2000. If the worm
+doesn't find the 'MZ' signature of 'kernel32.dll' in that range, it will
+also attempt to look for the same thing starting from 0BFF00000h, obviously
+assuming that maybe the system is not NT, but Win9X. (for example, in Win98
+the kernel32.dll module is located at the 0BFF80000h address)
+<br>&nbsp;&nbsp;&nbsp; After finding a possible address of the 'kernel32.dll'
+PE image in memory, the worm will also perform a couple of other checks,
+to be sure it's indeed the 'kernel32.dll' module. For that, it will check
+if it's a PE file, and then find the export table to check if the module
+name matches 'KERNEL32'. If the respective checks fail, the worm code continues
+the scanning.
+<br>&nbsp;&nbsp;&nbsp; It's funny to note how careful was the author here
+to find the right address of the kernel module image in memory, while a
+few instructions ago, it simply assumed that 'msvcrt.dll' contains a {0FFh,
+0D3h} sequence (call ebx) at 7801CBD3h. I think this was due to the author
+using the respective code from some PE virus, and he/she didn't care about
+removing either the Win9X part, or that it's useless anyway to perform
+such careful checks for the 'kernel32.dll' module, when it already makes
+the assumption regarding 'msvcrt.dll'.
+<br>&nbsp;&nbsp;&nbsp; Anyway, after finding the proper address in memory
+of 'Kernel32.DLL' a short subroutine is called to determine the offset
+of the 'GetProcAddress' exported entry. This subroutine will simply parse
+the export table, and verify if any of the entries is indeed 'GetProcAddress'.
+Then, 'GetProcAddress' will be further used to obtain the address of other
+common APIs, which are LoadLibraryA, GetSystemTime, CreateThread, CreateFileA,
+Sleep, GetSystemDefaultLangID and VirtualProtect. Of them, LoadLibraryA
+will further be used to load and obtain the memory offsets of the images
+of "infocomm.dll", "WS2_32.dll" and "w3svc.dll". Then, the worm extracts
+the TcpSockSend subroutine address in "infocomm.dll", as well for the addresses
+of the "socket", "connect", "send", "recv" and
+<br>"closesocket" subroutines in "WS2_32.dll".&nbsp; Next, the worm spawns
+100 threads in memory which are designed to carry the main replication
+code as well for the payload. However, due to a bug, the worm will actually
+try to spawn even more threads for each created thread as well, therefore
+quickly eating a huge amount of resources, which is less likely to go unnoticed
+on an infected server.
+<br>&nbsp;&nbsp;&nbsp; Anyway, each thread runs exactly the same code,
+which acts like the following: first, the worm attempts to open a file
+named "c:\notworm", and if this succeeds, the worm will start to issue
+'Sleep' calls of about 24 days, ad infinitum.
+<br>&nbsp;&nbsp;&nbsp; However, if the respective file is not found on
+disk, the worm continues. It will check if the current day is between 20
+and 28, and if so, it will run the a part of the payload which consists
+in sending 18000h times 1-byte long TCP/IP packets to the IP address "C689F05Bh",
+which in a more readable form is 198.137.240.91, which currently solves
+to the name "www.whitehouse.gov".
+<br>&nbsp;&nbsp;&nbsp; Next, the worm will run its random number generator
+routine, which has the purpose to provide targets for infection.
+<br>&nbsp;&nbsp;&nbsp; The routine uses two things as seeds for the stream
+of random numbers: the current second/millisecond fields of the current
+system time, and the thread number. Combined, these two could obviously
+produce a lot different IP streams. I say "could", because of the way the
+algorithm works, the entropy provided by the "second" and "millisecond"
+fields of the current time is lost in the computations, so that leaves
+us with exactly 100 possible streams of IP addresses, which only depend
+on the thread index, again, only in the range 0..99.
+<br>&nbsp;&nbsp;&nbsp; Therefore, whenever a copy of the worm receives
+control, it will start hitting a predictable invariant stream of IP addresses,
+thus highly limiting its ability to spread. For example, the stream of
+IP addresses generated by the first thread in the worm will always start
+with the following values: 7.107.254.83, 252.118.171.204, 198.83.139.183,
+33.250.241.248 and so on.
+</p><p>&nbsp;&nbsp;&nbsp; Interestingly, this mistake seems to have been also
+noticed by the author, since after the initial version of the worm became
+widespread, another "fixed" version was reported. This second version seems
+to have the random number generator routine fixed, thus having much better
+chances to spread over the net.
+</p><p>&nbsp;&nbsp;&nbsp; Also, the worm has another interesting payload which
+is run only if the current system codepage is 0x409, US English. First,
+the worm will run a Sleep call set to 2 hours, and after that, it prepare
+to launch the payload. For that, it will scan the export table of 'w3svc.dll'
+for an API named TcpSockSend. After finding it, the worm replaces it with
+a pointer to a subroutine inside the worm copy which sends a specific web
+page whenever a request to the HTTP server arrives. The web page looks
+like the following:
+</p><p><img src="codered_files/codered.gif" height="281" width="407">
+</p><p>&nbsp;&nbsp;&nbsp; It should be noted that while patching the export
+table of 'w3svc.dll', the worm takes care to write-enable the area of memory
+in which the module is stored. This is required in order to patch the address
+of TcpSockSend, the function hooked by the worm.From here, the worm will
+simply loop again, trying other IP addresses.
+<br>&nbsp;
+</p><p><b>C<u>onclusions:</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; There has been a lot of debating around the fact
+that this is maybe the first modern worm that doesn't exist at any time
+in a file, and doesn't use any temporary files during replication, like
+for example Linux/Cheese or Linux/Ramen do. "Bady" certainly exists only
+in memory or as a TCP/IP stream, send around the Internet, thus making
+it the perfect example for everyone's definition of the term worm.
+<br>&nbsp;&nbsp;&nbsp; But besides that, the truly important thing about
+it is that this could have been much, much worse. If the worm would have
+been written a little bit more careful, to infect more than just Windows
+2000 systems running IIS4/5 with the Indexing Service installed and to
+use a really 'random' stream of target IPs, then stopping it would have
+been much, much harder.
+<br>&nbsp;&nbsp;&nbsp; Then again, regarding detection, unfortunately the
+AV world was in its majority unprepared to handle "Bady" - to detect and
+stop it, scanner plugins for firewalls are needed, and unfortunately, they
+are not very common. Also, to detect and clean it in memory, probably a
+couple of improvements are needed to the scan engines, such as the possibility
+to scan the memory associated with a thread launched in the memory space
+of a module attached to a process...
+<br>&nbsp;
+</p><p><tt><b>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">Win32/Bady
+(worm)</font></tt>
+<br><tt><b>Aliases:&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">Code
+Red, CodeRed</font></tt>
+<br><tt><b>Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>network
+propagated worm that infects Win 2000 machines running IIS4/5 with ISAPI
+enabled.</tt>
+<br><b><tt>Payload:</tt></b>
+</p><blockquote>
+<blockquote>
+<ul>
+<li>
+<tt>attempt to flood www.whitehouse.gov between 20th and 28th of each month</tt></li>
+
+<li>
+<tt>hooks all HTTP requests on systems with codepage 0x409, and sends a
+custom page back to the clients</tt></li>
+</ul>
+</blockquote>
+</blockquote>
+<b><tt>Removal:</tt></b>
+<blockquote>
+<blockquote>
+<ul>
+<li>
+<tt>stop the WWW service on the affected machine, install the MS recommened
+patch, then restart the WWW service</tt></li>
+</ul>
+</blockquote>
+</blockquote>
+
+<p><br>(c) Virus Bulletin Ltd, 2001
+</p></body></html>

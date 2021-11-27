@@ -1,0 +1,110 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Viruses and Windows 95 (Data Fellows)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Viruses and Windows 95<BR>
+</FONT><FONT SIZE=+2>(Data Fellows)</FONT></FONT></B>
+<HR WIDTH="100%"></P></CENTER>
+
+<P>The soon-to-be-published Microsoft Windows 95 introduces new characteristics
+to the field of anti-virus activities. Although there have been rumors
+that the virus threat will be eliminated when Windows 95 comes along, these
+are, for the most part, insubstantial. In fact, almost all current viruses
+will be able to function with Windows 95. </P>
+
+<P>Boot sector viruses will be able to infect both hard disk Main Boot
+Records and the boot sectors of disk partitions quite normally. However,
+the viruses will not be able to spread to diskettes normally after the
+initial infection. </P>
+
+<P>When Windows 95 is started, it usually loads a 32-bit disk access system.
+If, on the other hand, the computer has been infected by a boot sector
+virus, Windows 95 is shunted to using 16-bit disk access system. In spite
+of this, some parts of the 32-bit access systems are loaded, and this prevents
+boot sector viruses from spreading to diskettes. This does not mean that
+the viruses can be safely left on the disk, however, because they are still
+able to activate and cause damage. The infection should be removed when
+it is detected. It should be noted that if the user has set the 16-bit
+disk access on from the Windows 95 Control Panel, the viruses will be able
+to spread to diskettes quite normally. </P>
+
+<P>Boot sector viruses that use DOS interrupts to infect diskettes will
+not be able function under Windows 95 - the operating system's kernel takes
+command over all DOS interrupts, thus preventing viruses from using them.
+</P>
+
+<P>Although Microsoft's own anti-virus program will not be supplied with
+Windows 95, Windows 95 is capable of detecting a boot sector infection
+by itself. Check the lower half of the Performance page in Control Panel's
+System program - it may contain a warning about a MS-DOS -compatible disk
+access state and a possible virus infection. Since this warning is not
+repeated anywhere else, it is easy for a user to overlook. </P>
+
+<P>File viruses, on the other hand, are able to function under Windows
+95 almost as well as under DOS itself. The main difference is that the
+viruses are only able to spread themselves inside DOS windows opened from
+Windows 95. This holds true only for the present viruses, however - it
+is likely that we will soon see viruses written expressly for Windows 95,
+capable of exploiting its characteristics. Since Windows 95 is technically
+quite different from earlier versions of Windows, only few currently known
+Windows viruses will be able to function under it. </P>
+
+<P><B>Disinfection of Viruses </B></P>
+
+<P>During installation, Windows 95 asks whether the user wants to create
+an utility diskette from which the computer can be booted afterwards. It
+is recommendable to take the program up on its offer, for without such
+an utility diskette it may prove difficult to disinfect certain boot sector
+viruses - especially if no anti-virus program is immediately available
+at the time. </P>
+
+<P><B>Disinfection of Boot Sector Viruses </B></P>
+
+<P>In principle, boot sector viruses are disinfected in Windows 95 in quite
+the same way as in DOS. First, the computer must be booted from a clean
+diskette - this can be done with either the Windows 95 utility diskette
+created during installation, or a normal DOS boot diskette. After this,
+the virus can be disinfected by using an anti-virus program. </P>
+
+<P>If the computer is booted from the Windows 95 utility diskette, the
+disinfection procedure may in some cases be interrupted by a warning about
+direct disk access. This warning can usually be disabled by using Windows
+95's own LOCK command, but it may sometimes prove necessary to boot the
+computer from a DOS boot diskette. After a DOS boot, the infection can
+be disinfected normally with F-PROT for DOS. As can be seen, it is worthwhile
+to hang onto an old DOS boot diskette even after switching to Windows 95.
+</P>
+
+<P>If no anti-virus program is immediately available, it is possible to
+attempt disinfection by using the operating system's own functions. This
+can be done with the command FDISK/MBR, which can be used both after a
+DOS- and a Windows 95 diskette boot. However, if the computer's hard disks
+cannot be accessed normally after a diskette boot, one should not attempt
+a FDISK/MBR disinfection. In such cases, the infecting virus has probably
+encrypted the hard disk's partition table - there are viruses that do this,
+among them the Stoned.Empire.Monkey viruses. </P>
+
+<P>Viruses that have infected the boot sector of a disk partition can be
+removed manually by using the Windows 95 utility diskette. After the diskette
+boot, the infection can be removed by simply giving the SYS C: command
+- this will cause the boot sector and system files to be rewritten on the
+hard disk. If the computer has been booted from a DOS boot diskette, the
+SYS C: command should not be used, because it will create a boot sector
+different from the boot sectors used by Windows 95. </P>
+
+<P><B>Disinfection of File Viruses </B></P>
+
+<P>First, the computer should be booted from a clean diskette just to be
+on the safe side. Windows 95 utility diskettes and DOS boot diskettes are
+both suitable for booting. After that, the viruses are disinfected just
+like in DOS. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

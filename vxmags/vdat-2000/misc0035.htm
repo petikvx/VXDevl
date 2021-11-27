@@ -1,0 +1,1064 @@
+<HTML>
+<HEAD>
+   <TITLE>Miscellaneous - ICSA Melissa Research Report</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="miback01.gif">
+<p>
+  <center>
+    <b><font size="+3" color="#004080">ICSA Melissa Research Report</font></b> 
+  </center>
+</p>
+<p> 
+  <center>
+    <font color="#004080"> </font> 
+  </center>
+</p>
+<p> 
+  <center>
+    <font color="#004080"><b><font size="+2">VicodenES/DL Smith virus writer</font></b> 
+    </font>
+  </center>
+</p>
+<p> 
+  <center>
+    <font size="+2" color="#004080">April 2, 1999</font> 
+  </center>
+</p>
+<hr>
+<p align="center"><b>Executive Summary</b></p>
+<p align="center"><b>Conclusions and Unresolved Questions</b></p>
+<p><br>
+  <b><i>Conclusions</i></b><br>
+  ICSA's analysts believe David L. SMITH is probably the virus writer VicodinES. 
+  We offer our analysis to help focus investigators. Forensic analysis of computers 
+  SMITH had access to may be useful in conjunction with our analysis. Our analysis 
+  relies on USENET posts developed by searching Dejanews, our own data collected 
+  from the computer underground and by analysis of the viruses involved. We recognize 
+  the analysis is neither conclusive nor can it be attributed to anyone with absolute 
+  confidence. However our analysis may assist the finder of fact in establishing 
+  the &quot;scene&quot; SMITH was involved in. Presuming SMITH is VicodinES, he 
+  may be culpable for offenses in addition to those associated with the Melissa 
+  virus.<br>
+  Roger Thompson, Director of Vendor Labs, has analyzed the Global Unique Identifier 
+  (GUID) of the Melissa macro virus and other macro viruses that VicodinES has 
+  acknowledged authoring. The GUID is consistent with the same person authoring 
+  Melissa as other macro viruses such as Class.A.poppy.<br>
+  Our analysis of SMITH's and VicodinES's posts to USENET have found three chief 
+  nodes in common, posts to the group nj.test, affinity to the Russian anti-virus 
+  program, AVP and promotion of a web site for a category of music, the Industrial 
+  Information Station.</p>
+<p><br>
+  <b><i>Unresolved Questions</i></b></p>
+<p><br>
+  Records for at least four other America Online (AOL) screennames could be checked. 
+  SMITH appears to have posted to USENET groups from at least five different AOL 
+  accounts. According to press reports, at least one of these was usurped from 
+  another, legitimate, AOL subscriber skyroket@aol.com . For example, on 8/4/96 
+  VicodinD@aol.com posted to rec.drugs a message in which he wrote he was changing 
+  his screename from PainfullD@aol.com, begging the question what happened to 
+  the PainfullD account, was it illicit, discovered and deleted by it's legitimate 
+  owner?<br>
+  SMITH's employer(s) should be interviewed to determine what companies allowed 
+  SMITH access to their systems. To post to USENET, SMITH appears to have used 
+  systems owned or registered to J.P. Morgan, AT&amp;T and Hoffman-LaRoche, all 
+  listed as clients of CGS Computer Associates. These uses may be violations of 
+  18 USC 1030 or similar state statutes. These firms may have a civil interest 
+  in SMITH's use of their systems as well.<br>
+  Records of SMITH's health care may reveal circumstantial evidence that when 
+  considered in context are incriminating. Specifically records of prescriptions 
+  for Vicodin ES, other pain killers and prescription drugs.</p>
+<p><br>
+  <b><font size="+2">Melissa Virus<br>
+  </font>From CERT Advisory 99.04:</b></p>
+<p><b><i>Overview:</i></b><br>
+  At approximately 2:00 PM GMT-5 on Friday March 26 1999 we began receiving reports 
+  of a Microsoft Word 97 and Word 2000 macro virus which is propagating via email 
+  attachments. The number and variety of reports we have received indicate that 
+  this is a widespread attack affecting a variety of sites.<br>
+  Our analysis of this macro virus indicates that human action (in the form of 
+  a user opening an infected Word document) is required for this virus to propagate. 
+  It is possible that under some mailer configurations, a user might automatically 
+  open an infected document received in the form of an email attachment. This 
+  macro virus is not known to exploit any new vulnerabilities. While the primary 
+  transport mechanism of this virus is via email, any way of transferring files 
+  can also propagate the virus.<br>
+  Anti-virus software vendors have called this macro virus the Melissa macro or 
+  W97M_Melissa virus.<br>
+  In addition to this advisory, please see the Melissa Virus FAQ (Frequently Asked 
+  Questions) document available at:<br>
+  http://www.cert.org/tech_tips/Melissa_FAQ.html</p>
+<p><b><i><font size="+2">I. Description of the Melissa Virus</font></i></b></p>
+<p>The Melissa macro virus propagates in the form of an email message containing 
+  an infected Word document as an attachment. The transport message has most frequently 
+  been reported to contain the following Subject header</p>
+<blockquote>
+  <p>Subject: Important Message From &lt;name&gt;</p>
+</blockquote>
+<p>Where &lt;name&gt; is the full name of the user sending the message.</p>
+<p>The body of the message is a multipart MIME message containing two sections. 
+  The first section of the message (Content-Type: text/plain) contains the following 
+  text.</p>
+<blockquote>
+  <p>Here is that document you asked for ... don't show anyone else ;-)</p>
+</blockquote>
+<p>The next section (Content-Type: application/msword) was initially reported 
+  to be a document called &quot;list.doc&quot;. This document contains references 
+  to pornographic web sites. As this macro virus spreads we are likely to see 
+  documents with other names. In fact, under certain conditions the virus may 
+  generate attachments with documents created by the victim.</p>
+<p>When a user opens an infected .doc file with Microsoft Word97 or Word2000, 
+  the macro virus is immediately executed if macros are enabled.</p>
+<p>Upon execution, the virus first lowers the macro security settings to permit 
+  all macros to run when documents are opened in the future. Therefore, the user 
+  will not be notified when the virus is executed in the future.</p>
+<p>The macro then checks to see if the registry key</p>
+<blockquote>
+  <p>&quot;HKEY_Current_User\Software\Microsoft\Office\Melissa?&quot;</p>
+</blockquote>
+<p>has a value of &quot;... by Kwyjibo&quot;. If that registry key does not exist 
+  or does not have a value of &quot;... by Kwyjibo&quot;, the virus proceeds to 
+  propagate itself by sending an email message in the format described above to 
+  the first 50 entries in every Microsoft Outlook MAPI address book readable by 
+  the user executing the macro. Keep in mind that if any of these email addresses 
+  are mailing lists, the message will be delivered to everyone on the mailing 
+  lists. In order to successfully propagate, the affected machine must have Microsoft 
+  Outlook installed; however, Outlook does not need to be the mailer used to read 
+  the message.</p>
+<p>This virus can not send mail on systems running MacOS; however, the virus can 
+  be stored on MacOS.</p>
+<p>Next, the macro virus sets the value of the registry key to &quot;... by Kwyjibo&quot;. 
+  Setting this registry key causes the virus to only propagate once per session. 
+  If the registry key does not persist through sessions, the virus will propagate 
+  as described above once per every session when a user opens an infected document. 
+  If the registry key persists through sessions, the virus will no longer attempt 
+  to propagate even if the affected user opens an infected document.</p>
+<p>The macro then infects the Normal.dot template file. By default, all Word documents 
+  utilize the Normal.dot template; thus, any newly created Word document will 
+  be infected. Because unpatched versions of Word97 may trust macros in templates 
+  the virus may execute without warning. For more information please see:</p>
+<blockquote>
+  <p>http://www.microsoft.com/security/bulletins/ms99-002.asp</p>
+</blockquote>
+<p>Finally, if the minute of the hour matches the day of the month at this point, 
+  the macro inserts into the current document the message &quot;Twenty-two points, 
+  plus triple-word-score, plus fifty points for using all my letters. Game's over. 
+  I'm outta here.&quot;</p>
+<p>Note that if you open an infected document with macros disabled and look at 
+  the list of macros in this document, neither Word97 nor Word2000 list the macro. 
+  The code is actually VBA (Visual Basic for Applications) code associated with 
+  the &quot;document.open&quot; method. You can see the code by going into the 
+  Visual Basic editor.</p>
+<p>If you receive one of these messages, keep in mind that the message came from 
+  someone who is affected by this virus and they are not necessarily targeting 
+  you. We encourage you to contact any users from which you have received such 
+  a message. Also, we are interested in understanding the scope of this activity; 
+  therefore, we would appreciate if you would report any instance of this activity 
+  to us according to our Incident Reporting Guidelines document available at:</p>
+<p>http://www.cert.org/tech_tips/incident_reporting.html</p>
+<p>[end of excerpt from CERT Advisory] (<a href="#AP1">Appendix 1</a>)</p>
+<p><b><font size="+2">VicodinES</font></b></p>
+<p><br>
+  <b><i>Sequence:</i></b></p>
+<p><br>
+  VicodinES@aol.com starts posting about rec.music.industrial and drugs in April 
+  95<br>
+  Drlortab@aol.com starts posting to rec.music.industrial in March 96<br>
+  Painfulld@aol.com makes four posts in July 96 to rec.music.industrial and alt.drugs 
+  and changes his address to vicodind@aol.com<br>
+  Vicodini@aol.com makes two posts in Sep 96 to rec.music.industrial.<br>
+  Dlsmith@monmouth.com post to sci.med.pharmacy in Feb 97 followed by rec.music.industrial 
+  in July 97<br>
+  Doug Winterspoon starts posting to alt.comp.virus in Sep 97<br>
+  On 10/18/97 and 10/19/97 Ane@tnn.com, Vic@tnn.com, Doug Winterspoon all post 
+  to nj.test<br>
+  Vic@klonopin.com posts on 10/18/97 to alt.comp.virus<br>
+  On 12/25/97 and 12/28/97 skyroket@aol.com posts virus infected files to porn 
+  groups<br>
+  On 2/4/98 Vic@bite-me.org starts posting to alt.comp.virus<br>
+  On 3/11/98 xanax.smith@feedme starts posting to alt.comp.virus<br>
+  Vicodines@my-dejanew.com starts posting to virus groups on 6/25/98<br>
+  Ibuprofen@my-dejanews.com starts posting to virus groups on 10/15-12/23/98 from 
+  IP's that appear to belong to corporate clients of his employer.</p>
+<p><br>
+  <b><i><a href="ivvicodn.htm">VDAT/Cicatrix Interview (August 97)</a></i></b></p>
+<p><br>
+  An August 1997 &quot;interview&quot; of the virus author VicodinES by &quot;Cicatrix&quot; 
+  published in the virus exchange group VDAT reveals several details that point 
+  towards David L. SMITH. VicodinES states he was 14 or 15 years of age when his 
+  father purchased a TI-99 4/A computer. These computers were popular in the mid-80's 
+  making VicodinES' year of birth somewhere near 1970 and thus his present age 
+  would be about 30. He became involved in the virus scene because he was bored 
+  and high on prescription painkillers.<br>
+  When asked why he names his viruses &quot;poppy,&quot; he replies, &quot;They 
+  all end in .Poppy because I am a pill-head and all the good pills come from 
+  the poppy plant!&quot;<br>
+  He admits to being part of &quot;The Narkotic Network,&quot; and there are three 
+  person in the network, Klonopin.Jones, and Fastin.Blee.<br>
+  When asked how he came by the handle &quot;VicodinES,&quot; he answered, &quot;VicodinES 
+  is a the name for a painkiller here in the US. It's actually Vicodin Extra Strength. 
+  I love those little fucking pills so I took that name. It's just Hydrocodone 
+  and Tylanol. Anyway I was very high on the little bastards when I decided to 
+  start writing virii so I thought it was appropriate.&quot;<br>
+  In the interview, he states he prefers the anti-virus program AVP.<br>
+  He claims the e-mail address &quot; vcru@hotmail.com.&quot; A check of Dejanews 
+  revealed 33 posts with this address all to alt.binaries.pictures.erotica with 
+  the name Dan Johnson. Our analysis does not include this as a significant alias 
+  with regard to viruses.<br>
+  In the interview he also acknowledges several entities that will occur again, 
+  specifically: Monkey, Mousey and The Woobie, Klonopin Jones and Fastin.Blee.</p>
+<p><br>
+  <b><i>Klonopin.Jones</i></b></p>
+<p><br>
+  <b>Klonopin Jones</b> jones@thermal1.fiu.edu posted to rec.music.industrial 
+  on 10/5/95 with his mailer setting including &quot;Organization: Industrial 
+  Information Station&quot; and the name &quot;Kinzy Jones Jr.&quot; at Florida 
+  International University. N.B. Klonopin is a proprietary anti-anxiety drug<br>
+  VicodinES used the alias vic@klonopin.com to post to alt.comp.virus on 10/18/97. 
+  Klonopin is a domain registered to Hoffman-LaRoche. Hoffman-LaRoche is listed 
+  on a web page of David L. SMITH's employer, CGS Computer Associates. If this 
+  address was legitimate, it may indicate SMITH was using Hoffman-LaRoche systems 
+  illicitly.</p>
+<p><br>
+  <b><i>Industrial Information Station &amp; rec.music.industrial</i></b></p>
+<p><br>
+  <b>Painfull D</b> painfulld@aol.com posted to rec.music industrial on 7/11/96 
+  with the following text:</p>
+<blockquote> 
+  <p><i>Three cats :</i></p>
+  <p><i>Monkey (calico female) - likes ambient music - mostly Delerium<br>
+    Mousey (siamese male) - likes hard fast ebm and beating up on monkey<br>
+    Woobie (persian / siamese male) - he's deaf so he has no idea what music is....poor 
+    woobie</i></p>
+  <p><i>[d]<br>
+    The IIS : http://www.fiu.edu:80/~wjones01/kd.html</i></p>
+  <p><i>ps yes I named my cats stupid names but they fit - what else could I do? 
+    :)</i></p>
+</blockquote>
+<p>then on 8/4/96, Vicodin D vicodind@aol.com posted to alt.drugs with the following 
+  text:</p>
+<blockquote> 
+  <p><i>[d]</i></p>
+  <p><i>Painfull D --&gt; is now Vicodin D (aol problems)</i></p>
+</blockquote>
+<p><b>VicodinES</b> vicodines@aol.com posted to 36 times to rec.music industrial, 
+  and on 1995/04/16 that he lives in Florida.</p>
+<p><br>
+  <b><i>Posts to nj.test</i></b></p>
+<p><br>
+  On 10/17-10/18/97 only four different senders posted to the USENET group nj.test. 
+  Three of these four are associated with David SMITH/VicodinES. On 10/17/97, 
+  Anexia (Ane@tnn.com) and VicodinES (Vic@tnn.com) posted test messages. On 10/18/97, 
+  VicodinES posted again, as did Doug Winterspoon (nomail@nospam.com) . The only 
+  other poster to this group was Jack (jack@REMOVE-TO-REPLY.superlink.net) who 
+  we do not believe is related to the Melissa author.</p>
+<p><br>
+  <b><i>Doug Winterspoon</i></b></p>
+<p><br>
+  Doug Winterspoon, who used the email addresses of (not@no.com and nomail@nospam.com 
+  was a prolific poster to alt.comp.virus On 12/7/97 he posted to alt.art.marketplace 
+  and in the text of the message asked that replies be sent to dlsmith@monmouth.com 
+  address. This address coincides with an address believed to be David L. SMITH's.</p>
+<p><br>
+  <b><i>DL Smith</i></b></p>
+<p><br>
+  DLSmith who used these email addresses on USENET: dlsmith@anti.spam.monmouth.com, 
+  dlsmith@monmouth.com, and dlsmith@monmouth.com.remove.this has an affinity towards 
+  the computer game Ultima Online, industrial music, drugs and computer viruses. 
+  During the period 2/4/99 to 3/18/99, using the address dlsmith@anti.spam.monmouth.com 
+  he posted from a client that appears to be inside AT&amp;T Labs Research, Florham 
+  Park, NJ as indicated by both the &quot;organization&quot; and NNTP posting 
+  host. AT&amp;T is a client of SMITH's employer.</p>
+<p><br>
+  <b><i>Ibuprofen</i></b></p>
+<p><br>
+  Alt.TV.simpsons post<br>
+  On 10/26/98, this identity posted to alt.tv.simpsons. This is the only link 
+  from SMITH/VicodinES to The Simpsons TV show which is referred to within the 
+  Melissa virus.<br>
+  Signed a message Doug W<br>
+  On 10/20/98, this identity posted to microsoft.public.scripting.vbscript and 
+  signed the message, &quot;Doug W&quot; linking this identity to Doug Winterspoon.<br>
+  IP addresses for the clients posting with this identity belong to CGS Computer 
+  Associates' Clients<br>
+  Of the seven posts using this identity, two appear to have come from clients 
+  with IP addresses assigned to Monmouth Internet. Four IP addresses are assigned 
+  to JP Morgan, listed on http://www.cgscai.com/cgs/clients.asp as a client of 
+  CGS Computer Associates. The final IP address is assigned to Cable &amp; Wireless; 
+  we know of no known assocaition between SMITH and C&amp;W.</p>
+<p><br>
+  <b><i>Sky Roket</i></b><br>
+</p>
+<p>Posted macro viruses to pornography groups on 12/25/97 and 12/28/97 before 
+  Melissa.</p>
+<p><br>
+  <b><i>Vicodin D and Painful D at AOL are the same person</i></b><br>
+</p>
+<p>Post made 8/4/96 cited AOL problems</p>
+<p><br>
+  Vic@klonopin.com <b><i>may be Hoffman-LaRoche's system</i></b><br>
+  On 10/18/97 this identity posted one time to alt.comp.virus. Klonopin.com is 
+  registered to Hoffman-La Roche, another of CGS Computer Associates' clients.</p>
+<p><br>
+  <b><font size="+1">Multiple aliases and clients</font></b></p>
+<p><br>
+  SMITH seldom posted to USENET from more than one identity on any given day. 
+  For those posts that originated from other than America Online, it appears that 
+  SMITH's prefered news client is Netscape Navigator/Communicator. The pattern 
+  of changes to his alias is consistent with choosing an alias for a day or some 
+  other time period and not changing mid-session. Changing the identity in Netscape 
+  is relatively straightforward, but sufficiently complicated that making frequent 
+  changes would be time-consuming.</p>
+<p><br>
+  <b><font size="+1"><a name="AP1"></a>Appendixes</font></b></p>
+<p><br>
+  <b><i>Appendix 1 CERT Advisory</i></b><br>
+  CERT Advisory CA-99-04-Melissa-Macro-Virus</p>
+<p>Original issue date: Saturday March 27 1999<br>
+  Last Revised: Saturday March 27, 1999</p>
+<p>Systems Affected</p>
+<p>* Machines with Microsoft Word 97 or Word 2000<br>
+  * Any mail handling system could experience performance problems or a denial 
+  of service as a result of the propagation of this macro<br>
+  virus.</p>
+<p>Overview</p>
+<p>At approximately 2:00 PM GMT-5 on Friday March 26 1999 we began receiving reports 
+  of a Microsoft Word 97 and Word 2000 macro virus which is propagating via email 
+  attachments. The number and variety of reports we have received indicate that 
+  this is a widespread attack affecting a variety of sites.</p>
+<p>Our analysis of this macro virus indicates that human action (in the form of 
+  a user opening an infected Word document) is required for this virus to propagate. 
+  It is possible that under some mailer configurations, a user might automatically 
+  open an infected document received in the form of an email attachment. This 
+  macro virus is not known to exploit any new vulnerabilities. While the primary 
+  transport mechanism of this virus is via email, any way of transferring files 
+  can also propagate the virus.</p>
+<p>Anti-virus software vendors have called this macro virus the Melissa macro 
+  or W97M_Melissa virus.</p>
+<p><b>I. Description</b></p>
+<p>The Melissa macro virus propagates in the form of an email message containing 
+  an infected Word document as an attachment. The transport message has most frequently 
+  been reported to contain the following Subject header</p>
+<blockquote>
+  <p>Subject: Important Message From &lt;name&gt;</p>
+</blockquote>
+<p>Where &lt;name&gt; is the full name of the user sending the message.</p>
+<p>The body of the message is a multipart MIME message containing two sections. 
+  The first section of the message (Content-Type: text/plain) contains the following 
+  text.</p>
+<blockquote>
+  <p>Here is that document you asked for ... don't show anyone else ;-)</p>
+</blockquote>
+<p>The next section (Content-Type: application/msword) was initially reported 
+  to be a document called &quot;list.doc&quot;. This document contains references 
+  to pornographic web sites. As this macro virus spreads we are likely to see 
+  documents with other names. In fact, under certain conditions the virus may 
+  generate attachments with documents created by the victim.</p>
+<p>When a user opens an infected .doc file with Microsoft Word97 or Word2000, 
+  the macro virus is immediately executed if macros are enabled.</p>
+<p>Upon execution, the virus first lowers the macro security settings to permit 
+  all macros to run when documents are opened in the future. Therefore, the user 
+  will not be notified when the virus is executed in the future.</p>
+<p>The macro then checks to see if the registry key </p>
+<blockquote>
+  <p>&quot;HKEY_Current_User\Software\Microsoft\Office\Melissa?&quot;</p>
+</blockquote>
+<p>has a value of &quot;... by Kwyjibo&quot;. If that registry key does not exist 
+  or does not have a value of &quot;... by Kwyjibo&quot;, the virus proceeds to 
+  propagate itself by sending an email message in the format described above to 
+  the first 50 entries in every MAPI address book readable by the user executing 
+  the macro. Keep in mind that if any of these email addresses are mailing lists, 
+  the message will be delivered to everyone on the mailing lists. In order to 
+  successfully propagate, the affected machine must have Microsoft Outlook installed; 
+  however, Outlook does not need to be the mailer used to read the message.</p>
+<p>Next, the macro virus sets the value of the registry key to &quot;... by Kwyjibo&quot;. 
+  Setting this registry key causes the virus to only propagate once per session. 
+  If the registry key does not persist through sessions, the virus will propagate 
+  as described above once per every session when a user opens an infected document. 
+  If the registry key persists through sessions, the virus will no longer attempt 
+  to propagate even if the affected user opens an infected document.</p>
+<p>The macro then infects the Normal.dot template file. By default, all Word documents 
+  utilize the Normal.dot template; thus, any newly created Word document will 
+  be infected. Because unpatched versions of Word97 may trust macros in templates 
+  the virus may execute without warning. For more information please see:</p>
+<blockquote>
+  <p>http://www.microsoft.com/security/bulletins/ms99-002.asp</p>
+</blockquote>
+<p>Finally, if the minute of the hour matches the day of the month at this point, 
+  the macro inserts into the current document the message &quot;Twenty-two points, 
+  plus triple-word-score, plus fifty points for using all my letters. Game's over. 
+  I'm outta here.&quot;</p>
+<p>Note that if you open an infected document with macros disabled and look at 
+  the list of macros in this document, neither Word97 nor Word2000 list the macro. 
+  The code is actually VBA (Visual Basic for Applications) code associated with 
+  the &quot;document.open&quot; method. You can see the code by going into the 
+  Visual Basic editor.</p>
+<p>If you receive one of these messages, keep in mind that the message came from 
+  someone who is affected by this virus and they are not necessarily targeting 
+  you. We encourage you to contact any users from which you have received such 
+  a message. Also, we are interested in understanding the scope of this activity; 
+  therefore, we would appreciate if you would report any instance of this activity 
+  to us according to our Incident Reporting Guidelines document available at:</p>
+<blockquote>
+  <p>http://www.cert.org/tech_tips/incident_reporting.html</p>
+</blockquote>
+<p><b>II. Impact</b></p>
+<p>* Users who open an infected document in Word97 or Word2000 with macros enabled 
+  will infect the Normal.dot template causing any documents referencing this template 
+  to be infected with this macro virus. If the infected document is opened by 
+  another user, the document, including the macro virus, will propagate. Note 
+  that this could cause the user's document to be propagated instead of the original 
+  document, and thereby leak sensitive information.</p>
+<p>* Indirectly, this virus could cause a denial of service on mail servers. Many 
+  large sites have reported performance problems with their mail servers as a 
+  result of the propagation of this virus.</p>
+<p><b>III. Solutions</b></p>
+<p>* Block messages with the signature of this virus at your mail transfer agents.</p>
+<p>With Sendmail</p>
+<p>Nick Christenson of sendmail.com provided information about configuring sendmail 
+  to filter out messages that may contain the Melissa virus. This information 
+  is available from the follow URL:</p>
+<blockquote>
+  <p> ftp://ftp.cert.org/pub/cert_advisories/Patches/CA-99-04-sendmail-melissa-filter.txt</p>
+</blockquote>
+<p>* Utilize virus scanners</p>
+<p>Most virus scanning tools will detect and clean macro viruses. In order to 
+  detect and clean current viruses you must keep your scanning tools up to date 
+  with the latest definition files.</p>
+<p>+ McAfee / Network Associates</p>
+<p>http://vil.mcafee.com/vil/vm10120.asp<br>
+  http://www.avertlabs.com/public/datafiles/valerts/vinfo/melissa.asp</p>
+<p>+ Symantec</p>
+<p>http://www.symantec.com/avcenter/venc/data/mailissa.html</p>
+<p>+ Trend Micro</p>
+<p>http://housecall.antivirus.com/smex_housecall/technotes.html</p>
+<p>* Encourage users at your site to disable macros in Microsoft Word</p>
+<p>Notify all of your users of the problem and encourage them to disable macros 
+  in Word. You may also wish to encourage users to disable macros in any product 
+  that contains a macro language as this sort of problem is not limited to Microsoft 
+  Word.</p>
+<p>In Word97 you can disable automatic macro execution (click Tools/Options/General 
+  then turn on the 'Macro virus protection' checkbox). In Word2000 macro execution 
+  is controlled by a security level variable similar to Internet Explorer (click 
+  on Tools/Macro/Security and choose High, Medium, or Low). In that case, 'High' 
+  silently ignores the VBA code, Medium prompts in the way Word97 does to let 
+  you enable or disable the VBA code, and 'Low' just runs it.</p>
+<p>Word2000 supports Authenticode on the VB code. In the 'High' setting you can 
+  specify sites that you trust and code from those sites will run.</p>
+<p>* General protection from Word Macro Viruses</p>
+<p>For information about macro viruses in general, we encourage you to review 
+  the document &quot;Free Macro AntiVirus Techniques&quot; by Chengi Jimmy Kuo 
+  which is available at.</p>
+<p>http://www.nai.com/services/support/vr/free.asp</p>
+<p><b>Acknowledgements</b></p>
+<p>We would like to thank Jimmy Kuo of Network Associates, Eric Allman and Nick 
+  Christenson of sendmail.com, Dan Schrader of Trend Micro, and Jason Garms and 
+  Karan Khanna of Microsoft for providing information used in this advisory.</p>
+<p>Additionally we would like to thank the many sites who reported this activity.<br>
+  ______________________________________________________________________</p>
+<p>This document is available from:<br>
+  http://www.cert.org/advisories/CA-99-04-Melissa-Macro-Virus.html.<br>
+  ______________________________________________________________________</p>
+<p>CERT/CC Contact Information</p>
+<p>Email: cert@cert.org<br>
+  Phone: +1 412-268-7090 (24-hour hotline)<br>
+  Fax: +1 412-268-6989<br>
+  Postal address:<br>
+  CERT Coordination Center<br>
+  Software Engineering Institute<br>
+  Carnegie Mellon University<br>
+  Pittsburgh PA 15213-3890<br>
+  U.S.A.</p>
+<p>CERT personnel answer the hotline 08:00-20:00 EST(GMT-5) / EDT(GMT-4) Monday 
+  through Friday; they are on call for emergencies during other hours, on U.S. 
+  holidays, and on weekends.</p>
+<p>Using encryption</p>
+<p>We strongly urge you to encrypt sensitive information sent by email. Our public 
+  PGP key is available from http://www.cert.org/CERT_PGP.key. If you prefer to 
+  use DES, please call the CERT hotline for more information.</p>
+<p>Getting security information</p>
+<p>CERT publications and other security information are available from our web 
+  site http://www.cert.org/.</p>
+<p>To be added to our mailing list for advisories and bulletins, send email to 
+  cert-advisory-request@cert.org and include SUBSCRIBE your-email-address in the 
+  subject of your message.</p>
+<p>Copyright 1999 Carnegie Mellon University.</p>
+<p> Conditions for use, disclaimers, and sponsorship information can be found 
+  in http://www.cert.org/legal_stuff.html.</p>
+<p>* &quot;CERT&quot; and &quot;CERT Coordination Center&quot; are registered 
+  in the U.S.<br>
+  Patent and Trademark Office<br>
+  ______________________________________________________________________</p>
+<p>NO WARRANTY<br>
+  Any material furnished by Carnegie Mellon University and the Software Engineering 
+  Institute is furnished on an &quot;as is&quot; basis. Carnegie Mellon University 
+  makes no warranties of any kind, either expressed or implied as to any matter 
+  including, but not limited to, warranty of fitness for a particular purpose 
+  or merchantability, exclusivity or results obtained from use of the material. 
+  Carnegie Mellon University does not make any warranty of any kind with respect 
+  to freedom from patent, trademark, or copyright infringement.<br>
+  ______________________________________________________________________</p>
+<p>Revision History<br>
+  <br>
+  <b><font size="+1">Appendix 2 VicodinES-Cicatrix Interview</font></b></p>
+<p><br>
+  <b><i>Interview with VicodinES (1997) (emphasis added by ICSA)</i></b></p>
+<p>by Cicatrix</p>
+<p><b><i>[IS/Recon Note:</i></b> from html publication produced by computer virus 
+  exchange group VDAT August 1997 <b><i>Boldface emphasis is ours indicating significant 
+  data in the interview.]</i></b></p>
+<p>How did you start out in computers?</p>
+<p><b><i>I was 14 or 15 and my dad purchased a TI-99 4/A</i></b> and I started 
+  teaching myself BASIC. Programs were loaded with a cassette tape :) A buddy 
+  of mine had one with a modem and we used to call all these bbs's long distance 
+  on stolen calling card numbers. We would read sex stories, curse out people 
+  on &quot;the war boards&quot; and download files on how to make bombs and such. 
+  The time-frame here was like 1982? Maybe a bit later. I also ran a small bbs 
+  for a time called &quot;The Electric Death BBS&quot; on a very early Compaq 
+  Lugable (fucking thing must have been 30 pounds) ... it was around the same 
+  time.</p>
+<p>How and when did you start out in the virus scene?</p>
+<p><b><i>Hmmm, honestly I was bored, really high on prescription painkillers (purchased 
+  not prescribed) and I decided to do some assembly programming again.</i></b></p>
+<p>Have you written viruses? If so which would you like to take credit for?</p>
+<p>Yes I write virii and I don't want to take any credit for the massively hacked 
+  virii that I stuck a bunch of AOL'ers with. Beta's are a bitch! Ummm I will 
+  take credit for anything that infected your system, even if I didn't program 
+  it. If it annoyed you then I want credit for it :)</p>
+<p>How do you name your viruses?</p>
+<p><b><i>They all end in .Poppy because I am a pill-head and all the good pills 
+  come from the poppy plant! Why? Why not? They all get their first names by accident.</i></b></p>
+<p>Which programming languages do you know?</p>
+<p>I took COBOL in high school but I forgot most of it. I know Modula and Pascal. 
+  I also do ok in Assembly and C++. I am working on my Visual C++ skills right 
+  now because I have a really good idea for my next virus ;)</p>
+<p>What programming language do you like using the most?</p>
+<p>They all suck!</p>
+<p>Are you a member of a VX group?</p>
+<p><b><i>I am part of The Narkotic Network. There is just three of us.</i></b></p>
+<p>Which AV software do you like/respect the most? Which the least?</p>
+<p><b><i>I use AVP the most so I guess I like that the best.</i></b> I have a 
+  copy of every AV product on my hd so I can keep track of what programs can find 
+  what virii and to cross check my work. I don't really hate any of them - I don't 
+  have emotional attachments to any AV products.... I take that back I LOVE the 
+  ones that still can find my virii!</p>
+<p>What are your goals (VX wise)?</p>
+<p>To annoy countless users worldwide.</p>
+<p>What is your view on the continuous 'war' between VX and AV.</p>
+<p>Don't really know much about it.</p>
+<p>Where did you get you handle? What does it mean?</p>
+<p><b><i>VicodinES is a the name for a painkiller here in the US. It's actually 
+  Vicodin Extra Strength. I love those little fucking pills so I took that name. 
+  It's just Hydrocodone and Tylanol. Anyway I was very high on the little bastards 
+  when I decided to start writing virii so I thought it was appropriate.</i></b></p>
+<p>What is your view on Virus Creation software (eg. VCL, PS-MPC etc.)?</p>
+<p>I played with NuKE NRLG and PS G2. I thought they were pretty cool. I liked 
+  the basic idea behind DREG - I never got a copy of the program (basically never 
+  bothered to download it) but I liked they whole philosophy behind it.</p>
+<p>What is your view on macro viruses vs. assembly or HLL viruses?</p>
+<p>Macro's are cool by me. I think sometimes it's way too easy to create a new 
+  variant of a macro but I have seen some that really impressed me. I won't ever 
+  write one but that's my preference. HLL virii are the way to go. You can really 
+  kick some fucking ass with a C++ virii in 95 - just wait, you will see. I have 
+  also heard that someone is working on Microsoft Scripting virii? Kinda like 
+  batch virii in 95 .. but I haven't seen anything yet.</p>
+<p>Have you ever confirmed one of your viruses 'in-the-wild'?</p>
+<p>Too early to tell for me. Though I do have confirmation of 300+ people downloading 
+  an infected WinZip of mine. It was a carrier of Skim.Poppy so I suspect that 
+  one will do me proud. Hey Joe Wells get used to typing the word &quot;POPPY&quot; 
+  :)</p>
+<p>Which VX E-zine do you like to most? Which the least?</p>
+<p>I like 40 Hex - I re-read them now and again. The best new one is Xine. 29A 
+  is also cool.</p>
+<p>Which individual or what group do you like/respect in the VX world?</p>
+<p>I don't know any. I only respect those that helped me with or without knowing. 
+  People like Polt from the WCIVR and Cicatrix also AV'ers like Eugene Kaspersky 
+  who answered my questions without bias.</p>
+<p>In the AV world?</p>
+<p>see above</p>
+<p>Which individual or what group do you like/respect outside the VX or the AV 
+  world?</p>
+<p>I like UPS in warez!! Fuckin' BIG UP'S FELLAZ! I also thought Da Chronic was 
+  amazing with AOHell. It's a simple thing now but unheard of when it came out. 
+  AOHell was even in Newsweek. New ideas don't need to be complex to gain my respect 
+  they just have to work. Da Chronic deserves much credit!</p>
+<p>What is your view on destructive payloads in viruses?</p>
+<p>Counter productive.</p>
+<p>Do you think there is such a thing as a 'good' virus?</p>
+<p>All mine are good, I don't understand the question :)</p>
+<p>What do you do in 'real' life?</p>
+<p>I run the MIS dept. for a large engineering firm (I only run one location though) 
+  and I am industrial music artist on the side. You may one day own one of my 
+  cd's.</p>
+<p>Do people outside the VX scene know what you do (parents, girlfriend etc.)?</p>
+<p>Not many - I don't invite people to judge my actions.</p>
+<p>Do you do other computer stuff outside VX (Hacking, phreaking, warez etc.)?</p>
+<p>I dabble in warez. Fastin.Blee does more warez than I do. He keeps me in the 
+  scene.</p>
+<p>Should viruses be illegal? Is there a difference between creation and spreading?</p>
+<p>I don't think in those terms. I am not governed by other peoples morals. I 
+  wouldn't really take any heed in any laws. I would be forced to if it directly 
+  affected me but until it does I won't waste time on debating those issues with 
+  anyone or myself.</p>
+<p>Describe the perfect virus.</p>
+<p>I would end up spouting off &quot;the one that was never caught&quot; clich&eacute; 
+  here so I will pass.</p>
+<p>What is your view on Windows (95)</p>
+<p>Undiscovered country. Do yourself a favor and buy Andrew Schulman's &quot;Unauthorized 
+  Windows 95 Developer's Resource Kit&quot; - I am a big fan of GUI. I started 
+  in a text only world and I have no problems seeing it go away.</p>
+<p>What is your advice for people just starting out?</p>
+<p>I am not a good one for advice. Too selfish and sarcastic to be taken at face 
+  value, sorry.</p>
+<p>Where can you be reached if at all?</p>
+<p>vcru@hotmail.com</p>
+<p>Any greets?</p>
+<p>Yea shouts out to <b><i>Klonopin.Jones, Fastin.Blee,</i></b> Flexoral.DeZego, 
+  DeadPete, Mudcat &quot;Grave&quot; Rose, <b><i>Monkey, Mousey and The Woobie!</i></b></p>
+<p>Any other comments?</p>
+<p>Yes my Turn-On's are skinny little blonde chicks with straight hair, very strong 
+  thuderstorms and getting free painkillers. Oh and one other thing don't think 
+  you can invite me over to your house without me searching your bathroom medicine 
+  cabinet for painkillers. I will steal them, you can count on that.</p>
+<p>Short responses to the following names or words:<br>
+  - Dark Avenger - created MtE right? If so then he rules!<br>
+  - Dark Angel - some virus guy who followed the rules and took a &quot;spooky&quot; 
+  name just like all the other sheep. What his accomplishments are I have no idea.<br>
+  - Sarah Gordon - Isn't she the queen of misinformation? I could be wrong here.<br>
+  - Fridrik Skulason - AV guy from Iceland<br>
+  - many fat chicks come from Iceland<br>
+  - I have seen Bj&ouml;rk's tits and she has nasty ones<br>
+  - ugggh don't go to Iceland<br>
+  - Alan Solomon - AV guy from DSAV - name makes me think he is fat.<br>
+  - WordBasic/VBA - cross-platform virii courtesy of Bill Gates<br>
+  - VDAT - I dig it<br>
+  - VSUM - loads of mistakes - bad source of information<br>
+  - Assembler - not a good language for 95 virii<br>
+  - NuKE - A group who I think are cool<br>
+  - Phalcon Skism - I really don't know the difference between any of the groups 
+  but I think these guys did a good job with G2<br>
+  - VLAD - I have borrowed some ideas from these ingenious fellows<br>
+  - I give you credit here and on my website.<br>
+  - Trident - some poly engine right?<br>
+  - Polymorphic - waste of time - just don't get detected in the first place<br>
+  - Stealth - waste of time in 95 - no one uses TBAV in the US anyway so I don't 
+  bother to think about stealth<br>
+  - I hate...... &lt;list too long to print&gt;<br>
+  - I love...... <b><i>chocolate ice cream pops from Shop Rite</i></b> and a 2 
+  liter of Diet Mountain Dew on an empty stomach<br>
+  - IRC - crap - who wants to chat while they are on a computer anyway - fucking 
+  waste of time<br>
+  - Sex - not as big of a driving force as in my life as it seems to be for others 
+  but I love to fuck when I get the chance<br>
+  How and why did you get TNN started?</p>
+<p><b><i>I told these two other guys (Klonopin.Jones + Fastin.Blee) who were helping 
+  me distribute, debug and design virii that they were now in a group and they 
+  didn't argue - so The Narkotic Network was born.</i></b></p>
+<p>How is TNN organized?</p>
+<p>Honestly there isn't much to be organized. I just kinda do what I want with 
+  it.</p>
+<p>How are your other tutorials coming along?</p>
+<p>I have mixed feelings on tutorials. I don't deny the fact that I have learned 
+  a TON from tutorials but I'm not so sure I am that comfortable giving away all 
+  my ideas. I may not write any more tutorials. I have noticed a few errors in 
+  my first tutorial anyway and I can't deal with the constant proof reading I 
+  do in my head after I post my ideas.</p>
+<p>Will you ever release a virus creator?</p>
+<p>I don't have that much free time. I divide my free time between programming 
+  and music. I have a computer dedicated to the internet and virii and one dedicated 
+  to running my samplers, drum machines and syths.</p>
+<p>What is in your future and the future of TNN?</p>
+<p>I want to turn the Narkotic Network web site into a a site where I ask total 
+  strangers to send me all the drugs in their medicine cabinet. But, I don't think 
+  I can get away with that. I really want to do that but I don't want to risk 
+  it all and get caught! I guess we will just keep moving forward with more complex 
+  virii and maybe more information. I will probably even relocate when GeoShitties 
+  kills the site.</p>
+<p>Will TNN increase the number of members?</p>
+<p>I don't really know. The Vx culture moves very slow and seems to communicate 
+  very little (I have made attempts to cross pollinate with very little success) 
+  so for right now three members is as good as it gets. I also tried to get on 
+  #virii once to &quot;hang&quot; but I didn't have my IRC setup to +o super-dork 
+  access so no chat for me.</p>
+<p>Will TNN go into other scenes except VX? (hacking, etc.)</p>
+<p>We actually move a lot of warez. If you're into virii you gotta think about 
+  distribution and if we stay up on whats hot then we can infect you when you 
+  least expect it!</p>
+<p><br>
+  <b>Appendix 3 Aliases</b><br>
+</p>
+<p>
+<table width="546" border="1" cellspacing="2" cellpadding="0" align="center">
+  <tr> 
+    <td width="33%"> 
+      <p>
+        <center>
+          <b>&nbsp;David L. Smith</b>
+        </center>
+    </td>
+    <td width="33%"> 
+      <p>
+        <center>
+          &nbsp;<b>Common Ground</b>
+        </center>
+    </td>
+    <td width="34%"> 
+      <p>
+        <center>
+          &nbsp;<b>VicodinES</b>
+        </center>
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%"> 
+      <p>a.k.a. Doug Smith dlsmith@monmouth.com</p>
+      <p><br>
+        8 posts<br>
+        drugs, anxiety, klonopin<br>
+        Peace<br>
+        D<br>
+        <font color="#ff00ff">IIS</font><br>
+        Virus-advice<br>
+        <font color="#00ff00">AVP</font>
+    </td>
+    <td width="33%"> 
+      <p><font color="#ff0000">Nj.test</font></p>
+      <p><font color="#ff0000"><br>
+        Doug Winterspoon </font>Vic@tnn.com<br>
+        <font color="#ff0000">Anexsia ane@tnn.com</font>
+    </td>
+    <td width="34%"> 
+      <p>Virus Writer<br>
+        Cicatrix Interview</p>
+      <p><br>
+        Cat names<br>
+        Klonopin Jones<br>
+        <font color="#00ff00">AVP</font><br>
+        TNN<br>
+        VicodinES@my-dejanews.com<br>
+        16 posts<br>
+        Vic@Bite-me.org<br>
+        13 posts<br>
+        Vic@TNN.com<br>
+        2 posts<br>
+        <font color="#ff0000">Nj.test</font>
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%"> 
+      <p>Doug Winterspoon</p>
+      <p><br>
+        Nomail@nospam.com<br>
+        112 posts <br>
+        alt.comp.virus<br>
+        alt.comp.virus.source.code<br>
+        alt.binaries.pictures.erotica.pornstar<br>
+        <font color="#ff0000">nj.test<br>
+        </font><font color="#00ff00">AVP</font><br>
+        12/7/97 message with dlsmith return address
+    </td>
+    <td width="33%"> 
+      <p><font color="#00ff00">AVP</font></p>
+      <p><font color="#00ff00"><br>
+        Cicatrix Interview<br>
+        Dlsmith</font>
+    </td>
+    <td width="34%"> 
+      <p>Painfulld@aol.com</p>
+      <p><br>
+        29 posts<br>
+        <font color="#ff00ff">IIS</font><br>
+        Klonopin.jones<br>
+        TNN<br>
+        [d]<br>
+        cats' names
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%"> 
+      <p>Ibuprofen@my-dejanews.com</p>
+      <p><br>
+        7 posts<br>
+        Doug W<br>
+        Alt.tv.simpsons<br>
+        JP Morgan IP<br>
+        Monmouth IP<br>
+        Cable and Wireless IP
+    </td>
+    <td width="33%"> <font color="#ff00ff">IIS &amp; Klonopin.Jones</font></td>
+    <td width="34%"> 
+      <p>VicodinD@aol.com</p>
+      <p><br>
+        12 posts<br>
+        [d]<br>
+        <font color="#ff00ff">IIS</font><br>
+        PainfullD&agrave;VicodinD (AOL problems)
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>Xanax.smith@feedme</p>
+      <p><br>
+        13 posts<br>
+        Virus<br>
+        TNN Web page link<br>
+        VIC sig<br>
+        VicodinES/TNN sig<br>
+        Drug.lastname combo like Klonopin.Jones
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>VicodinI@aol.com</p>
+      <p><br>
+        2 posts<br>
+        [d]<br>
+        <font color="#ff00ff">IIS</font>
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>VicodinES@aol.com</p>
+      <p><br>
+        36 posts<br>
+        Peace<br>
+        Vic<br>
+        Ft.Lauderdale Bar<br>
+        Industrial Music<br>
+        (not IIS though)
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>Anexsia &lt;ane@tnn.com</p>
+      <p><br>
+        8 posts<br>
+        <font color="#ff0000">Nj.test</font>
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>Dr Lortab drlortab@aol.com</p>
+      <p><br>
+        10 Posts<br>
+        Rec.music.industrial<br>
+        <font color="#ff00ff">IIS</font><br>
+        Peace<br>
+        [d] Opiate
+    </td>
+  </tr>
+  <tr> 
+    <td width="33%">&nbsp; </td>
+    <td width="33%">&nbsp; </td>
+    <td width="34%"> 
+      <p>Skyroket skyroket@aol.com</p>
+      <p><br>
+        27 Posts<br>
+        alt.sex and alt.binaries<br>
+        virus-infected<br>
+        W97M/Blee.B<br>
+        Poppy
+    </td>
+  </tr>
+</table>
+<p></p>
+<p align="center"><br>
+  The VicodinES</p>
+<p>
+  <center>
+    <a href="tumisc30.htm">Theory Of Better File Virus Distribution</a><br>
+    (a study in new ideas?)
+  </center>
+</p>
+<p>Ok so you managed to get over your first hurdle, you managed to make/hack/remix 
+  a memory resident *.com file infecting virus. Congratulations! I mean that wholeheartedly. 
+  So now what? Did you spend all that time learning and debugging .asm files just 
+  so it would sit on your HD? No? I didn't think so. So what's your next move? 
+  DISTRIBUTION!</p>
+<p>The first rule of distribution for a file infector is demand. You must create 
+  a demand or use a program that is in demand as a host. Without demand your file 
+  will never be downloaded or run.<br>
+  Second, deception! You must be able to get your virus past most AV products 
+  or you will never get a chance to infect. How is your code? Can you sneak by 
+  heuristics? You will need a way to sneak your virus passed the most common AV 
+  programs, even if you're heuristically challenged. Can that be done? Yes, a 
+  clever dropper can do that. How? .... read on.<br>
+  Third, infection! Infect on the first run! This also requires a Decently clever 
+  dropper. What good is a memory resident *.com infecting virus if it's run and 
+  then no .com files are run the entire time it's resident. Then *poof* someone 
+  shuts off the computer and never runs your dropper again? That would be fine 
+  if you had written a multipartite virus but for this first example we are concentrating 
+  on a beginners virus, a basic *.com memory resident file infector.</p>
+<p>Ok so I say that Virus Distribution consists of three basic components:<br>
+  DEMAND, DECEPTION and INFECTION. Am I right? Is this a sound theory? Well let 
+  me back up my theory with an example or two.</p>
+<p>&nbsp;</p>
+<p>EXAMPLE #1:<br>
+  The Virus: *.com memory resident file infector. (virus.com)<br>
+  Tools Needed: Tlink, Bat2exe, the virus.obj file (you can find Bat2exe<br>
+  from filez.com if you don't already have it and you must already have Tlink 
+  and<br>
+  the .obj file if you wrote the virus!)</p>
+<p>Ok so you have everything you need and you're just dying to infect the world. 
+  Ok, give it some thought. Think &quot;DEMAND.&quot; In this example we will 
+  capitalize on a current issue and create demand. In this case we dream up an 
+  &quot;AOL IE 3.0 Security Patch&quot; and our method of distribution will be 
+  AOL and USENET. You see, I have already done this. When AOL had their big crash 
+  I created an Anti-Crash &quot;AOL Approved&quot; Downloadable Patch. You say 
+  no one would ever fall for that :) .. yea right! So I just retooled that idea 
+  for &quot;right now&quot; - AOL only came out with a patch for their IE integrated 
+  browser on 7-7-97 :) .... Anticipate demand, create demand or capitalize on 
+  demand. Ok so now everyone who uses AOL will want to be secure, and you have 
+  made a program that is in demand. With demand out of the way we need to concentrate 
+  on deception. Now, most computer users are not that bright but they know better 
+  than to just run a .bat file - hell I have even heard that some computer users 
+  even know how to view .bat files and look for suspicious content! So we will 
+  hide our .bat file in a .com. (realistically though your chance won't drop that 
+  much if you just leave it as a .bat)</p>
+<p>Ok lets make that dropper!</p>
+<p>1. Rename tlink.exe to patch.exe<br>
+  2. Rename virus.obj to patch.obj<br>
+  3. Create a nice descriptive .doc or readme.txt file to calm the user's<br>
+  nerves.<br>
+  4. Create a .bat file that acts like your file description.<br>
+  aol_ie.bat :<br>
+  cls<br>
+  echo Press any key to update your Internet Explorer For<br>
+  America Online<br>
+  pause&gt;nul<br>
+  patch /t patch.obj ;link the virus<br>
+  patch ;run the virus<br>
+  command ;call command.com for infection<br>
+  5. bat2exe your aol_ie.bat - it will result in aol_ie.com [you can skip<br>
+  this part if you have to]<br>
+  6. Package your files into a nice .zip or if you want you can use a self<br>
+  extracting compression program but use one with an icon!! (WinZip or <br>
+  RAR) [icons calm new computer user's nerves!]</p>
+<p>So your zip will contain :<br>
+  patch.exe [why did you rename tlink.exe? patch goes with the flow better than 
+  tlink.exe<br>
+  and will not arouse suspicion]<br>
+  patch.obj [why did you rename virus.obj? also goes with the flow better]<br>
+  aol_ie.com [the dropper .bat converted to .com]<br>
+  readme.txt [be creative here!!]</p>
+<p>*** [EXTRA] Take it a bit further! . If you want to you can add a few extra 
+  steps like creating a .pif for your .com [or .bat] or by including a hidden 
+  .ico or .dll file to go along with your .pif . use your imagination ***</p>
+<p>*** [EXTRA] Take it a bit further! ... You can also fatten up your zip with 
+  miscellaneous files of varying size renamed to patch.dat or something equally 
+  innocuous ***</p>
+<p>*** [Snag?] Did we hit a snag? . What if they view these files with a hex editor 
+  or text editor? No problem - all they will see is the inside of tlink.exe or 
+  some commands in aol_ie.com like patch and pause, certainly nothing to be alarmed 
+  about :) ***</p>
+<p>So is the deception complete? More than you may realize. They downloaded your 
+  zip and scanned it. They did a deep or heuristic scan!!! Are you worried? Should 
+  you worry because your virus is heuristically challenged? Not really - you have 
+  a 75% better chance of beating heuristics in .obj form :) ... don't believe 
+  me? Test that one yourself. Also your aol_ie.com has the pause command in it. 
+  What virus pauses before it infects? Do you know of one? It doesn't make logical 
+  sense ... that's why we do it.</p>
+<p>Finally, we need instant infection. Wait, that's already done. Did you catch 
+  it? The third to last line in our bat links the viral code and creates the actual 
+  virus. The second to last line runs our virus which, in turn goes memory resident. 
+  Then the last line of our very simple dropper runs command.com. We just went 
+  memory resident and then got command.com! Hell that means that even if our user 
+  has Win95 we still get a chance to go active every time they invoke a DOS Prompt 
+  or Shut Down To DOS. Also our heuristically challenged virus wasn't even created 
+  until after the download was scanned and no current AV programs (that I know 
+  of) support heuristics in their memory esident<br>
+  scanner!</p>
+<p>So in example #1 I demonstrated how some thought and ingenuity combined with 
+  my theory of &quot;Better Distribution&quot; can increase your chances of infecting 
+  a new machine and spreading. Example #1 only deals with a very simple virus 
+  and limited targets (how many .com files can you find on your system?) ... but 
+  our mission was to increase the chances of infection and survival and we did 
+  that 10 fold!!</p>
+<p>Ok, do you subscribe to my theory of Better Distribution yet? No? I'll try 
+  once again with a more complex virus and a totally different angle, but sticking 
+  to the main points of my theory : DEMAND, DECEPTION and INFECTION!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>EXAMPLE #2:<br>
+  The Virus: *.exe (Windows EXE) non-memory resident file infector.<br>
+  (virus.exe)<br>
+  Tools Needed: A current or new beta release of a popular Windows program.</p>
+<p>Ok let's start! Mission number one? DEMAND! For this example let's use the 
+  latest greatest release of WinZip (beta or otherwise). That should take care 
+  of demand - everyone wants a new FREE version of WinZip. It's a good universal 
+  program to use just like pkzip was a few years ago.</p>
+<p>As you just saw demand takes care of itself if you just put a little thought 
+  into it. Lets see if DECEPTION will do the same thing. How do you infect WinZip? 
+  Well, since this a more advanced example I will just assume that I don't have 
+  to show you how to infect a file. But, I will tell you to test your work! Think! 
+  The WinZip setup program is a lot more complex than any dropper .bat file we 
+  can construct so be sure to test your infection. For example I have done the 
+  WinZip thing and the Setup.exe for the 16bit WinZip has to have the exact same 
+  time/date stamp as the readme.txt. You may have made a successful infection 
+  but your deception will fail if the infected program screams that time/date 
+  stamps don't match! So with the more complex programs deception takes a bit 
+  more thought. Does the deception end here? No. How will you distribute this 
+  virus in a deceptive way? If you follow the normal route of distribution for 
+  a new virus that is attached to a new ware then you would just post the zip 
+  to alt.binaries.warez and all other warez-related newsgroups. Well, that's great 
+  but Dr Solly scans most binary newsgroups and posts virus alerts and instant 
+  fixes. So in one day you can be found, named and have a remover. That is the 
+  worst thing that could ever happen to a new virus! So what's there to do? Well 
+  either scam some warez web sites or warez traders into taking your file if it's 
+  legit (but infected) or do what I do/did and post to all those USENET warez 
+  related newsgroups with a LINK to some hacked out ftp or web site where the 
+  file is stored!! No one bothers to follow all warez links and scan them. Shit, 
+  I did this for one of my files and hid a counter on the site . it reached 553 
+  before Geocities threw me off for distributing registered software. Now think 
+  about that - I took a new, not named and currently unscannable virus and had 
+  500+ people seek it out (and run it?). For deceptive distribution that was a 
+  slam-dunk!</p>
+<p>Ok now how did my INFECTION take care of itself? I chose a setup.exe!!! You 
+  have to choose your carriers wisely. A setup program usually runs all over and 
+  infects the program that it is setting up, in this case WinZip. Plus, WinZip 
+  is an often used program which greatly increases your chances of survival and 
+  any self extracting archives will be carriers or my virus!</p>
+<p>Are you now convinced that my &quot;Theory of Better Distribution&quot; is 
+  the way to attack your next world wide virus infection? I hope so.</p>
+<p>Boot sector virii don't have to rule the world of distribution (and the Wild 
+  List!) - think hard and you will figure out new and ingenious ways to make someone 
+  want your virus. I hope that I have made you think a bit harder about what you're 
+  going to do the next time that you decide to distribute one of your virii. Hopefully 
+  you will never again just upload some &quot;new patch&quot; for some obscure 
+  program to a local BBS and pray that your virus makes it around the world. If 
+  this was 1989 then you may have had a chance but remember that you have to think 
+  about now. Also, don't think you can just upload sex.exe to alt.binaries.erotica. 
+  Few people are stupid enough for run an .exe from a porn newsgroups (though 
+  I believe some are - just not enough of them to count).</p>
+<p>Once again remember you have to think about now, don't take into account how 
+  they used to do it! Think about how you can do it now! How do you get files 
+  now? What programs do you want now? What makes you suspicious now?</p>
+<p>Remember unless you still want to live that &quot;I just write virii for research&quot; 
+  lie then you need to think as hard about your distribution as you did on making 
+  your multipartite encrypted armored polymorphic stealth tunneling memory resident 
+  Windows 95 virus!!!</p>
+<p>Peace,<br>
+  VicodinES</p>
+<p>Ps. I also recommend you get the Nowhere Utilities by Nowhere Man! Fucing<br>
+  great tools for deception!</p>
+<p>[text content edited by Commander Ritalin and Fastin.Blee]</p>
+<p>
+<hr align=LEFT>
+<p></p>
+<p>CERT Advisory 99-04, Melissa Macro Virus http://www.cert.org/advisories/CA-99-04-Melissa-Macro-Virus.html 
+  (Appendix 1)</p>
+<p>VDAT Cicatrix interview of VicodinES (Appendix 2)<br>
+</p>
+<p><b><font size="-1">Last Modified: 12/09/99 12:50</font></b> 
+<hr>
+</BODY>
+</HTML>

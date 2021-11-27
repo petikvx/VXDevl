@@ -1,0 +1,139 @@
+               'ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿'
+                º *******:::: NE EXE Infection ::::******* º
+                º ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ º
+                º ***** -= Ice Breaker/DIFFUSION =- ****** º
+               'ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ'
+
+
+Ice Breaker's Tutorial On NE EXE Infection
+==========================================
+ I have found problems within the virus community. Althought NE EXE's are
+dying off and PE's are taking over, I still think that NE infection should
+be known.. Unfortunately, I don't understand it yet, so as I write this,
+I'll be testing it out. I hope this will help you, as it will me. The code
+will be tested, but possibly buggy, Sorry but I can't do any better. The
+presented code will be new and unique as I have coded from scratch! So pls
+bare with me and my coding.
+ For you to take notice in this, I recommend you learn these first!
+ 1. Overwritter
+ 2. Parasitic COM
+ 3. Parasitic DOS EXE  (Actually, Not Required)
+ If you haven't done these, go away until you have!
+
+This is not the best way to do it, but hey, it's new and unique! (And for
+you beginners, VERY simple!)...
+
+The Concept
+===========
+Infect the STUB (If you don't know what this is, please leave this, learn,
+then return!) with your virus (Make sure you have enough space, or make
+more for it). Next comes the idea of infection, Re-launch is the key-word!
+
+Stepz of Infection
+==================
+After you've found the EXE, and saved it's name..
+1. Open File
+
+2. Read the entire header from offset 00h to 3Fh. Contains IMPORTANT
+   information.
+
+3. Check Offset 18h = 40h (@)
+
+4. Read in the Word at 3Ch. This tells you where the NE/PE header is,
+   This is VERY Important!
+
+5. Get the IP address from Word Offset 8h, the IP is the only thing
+   we need though, this tells us where the code starts for the "This
+   program requires ...." message. This requires slight alteration -
+   40h Start is shown as 04h, 200h Start is shown as 20h.
+
+   Simple command is load word offset 8h into ax (or any reg you want)
+   and have on the next line -
+   rol  ax,04h
+
+   I know in the MZ DOS header the CS:IP was at 14h, but view as many
+   PE's and NE's as you want, you'll notice mine works!
+
+6. Now, Subtract the NE/PE Header start from the IP, This gives you the
+   size of the available space to the virus.
+
+7. Compare the virus size to the available space, if the space is too small
+   you can either, leave the file, or attempt a patching (Move the file from
+   the NE/PE header down, just enough to fit the virus in.. Remember to patch
+   the header for the new NE/PE Header offset!). I don't recommend patching,
+   it will require alot of disk access, probably giving away the virus!
+
+8. Seek from the start to the NE/PE header and check it's a NE Header...
+   If it is not, abort! (Remember, this works with PE EXE's as well!)
+
+9. Seek from the start of the file to the beginning of the STUB
+
+10. Write the virus! The Fun part! Hehehe
+
+11. Seek to the NE Header.
+
+12. Now for the new part, Eliminate the NE Text, use it to create a
+    "Infected" Marker.
+
+13. Close the file
+
+Restoring the Host
+==================
+ This is easy! Now, if you've been good, and remembered to save the name, The
+virus should have the current EXE's name in it. All you do now, is COPY the
+Host to a Unused name, such as L437GHF4.EXE, Open it, Seek to the Start of the
+NE Header (Save this address as well!) and Overwrite your marker with "NE" to
+restore it's WINDOZE code, then close the file and call an execution routine!
+ SIMPLE!!!!
+
+Conclusion
+==========
+ A far and winding road, but hey, from my testing it works! I'm sure you can
+go in and play with the NE Header, but I couldn't be arsed really! Also, I
+think that this method is kewl as, providing you don't patch the file, the
+size doesn't increase, and is more reliable than the viruses which search for
+chains of constants, because ALL Win files has the STUB, but they don't all
+have chains of constants! 100% Original Idea, 0% given code, for 3 reasons
+1. It's too simple to need to provide samples
+2. A version of this code will be in the Straight Life virus
+3. I'm too lazy to write it in this tutorial! HAHAHAHAHAHA
+
+
+Last Minute Notes
+=================
+ I just tried this idea with a PE file, and it works!!!!!!!!!!!!!!!!
+
+Greetz
+======
+Cenobyte        Hey man, the work'll cool off soon! Stick with us!
+Cicatrix        Wanna do your own interview with me?
+Crack's Whore   Compile that fucking virus!
+Dark Mage       Why don't you tell me your problem, so I can help!
+Foxz            I **HATE** your site! ;)
+HamDan Wong     Where are you, my friend?
+Jerk1N          ???? ;)
+Mike Lopez      Why aren't you responding to my letters?
+Opic            Kewl viruses my friend, talk soon?
+RAiD            What did ya think of Hellphoria?
+Rajaat          If you read this, please mail me....
+SerialKiller    Why don't my ICQ messages go through to you?
+Slage Hammer    You need England on my address to reach me... :)
+Smuilt          Where's the re-write of your database?
+SPo0ky          Found the SDK's and DDK's yet? ;)
+VicodinES       Where are you? Not seen you for ages..
+Virtual Deamon  Slam #5?
+Virus           How's AccessiV.C doing on the BBS? ;)
+
+        Cool down to the ice level,
+                ][ce Breaker     kma@thevortex.com
+
+
+ Û°±Û   °²Û°² °±°Û ±°±° ±°    °°  °±²°±±  °±Û°°  °°°²°  Û°°     °±   Û±
+ °±²°±   Û±°  ²°   °°   °°    °° °°±Û±±°±  °²°  ±°°²°Û± °±²°    ²°  Û²±±
+ ²° °Û°  ²±°  °°   ²°   °±    °± ²±     °  °°°  ±°   °° ±°°±°   ²°  ±±±±
+ ±±  ²²  ±°°  ²²°° °°±° °²    °² °±°°Û°    °Û°  °°   ±° °° °°±  °°  ±±±°
+ ²²  ±Û  ²°²  ±°   Û°   °±    °°   ²±°°±   °²°  ²°   ²± ±°  °°° °Û   °°
+ °° ±²±  °°°  Û°   °°   ²°    °° °     °°  °±°  ±°   °± °Û   Û±°±°
+ ±±²²°   °Û±  °°   °±    Û°°Û°±  Û°±²°±°²  °°°  °°°°Û²° ²°    °±°°   Û±
+ °±Û²   °±°²° °°   ²°     ²°±°    °°±°±²  Û²±Û°  °±°°°  °°     ²°±   ±°
+                             VIRUS TEAM

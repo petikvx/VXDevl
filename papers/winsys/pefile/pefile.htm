@@ -1,0 +1,1076 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>PE File Structure</title>
+</head>
+
+<body background="../images/pgbkd9.jpg" bgcolor="#FFFFFF">
+
+<table border="0" width="100%">
+    <tr>
+        <td align="center"
+        background="../MainJFMTemplates_files/flashy1_bg_base_blue.gif"><font
+        face="Arial"><img
+        src="../MainJFMTemplates_files/flashy1_spacer_blue.gif"
+        width="100%" height="14"></font></td>
+    </tr>
+</table>
+
+<p align="center"><font color="#000080" size="4" face="Arial"><b>PE
+File Structure</b></font></p>
+
+<p align="left"><font face="Arial">The <strong>&quot;portable
+executable file format&quot; (PE)</strong> is the format of the
+binary programs (exe, dll, sys, scr) for MS windows NT, windows
+95 and win32s. It can also be used for object files ( bpl, dpl,
+cpl, ocx, acm, ax).</font></p>
+
+<p align="left"><font size="2" face="Arial">The format was
+designed by <strong>Microsoft</strong> and then in 1993
+standardized by the <strong>Tool Interface Standard Committee</strong>
+(Microsoft, Intel, Borland, Watcom, IBM and others) , apparently
+based on the <strong>&quot;common object file format&quot; </strong>(COFF),
+the format used for object files and executables on several UNIX
+and VMS OSes.</font></p>
+<div align="center"><center>
+
+<table border="1">
+    <tr>
+        <td><p align="center"><font size="2" face="Arial">The
+        following 3 paragraphs copied from Mark Pietrek's article
+        on MSDN</font></p>
+        <p align="left"><font size="2" face="Arial">The term
+        &quot;Portable Executable&quot; was chosen because the
+        intent was to have a common file format for all flavors
+        of Windows, on all supported CPUs. To a large extent,
+        this goal has been achieved with the same format used on
+        Windows NT and descendants, Windows 95 and descendants,
+        and Windows CE.</font></p>
+        <p align="left"><font size="2" face="Arial">A very handy
+        aspect of PE files is that the Data <strong>Structures</strong>
+        on disk are the same data structures used in memory.
+        Loading an executable into memory is primarily a matter
+        of mapping certain ranges of a PE file into the address
+        space. Thus, a data structure is identical on disk and in
+        memory. The key point is that if you know how to find
+        something in a PE file, you can almost certainly find the
+        same information after the file is loaded in memory. It's
+        important to note that PE files are not just mapped into
+        memory as a single memory-mapped file. Instead, the Win32
+        loader looks at the PE file and decides what portions of
+        the file to map in. This mapping is consistent in that
+        higher offsets in the file correspond to higher memory
+        addresses when mapped into memory. The offset of an item
+        in the disk file may differ from its offset once loaded
+        into memory. However, all the information is present to
+        allow you to make the translation from disk offset to
+        memory offset.</font></p>
+        <p align="left"><font size="2" face="Arial">A module in
+        memory represents all the code, data, and resources from
+        an executable file that is needed by a process. Other
+        parts of a PE file may be read, but not mapped in (for
+        instance, relocations). Some parts may not be mapped in
+        at all, for example, when debug information is placed at
+        the end of the file. A field in the PE header tells the
+        system how much memory needs to be set aside for mapping
+        the executable into memory. Data that won't be mapped in
+        is placed at the end of the file, past any parts that
+        will be mapped in.</font></p>
+        </td>
+    </tr>
+</table>
+</center></div>
+
+<p align="left"><font size="3" face="Arial">The <strong>PE</strong>
+data structures are: <strong>DOS header, DOS stub, PE File Header,
+Image Optional Header, Section Table - </strong>which has a
+trailing array of <strong>Section Headers - Data Directories - </strong>these
+directories contain pointers to data in the individual sections<strong>
+</strong>and, lastly, the individual <strong>Sections </strong>themselves.</font></p>
+
+<p align="center"><img src="peheader2.jpg" width="282"
+height="436"></p>
+
+<p align="left"><font size="2" face="Arial">Each section header
+has some flags about what kind of data it contains (&quot;initialized
+data&quot;,&quot; readable data&quot;,&quot;writable data&quot;</font>
+<font size="2" face="Arial">and so on), whether it can be shared
+etc., and pointers (</font><a href="#Notes"><font size="2"
+face="Arial">RVA's</font></a><font size="2" face="Arial">). A PE
+header component is called the &quot;IMAGE_DIRECTORY HEADER&quot;.
+This header holds information about some PE Sections (Resources,
+Import, and so on). Each Record being [PointerToSection] [Size]. </font></p>
+
+<p align="left"><font size="2" face="Arial">Some sections also
+have additional headers (for example .rsrc) called <strong>Section
+Data Headers</strong>. Some don't, directoryless types of
+contents of sections are, for example, &quot;executable code&quot;
+or &quot;initialized data&quot;. Essentially, the sections'
+contents is what you really need to execute a program, and all
+the header and directory stuff is just there to help you or the
+win32 loader to find it.</font></p>
+
+<hr>
+
+<p align="center"><font color="#000080" size="4" face="Arial"><strong>PE
+File Layout </strong></font><font color="#0000FF" size="4"
+face="Arial"><strong>RosAsm</strong></font><font color="#000080"
+size="4" face="Arial"><strong> Base3.exe</strong></font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>Dos MZ
+Header</strong></font></p>
+
+<p align="center"><font face="Arial"><img src="b3mz.jpg"
+border="1" width="563" height="85"></font></p>
+
+<p align="left"><font size="2" face="Arial">This makes a <strong>PE</strong>
+file an <strong>MS-DOS</strong> executable. First 2 bytes are
+always: <strong>4D</strong>h <strong>5A</strong>h &gt; &quot;<strong>MZ</strong>&quot;
+is <strong>dos exe</strong> <strong>signature</strong> starting
+at 0h, <strong>Last Page Size</strong> ( 2 bytes),<strong>Total
+Pages in File </strong>( 2 bytes), <strong>Relocation Items</strong>
+( 2 bytes). The word at offset 8h tells the # of 16 byte
+paragraphs the DOS header contains &gt; <strong>Dos Header Size</strong>
+4h (16*4) = 40h bytes in length,</font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>Min Size</strong>
+( 2 bytes),<strong> Max Size</strong> FFFFh @ offset 0Ch, <strong>Initial
+Stack Segment</strong> (SP register value at run time 2 bytes), <strong>Initial
+Stack Pointer</strong> 2 bytes, 2 byte <strong>Checksum for
+Header</strong> @ offset 12h, <strong>Initial Instruction Pointer</strong>
+2 bytes, <strong>Initial Code Segment</strong> 2 bytes, <strong>Relocation
+Table Offset </strong>40h @ offset 18h 2 bytes,<strong>Overlay #</strong>
+default 2 bytes, <strong>Betov's CheckSum</strong> 4 bytes @
+offset 38h (located in the last part of 8 reserved words ) and
+the <strong>PE Header Pointer</strong> &gt; 80h 4 bytes @ offset
+3Ch. </font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 00h thru 3Fh )</strong></font></p>
+
+<p align="center"><img src="b3qmz.jpg" border="1" width="397"
+height="353"></p>
+
+<p align="center"><font face="Arial">In a <strong>Win32 system
+the PE loader just skips</strong> the following MS-DOS Stub.</font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>MS-DOS
+executable (&quot;stub&quot;)</strong></font></p>
+
+<p align="center"><font face="Arial"><img src="b3dstub.jpg"
+border="1" width="561" height="85"></font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>DOS stub</strong>
+is actually a valid EXE for PE-files, it is a MS-DOS 2.0
+compatible executable that almost always consists of a small
+number of bytes that output an error message. It can simply
+display a string like &quot;This program requires Windows&quot;
+or &quot;Cannot be run in DOS mode&quot; or the <strong>&quot;RosAsm
+message above&quot;</strong>. </font></p>
+
+<p align="left"><font size="2" face="Arial">The bytes from 40h to
+4Dh above is the actual code: push cs // pop ds // mov dx 0E //
+mov ah 09 // int 021 // mov ax 4C01 // int 021 to print the
+message if the program is run in DOS.</font></p>
+
+<hr>
+
+<p align="center"><font color="#000080" face="Arial"><strong>PE
+File header</strong></font><font face="Arial"> (in the COFF-format)</font></p>
+
+<p align="center"><font face="Arial"><img src="b3pe8-9.jpg"
+border="1" width="563" height="43"></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row:</strong>
+The 32-bit-<strong>PE signature</strong> (first 4 bytes contains
+the number 4550h &gt; &quot;<strong>PE</strong>&quot;) @ offset
+80h , the 2 byte <strong>IMAGE_FILE_MACHINE</strong> @ offset 84h
+for x<strong>86</strong>: (<strong>14C</strong>h) for Intel 80386
+processor or better, (14Dh) for Intel 80486 processor or better,(14Eh)
+for Intel Pentium processor or better. 2 bytes @offset 86h
+contains <strong>how</strong> <strong>many sections </strong>are
+in it <strong>04h</strong> . Next is a timestamp <strong>'TimeDateStamp'</strong>
+(32 bit value).The members <strong>'PointerToSymbolTable'</strong>
+(32 bit value) and,</font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>Second row:'NumberOfSymbols'</strong>
+0h @ offset 90h (32 bit value) are used for debugging information.
+<strong>'SizeOfOptionalHeader'</strong> E0h (16 bit) @ offset 94h:This
+header tells us how the binary should be loaded: The starting
+address, the amount of stack to reserve, the size of the data
+segment etc..<strong>'Characteristics'</strong> is 16 bits 10Fh (1_00001111)
+@ offset 96h and consists of a collection of flags, most of which
+are valid for libraries and object files. <strong>Optional Header
+Starts @ </strong>offset 98h the 16-bit-word is <strong>'Magic' </strong>always
+contains the value 10Bh.The next 2 bytes 3h @ offset 9Ah are the <strong>'Version'</strong>
+of the linker.<strong>'SizeOfCode' </strong>is last 4 bytes<strong>
+Size of the executable code.</strong></font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 80h thru 9Fh)</strong></font></p>
+
+<p align="center"><font size="1" face="Arial"><strong><img
+src="b3peq8-9.jpg" border="1" width="370" height="232"></strong></font></p>
+
+<hr>
+
+<p align="left"><font size="2" face="Arial">Thusfar in Base3.exe
+as written by <strong>RosAsm,</strong> we have encountered the<strong>
+Dos</strong> header,<strong> Dos</strong> stub and the <strong>PE</strong>
+'image file header' - that tells us most importantly, what
+machine it runs on, <strong>how many sections</strong> are in it
+and the<strong> size of</strong> the '<strong>Image Optional
+Header</strong>', which immediately follows and we are now in....starting
+at 98h,with magic and is E0h bytes long, adding the two together
+we get <strong>178h</strong>... which is the start of the <strong>IMAGE_DATA_DIRECTORY</strong>
+array as we will see below after we finish with the '<strong>Image
+Optional Header</strong>' ..</font></p>
+
+<hr>
+
+<p align="center"><font face="Arial"><img src="b3pea-b.jpg"
+border="1" width="563" height="40"></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row:</strong>
+The next 2 longwords @ offset A0h (32 bits each) are intended to
+be the size of the initialized data (<strong>'SizeOfInitializedData'),</strong>
+the &quot;data segment&quot; and the size of the uninitialized
+data ('<strong>SizeOfUninitializedData'</strong> ) the so-called
+&quot;bss segment&quot;. This is the size of everything but Code
+and Virtual data (size of initialized data .data + .rsrc+... + .reloc).
+Next is a 32-bit-value @ offset A8h that is an <strong>RVA (</strong></font><a
+href="#Notes"><font size="2" face="Arial"><strong>relative
+virtual address</strong></font></a><font size="2" face="Arial">).
+This RVA is the offset to the code's entry point, program
+execution starts here (<strong>'AppRVAentryPoint'</strong>).The
+next 2 32-bit-values are the offsets to the executable code (<strong>'AppBaseOfCode'
+)</strong> and, </font></p>
+
+<p align="left"><font size="3" face="Arial"><strong>Second row</strong></font><font
+size="2" face="Arial"><strong>:</strong> The initialized data @
+offset B0h (<strong>'SHAppBaseOfData'</strong>).The next entry is
+a 32-bit-value giving the preferred (linear) load address (<strong>'ImageBase'</strong>)
+of the entire binary, including all headers 400000h = (The image
+base linker default value). The next 2 32-bit-values @ offset B8h
+are the <em><strong>alignments</strong></em> of the PE-file's
+sections in <strong>RAM</strong> <strong>'Section Alignment'</strong>
+when the image has been loaded and in the <strong>'File Alignment'</strong>
+in the file. </font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( A0h thru BFh )</strong></font></p>
+
+<p align="center"><font face="Arial"><img src="b3peqa-b.jpg"
+border="1" width="235" height="128"></font></p>
+
+<p align="center"><img src="b3pec-d.jpg" border="1" width="563"
+height="44"></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row:</strong>
+The next 4 16-bit-words are the expected operating system version
+('MajorOperatingSystemVersion' and 'MinorOperatingSystemVersion,
+the next 2 16-bit-words are the expected subsystem version and 4
+bytes of reserved space.</font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>Second row: 'SizeOfImage'</strong>
+32 bit value@ offset D0h.It is the sum of all headers' and
+sections' lengths if aligned to 'SectionAlignment'. It is a hint
+to the loader how many pages it will need in order to load the
+image in RAM. Next <strong>'SizeOfHeaders'</strong> @ offset D4h
+a 32-bit-value giving the total length of all headers including
+the data directories and the section headers, it is also the
+offset to the sections. Then we have got a 32-bit-checksum <strong>'CheckSum'.
+</strong>The algorithm to compute the checksum is property of
+Microsoft, and they won't tell you, it is only needed for Driver
+PEs. The checksum need not be supplied and may be 0. Then there
+is a 16-bit-word <strong>'Subsystem' </strong>@ offset DCh IMAGE_SUBSYSTEM_WINDOWS_GUI
+(2h). Windows 95 binaries will always use the Win32 subsystem, so
+the only legal values for these binaries are 2 and 3. The last
+thing in the second row is a 16-bit-value that tells, if the
+image is a DLL.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( C0h thru DFh )</strong></font></p>
+
+<p align="center"><img src="b3peqc-d.jpg" border="1" width="436"
+height="142"></p>
+
+<p align="center"><font face="Arial"><img src="b3pee-f.jpg"
+border="1" width="564" height="43"></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row</strong>:
+The next 4 32-bit-values starting @ offset E0h are the size of
+stack reserve (<strong>'SizeOfStackReserve'</strong>), the size
+of initially committed stack (<strong>'SizeOfStackCommit'</strong>)
+, the size of the reserved heap(<strong>'SizeOfHeapReserve'</strong>)
+and the size of the committed heap (<strong>'SizeOfHeapCommit'</strong>).</font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>Second row:</strong>
+After these stack- and heap-descriptions, we find 32 bits of <strong>'LoaderFlags'</strong>.
+Then the <strong>Size of Data Directory</strong>, number of
+possible entries in the <em><strong>following section table</strong></em>
+(<strong>16 records</strong>) 4 bytes @ offset F4h.called <strong>'NumberOfRvaAndSizes'</strong>.
+The last 8 bytes would be for the Export Directory pointers entry
+if used..</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( E0h thru FFh )</strong></font></p>
+
+<p align="center"><img src="b3peqe-f.jpg" border="1" width="226"
+height="96"></p>
+
+<p align="center"><img src="b3pe100-11f.jpg" border="1"
+width="566" height="38"></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row</strong>:
+The next 4 32-bit-values starting @ offset 100h are</font> <font
+size="2" face="Arial">Import Directory Virtual Address <strong>('AppBaseOfImport'),</strong>
+the Import Directory Size <strong>('AppImportSize')</strong>,
+Resource Directory Virtual Address <strong>('AppBaseOfRsrc')</strong>
+and the Resource Directory Size <strong>('AppRsrcSize')</strong></font>.</p>
+
+<p align="left"><font size="2" face="Arial"><strong>Second row: </strong>The
+32-bit-values starting @ offset <strong>110h </strong>and those
+following to <strong>157h</strong> are filled with zeros and
+would be entries, RVAs and Sizes for: Exception, Security,
+Relocation Table, Debug, Copyright, Global Mips gp and Global
+Pointer, Thread Local Storage and Load Configuration, if used.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 100h thru 10Fh )</strong></font></p>
+
+<p align="center"><img src="b3peq100-11f.jpg" border="1"
+width="210" height="67"></p>
+
+<p align="center"><font size="2" face="Arial"><img
+src="b3pe150-17f.jpg" border="1" width="566" height="63"></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>First row: </strong>The
+32-bit-values starting @ offset 158h are the Second Import
+Address Table <strong>'AppSecondImport' </strong>and its size <strong>'AppSecondImportSize'
+</strong>This is explained below.</font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>Second row: </strong>The
+the space from 160h filled with zeros is reserved and the <strong>Image
+Optional Header</strong> ends at</font><font size="1"
+face="Arial"><strong> </strong></font><font size="2" face="Arial"><strong>177h.</strong></font></p>
+
+<p align="center"><font color="#000080" size="4" face="Arial"><strong>The
+entire 'Image Optional Header' as seen in Quickview</strong></font></p>
+
+<p align="center"><img src="peimgopthdr.jpg" border="1"
+width="470" height="437"></p>
+
+<hr>
+
+<p align="center"><img src="peheader2.jpg" width="282"
+height="436"></p>
+
+<p align="center"><font color="#000080" size="3" face="Arial"><strong>Section
+Headers</strong></font></p>
+
+<p align="center"><font size="2" face="Arial">Between the PE
+headers and the raw data for the image's Sections lies the <strong>Section
+Table</strong>.</font> </p>
+
+<p align="left"><font size="2" face="Arial">There is one section
+header for each section, and each data directory will point to
+one of the sections. Several data directories may point to the
+same section, and there may be sections without a data directory
+pointing to them.</font></p>
+
+<p align="center"><font size="2" face="Arial">The sections in the
+image are sorted by their starting address (RVAs), rather than
+alphabetically.</font></p>
+
+<p align="center"><font color="#000080" size="4" face="Arial"><strong>Section
+Table - Image Data Directories</strong></font></p>
+
+<p align="left"><font size="2" face="Arial">Sections have two
+alignment values, one within the disk file (<strong>Pointer to
+Raw Data</strong>) and the other in memory (<strong>Virtual
+Address</strong> ). The <strong>PE file header</strong> specifies
+both of these values, which can differ. Each </font><font
+color="#0000FF" size="2" face="Arial"><strong>section</strong>
+starts at an offset that's some multiple of the alignment value</font><font
+size="2" face="Arial">. For instance, in the PE file, a typical
+alignment would be 200h. Thus, every section begins at a <strong>file
+offset</strong> that's a multiple of 200h. Once mapped into
+memory, sections always start on at least a <strong>page boundary</strong>.
+That is, when a PE section is mapped into memory, the first byte
+of each section corresponds to a memory page. On x86 CPUs pages
+are 4KB aligned, while on the IA-64 CPUs they are 8KB aligned. </font></p>
+
+<p align="left"><font size="2" face="Arial">The Section Table is
+an <strong>array</strong> of IMAGE_NUMBER_OF_</font><a
+href="#directory indexes"><font size="2" face="Arial">DIRECTORY
+ENTRIES</font></a><font size="2" face="Arial"> (16 spaces
+reserved for entries) IMAGE_DATA_DIRECTORYs. Each of these
+directories describes the location (32 bits RVA called '<strong>Virtual
+Address</strong>') and size (also 32 bit, called '<strong>Size of
+Raw Data</strong>') of a particular piece of information, which
+is located in one of the sections that follow the directory
+entries. Some elements at the end of the array are currently
+unused. </font></p>
+
+<p align="left"><font size="2" face="Arial">This array allows the
+<strong>loader to quickly</strong> find a particular section of
+the image (for example, the imported function table), <strong>without
+having to iterate</strong> through each of the images sections, <strong>comparing
+names</strong> as it goes along.</font> <font size="2"
+face="Arial">In the section table the first entry of an array
+element is of the SHORT_NAME 8 bytes, that make up the name (in
+ASCII) of the section. If all of the 8 bytes are used there is no
+0 terminator for the string... Followed by two sets of Dwords
+that are the sizes and the second ones that are the RVA addresses
+for each entry and data characteristics sometimes called flags.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>Partial
+Section Records of Directory entries of Base3.exe each .jpg
+showing the relevant entry.</strong></font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>Import
+Table - Data Section Header starts at 178h</strong></font></p>
+
+<p align="center"><img src="b3qidatadir.jpg" border="1"
+width="561" height="64"></p>
+
+<p align="left"><font size="2" face="Arial">'<strong>.idata</strong>':
+@ offset 178h padded with 2 zeros = 8 bytes, <strong>AppImportTrueSize</strong>:
+(Virtual Size) 204h @ offset 180h 4 bytes, <strong>AppBaseOfImports</strong>:
+<strong>RVA</strong> 1000h @ offset 184h 4 bytes, <strong>AppImportAlignedSize</strong>:
+400h @ offset 188h 4 bytes, <strong>AppStartOfImport</strong>:
+400h @ offset 18Ch 4 bytes,12 bytes not used. The </font><a
+href="#Flags:"><font size="2" face="Arial"><strong>flags</strong>
+</font></a><font size="2" face="Arial">describing how the section's
+memory should be treated <strong>DataCharacteristics</strong></font>
+<font size="2" face="Arial">D$ <strong>0_C0000040 </strong>@
+offset 19Ch; readable, writeable, initialized data.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 170h thru 19Fh )</strong></font></p>
+
+<p align="center"><font face="Arial"><strong><img
+src="b3qidata.jpg" border="1" width="370" height="191"></strong></font></p>
+
+<p align="center"><font size="2" face="Arial">As we can see the <strong>.idata</strong>
+section starts at 400h in the file and is 400h bytes in length...</font></p>
+
+<p align="left"><font size="2" face="Arial">When you use code or
+data from a DLL, you're importing it. When any PE file loads, one
+of the jobs of the <em><strong>Win32 loader is to locate all the
+imported functions and data and make those addresses available</strong></em>
+to the file being loaded.</font><font size="4"> </font><font
+size="2" face="Arial">When you link directly against the code and
+data of another DLL, you're implicitly linking against the DLL.
+You don't have to do anything to make the addresses of the
+imported APIs available to your code. Within a PE file, (<strong>Not
+shown in .jpgs</strong>) there's an <strong>array of data
+structures</strong>, one per imported DLL. Each of these
+structures gives the name of the imported DLL and points to an
+array of function pointers. The array of function pointers is
+known as the <strong>Import Address Table</strong> (<strong>IAT</strong>).
+Each imported API has its own reserved spot in the <strong>IAT</strong>
+where the address of the imported function is written by the <strong>Win32
+loader</strong>. This last point is particularly important: once
+a module is loaded into RAM, the <strong>IAT</strong> contains
+the address that is invoked when calling imported APIs. The
+beauty of the IAT is that there's <em><strong>just one place in a
+PE file when loaded into RAM where an imported API's address is
+stored</strong></em>. all the calls go through the same function
+pointer in the IAT.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>Actual
+table as seen in Quickview.</strong></font></p>
+
+<p align="center"><font face="Arial"><strong><img
+src="b3qidatatable.jpg" border="1" width="276" height="433"></strong></font></p>
+
+<p align="left"><font size="1" face="Arial">The important parts
+of an<strong> import table</strong> are the imported DLL name and
+the <strong>two arrays</strong> of IMAGE_IMPORT_BY_NAME pointers.
+In the EXE file, the <strong>two arrays</strong> (pointed to by
+the Characteristics and FirstThunk fields) run parallel to each
+other, and are terminated by a NULL pointer entry at the end of
+each array. The pointers in both arrays point to an IMAGE_IMPORT_BY_NAME
+structure. Why are there two parallel arrays of pointers to the
+IMAGE_IMPORT_BY_NAME structures? The array pointed at by the
+Characteristics field is <em>left alone, and never modified</em>.
+It's sometimes called the hint-name table. The array pointed at
+by the FirstThunk field <strong>is overwritten by the PE loader</strong>.
+The loader iterates through each pointer in the array and finds
+the address of the function that each IMAGE_IMPORT_BY_NAME
+structure refers to. The <strong>loader then overwrites</strong>
+in RAM the pointer with the found function's address. Since the
+array of pointers that are <strong>overwritten</strong> by the
+loader eventually holds the addresses of all the imported
+functions, it's called the <strong>Import Address Table</strong>.</font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>Resource -
+Data Section Header</strong></font></p>
+
+<p align="center"><font size="2" face="Arial"><strong><img
+src="b3qirsrcdir.jpg" border="1" width="564" height="61"></strong></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>'.rsrc'</strong>:
+padded with 3 zeros = 8 bytes, <strong>AppRsrcTrueSize</strong>:
+virtual size 680h 4 bytes, <strong>AppBaseOfRsrcs</strong>:
+virtual address 2000h 4 bytes, <strong>RVA AppRsrcAlignedSize: </strong>size
+of raw data 800h 4 bytes, <strong>AppStartOfRsrc</strong>:
+pointer to raw data 800h 4 bytes, 12 bytes not used.The <strong>flags</strong>
+describing how the section's memory should be treated, <strong>DataCharacteristics</strong>:D$
+0_40000040 ; readable, initialized data.</font></p>
+
+<p align="center"><font size="1" face="Arial">The resources, such
+as dialog boxes, menus, icons and so on, are in the data
+directory pointed to by IMAGE_DIRECTORY_ENTRY_RESOURCE. </font></p>
+
+<p align="center"><font size="1" face="Arial">It is in a section
+that has, at least, the bits 'IMAGE_SCN_CNT_INITIALIZED_DATA' and
+'IMAGE_SCN_MEM_READ' set.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 1A0h thru 1C7h )</strong></font></p>
+
+<p align="center"><img src="b3qirsrc.jpg" border="1" width="376"
+height="199"></p>
+
+<p align="center"><font size="2" face="Arial">As we can see the
+resource section starts at 800h in the file and is 800h bytes in
+length...</font></p>
+<div align="center"><center>
+
+<table border="1" width="90%">
+    <tr>
+        <td width="100%"><p align="center"><font size="2"
+        face="Arial">The following was copied from some of</font><font
+        face="Arial"> </font><font color="#000080" size="2"
+        face="Arial">Mark Pietrek's</font><font face="Arial"> </font><font
+        size="2" face="Arial">articles:</font></p>
+        <p align="left"><font size="1" face="Arial">Navigating
+        the resource directory hierarchy is like navigating a
+        hard disk. There's a <strong>'Section Data Header'</strong>
+        - master directory (the root directory), which has
+        subdirectories. The subdirectories have subdirectories of
+        their own that may point to the raw resource data for
+        things like dialog templates. In the PE format, both the
+        root directory of the resource directory hierarchy and
+        all of its subdirectories are structures of type IMAGE_RESOURCE_DIRECTORY.
+        </font></p>
+        <p align="left"><font size="1" face="Arial">A directory
+        entry can either point at a subdirectory (that is, to
+        another IMAGE_RESOURCE_DIRECTORY), or it can point to the
+        raw data for a resource. Generally, there are at least
+        three directory levels before you get to the actual raw
+        resource data. The top-level directory (of which there's
+        only one) is always found at the beginning of the
+        resource section (.rsrc). The subdirectories of the top-level
+        directory correspond to the various types of resources
+        found in the file. For example, if a PE file includes
+        dialogs, string tables, and menus, there will be three
+        subdirectories: a dialog directory, a string table
+        directory, and a menu directory. Each of these type
+        subdirectories will in turn have ID subdirectories. There
+        will be one ID subdirectory for each instance of a given
+        resource type.Each ID subdirectory will have either a
+        string name (such as &quot;MyDialog&quot;) or the integer
+        ID used to identify the resource in the RC file.</font></p>
+        <p align="center" class="label"><font size="2"
+        face="Arial"><b>IMAGE_RESOURCE_DIRECTORY Format</b></font></p>
+        <p class="dt"><font size="1" face="Arial"><strong>DWORD</strong>&nbsp;&nbsp;
+        Characteristics - Theoretically this field could hold
+        flags for the resource, but appears to always be 0.</font></p>
+        <p class="dt"><font size="1" face="Arial"><strong>DWORD</strong>&nbsp;&nbsp;
+        TimeDateStamp - The time/date stamp describing the
+        creation time of the resource.</font></p>
+        <p><font size="1" face="Arial"><strong>WORD</strong>&nbsp;&nbsp;&nbsp;
+        *MajorVersion - These *fields would hold a version number
+        for the resource.</font></p>
+        <p><font size="1" face="Arial"><strong>WORD&nbsp;</strong>&nbsp;&nbsp;
+        *MinorVersion - These *fields appear to always be set to
+        0.</font></p>
+        <p><font size="1" face="Arial"><strong>WORD</strong></font><font
+        size="2" face="Arial"><strong>&nbsp;</strong>&nbsp;&nbsp;
+        NumberOfNamed Entries</font><font size="1" face="Arial">
+        - The number of array elements that use <strong>names </strong>and
+        that follow this structure.</font></p>
+        <p><font size="1" face="Arial"><strong>WORD</strong></font><font
+        size="2" face="Arial">&nbsp;&nbsp;&nbsp;
+        NumberOfIdEntries</font><font size="1" face="Arial"> -
+        The number of array elements that use <strong>integer IDs</strong>,
+        and which follow this structure.</font></p>
+        <p align="center"><font size="2" face="Arial"><strong>IMAGE_RESOURCE_DIRECTORY_ENTRY
+        - Directory Entries.</strong></font></p>
+        <p align="center"><font size="1" face="Arial">This field
+        isn't really part of the IMAGE_RESOURCE_DIRECTORY
+        structure. </font></p>
+        <p><font size="1" face="Arial">Rather,<strong> its an
+        array</strong> of IMAGE_RESOURCE_DIRECTORY_ENTRY
+        structures that immediately follow the IMAGE_RESOURCE_DIRECTORY
+        structure. The <strong>number of elements in the array is
+        the sum </strong>of the NumberOfNamedEntries and
+        NumberOfIdEntries fields. The directory entry elements
+        that have <strong>name identifiers</strong> (rather than
+        integer IDs) come <strong>first</strong> in the array. A
+        directory entry can either <strong>point at a
+        subdirectory</strong> (that is, to another IMAGE_RESOURCE_DIRECTORY),
+        or it can <strong>point to the raw data </strong>for a
+        resource.</font></p>
+        <p align="center"><font size="2" face="Arial"><b>IMAGE_RESOURCE_DIRECTORY_ENTRY
+        - Format</b></font></p>
+        <p><font size="2" face="Arial"><strong>DWORD</strong>&nbsp;&nbsp;
+        Name</font></p>
+        <p><font size="1" face="Arial">This field contains either
+        <strong>an integer ID or a pointer</strong> to a
+        structure that contains a string name. If the <strong>high
+        bit</strong> (0x80000000) <strong>is zero</strong>, this
+        field is interpreted <strong>as an integer ID</strong>.
+        If the <strong>high bit is nonzero</strong>, the lower 31
+        bits are an <strong>offset</strong> (relative <strong>to
+        the start</strong> of the resources) to an IMAGE_RESOURCE_DIR_STRING_U
+        structure. This structure contains a WORD character count,
+        followed by a UNICODE string with the resource name. Yes,
+        even PE files intended for non-UNICODE Win32
+        implementations use UNICODE here. To convert the UNICODE
+        string to an ANSI string, use the WideCharToMultiByte
+        function.</font></p>
+        <p><font size="2" face="Arial"><strong>DWORD</strong>&nbsp;&nbsp;
+        OffsetToData</font></p>
+        <p class="indent"><font size="1" face="Arial">This field
+        is either an <strong>offset</strong> to another resource
+        directory or a <strong>pointer</strong> to information
+        about a specific resource instance. If the<strong> high
+        bit </strong>(0x80000000) </font><font color="#FF0000"
+        size="1" face="Arial"><strong>is set</strong></font><font
+        size="1" face="Arial">, this directory entry refers to a <strong>subdirectory</strong>
+        and the</font><font color="#FF0000" size="1" face="Arial">
+        <strong>lower 31 bits are an offset</strong></font><font
+        size="1" face="Arial"> (relative to the start of the
+        resources) to another IMAGE_RESOURCE_DIRECTORY. If the <strong>high
+        bit </strong></font><font color="#0000FF" size="1"
+        face="Arial"><strong>isn't set</strong></font><font
+        size="1" face="Arial">, </font><font color="#0000FF"
+        size="1" face="Arial">the lower 31 <strong>bits point</strong></font><font
+        size="1" face="Arial"> to an IMAGE_RESOURCE_DATA_ENTRY
+        structure. The <strong>IMAGE_RESOURCE_DATA_ENTRY</strong>
+        structure contains the location of the resource's raw
+        data, its size, and its code page.</font></p>
+        <p><font size="1" face="Arial">To go further into the
+        resource formats, for each resource type (dialogs, menus,
+        and so on) if you're interested, the RESFMT.TXT file from
+        the Win32 SDK has a detailed description of all the
+        resource type formats. </font></p>
+        </td>
+    </tr>
+</table>
+</center></div>
+
+<p align="center"><font size="2" face="Arial"><strong>Data - Data
+Section Header</strong></font></p>
+
+<p align="center"><img src="b3qdatadir.jpg" border="1"
+width="562" height="61"></p>
+
+<p align="left"><font size="2" face="Arial"><strong>'.data'</strong>:padded
+with 3 zeros = 8 bytes, <strong>AppDataTrueSize:</strong> virtual
+size129h 4 bytes, <strong>AppBaseOfData</strong>: virtual address
+3000h 4 bytes, <strong>AppDataAlignedSize</strong>: size of raw
+data 200h 4 bytes,<strong> AppStartOfData</strong>: pointer to
+raw data 1000h bytes,<strong> </strong>12 bytes not used,The <strong>flags</strong>
+describing how the section's memory should be treated <strong>DataCharacteristics</strong>:
+4bytes D$ 0_C0000040 ; readable, writeable, initialized data.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 1C0h thru 1E0h )</strong></font></p>
+
+<p align="center"><img src="b3qdata.jpg" border="1" width="385"
+height="217"></p>
+
+<p align="center"><font size="2" face="Arial">As we can see the .data
+section starts at 1000h in the file and is 200h bytes in length...</font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>Text - Data
+Section Header</strong></font></p>
+
+<p align="center"><font size="2" face="Arial">The .text section
+is where all general-purpose code emitted by the compiler or
+assembler ends up.</font></p>
+
+<p align="center"><font size="2" face="Arial"><strong><img
+src="b3qtextdir.jpg" border="1" width="563" height="63"></strong></font></p>
+
+<p align="left">&nbsp;</p>
+
+<p align="left"><font size="2" face="Arial"><strong>'.text' </strong>padded
+with 3 zeros = 8 bytes, <strong>AppTrueCodeSize</strong>: virtual
+size 4 bytes; true size of code in file, <strong>AppCodeRVAoffset</strong>:
+4 bytes, RVA offset (aligned on 01000 boundary) <strong>AppFileSizeOfCode</strong>:size
+of raw data 4 bytes, file aligned size of code ( 200h aligned ) ,<strong>
+AppStartOfCode</strong>:pointer to raw data 4 bytes pointer to
+code (true first code in file - not entry point-). <strong>The
+four 'dummy' D$ and W$ have no meaning in EXE and DLL files: </strong>D$
+00 ; dummy reloc ptr D$ 00 ; dummy line number ptr W$ 00 ; dummy
+reloc number W$ 00 ; dummy number of line number = 12 bytes not
+used</font>. <font size="2" face="Arial">CodeCharacteristics:<strong>
+DataCharacteristics</strong>:D$ 0_60000020 ; readable, runable/executable.</font></p>
+
+<p align="center"><font size="1" face="Arial"><strong>The above
+as seen in Quickview. ( 1F0h thru 21Fh )</strong></font></p>
+
+<p align="center"><font face="Arial"><img src="b3qtext.jpg"
+border="1" width="329" height="215"></font></p>
+
+<p align="center"><font size="2" face="Arial">As we can see the .text
+section starts at 1200h in the file and is 200h bytes in length...</font></p>
+
+<p align="center"><font size="2" face="Arial"><strong>RosAsm 'Source
+Code' - Source Section Header</strong>:</font></p>
+
+<p align="center"><font size="2" face="Arial">As Betov has hidden
+the RosAsm 'source code' in the file, Quickview does not see it
+nor display it.</font></p>
+
+<p align="center"><font size="2" face="Arial">Used by RosAsm only
+(not by the loader which only sees 4 sections, not the actual 5).</font></p>
+
+<p align="center"><font size="2" face="Arial">Can you figure out
+how he does it ? Clue: Go back to Image File Header....</font></p>
+
+<p align="center"><font size="2" face="Arial"><img
+src="b3qsrcdir.jpg" border="1" width="563" height="62"></font></p>
+
+<p align="left"><font size="2" face="Arial"><strong>'.src'</strong></font><font
+size="3" face="Arial">:</font><font size="2" face="Arial"> padded
+with 4 zeros = 8 bytes</font><font size="3" face="Arial">,</font><font
+size="2" face="Arial"> <strong>AppSrcTrueSize</strong> 234Ch 4
+bytes, <strong>AppBaseOfSrc </strong>5000h<strong> RVA </strong>4
+bytes, <strong>AppSrcAlignedSize</strong> 2400h 4 bytes, <strong>AppStartOfSrc</strong>
+1400h 4 bytes, 12 bytes not used, <strong>DataCharacteristics</strong>:
+D$ 06000840 ; Not readable initialized data; don't keep; don't
+cache...</font></p>
+
+<p align="center"><font size="2" face="Arial">RosAsm Base3.exe
+source code starts at 1400h and is 234Ch in length and continues
+to the <strong>EOF</strong>...... </font></p>
+
+<p align="center"><font size="1" face="Arial">EOF is commonly
+used to signify the end of file...</font></p>
+
+<p align="left"><font size="2" face="Arial">The above IMAGE_DATA_DIRECTORYs
+in <strong>178h </strong>to<strong> 267h </strong>are followed by
+unused space and are padded with zeros to the file boundary <strong>3FFh</strong>....
+As we saw above the Import Section begins at 400 H , Resource
+Section at 800h, Data Section at 1000h, Text at 1200h, RosAsm
+source at 1400h. Each of these sections are also padded with
+zeros to the file boundaries, which in our files is 200h &gt; 512
+bytes and just happens to be the exact size of a single disk
+sector..... As we have also seen the RVAs and offsets are used by the Win32 loader to map the file into memory differently....</font></p>
+
+<center><a href="rbase3mem.htm"><b>To see how the file is loaded into memory click here...</b></a>.....</center><br>
+<br>
+<hr>
+
+<p align="center"><font color="#000080" size="3" face="Arial"><strong>The
+Sections found in RosAsm Base3.exe</strong></font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.idata</strong>
+section contains information about functions (and data) that the
+module imports from other DLLs.</font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.rsrc </strong>section
+contains all the resources for the module. </font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.data </strong>section
+is where your initialized data goes.</font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.text</strong>
+section is where all general-purpose code emitted by the compiler
+or assembler resides.</font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.src</strong>
+section contains all the RosASM source code for the module.</font></p>
+
+<p align="center"><font color="#000080" size="3" face="Arial"><strong>Other
+Sections that you may encounter in other PE files</strong></font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.bss</strong>
+section is where any uninitialized static and global variables
+are stored. </font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.crt</strong>
+is another initialized data section utilized by the Microsoft C/C++
+run-time libraries (hence the name). </font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.edata </strong>section
+is a list of the functions and data that the PE file exports for
+other modules. </font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.reloc</strong>
+section holds a table of base relocations. A base relocation is
+an adjustment to an instruction or initialized variable value
+that's needed if the loader couldn't load the file where the
+linker assumed it would. If the loader is able to load the image
+at the linker's preferred base address, the loader completely
+ignores the relocation information in this section.</font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.tls</strong>
+section, which refers to &quot;thread local storage,&quot; and is
+related to the TlsAlloc family of Win32 functions. When dealing
+with a .tls section, the memory manager sets up the page tables
+so that whenever a process switches threads, a new set of
+physical memory pages is mapped to the .tls section's address
+space. This permits per-thread global variables.</font></p>
+
+<p align="left"><font size="2" face="Arial">The <strong>.rdata</strong>
+section is used for at least two things. First, in Microsoft
+linker-produced EXEs, the .rdata section holds the debug
+directory, which is only present in EXE files.The other useful
+portion of an .rdata section is the description string. </font></p>
+
+<hr>
+
+<p><font size="2" face="Arial"><b>NOTE:</b> There seems to be a
+wide latitude in the way PE files are written by the various
+Compilers/Linkers and if you look at a number of different PE
+files you will find that some of them may not adhere to what is
+found in this document. Nevertheless most of it applies and the
+Win32 Loader is capable of uploading them into RAM, therefore the
+loader seems to be quite flexible in its own right. It also seems
+that while the Linker Version is present in the Optional Header
+it is useless as it does not identify which linker it is.... Of
+course we do know that <b>RosAsm</b> wrote our Base3.exe.... </font></p>
+
+<hr>
+
+<p align="center"><a href="../index.htm"><b><img
+src="../images/jfmlogo2.jpg" width="105" height="71"></b></a> <a
+href="../links.htm"><b><img src="../images/jfmlogo2.jpg"
+width="105" height="71"></b></a><a href="../index.htm"><b><br>
+Home page</b></a><b> &lt;</b>.<a href="../links.htm"><b>&gt;Links
+Page</b></a></p>
+
+<hr>
+
+<hr>
+
+<p align="left"><a name="Notes"><font face="Arial">Notes</font></a><font
+face="Arial"> about <strong>Relative Virtual Addresses</strong>:The
+PE format makes heavy use of so-called RVAs. An RVA, aka &quot;relative
+virtual address&quot;, is used to describe a memory address if
+you don't know the <strong>image base</strong> address. It is the
+value you need to add to the image base address to get the actual
+linear address. The base address is the address the PE image is
+loaded to in RAM, and may vary from one invocation to the next. <strong>Example:</strong>
+Suppose an executable file is loaded to address 400000h and
+program execution starts at RVA 4000h. The effective execution
+start will then be at the address 404000h. If the executable were
+loaded to 100000h, the execution start would be 104000h.</font></p>
+
+<hr>
+
+<p align="left"><font face="Arial">...Defined </font><a
+name="directory indexes"><font face="Arial"><strong>directory
+indexes</strong></font></a><font face="Arial"> are: </font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_EXPORT (0)The
+directory of exported symbols. mostly used for DLLs.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_IMPORT (1)
+The directory of imported symbols.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_RESOURCE
+(2) Directory of resources. </font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_EXCEPTION
+(3) Exception directory - structure and purpose unknown.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_SECURITY
+(4) Security directory - structure and purpose unknown.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_BASERELOC
+(5) Base relocation table. Neccessary for DLLs.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_DEBUG (6)
+Debug directory - contents is compiler dependent. Moreover, many
+compilers stuff the debug information into the code section and
+don't create a separate section for it.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_COPYRIGHT
+(7) Description string - some arbitrary copyright note or the
+like.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_GLOBALPTR
+(8) Machine Value (MIPS GP) - structure and purpose unknown.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_TLS (9)
+Thread local storage directory - structure unknown; contains
+variables that are declared &quot;__declspec(thread)&quot;, i.e.
+per-thread global variable.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG
+(10) Load configuration directory - structure and purpose unknown.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT
+(11) Bound import directory - see description of import directory.</font></p>
+
+<p align="left"><font face="Arial">IMAGE_DIRECTORY_ENTRY_IAT (12)
+Import Address Table - see description of import directory.</font></p>
+
+<p align="left"><font face="Arial">As an example, if we find at
+index 7 the 2 longwords 1200h and 33h, and the load address is
+10000h, we know that the copyright data is at address 10000h+1200h
+(in whatever section there may be), and the copyright note is 33h
+bytes long. If a directory of a particular type is not used in a
+binary, the Size and VirtualAddresses are both set to 0h.</font></p>
+
+<hr>
+
+<p align="left"><a name="Flags:"><font face="Arial"><strong>Flags:</strong></font></a></p>
+
+<p align="left"><font face="Arial">What most programmers call
+flags, the COFF/PE format calls <strong>characteristics</strong>.
+This field is a set of flags that indicate the section's
+attributes (such as code/data, readable, or writeable,). For a
+complete list of all possible section attributes, see the IMAGE_SCN_XXX_XXX
+#defines in WINNT.H. Some of the more important flags are shown
+below:</font></p>
+
+<p align="left"><font face="Arial">0x00000020 This section <strong>contains
+code</strong>. Usually set in conjunction with the executable
+flag (0x80000000).</font></p>
+
+<p align="left"><font face="Arial">0x00000040 This section <strong>contains
+initialized data</strong>. Almost all sections except executable
+and the .bss section have this flag set.</font></p>
+
+<p align="left"><font face="Arial">0x00000080 This section <strong>contains
+uninitialized data</strong> (for example, the .bss section).</font></p>
+
+<p align="left"><font face="Arial">0x00000200 This section <strong>contains
+comments</strong> or some other type of information. A typical
+use of this section is the .drectve section emitted by the
+compiler, which contains commands for the linker. </font></p>
+
+<p align="left"><font face="Arial">0x00000800 This section's
+contents shouldn't be put in the final EXE file. These sections
+are used by the compiler/assembler to pass information to the
+linker.</font></p>
+
+<p align="left"><font face="Arial">0x02000000 This section <strong>can
+be discarded</strong>, since it's not needed by the process once
+it's been loaded. The most common discardable section is the base
+relocations (.reloc).</font></p>
+
+<p align="left"><font face="Arial">0x10000000 This section is<strong>
+shareable</strong>. When used with a DLL, the data in this
+section will be shared among all processes using the DLL. The
+default is for data sections to be nonshared, meaning that each
+process using a DLL gets its own copy of this section's data. In
+more technical terms, a shared section tells the memory manager
+to set the page mappings for this section such that all processes
+using the DLL refer to the same physical page in memory. To make
+a section shareable, use the SHARED attribute at link time. For
+example</font></p>
+
+<p align="left"><font face="Arial">0x20000000 This section is <strong>executable</strong>.
+This flag is usually set whenever the &quot;contains code&quot;
+flag (0x00000020) is set.</font></p>
+
+<p align="left"><font face="Arial">0x40000000 This section is <strong>readable</strong>.
+This flag is almost always set for sections in EXE files.</font></p>
+
+<p align="left"><font face="Arial">0x80000000 The section is <strong>writeable</strong>.
+If this flag isn't set in an EXE's section, the loader should
+mark the memory mapped pages as read-only or execute-only.
+Typical sections with this attribute are .data and .bss.
+Interestingly, the .idata section also has this attribute set.</font></p>
+
+<p align="left"><font face="Arial">/ More Section characteristics.</font></p>
+
+<p align="left"><font face="Arial">0x00000000 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000001 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000002 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000004 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000008 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000010 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000020 // Section contains
+code.</font></p>
+
+<p align="left"><font face="Arial">0x00000040 // Section contains
+initialized data.</font></p>
+
+<p align="left"><font face="Arial">0x00000080 // Section contains
+uninitialized data.</font></p>
+
+<p align="left"><font face="Arial">0x00000100 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000200 // Section contains
+comments or some other type of information.</font></p>
+
+<p align="left"><font face="Arial">0x00000400 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">0x00000800 // Section contents
+will not become part of image.</font></p>
+
+<p align="left"><font face="Arial">0x00001000 // Section contents
+comdat.</font></p>
+
+<p align="left"><font face="Arial">0x00002000 // Reserved.</font></p>
+
+<p align="left"><font face="Arial">Obsolete 0x00004000</font></p>
+
+<p align="left"><font face="Arial">0x00008000 // Section content
+can be accessed relative to GP.</font></p>
+
+<hr>
+
+<p align="left">Acknowledgements:</p>
+
+<p align="left">To complete this tutorial I primarily used
+information that I learned from:</p>
+
+<p align="left">RosAsm source code, Matt Pietrek's article on
+MSDN &amp; from B.Luevelsmeyer at iplan.heitec.net and other
+information, such as winnt.h file with Borland Bcc55, I had in my
+files.</p>
+
+<p align="left">Words of Matt Pietrek:</p>
+
+<p>&quot;A good understanding of the Portable Executable (PE)
+file format leads to a good understanding of the operating system.
+If you know what's in your DLLs and EXEs, you'll be a more
+knowledgeable programmer.&quot; .</p>
+
+<p>&quot;You might be wondering why you should care about the
+executable file format. The answer is the same now as it was then:
+an operating system's executable format and data structures
+reveal quite a bit about the underlying operating system. By
+understanding what's in your EXEs and DLLs, you'll find that you've
+become a better programmer all around.&quot;</p>
+
+<p align="center"><a href="../index.htm"><b><img
+src="../images/jfmlogo2.jpg" width="105" height="71"></b></a> <a
+href="../links.htm"><b><img src="../images/jfmlogo2.jpg"
+width="105" height="71"></b></a><a href="../index.htm"><b><br>
+Home page</b></a><b> &lt; </b><a href="../links.htm"><b>&gt;Links
+Page</b></a></p>
+
+<table border="0" width="100%">
+    <tr>
+        <td align="center"
+        background="../jfmasmtuts/MainJFMTemplates_files/flashy1_bg_base_blue.gif"><b><img
+        src="../MainJFMTemplates_files/flashy1_spacer_blue.gif"
+        width="100%" height="14"></b></td>
+    </tr>
+</table>
+</body>
+</html>

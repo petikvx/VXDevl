@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="x.c, ExSee, BSD, FreeBSD, telnetd bug, TESO, buffer overflow, SadMind, 23, Unix"><title>Remote Vision</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2">R<u>emote Vision</u></font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>I<u>ntroduction:</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; It has almost become a habit that whenever a new
+vulnerability is found and announced in some software or operating system,
+be it Microsoft's, some flavor of Unix or third-party software package,
+a net worm is written to exploit and propagate through the respective vulnerability.
+At first, this used to be a domain exclusively reserved to Unix malware,
+but it was changed forever by the appearance of CodeRed and Nimda, which
+are able to exploit various bugs specific to IIS running on MS Windows
+platforms.
+<br>&nbsp;&nbsp;&nbsp; Even if the above two mentioned worms are still
+between the highest ranked of all times in their class from the point of
+view of spreading, from time to time, highly-successful worms still appear
+for other OSes, such as Linux or FreeBSD. Also, from time to time, maybe
+less-successful worms appear, which thanks to the prompt action of the
+people in the security field are stopped before managing to hit the net
+at their full strength.
+<br>&nbsp;&nbsp;&nbsp; Such a case is the BSD-worm "ExSee".
+<br>&nbsp;
+</p><p><b>A<u> buffer overflow exploit</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Around the middle of June 2001, the "TESO Security
+team", name which may sound familiar to some of you (see the <a href="http://craiu.pcnet.ro/papers/papers/sadmind.html">SadMind</a>
+worm description), discovered a
+<br>security problem which affects most of the Unix distributions based
+on the BSD source. An unchecked buffer operation allows a malicious attacker
+to trash the stack of the "telnet" daemon process, possibly resulting in
+execution of infiltrated code with high (usually root) privileges. Even
+if the details of the exploit were not made public at that time, about
+one month later, a demonstration sample made its ways to the Bugtraq discussion
+list, basically becoming available to anyone out there interested into
+getting a copy of it. The post triggered the exploit author's prompt reaction,
+which pointed a specific note in the exploit code that stated that the
+distribution to third parties was specifically prohibited, especially distribution
+through the Bugtraq mailing list, or a specific site known to host various
+exploits and security tools.
+<br>&nbsp;&nbsp;&nbsp; Unfortunately, it was already too late, and two
+months later a worm, using the telnetd buffer overflow code from the respective
+sample, was reported.
+<br>&nbsp;
+</p><p><b>T<u>he worm</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Initially called "x.c", or "ExSee", the worm is about
+6KB in C source code, and uses no additional or external scripts. An interesting
+thing regarding the worm is that whenever it replicates to a remote system,
+it tries to run a couple of commands on the target machine, and between
+them, one command to downloading a copy of the worm source from a site
+in Poland, "mri.am.lublin.pl". Apparently, the site has nothing to do with
+the worm - I assume the author just hacked it and used the site to host
+the source which is downloaded, compiled and run on infected machines.
+Fortunately, the copy of the worm' source from the site in Poland was removed
+in the early days, therefore, the epidemic went almost unnoticed. However
+an open remote shell backdoor is also installed on infected machines, and
+is listening for connections on port 145, the so called "UAAC Protocol"
+port.
+<br>&nbsp;&nbsp;&nbsp; Despite the fact the worm is not available for download
+on the web site, an attacked system, even if not carrying the infection
+further, will still have an open root shell on port 145, which can be considered
+dangerous enough by itself.
+<br>&nbsp;&nbsp;&nbsp; Whenever a vulnerable system is found by the worm,
+the exploit code is sent, and along with it, a series of commands designed
+to propagate the infection further.
+<br>&nbsp;First of all, as mentioned above, the worm attempts to download
+a copy of itself using the classic BSD tool 'fetch', and save it into the
+system root folder. Next, the worm compiles itself, and deletes the source
+saved in the previous step. It will remove all debug info from the compiled
+executable, making it no longer than about 6KB, and move it to the /usr/sbin
+directory under the name "cron ". (note the space included in the file
+name) Then, the worm executes itself on the remote system, and makes sure
+it will be started every time the system reboots from the system script
+/etc/rc.local. As mentioned above, the worm also backdoors the system by
+adding a line at the end of the /etc/inetd.conf file, making sure to restart
+the Internet services daemon, which activates the backdoor.
+<br>&nbsp;
+</p><p><b>R<u>eplication</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; The worm replication subroutine targets random IP
+addresses across the Internet. The random IP generation uses the built
+in C random functions, and seeds the generator with the current time. This
+allows the worm to hit a rather large area of IPs, but not as efficient
+as the other modern worms, which give higher probabilities to the IP addresses
+similar to the one of the system hosting the worm. The replication process
+is also slowed by the fact that the worm waits 10 seconds before sending
+the exploit code, and another second before sending the commands to the
+infected system. Given the high probability that a random IP address from
+the net is unused, the timeouts will also slow the replication a great
+deal. Moreover, the exploit requires a very large amount of data to be
+sent to the attacked machine, which is time consuming by itself.
+<br>&nbsp;&nbsp;&nbsp; Coupled with the missing source from the download
+location, these things prevented the worm from becoming widespread. It
+is however interesting to note that between September 12 and date of the
+writing of the article, Smallpot, a custom honeypot software I designed,
+which collects hacking attempts and various other data sent to it, received
+3 attempts to check for the vulnerability used by the worm, from 3 different
+IP addresses of which one of them connects to a NetBSD machine. The variations
+in the amount of port 23 (telnet) network scans can also be investigated
+on sites such as Dshield - as usually in such cases, it's impossible to
+state for sure if the port 23 connection attempts are caused by the worm,
+or by hackers attempting to find vulnerable hosts. Given the reasons explained
+in this article, it is my belief that the former solution is much more
+reasonable.
+<br>&nbsp;
+</p><p><b>T<u>echnical details on the exploit</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Before attempting to send the exploit code to a remote
+host, the worm performs a couple of checks. First of all, even if it managed
+to initiate a TCP handshake for port 23 with the remote host, it will also
+attempt to read some data from the socket, which should usually be a traditional
+Unix login banner. This makes sure the
+<br>remote system is actually at least attempting to communicate on port
+23, and it's not a dead end.
+<br>&nbsp;&nbsp;&nbsp; Next, the worm sends a specially crafted test string,
+which attempts to query the remote telnet server for several supported
+options. This special strings looks in hexa-decimal form as following "FF
+F6 FF FB 08 FF FB 26". "FF" is a special marker character in the telnet
+protocol, which means a control code is coming. "F6" is a "are you there"
+code, meant to query the remote party's ability to understand the telnet
+protocol codes. "FB" is a control code which announces the client's desire
+to negotiate some specific option, in our case "08" - output line width
+and "26" - encryption. The worms expects the server to also answer with
+a specific string, which should be: "0D 0A 5B 59 65 73 5D 0D 0A FF FE 08
+FF FD 26 00", which means "CRLF", "[Yes]", "CRLF", and answers to the negotiation
+request - "no" for output line width and "yes" for encryption. The worms
+also checks if the server replied back with even more information regarding
+the encryption protocol, which indicates the availability of various encryption
+interfaces - Kerberos, etc... Depending on the extended answer part, the
+worm uses different exploit data to construct the strings which trigger
+the buffer overflow.
+<br>&nbsp;&nbsp;&nbsp; Next, the worm attempts to massively set a number
+of 31500 environment user variables to its internal exploit code, padded
+with x86 NOP instructions, to increase the odds of having the IP hitting
+the shell code after the stack overflow. If the operations, which are likely
+to take a large amount of time, especially on a slow link, are successful,
+a 250-bytes long special Telnet protocol commands string is sent, which
+eventually causes the stack overflow, and the return in the memory area
+holding one of the many user variables with the shell code.
+<br>&nbsp;&nbsp;&nbsp; The shell code calls the execute process system
+API asking it to run the traditional Bourne shell, "/bin/sh". From here,
+the attacking copy of the worm runs its replication commands.
+<br>&nbsp;
+</p><p><b>C<u>onclusions</u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Even if the "ExSee" worm was unsuccessful, it remains
+as another warning that new bugs found in various software programs or
+operating systems can also
+<br>be exploited through "mobile" code, making them even more dangerous
+as they have the potential to target more computer systems. The slow replication
+<br>algorithm of the worm, and its random attack pattern decreased its
+chances to make it to the wild, but a very important step was also made
+by removing the
+<br>source from the web site.
+<br>&nbsp;&nbsp;&nbsp; However, the main aspect is that with more and more
+malware attacking the Unix users, the AV community will have to start building
+links with the security people working natively in this field, and probably
+take the step of increasing the protection of their data security packages
+with Intrusion Detection Sysytems. In this case for instance, an antivirus
+is not able to prevent the worm from installing the backdoor in the attacked
+system. However, an IDS using updated definitions should be easily able
+to block the exploit from taking place, thus preventing the malicious code
+from being executed.
+</p><p><tt><b>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">BSD86/ExSee.A</font>
+(worm)</tt>
+<br><tt><b>Aliases:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">"x.c"</font></tt>
+<br><tt><b>Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</b>network propagated worm affecting x86 BSD-based Unix systems</tt>
+<br><tt><b>Payload:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Backdoors the
+infected system by adding a root shell on port 145</tt>
+<br><b><tt>Detection and disinfection:</tt></b>
+</p><blockquote>
+<blockquote>
+<blockquote><tt>Infected systems have a copy of the worm stored in a file
+named "/usr/sbin/cron\x32". Delete this file, patch /etc/rc.local to remove
+the worm link, edit /etc/inetd.conf and remove the bogus UAAC service.
+Then download and install a patch for the telnetd exploit from your OS
+vendor.</tt></blockquote>
+</blockquote>
+</blockquote>
+(c) Virus Bulletin Ltd, 2001
+</body></html>

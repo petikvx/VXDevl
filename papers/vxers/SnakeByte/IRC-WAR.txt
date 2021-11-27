@@ -1,0 +1,212 @@
+
+
+              Playing games on IRC
+           IRC war demystified.. *g*
+    by SnakeByte [SnakeByte@kryptocrew.de]
+      http://www.kryptocrew.de/snakebyte/
+
+
+
+I am sitting here on an LAN-meeting with 2 friends,
+and due to the fact that 2 PC's got fucked up
+while installing the network *g* I decided to write
+something for the maniac, while the others play C&C I.
+
+This little tutorial is about IRC-Wars and how
+to abuse IRC. War on IRC is like a game. The goal
+is to gain channelops on a channel of your choice.
+This can be done in multiple ways and I'll show you
+some of them here. Ok, just keep in mind: if you got
+the @ and the others are out of the channel then
+you've won ! *eg* ...just for those who think
+abusing IRC is hacking.. it's NOT ! ;P
+
+Ok, here we go. How can we get the @ ?
+If a channel is empty and we join, we get @.
+Ok, sounds easy, but how to make all the others 
+part the channel ? 
+
+
+War-Scripts:
+ For nearly every IRC-client exist war-scripts, 
+ which got a lot of useful tools. Check www.mircx.com
+ for mIRC warscripts (Dod/Showdown/Eternal War). 
+ If you got Linux/Unix installed try BitchX and
+ one of the scripts. 
+
+IRC-Flooding:
+ This chapter is about flooding. This means, you
+ send either a lot of stuff into the channel or
+ to a single person. There are a lot of flood-bots
+ around and you may choose your favourite ones
+ Try to search for Flood or Wakobots to get some
+ flood program. Some war scripts also have the option
+ to flood with help of the script, but normally clones
+ are better, 'cause they can send out more.
+ The lamers way of flooding is directly into the chan
+ and hoping that the others get annoyed by this and
+ leave the channel... not very effective.
+ But if you try to CTCP-Flood the others in the channel
+ with something like PING or VERSION, they send a
+ response to the clone. If you can make them send
+ enough messages to the clone, the server kicks them
+ 'cause of 'excess flood'. The server tries to protect
+ itself and if you send too many to the server he kicks
+ you. Just make them send enough responses to the clones
+ by sending them CTCP messages like CLIENTINFO or 
+ USERINFO. Normally, 6 to 8 clones do the job very well.
+
+DoS:
+ Ok, several scripts got a flood-protection, which
+ prevents them of getting disconnected through excess
+ floods. What shall we do now ? We check the operating
+ system the enemys have installed. If it is win95 or
+ an older version of NT, we're lucky. Just use an
+ OOB-Nuker, which exploits a bug in this OS and send
+ some nasty data to port 139. Or try an oversized packet
+ attack with a Ping of Death tool. You can find these
+ programs like sand at the beach, just get some. They send
+ an oversized ICMP packet to the opponent and his 
+ PC crashes if it is unpatched. If you find out, the
+ other has mIRC 5.3 or below installed, you can freeze
+ his mIRC client, by open 1000-2000 TCP/IP connections
+ to his identserver (normally port 113). A very interested
+ thing is Click, which exploits a bug in the IRC-protocol
+ system. Click let you send a disconnect message to
+ the other client who quits the server. 
+ Another way is the ICMP flood. It sends lot's of
+ ICMP messages to the other one's PC. If your connection
+ is fast enough and the other one's lousy, you may be 
+ lucky and crash his connection. There are 
+ thousands of other DoS (Denial of Service) attacks
+ out, but only a few are implemented on Win9x/NT, so
+ if you want to work with DoS Linux is the better choice.
+
+
+Getting the other ones IP:
+ A lot of DoS scripts need the IP-address of the 
+ target. This can be resolved with the /DNS or
+ /WHOIS command. If you are on a server, which does not
+ give you an IP. Try opening a DCC chat or DCC send
+ and use NETSTAT, a DOS-Box tool, which shows you all
+ current TCP/IP connections.
+
+
+How to get around K-Lines and other way's to hide your IP:
+ One way is WANIRC, a tool, which lets you connect to an
+ IRC-Server through a gate. A friend of you has to run
+ this program and you select him (/server IP) as your
+ IRC-Server. This will show everyone his IP, so it's 
+ not a very nice way, if you wan't to do IRC-Wars *g*
+ Another way are Wingate-Servers. To find Wingates scan
+ for the open Port 23 or check a wingate list. By trying
+ /kline on a server, you get a list of all k-lines, very
+ often it contains several wingates servers which you can
+ use on another IRC-Server. To connect to a wingate server
+ type '/server IP 23' where the IP is the IP of the
+ wingate server ;)
+ Now we need to connect to the IRC-Server. We use the raw
+ command for this: '/raw irc.fu-berlin.de 6667' first the
+ server then the port. Then we need to tell the IRC-Server
+ our nick. '/raw nick SnakeByte' instead of SnakeByte you
+ should use your own nick. Then some user informations are
+ requested by the IRC-Server:
+   '/raw user username hostname servername realname'
+ For all those names, you can enter whatever you want to.
+ Wingates can also used in another way (not so much typing
+ all the time ;) )
+ Search for the socks-irewall option in your mIRC client
+ and enter the information of your wingate into the fields.
+ Select connect using socks firewall and you can use your
+ mIRC like normal. This can also be done by using a real
+ firewall, if it is configured right, others will only
+ get the IP of the firewall (no I don't mean shit like
+ Junkbuster ... )
+ The disadvantage of such methods to hide the IP is, that
+ your data is forwarded by the Wingate, so your LAG time
+ will raise. These ways of changing your IP will also
+ help you, if you're banned on a channel and the ban is
+ set to your host.
+
+
+Another way to get @ .. IRC-splits
+ If an IRC-Server loose it's connection due to too many
+ traffic or for some other reasons, it is trying to reconnect
+ to the IRC-Server network some time later. When this
+ happened some interesting things occour. If two people
+ on each server use the same nick, both will get disconnected
+ from the server, because each nickname has to be unique.
+ If you send several clones on a disconnected server with
+ the nicknames of your favourite victims, they and the clones
+ will get disconnected if the server reconnects. Nice time 
+ to gain ops by parting and rejoining (cycling) the channel. 
+ Another interesting thing is, that if you have the @ in the
+ channel of the disconnected server you will still have it
+ when it reconnects. Now try to deop all the other @'s and
+ you overtaked the channel. You can simply gain @ on the
+ disconnected server by joining the channel there, if it is
+ empty, which it is often enough.
+ Sounds nice you think, uh ? But how can we detect a netsplit ? There 
+ are some mIRC-Scripts and Add-Ons, which contain a link looker.
+ This is a tool, which alerts you if such thing is happening.
+ If you see a part message like this:
+    SnakeByte has quit IRC (irc-server1 irc-server2)
+ you know that server1 and server2 split up. 
+
+
+What are bots and how to get rid / misuse them ?
+ Bots are like IRC-Clients. The are running normally on
+ a Unix/Linux shell and protect the channel. You can
+ send your own bot into a channel after an overtake and set
+ +i (invite only) to keep this channel closed for a while *g*
+ Normally bots check who has @ and deop/kick others who have
+ or do things like flooding the channel. Try Click or one 
+ of the Eggdrop/Bot killer DoS attacks to get rid of them.
+ But very often bot's are also used to give ops to the
+ ones who are friendlisted. This may be misused if auto-op
+ is enabled. (This means the get @ after joining the channel)
+ Check the Ident of some people who get autoopped by the bot
+ and notice them on a piece of paper. If the channel is empty,
+ or only a few ops (don't forget the mass de-op *g*)
+ are inside enter their ident as yours and enter the
+ channel. With some luck the hostmask on the bot
+ for the Auto-op is set to <name>!<ident>@*.*
+ then the bot will give you automatically ops. If it is set
+ to the real hostmask you need to try to change your hostmask
+ to their ones. If you know they use a wingate, use the same
+ and your hostmask will be identical to theirs. You should also
+ scan the IP's in the same class c-net as the bot's one is and 
+ hopefully you find a wingate to have a hostmask as identical
+ to their ones. Very often you can get rid of bots with a 
+ CTCP-Ping flood or other types of floods (portflood, icmp flood),
+ cause most of them run on a shell with a very bad connection ;)
+ But very often IRC-War becomes nowadays a challenge which the one
+ wins who has the most bots :( So get either as many shells as you
+ can or just overtake channels only which are not protected by a botnet.
+
+
+Chanserv, X and W
+ These are Serverdaemons, which are set up to protect a
+ registered channel. I know no way to get rid of them, 
+ so you should better keep your hands of such channels.
+ These daemons are like bot's but run directly on the 
+ IRC-Server, so you can't disconnect them. Even kicking is 
+ impossible, cause they are protected by the server.
+
+
+What to do after an overtake ?
+ Ok, this depends why you overtaked the channel ;)
+ You can drop this channel and search the next one for 
+ overtaking... boring ;)
+ Play a bit with the ones who oned the channel before you *g*
+ Kick them on rejoin, ban them, set the channel to +m (moderated)
+ Set up a clone and close the channel for a longer time, by 
+ setting it secret and invite only. Ok, this is not very 
+ nice, but you can give a shit at the hacker ethics, 'cause
+ IRC-War has nothing to do with hacking *g*
+
+
+ Ok, thats all for now.. Wait for the next blackcode newsletter to
+ get more information about IRC...
+
+  cu SnakeByte

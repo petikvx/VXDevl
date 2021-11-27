@@ -1,0 +1,792 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="Producer" content="Acrobat Distiller 4.05 for Windows"><meta name="Creator" content="Microsoft Word 9.0"><meta name="ModDate" content="D:20040312163722-05'00'"><meta name="Author" content="DJ6106"><meta name="CreationDate" content="D:20040312163702"><title>Design and Implementation of a Lab Worm</title></head><body bgcolor="#ffffff" link="blue" vlink="blue"><table border="1" width="100%"><tbody><tr><td><table color="#ffffff" bgcolor="#ffffff" border="1" cellpadding="10" cellspacing="0" width="100%"><tbody><tr><td><font color="black" face="arial,sans-serif" size="-1">This is the html version of the file <a href="http://users.ece.gatech.edu/%7Eowen/Academic/Internetwork_Security/Spring2004/Lab9_paper.pdf"><font color="blue">http://users.ece.gatech.edu/~owen/Academic/Internetwork_Security/Spring2004/Lab9_paper.pdf</font></a>.<br> <b><font color="#0039b6">G</font> <font color="#c41200">o</font> <font color="#f3c518">o</font> <font color="#0039b6">g</font> <font color="#30a72f">l</font> <font color="#c41200">e</font></b> automatically generates html versions of documents as we crawl the web.</font><br><br><center><font size="-2"><i>Google is neither affiliated with the authors of this page nor responsible for its content.</i></font></center></td></tr></tbody></table></td></tr></tbody></table>
+<hr>
+
+
+
+
+
+
+
+
+
+
+<table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="1"><b>Page 1</b></a></font></td></tr></tbody></table><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 229px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 246px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 264px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 1292px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 11px; font-family: Times;">
+<div style="position: absolute; top: 451px; left: 81px;"><nobr><i><b>Abstract –  Malicious worms have presented  a  formidable</b></i></nobr></div>
+<div style="position: absolute; top: 466px; left: 81px;"><nobr><i><b>threat to the security community in recent years. Beginners to</b></i></nobr></div>
+<div style="position: absolute; top: 482px; left: 81px;"><nobr><i><b>internet  security  research require  an understanding of the </b></i></nobr></div>
+<div style="position: absolute; top: 497px; left: 81px;"><nobr><i><b>inner workings of worms. A simple research worm designed to</b></i></nobr></div>
+<div style="position: absolute; top: 513px; left: 81px;"><nobr><i><b>run  on  a  test  network  facilitates  this  understanding.  This </b></i></nobr></div>
+<div style="position: absolute; top: 528px; left: 81px;"><nobr><i><b>worm is also useful to researchers needing see how a typical</b></i></nobr></div>
+<div style="position: absolute; top: 544px; left: 81px;"><nobr><i><b>worm will affect systems. This paper explains the design and </b></i></nobr></div>
+<div style="position: absolute; top: 560px; left: 81px;"><nobr><i><b>implementation of a simple research worm.  A discussion of</b></i></nobr></div>
+<div style="position: absolute; top: 575px; left: 81px;"><nobr><i><b>worm structure is provided.  Design decisions made in creating </b></i></nobr></div>
+<div style="position: absolute; top: 590px; left: 81px;"><nobr><i><b>our research worm are then given with an emphasis on how</b></i></nobr></div>
+<div style="position: absolute; top: 606px; left: 81px;"><nobr><i><b>they relate to real internet worms.  Relevant information from</b></i></nobr></div>
+<div style="position: absolute; top: 622px; left: 81px;"><nobr><i><b>the construction process provides context to the reader. The </b></i></nobr></div>
+<div style="position: absolute; top: 637px; left: 81px;"><nobr><i><b>worm described herein is run on a safe isolated network at the</b></i></nobr></div>
+<div style="position: absolute; top: 653px; left: 81px;"><nobr><i><b>Georgia  Institute of  Technology.  Students  in  a  network </b></i></nobr></div>
+<div style="position: absolute; top: 668px; left: 81px;"><nobr><i><b>security course study it to see worm behavior firsthand and to</b></i></nobr></div>
+<div style="position: absolute; top: 684px; left: 81px;"><nobr><i><b>gauge the effectiveness of different tools at combating worms.</b></i></nobr></div>
+<div style="position: absolute; top: 699px; left: 81px;"><nobr><i><b>This research worm does not attack a real network service,</b></i></nobr></div>
+<div style="position: absolute; top: 715px; left: 81px;"><nobr><i><b>thus it is harmless if ever run on a network connected to the </b></i></nobr></div>
+<div style="position: absolute; top: 731px; left: 81px;"><nobr><i><b>Internet.<a href="#1"></a></b></i></nobr></div>
+<div style="position: absolute; top: 762px; left: 81px;"><nobr><b>Index terms – Network Security, Internet Worm, Security</b></nobr></div>
+<div style="position: absolute; top: 778px; left: 81px;"><nobr><b>Evaluation Laboratory</b></nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 842px; left: 188px;"><nobr>I. I</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 845px; left: 206px;"><nobr>NTRODUCTION</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 877px; left: 81px;"><nobr>Security</nobr></div>
+<div style="position: absolute; top: 877px; left: 150px;"><nobr>researchers</nobr></div>
+<div style="position: absolute; top: 877px; left: 237px;"><nobr>must</nobr></div>
+<div style="position: absolute; top: 877px; left: 285px;"><nobr>possess</nobr></div>
+<div style="position: absolute; top: 877px; left: 349px;"><nobr>an</nobr></div>
+<div style="position: absolute; top: 877px; left: 382px;"><nobr>in-depth</nobr></div>
+<div style="position: absolute; top: 894px; left: 81px;"><nobr>understanding of internet  worms  in order  to effectively</nobr></div>
+<div style="position: absolute; top: 912px; left: 81px;"><nobr>combat  them.  Such an understanding best comes from</nobr></div>
+<div style="position: absolute; top: 929px; left: 81px;"><nobr>seeing how a  worm is designed and implemented.  The </nobr></div>
+<div style="position: absolute; top: 946px; left: 81px;"><nobr>aim of this  paper  is  to provide  insight into both the </nobr></div>
+<div style="position: absolute; top: 964px; left: 81px;"><nobr>methods and mechanisms used in worm creation. First, a </nobr></div>
+<div style="position: absolute; top: 981px; left: 81px;"><nobr>model  will  be defined for  classifying worm-like  code. </nobr></div>
+<div style="position: absolute; top: 998px; left: 81px;"><nobr>Concrete details will then be explored through the design </nobr></div>
+<div style="position: absolute; top: 1015px; left: 81px;"><nobr>and  implementation of a  simple  research worm.  The </nobr></div>
+<div style="position: absolute; top: 1033px; left: 81px;"><nobr>worm described was created in a security research lab at </nobr></div>
+<div style="position: absolute; top: 1050px; left: 81px;"><nobr>the Georgia Institute of Technology to allow students to</nobr></div>
+<div style="position: absolute; top: 1067px; left: 81px;"><nobr>witness it spread in a safe, controlled environment.  The </nobr></div>
+<div style="position: absolute; top: 1084px; left: 81px;"><nobr>information in this paper is being provided in hopes that it </nobr></div>
+<div style="position: absolute; top: 1101px; left: 81px;"><nobr>may help  the  reader  defend against  worm attacks by</nobr></div>
+<div style="position: absolute; top: 1119px; left: 81px;"><nobr>seeing a  research worm from the  worm author’s</nobr></div>
+<div style="position: absolute; top: 1136px; left: 81px;"><nobr>viewpoint.</nobr></div>
+<div style="position: absolute; top: 1213px; left: 87px;"><nobr><i>Authors are researching information security issues</i></nobr></div>
+<div style="position: absolute; top: 1231px; left: 81px;"><nobr><i>related to rapid mobile code in the College of Computing </i></nobr></div>
+<div style="position: absolute; top: 1248px; left: 81px;"><nobr><i>and School of Electrical and Computer Engineering at</i></nobr></div>
+<div style="position: absolute; top: 1265px; left: 81px;"><nobr><i>Georgia Institute of Technology, Atlanta, Georgia. </i></nobr></div>
+<div style="position: absolute; top: 468px; left: 556px;"><nobr>II. A G</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 471px; left: 599px;"><nobr>ENERIC</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 468px; left: 645px;"><nobr>W</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 471px; left: 659px;"><nobr>ORM</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 468px; left: 690px;"><nobr>M</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 471px; left: 703px;"><nobr>ODEL</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 504px; left: 486px;"><nobr>A general  model  of worm-like  behavior is  needed to</nobr></div>
+<div style="position: absolute; top: 521px; left: 486px;"><nobr>understand and classify internet worms.  Ellis described</nobr></div>
+<div style="position: absolute; top: 538px; left: 486px;"><nobr>six components of any worm system as: reconnaissance, a </nobr></div>
+<div style="position: absolute; top: 555px; left: 486px;"><nobr>specific  attack,  a command interface, a communications</nobr></div>
+<div style="position: absolute; top: 573px; left: 486px;"><nobr>capability, intelligence capabilities  and unused attack</nobr></div>
+<div style="position: absolute; top: 590px; left: 486px;"><nobr>capabilities  [1].  Since  the  purpose  of our  educational </nobr></div>
+<div style="position: absolute; top: 607px; left: 486px;"><nobr>worm is  to demonstrate  a  worm’s ability to infect  and</nobr></div>
+<div style="position: absolute; top: 624px; left: 486px;"><nobr>propagate hosts using a known vulnerability and exploit, </nobr></div>
+<div style="position: absolute; top: 642px; left: 486px;"><nobr>rather  than demonstrate  an intelligent  and  cooperative </nobr></div>
+<div style="position: absolute; top: 659px; left: 486px;"><nobr>worm system,  we have chosen not  to  implement  a </nobr></div>
+<div style="position: absolute; top: 676px; left: 486px;"><nobr>command interface or maintain an intelligence capability</nobr></div>
+<div style="position: absolute; top: 693px; left: 486px;"><nobr>in our prototype. In addition, maintaining unused attacks </nobr></div>
+<div style="position: absolute; top: 711px; left: 486px;"><nobr>is unnecessary for our purpose.  Nazario, et al., proposed </nobr></div>
+<div style="position: absolute; top: 728px; left: 486px;"><nobr>a  general  worm algorithm that  enumerates target  hosts,</nobr></div>
+<div style="position: absolute; top: 745px; left: 486px;"><nobr>verifies  visibility,  verifies  vulnerability,  exploits  the </nobr></div>
+<div style="position: absolute; top: 762px; left: 486px;"><nobr>vulnerability and then infects the target host [2].  Since </nobr></div>
+<div style="position: absolute; top: 780px; left: 486px;"><nobr>we our  using a  specified vulnerability with a  known</nobr></div>
+<div style="position: absolute; top: 797px; left: 486px;"><nobr>exploit  to reduce  risk of harm to the  network, we can</nobr></div>
+<div style="position: absolute; top: 814px; left: 486px;"><nobr>combine  the  steps:  verify visibility and verify</nobr></div>
+<div style="position: absolute; top: 831px; left: 486px;"><nobr>vulnerability.  We have added to the above algorithm the </nobr></div>
+<div style="position: absolute; top: 849px; left: 486px;"><nobr>implementation of an optional payload.  This can perform</nobr></div>
+<div style="position: absolute; top: 866px; left: 486px;"><nobr>a number of functions including the communications and</nobr></div>
+<div style="position: absolute; top: 883px; left: 486px;"><nobr>intelligence  capabilities  described earlier,  as  well  as </nobr></div>
+<div style="position: absolute; top: 900px; left: 486px;"><nobr>administrative  or malicious operations on files  and/or</nobr></div>
+<div style="position: absolute; top: 918px; left: 486px;"><nobr>other resources on the infected host.   Our choices provide </nobr></div>
+<div style="position: absolute; top: 935px; left: 486px;"><nobr>a simplified general model to teach design decisions for </nobr></div>
+<div style="position: absolute; top: 952px; left: 486px;"><nobr>our own worm.  Our model is composed of five parts.</nobr></div>
+<div style="position: absolute; top: 969px; left: 508px;"><nobr>1.  The enumeration of target hosts</nobr></div>
+<div style="position: absolute; top: 987px; left: 508px;"><nobr>2  The exploit of a weakness in security</nobr></div>
+<div style="position: absolute; top: 1004px; left: 508px;"><nobr>3.  The infection of a target  </nobr></div>
+<div style="position: absolute; top: 1021px; left: 508px;"><nobr>4.  An optional payload  </nobr></div>
+<div style="position: absolute; top: 1038px; left: 508px;"><nobr>5.  Virus-like reproduction</nobr></div>
+<div style="position: absolute; top: 1074px; left: 508px;"><nobr><i>A. Enumeration of Target Hosts</i></nobr></div>
+<div style="position: absolute; top: 1109px; left: 486px;"><nobr>Worms  have used different techniques for discovering </nobr></div>
+<div style="position: absolute; top: 1126px; left: 486px;"><nobr>hosts to target on the network. These techniques can be </nobr></div>
+<div style="position: absolute; top: 1143px; left: 486px;"><nobr>classified  in three  categories: hitlist,  topological  and </nobr></div>
+<div style="position: absolute; top: 1161px; left: 486px;"><nobr>scanning.</nobr></div>
+<div style="position: absolute; top: 1161px; left: 561px;"><nobr>A hitlist  is  a  pre-compiled list  of known</nobr></div>
+<div style="position: absolute; top: 1178px; left: 486px;"><nobr>addresses  for target hosts.</nobr></div>
+<div style="position: absolute; top: 1178px; left: 681px;"><nobr>A technique that mines </nobr></div>
+<div style="position: absolute; top: 1195px; left: 486px;"><nobr>information from the infected host for other targets uses a </nobr></div>
+<div style="position: absolute; top: 1212px; left: 486px;"><nobr>topological technique.  The final technique is scanning an</nobr></div>
+<div style="position: absolute; top: 1230px; left: 486px;"><nobr>address set for target hosts. Sequentially stepping through </nobr></div>
+<div style="position: absolute; top: 1247px; left: 486px;"><nobr>a subnet or using a  pseudorandom number  generator  to</nobr></div>
+<div style="position: absolute; top: 1264px; left: 486px;"><nobr>scan  through  a  large  address  space  are  two examples.</nobr></div>
+</span></font>
+<font face="Times" size="5"><span style="font-size: 34px; font-family: Times;">
+<div style="position: absolute; top: 309px; left: 124px;"><nobr><b>Design and Implementation of a Lab Worm </b></nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 398px; left: 155px;"><nobr>Christopher Church, Tim Schmoyer, <i>Senior Member, IEEE, </i>and Henry L. Owen, <i>Senior Member, IEEE</i></nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 1363px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="2"><b>Page 2</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 1417px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 1434px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 1452px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 2480px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 1486px; left: 81px;"><nobr>These  techniques can also be  combined  to  increase  the </nobr></div>
+<div style="position: absolute; top: 1503px; left: 81px;"><nobr>effective propagation rate of the worm through a network.</nobr></div>
+<div style="position: absolute; top: 1539px; left: 103px;"><nobr><i>B. Exploit of a Vulnerability </i></nobr></div>
+<div style="position: absolute; top: 1574px; left: 81px;"><nobr>All infections by an internet worm begin with the exploit </nobr></div>
+<div style="position: absolute; top: 1591px; left: 81px;"><nobr>of a  security weakness. This weakness must allow the </nobr></div>
+<div style="position: absolute; top: 1608px; left: 81px;"><nobr>parent worm to  execute  arbitrary code  on the  victim</nobr></div>
+<div style="position: absolute; top: 1626px; left: 81px;"><nobr>machine.  The variety of vulnerabilities targeted by real </nobr></div>
+<div style="position: absolute; top: 1643px; left: 81px;"><nobr>worms is staggering. A detailed account of exploits used </nobr></div>
+<div style="position: absolute; top: 1660px; left: 81px;"><nobr>is beyond the  scope  of this paper; however  several</nobr></div>
+<div style="position: absolute; top: 1677px; left: 81px;"><nobr>popular ones are worth mentioning. The ability for some</nobr></div>
+<div style="position: absolute; top: 1695px; left: 81px;"><nobr>email clients, such as Microsoft Outlook, to execute code </nobr></div>
+<div style="position: absolute; top: 1712px; left: 81px;"><nobr>attached  to  emails has remained  a  common point of</nobr></div>
+<div style="position: absolute; top: 1729px; left: 81px;"><nobr>attack.  Worms have used  email  for  years to  spready</nobr></div>
+<div style="position: absolute; top: 1746px; left: 81px;"><nobr>rapidly. A recent worm to exploit this vulnerability is the </nobr></div>
+<div style="position: absolute; top: 1764px; left: 81px;"><nobr>SoBig.f email  worm. </nobr></div>
+<div style="position: absolute; top: 1764px; left: 242px;"><nobr>Remote  services  with buffer </nobr></div>
+<div style="position: absolute; top: 1781px; left: 81px;"><nobr>overflow vulnerabilities  are  also commonly attacked. </nobr></div>
+<div style="position: absolute; top: 1798px; left: 81px;"><nobr>Buffer overflows have been the most commonly targeted </nobr></div>
+<div style="position: absolute; top: 1815px; left: 81px;"><nobr>[6]  security vulnerability for  years.  Buffer  overflows </nobr></div>
+<div style="position: absolute; top: 1833px; left: 81px;"><nobr>have been discovered in almost every type  of software. </nobr></div>
+<div style="position: absolute; top: 1850px; left: 81px;"><nobr>Any program that reads data from a network is a potential</nobr></div>
+<div style="position: absolute; top: 1867px; left: 81px;"><nobr>target  for  a  worm.  Successful worms have exploited </nobr></div>
+<div style="position: absolute; top: 1884px; left: 81px;"><nobr>buffer  overflows in popular  services including fingerd, </nobr></div>
+<div style="position: absolute; top: 1902px; left: 81px;"><nobr>Apache, MS SQL, IIS, and Microsoft’s RPC in NT.    </nobr></div>
+<div style="position: absolute; top: 1937px; left: 103px;"><nobr><i>C. Infection</i></nobr></div>
+<div style="position: absolute; top: 1972px; left: 81px;"><nobr>The infection stage begins when a host first receives and </nobr></div>
+<div style="position: absolute; top: 1989px; left: 81px;"><nobr>executes viral code.  Typically, worms infect vulnerable </nobr></div>
+<div style="position: absolute; top: 2007px; left: 81px;"><nobr>hosts immediately after gaining access through a security</nobr></div>
+<div style="position: absolute; top: 2024px; left: 81px;"><nobr>hole.  Some send intermediate  code that  downloads a </nobr></div>
+<div style="position: absolute; top: 2041px; left: 81px;"><nobr>copy of the worm and runs it [4].  The format of the code </nobr></div>
+<div style="position: absolute; top: 2058px; left: 81px;"><nobr>sent is dependant upon the type of exploit used and the </nobr></div>
+<div style="position: absolute; top: 2076px; left: 81px;"><nobr>type of system targetted. If the worm exploits multiple </nobr></div>
+<div style="position: absolute; top: 2093px; left: 81px;"><nobr>vulnerabilities,  it  may contain copies  of its  code in</nobr></div>
+<div style="position: absolute; top: 2110px; left: 81px;"><nobr>multiple formats.  An extreme case of this is detailed in</nobr></div>
+<div style="position: absolute; top: 2127px; left: 81px;"><nobr>[5].   </nobr></div>
+<div style="position: absolute; top: 2162px; left: 81px;"><nobr>The  exploit  and  infection code  are  the  most common</nobr></div>
+<div style="position: absolute; top: 2179px; left: 81px;"><nobr>targets  for  signature  based intrusion detection systems. </nobr></div>
+<div style="position: absolute; top: 2196px; left: 81px;"><nobr>These  systems check packets on a  network for  known</nobr></div>
+<div style="position: absolute; top: 2214px; left: 81px;"><nobr>strings used  in exploits or  as parts of worms.</nobr></div>
+<div style="position: absolute; top: 2231px; left: 81px;"><nobr>Polymorphic code, or mutating the worm and exploit code </nobr></div>
+<div style="position: absolute; top: 2248px; left: 81px;"><nobr>randomly between each infection, may defeat  these </nobr></div>
+<div style="position: absolute; top: 2265px; left: 81px;"><nobr>security systems. Few real worms  have tried such</nobr></div>
+<div style="position: absolute; top: 2283px; left: 81px;"><nobr>techniques yet, but they should be expected [2].    </nobr></div>
+<div style="position: absolute; top: 2318px; left: 103px;"><nobr><i>D. Payload </i></nobr></div>
+<div style="position: absolute; top: 2353px; left: 81px;"><nobr>All  side  effects other  than reproduction and  resource </nobr></div>
+<div style="position: absolute; top: 2370px; left: 81px;"><nobr>consumption are  due  to  the  payload  of the  worm. </nobr></div>
+<div style="position: absolute; top: 2388px; left: 81px;"><nobr>Interesting examples from existing worms include </nobr></div>
+<div style="position: absolute; top: 2405px; left: 81px;"><nobr>deletion of files, inclusion of files  into the  worm itself,</nobr></div>
+<div style="position: absolute; top: 2422px; left: 81px;"><nobr>installation of backdoors, denial of service  attacks,</nobr></div>
+<div style="position: absolute; top: 1486px; left: 486px;"><nobr>installation of security patches,  password cracking,</nobr></div>
+<div style="position: absolute; top: 1503px; left: 486px;"><nobr>spamming, and computer restarts [7].   </nobr></div>
+<div style="position: absolute; top: 1539px; left: 508px;"><nobr><i>E. Viral Reproduction </i></nobr></div>
+<div style="position: absolute; top: 1574px; left: 486px;"><nobr>All worms must infect new targets in order to reproduce. </nobr></div>
+<div style="position: absolute; top: 1591px; left: 486px;"><nobr>The vulnerabilities used will determine exactly how this is </nobr></div>
+<div style="position: absolute; top: 1608px; left: 486px;"><nobr>done. Internet worms may be described as either active or </nobr></div>
+<div style="position: absolute; top: 1626px; left: 486px;"><nobr>passive.  Active worms have an autonomous cycle; they</nobr></div>
+<div style="position: absolute; top: 1643px; left: 486px;"><nobr>spread without human interaction. Passive worms require </nobr></div>
+<div style="position: absolute; top: 1660px; left: 486px;"><nobr>some interaction in order  to infect  a  host.  Common</nobr></div>
+<div style="position: absolute; top: 1677px; left: 486px;"><nobr>passive worm examples include email worms that infect </nobr></div>
+<div style="position: absolute; top: 1695px; left: 486px;"><nobr>when a user opens an attachment. </nobr></div>
+<div style="position: absolute; top: 1730px; left: 508px;"><nobr><i>F. Summary of Worm Model</i></nobr></div>
+<div style="position: absolute; top: 1765px; left: 486px;"><nobr>A five part worm model makes it easy to analyze existing</nobr></div>
+<div style="position: absolute; top: 1782px; left: 486px;"><nobr>worms  in terms  of their  subcomponents.  A detailed</nobr></div>
+<div style="position: absolute; top: 1800px; left: 486px;"><nobr>analysis that  breaks different worms down into  their </nobr></div>
+<div style="position: absolute; top: 1817px; left: 486px;"><nobr>components with this model is beyond the scope of this </nobr></div>
+<div style="position: absolute; top: 1834px; left: 486px;"><nobr>paper, but would be useful to highlight trends and provide </nobr></div>
+<div style="position: absolute; top: 1851px; left: 486px;"><nobr>historical  context.  Our  worm model  will  be used to</nobr></div>
+<div style="position: absolute; top: 1869px; left: 486px;"><nobr>describe the construction of a research worm and compare </nobr></div>
+<div style="position: absolute; top: 1886px; left: 486px;"><nobr>it to worms found on the Internet. </nobr></div>
+<div style="position: absolute; top: 1921px; left: 546px;"><nobr>III. D</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 1924px; left: 579px;"><nobr>ESIGN OF THE </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 1921px; left: 662px;"><nobr>SPOC W</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 1924px; left: 717px;"><nobr>ORM</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 1956px; left: 486px;"><nobr>The design of the worm, affectionately dubbed the Simple </nobr></div>
+<div style="position: absolute; top: 1974px; left: 486px;"><nobr>Proof Of Concept (SPOC) worm tries to attain generality, </nobr></div>
+<div style="position: absolute; top: 1991px; left: 486px;"><nobr>simplicity, and usefulness. SPOC must be as simple as</nobr></div>
+<div style="position: absolute; top: 2008px; left: 486px;"><nobr>possible.  However, the very nature of worms is complex,</nobr></div>
+<div style="position: absolute; top: 2025px; left: 486px;"><nobr>so even the most basic implementation will reflect this to</nobr></div>
+<div style="position: absolute; top: 2043px; left: 486px;"><nobr>an extent.  The lessons learned from the construction and </nobr></div>
+<div style="position: absolute; top: 2060px; left: 486px;"><nobr>experimentation with SPOC  should apply to many real </nobr></div>
+<div style="position: absolute; top: 2077px; left: 486px;"><nobr>world malicious worms. </nobr></div>
+<div style="position: absolute; top: 2112px; left: 508px;"><nobr><i>A. Platform</i></nobr></div>
+<div style="position: absolute; top: 2148px; left: 486px;"><nobr>The Intel x86 architecture is an obvious choice for SPOC</nobr></div>
+<div style="position: absolute; top: 2165px; left: 486px;"><nobr>so that it could be run in a Georgia Tech security research</nobr></div>
+<div style="position: absolute; top: 2182px; left: 486px;"><nobr>lab. Most  malicious worms  target  intel  machines,  so</nobr></div>
+<div style="position: absolute; top: 2199px; left: 486px;"><nobr>making  SPOC  do the same also assists  in  studying </nobr></div>
+<div style="position: absolute; top: 2217px; left: 486px;"><nobr>common behavior.</nobr></div>
+<div style="position: absolute; top: 2251px; left: 486px;"><nobr>The choice of operating system is slightly more difficult. </nobr></div>
+<div style="position: absolute; top: 2268px; left: 486px;"><nobr>Both  GNU/Linux  and Microsoft  Windows  are  common </nobr></div>
+<div style="position: absolute; top: 2286px; left: 486px;"><nobr>targets for  internet  worms.</nobr></div>
+<div style="position: absolute; top: 2286px; left: 688px;"><nobr>Windows has received </nobr></div>
+<div style="position: absolute; top: 2303px; left: 486px;"><nobr>slightly more worm attacks lately, but Linux has a better</nobr></div>
+<div style="position: absolute; top: 2320px; left: 486px;"><nobr>collection of free development tools. Linux was chosen</nobr></div>
+<div style="position: absolute; top: 2337px; left: 486px;"><nobr>mainly to make development and analysis easier. </nobr></div>
+<div style="position: absolute; top: 2373px; left: 508px;"><nobr><i>B. Vulnerability </i></nobr></div>
+<div style="position: absolute; top: 2408px; left: 486px;"><nobr>SPOC targets a  buffer  overflow in a  mock network</nobr></div>
+<div style="position: absolute; top: 2425px; left: 486px;"><nobr>service [3]. A buffer overflow occurs when a data buffer </nobr></div>
+<div style="position: absolute; top: 2442px; left: 486px;"><nobr>is written with more data than it can hold and some of the </nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 2551px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="3"><b>Page 3</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 2605px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 2622px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 2640px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 3668px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 2674px; left: 81px;"><nobr>data  overwrites other  variables. They are  commonly</nobr></div>
+<div style="position: absolute; top: 2691px; left: 81px;"><nobr>exploited  in buffers located  on the  stack because the </nobr></div>
+<div style="position: absolute; top: 2709px; left: 81px;"><nobr>address where functions return is located nearby.  Buffer </nobr></div>
+<div style="position: absolute; top: 2726px; left: 81px;"><nobr>overflows are the most common vulnerabilities found in</nobr></div>
+<div style="position: absolute; top: 2743px; left: 81px;"><nobr>computers on the  Internet.  The  implementation of the </nobr></div>
+<div style="position: absolute; top: 2760px; left: 81px;"><nobr>fake service  contains software  checks to  monitor  the </nobr></div>
+<div style="position: absolute; top: 2778px; left: 81px;"><nobr>worm’s progress. SPOC doesn’t attack a  real  service, </nobr></div>
+<div style="position: absolute; top: 2795px; left: 81px;"><nobr>therefore it is harmless if ever run on a network connected </nobr></div>
+<div style="position: absolute; top: 2812px; left: 81px;"><nobr>to the Internet. </nobr></div>
+<div style="position: absolute; top: 2847px; left: 81px;"><nobr>The  implementation of the  vulnerable  service  is  only</nobr></div>
+<div style="position: absolute; top: 2864px; left: 81px;"><nobr>about 150 lines of C code.  It implements an echo service </nobr></div>
+<div style="position: absolute; top: 2881px; left: 81px;"><nobr>that listens on port 3333. The critical vulnerability occurs</nobr></div>
+<div style="position: absolute; top: 2898px; left: 81px;"><nobr>within the code shown in figure 1.</nobr></div>
+<div style="position: absolute; top: 3131px; left: 81px;"><nobr><b>Figure 1: vulnerable portion of service </b></nobr></div>
+<div style="position: absolute; top: 3157px; left: 81px;"><nobr>Overflowing a buffer with <i>gets</i>() is extremely simple. The </nobr></div>
+<div style="position: absolute; top: 3174px; left: 81px;"><nobr>memory layout of the vulnerable service can be seen in</nobr></div>
+<div style="position: absolute; top: 3192px; left: 81px;"><nobr>figure 2.</nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 3256px; left: 98px;"><nobr>16 bytes </nobr></div>
+<div style="position: absolute; top: 3308px; left: 98px;"><nobr>4 bytes </nobr></div>
+<div style="position: absolute; top: 3229px; left: 237px;"><nobr>… </nobr></div>
+<div style="position: absolute; top: 3260px; left: 201px;"><nobr>userinput </nobr></div>
+<div style="position: absolute; top: 3289px; left: 215px;"><nobr>return </nobr></div>
+<div style="position: absolute; top: 3306px; left: 210px;"><nobr>address </nobr></div>
+<div style="position: absolute; top: 3337px; left: 237px;"><nobr>… </nobr></div>
+<div style="position: absolute; top: 3230px; left: 307px;"><nobr>Higher </nobr></div>
+<div style="position: absolute; top: 3247px; left: 307px;"><nobr>Addresses </nobr></div>
+<div style="position: absolute; top: 3326px; left: 307px;"><nobr>Lower </nobr></div>
+<div style="position: absolute; top: 3343px; left: 307px;"><nobr>Addresses </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 3377px; left: 81px;"><nobr><b>Figure 2: Stack layout in vulnerable service </b></nobr></div>
+<div style="position: absolute; top: 3420px; left: 81px;"><nobr>When <i>svcHandle</i>()  finishes  executing it  jumps  to the </nobr></div>
+<div style="position: absolute; top: 3437px; left: 81px;"><nobr>return address stored on the stack.  The address to return</nobr></div>
+<div style="position: absolute; top: 3455px; left: 81px;"><nobr>to was placed there when <i>svcHandle</i>() was called.  If a </nobr></div>
+<div style="position: absolute; top: 3472px; left: 81px;"><nobr>string larger than 16 bytes is sent to userinput then part of</nobr></div>
+<div style="position: absolute; top: 3489px; left: 81px;"><nobr>the data will overwrite the return address. Through trial </nobr></div>
+<div style="position: absolute; top: 3506px; left: 81px;"><nobr>and error we can guess a reasonable stack address, send a </nobr></div>
+<div style="position: absolute; top: 3524px; left: 81px;"><nobr>string of NOP (No OPeration) instructions, and a string of</nobr></div>
+<div style="position: absolute; top: 3541px; left: 81px;"><nobr>code to execute.  The NOP string allows some degree of</nobr></div>
+<div style="position: absolute; top: 3558px; left: 81px;"><nobr>error  to our  guess;  it  will  work as  long as  the  return</nobr></div>
+<div style="position: absolute; top: 3575px; left: 81px;"><nobr>address points somewhere  in the  NOP area.  So  our </nobr></div>
+<div style="position: absolute; top: 3593px; left: 81px;"><nobr>malicious code is laid out as shown in figure 3.</nobr></div>
+<div style="position: absolute; top: 2675px; left: 502px;"><nobr>16 bytes</nobr></div>
+<div style="position: absolute; top: 2675px; left: 587px;"><nobr>4 bytes</nobr></div>
+<div style="position: absolute; top: 2675px; left: 661px;"><nobr>500 bytes</nobr></div>
+<div style="position: absolute; top: 2675px; left: 751px;"><nobr>7 bytes</nobr></div>
+<div style="position: absolute; top: 2718px; left: 503px;"><nobr>padding stack address</nobr></div>
+<div style="position: absolute; top: 2718px; left: 672px;"><nobr>NOPs</nobr></div>
+<div style="position: absolute; top: 2718px; left: 758px;"><nobr>code </nobr></div>
+<div style="position: absolute; top: 2761px; left: 490px;"><nobr><b>Figure 3: Layout of malicious code</b></nobr></div>
+<div style="position: absolute; top: 2796px; left: 508px;"><nobr><i>C. Payload </i></nobr></div>
+<div style="position: absolute; top: 2831px; left: 486px;"><nobr>There is no payload in SPOC, although it is designed to</nobr></div>
+<div style="position: absolute; top: 2848px; left: 486px;"><nobr>be easy to add one.  Useful payloads to consider adding in</nobr></div>
+<div style="position: absolute; top: 2866px; left: 486px;"><nobr>the  future  include  sending messages  to the  system log,</nobr></div>
+<div style="position: absolute; top: 2883px; left: 486px;"><nobr>restarting the  vulnerable  service,  or  sending an email </nobr></div>
+<div style="position: absolute; top: 2900px; left: 486px;"><nobr>notice of success.</nobr></div>
+<div style="position: absolute; top: 2935px; left: 508px;"><nobr><i>D. Reproduction </i></nobr></div>
+<div style="position: absolute; top: 2971px; left: 486px;"><nobr>The method for determining which IP addresses to attack</nobr></div>
+<div style="position: absolute; top: 2988px; left: 486px;"><nobr>is a difficult decision for worm designers.  Worm authors</nobr></div>
+<div style="position: absolute; top: 3005px; left: 486px;"><nobr>will try to make the address generation seem random in</nobr></div>
+<div style="position: absolute; top: 3022px; left: 486px;"><nobr>order to slow down internet security defenses.  They want</nobr></div>
+<div style="position: absolute; top: 3040px; left: 486px;"><nobr>to scatter addresses  among  many different networks  to</nobr></div>
+<div style="position: absolute; top: 3057px; left: 486px;"><nobr>spread their worm faster.  They will also try to prevent </nobr></div>
+<div style="position: absolute; top: 3074px; left: 486px;"><nobr>different instances of the worm from repeating attacks on</nobr></div>
+<div style="position: absolute; top: 3091px; left: 486px;"><nobr>the  same addresses. The reproduction strategy used by</nobr></div>
+<div style="position: absolute; top: 3109px; left: 486px;"><nobr>SPOC  aims to balance  simplicity with infection speed. </nobr></div>
+<div style="position: absolute; top: 3126px; left: 486px;"><nobr>SPOC first attempts to infect every machine on the subnet </nobr></div>
+<div style="position: absolute; top: 3143px; left: 486px;"><nobr>of each network interface.  This technique, very similar to </nobr></div>
+<div style="position: absolute; top: 3160px; left: 486px;"><nobr>the  strategy used by Code Red 2 [7], spreads the worm</nobr></div>
+<div style="position: absolute; top: 3178px; left: 486px;"><nobr>quickly throughout local networks. After attacking each </nobr></div>
+<div style="position: absolute; top: 3195px; left: 486px;"><nobr>subnet, a random IP address is set as the target address.</nobr></div>
+<div style="position: absolute; top: 3212px; left: 486px;"><nobr>SPOC enters a loop in which the target address is attacked </nobr></div>
+<div style="position: absolute; top: 3229px; left: 486px;"><nobr>and  incremented.  By starting at  a  random address,</nobr></div>
+<div style="position: absolute; top: 3247px; left: 486px;"><nobr>different copies of the worm are likely to attack different</nobr></div>
+<div style="position: absolute; top: 3264px; left: 486px;"><nobr>machines.  This  strategy has  the  added benefit  of not </nobr></div>
+<div style="position: absolute; top: 3281px; left: 486px;"><nobr>requiring synchronization between the worms. </nobr></div>
+<div style="position: absolute; top: 3316px; left: 580px;"><nobr>IV. I</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 3319px; left: 608px;"><nobr>MPLEMENTATION</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 3352px; left: 486px;"><nobr>The  construction process involves a  sequence  of stages</nobr></div>
+<div style="position: absolute; top: 3369px; left: 486px;"><nobr>that result in attack code which may be used in a buffer </nobr></div>
+<div style="position: absolute; top: 3386px; left: 486px;"><nobr>overflow attack.  A high level pseudo-code description is</nobr></div>
+<div style="position: absolute; top: 3403px; left: 486px;"><nobr>given first,  followed by a  C  implementation of the </nobr></div>
+<div style="position: absolute; top: 3421px; left: 486px;"><nobr>majority of SPOC, and finally a complete worm is written</nobr></div>
+<div style="position: absolute; top: 3438px; left: 486px;"><nobr>in assembly.  The assembly is transformed into a string</nobr></div>
+<div style="position: absolute; top: 3455px; left: 486px;"><nobr>that can be embedded in a C program. Each stage allows</nobr></div>
+<div style="position: absolute; top: 3472px; left: 486px;"><nobr>us to focus  on a few details of the implementation at a </nobr></div>
+<div style="position: absolute; top: 3490px; left: 486px;"><nobr>time. </nobr></div>
+<div style="position: absolute; top: 3524px; left: 486px;"><nobr>Implementing SPOC in both C and assembly may seem</nobr></div>
+<div style="position: absolute; top: 3541px; left: 486px;"><nobr>unnecessary at first.  However, both have drawbacks that </nobr></div>
+<div style="position: absolute; top: 3559px; left: 486px;"><nobr>make neither  a  reasonable  choice  as the  only</nobr></div>
+<div style="position: absolute; top: 3576px; left: 486px;"><nobr>implementation  language. The code generated by a C </nobr></div>
+<div style="position: absolute; top: 3593px; left: 486px;"><nobr>compiler  implements  function calls  and variable </nobr></div>
+<div style="position: absolute; top: 3610px; left: 486px;"><nobr>references in a  way that  cannot  be  used  in a  buffer </nobr></div>
+<div style="position: absolute; top: 3628px; left: 486px;"><nobr>overflow attack.  Assembly allows us to solve  these </nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 2941px; left: 92px;"><nobr>void svcHandle(int sockfd) { </nobr></div>
+<div style="position: absolute; top: 2957px; left: 110px;"><nobr>char userinput[16]; </nobr></div>
+<div style="position: absolute; top: 2986px; left: 110px;"><nobr>dup2(sockfd, STDIN, FILENO); </nobr></div>
+<div style="position: absolute; top: 3002px; left: 110px;"><nobr>gets(userinput); </nobr></div>
+<div style="position: absolute; top: 3031px; left: 110px;"><nobr>… </nobr></div>
+<div style="position: absolute; top: 3061px; left: 92px;"><nobr>}</nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 3739px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="4"><b>Page 4</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 3793px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 3810px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 3828px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 4856px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 3862px; left: 81px;"><nobr>problems but makes it difficult to write non-trivial code. </nobr></div>
+<div style="position: absolute; top: 3879px; left: 81px;"><nobr>The problems of both may be avoided by writing all of</nobr></div>
+<div style="position: absolute; top: 3897px; left: 81px;"><nobr>the  worm in C except  the  code  that  builds the  attack</nobr></div>
+<div style="position: absolute; top: 3914px; left: 81px;"><nobr>string, and then modifying the assembly produced by a C</nobr></div>
+<div style="position: absolute; top: 3931px; left: 81px;"><nobr>compiler. </nobr></div>
+<div style="position: absolute; top: 3966px; left: 103px;"><nobr><i>A. Pseudo-Code </i></nobr></div>
+<div style="position: absolute; top: 4002px; left: 81px;"><nobr>The construction process begins with pseudo-code. At this</nobr></div>
+<div style="position: absolute; top: 4019px; left: 81px;"><nobr>level, ideas of SPOC’s behavior may be discussed without</nobr></div>
+<div style="position: absolute; top: 4036px; left: 81px;"><nobr>worrying too much about implementation details.  Before </nobr></div>
+<div style="position: absolute; top: 4053px; left: 81px;"><nobr>moving on to write C code, we will outline the general </nobr></div>
+<div style="position: absolute; top: 4071px; left: 81px;"><nobr>execution cycle of SPOC and describe the actions taken in</nobr></div>
+<div style="position: absolute; top: 4088px; left: 81px;"><nobr>an attack. </nobr></div>
+<div style="position: absolute; top: 4114px; left: 81px;"><nobr>1. Attack Cycle </nobr></div>
+<div style="position: absolute; top: 4140px; left: 81px;"><nobr>Since  SPOC  is  an active  worm,  the  bulk of its  time  is </nobr></div>
+<div style="position: absolute; top: 4158px; left: 81px;"><nobr>spent running  a loop  that scans for  targets and  tries to</nobr></div>
+<div style="position: absolute; top: 4175px; left: 81px;"><nobr>infect them. Even though  many worms  achieve great</nobr></div>
+<div style="position: absolute; top: 4192px; left: 81px;"><nobr>speedups  by running  multiple threads, SPOC  is  kept</nobr></div>
+<div style="position: absolute; top: 4209px; left: 81px;"><nobr>simple and uses only one thread of execution. Each loop </nobr></div>
+<div style="position: absolute; top: 4227px; left: 81px;"><nobr>iteration begins by computing a new target address. A</nobr></div>
+<div style="position: absolute; top: 4244px; left: 81px;"><nobr>connection is  attempted to the  target  address.  If the </nobr></div>
+<div style="position: absolute; top: 4261px; left: 81px;"><nobr>connection fails, SPOC gives up and moves on to the next</nobr></div>
+<div style="position: absolute; top: 4278px; left: 81px;"><nobr>address. If the connection opens successfully, a specially</nobr></div>
+<div style="position: absolute; top: 4296px; left: 81px;"><nobr>crafted attack string is sent and the connection is closed. </nobr></div>
+<div style="position: absolute; top: 4313px; left: 81px;"><nobr>Stealthier schemes could be devised where the victim is </nobr></div>
+<div style="position: absolute; top: 4330px; left: 81px;"><nobr>probed first  to see  if it  is  vulnerable.  However,  most </nobr></div>
+<div style="position: absolute; top: 4347px; left: 81px;"><nobr>internet worms don’t do this and neither does SPOC. </nobr></div>
+<div style="position: absolute; top: 4374px; left: 81px;"><nobr>2. Attack Cycle </nobr></div>
+<div style="position: absolute; top: 4400px; left: 81px;"><nobr>Based  upon the  above  description, the  pseudo-code  in</nobr></div>
+<div style="position: absolute; top: 4417px; left: 81px;"><nobr>figure  4 is  easily devised. Written in very informal </nobr></div>
+<div style="position: absolute; top: 4434px; left: 81px;"><nobr>notation, it gives  an excellent starting  point for the</nobr></div>
+<div style="position: absolute; top: 4452px; left: 81px;"><nobr>implementation of SPOC. </nobr></div>
+<div style="position: absolute; top: 4487px; left: 103px;"><nobr><i>B. C Program</i></nobr></div>
+<div style="position: absolute; top: 4522px; left: 81px;"><nobr>The  next step in the  construction process  is  to write  C </nobr></div>
+<div style="position: absolute; top: 4539px; left: 81px;"><nobr>code based on the pseudo-code description. This is easy</nobr></div>
+<div style="position: absolute; top: 4557px; left: 81px;"><nobr>since the psuedo-code is extremely similar in structure to </nobr></div>
+<div style="position: absolute; top: 4574px; left: 81px;"><nobr>C code.  The important additions at this stage are system</nobr></div>
+<div style="position: absolute; top: 4591px; left: 81px;"><nobr>and library calls. </nobr></div>
+<div style="position: absolute; top: 4617px; left: 81px;"><nobr>1. Library Calls</nobr></div>
+<div style="position: absolute; top: 4644px; left: 81px;"><nobr>The network interfaces must be discovered before SPOC</nobr></div>
+<div style="position: absolute; top: 4661px; left: 81px;"><nobr>can attack machines connected to them. Linux  systems </nobr></div>
+<div style="position: absolute; top: 4678px; left: 81px;"><nobr>allow for a list of local interfaces to be obtained with the </nobr></div>
+<div style="position: absolute; top: 4695px; left: 81px;"><nobr><i>ioctl</i>()  system call.  To obtain the  listing, the  second</nobr></div>
+<div style="position: absolute; top: 4713px; left: 81px;"><nobr>argument  to  <i>ioctl</i>() must be  <i>SIOCGIFCONF</i>. The exact </nobr></div>
+<div style="position: absolute; top: 4730px; left: 81px;"><nobr>usage is well documented in [8]. </nobr></div>
+<div style="position: absolute; top: 4764px; left: 81px;"><nobr>The  connect,  send,  and  close  operations need  to  be </nobr></div>
+<div style="position: absolute; top: 4782px; left: 81px;"><nobr>performed  as well. The  most common network library</nobr></div>
+<div style="position: absolute; top: 4799px; left: 81px;"><nobr>used in Linux  is the BSD sockets  library.</nobr></div>
+<div style="position: absolute; top: 4799px; left: 384px;"><nobr>A TCP</nobr></div>
+<div style="position: absolute; top: 4816px; left: 81px;"><nobr>connection to the vulnerable server is opened with a call </nobr></div>
+<div style="position: absolute; top: 3862px; left: 486px;"><nobr>to <i>connect</i>(),  data  sent with <i>send</i>(),  and  the  connection</nobr></div>
+<div style="position: absolute; top: 3879px; left: 486px;"><nobr>terminated with <i>close</i>.  A detailed explanation of the </nobr></div>
+<div style="position: absolute; top: 3897px; left: 486px;"><nobr>sockets library may be found in [9]. </nobr></div>
+<div style="position: absolute; top: 4391px; left: 486px;"><nobr><b>Figure 4: pseudo-code for SPOC </b></nobr></div>
+<div style="position: absolute; top: 4416px; left: 486px;"><nobr>2. Implementation</nobr></div>
+<div style="position: absolute; top: 4443px; left: 486px;"><nobr>We have enough information to rewrite the pseudo-code</nobr></div>
+<div style="position: absolute; top: 4460px; left: 486px;"><nobr>in C. Details of conversion of the pseudocode to c code </nobr></div>
+<div style="position: absolute; top: 4477px; left: 486px;"><nobr>are omitted.</nobr></div>
+<div style="position: absolute; top: 4503px; left: 486px;"><nobr>3. Testing </nobr></div>
+<div style="position: absolute; top: 4530px; left: 486px;"><nobr>We wanted to be able  to test  this  code after  it  was </nobr></div>
+<div style="position: absolute; top: 4547px; left: 486px;"><nobr>developed.  The  <i>code </i>variable, which holds the code to</nobr></div>
+<div style="position: absolute; top: 4564px; left: 486px;"><nobr>execute  on a  victim machine, was initialized to contain</nobr></div>
+<div style="position: absolute; top: 4581px; left: 486px;"><nobr>code to generate a UDP packet.  The packet is sent back</nobr></div>
+<div style="position: absolute; top: 4599px; left: 486px;"><nobr>to  the  attacker  and  contains the  string “hello.”  Another </nobr></div>
+<div style="position: absolute; top: 4616px; left: 486px;"><nobr>program running  on the  attacker machine  receives  the </nobr></div>
+<div style="position: absolute; top: 4633px; left: 486px;"><nobr>packet and announces that an attack has succeeded. This</nobr></div>
+<div style="position: absolute; top: 4650px; left: 486px;"><nobr>setup  made  it  clear  whether  the  vulnerable  service  was</nobr></div>
+<div style="position: absolute; top: 4668px; left: 486px;"><nobr>being exploited correctly. </nobr></div>
+<div style="position: absolute; top: 4703px; left: 508px;"><nobr><i>C. Assembly Language </i></nobr></div>
+<div style="position: absolute; top: 4738px; left: 486px;"><nobr>In the assembly language stage, several important</nobr></div>
+<div style="position: absolute; top: 4755px; left: 486px;"><nobr>problems relating to use of libraries, memory addressing,</nobr></div>
+<div style="position: absolute; top: 4773px; left: 486px;"><nobr>and  self-reference  must be  resolved.  The  C code  might</nobr></div>
+<div style="position: absolute; top: 4790px; left: 486px;"><nobr>seem to complete  the  worm,  as  if SPOC  would be</nobr></div>
+<div style="position: absolute; top: 4807px; left: 486px;"><nobr>finished if the  <i>code </i>variable  pointed to the  memory</nobr></div>
+<div style="position: absolute; top: 4824px; left: 486px;"><nobr>location  of the beginning  of <i>main</i>().  There  are  several </nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 3940px; left: 506px;"><nobr>procedure attack (address) </nobr></div>
+<div style="position: absolute; top: 3955px; left: 524px;"><nobr>begin </nobr></div>
+<div style="position: absolute; top: 3970px; left: 524px;"><nobr>connect to address, port 3333;</nobr></div>
+<div style="position: absolute; top: 4000px; left: 524px;"><nobr>if connection succeeds then </nobr></div>
+<div style="position: absolute; top: 4015px; left: 542px;"><nobr>begin </nobr></div>
+<div style="position: absolute; top: 4030px; left: 542px;"><nobr>send vuln_code; </nobr></div>
+<div style="position: absolute; top: 4045px; left: 542px;"><nobr>close connection; </nobr></div>
+<div style="position: absolute; top: 4060px; left: 542px;"><nobr>end </nobr></div>
+<div style="position: absolute; top: 4075px; left: 524px;"><nobr>end </nobr></div>
+<div style="position: absolute; top: 4105px; left: 506px;"><nobr>procedure worm_main </nobr></div>
+<div style="position: absolute; top: 4120px; left: 524px;"><nobr>begin </nobr></div>
+<div style="position: absolute; top: 4150px; left: 524px;"><nobr>for each network_interface do </nobr></div>
+<div style="position: absolute; top: 4165px; left: 542px;"><nobr>for each address on          </nobr></div>
+<div style="position: absolute; top: 4180px; left: 542px;"><nobr>network_interface subnet do </nobr></div>
+<div style="position: absolute; top: 4195px; left: 560px;"><nobr>attack (address); </nobr></div>
+<div style="position: absolute; top: 4225px; left: 524px;"><nobr>random_address = rand_32bits; </nobr></div>
+<div style="position: absolute; top: 4255px; left: 524px;"><nobr>loop forever </nobr></div>
+<div style="position: absolute; top: 4270px; left: 542px;"><nobr>begin </nobr></div>
+<div style="position: absolute; top: 4285px; left: 542px;"><nobr>attack (random_address); </nobr></div>
+<div style="position: absolute; top: 4300px; left: 542px;"><nobr>increment (random_address); </nobr></div>
+<div style="position: absolute; top: 4315px; left: 542px;"><nobr>end </nobr></div>
+<div style="position: absolute; top: 4345px; left: 524px;"><nobr>end </nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 4927px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="5"><b>Page 5</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 4981px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 4998px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 5016px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 6044px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 5050px; left: 81px;"><nobr>problems  that  are  not  apparent until  the  assembly</nobr></div>
+<div style="position: absolute; top: 5067px; left: 81px;"><nobr>generated by the compiler is carefully analyzed. </nobr></div>
+<div style="position: absolute; top: 5094px; left: 81px;"><nobr>1. Function Calls </nobr></div>
+<div style="position: absolute; top: 5120px; left: 81px;"><nobr>A commonly available  tool on GNU/Linux  systems  for</nobr></div>
+<div style="position: absolute; top: 5137px; left: 81px;"><nobr>analyzing  executable  files  is  the  GNU  Debugger (gdb)</nobr></div>
+<div style="position: absolute; top: 5154px; left: 81px;"><nobr>[10]. In order to use it, we must compile the C source in</nobr></div>
+<div style="position: absolute; top: 5172px; left: 81px;"><nobr>gcc with the -<i>g </i>and -<i>static </i>options.  We can look at the </nobr></div>
+<div style="position: absolute; top: 5189px; left: 81px;"><nobr>assembly code for any function  in gdb by using  the</nobr></div>
+<div style="position: absolute; top: 5206px; left: 81px;"><nobr><i>disassemble </i>command. This is especially useful, because</nobr></div>
+<div style="position: absolute; top: 5223px; left: 81px;"><nobr>it allows us to see the code behind library functions. </nobr></div>
+<div style="position: absolute; top: 5258px; left: 81px;"><nobr>When either of the two functions shown in the C code is </nobr></div>
+<div style="position: absolute; top: 5275px; left: 81px;"><nobr>disassembled, a sequence of assembly instructions </nobr></div>
+<div style="position: absolute; top: 5292px; left: 81px;"><nobr>appears. Wherever a library call was made it has been</nobr></div>
+<div style="position: absolute; top: 5310px; left: 81px;"><nobr>replaced by</nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 5347px; left: 81px;"><nobr>call &lt;memory location&gt; &lt;function&gt;  </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 5376px; left: 81px;"><nobr>It is unknown where the attack code will be in memory</nobr></div>
+<div style="position: absolute; top: 5394px; left: 81px;"><nobr>when it runs, so any library function calls will point to an</nobr></div>
+<div style="position: absolute; top: 5411px; left: 81px;"><nobr>incorrect addresses. A solution is to  replace  procedure </nobr></div>
+<div style="position: absolute; top: 5428px; left: 81px;"><nobr>calls  with the  code they contain, known as  inline </nobr></div>
+<div style="position: absolute; top: 5445px; left: 81px;"><nobr>expansion. For example, instead of</nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 5482px; left: 81px;"><nobr>call   0x804d180 &lt;__ioctl&gt;  </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 5512px; left: 81px;"><nobr>one could write </nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 5549px; left: 81px;"><nobr>push   %ebx </nobr></div>
+<div style="position: absolute; top: 5564px; left: 81px;"><nobr>mov    0x10(%esp,1),%edx </nobr></div>
+<div style="position: absolute; top: 5579px; left: 81px;"><nobr>mov    0xc(%esp,1),%ecx </nobr></div>
+<div style="position: absolute; top: 5594px; left: 81px;"><nobr>mov    0x8(%esp,1),%ebx </nobr></div>
+<div style="position: absolute; top: 5609px; left: 81px;"><nobr>mov    $0x36,%eax </nobr></div>
+<div style="position: absolute; top: 5624px; left: 81px;"><nobr>int    $0x80 </nobr></div>
+<div style="position: absolute; top: 5639px; left: 81px;"><nobr>pop    %ebx </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 5669px; left: 81px;"><nobr>which</nobr></div>
+<div style="position: absolute; top: 5669px; left: 138px;"><nobr>is</nobr></div>
+<div style="position: absolute; top: 5669px; left: 169px;"><nobr>what  appears</nobr></div>
+<div style="position: absolute; top: 5669px; left: 285px;"><nobr>from</nobr></div>
+<div style="position: absolute; top: 5669px; left: 335px;"><nobr>the  command</nobr></div>
+<div style="position: absolute; top: 5686px; left: 81px;"><nobr><i>disassembleioctl </i>in gdb. This technique works rather well </nobr></div>
+<div style="position: absolute; top: 5703px; left: 81px;"><nobr>for  functions that  wrap  system calls.  <i>write</i>(),  <i>ioctl</i>(), </nobr></div>
+<div style="position: absolute; top: 5721px; left: 81px;"><nobr><i>send</i>(),  and  <i>close</i>()  are  such functions.  This  quickly</nobr></div>
+<div style="position: absolute; top: 5738px; left: 81px;"><nobr>becomes  unreasonable  with functions like  <i>printf</i>()  that </nobr></div>
+<div style="position: absolute; top: 5755px; left: 81px;"><nobr>contain several  lengthy subroutines.  Direct  system calls</nobr></div>
+<div style="position: absolute; top: 5772px; left: 81px;"><nobr>are used by a worm author whenever possible. </nobr></div>
+<div style="position: absolute; top: 5799px; left: 81px;"><nobr>2. Memory References</nobr></div>
+<div style="position: absolute; top: 5825px; left: 81px;"><nobr>Another problem occurs whenever memory is referenced. </nobr></div>
+<div style="position: absolute; top: 5842px; left: 81px;"><nobr>Many system calls take pointers as arguments.  Allocating</nobr></div>
+<div style="position: absolute; top: 5859px; left: 81px;"><nobr>and  writing the  data in these pieces of memory is non-</nobr></div>
+<div style="position: absolute; top: 5877px; left: 81px;"><nobr>trivial.  A similar problem occurs when we wish to send a </nobr></div>
+<div style="position: absolute; top: 5894px; left: 81px;"><nobr>copy of the worm to a victim; we do not know where in</nobr></div>
+<div style="position: absolute; top: 5911px; left: 81px;"><nobr>memory the worm code begins.  An interesting trick has </nobr></div>
+<div style="position: absolute; top: 5928px; left: 81px;"><nobr>been used  by exploit  writers for  years to  resolve  these </nobr></div>
+<div style="position: absolute; top: 5946px; left: 81px;"><nobr>problems. The  <i>call </i>instruction jumps  and pushes  the </nobr></div>
+<div style="position: absolute; top: 5963px; left: 81px;"><nobr>address of the next instruction on the stack.  This may be</nobr></div>
+<div style="position: absolute; top: 5980px; left: 81px;"><nobr>exploited to obtain the address of the worm and of a data</nobr></div>
+<div style="position: absolute; top: 5997px; left: 81px;"><nobr>storage region as follows. </nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 5053px; left: 486px;"><nobr>WORM: </nobr></div>
+<div style="position: absolute; top: 5068px; left: 486px;"><nobr>call TOP </nobr></div>
+<div style="position: absolute; top: 5083px; left: 486px;"><nobr>TOP: </nobr></div>
+<div style="position: absolute; top: 5098px; left: 486px;"><nobr>pop %ebp </nobr></div>
+<div style="position: absolute; top: 5113px; left: 486px;"><nobr>jmp BOTTOM_CALL </nobr></div>
+<div style="position: absolute; top: 5143px; left: 486px;"><nobr>BODY: </nobr></div>
+<div style="position: absolute; top: 5158px; left: 486px;"><nobr>pop %esi </nobr></div>
+<div style="position: absolute; top: 5188px; left: 501px;"><nobr>…</nobr></div>
+<div style="position: absolute; top: 5218px; left: 486px;"><nobr>BOTTOM_CALL: </nobr></div>
+<div style="position: absolute; top: 5233px; left: 486px;"><nobr>call BODY </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 5260px; left: 486px;"><nobr>Register EBP contains the address of the beginning of the</nobr></div>
+<div style="position: absolute; top: 5277px; left: 486px;"><nobr>block of code and register ESI contains the address of the </nobr></div>
+<div style="position: absolute; top: 5295px; left: 486px;"><nobr>byte immediately following the code.  ESI may be used as</nobr></div>
+<div style="position: absolute; top: 5312px; left: 486px;"><nobr>the  beginning of an area  that  is safe to  use  for  storing</nobr></div>
+<div style="position: absolute; top: 5329px; left: 486px;"><nobr>data.  The  size  of this area  is equal  to  the  size  of the </nobr></div>
+<div style="position: absolute; top: 5346px; left: 486px;"><nobr>vulnerable  service’s stack minus the  size  of the  worm. </nobr></div>
+<div style="position: absolute; top: 5364px; left: 486px;"><nobr>Considering that it is only necessary to store <i>socketaddr</i></nobr></div>
+<div style="position: absolute; top: 5381px; left: 486px;"><nobr>and <i>ifconf </i>structures, this should be more than adequate. </nobr></div>
+<div style="position: absolute; top: 5407px; left: 486px;"><nobr>3. Summary of Assembly Conversion</nobr></div>
+<div style="position: absolute; top: 5433px; left: 486px;"><nobr>Inline expansion and abuse of the  call  instruction solve </nobr></div>
+<div style="position: absolute; top: 5451px; left: 486px;"><nobr>the big problems involved with writing attack code.  It is </nobr></div>
+<div style="position: absolute; top: 5468px; left: 486px;"><nobr>now possible to calculate the address of the code, find an</nobr></div>
+<div style="position: absolute; top: 5485px; left: 486px;"><nobr>area of memory that may be used for  data  storage,  and </nobr></div>
+<div style="position: absolute; top: 5502px; left: 486px;"><nobr>flatten functions so that they can be used.  Writing the </nobr></div>
+<div style="position: absolute; top: 5520px; left: 486px;"><nobr>assembly code is now a straightforward task. </nobr></div>
+<div style="position: absolute; top: 5555px; left: 508px;"><nobr><i>D. Hex String </i></nobr></div>
+<div style="position: absolute; top: 5590px; left: 486px;"><nobr>The  worm code  is almost finished  and  the  only step </nobr></div>
+<div style="position: absolute; top: 5607px; left: 486px;"><nobr>remaining is  to convert  it  into a  string of hexadecimal </nobr></div>
+<div style="position: absolute; top: 5625px; left: 486px;"><nobr>characters.  This string may be used to initialize the <i>code</i></nobr></div>
+<div style="position: absolute; top: 5642px; left: 486px;"><nobr>variable in the C program. The conversion is easily done </nobr></div>
+<div style="position: absolute; top: 5659px; left: 486px;"><nobr>with gdb’s  <i>x</i>/<i>bx </i>command.</nobr></div>
+<div style="position: absolute; top: 5659px; left: 696px;"><nobr>This command gives </nobr></div>
+<div style="position: absolute; top: 5676px; left: 486px;"><nobr>hexadecimal byte values for regions of an executable. </nobr></div>
+<div style="position: absolute; top: 5703px; left: 486px;"><nobr>1. Removing Input Terminators</nobr></div>
+<div style="position: absolute; top: 5729px; left: 486px;"><nobr>One  real  problem remains:</nobr></div>
+<div style="position: absolute; top: 5729px; left: 698px;"><nobr>removing any input-</nobr></div>
+<div style="position: absolute; top: 5746px; left: 486px;"><nobr>terminating bytes  from the  string.</nobr></div>
+<div style="position: absolute; top: 5746px; left: 734px;"><nobr>Buffer  overflow</nobr></div>
+<div style="position: absolute; top: 5763px; left: 486px;"><nobr>vulnerabilities are often found in functions which read a </nobr></div>
+<div style="position: absolute; top: 5781px; left: 486px;"><nobr>string of data  until  a  terminating character  occurs. </nobr></div>
+<div style="position: absolute; top: 5798px; left: 486px;"><nobr>Common terminating characters are  null  characters and </nobr></div>
+<div style="position: absolute; top: 5815px; left: 486px;"><nobr>newlines.  The <i>gets</i>() function SPOC exploits functions by</nobr></div>
+<div style="position: absolute; top: 5832px; left: 486px;"><nobr>reading until a newline is encountered.  This is bad if a </nobr></div>
+<div style="position: absolute; top: 5850px; left: 486px;"><nobr>newline occurs in the middle of the malicious string! The </nobr></div>
+<div style="position: absolute; top: 5867px; left: 486px;"><nobr>easiest  way to handle  this  is  to rewrite  assembly</nobr></div>
+<div style="position: absolute; top: 5884px; left: 486px;"><nobr>instructions so that  there  are  no terminating characters.</nobr></div>
+<div style="position: absolute; top: 5901px; left: 486px;"><nobr>For example,  the sequence </nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 5938px; left: 486px;"><nobr>mov %ebp, 0 </nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 5966px; left: 486px;"><nobr>could remove the zero value by writing it as</nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 6003px; left: 486px;"><nobr>xor %ebp, %ebp </nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 6115px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="6"><b>Page 6</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 6169px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 6186px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 6204px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 7232px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 6238px; left: 168px;"><nobr>V.  T</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 6241px; left: 199px;"><nobr>ESTING THE</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 6238px; left: 270px;"><nobr>W</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 6241px; left: 285px;"><nobr>ORM</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 6273px; left: 85px;"><nobr>The SPOC worm is now complete and may be run in a </nobr></div>
+<div style="position: absolute; top: 6291px; left: 81px;"><nobr>safe test environment. The network  it was  run  on at</nobr></div>
+<div style="position: absolute; top: 6308px; left: 81px;"><nobr>Georgia  Tech was isolated  from the  internet  and  from</nobr></div>
+<div style="position: absolute; top: 6325px; left: 81px;"><nobr>other  systems.</nobr></div>
+<div style="position: absolute; top: 6325px; left: 190px;"><nobr>Several  computers ran copies of the </nobr></div>
+<div style="position: absolute; top: 6342px; left: 81px;"><nobr>vulnerable service while another launched the worm.</nobr></div>
+<div style="position: absolute; top: 6360px; left: 81px;"><nobr>Worm progress was easily monitored with two utilities: </nobr></div>
+<div style="position: absolute; top: 6377px; left: 81px;"><nobr>ethereal  and strace. Ethereal  is  a  Linux  based packet </nobr></div>
+<div style="position: absolute; top: 6394px; left: 81px;"><nobr>sniffer  that  was used  to  watch for  traffic  across the </nobr></div>
+<div style="position: absolute; top: 6411px; left: 81px;"><nobr>vulnerable  service  port.  Each copy of the  vulnerable </nobr></div>
+<div style="position: absolute; top: 6429px; left: 81px;"><nobr>service  was launched  using strace.  Strace  is another </nobr></div>
+<div style="position: absolute; top: 6446px; left: 81px;"><nobr>Linux  program that prints a log  of every system call</nobr></div>
+<div style="position: absolute; top: 6463px; left: 81px;"><nobr>made.  Since network connections are opened and packets</nobr></div>
+<div style="position: absolute; top: 6480px; left: 81px;"><nobr>are  sent via  system calls,  the  log produced  by strace </nobr></div>
+<div style="position: absolute; top: 6498px; left: 81px;"><nobr>shows what the mock network service is doing.</nobr></div>
+<div style="position: absolute; top: 6532px; left: 81px;"><nobr>When the  vulnerable service executes it must bind to a </nobr></div>
+<div style="position: absolute; top: 6549px; left: 81px;"><nobr>port,  listen on that port until a connection is attempted,</nobr></div>
+<div style="position: absolute; top: 6567px; left: 81px;"><nobr>and  accept  a  connection when it  occurs.  A successful</nobr></div>
+<div style="position: absolute; top: 6584px; left: 81px;"><nobr>connection is handled by creating a new process to handle</nobr></div>
+<div style="position: absolute; top: 6601px; left: 81px;"><nobr>the transaction. Each step mentioned above is performed </nobr></div>
+<div style="position: absolute; top: 6618px; left: 81px;"><nobr>with a system call and is printed to the console by strace </nobr></div>
+<div style="position: absolute; top: 6636px; left: 81px;"><nobr>when it occurs.  Figure 5 shows a sample of the output for </nobr></div>
+<div style="position: absolute; top: 6653px; left: 81px;"><nobr>this portion of the  program. The  process spawned  for </nobr></div>
+<div style="position: absolute; top: 6670px; left: 81px;"><nobr>each transaction will read a string from the network, echo</nobr></div>
+<div style="position: absolute; top: 6687px; left: 81px;"><nobr>it back out the network connection, and terminate both the </nobr></div>
+<div style="position: absolute; top: 6705px; left: 81px;"><nobr>connection and the process. Strace reports each of these </nobr></div>
+<div style="position: absolute; top: 6722px; left: 81px;"><nobr>actions as they occur. </nobr></div>
+<div style="position: absolute; top: 7039px; left: 81px;"><nobr><b>Figure 5: Strace output of normal behavior </b></nobr></div>
+<div style="position: absolute; top: 7090px; left: 81px;"><nobr>When the SPOC Worm infects the mock network service, </nobr></div>
+<div style="position: absolute; top: 7107px; left: 81px;"><nobr>a  distinct  pattern of system calls  appears  in the  output</nobr></div>
+<div style="position: absolute; top: 7124px; left: 81px;"><nobr>from strace.  This signature pattern appears as <i>socket()</i>, </nobr></div>
+<div style="position: absolute; top: 7142px; left: 81px;"><nobr><i>connect()</i>,  and  <i>close() </i>system calls being executed  very</nobr></div>
+<div style="position: absolute; top: 7159px; left: 81px;"><nobr>quickly. A sample of the output is shown in figure 6.</nobr></div>
+<div style="position: absolute; top: 7186px; left: 81px;"><nobr><b>Figure 6: Strace output of worm behavior </b></nobr></div>
+<div style="position: absolute; top: 6238px; left: 486px;"><nobr>The worm repeatedly tries to to open connections to port </nobr></div>
+<div style="position: absolute; top: 6255px; left: 486px;"><nobr>3333  (the port that the  vulnerable  service  runs on). </nobr></div>
+<div style="position: absolute; top: 6273px; left: 486px;"><nobr>Machines located on the same LAN are tried first, in this </nobr></div>
+<div style="position: absolute; top: 6290px; left: 486px;"><nobr>case  192.168.0.1  and  192.168.0.2.  As described  in</nobr></div>
+<div style="position: absolute; top: 6307px; left: 486px;"><nobr>section 4,  if the  worm connects successfully it  sends a </nobr></div>
+<div style="position: absolute; top: 6685px; left: 486px;"><nobr>special  string formatted  to  overflow the  buffer  and </nobr></div>
+<div style="position: absolute; top: 6702px; left: 486px;"><nobr>execute a copy of the worm.  This attack would appear in</nobr></div>
+<div style="position: absolute; top: 6719px; left: 486px;"><nobr>the strace output as a sequence of sends.</nobr></div>
+<div style="position: absolute; top: 6754px; left: 486px;"><nobr>After  each infection attempt  the  worm continues</nobr></div>
+<div style="position: absolute; top: 6771px; left: 486px;"><nobr>searching for vulnerable services.  Random IP addresses</nobr></div>
+<div style="position: absolute; top: 6788px; left: 486px;"><nobr>are generated and attacked after all machines on the LAN </nobr></div>
+<div style="position: absolute; top: 6805px; left: 486px;"><nobr>have been scanned.  Upon infection, the victim machine </nobr></div>
+<div style="position: absolute; top: 6823px; left: 486px;"><nobr>will begin displaying the pattern of system calls that show</nobr></div>
+<div style="position: absolute; top: 6840px; left: 486px;"><nobr>the worm scanning for more targets.</nobr></div>
+<div style="position: absolute; top: 6875px; left: 486px;"><nobr>Worm behavior is  easy to monitor  with utilities  like </nobr></div>
+<div style="position: absolute; top: 6892px; left: 486px;"><nobr>strace.  Many worm authors use  techniques to  prevent </nobr></div>
+<div style="position: absolute; top: 6909px; left: 486px;"><nobr>strace or similar utilities from being used to monitor their </nobr></div>
+<div style="position: absolute; top: 6926px; left: 486px;"><nobr>code [13].  These techniques are often used at a final stage </nobr></div>
+<div style="position: absolute; top: 6944px; left: 486px;"><nobr>of worm creation because strace is a valuable tool for the </nobr></div>
+<div style="position: absolute; top: 6961px; left: 486px;"><nobr>worm author to debug their code. </nobr></div>
+<div style="position: absolute; top: 6996px; left: 594px;"><nobr>VI. C</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 6999px; left: 628px;"><nobr>ONCLUSION</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 7031px; left: 486px;"><nobr>The  creation of the  SPOC worm provides a  working</nobr></div>
+<div style="position: absolute; top: 7048px; left: 486px;"><nobr>worm to experiment with in a  test  environment.  This </nobr></div>
+<div style="position: absolute; top: 7066px; left: 486px;"><nobr>research worm allows the  safe examination and </nobr></div>
+<div style="position: absolute; top: 7083px; left: 486px;"><nobr>exploration of the worm process, including the authoring</nobr></div>
+<div style="position: absolute; top: 7100px; left: 486px;"><nobr>process. The construction process itself provides valuable </nobr></div>
+<div style="position: absolute; top: 7117px; left: 486px;"><nobr>insight into the  techniques  used by malicious authors. </nobr></div>
+<div style="position: absolute; top: 7135px; left: 486px;"><nobr>Examination of some of the  tradeoffs and  authoring</nobr></div>
+<div style="position: absolute; top: 7152px; left: 486px;"><nobr>techniques yields a  better  understanding of worms,</nobr></div>
+<div style="position: absolute; top: 7169px; left: 486px;"><nobr>allowing better  defensive  techniques to be  developed. </nobr></div>
+<div style="position: absolute; top: 7187px; left: 486px;"><nobr>Defensive  techniques are  becoming more  and  more </nobr></div>
+<div style="position: absolute; top: 7204px; left: 486px;"><nobr>important as the occurance and infection speed of worms</nobr></div>
+</span></font>
+<font face="Courier" size="3"><span style="font-size: 12px; font-family: Courier;">
+<div style="position: absolute; top: 6341px; left: 495px;"><nobr><b>socket</b>(PF_INET, SOCK_STREAM, </nobr></div>
+<div style="position: absolute; top: 6356px; left: 495px;"><nobr>IPPROTO_TCP) = 4 </nobr></div>
+<div style="position: absolute; top: 6386px; left: 495px;"><nobr><b>connect</b>(4, {sa_family=AF_INET, </nobr></div>
+<div style="position: absolute; top: 6401px; left: 495px;"><nobr>sin_port=htons(3333),  </nobr></div>
+<div style="position: absolute; top: 6416px; left: 504px;"><nobr>sin_addr=inet_addr("192.168.0.1")}, </nobr></div>
+<div style="position: absolute; top: 6431px; left: 495px;"><nobr>16) = -1 ECONNREFUSED (Connection </nobr></div>
+<div style="position: absolute; top: 6446px; left: 495px;"><nobr>refused) </nobr></div>
+<div style="position: absolute; top: 6476px; left: 495px;"><nobr><b>close</b>(4)                               </nobr></div>
+<div style="position: absolute; top: 6491px; left: 495px;"><nobr>= 0 </nobr></div>
+<div style="position: absolute; top: 6521px; left: 495px;"><nobr><b>socket</b>(PF_INET, SOCK_STREAM, </nobr></div>
+<div style="position: absolute; top: 6536px; left: 495px;"><nobr>IPPROTO_TCP) = 4 </nobr></div>
+<div style="position: absolute; top: 6566px; left: 495px;"><nobr><b>connect</b>(4, {sa_family=AF_INET, </nobr></div>
+<div style="position: absolute; top: 6581px; left: 495px;"><nobr>sin_port=htons(3333),   </nobr></div>
+<div style="position: absolute; top: 6596px; left: 495px;"><nobr>sin_addr=inet_addr("192.168.0.2")}, </nobr></div>
+<div style="position: absolute; top: 6611px; left: 495px;"><nobr>16) = -1 ECONNREFUSED (Connection </nobr></div>
+<div style="position: absolute; top: 6626px; left: 495px;"><nobr>refused) </nobr></div>
+<div style="position: absolute; top: 6656px; left: 495px;"><nobr><b>close</b>(4)                               </nobr></div>
+<div style="position: absolute; top: 6672px; left: 495px;"><nobr>= 0</nobr></div>
+<div style="position: absolute; top: 6781px; left: 93px;"><nobr><b>bind</b>(3, {sa_family=0x200 /* AF_??? </nobr></div>
+<div style="position: absolute; top: 6796px; left: 93px;"><nobr>*/,   </nobr></div>
+<div style="position: absolute; top: 6811px; left: 93px;"><nobr>sa_data="\r\5\0\0\0\0\0\0\0\0\0\0\0\</nobr></div>
+<div style="position: absolute; top: 6826px; left: 93px;"><nobr>0"}, 16) = 0 </nobr></div>
+<div style="position: absolute; top: 6856px; left: 93px;"><nobr><b>listen</b>(3, 128)                       </nobr></div>
+<div style="position: absolute; top: 6871px; left: 93px;"><nobr>= 0 </nobr></div>
+<div style="position: absolute; top: 6901px; left: 93px;"><nobr><b>accept</b>(3, {sa_family=AF_INET, </nobr></div>
+<div style="position: absolute; top: 6916px; left: 93px;"><nobr>sin_port=htons(32796),  </nobr></div>
+<div style="position: absolute; top: 6931px; left: 93px;"><nobr>sin_addr=inet_addr("127.0.0.1")}, </nobr></div>
+<div style="position: absolute; top: 6946px; left: 93px;"><nobr>[16]) = 4 </nobr></div>
+<div style="position: absolute; top: 6976px; left: 93px;"><nobr><b>fork</b>()                               </nobr></div>
+<div style="position: absolute; top: 6991px; left: 93px;"><nobr>= 27699 </nobr></div>
+</span></font>
+
+<div style="position: absolute; top: 7303px; left: 0pt;"><hr><table border="0" width="100%"><tbody><tr><td align="right" bgcolor="#eeeeee"><font face="arial,sans-serif"><a name="7"><b>Page 7</b></a></font></td></tr></tbody></table></div><font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 7357px; left: 459px;"><nobr>Proceedings of the 2004 IEEE </nobr></div>
+<div style="position: absolute; top: 7374px; left: 459px;"><nobr>Workshop on Information Assurance </nobr></div>
+<div style="position: absolute; top: 7392px; left: 459px;"><nobr>United States Military Academy, West Point, NY  June 2004 </nobr></div>
+<div style="position: absolute; top: 8420px; left: 81px;"><nobr>ISBN 555555555/$10.00  <font face="Symbol">    </font>2004 IEEE </nobr></div>
+<div style="position: absolute; top: 7426px; left: 81px;"><nobr>in the  internet  continues  to increase.  Development  of</nobr></div>
+<div style="position: absolute; top: 7443px; left: 81px;"><nobr>systems  that  try to detect  worm behavior is  currently</nobr></div>
+<div style="position: absolute; top: 7461px; left: 81px;"><nobr>underway [14] and is necessary because human security</nobr></div>
+<div style="position: absolute; top: 7478px; left: 81px;"><nobr>responses are often too slow and too late. </nobr></div>
+<div style="position: absolute; top: 7513px; left: 187px;"><nobr>VII. R</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 10px; font-family: Times;">
+<div style="position: absolute; top: 7516px; left: 226px;"><nobr>EFERENCES</nobr></div>
+</span></font>
+<font face="Times" size="3"><span style="font-size: 12px; font-family: Times;">
+<div style="position: absolute; top: 7548px; left: 81px;"><nobr>[1] Dan Ellis, Worm Anatomy and Model, Proceedings of</nobr></div>
+<div style="position: absolute; top: 7566px; left: 81px;"><nobr>the 2003 ACM Workshop, October 2003, pp. 42-50, </nobr></div>
+<div style="position: absolute; top: 7583px; left: 81px;"><nobr>http://mason.gmu.edu/esibley/INFS697F03/ACM%20W</nobr></div>
+<div style="position: absolute; top: 7600px; left: 81px;"><nobr>orm%20Anatomy%20and%20Model.pdf</nobr></div>
+<div style="position: absolute; top: 7635px; left: 81px;"><nobr>[2] Jose Nazario, Jeremy Anderson, Rick Wash and Chris</nobr></div>
+<div style="position: absolute; top: 7652px; left: 81px;"><nobr>Connellly, The Future of Internet Worms, Crimelabs </nobr></div>
+<div style="position: absolute; top: 7669px; left: 81px;"><nobr>research, July 2001, </nobr></div>
+<div style="position: absolute; top: 7686px; left: 81px;"><nobr>http://www.cgisecurity.com/lib/the_future_of_internet_w</nobr></div>
+<div style="position: absolute; top: 7704px; left: 81px;"><nobr>orms.pdf</nobr></div>
+<div style="position: absolute; top: 7738px; left: 81px;"><nobr>[3] Cowan et al.  “Buffer Overflows: Attacks and </nobr></div>
+<div style="position: absolute; top: 7755px; left: 81px;"><nobr>Defenses for the Vulnerability of the Decade.”   </nobr></div>
+<div style="position: absolute; top: 7773px; left: 81px;"><nobr>Proceedings of DARPA Information Survivability</nobr></div>
+<div style="position: absolute; top: 7790px; left: 81px;"><nobr>Conference and Expo (DISCEX).  Oregon Graduate </nobr></div>
+<div style="position: absolute; top: 7807px; left: 81px;"><nobr>Institute of Science and Technology, 1999. </nobr></div>
+<div style="position: absolute; top: 7842px; left: 81px;"><nobr>[4] Eugene Spafford, “An Analysis of the Internet </nobr></div>
+<div style="position: absolute; top: 7859px; left: 81px;"><nobr>Worm,” Proc. European Software Engineering</nobr></div>
+<div style="position: absolute; top: 7876px; left: 81px;"><nobr>Conference, pp. 446-468, Sept, 1989.  Lecture Notes in</nobr></div>
+<div style="position: absolute; top: 7893px; left: 81px;"><nobr>Computer Science #387, Springer-Verlag. </nobr></div>
+<div style="position: absolute; top: 7928px; left: 81px;"><nobr>[5] Wiley, Brandon.  “Curious Yellow: The First </nobr></div>
+<div style="position: absolute; top: 7945px; left: 81px;"><nobr>Coordinated Worm Design.” </nobr></div>
+<div style="position: absolute; top: 7962px; left: 81px;"><nobr>http://blanu.net/curious_yellow.html</nobr></div>
+<div style="position: absolute; top: 7997px; left: 81px;"><nobr>[6] http://www.phrack.org/phrack/61/p61-</nobr></div>
+<div style="position: absolute; top: 8014px; left: 81px;"><nobr>0x09_Polymorphic_Shellcode_Engine.txt, “Polymorphic</nobr></div>
+<div style="position: absolute; top: 8031px; left: 81px;"><nobr>Shellcode Engine using Spectrum Analysis.”</nobr></div>
+<div style="position: absolute; top: 8066px; left: 81px;"><nobr>[7] Weaver, Nicholas, “A Brief History of the Worm.” </nobr></div>
+<div style="position: absolute; top: 8083px; left: 81px;"><nobr>Security Focus: INFOCUS, Nov. 26,</nobr></div>
+<div style="position: absolute; top: 8100px; left: 81px;"><nobr>2001,http://www.securityfocus.com/infocus/1515 </nobr></div>
+<div style="position: absolute; top: 8135px; left: 81px;"><nobr>[8] http://www.phrack.org/phrack/49/P49-14, “Smashing</nobr></div>
+<div style="position: absolute; top: 8152px; left: 81px;"><nobr>the Stack for Fun and Profit.” </nobr></div>
+<div style="position: absolute; top: 8187px; left: 81px;"><nobr>[9] Stevens, W. Richard Unix Network Programming,</nobr></div>
+<div style="position: absolute; top: 8204px; left: 81px;"><nobr>Volume 1.  Printice Hall, 1998. </nobr></div>
+<div style="position: absolute; top: 8238px; left: 81px;"><nobr>[10] Donahoo, Michael J. and Calvert, Kenneth L. The </nobr></div>
+<div style="position: absolute; top: 8256px; left: 81px;"><nobr>Pocket Guide to TCP/IP Sockets.  San Francisco: Morgan</nobr></div>
+<div style="position: absolute; top: 8273px; left: 81px;"><nobr>Kaufmann, 2001. </nobr></div>
+<div style="position: absolute; top: 8307px; left: 81px;"><nobr>[11] http://www.gnu.org/manual/gdb/, “Debugging with</nobr></div>
+<div style="position: absolute; top: 8325px; left: 81px;"><nobr>GDB.” </nobr></div>
+<div style="position: absolute; top: 7426px; left: 486px;"><nobr>[12] Zalewski, Michael.  “I don’t think I really love you.”  </nobr></div>
+<div style="position: absolute; top: 7443px; left: 486px;"><nobr>http://commons.somewhere.com/rre/2000/RRE.worm.desi</nobr></div>
+<div style="position: absolute; top: 7461px; left: 486px;"><nobr>gn.html</nobr></div>
+<div style="position: absolute; top: 7495px; left: 486px;"><nobr>[13] Morris, Robert Sr., Berk, Vincent, and Bakos,</nobr></div>
+<div style="position: absolute; top: 7512px; left: 486px;"><nobr>George. “Designing a Framework for Active Worm</nobr></div>
+<div style="position: absolute; top: 7530px; left: 486px;"><nobr>Detection on Global Networks.”  First IEEE International </nobr></div>
+<div style="position: absolute; top: 7547px; left: 486px;"><nobr>Workshop on Information Assurance, Darmstadt, pp. 13-</nobr></div>
+<div style="position: absolute; top: 7564px; left: 486px;"><nobr>23, 2003. </nobr></div>
+</span></font>
+
+</body></html>

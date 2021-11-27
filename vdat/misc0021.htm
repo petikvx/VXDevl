@@ -1,0 +1,1005 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Miscellaneous - The Norman Book of Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="miback01.gif">
+
+<CENTER><P><FONT COLOR="#004080"><B><FONT SIZE=+3>The Norman Book on Viruses<BR>
+</FONT></B>by</FONT><BR>
+<A HREF="http://www.norman.com"><IMG SRC="norman.gif" BORDER=0 HEIGHT=32 WIDTH=91></A></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<TABLE CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<TR>
+<TD valign="top" rowspan="2"><BR>
+<B>Table of Contents</B> 
+<UL>
+<LI><B><FONT SIZE=+1><A HREF="#Introduction">Introduction  </A></FONT></B></LI>
+
+<LI><B><FONT SIZE=+1><A HREF="#Whatisavirus">What is a Virus?</A></FONT></B></LI>
+
+<UL>
+<LI><A HREF="#FileVirus">File Virus</A></LI>
+
+<LI><A HREF="#BootVirus">Boot Virus </A></LI>
+
+<UL>
+<LI><A HREF="#TheBootingProcess">The Booting Process</A></LI>
+
+<LI><A HREF="#Abootablediskette">A Bootable Diskette  </A></LI>
+
+<LI><A HREF="#HowaBootVirusInfects">How a Boot Virus Infects  </A></LI>
+</UL>
+
+<LI><A HREF="#MacroVirus">Macro Virus  </A></LI>
+
+<UL>
+<LI><A HREF="#HowItWorks">How It Works </A></LI>
+
+<LI><A HREF="#WhyIt'sSuchARisk">Why It's Such a Risk</A></LI>
+
+<LI><A HREF="#Predictionsforthefuture">Predictions for the Future  </A></LI>
+</UL>
+
+<LI><A HREF="#Howmanyviruses">How Many Viruses Are There? </A></LI>
+
+<LI><A HREF="#IntheWildViruses">In the Wild Viruses</A></LI>
+</UL>
+
+<LI><B><FONT SIZE=+1><A HREF="#Theevolutionofthevirusproblem">The Evolution
+of the Virus Problem</A></FONT></B></LI>
+
+<LI><B><FONT SIZE=+1><A HREF="#Virusesondifferentplatforms">Viruses on
+Different Operating Systems</A></FONT></B></LI>
+
+<UL>
+<LI><A HREF="#MS-DOS">MS-DOS</A></LI>
+
+<LI><A HREF="#Windows">Windows</A></LI>
+
+<LI><A HREF="#OS2">OS/2</A></LI>
+
+<LI><A HREF="#Windows95">Windows 95</A></LI>
+
+<LI><A HREF="#WindowsNT">Windows NT</A></LI>
+</UL>
+
+<LI><B><FONT SIZE=+1><A HREF="#Solutionstothevirusproblem">Solutions to
+the Virus Problem</A></FONT></B></LI>
+
+<LI><B><FONT SIZE=+1><A HREF="#NVCProducts">Norman Virus Control Products</A></FONT></B></LI>
+</UL>
+
+<P><BR>
+<BR>
+</P>
+
+<P><A NAME="Introduction"></A><B>Introduction</B></P>
+
+<P>It's hard to believe that the first IBM personal computer ( PC) was
+introduced in August, 1981. In the beginning they were used by a small
+group of people. Only fifteen years later, however, we can't imagine life
+without them, both at work and at home. Look around your office when the
+electricity goes out, and you'll see people standing around talking because
+they feel they can't get any work done without their computers.</P>
+
+<P>We have become dependent on these machines and the information stored
+within. As the importance of a &quot;thing&quot; rises, it becomes equally
+as important, if not more, to secure it. (How many of you have alarm systems
+in your cars?)</P>
+
+<P>A large portion of modern computing life is to secure the information
+that we are creating and processing. There are many aspects of information
+security, ranging from physical access to ensuring that the information
+has not been changed in any way.</P>
+
+<P>One of the most high-profile threats to information integrity is the
+computer virus. Surprisingly, PC viruses have been around for two-thirds
+of the IBM PC's lifetime, appearing in 1986. With global computing on the
+rise, computer viruses have had more visibility in the past two years.
+In fact, the entertainment industry has helped by illustrating the effects
+of viruses in movies such as &quot;Independence Day&quot;, &quot;The Net&quot;
+and &quot;Sneakers&quot;.</P>
+
+<P>Please note that computer viruses are also found on Macintoshes, but
+in this book, we will focus on PC viruses. The topics we will cover are:</P>
+
+<UL>
+<LI>what a virus is</LI>
+
+<LI>the evolution of the virus problem</LI>
+
+<LI>viruses on different operating systems</LI>
+
+<LI>solutions to the virus problem</LI>
+
+<LI>how Norman Virus Control products help</LI>
+</UL>
+
+<P><A NAME="Whatisavirus"></A><B>What is a Virus?</B></P>
+
+<P>The terms &quot; computer virus&quot; and &quot; virus&quot; are used
+very loosely in everyday conversation and have become synonymous with &quot;trouble&quot;.</P>
+
+<P>Viruses, worms, Trojan horses, and logic bombs are all unwanted, uninvited,
+potentially dangerous software, but there are important distinctions among
+them. The differences lie in whether the category requires a host program
+and whether it makes copies of itself. All four may cause damage, but this
+is not integral to the definitions. The following table defines each one:<BR>
+</P>
+
+<CENTER><TABLE BORDER=1 >
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<CENTER><P><B>TERM</B></P></CENTER>
+</TD>
+
+<TD ROWSPAN="1" COLSPAN="1"><B>REQUIRES HOST?</B></TD>
+
+<TD ROWSPAN="1" COLSPAN="1"><B>REPLICATES </B></TD>
+</TR>
+
+<TR>
+<TD>Virus</TD>
+
+<TD>Yes. Viruses require a host, and their goal is to infect other files
+so that the virus can &quot;live&quot; longer. Some viruses perform destructive
+actions although this is not necessarily the case. Many viruses attempt
+to hide from being discovered. 
+<P>Note: viruses are simply software programs.</P>
+</TD>
+
+<TD>Yes. All viruses make copies of themselves, infecting system boot sectors,
+master boot sectors, programs, or data files as the opportunity arises.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Worm</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">No. A host is not required, because worms are
+typically a mainframe problem and do not need to hide from most users.</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Yes. A worm makes copies of itself as it finds
+the opportunity.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Trojan horse</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">No. While the term &quot;Trojan horse&quot;
+sometimes refers to the program containing destructive code, the term is
+more often used to refer to the entire . COM or . EXE.</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">No. Most Trojan horses activate when they are
+run and often destroy the structure of the current drive ( FATs, directory,
+etc.), obliterating themselves in the process.</TD>
+</TR>
+
+<TR>
+<TD NOWRAP>Bug, 
+<P>Logic bomb, </P>
+
+<P>Time bomb</P>
+</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Yes. Programmers cannot write a bug without
+also writing other code -- although it's fair to say that most programmers
+do not intentionally write bugs. Logic bombs and time bombs are intentionally
+inserted in otherwise &quot;good&quot; code.</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">No. This code generally has better things to
+do than making copies of itself. Logic bombs and time bombs wish to remain
+hidden, with only their effects being visible. Bugs do just about everything
+except make more bugs.</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>When speaking about viruses, we normally speak about four different
+types: </P>
+
+<CENTER><TABLE BORDER=1 >
+<CAPTION></CAPTION>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">
+<CENTER><P><B>What they are called</B></P></CENTER>
+</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">
+<CENTER><P><B>What they infect</B></P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>File virus</TD>
+
+<TD>Executables (program files). These are able to infect over networks.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Macro virus</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Data files. These are able to infect over networks.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Boot virus</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Boot sectors of hard drives and floppy disks.
+These are not able to infect over networks.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Multipartite virus</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Both executable files and boot sectors. These
+are able to infect over networks.</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>Because a macro virus infects files, it technically is a file virus.
+However, unlike traditional file viruses, it targets data files instead.
+Macro viruses are becoming increasingly common, and therefore they deserve
+to be treated as a separate category.</P>
+
+<P>You have probably also heard other terms such as &quot; polymorphic&quot;,
+&quot; stealth&quot;, and &quot; encrypted&quot;. These are not types of
+viruses, per se, but rather are methods that viruses use to disguise themselves
+from anti-virus products.</P>
+
+<P>The next sections describe file, macro, and boot viruses more thoroughly.
+Multipartite viruses are not common, and therefore will not be covered
+in this book.</P>
+
+<P><A NAME="FileVirus"></A><B>File Virus</B></P>
+
+<P>A file virus attaches itself to a program file (the host) and uses different
+techniques in order to infect other program files.</P>
+
+<P>There are three basic techniques for infecting an executable file: overwrite,
+prepend, and append.</P>
+
+<H6 ALIGN=CENTER><IMG SRC="one.gif" HEIGHT=114 WIDTH=346><FONT SIZE=+0>
+</FONT></H6>
+
+<P>An overwriting virus places itself at the beginning of the program,
+directly over the original program code, so the program is now damaged.
+When you try to run this program, nothing happens except for the virus
+infecting another file.</P>
+
+<P>Such viruses are easily apprehended and destroyed by users and user
+support staff, so they actually spread very poorly in the wild. You have
+almost no chance of ever getting an overwriting virus in your machine.</P>
+
+<H6 ALIGN=CENTER><IMG SRC="two.gif" HEIGHT=165 WIDTH=380><FONT SIZE=+0>
+ </FONT></H6>
+
+<P>The pure prepending virus may simply place all of its code at the top
+of your original program. When you run a program infected by a prepending
+file virus, the virus code runs first, and then your original program runs.</P>
+
+<H6 ALIGN=CENTER><IMG SRC="three.gif" HEIGHT=200 WIDTH=400><FONT SIZE=+0>
+ </FONT></H6>
+
+<P>An appending virus places a &quot; jump&quot; at the beginning of the
+program file, moves the original beginning of the file to the end of the
+file, and places itself between what was originally the end of the file
+and what was originally at the beginning of the file. When you try to run
+this program, the &quot;jump&quot; calls the virus, and the virus runs.
+The virus then moves the original beginning of the file back to its normal
+position and then lets your program run.</P>
+
+<P>That was a brief overview of how a virus attaches itself to a program
+file. It uses different techniques in order to infect. Most file viruses
+go memory-resident so that they can monitor all actions and infect other
+program files. Other file viruses infect by &quot;direct action&quot;,
+which means that they infect a program file when that program file is accessed.</P>
+
+<P>Several other methods exist, but for the most part, file viruses like
+to go memory resident. If a file virus is memory resident, then it can
+be extremely easy to infect another program file by waiting until that
+program file is run and then attaching to that file. That file will then
+become infected (i.e., become a &quot; carrier&quot;), and it will go on
+to infect other program files.</P>
+
+<P><A NAME="BootVirus"></A><B>Boot Virus</B></P>
+
+<P>Boot viruses infect System Boot Sectors ( SBS) an d Master Boot Sectors
+( MBS).</P>
+
+<P>The MBS is located on all physical hard drives. It contains, among other
+data, information about the partition table (information about how a physical
+disk is divided into logical disks), and a short program that can interpret
+the partition information to find out where the SBS is located. The MBS
+is operating system. The SBS contains, among other data, a program whose
+purpose is to find and run an operating system.</P>
+
+<P>Because these system areas are read during the booting process on all
+IBM-compatibles, boot viruses are operating system-independent and are
+therefore able to propagate more effectively than file viruses.</P>
+
+<P>Refer to <A HREF="#Virusesondifferentplatforms">See Also: Viruses on
+Different Operating Systems</A> for more information.</P>
+
+<P><A NAME="TheBootingProcess"></A><B>The Booting Process</B></P>
+
+<P>To understand boot viruses, it is necessary to understand the booting
+process.</P>
+
+<P>The BIOS (Basic Input/Output System), which controls the booting process,
+is initiated as soon as the power is switched on.</P>
+
+<P>The next process that runs is called POST (Power On Self Test). It ensures
+that the computer is in working order. One POST function that all users
+will recognize is the display that counts the amount of RAM (Random Access
+Memory) in the machine.</P>
+
+<P>POST's final act is to kick off the booting process. The first task
+is to determine whether or not there is a diskette in the floppy drive.
+If there is, the System Boot Sector on the floppy is read, and the machine
+attempts to boot from it.</P>
+
+<P>If the diskette is not bootable (see below for more details), then you
+will see the following message on the screen :</P>
+
+<P>Non system-disk or disk error.</P>
+
+<P>Replace and strike any key when ready.</P>
+
+<P>Normally, however, no diskette is present, and the Master Boot Sector
+on the hard drive is read. Then the System Boot Sector of the hard drive
+is read, and it will start the operating system.</P>
+
+<P>This process remains the same on machines running DOS, Windows, Windows
+95, Windows NT, and OS/2. The differences appear when the operating systems
+themselves are loaded.</P>
+
+<P><A NAME="Abootablediskette"></A><B>A Bootable Diskette</B></P>
+
+<P>When a floppy disk is formatted, a System Boot Sector is created. The
+diskette can have two functions: contain program files and data files and/or
+be a bootable diskette.</P>
+
+<P>A bootable diskette is one that can be used to bypass the booting process
+on the hard drive. Instead, the boot process runs from the diskette.</P>
+
+<P>To create a bootable diskette, you must either format the diskette with
+the &quot; system&quot; option (/S) or you must use DOS's SYS command on
+the diskette.</P>
+
+<P>A formatted diskette always has a System Boot Sector regardless of whether
+or not the diskette is bootable. The SBS happens to be the place that a
+boot virus calls home, so any formatted diskette that you have can potentially
+be infected with a boot virus.</P>
+
+<P><A NAME="HowaBootVirusInfects"></A><B>How a Boot Virus Infects</B></P>
+
+<P>If a diskette is left in drive A: of a machine, and CMOS is set up to
+first boot from drive A: and then drive C:, then the SBS of the diskette
+will be read. If the SBS contains a boot virus, the boot virus will become
+active, go memory resident, infect the system areas of the hard drive,
+and attempt to infect other write-enabled diskettes that are accessed.</P>
+
+<P>People tend to leave floppies in the drive when they turn their machines
+off for the day and then forget about them when they turn their machine
+on in the morning. Consequently, boot viruses are the majority of the most
+common viruses seen today.</P>
+
+<P><A NAME="MacroVirus"></A><B>Macro Virus</B></P>
+
+<P>Between August and November 1995, four macro viruses and one macro Trojan
+horse were discovered, and the numbers continue to rise. Norman believes
+that as of December, 1996, there are 100 macro viruses. The differences
+between macro viruses and traditional file viruses lie in the host (data
+files) and the method of replication (use of macro programming languages
+inherent to applications). These differences add up to a new, formidable
+data security threat. Throw in the increased use of OLE (Object Linking
+and Embedding) as well as the explosive use of networks, e-mail, and the
+Internet as exchange media, and the outlook is grim.</P>
+
+<P><A NAME="HowItWorks"></A><B>How It Works</B></P>
+
+<P>Traditional file viruses do not attempt to infect data files, for data
+files are not an ideal ground for replication. That is, one does not &quot;run&quot;
+a data file &aelig; one &quot;reads&quot; and &quot;edits&quot; a data
+file. However, in the past few years, organizations have been building
+upon open systems, in which data is shared more readily. This in turn means
+that there is little security. Macro viruses take advantage of the fact
+that many applications now contain macro programming languages. These languages
+allow users (and virus authors) more flexibility and power within the application
+than ever before. Often macro viruses are not detected early enough because
+many users are not familiar with the nuances of macros. As a result, macro
+viruses have an infection rate much higher than traditional file and boot
+viruses.</P>
+
+<P>To date, the most targeted macro programming language is WordBasic,
+the language within Microsoft Word.</P>
+
+<P><A NAME="WhyIt'sSuchARisk"></A><B>Why It's Such a Risk</B></P>
+
+<P>Since data files are shared more frequently than executable (program)
+files, the security threat posed by macro viruses is very real. The open
+systems in many of Microsoft's applications utilize OLE in order to combine
+different data types. You can embed an object such as a bitmap within a
+Word document. Embedding an object means that any edits to the object will
+not be reflected in any other copies of the object. You can also link an
+object such as a Excel spreadsheet to a Word document. Linking an object
+means that you may edit the object in either its source application or
+from within the application to which it is linked, and all copies of the
+object will be updated.</P>
+
+<CENTER><P><IMG SRC="four.gif" HEIGHT=408 WIDTH=632><BR>
+</P></CENTER>
+
+<P>Microsoft Word has the ability to embed and link objects. In addition,
+Word documents have the ability to be embedded and linked in other applications.
+The risk, therefore, results in the ability to run a Word macro virus from
+another application. For example, Microsoft's MSMail messages can contain
+attachments such as Word documents. If the correct association exists,
+then the MSMail user can simply double-click on the Word document, Word
+will start, and the specified document will be loaded. This is only one
+example of OLE in action. There are other uses of OLE in conjunction with
+Word documents, and it is the frequency of such use that drives the scope
+of the Word macro security threat.</P>
+
+<P>Some macro viruses contain destructive code and some even create and
+execute traditional file and boot viruses. While traditional file and boot
+viruses affect the operation of a machine, macro viruses affect the quality
+and reliability of information contained within data files.</P>
+
+<P><A NAME="Predictionsforthefuture"></A><B>Predictions for the Future</B></P>
+
+<P>Norman Data Defense Systems expects an explosion in the development
+of macro viruses and in the number of infections both locally and globally.
+We also expect to see viruses taking advantage of common macro languages,
+enabling the macro virus to become application-independent. (Remember that
+currently, Microsoft Word is the application most afflicted with macro
+virus infections because most macro viruses are written in WordBasic.)
+In addition, we expect macro viruses to utilize polymorphic and stealth
+techniques. Norman will continue to keep abreast of the macro virus problem,
+along with traditional file and boot viruses, by looking towards scanning
+for and removing macro viruses on the application level as well as on the
+binary level.</P>
+
+<P><A NAME="Howmanyviruses"></A><B>How Many Viruses Are There?</B></P>
+
+<P>Anti-virus vendors are asked this question all the time. The answer
+is difficult for several reasons:</P>
+
+<OL>
+<LI>There is no central organization that counts the number of viruses.</LI>
+
+<LI>New viruses appear every day. Some experts say that the growth of new
+viruses is exponential and others say that it's quadratic. If we were able
+to count them all, then the count would be valid only for a short period
+of time such as a day.</LI>
+
+<LI>Often we find that many variants are made based upon one virus, and
+often times there is disagreement among the virus research community on
+the definition of &quot; variant&quot;.</LI>
+
+<LI>There is no standard naming convention for viruses, and as a result
+it is possible to have several different names for the same virus.</LI>
+
+<P>This brings up the question of how viruses get their names. Sometimes
+the virus author puts text into the virus that indicates a name for the
+virus or for him/herself (e.g., The xxx virus is here; Greetings from yyy).
+But most of the time, names are given by people who discover them. Different
+methods are used, such as: estimates of place of origin or place of detection
+(e.g., the Lehigh virus), number of bytes that the virus adds to files,
+what the virus does, and so on.</P>
+
+<P>With those caveats in mind, Norman Virus Control products detect over
+10,000 virus variants as of this writing (December, 1996).</P>
+</OL>
+
+<P><A NAME="IntheWildViruses"></A><B>In the Wild Viruses</B></P>
+
+<P>Although virus researchers know of thousands of viruses, you need not
+worry about all of them. Of those thousands, most of them exist only in
+research labs, and the remaining handful are actually seen in homes and
+organizations around the world.</P>
+
+<P>As a result, virus researchers group viruses into two categories: &quot;in
+the wild&quot; and &quot; in the zoo&quot;, sometimes referred to as &quot;
+ITW&quot; and &quot; ITZ&quot; respectively.</P>
+
+<P>Viruses that are &quot;in the wild&quot; have been seen outside the
+research labs. In the wild viruses comprise about 10% of the viruses that
+we know about, and it is these viruses that you and your organization should
+concern yourselves with.</P>
+
+<P>If you are interested in more details, contact your nearest dealer or
+Norman Data Defense Systems directly.</P>
+
+<P><A NAME="Theevolutionofthevirusproblem"></A><B>The Evolution of the
+Virus Problem</B></P>
+
+<P>In the beginning, computers were not connected together very well, and
+computer viruses spread extremely slowly. Files were transmitted via BBSs
+(bulletin board systems) or on diskette. As a result, the transmission
+of infected files and boot sectors was geographically limited.</P>
+
+<P>However, as soon as connectivity increased, mostly by the use of computers
+in the workplace, the boundaries of computer viruses widened. First there
+was the local area network ( LAN), then there was the wide area network
+( WAN), and now there is the Internet. The extensive use of e-mail has
+also contributed to the meteoric rise in the number of macro virus incidents.</P>
+
+<P>We are now living in a society in which global technology has taken
+the forefront, and global commerce is driven by communication pathways.
+Computers are an integral part of this technology and so the information
+they contain (as well as the malicious code they unwittingly contain) also
+becomes global.</P>
+
+<P>Consequently, it is much easier to get a virus today than it was two
+years ago. However, the types of viruses that are common today are different
+than those that were common two years ago.</P>
+
+<P>Steve White, Jeff Kephart, and David Chess of the IBM Thomas J. Watson
+Research Center have been following the evolution of viruses, and (among
+other things) they have concluded that the prevalence of certain types
+of viruses have been in part determined by changes in operating systems.<I>
+<A HREF="#footnote">1</A> </I></P>
+
+<P>Briefly, the trend has been as follows:</P>
+
+<H6 ALIGN=CENTER><IMG SRC="five.gif" HEIGHT=344 WIDTH=538><FONT SIZE=+0>
+ </FONT></H6>
+
+<P>In the following sections, we will discuss how viruses operate in different
+operating systems.</P>
+
+<P><A NAME="Virusesondifferentplatforms"></A><B>Viruses on Different Operating
+Systems</B></P>
+
+<P>When viruses first appeared, the only operating system of note was MS-DOS.
+It took some years for Windows to stabilize and become popular, so viruses
+flourished in MS-DOS. In fact, almost all file viruses (excluding macro
+viruses) are MS-DOS based.</P>
+
+<P>Although OS/2 came on the scene shortly after viruses did, OS/2 is not
+as mainstream an operating system as DOS. Therefore, virus writers were
+-- and still are -- less likely to be running OS/2 themselves, and even
+if OS/2 viruses were written frequently, they would not be as widespread
+as MS-DOS viruses. As a result, there are only two known OS/2 viruses today.</P>
+
+<P>Both Windows 95 and Windows NT are becoming increasingly common, and
+both are backwards compatible with MS-DOS, which means that they are backwards
+compatible with MS-DOS viruses. However, the architechture of the new operating
+systems pose interesting challenges to viruses.</P>
+
+<P>Let's take a look at viruses on MS-DOS, Windows, OS/2, Windows 95, and
+Windows NT.</P>
+
+<P><A NAME="MS-DOS"></A><B>MS-DOS</B></P>
+
+<P>Since the macro viruses that we have seen to date infect data files
+generated from and read by Windows applications, macro viruses are not
+a problem on MS-DOS-only machines.</P>
+
+<P>Traditional file viruses and boot viruses prosper in MS-DOS machines
+because MS-DOS has no inherent security features. Viruses, therefore, have
+free rein to infect memory, and program files as described in <A HREF="#FileVirus">See
+Also: File Virus</A> .</P>
+
+<P><A NAME="Windows"></A><B>Windows</B></P>
+
+<P>When Windows was introduced, users had to change the way they interacted
+with their computers. The images on the screen were more colorful, navigating
+around in a program was more intuitive, and the prospect of being able
+to switch tasks without exiting an application was very enticing.</P>
+
+<P>Since DOS runs &quot;underneath&quot; Windows, file viruses are able
+to infect machines that run Windows, but their lifespans are cut short.
+In general, file viruses are able to infect Windows executables, but the
+executables then do not generally work properly. Impatient users would
+either replace the executables, or if they were frustrated enough, reinstall
+Windows. This was enough to cause the demise of the traditional file virus.</P>
+
+<P>Macro viruses and boot viruses, however, have not suffered the same
+fate. To date, macro viruses have been written to target Windows applications,
+and therefore the presence of Windows is required. Combining the wide acceptance
+of Windows with the fact that macro viruses infect data files rather than
+program files (see <A HREF="#MacroVirus">See Also: Macro Virus</A> ) has
+led to one macro virus, Macro.Word.Concept, becoming one of the ten most
+common viruses.</P>
+
+<P>The actual booting process on a Windows machine is no different than
+on a DOS-only machine. Therefore, boot viruses have not been hindered by
+Windows, and they continue to propagate by infecting hard drives, going
+memory resident, and then infecting floppy disks.</P>
+
+<P><A NAME="OS2"></A><B>OS/2</B></P>
+
+<P>As mentioned above, OS/2 is not as widely used as Windows and other
+Microsoft operating systems. Because of the way that OS/2 was designed,
+however, it is still susceptible to non-OS/2-specific viruses.</P>
+
+<P>Unlike Windows, MS-DOS does not run &quot;underneath&quot; OS/2. OS/2
+is a powerful 32-bit operating system that supports DOS applications, Windows
+applications, and native OS/2 applications. In order to run DOS applications,
+OS/2 furnishes VDMs (virtual DOS machines). As the name suggests, VDMs
+&quot;look&quot; like DOS to DOS programs. Therefore, an infected DOS program
+can infect other DOS program files within that VDM, but not DOS programs
+in other VDMs. The newly infected DOS program file can then continue infecting
+other program files which might be started in VDMs in the future. So the
+infection path continues.</P>
+
+<P>If Windows applications which include macro programming languages are
+run on an OS/2 machine, then the OS/2 machine is equally as susceptible
+to macro viruses as a Windows machine.</P>
+
+<P>Again, since the booting process is the same on IBM-compatible machines
+prior to the operating system being loaded, boot viruses can infect OS/2
+machines. OS/2 handles diskettes differently than DOS and Windows so the
+likelihood that the boot virus will propagate after it has infected the
+hard drive is lower on an OS/2 machine than on a Windows or DOS-only machine.
+The risk involved is rather one of the boot virus's action on the hard
+drive. If the boot virus was designed to have a payload, then we can expect
+it to be delivered, regardless of whether it was able to infect any floppies.</P>
+
+<P>OS/2 supports two file systems: FAT (file allocation table) and HPFS
+(high performance file system), and you may use just one or both. HPFS
+is more advanced and stores information in different places, so you can
+expect serious effects on an HPFS system from a boot virus that expected
+to only see FAT.</P>
+
+<P><A NAME="Windows95"></A><B>Windows 95</B></P>
+
+<P>Unlike Windows and DOS, Windows 95 is marketed as having built-in security
+features. Unfortunately, such features are not robust enough to safeguard
+Windows 95 against viruses. In fact, to date there has been one virus written
+especially to target Windows 95 (the Boza virus). Furthermore, Windows
+95's workgroup networking environment has no file-level protection and
+therefore can potentially lead to increases in virus spreading.</P>
+
+<P>Windows 95 shares many characteristics with OS/2 with respect to system
+architecture and interaction with viruses:</P>
+
+<P>Like OS/2, Windows 95 is a 32-bit operating system that supports DOS
+applications, Windows applications, and native Windows 95 applications.</P>
+
+<P>Similar to OS/2's VDMs, Windows 95 has VMs (virtual machines) -- a System
+Virtual Machine with separate address spaces for Win32 applications and
+a shared address space for all Win16 applications; and separate virtual
+machines for individual DOS applications.</P>
+
+<P>File viruses can easily spread on a Windows 95 machine because DOS program
+files' only limitation under Windows 95 is that they cannot write directly
+to the hard drive.</P>
+
+<P>Each DOS VM takes on the characteristics of the system from the point
+at which the machine was started. Since Windows 95 first starts up by running
+the same programs as a DOS-only machine does, it is possible that an infected
+program running during the startup process could could go on to infect
+other program files within that VM. In addition, if that infected program
+originated from the startup process, it would become active in all VMs
+that were started in the future. Although program files from one VM cannot
+infect program files in another VM, it is possible for an infected program
+file to be loaded into a separate VM in the future, thereby continuing
+the infection path.</P>
+
+<P>The macro viruses that have been written to date target data files generated
+from and read by Win16 and Win32 applications that are frequently run on
+Windows 95. As a result, macro virus infections abound on Windows 95.</P>
+
+<P>Since the Windows 95 boot process is the same as a DOS-only or Windows
+machine (up to a certain point), boot viruses are able to infect hard drives
+of Windows 95 machines. When Windows 95 loads, however, boot viruses are
+often disabled and not allowed to propagate. On the other hand, if the
+boot virus has a payload, it may deliver it without requiring the virus
+to replicate beforehand.</P>
+
+<P><A NAME="WindowsNT"></A><B>Windows NT</B></P>
+
+<P>As discussed in the sections on OS/2 and Windows 95, Windows NT supports
+DOS applications, Windows applications, and native Windows NT applications.
+Like Windows 95, Windows NT is backwards compatible with DOS and Windows.
+Despite the fact that NT's security features are more robust than Windows
+95's, file viruses can still infect and propagate within Windows NT. DOS
+applications run in separate VDMs (virtual DOS machines), and file viruses
+can function within the VDM. Some DOS file viruses might not work in the
+intended fashion under NT, but there is nothing about NT's security that
+prevents file viruses from infecting.</P>
+
+<P>As with Windows 95, Windows NT supports applications that contain macro
+programming languages, making NT as vulnerable to macro viruses as Windows-only
+machines.</P>
+
+<P>Because Windows NT machines boot the same way that DOS machines do (up
+to the point at which NT takes over), boot viruses are able to infect NT
+hard drives. However, when these boot viruses attempt to go memory resident,
+they will be stopped by NT and therefore be unable to infect floppies.
+In effect, this stops the infection path, but the user must still deal
+with any side effects that the boot virus may have on the system -- destructive
+payloads or manhandling NT's boot area in such a way that NT refuses to
+load.</P>
+
+<P><A NAME="Solutionstothevirusproblem"></A><B>Solutions to the Virus Problem</B></P>
+
+<P>When people think of anti-virus solutions, they normally think of scanners.
+Scanners are the most readily available type of anti-virus solution, but
+they are not the only type.</P>
+
+<P>It's perhaps best to think of anti-virus solutions in terms of:</P>
+
+<UL>
+<LI>what is required to detect the virus<BR>
+- generic methods<BR>
+- specific methods</LI>
+</UL>
+
+<P><B>and</B></P>
+
+<UL>
+<LI>when the virus is detected<BR>
+- prior to the attempted infection<BR>
+- after the infection</LI>
+
+<P>A virus can be detected using either generic methods or specific methods.
+Generic methods look for virus-like behavior rather than specific viruses.
+As a result, even new viruses can be detected, and there is little need
+for frequent updates to the tool that is being used. Because generic methods
+look for behavior rather than specific viruses, the name of the virus is
+normally not given. Instead users are simply warned that a virus is likely
+to be present. Some shy away from this method because it can give false
+alarms --either by detecting a virus that is not there or not detecting
+a virus that is there.</P>
+
+<P>Examples of generic detection methods are:</P>
+
+<LI>checksumming and integrity checking</LI>
+
+<LI>heuristics</LI>
+
+<LI>decoys</LI>
+
+<LI>behavior blocking</LI>
+
+<P>Specific methods, on the other hand, rely on having prior knowledge
+of the virus. In this case the tool is able to both detect that the virus
+is present as well as identify it. As a result, frequent updates to the
+tool are necessary. Most users like to know what they're &quot;up against&quot;
+if a virus is found, and the best way to do that is to determine the exact
+nature of the beast. For this reason, many users prefer this method, but
+they do not ultimately appreciate how often the tool must be updated.</P>
+
+<P>Examples of specific detection methods are:</P>
+
+<LI>on-demand and scheduled scanning</LI>
+
+<LI>real-time scanning</LI>
+
+<P>An equally important consideration is when the virus is detected. All
+users would probably agree that the ideal situation would be to prevent
+viruses from continuing to infect, and the next most ideal would be to
+identify those areas that have already been infected.</P>
+
+<P>Let's examine where the above-mentioned methods fall:</P>
+
+<CENTER><TABLE BORDER=1 >
+<CAPTION>
+<P><B>Method Detection discussion </B></P>
+</CAPTION>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Check-summing and integrity checking</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Both methods store information about (hopefully)
+uninfected files in a certain place. Checks against the current status
+of the files and the stored information are performed periodically. If
+any change is detected, then a warning is issued. This method provides
+after-the-fact detection.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Heuristics</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">This is a method of analyzing files and boot
+areas in a general sense to determine if the code appears virus-like. Heuristics
+perform after-the-fact detection.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Decoys</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">This is a method of lying in wait for viruses,
+allowing certain files to become infected if a virus is present. Decoys
+detect viruses as they are infecting and are helpful in raising the warning
+flag.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Behavior blocking</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">This is a method of analyzing the behavior
+of all computing actions to determine if the sum of the parts adds up to
+a virus-like action. If so, then the action is stopped before infection
+can occur. Behavior blocking performs before-the-fact detection.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">On-demand and scheduled scanning</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">This is a method of scanning for specific viruses
+at certain times. This is always an after-the-fact detection.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Real-time scanning</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">This method also uses scanning, but the detection
+process occurs while other computer processes occur, such as copying a
+file. As a result, users are notified of existing viruses before they can
+be triggered.</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>As you can see, there is no single solution that meets all your virus
+detection needs. We therefore suggest that you combine these methods to
+best suit your needs, and follow them up with removal routines.</P>
+
+<P>The subject of removal is similarly complex. Some people have a narrow
+definition of virus removal -- if you delete the file or format the hard
+drive, the virus is no longer there. Please note, however, that such drastic
+measures are not often necessary, and that it is much healthier to define
+removal as removing the virus code and leaving behind a usable file and/or
+boot area.</P>
+
+<P>Some of the detection methods listed above can also perform removal
+(as defined the &quot;healthy&quot; way):</P>
+
+<CENTER><TABLE BORDER=1 >
+<CAPTION>
+<P><B>Method Removal discussion </B></P>
+</CAPTION>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Checksumming and integrity checking</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Can remove viruses.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Heuristics</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Sometimes can remove boot viruses.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Decoys</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Cannot remove viruses.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Behavior blocking</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Can remove viruses from memory and boot viruses
+from floppies.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">On-demand and scheduled scanning</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Sometimes can remove viruses.</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">Real-time scanning</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Sometimes can remove viruses.</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>Please read on for an overview of what Norman Virus Control products
+can do.</P>
+</UL>
+
+<P><A NAME="NVCProducts"></A><B>Norman Virus Control Products</B></P>
+
+<P>Because Norman Data Defense Systems realizes that no single anti-virus
+detection method addresses all your needs, our anti-virus products provide
+a wide range of solutions that are available for DOS, Windows, Windows
+95, Windows NT, OS/2, and NetWare.</P>
+
+<P>We know that the hardware and software combination in organizations
+is mostly heterogeneous, and therefore we have designed our anti-virus
+products to coexist on these platforms and to send virus alert messages
+over the network, both via SNMP traps and NetWare messaging.</P>
+
+<CENTER><TABLE BORDER=1 >
+<CAPTION>
+<P><B>Product name Solutions provided </B></P>
+</CAPTION>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for DOS/Windows</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Smart behavior blocking <BR>
+Integrity checking of system areas<BR>
+Decoys<BR>
+On-demand and scheduled scanning<BR>
+Removal<BR>
+SNMP trap messaging<BR>
+NetWare messaging </TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for <BR>
+Windows 95</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">Smart behavior blocking<BR>
+On-demand and scheduled scanning<BR>
+Removal<BR>
+SNMP trap messaging<BR>
+NetWare messaging<BR>
+</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for <BR>
+Windows NT</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">On-demand and scheduled scanning <BR>
+Removal<BR>
+SNMP trap messaging<BR>
+NetWare messaging<BR>
+</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for OS/2</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">On-demand and scheduled scanning<BR>
+Removal<BR>
+SNMP trap messaging<BR>
+NetWare messaging<BR>
+</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for Word</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">On-demand scanning and removal of Word macro
+viruses</TD>
+</TR>
+
+<TR>
+<TD ROWSPAN="1" COLSPAN="1">NVC for NetWare</TD>
+
+<TD ROWSPAN="1" COLSPAN="1">On-demand, scheduled, and real-time scanningon
+NetWare file servers <BR>
+SNMP trap messaging<BR>
+NetWare messaging<BR>
+</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>For more information, please contact your nearest Norman dealer or Norman
+Data Defense Systems directly.</P>
+
+<P> </P>
+
+<P>
+<HR><A NAME="footnote"></A>1 </P>
+
+<P>Steve R White, Jeffrey O Kephart and David M Chess, `The Changing Ecology
+of Computer <BR>
+Viruses' Proceedings of the Fifth International Virus Bulletin Conference,
+Brighton, UK, 1996.</P>
+
+<CENTER><P><BR>
+
+<HR></P></CENTER>
+</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>

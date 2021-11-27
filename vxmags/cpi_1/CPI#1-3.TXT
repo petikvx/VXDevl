@@ -1,0 +1,99 @@
+     ----------------------------------------------------------------------
+     
+                       [1.3] Aspects Of Some Known Viruses
+     
+     
+          Many  viruses  have  been  written  before and probably after you 
+     read  this article. A few names include the Israeli, Lehigh, Pakistani 
+     Brain,  Alameda,  dBase,  and  Screen.  Keep in mind that most viruses 
+     ONLY  infect COM and EXE files, and use the Operating System to spread 
+     their  disease.  Also,  many viruses execute their own code before the 
+     host  file  begins  execution,  so  after  the virus completes passive 
+     execution  (without  "going  off")  the  program will load and execute 
+     normally. 
+     
+          Israeli  - This one is a TSR virus that, once executed, stayed in 
+     memory  and  infected  both COM and EXE files, affecting both HARD and 
+     FLOPPY  disks.  Once  executed, the virus finds a place to stay in the 
+     system's  memory  and upon each execution of a COM or EXE file, copies 
+     itself  onto the host phile. This one is very clever, before infecting 
+     the  file,  it  preserves  the  attributes  and date/time stamp on the 
+     file,  modifies  the  files attributes (removes READ only status so it 
+     can  write  on it), and then restores all previous values to the file. 
+     This  virus  takes very little space, and increases the host file size 
+     by  approximately  1800  bytes.  The trigger of this virus is the date 
+     Friday  the  13th.  This  trigger will cause the virus to either trash 
+     the  disk/s  or delete the files as you execute them, depending on the 
+     version. Whoever wrote this sure did a nice job....
+     
+          Lehigh  -  This one infects the COMMAND.COM file, which is always 
+     run  before bootup, so the system is ready for attack at EVERY bootup. 
+     It  hides  itself  via  TSR type and when any disk access is made, the 
+     TSR  checks  the  COMMAND.COM  to  see  if  it is infected. Then if it 
+     isn't,  it  infects  it,  and  adds  a  point to its counter. When the 
+     counter  reaches  4,  the  virus  causes  the disk to crash. This one, 
+     however,  can be stopped by making your COMMAND.COM Read-Only, and the 
+     date/time  stamp  is  not  preserved,  so  if  the  date/time stamp is 
+     recent,  one  could  be  infected  with  this  virus.  This  virus  is 
+     transferred  via  infected  floppy disks as well as a clean disk in an 
+     infected  system.  It can not infect other hosts via modem, unless the 
+     COMMAND.COM is the file being transferred.
+     
+          Pakistani  Brain  -  This one infects the boot sector of a floppy 
+     disk.  When  booting off of the disk, the virus becomes a TSR program, 
+     and  then  marks  an  unused portion of the disk as "bad sectors." The 
+     bad  sectors,  cannot be accessed by DOS. However, a disk directory of 
+     an  infected  disk  will show the volume label to be @ BRAIN. A CHKDSK 
+     will  find  a few bad sectors. When you do a directory of a clean disk 
+     on  an  infected  system, the disk will become infected. The virus has 
+     no  trigger  and  immediately  begins  to mark sectors bad even though 
+     they  are  good. Eventually, you will have nothing left except a bunch 
+     of  bad  sectors  and  no  disk  space. The virus itself has the ASCII 
+     written  into  it with the words "Welcome the the Dungeon" as well the 
+     names  of  the  supposed  authors of the virus, and address, telephone 
+     number,  and  a  few  other  lame  messages.  To inoculate your system 
+     against  this  virus,  just type 1234 at byte offset location 4 on the 
+     boot track (floppy disks).
+     
+          Alameda  -  This  virus  also infects the boot sector of the host 
+     system.  It  is  very  small  and  inhabits  ONE sector. This one only 
+     damages  floppy  disks.  If  you  boot from a diseased disk, the virus 
+     loads  itself  into  HIGH memory and during a warm boot, it remains in 
+     memory  and  infects  any  other  clean disks being booted from on the 
+     infected  system. It then replaces the boot track with the virus track 
+     and  replaces  the  boot  track  on the last track of the disk, so any 
+     data  located  on  the  last  track  is  corrupted.  All  floppy disks 
+     inserted  during  reboot can catch this virus. This virus only infects 
+     IBM PC's and XT's, however, it does not infect 286's or 386's. 
+     
+          dBase  -  This  one is a TSR virus that works in a manner similar 
+     to  the  Israeli  virus. It looks for files with a DBF extension, then 
+     it  replicates  itself in all DBF files, preserving file size, and all 
+     attributes.  After  the  first  90  days, the virus destroys your file 
+     allocation  table  and  corrupts all data in the DBF files. This virus 
+     creates  a  hidden  file,  BUG.DAT that indicates the bytes transposed 
+     (in  order to preserve file specifications). Run a CHKDSK to make sure 
+     you  don't  have  any  extra  hidden  files or a BUG.DAT in your dBase 
+     directory.  If  you  create a BUG.DAT file manually in your directory, 
+     making it read-only, you will be safe from this virus.
+     
+          Screen  -  This  one  is  another TSR virus that comes on and off 
+     periodically.  When  it is on, it examines the screen memory and looks 
+     for  any  4  digits  starting at a random place on the screen. Then it 
+     transposes  two  of  them,  this is not a good thing. It infects every 
+     COM  file  in  your  directory, HARD and FLOPPY disks can be infected. 
+     You  can  use  a  ASCII  searcher  to  check  if  you  are infected by 
+     searching  for  "InFeCt"  in your COM files. If you have this written, 
+     read  the  4  bytes immediately preceding it and overwrite the first 4 
+     bytes  of  the program with their value. Then, truncate the program at 
+     their  stored  address. You will rid yourself of this virus. Make sure 
+     you use a clean copy of you editor for this.
+     
+          Other  viruses  include  MAC, AMIGA, and many other environments. 
+     By  the way, other computer systems other than IBM/DOS may become part 
+     of CPI if you qualify.
+     
+          Anyway,  these  are  a few viruses I have read on and thus passed 
+     the  information  to  you, I hope you can learn from them and get some 
+     ideas for some.
+

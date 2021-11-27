@@ -1,0 +1,1033 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Antiviral Software Evaluation FAQ</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<H1 ALIGN=CENTER><FONT COLOR="#004080">Antiviral Software Evaluation FAQ</FONT></H1>
+
+<H2 ALIGN=CENTER><FONT COLOR="#004080">maintained by Rob Slade</FONT></H2>
+
+<H3 ALIGN=CENTER><FONT COLOR="#004080">HTML release 1.01<BR>
+Last update: 13 November 1996</FONT></H3>
+
+<P>
+<HR WIDTH="100%"><BR>
+This list of questions is intended to provide a framework and background
+information for review, evaluation and decisions regarding antiviral protection
+software and systems. The latest version of this file may be accessed online
+via the Web at Victoria Freenet. The companion files Antiviral contacts
+listing (CONTACTS.LST) and Quick reference antiviral review chart (QUICKREF.RVW)
+provide additional related information. All three files are available in
+the Computer Virus SIG of the Victoria (BC, Canada) Freenet (<A HREF="telnet://guest@freenet.victoria.bc.ca">telnet://guest@freenet.victoria.bc.ca</A>
+and give the command &quot;go virus&quot;). (This file is prepared from
+Chapter Six of &quot;Robert Slade's Guide to Computer Viruses&quot;.) </P>
+
+<P>This document is <B>not</B> intended to be an introduction to the study
+of computer viral programs. It is expected that you already know the relevant
+concepts and terminology. For general background information on computer
+viruses, please see the VIRUS-L/comp.virus FAQ (<A HREF="ftp://ftp.cs.ucr.edu/pub/virus-l/vlfaq200.txt">ftp://ftp.cs.ucr.edu/pub/virus-l/vlfaq200.txt</A>)
+which is also available at the Victoria Freenet site. </P>
+
+<P>This document is now maintained in minimal HTML format. </P>
+
+<P>
+<HR></P>
+
+<H2>Table of Contents</H2>
+
+<UL>
+<P><A HREF="#ASE01">1) Why can't I get 100% protection?<BR>
+</A><A HREF="#ASE02">2) Why isn't there any one &quot;best&quot; antiviral?<BR>
+</A><A HREF="#ASE03">3) What is an activity monitor?</A> </P>
+
+<UL>
+<P><A HREF="#ASE03a">3a) What are the strengths of activity monitors?<BR>
+</A><A HREF="#ASE03b">3b) What are the weaknesses of activity monitors?<BR>
+</A><A HREF="#ASE03c">3c) How should activity monitors be evaluated?</A>
+</P>
+</UL>
+
+<P><A HREF="#ASE04">4) What is authentication/change-detection software?</A>
+</P>
+
+<UL>
+<P><A HREF="#ASE04a">4a) What are the strengths of change-detection software?<BR>
+</A><A HREF="#ASE04b">4b) What are the weaknesses of change-detection software?<BR>
+</A><A HREF="#ASE04c">4c) How should change-detection software be evaluated?</A>
+</P>
+</UL>
+
+<P><A HREF="#ASE05">5) What is a scanner?</A> </P>
+
+<UL>
+<P><A HREF="#ASE05a">5a) What are the strengths of scanners?<BR>
+</A><A HREF="#ASE05b">5b) What are the weaknesses of scanners?<BR>
+</A><A HREF="#ASE05c">5c) How should scanners be evaluated?</A> </P>
+</UL>
+
+<P><A HREF="#ASE06">6) What is resident software?<BR>
+</A><A HREF="#ASE07">7) What is heuristic scanning?<BR>
+</A><A HREF="#ASE08">8) What is a false negative?<BR>
+</A><A HREF="#ASE09">9) What is a false positive?<BR>
+</A><A HREF="#ASE10">10) How does disinfection work?</A> </P>
+
+<UL>
+<P><A HREF="#ASE10a">10a) What is &quot;generic&quot; disinfection?<BR>
+</A><A HREF="#ASE10b">10b) What is &quot;heuristic generic&quot; disinfection?</A>
+</P>
+</UL>
+
+<P><A HREF="#ASE11">11) Can I get hardware antiviral protection?<BR>
+</A><A HREF="#ASE12">12) Why can a &quot;so-so&quot; antiviral actually
+be harmful?<BR>
+</A><A HREF="#ASE13">13) What aspects of an antiviral are important?<BR>
+</A><A HREF="#ASE14">14) What aspects of an antiviral are *not* important?<BR>
+</A><A HREF="#ASE15">15) What about &quot;number of viruses detected&quot;?<BR>
+</A><A HREF="#ASE16">16) Why isn't disinfection very important?<BR>
+</A><A HREF="#ASE17">17) Why should I support &quot;free&quot; software?<BR>
+</A><A HREF="#ASE18">18) What about published reviews?<BR>
+</A><A HREF="#ASE19">19) Where can I find published reviews?<BR>
+</A><A HREF="#ASE20">20) Are virus simulators any help?</A><BR>
+</P>
+</UL>
+
+<P>
+<HR><A NAME="ASE01"></A></P>
+
+<H2>1) Why can't I get 100% protection?</H2>
+
+<P>An easy answer can be seen by noting that computer viruses are programs,
+and they only do things that &quot;real&quot; programs do. There is no
+magic secret that viral programs use. Therefore, there is no single distinctive
+or characteristic that can be used to identify a viral program. </P>
+
+<P>A more rigorous explanation is found in Fred Cohen's ground breaking
+work on the theoretical study of computer viruses between 1983 and 1986.
+Using mathematical and logical models of the nature of computers and computation
+he determined that the problem of accurately identifying a viral program,
+as opposed to one which is not viral, is &quot;undecidable&quot;. A program
+to identify computer viruses will always have the possibility of making
+errors either in failing to identify viral programs (false negative), or
+in falsely accusing a valid program of being viral (false positive), or
+both. </P>
+
+<P>However, if you do your homework, you can get very solid protection.
+</P>
+
+<P>
+<HR><A NAME="ASE02"></A></P>
+
+<H2>2) Why isn't there any one &quot;best&quot; antiviral?</H2>
+
+<P>This desire for one single &quot;best&quot; antiviral ignores three
+vitally important points. The first is that, as pointed out above, &quot;the
+best&quot; may not be good enough by itself. </P>
+
+<P>The second point is that, even within the limited realm of anti-viral
+programs, data security software operates in many different ways. Thus,
+one type of security may be better in one situation, while another variety
+may be better in a different environment. There are basically three &quot;classes&quot;
+of anti-viral packages: activity monitors, authentication or change-detection
+software, and scanners. Each type has its own strengths and weaknesses.
+(Note that most commercial antiviral programs have a combination of functions.)
+</P>
+
+<P>The final point is that security, of every type, is always a &quot;moving
+target,&quot; and the virus world moves faster than most. Not only are
+new viral programs being written every day, but new types of viral functions
+are being coded all the time (albeit at a much slower rate than the run-of-the-mill
+copycat virals). Any antiviral program developer who purports to &quot;guarantee&quot;
+protection against &quot;all known and unknown&quot; viral programs simply
+does not comprehend the reality of the situation. </P>
+
+<P>
+<HR><A NAME="ASE03"></A></P>
+
+<H2>3) What is an activity monitor?</H2>
+
+<P>Activity monitoring software, as the name implies, oversees the operation
+of the computer and alerts the user when suspicious activity takes place.
+It may, for example, check for any calls to format a disk or attempts to
+alter or delete a program file while a program other than the operating
+system is in control. It may be more sophisticated, and check for any program
+that performs &quot;direct&quot; activities with hardware, without using
+the standard system calls. Although the analogy should not be stretched
+too far, activity monitors do share some characteristics, though not functions,
+of medical vaccines, being memory-resident and preventive in nature. </P>
+
+<P>A minor variation on activity-monitoring software is operation-restricting
+software. Instead of watching for suspicious activities, it automatically
+prevents them. The difference between a &quot;monitor&quot; and a &quot;restrictor&quot;
+is really only one of degree in the information given to the user. Most
+general microcomputer security programs use operation restriction. </P>
+
+<P>Heuristic scanning, despite the name, has much in common with activity-
+monitoring. A heuristic scanner looks not for signatures of a specific
+virus, but for code which performs suspect activities. </P>
+
+<P>
+<HR><A NAME="ASE03a"></A></P>
+
+<H2>3a) What are the strengths of activity monitors?</H2>
+
+<P>Activity monitors can detect &quot;unknown&quot; (that is, not previously
+identified) viral programs, and do not require a database of signatures
+of known viruses. Activity monitors generally require less frequent updates
+than do scanners. Activity monitors do not require the same level of setup
+as do authentication or change detection systems. Activity monitors may
+be able to function on already infected systems. </P>
+
+<P>Activity monitors represent some of the oldest examples of antiviral
+software. Generally speaking, such programs followed in the footsteps of
+the earlier anti-trojan software, such as BOMBSQAD and WORMCHEK in the
+MS-DOS arena, which used the same &quot;check what the program tries to
+do&quot; approach. This tactic can be startling effective, particularly
+given the fact that so much malware is slavishly derivative and tends to
+use the same functions over and over again. </P>
+
+<P>
+<HR><A NAME="ASE03b"></A></P>
+
+<H2>3b) What are the weaknesses of activity monitors?</H2>
+
+<P>It is very hard to tell the difference between a word processor updating
+a file and a virus infecting a file. Activity-monitoring programs may be
+more trouble than they are worth because they can continually ask for confirmation
+of valid activities. If you restrict the operations that a computer can
+perform, you can eliminate viral programs. Unfortunately, you also can
+eliminate most of the usefulness of the computer. </P>
+
+<P>Activity monitors may also be bypassed by viral programs that do low-level
+programming rather than using the standard operating system calls, or those
+that actually replace the standard system calls with viral triggers. In
+addition, while new viral technologies, such as stealth and polymorphism,
+have little effect on activity monitoring, new concepts in viral spread,
+such as companion or spawning viruses require new checks to be added to
+monitors. </P>
+
+<P>Activity monitors have a good chance to detect viral activity of new
+and unknown viral strains, but it would be very difficult to agree with
+those that claim to be able to detect &quot;all current and future&quot;
+viral programs. Unfortunately, activity monitors tend to encourage a set-and-forget
+mentality toward viral protection. This attitude should be avoided at all
+costs. If activity-monitoring software is your protection method of choice,
+continue to keep up-to-date with viral methods and to test your software
+regularly. </P>
+
+<P>As with mainframe security &quot;permission&quot; systems, operation-restricting
+packages allow you to restrict the activities that programs can perform,
+sometimes on a file-by-file basis. However, the more options these programs
+allow, the more time they will take to set up. The program must be modified
+each time you make a valid change to the system, and, as with activity
+monitors, some viral programs may be able to evade the protection by using
+low-level programming. </P>
+
+<P>Activity monitors do not provide disinfection functions. (A possible
+exception is &quot;heuristic generic&quot; disinfection.) </P>
+
+<P>
+<HR><A NAME="ASE03c"></A></P>
+
+<H2>3c) How should activity monitors be evaluated?</H2>
+
+<P>It is important, when evaluating both activity-monitoring and operation-
+restricting software, to judge the extent to which the operator is given
+the option of &quot;allowing&quot; an operation. It is also important,
+that the operator be informed, not only that a particular program or operation
+should be halted, but also why. There should not be too many false alarms
+generated by the software, and it would be helpful to have the option of
+&quot;tuning&quot; the software to be less, or more, sensitive to a given
+type of activity. </P>
+
+<P>It is very difficult to specify in advance what you should check for
+in activity-monitoring software, since the developers are loath to state,
+in detail, exactly what the program will be checking for. (This reluctance
+is understandable: if a developer &quot;advertises&quot; exactly what the
+product checks for, virus or trojan writers will simply use another route.)
+In addition, the work or computing environment must be considered, as well
+as, in certain cases, the corporate climate. Activity monitors, more than
+scanners or change detectors, are subject to review on the basis of political
+rather than technical grounds. </P>
+
+<P>Activity-monitoring software should be thoroughly tested in a real working
+environment (one that uses all the programs you normally use, in the ways
+you normally use them) for some time in order to ensure that the vaccine
+does not conflict with normal operation. This &quot;real&quot; environment
+includes the &quot;real&quot; people who will be using the software: choose
+your sample population carefully and avoid simply giving it to the tech
+support office to test. Two important factors to check for are the number
+of false positives (or false alarms) that the software generates and the
+level of information given to the user when an anomalous condition is detected.
+This last is difficult to judge: user populations that tend to remain at
+the novice level will not have more confidence in the system, regardless
+of how much information it gives them. </P>
+
+<P>Monitoring programs should be tested against a battery of viral programs,
+but the test suite should be collected on the basis of function rather
+than simply diversity. If the activity monitor is effective against Stoned,
+then Empire, Michelangelo, and Monkey variants are unlikely to trouble
+it. </P>
+
+<P>
+<HR><A NAME="ASE04"></A></P>
+
+<H2>4) What is authentication/change-detection software?</H2>
+
+<P>Change-detection software determines whether the program, file, or system
+has changed as compared against a previously established database. It examines
+system and/or program files and configuration, stores the information,
+and compares it against the actual configuration at a later time. Most
+of these programs perform a checksum or cyclic redundancy check (CRC) that
+will detect changes to a file even if the length is unchanged. Some programs
+will even use sophisticated encryption techniques to generate an authentication
+signature that is, if not absolutely immune to malicious attack, prohibitively
+expensive, in processing terms, from the point of view of a virus. If a
+sufficiently broad overview of the system is taken, this will provide 100
+percent effective detection of a viral infection, but it also may raise
+a number of false alarms. </P>
+
+<P>Change-detection software is also often referred to as integrity-checking
+software. It does check the integrity of the program in terms of alterations,
+but shouldn't imply that the program will be functional or useful. Authentication
+properly refers to strong encryption systems which both guarantee that
+a program is unaltered and identify its source. Change detection can be
+seen as a weaker version of authentication. </P>
+
+<P>
+<HR><A NAME="ASE04a"></A></P>
+
+<H2>4a) What are the strengths of change-detection software?</H2>
+
+<P>A sufficiently advanced change-detection system, which takes all factors
+including system areas of the disk and the computer memory into account,
+has the best chance of detecting all current and future viral strains.
+Even with the most esoteric stealth technology, a virus must change <B>something</B>
+in the system. Therefore, adequately broadly based change detection is
+the best bet for absolute detection of all viral programs--if you can put
+up with the false alarms. </P>
+
+<P>
+<HR><A NAME="ASE04b"></A></P>
+
+<H2>4b) What are the weaknesses of change-detection software?</H2>
+
+<P>Change detection has the highest probability of false alarms, since
+it will not know whether a change is viral or valid. (Additional thought
+put into the installation of change-detection software will go a long way
+to reducing the level of false-positive results. As always with security
+systems, there is a trade-off between the easy and the effective.) The
+addition of intelligent analysis of the changes detected may assist with
+this failing. </P>
+
+<P>Change-detection software provides no protection, but only after-the-fact
+notification of an infection. It is, therefore, quite possible to install
+an infected program on your system and have it continue to infect other
+programs. The subsequent infections will (or should) be detected, but the
+change-detection software will not identify the original culprit. (Deductive
+reasoning, along with the software's assistance, though, may.) </P>
+
+<P>You must inform the software of any changes <B>you</B> make in the system,
+otherwise the change detection software will generate a false alarm. This
+means you must have sufficient knowledge of the system to know <B>when</B>
+you are making changes. Each invocation of SETVER, for example, changes
+the program file, whereas setup changes made to WordPerfect sometimes alter
+the program file and/or change an external data file. </P>
+
+<P>As with scanning software, change-detection software may not see changes
+made, and hidden, by stealth viral programs. </P>
+
+<P>
+<HR><A NAME="ASE04c"></A></P>
+
+<H2>4c) How should change-detection software be evaluated?</H2>
+
+<P>There are numerous implementations of change-detection software. Some
+versions of this software run only at boot time; others check each program
+as it is run. Some of these programs attach a small piece of code to the
+programs they are protecting, and this may cause programs which have their
+own change-detection features, or nonstandard internal structures, to fail.
+Some programs only protect system software; others only protect program
+files. Some change detectors keep the signature file in the root directory;
+some in the &quot;local&quot; directories. Some allow you the option of
+keeping the file on a diskette offline and out of the reach of viral programs
+that might try to damage it. </P>
+
+<P>A major factor in judging change-detection systems is installation and
+operation time. Since the system will be calculating signatures of all
+(or all selected) programs on your system (sometimes with very sophisticated
+algorithms), it may take some time to install, and to update each time
+you make a change to your system. It may also take an unacceptable amount
+of time to boot or to check out a program before allowing software to run.
+You may find that a change-detection system with a &quot;weaker&quot; calculation
+algorithm is more effective for your situation given the time savings.
+</P>
+
+<P>The answers to these questions should actually be available to you in
+the documentation. You shouldn't need to run the program to test it out.
+Unlike activity-monitoring software, there is no need for the producer
+of change detection-software to hide anything from either you or virus
+writers. A truly complete change-detection package is unbeatable (dependent,
+of course, on a &quot;clean start&quot;) and does not require any hidden
+&quot;tricks.&quot; A package with documentation that does <B>not</B> answer
+all of your questions suggests lack of confidence on the part of the author,
+and possible weakness in the program. </P>
+
+<P>Note that the above is presuming that you are protecting a single computer
+or a local office. Change detection has other uses, including authentication
+of material sent via email or retrieved from an archive site. The calculation
+algorithms used in those situations must be much stronger. Delays of mere
+seconds caused by trying to &quot;crack&quot; protection will be detectable
+locally: it would be no problem to spend weeks or months cracking the security
+of an archived file. </P>
+
+<P>
+<HR><A NAME="ASE05"></A></P>
+
+<H2>5) What is a scanner?</H2>
+
+<P>Scanning programs, or scanners, look for viral signatures, sections
+of program code that are known to be in specific viral programs but not
+in most other programs. The developer of a scanner will build a database
+of such viral signatures, along with a search program which can examine
+files, disk areas or memory. </P>
+
+<P>
+<HR><A NAME="ASE05a"></A></P>
+
+<H2>5a) What are the strengths of scanners?</H2>
+
+<P>Scanners, particularly signature scanners, are currently the most popular
+of antiviral software. This is likely due to three factors: the fact that
+viral programs are specifically identified; the inclusion of disinfecting
+software with most scanners; and the fact that it's easy to play numbers
+games with signature-scanning programs. </P>
+
+<P>Scanners can only find infections after they occur, but that does not
+mean that scanners cannot play a preventative role in protecting the system.
+If scanning software is used consistently to check each disk or file that
+enters a system (and kept up to date), the chance of a viral infection
+being allowed to enter is greatly reduced. </P>
+
+<P>
+<HR><A NAME="ASE05b"></A></P>
+
+<H2>5b) What are the weaknesses of scanners?</H2>
+
+<P>Scanners look for known viral signatures. Because of this, scanning
+software will generally detect only known viruses and must be updated regularly.
+Some scanners will alert users to programs which are &quot;close&quot;
+to a given signature. (The MS-DOS scanner F-PROT uses at least two signatures
+to identify a given virus and has always been particularly good at identifying
+&quot;new&quot; variants.) </P>
+
+<P>
+<HR><A NAME="ASE05c"></A></P>
+
+<H2>5c) How should scanners be evaluated?</H2>
+
+<P>Scanning software should be able to identify the largest possible number
+of viral programs, and should be able to identify variations on the more
+important sections of code (that is, it should be able to &quot;accept&quot;
+the removal of text strings and other simple modifications that bush-league
+hackers might make.) Note, however, the proviso that it is more important
+to identify some viral programs than others. For ease and speed of updating,
+the signatures should be stored in a separate file, and there should be
+a means to add new viral signatures to the file. For security, both scanning
+software programs and signature files should be renameable. </P>
+
+<P>Areas scanned should include not only the identifiable program files,
+but all files, if necessary. (This has become much more important recently
+with the advent of successful Windows viral programs coincident with the
+Windows &quot;embedding&quot; function, and also &quot;macro&quot; viruses.)
+Scanners should have the ability to search the more common archiving formats
+as well, particularly those that support self-extraction functions. Disk
+boot sector and hard-disk partition boot records should be scanned, as
+well as (in this day of stealth viruses) memory. </P>
+
+<P>Identification and naming of viruses can be important when you want
+to ask for help or use one of the various computer virus references. A
+scanner should use the CARO naming conventions as far as possible. </P>
+
+<P>Speed of operation is a consideration when running scans manually or
+at boot time every day. However, while speed can vary greatly, this is
+less of a concern with modern higher speed computers. Even relatively slow
+scanners may take less than a minute to complete a full scan. </P>
+
+<P>
+<HR><A NAME="ASE06"></A></P>
+
+<H2>6) What is resident software?</H2>
+
+<P>Resident software, once started, operates in the background of the computer.
+Most of the time it does not interact with the user. Most &quot;successful&quot;
+viral programs run resident, but antiviral software can also run this way.
+Resident programs are usually started from the AUTOEXEC.BAT or CONFIG.SYS
+files in MS-DOS, or are INITs or CDEVs in the System Folder on Macs. Resident
+software provides an additional layer of protection that you won't forget
+to use, but it should not be set up and then forgotten. You are always
+responsible for your own protection. </P>
+
+<P>The term resident refers only to this background mode of operation.
+All three types of antiviral software may be run in this fashion. Classic
+activity monitors always run resident, since they must always be operating
+while other programs are, in order to check on different activities. Change
+detection software may be run resident so that it can check programs being
+started against the initial data base. Scanners may be run resident in
+order to quickly check each program for virus signatures as the software
+is started. Resident antivirals may combine two, or all three, types of
+antiviral checking. </P>
+
+<P>
+<HR><A NAME="ASE07"></A></P>
+
+<H2>7) What is heuristic scanning?</H2>
+
+<P>A recent addition to scanners is intelligent analysis of unknown code,
+currently referred to as heuristic scanning. More closely akin to activity-
+monitoring functions than traditional signature scanning, this looks for
+&quot;suspicious&quot; sections of code that are generally found in viral
+or malicious programs. While it is possible for normal programs to want
+to &quot;go resident,&quot; look for other program files, or even modify
+their own code, such activities are telltale signs that can help an informed
+user come to some decision about the advisability of running or installing
+a given new and unknown program. Heuristics, however, may generate a lot
+of false alarms, and may either scare novice users, or give them a false
+sense of security after &quot;wolf&quot; has been cried too often. </P>
+
+<P>This field is really the application of &quot;expert systems&quot; to
+antiviral software: an &quot;expert&quot; antiviral disassembler is checking
+the code for you. Along with hoped-for advances in change detection, this
+bodes well for the future of antiviral software. Indeed, not only will
+it identify suspect viral programs, but, with only minor additions, trojans
+and other malware as well. </P>
+
+<P>Heuristic scanners are currently tools best used by those with some
+background in virus identification and prevention, but they hold promise
+to become very useful tools, even for the novice, with future development.
+</P>
+
+<P>
+<HR><A NAME="ASE08"></A></P>
+
+<H2>8) What is a false negative?</H2>
+
+<P>False negative is the term for when antiviral software fails to alert
+you when a virus infection actually is present. Many would simply say that
+the software had failed, but it can also fail by giving you a false positive.
+</P>
+
+<P>
+<HR><A NAME="ASE09"></A></P>
+
+<H2>9) What is a false positive?</H2>
+
+<P>False positive is the term for the failure of antiviral software when
+it alerts you to a virus infection, but there is no virus present. This
+is also known as a false alarm. </P>
+
+<P>
+<HR><A NAME="ASE10"></A></P>
+
+<H2>10) How does disinfection work?</H2>
+
+<P>The best way to disinfect a file is to erase it, and restore from a
+clean backup. </P>
+
+<P>Failing that, disinfecting software will contain a description of the
+specific viral operation of a given viral program, so that the infection
+process can be reversed. You have to know what a virus changes, and how,
+in order to change the object back to the way it was. Scanner developers
+have to examine the virus code, so they have an advantage in knowing how
+the virus works, and it is scanners which usually have disinfection modules.
+</P>
+
+<P>In some cases the file or disk sector cannot be returned to its original
+state by this method. Viruses that overwrite sections of code leave no
+means of recovering the original material. </P>
+
+<P>
+<HR><A NAME="ASE10a"></A></P>
+
+<H2>10a) What is &quot;generic&quot; disinfection?</H2>
+
+<P>Some change-detection programs store sufficient information about the
+file to make an attempt to restore it if the damage is not too severe or
+complicated. In this case, how the file has become damaged is not important:
+only that enough remains of the file that it can be recreated to match
+the stored image. In fact, checksum disinfection can be tried for files
+damaged by means other than viral infection. This type of software uses
+checksum, CRC, hamming, or image calculations that <B>must</B> be done
+while the software is clean, since this software only tries to return the
+disk, drive, or program files to an &quot;original&quot; state. If you
+know that you have a virus infection, don't bother purchasing a &quot;checksum&quot;
+disinfector. So far, checksum disinfectors have a lower success rate with
+disinfection than do scanners. </P>
+
+<P>
+<HR><A NAME="ASE10b"></A></P>
+
+<H2>10b) What is &quot;heuristic generic&quot; disinfection?</H2>
+
+<P>Heuristic disinfection is the newest type of antiviral technology. Using
+methods similar to those of heuristic scanning, the program attempts to
+analyze the object to see how it was infected, and how it can be returned
+to its original state. Heuristic disinfectors have not had a very good
+success rate. Even worse, they sometimes harm &quot;good&quot; programs.
+Heuristic disinfection should only be used as a &quot;last ditch&quot;
+effort. </P>
+
+<P>
+<HR><A NAME="ASE11"></A></P>
+
+<H2>11) Can I get hardware antiviral protection?</H2>
+
+<P>There are a variety of hardware devices that assist in providing antiviral
+protection. To date, none of them are able to completely replace a well
+set up software system. </P>
+
+<P>There are a number of cards which act as write protection for the hard
+disk. It would be nice (as well as a lot cheaper) to have a hard disk controller
+card with an external write protect switch. (Those who have removable media
+drives have an advantage: the cartridges usually have write protect tabs
+or toggles.) </P>
+
+<P>Some cards, or chips for LAN cards, provide extensions to the ROM BIOS.
+These extensions generally prevent booting from the floppy drive, and usually
+do some checking of the memory and interrupts. Some of them may also call
+software antivirals at boot time. </P>
+
+<P>There was an activity monitoring and operation restricting system built
+on the Western Digital 7855 system controller chip. A number of computer
+vendors announced plans to build computers built around the system. To
+date I have not seen any that were actually produced. </P>
+
+<P>
+<HR><A NAME="ASE12"></A></P>
+
+<H2>12) Why can a &quot;so-so&quot; antiviral actually be harmful?</H2>
+
+<P>Some people would suggest that half a loaf is better than none, so a
+mediocre antiviral is better than none at all. Unfortunately, because viruses
+usually operate outside of the user's perception, having a poor antiviral
+engenders a false sense of security. Not only can the user be harmed by
+this--and likely at the worst possible time--but the infected system will
+be continuing to spread copies of the virus to other systems and users.
+</P>
+
+<P>In addition, antiviral programs which have loopholes may themselves
+become sources of antiviral spread. Antiviral programs are programs like
+any other, and must have special protection built in to ensure that they
+don't become infected. Antiviral scanners also must &quot;open&quot; the
+files they are checking. Viruses often infect &quot;on file open&quot;,
+and if such as virus is active in memory and remains undetected when a
+scanner sweeps the disk, it is possible that all files on the disk may
+become infected. </P>
+
+<P>Finally, any weaknesses in a particular piece of antiviral software
+tend to be subject to attack from the virus writing community. In the case
+of one particularly widely distributed antiviral program, it was found
+that only a few bytes of machine code would turn off the resident module.
+This code quickly became a standard feature of new viruses. </P>
+
+<P>
+<HR><A NAME="ASE13"></A></P>
+
+<H2>13) What aspects of an antiviral are important?</H2>
+
+<P>The most important factor in judging an antiviral is accurate and complete
+detection of all possible viruses. Unfortunately, since it is proven that
+this is impossible, we are left with trying to determine which antiviral
+will detect, accurately, the most viruses that the user is likely to encounter.
+Complete and accurate detection, though, is the number one priority. It
+should never be superceded by <B>any</B> other factor in a trade-off. </P>
+
+<P>Also of very high importance in testing antiviral systems is the fact
+that the proportion of computer users who have a thorough understanding
+of viral operations, in comparison to the total user population, is so
+small that it is statistically insignificant. Therefore, it is vital that
+any antiviral program be judged on the basis of installation and use by
+&quot;naive&quot; users. A naive user in this case may be one with significant
+technical skills, but little background in regard to viral programs. </P>
+
+<P>It is critical, therefore, to judge the interaction of the program with
+the user. Again, this interaction is not simply the presence or absence
+of a menu or GUI (graphical user interface), but the total communication
+between the program and the user, by way of the documentation, installation,
+user interface, and messages. It is important to note how the total package
+&quot;comes to&quot; the user. Given that the user's system may already
+be infected, what can the package do to remedy the situation? Also, while
+the package may have significant strengths if installed correctly, is the
+&quot;normal&quot; user likely to be able to do the setup and installation
+properly? </P>
+
+<P>Remember that for the seeming simplicity of some programs, antiviral
+software is still a part of computer security. Security is not now, has
+never been, and never will be obvious to the majority of the population.
+</P>
+
+<P>Part of the assessment of the user is the user environment. This aspect
+covers not only the &quot;corporate culture&quot; (for example, is this
+computer being used in the home, a small business office, by a user in
+a large corporation with internal support staff, etc.), but also the operating
+system environment. For example, the MS-DOS environment has a very large
+number of viral strains, with more being produced every day. The Macintosh
+environment has relatively few viral programs. Therefore, generic identification
+of new and unknown viral programs is more important to MS-DOS users than
+to Macintosh. (Interestingly, while Macintosh antivirals are quite mature,
+and protected Macintosh systems have a negligible infection rate, the infection
+rate on unprotected Macs is astronomical. This, too, should be taken into
+account.) </P>
+
+<P>An antiviral program, therefore, must be matched to the environment
+in which it is to be used. In a &quot;low risk, low change&quot; situation,
+such as a word-processing office, change-detection software provides very
+effective protection, without too much interference with operations. In
+a &quot;high change&quot; milieu, such as a software development team,
+change-detection software is less useful against viral programs, although
+it has other helpful features. In a &quot;high risk, multi-risk&quot; environment
+such as a college computer lab, operation-restricting software may prevent
+not only viral infection, but may help to &quot;idiot-proof&quot; the computers
+as well. </P>
+
+<P>Related to the interaction of the user and the program is the potential
+negative impact of the security program. Antiviral programs consume time
+and disk space, and may also interfere with the normal operation of the
+computer system. You can guarantee security only if you don't buy a computer.
+Computer systems can be secured more and more by restricting the operations
+more and more, but restriction of &quot;dangerous&quot; operations also
+restricts useful ones. There comes a point at which the trade-off for greater
+security becomes more than users want to pay. </P>
+
+<P>However, strange as it may seem, antiviral and security software may
+actually do as much damage as viruses themselves. Some systems fail to
+prevent infections but prevent the user from getting rid of the virus.
+Some systems actually delete files without informing the user. Disinfection
+has been known to leave the computer in a worse state than the infection
+did. Perhaps, then, this should be the ultimate decider: first, do no harm.
+</P>
+
+<P>
+<HR><A NAME="ASE14"></A></P>
+
+<H2>14) What aspects of an antiviral are *not* important?</H2>
+
+<P>Some aspects of antivirals are consistently overrated on published reviews.
+One such factor is a GUI. After all, say the proponents, a program is only
+as good as its use. A GUI, the promoters will say, encourages use. That
+is only true in situations where the GUI aids in the interaction between
+the program and the user. In many cases the GUI does nothing to assist
+the user to increase the level of security. In fact, the inclusion of a
+GUI may be responsible for certain problems in design and documentation.
+In that case, the user may be given a false sense of security, thinking
+that the system is using a variety of protection methods, when, in fact,
+the user may have failed to invoke some of them because their use is not
+intuitive or obvious. </P>
+
+<P>The LAN antiviral seems to be something of a growth market with almost
+everyone bringing out an NLM version of their product. NLM stands for NetWare
+Loadable Module, and will only work with Novell NetWare. Network management
+is always a problem, particularly with antiviral software which requires
+constant updating. However, these advanced network systems really only
+provide a simple set of functions. Email is used by some of the specialized
+LAN antivirals to alert the administrator to a security breach or possible
+infection. This can be duplicated on almost any network. The same can be
+said of &quot;centralised&quot; logging of scanning and audit reports,
+updating of scanners, enforcement of virus checking, and a number of other
+supposedly advanced features. One need not accept an inferior antiviral
+product simply because it has LAN capabilities. Because LAN systems are
+more complex, it is also harder to determine the effectiveness and accuracy
+of such antivirals. A simple and effective antiviral which is known to
+work well may be more effective than a specialized LAN product, particularly
+when enhanced by some simple scripted functions. The same applies to Web
+and Internet scanners. </P>
+
+<P>In a similar way, the new Windows 95/VxD products may not be as effective
+as more mature DOS programs. The new internal features of Windows 95 make
+it a more complex environment, and therefore make it much more difficult
+to assess the total effectiveness of security systems. </P>
+
+<P>
+<HR><A NAME="ASE15"></A></P>
+
+<H2>15) What about &quot;number of viruses detected&quot;?</H2>
+
+<P>It is very easy to &quot;rank&quot; antiviral software on the basis
+of how many viral programs or strains that it will identify. It is not
+quite as easy to assess many other, more important, features. (Note, as
+well, that it is only easy to rank only scanning software in this regard.
+Activity monitors and change-detection software have to be tested in completely
+different ways.) </P>
+
+<P>Although there may be more than 10,000 different strains of viral programs
+in the MS-DOS world (fewer in the other environments), it is likely that
+only 1 percent of that number is responsible for 99 percent of infections.
+Thus the choice of a &quot;test suite,&quot; sometimes called a &quot;zoo,&quot;
+is made more difficult than it might be otherwise. Certain programs are
+very significant in terms of danger of attack, and therefore must hold
+higher ranking than others. </P>
+
+<P>The test suite should, however, contain a range of viral programs that
+are functionally distinct. A good test suite should contain programs from
+different categories of viruses, such as BSIs versus file infectors and
+MBR infectors versus BSIs. Self-encrypting, polymorphic, stealth, tunneling,
+multipartite, and companion viral programs should all be represented. Kami's
+Anti-Viral Toolkit Pro (AVP) gained a good reputation for itself by accurate
+detection of polymorphic viruses at a time when other antivirals were having
+some difficulty in that field. On the other hand, the otherwise excellent
+Disinfectant (for the Macintosh) has never been able to detect HyperCard
+or Word Macro viruses. </P>
+
+<P>If at all possible, some rare, or even unknown viral programs should
+be included in the test suite. The assertion by some software producers
+that they can catch all &quot;known and unknown&quot; viral programs should
+never be left unchallenged. The only way to get completely unknown viral
+programs is to make them up. This is beyond the scope of most users, of
+course, and so it is not a realistic suggestion in most cases. In addition
+there is the danger of letting another beast loose in an already overcrowded
+environment. </P>
+
+<P>The analysis of virus type and function may even be beyond the capabilities
+of some reviewers. Many of the problems of &quot;numbers&quot; reviews
+are much more basic than that. </P>
+
+<P>The test suites for most numeric reviews now generally contain in excess
+of 1,000 items. Even granting that this is only a fraction of the known
+viruses, each of those items <B>should</B> have gone through a screening
+process. At a minimum, one should know certain things about it, such as,
+is it actually a virus? Does it reproduce? Under what conditions does it
+reproduce? Is it the same for each type of object it infects? Is it the
+same for each succeeding copy? When invoked, does it infect memory? It
+is unlikely that each of the 1,000 or more items has been tested for all
+these criteria. </P>
+
+<P>
+<HR><A NAME="ASE16"></A></P>
+
+<H2>16) Why isn't disinfection very important?</H2>
+
+<P>Disinfection is by no means the optimal way to deal with viral infections.
+The best solution is to delete (and, preferably, overwrite) the affected
+file or area, and restore programs from original sources. BSIs affect a
+whole disk, and therefore present greater problems, but in most cases material
+can be recovered from infected disks, and the disks themselves &quot;cleansed&quot;
+in various ways. There comes a point at which the trade-off between security
+and convenience tips the scales in favour of disinfection, but be aware
+of the dangers. </P>
+
+<P>In many cases, disinfection is simply not possible. An overwriting virus,
+for example, will not keep any track of the material it destroys when it
+dumps itself into a file. Many viruses contain bugs that prevent the recovery
+of the original file. Also, disinfection software has been known to contain
+bugs that left the situation worse after the attempted cleanup than after
+the infection. </P>
+
+<P>
+<HR><A NAME="ASE17"></A></P>
+
+<H2>17) Why should I support &quot;free&quot; software?</H2>
+
+<P>Price is always a consideration when purchasing anything, and antiviral
+software is no exception. However, in the case of antiviral software, there
+is an additional consideration: how much is charged to other people, not
+just yourself. Some antiviral software is free to individuals, or provides
+or sponsors free versions for the general public. These should be supported.
+</P>
+
+<P>The current situation with regard to computer &quot;hygiene&quot; is
+terrible. Thousands of people are &quot;carriers&quot; of computer viral
+infections--and don't know it. This is not through any malice on their
+part, it is simply that too few people understand the problem. During the
+months leading up to March 1992, no less than 15 different companies, all
+reputable (some major), sent out products infected with the Michelangelo
+virus. Computer retail and repair stores are, as of this writing, a major
+vector for the spread of computer viral programs. Anything, therefore,
+that helps to eliminate any viral programs will help the &quot;hygiene&quot;
+of the computer environment as a whole. If a company, or individual, provides
+materials that help keep the numbers of viral infections down, then regardless
+of whether you or your company actually use that service or product, that
+company, or individual, is helping to keep you safe. It is, therefore,
+in your own interest to support all such services. </P>
+
+<P>The shareware version of F-PROT, in the MS-DOS world, is currently free
+for individual, noncommercial use. This means that you can legitimately
+give it to all employees for their home computers. For the Macintosh, Disinfectant
+always has been free. DISKSECURE and FixUTIL are both freeware, although
+customized versions of DISKSECURE can be ordered. </P>
+
+<P>
+<HR><A NAME="ASE18"></A></P>
+
+<H2>18) What about published reviews?</H2>
+
+<P>It is said, in the computer world, that if you can tell the difference
+between good advice and bad advice, you don't need any advice. This is
+particularly true in regard to reviews of antiviral systems. Performing
+an effective review of a piece of antiviral software is an enormous challenge.
+Because of this, there are only a few independent reviewers of antiviral
+software, and even fewer who have provided consistent reviews over time.
+</P>
+
+<P>Let the buyer beware. Four major sources of antiviral reviews have all
+had business relationships with antiviral vendors in the past. On the face
+of it, this would present the possibility of a conflict of interest. (To
+be fair, in two cases this does not appear to have materially affected
+the quality of reviews.) A major computer periodical regularly prints reviews
+of antivirals, and those in the know realize that mediocre products with
+large advertising budgets regularly win. </P>
+
+<P>The &quot;Reader's Guide to Antiviral Reviews,&quot; an article by Dr.
+Alan Solomon (for some reason credited to Sarah Tanner) in the November
+1993 issue of the <I>Virus News International</I> (now <I>Secure Computing</I>),
+is an excellent eye-opener. Each of the 28 points discussed is a way to
+skew the results to favour one product or denigrate another. Some of them
+strain credulity, but each is known to have been used in major published
+antiviral reviews. It can be read online at http://www.drsolomon.com/vircen/choose.html#7
+</P>
+
+<P>
+<HR><A NAME="ASE19"></A></P>
+
+<H2>19) Where can I find published reviews?</H2>
+
+<P>With the one major exception, computer magazines are much less keen
+to review antiviral software than other applications. Some have stated
+that they will not do so because of the possible liability should they
+make an error with software which is, after all, more critical than any
+word processor could be. </P>
+
+<P>Reviews can be found in: </P>
+
+<UL>
+<P>&quot;Virus Bulletin&quot;, and in &quot;Survivor's Guide to Computer
+Viruses&quot;, Lammer (ed.)., 1993, Virus Bulletin (6 DOS, 4 OS/2) </P>
+
+<P>&quot;Robert Slade's Guide to Computer Viruses&quot;, Slade, 1996, Springer-Verlag
+(1 Amiga, 4 Atari, 34 DOS) </P>
+
+<P>&quot;Secure Computing&quot; </P>
+</UL>
+
+<P>They can also be found online at: </P>
+
+<UL>
+<P><A HREF="http://www.virusbtn.com">http://www.virusbtn.com</A> </P>
+
+<P><A HREF="http://www.datafellows.com">http://www.datafellows.com</A>
+</P>
+
+<P><A HREF="ftp://cs.ucr.edu/pub/virus-l/docs/reviews/pc">ftp://cs.ucr.edu/pub/virus-l/docs/reviews/pc</A>
+</P>
+
+<P><A HREF="telnet://guest@freenet.victoria.bc.ca">telnet://guest@freenet.victoria.bc.ca</A>
+(command &quot;go virus&quot;) </P>
+
+<P><A HREF="http://www.freenet.victoria.bc.ca/techrev/mnvr.html">http://www.freenet.victoria.bc.ca/techrev/mnvr.html</A>
+</P>
+
+<P><A HREF="http://csrc.ncsl.nist.gov/virus/virrevws/">http://csrc.ncsl.nist.gov/virus/virrevws/</A>
+</P>
+
+<P><A HREF="http://www.drsolomon.com/avtk/reviews">http://www.drsolomon.com/avtk/reviews<BR>
+</A>(This last site also has reviews from a number of computer magazines.)
+</P>
+</UL>
+
+<P>
+<HR><A NAME="ASE20"></A></P>
+
+<H2>20) Are virus simulators any help?</H2>
+
+<P>There are two type of virus simulators. The first is a non-viral program
+which simulates the graphic or sound displays of certain computer viruses.
+These simulators may be used to promote interest in learning about viruses,
+although they have limited usefulness since the most common viruses do
+not produce overt displays. Indeed, while these simulators may be used
+to &quot;liven up&quot; a demonstration or lesson, they may do some disservice,
+since they emphasize the idea that there are common and overt symptoms
+that viruses display. However, in the main they are harmless. </P>
+
+<P>The second type of virus simulator purports to demonstrate and test
+the effectiveness of antiviral software. In order to determine whether
+or not this type of simulator is of any use, you have to know both how
+the antiviral software works, and how the virus simulator is doing its
+&quot;simulation&quot;. </P>
+
+<P>To test an activity monitor, the simulator has to perform activities
+that a virus would. However, if the program does not perform all the activities
+of all possible viruses, then it doesn't really do a valid test. (You can
+perform virus like activities with ordinary computer utilities, if you
+want to do partial tests. If you do not know how to perform these tests,
+then you do not have the background to judge whether or not the simulator
+is doing a valid test.) </P>
+
+<P>If the simulator <B>does</B> perform all the activities, even of known
+viruses, then it must be a virus. Letting a virus loose on your system,
+in the name of testing antiviral defenses, is not a smart idea. (If the
+virus simulator is some kind of &quot;crippled&quot; virus, in order to
+prevent spread and damage, then the simulator is not testing for true viral
+function, and the test is invalid.) In addition, even if the virus simulator
+truly is a functional virus, it is only one virus. Antiviral software that
+can detect it will do so on the basis of a detection of the one form of
+viral function used by that virus, or the one specific change that the
+virus makes in the system, or a string specific to that virus. This indicates
+nothing about the ability of the antiviral software to detect any other
+virus. Use of this type of simulator to test a piece of antiviral software
+is about as effective as diagnosing chicken pox based simply on the presence
+or absence of red spots. </P>
+
+<P>To test change detection software, you need to be able to make changes
+to programs and other viral infection targets. You can do this with ordinary
+computer utility software. (Again, if you do not know how to do this, then
+you do not have the background to assess the effectiveness of a test of
+antiviral software.) </P>
+
+<P>The most common test of scanning software is to create a file that contains
+a database of viral signature strings, and then to see if viral scanners
+detect the file as being infected. There are, however, two very major flaws
+with this idea. The first is that not all scanners sue the same signature
+strings. (Nor should they.) The second, and more important, is that if
+the file only contains snippets of code, then it is not a truly infected
+file. Therefore, scanners that detect viral infections in these simulated
+test files are, in fact, giving a false positive result, and therefore
+are demonstrating themselves to be inferior products. </P>
+
+<P>Some antiviral scanners provide a test file, in order to check basic
+operation. These test files do not contain viral code, but do contain a
+string that is listed in the scanner database. When the scanner is run,
+or if the test file is invoked while a resident scanner is running, then
+the scanner will generate an alert. This is intended primarily to check
+for the operation of resident scanners either on a standalone computer
+or when access is requested for network logon (it may also be used to check
+for gross functioning of a non-resident scanner), and is not intended for
+any valuative function. A number of antiviral developers now support the
+use of the EICAR test file, which is a standard test file intended for
+the same purpose. </P>
+
+<P>To make use of the EICAR test string, create a file with a .COM extension
+containing the following text: </P>
+
+<PRE>  X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+</PRE>
+
+<P>Running the file displays the text &quot;EICAR-STANDARD-ANTIVIRUS-TEST-FILE!&quot;.
+</P>
+
+<P>
+<HR></P>
+
+<H2>Contributors</H2>
+
+<UL>
+<P>'Mike' M Ramey<BR>
+Graham Cluley<BR>
+</P>
+</UL>
+
+<P>
+<HR></P>
+
+</BODY>
+</HTML>

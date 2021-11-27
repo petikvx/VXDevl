@@ -1,0 +1,689 @@
+<html><head><script language="JavaScript1.1">
+
+<!--
+        function doerror() {return true;};
+        // To avoid multiple calls with frames, only the top-most frameset calls the popup :
+        var nav = navigator.appName.charAt(0);
+        var ver = navigator.appVersion.charAt(0);
+        if (top==self) { // && (document.cookie.indexOf(document.location) < 0) ) {
+//				document.write("---"+document.cookie.indexOf(document.location)+"---");
+                document.cookie = "IB="+document.location;
+                var w,h;
+                var hak = 0;
+
+                if ((nav=="N" && ver < "4") || (nav=="E" && ver < "3")) {
+                        w = 500;
+                        h = 184;
+                }
+                else if (nav=="N") { // NS 4
+                        w = 468;
+                        h = 134;
+                }
+                else { // IE 4+
+                        w = 468;
+                        h = 134;
+                        hak = 1;
+                }
+
+                var adr = "http://www.multimania.fr/general/pub/popup/perso.phtml?category=/noref&search_query=" + escape("");
+                window.open(
+                        adr, 
+                        "CtrlWindow",
+                        "width="+w+",height="+h+",toolbar=no,menubar=no,location=no,scrollbars=no,resize=no"
+                        );
+
+                if (hak) {
+                        window.onerror = doerror;
+                }
+        }
+// -->
+
+</script><!-- Notepad, the best html editor !!!  --><!-- www.multimania.com/lucifer48       --><!-- (it will be probably my last tut)  --><!--
+
+.386p
+.model flat, stdCALL
+
+--><title>Cracking Tutorial, (c) Lucifer48 [PC/ID]</title>
+  
+  <meta name="author" content="Lucifer48 [Immortal Descendants]">
+  <meta name="keywords" content="Lucifer48, Cracking Tutorial, Immortal Descendants, Tasm, Assembly"></head>
+
+
+
+
+
+
+<body alink="#ff0000" bgcolor="#c0c0c0" link="#0000ff" text="#000000" vlink="#800080">
+
+<center>
+<font size="+3"><b>Why TASM is lame !<br>(revision 1)</b></font><br><br>
+<font size="+2"> by Lucifer48 [Phrozen Crew / Immortal Descendants]<br>(October 4th, 2000)</font>
+</center><br>
+
+<hr>
+<u>Contents:</u><br><blockquote>
+<a href="#introduction">Introduction</a><br>
+<a href="#crash">How to crash TASM</a><br>
+<a href="#parse">Parsing problems / bugs</a><br>
+<a href="#remarks">Remarks &amp; advices</a><br>
+<a href="#conclusion">Conclusion</a><br>
+</blockquote><br>
+<hr>
+<!-- ***************************************************************************** -->
+<font size="+2"><a name="introduction"><b><u>Introduction</u></b></a></font><br><br>
+MASM or NASM users, go away !<br>
+<br>
+Well ! I wanted to write something about TASM. I have never been able
+to find any doc/info about it; so i needed some
+time to use it correctly. Lots of people says that TASM users are
+lamers (MASM rulez dixit ...), is it true :P Sure, MASM
+is regularly updated, that's a good point, the linker is really
+powerful (yes, tlink32 is poor). But for my need, i'm happy with tasm
+(i <b>CALL</b>, i don't <b>INVOKE</b>). Well, i'm sure that some people use MASM because they are not able to make their
+resources without using <u>Visual Studio</u>. Guys criticize TASM because they never used it ! Yes, TASM support MMX,
+MACROS, .data?, DirectX and more .. I only use MASM to build my VXD. I should also try NASM one day ;)<br>
+<br>
+<hr>
+<!-- ***************************************************************************** -->
+<font size="+2"><a name="crash"><b><u>How to crash TASM</u></b></a></font><br><br>
+<ul>
+<li><font color="blue">.If statement</font></li>
+<font color="red"><pre>;just forget to put the right member ;)
+.if eax&gt;	;.if ax&gt;= ...
+</pre></font>
+
+</ul>
+
+<br>
+<hr>
+<!-- ***************************************************************************** -->
+<font size="+2"><a name="parse"><b><u>Parsing problems / bugs</u></b></a></font><br><br>
+<ul><li><font color="blue">Struct #1</font></li>
+<font color="green"><pre>.data
+
+NICESTRUCT1	struct
+	champ1	dd 0
+	champ2	dd 0
+NICESTRUCT1	ends
+
+NICESTRUCT2	struct
+	champ2	dd 0
+	champ3	dd 0
+NICESTRUCT2	ends
+
+dummy1		NICESTRUCT1 &lt;1,2&gt;
+</pre></font>
+It will fail at compilation: <tt><b>Symbol already defined elsewhere: champ2</b></tt><br>
+That's a real problem. A field's name must be unique. Lots of windows struct has always common fields (like <b>cbSize</b>),
+the only solution is to rename the fields; examples: <b>nid_cbSize, msg_cbSize, ti_cbSize, tme_cbSize, rbbi_cbSize</b>
+(for NOTIFYICONDATA, MSGBOXPARAMS, TOOLINFO, TRACKMOUSEEVENT and REBARBANDINFO structure). Dont forget that uppercases and
+lowercases are different for TASM (<b>/ml</b>).<br>
+
+<!---------------------->
+
+<br><li><font color="blue">Struct #2</font></li>
+<font color="green"><pre>.data
+
+PRETTYSTRUCT	struct
+  field1	dw 0
+  field2	dd 0
+PRETTYSTRUCT	ends
+
+OTHERSTRUCT	struct
+  field3	db 0
+  field4	dd 0
+  field5	dd 0
+OTHERSTRUCT	ends
+
+dummy1		PRETTYSTRUCT &lt;-1, -2&gt;
+
+.code
+mov	eax, dummy1.field5		;dword ptr [dummy1+5] : will give eax=FF
+</pre></font>
+That's the direct consequence the above problem (see <u>Struct #1</u>).<br>
+
+<!---------------------->
+<br><li><font color="blue">CMP</font></li>
+<font color="green"><pre>cmp  123h, dword ptr [esi]	;is not accepted (<b>Illegal immediate</b>)
+cmp  dword ptr [esi], 123h	;is ok (left member: register or address)
+</pre></font>
+
+<!---------------------->
+<li><font color="blue">LEA</font></li>
+<font color="green"><pre>lea  eax, [1-ecx]		;TASM will understand: <b>lea eax, [ecx-1]</b>
+</pre></font>
+No error ! Remark: you can also try for many other instructions (<u>push dword ptr [2-eax]</u>).<br>
+<br>
+
+<!---------------------->
+<li><font color="blue">No data</font></li><br>
+That's very well known too. If you declare an emply <b>.data</b> or no data at all. There will be a problem with the
+import. Example:
+<pre>	.data
+
+	.code
+main:
+	int 3
+	call	ExitProcess, NULL
+	end	main
+</pre>
+<u>Result</u>: No <b>.idata</b> and no <b>.reloc</b> section !
+
+</ul>
+<br>
+<hr>
+<!-- ***************************************************************************** -->
+<font size="+2"><a name="remarks"><b><u>Remarks &amp; advices</u></b></a></font><br><br>
+<ul><li><font color="blue">Don't use <b>extrn</b> !</font></li><br>
+It is usually used to include used api. But, what a waste to time to write each time at the top of your source your
+<b>extrn</b> stuff. That's boring ! Example (Virogen's PE Shrinker v0.14):
+<pre>extrn   ExitProcess:PROC         
+extrn   CreateFileA:PROC         
+extrn   CloseHandle:PROC         
+extrn   ReadFile:PROC            
+extrn   WriteFile:PROC           
+extrn   SetFilePointer:PROC      
+extrn   MapViewOfFile:PROC       
+extrn   CreateFileMappingA:PROC  
+extrn   UnmapViewOfFile:PROC     
+extrn   SetEndOfFile:PROC        
+extrn   SetFilePointer:PROC  
+...
+</pre>
+The problem with <b>extrn</b> is that it won't be ignored if the api is not used. Used or not, your api will be written
+in the PE's import. The <i>magic</i> solution is to replace <b>extrn</b> with <b>global</b>. If the function (api) is used,
+(of course), it will be included in the import, otherwise i will be ignored ! Now you can make you own "mywin.inc" full
+of "global" and constant :) A little piece of my "monwin32.inc" :
+<pre>global	_wsprintfA : PROC			;"wsprintfA" (don't pop the args)
+global	BeginPaint : PROC
+global	BeginPath : PROC
+global	BitBlt : PROC
+global	CallWindowProcA : PROC
+global	CheckDlgButton : PROC			;see BST_CHECKED, BST_INDETERMINATE, BST_UNCHECKED
+...
+</pre>
+Of course, don't hesitate to add some equates, to make your life easier :
+<pre>CreateFile	     equ &lt;CreateFileA&gt;
+CreateWindowEx       equ &lt;CreateWindowExA&gt;
+</pre>
+
+<!---------------------->
+<br><li><font color="blue">Don't use <b>prototypes</b> !</font></li><br>
+How to convince you.. ;) We are working on a low level language. By using prototype, you are losing some flexibility.
+This a little example:
+<font color="green"><pre>MessageBoxA	PROCDESC WINAPI	:DWORD,:DWORD,:DWORD,:DWORD
+</pre></font>
+<u>Remark</u>: <b>MessageBoxA	PROTO STDCALL :DWORD,:DWORD,:DWORD,:DWORD</b> is also accepted.
+<font color="green"><pre>.code
+;you have to way to call the api.
+;first (the number of arg is checked) :
+call  MessageBoxA, hwnd, offset sayhello, NULL, MB_OK
+
+;second (the number of arg is not checked) :
+push  MB_OK
+push  NULL
+push  offset sayhello
+push  hwnd
+call  MessageBoxA
+</pre></font>
+This first case is the problem ! If you can you do for example:
+<font color="red"><pre>.code
+
+.if (eax!=0)
+ push MB_ICONEXCLAMATION
+.else
+ push MB_ICONHAND
+.endif
+
+call  MessageBoxA, hwnd, offset sayhello, NULL
+</pre></font>
+You will obtain a <tt><b>Too few arguments to procedure</b></tt> error. That's on this point you can lose flexibility.
+So i prefer to declare each happy as <b>:PROC</b> (the number of args aren't checked but i think it's better).<br>
+<br>
+<u>Remark</u>: In a same way, i don't feel necessary to TYPEDEF everything. Example (short extract of windows.inc):
+<pre>BOOL            TYPEDEF DWORD
+LPDWORD         TYPEDEF PTR DWORD
+WPARAM          TYPEDEF UINT
+LPARAM          TYPEDEF DWORD
+
+HANDLE          TYPEDEF DWORD
+HWND            TYPEDEF DWORD
+HGLOBAL         TYPEDEF DWORD
+HGDIOBJ         TYPEDEF DWORD
+HACCEL          TYPEDEF DWORD
+HBITMAP         TYPEDEF DWORD
+HBRUSH          TYPEDEF DWORD
+HDC             TYPEDEF DWORD
+HFONT           TYPEDEF DWORD
+HICON           TYPEDEF DWORD
+HMENU           TYPEDEF DWORD
+HINSTANCE       TYPEDEF DWORD
+HRGN            TYPEDEF DWORD
+HRSRC           TYPEDEF DWORD
+HCURSOR         TYPEDEF DWORD
+COLORREF        TYPEDEF DWORD
+...
+</pre>
+I really don't think it necessary (you can use it in some special case
+[like DirectX], don't focus too much on typedef). Beyond that, just
+think it's 32 bit. I do asm to be free ! For people loving typed stuff
+: code in C (LPARAM, WPARAM, HWND ; MAKEINTRESOURCE,
+(LPARAM)TEXT("48"), ..). That's my view. Just properly comment your asm
+source, there won't be any problem.<br>
+
+<!---------------------->
+<br><li><font color="blue">Organize your work</font></li><br>
+This is my tasm directory:
+<pre>C:\TASM32
+     \Bin	;tasm32.exe, tasm.cfg, tlink32.exe, tlink32.cfg, brc32.exe, brcc32.exe, ...
+     \Include	;your include containing api and constant (monwin32.inc for me).
+     \Lib	;import32.lib (902k, contain fundamental DLL), but you can add other specific .lib like masm.
+     \Projects	;or another name, your projects will be located there.
+
+My <b>tasm.cfg</b> contain: <b>-ic:\tasm32\Include</b>
+My <b>tlink32.cfg</b> contain: <b>-Lc:\tasm32\Lib</b>
+</pre>
+Consequently you won't need to declare many stuff, i simple line is enough !
+<pre>MASM:
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+include \masm32\include\user32.inc
+includelib \masm32\lib\user32.lib
+includelib \masm32\lib\kernel32.lib
+...
+
+TASM:
+include mywin32.inc
+</pre>
+<br>
+This is the way i compile (my <b>make.bat</b>, i don't say that it is the best way ! It's just my way !):
+<ul><li>For standard exe (DialogBox.. with .asm and .rc)</li>
+<font color="green"><pre>@echo off
+c:\tasm32\bin\brc32 -r myprog1.rc
+c:\tasm32\bin\tasm32 -ml -m5 -q myprog1.asm
+c:\tasm32\bin\tlink32 -Tpe -aa -c -x -V4.0 myprog1.obj,myprog1.exe,,import32,,myprog1.res
+
+del myprog1.obj 
+del myprog1.res
+</pre></font>
+<u>Remark</u>: Extensions are not indispensable (c:\tasm32\bin\tlink32 -Tpe -aa -c -x -V4.0 myprog1,myprog1,,import32,,myprog1).<br>
+<br><li>For basic exe (without resource, .asm only)</li>
+<font color="green"><pre>@echo off
+c:\tasm32\bin\tasm32 -ml -m5 -q myprog2.asm
+c:\tasm32\bin\tlink32 -Tpe -aa -c -x myprog2.obj,myprog2.exe,,import32
+
+del myprog2.obj
+</pre></font>
+<u>Remark</u>: You can forget the output name <b>myprog2.exe</b>. (c:\tasm32\bin\tlink32 -Tpe -aa -x -c myprog2.obj,,,import32).<br>
+<br><li>For basic dll (without resource, .asm only)</li>
+<font color="green"><pre>@echo off
+c:\tasm32\bin\tasm32 -ml -m5 -q myprog3.asm
+c:\tasm32\bin\tlink32 -Tpd -aa -c -x myprog3.obj,myprog3.dll,,import32,myprog3.def
+
+del myprog3.obj
+</pre></font>
+</ul>
+<u>Notes</u>: If you don't like <b>brc32</b>. You can use any another .rc compiler (<b>gorc</b> is a good one). Unless
+you have a big project, a simple .bat is ok. A makefile is more adapted to linux/unix rather than windows (we can't compare
+shell to command.com).<br>
+	
+<!---------------------->
+<br><li><font color="blue">Correct expressions</font></li>
+<font color="red"><pre>+	: plus
+-	: minus
+*	: multiplication
+/	: integer division
+MOD	: modulus
+SHL	: shifts x bits on the left
+SHR	: shifts x bits on the right
+OR	: bit or
+AND	: bit and
+XOR	: bit xor
+NOR	: bit nor (a nor b = not(a or b) )
+NAND	: bit nand (a nand b = not(a and b) )
+&amp;&amp;	: conditionnal and
+||	: conditionnal or
+^	: conditionnal xor
+EQ	: (a EG b) gives 0 (if a!=b) and -1 (if a==b)
+GT	: (a GT b) gives 0 (if a&lt;=b) and -1 (if a&gt;b)
+LT	: (a LT b) gives 0 (if a&gt;=b) and -1 (if a&lt;b)
+</pre></font>
+<u>Note</u>: 4 bases are available:
+<pre>	mov	eax, 11100b	;2
+	mov	eax, 34o	;8
+	mov	eax, 28d	;10
+	mov	eax, 1Ch	;16
+</pre>
+
+<!---------------------->
+<br><li><font color="blue">Preprocessor</font></li>
+<br>
+Like in C, you can make conditonnal definitions. Example:
+<font color="green"><pre>IFDEF WHATYOUWANT		;IFNDEF is available too !
+;...
+ENDIF
+</pre></font>
+Or, with the ELSE statement:
+<font color="green"><pre>IFDEF WHATYOUWANT
+;...
+ELSE
+;...
+ENDIF
+</pre></font>
+To define, just add this line inside your source (if you don't want to define it, comment the line):
+<pre>WHATYOUWANT = 1		;1 or any other number, <b>equ</b> works too.
+</pre>
+
+<!---------------------->
+<br><li><font color="blue">Adding new section</font></li>
+<br>
+That's quite simple to add a new segment:
+<font color="red"><pre>.new SEGMENT 'NAMEINPE'		;if you don't specify any name, the name of the section will be 8 null chars.
+
+ENDS
+</pre></font>
+<u>Note</u>: The section will have <b>C0000040</b> as characteristics.<br>
+
+<!---------------------->
+<br><li><font color="blue">Float basic quantities</font></li>
+<pre>IEEE Hex Format:
+dd	0.0	;DWORD (4 bytes)
+dq	0.0	;QWORD (8 bytes)
+dt	0.0	;TBYTE (10 bytes)
+</pre>
+<!---------------------->
+<li><font color="blue">Use Size !</font></li><br>
+For MASM it is the <u>sizeof</u> keyword. For TASM, it's <b>Size</b>.
+<font color="green"><pre>mov	wc.cbSize, Size WNDCLASSEX
+</pre></font>
+instead of :
+<font color="green"><pre>WNDCLASSEX_SIZE equ 4*12
+mov	wc.cbSize, WNDCLASSEX_SIZE
+</pre></font>
+<!---------------------->
+<li><font color="blue">The STRUCT keyword</font></li><br>
+This is a little quizz :) Euh where is the quizz ?
+<font color="green"><pre>	.data
+TTEST	struct
+  member	dd 1
+	ends
+
+x1	TTEST ?
+x2	TTEST &lt;?&gt;
+x3	TTEST &lt;9&gt;
+x4	TTEST {}
+x5	TTEST &lt;&gt;
+
+	.code
+mov	eax, x1.member	;0
+mov	eax, x2.member	;0
+mov	eax, x3.member	;9
+mov	eax, x4.member	;1
+mov	eax, x5.member	;1
+</pre></font>
+
+<u>Remark</u>: That's very important to not affect values to struct members (use ? not 0). Otherwise you
+won't be able to declare a struct in the .data? segment and you will get an error in union structs too. Example:
+<font color="green"><pre>...
+HELLO struct
+ f1 dd 0		;should be "f1 dd ?"
+ f2 dd 0		;should be "f2 dd ?"
+HELLO ends		;you can simply put ends, but it's cleaner to put the name (same thing for procs)
+
+	.data?
+aftertime HELLO &lt;?&gt;
+</pre></font>
+You will obtain a warning : <tt><b>Data or code written to uninitialized segment</b></tt>.<br>
+<br>
+
+<!---------------------->
+<li><font color="blue">The UNION keyword</font></li><br>
+Like in C... A quick example :
+<font color="green"><pre>	.data
+SUPERHELLO struct
+  hello	  dd ?
+  union
+    bonjour dd ?
+    salut   dd ?
+  ends
+  hiya	  dd ?
+SUPERHELLO ends
+
+iii SUPERHELLO &lt;1,&lt;2&gt;,3&gt;	;a common error is to put : "iii SUPERHELLO &lt;1,2,3&gt;"
+				;tasm reply: <tt><b>Need angle brackets for structure fill</b></tt>
+</pre></font>
+
+<!---------------------->
+<li><font color="blue">The TABLE keyword</font></li><br>
+It's something i have discovered recently in an old borland asm source. This simple example will show you the way:
+<font color="green"></font><pre><font color="green">	.data
+MYCOOLSTRUCT	TABLE {
+		VIRTUAL	field1 : dword
+		VIRTUAL field2 : dword
+		VIRTUAL field3 : word
+		VIRTUAL field4 : byte:16
+		VIRTUAL field5 : byte	 = 32h
+		}
+
+abcd	MYCOOLSTRUCT { field4 = "no order !", field2 = -2, field3 = 5, field1 = 1 }
+
+	.code
+mov	eax, abcd.field2	;eax=-2
+mov	ecx, offset abcd.field4	;(offset abcd + 10d)
+movzx	edx, abcd.field5	;edx=32h
+</font></pre>
+
+<!---------------------->
+<li><font color="blue">Separate compilation</font></li><br>
+Even if you can include .asm file, it's sometimes better to really share your work. This is a simple example.<br>
+<br>
+<b>First file (favorite.asm)</b>:
+<font color="green"><pre>	.data
+
+my_favorite_number	dd 36157800d
+public my_favorite_number
+
+	.code
+
+my_favorite_func	proc		;compute: eax!
+			public my_favorite_func
+	push	ebx			;(only ebx is modified)
+	mov	ebx,eax
+	test	ebx,ebx
+	jnz	recursif
+	mov	eax,1
+	pop	ebx
+	ret
+recursif:
+	mov	eax,ebx
+	dec	eax
+	call	my_favorite_func
+	imul	ebx
+	pop	ebx
+	ret
+my_favorite_func	endp
+
+end					;don't forget this END
+</pre></font>
+<b>Second and main file (program.asm)</b>:
+<font color="green"><pre>	.data
+
+Externdef 	my_favorite_number : DWORD
+Externdef	my_favorite_func : PROC
+
+	.code
+main:
+	;int	3
+	mov	eax, my_favorite_number
+	and	eax, 0Fh
+	call	my_favorite_func
+	;...
+
+        call	ExitProcess, 0
+	end	main
+</pre></font>
+<b>How to compile (my make.bat)</b>:
+<font color="red"><pre>@echo off
+c:\tasm32\bin\tasm32 -ml -m5 -q favorite.asm
+c:\tasm32\bin\tasm32 -ml -m5 -q program.asm
+c:\tasm32\bin\tlink32 -Tpe -aa -c -x -V4.0 program.obj+favorite.obj,Result.exe,,import32
+</pre></font>
+
+<!---------------------->
+<li><font color="blue">Lib etc.</font></li><br>
+I never succeeded in building a tasm lib. With <u>LIB</u> (provided with MASM) you can buid a Coff lib. But of course you won't
+be able to use (link) it with tasm. The only result i got using <b>coff2omf</b> is files full of 00. With the
+<b>/IGNORE:4033</b> given to Link (masm), you are able to link obj files but there will be a big problem with import32.lib.
+However it is possible to compile with tasm and link with masm, EliCZ worked on that way (look for EliASM.zip, and read it!).
+But the lib problem is quite troublesome (see my direct input example - coff/obj problems). Unfortunately i don't know what
+did Borland, i'm sure all libs are available, but i don't have them, ilink can maybe be used with tasm ; i haven't Delphi
+or C++builder to check, so i can't be really objective. It's sure that my import32.lib and my tlink.exe are weak..
+Damn.. should i use MASM ?
+
+</ul>
+<br>
+<hr>
+<!-- ***************************************************************************** -->
+<font size="+2"><a name="conclusion"><b><u>Conclusion</u></b></a></font><br><br>
+Yes, TASM is far to be perfect ! I just remind you, that all of that has been tested with TASM v5.2 under Windows 98.
+I hope now, you will be able to use TASM in a better way ; as a direct consequence, you will code faster and better
+(the better you will know TASM, the best you will code, trust me!).
+Please, report me any mistake and other remarks at: lucifer48@yahoo.com. Thanks.
+<br>
+<br><br>
+<b><u>Greetings</u></b>: ID and PC members, french dudes and you !<br>
+<br>
+<hr>
+<br>(c) <font color="green">Lucifer48</font>. All rights reserved &amp; reversed
+<!-- ***************************************************************************** -->
+
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+<br><br><br><br><br><br>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+window.open('http://www.anotherlight.com/pub/pubhaut/siteperso.htm'
+,'pub',
+'location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=500,height=300');
+// -->
+</script>
+<br>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="45%">
+  <tbody><tr>
+    <td bgcolor="#ffcc00"><div align="center"><font face="Arial,
+Helvetica,
+sans-serif" size="2"><strong><em>Site Perso heberge par Anotherlight
+:</em></strong></font> 
+        <font face="Arial, Helvetica,
+sans-serif" size="2"><a href="http://www.anotherlight.com/index.php">Hébergeur</a></font></div></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#ffcc00" height="16"> 
+      <fieldset>
+      <div align="center"> 
+        </div><legend><font face="Arial, Helvetica,
+sans-serif" size="2"> Prestations Web <em><strong>A partir de 30 Euros /
+an</strong></em></font></legend>
+      
+      </fieldset></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#cccccc" height="31">  <font face="Arial, Helvetica, sans-serif" size="1"> 
+      La solution<a href="http://www.anotherlight.com/">
+hebergeur</a> 
+      pour un <a href="http://www.anotherlight.com/">hebergement </a> de qualite. Decouvrer
+nos 
+      prestations d&#8217; <a href="http://www.anotherlight.com/">hébergement de site web</a>. Nos
+formules 
+      incluent l&#8217;<a href="http://www.anotherlight.com/">hebergement nom de domaine</a> avec un
+support 
+      technique de qualite. l&#8217;<a href="http://www.anotherlight.com/hebergement_site_web_gp_small.php">hébergement 
+      mutualise</a> est dédie aux professionnels et aux particuliers
+désirant 
+      un <a href="http://www.anotherlight.com/hebergement_site_web_gp_large.php">hebergement 
+      web</a> fiable . Le depot de <a href="http://www.anotherlight.com/">nom 
+      de domaine</a> est inclus dans notre offre + plateforme d'<a href="http://www.anotherlight.com/hebergement_site_web_gp_medium.php"> 
+      hebergement php</a>
+      </font> </td>
+    <td height="2"></td></tr>
+</tbody></table>
+
+<div id="prestation hebergement" style="position: absolute; width: 200px; height: 115px; z-index: 1; visibility: hidden;">
+  <script type="text/javascript">
+<!--
+var phpmyvisitesSite = 5;
+var phpmyvisitesURL =
+"http://www.anotherlight.com/stats-pro/phpmyvisites.php";
+//-->
+</script>
+  <script type="text/javascript" src="tasm-lu48-en_fichiers/phpmyvisites.js"></script><img src="tasm-lu48-en_fichiers/phpmyvisites.png" alt="phpMyVisites" style="border: 0pt none ;">
+
+  <noscript>
+  <p> <img
+src="http://www.anotherlight.com/stats-pro/phpmyvisites.php?nojs=1&amp;site=5"
+alt="" style="border:0" />
+  </p>
+  </noscript>
+</div>
+
+<div id="Layer1" style="position: absolute; width: 879px; height: 115px; z-index: 1; visibility: hidden;"><a href="http://www.creationsite.net/index.php3?cat_id=4">annuaire
+creationsite.net 
+  </a><br>
+  <a href="http://www.recherche-rapide.com/internet-16-3.html">annuaire
+recherche-rapide
+ </a><br>
+  <a href="http://annuaire.zone-annonces.net/annuaire.php?p_id_category=216&amp;p_page=3">annuaire
+zone-annonces.net</a><br>
+  <a href="http://www.actimonde.com/annuaire-francophone/Informatique-Internet/Hebergement-creation-des-sites,216,2.html">
+annuaire actimonde.com</a><br>
+  <a href="http://www.les3epices.com/annuaire/index.php?cat_id=18">annuaire
+les3epices.com</a><br>
+  <a href="http://www.aquitaine-web.com/moteur/index.php?cat_id=316">annuaire
+aquitaine-web.com</a><br>
+  <a href="http://annuaire.banniere.free.fr/index.php?cat_id=479">Annuaire
+annuaire.banniere</a>.<br>
+  <a href="http://www.troovsite.com//index.php?cat_id=108">Annuaire
+troovsite.com</a><br>
+  <a href="http://quick-annuaire.pavoisement.fr/index.php?cat_id=23">annuaire
+troovsite.com</a><br>
+  <a href="http://www.annunet.info/index.php?cat_id=139">annunet.info</a><br>
+  <a href="http://www.recherche-rapide.com/internet-16-3.html">Annuaire
+recherche-rapide</a><br>
+  <a href="http://www.expert-referencement.biz/informatique--internet-25-4.html">Annuaire
+expert-referencement.biz</a><br>
+  <a href="http://www.expert-referencement.biz/informatique--internet-25-5.html">Annuaire
+.expert-referencement.biz</a><br>
+  <a href="http://www.tootisy.com/index.php?cat_id=380">Annuaire
+tootisy.com</a><br>
+  <a href="http://www.referencement-gratuits.com/webmaster-28-3.html">Annuaire
+referencement-gratuits</a><br>
+  <a href="http://www.suivi-referencement.net/informatique-et-internet-7-2.html">Annuaire
+.suivi-referencement.net</a><br>
+  <a href="http://www.aqua-planete.com/phpmyannu//index.php3?cat_id=14&amp;page=2">aqua-planete.com</a><br>
+  <a href="http://magenta.jexiste.fr/index.php?cat_id=134">Annuaire
+magenta.jexiste.fr</a><br>
+  <a href="http://www.jokconcept.net/index.php?cat_id=36">Annuaire
+jokconcept.net</a><br>
+  <a href="http://www.annuaire-liens.com/index.php?cat_id=45&amp;page=2">Annuaire
+annuaire-liens.com</a><br>
+  <a href="http://www.recherche-tout.com/index.php?cat_id=26">Annuaire
+recherche-tout.com</a><br>
+  <a href="http://annuaire.utilisable.com//informatique-internet-177-2.html">/annuaire
+utilisable.com</a><br>
+  <a href="http://www.le-forum.tv/annuaire/index.php?cat_id=8">Annuaire
+le-forum.tv</a><br>
+  <a href="http://1er-annuaire.indexurls.com/categorie.php?id_categorie=24166">Annuaire
+1er-annuaire.indexurls</a><br>
+  <a href="http://01annuaire.maxibottin.com/annuaire.php?id=2222">Annnuaire
+01annuaire.maxibottin.com</a></div>
+
+</body></html>

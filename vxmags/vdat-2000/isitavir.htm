@@ -1,0 +1,641 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Is It A Virus Or A False Alarm</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Is It a Virus or a False
+Alarm?</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>Before you remove a virus from a file, call the fire department, or
+decide to take a long vacation, you must decide whether what you have is
+a real virus or a false alarm (sometimes called &quot;false positive&quot;,
+meaning we found one (positive) but we are wrong (false).) </P>
+
+<P>False alarms come in two flavors: false positive, and false negative.
+A <I>false positive</I> occurs when your anti-virus product says you have
+a virus but you really don't. A <I>false negative</I> occurs when your
+anti-virus product says you have a virus but you really do. </P>
+
+<P>Not every suspicious activity turns out to be a virus. You can do much
+to help ensure that there are a minimal number of false alarms, so that
+you have more energy to respond when there is a real problem. </P>
+
+<P><A NAME="FalseAlarmsAnAccidentWaitingtoHappen"></A><B><FONT SIZE=+1>False
+Alarms: An Accident Waiting to Happen</FONT></B></P>
+
+<P>A &quot;false alarm&quot; is an occasion on which an anti-virus product
+produces a report of a virus, when in fact there is no virus in the location
+the product is examining. False alarms occur in two general locations:
+memory and the drive surface. </P>
+
+<P>Memory-related false alarms are generally the result of running two
+anti-virus products consecutively. The first product run uses memory to
+store its scan strings, which are fragments of real viruses; the second
+product run matches its scan strings with what it finds in memory, makes
+a match, and warns the user. The &quot;fault&quot; here lies in both products:
+all anti-virus products should remove their scan strings from memory before
+the program returns control to DOS. And generally the virus that the second
+product &quot;detects&quot; in memory should not be located where the scanstring
+was found in memory, but rather in some other specific location (the bottom
+of available conventional memory, for instance.) </P>
+
+<P>The memory-related false alarm is upsetting, but not debilitating. Turning
+the machine off and back on clears memory, and a second pass with the scanner
+that displayed the false alarm now shows memory to be uninfected. Further,
+because neither scanner will find this virus in any files, the user does
+not worry to the same extent that they would worry if one of the scanners
+identified a particular file as being infected. </P>
+
+<P>The other kind of false alarm occurs when an anti-virus product concludes
+that a file is infected. This conclusion is normally based on a match of
+as few as 1C consecutive bytes between the file being examined and a file
+of scan strings that the anti-virus product is using. These scan strings,
+it is widely understood, provide a useful first approximation to answering
+the question, &quot;Does this file contain this virus?&quot; If part of
+the virus code is found in the file, then we certainly have reason to look
+more closely. It is now the task of the anti-virus product to confirm that
+the file is, indeed, infected with this virus. </P>
+
+<P>There are many ways that a good product can do this. We know, for instance,
+how a given virus attaches to a file, how many bytes it adds, and what
+they are. Much like the FBI can compare a fingerprint found at the scene
+of a crime with a fingerprint database, we can checksum selected portions
+of the file and compare the result with a checksum database to determine
+if this virus is really here. </P>
+
+<P>An alternative approach which can help with confirmation is to use a
+longer scan string in the second phase of identification. For a non-encrypted
+virus, it is an easy matter to first scan with short strings, and if any
+match is found, to load a longer scan string and determine if a match is
+still found. </P>
+
+<P>A variation on this idea is to use pairs of scan strings, taken from
+different parts of the virus. Only if both scan strings are found-and found
+in the correct relation to each other-should the anti-virus product pronounce
+the file infected. Skulason's F-Prot apparently takes a double scan string
+approach to verifying an infection. </P>
+
+<P>Whatever the approach used, it is absolutely necessary to not create
+false alarms, identifying viruses where there are none. The false alarm
+is as stressful to the user as a real alarm. It is often more costly than
+a real virus, for removing a virus that isn't there is difficult! When
+other anti-virus products do not report the virus, they cannot remove it,
+and the user gradually passes through stages of fear, anxiety, confusion,
+and finally general distrust The distrust often settles over the entire
+business like a gray cloud. The vendor of the anti-virus product is not
+trusted. The anti-virus product that produced the false alarm is not trusted.
+The other anti-virus products (that did not produce the false alarm) are
+less trusted (at least until it is conclusively proven that the false alarm
+was, indeed, false). The product(s) which were incorrectly reported as
+infected are trusted less. The help desk or computer support team that
+was not able to figure out what was going on is less trusted. Everything
+is suspect. In the short run, the entire anti-virus industry is distrusted.
+</P>
+
+<P>You may know the story of the boy who cried &quot;wolf!&quot;. The hunters
+came, and there was no wolf. But the boy enjoyed seeing the hunters excited,
+so he tried it again. Again they came. Again no wolf. One day a wolf came
+along, the boy cried &quot;wolf!&quot; and the hunters did not believe
+him. The wolf ate the boy and his stories. The entire virus industry is
+now suffering the fate of this boy, for today's software hunters don't
+believe vendor claims. </P>
+
+<P>Every time a product produces a false alarm, its integrity-and to some
+extent the integrity of all anti-virus products-is sullied. Every time
+a vendor misleads the press about the virus problem, the industry is tarnished.
+</P>
+
+<UL>
+<LI><FONT SIZE=-1>A vendor apparently started the DataCrime scare some
+years back. We did a computer search of the word &quot;virus&quot; in the
+Washington Post. The first stories of the Datacrime virus were stories
+in which a vendor indicated the virus was coming, and would be severe in
+its consequence. The press bought the story, played it big. Just prior
+to the terrible activation date, the vendor was quoted as assuring reporters
+that it would not be a big deal. The vendor was right, of course: No cases
+of the virus were reported in the US, to our knowledge.</FONT> </LI>
+
+<LI><FONT SIZE=-1>A vendor apparently started the Michelangelo scare of
+1992. This vendor vigorously contacted key newspapers, and is quoted by
+a dozen major newspapers as indicating that 5 million computers were infected
+with it. When the fateful day came and went, with hardly any cases reported
+at all, the vendor denied making such claims. But even the vendor's revised
+estimates of how many machines were damaged by the virus seem too high
+by many orders of magnitude.</FONT> </LI>
+</UL>
+
+<P>The problem of users distrusting vendors is not confined to any single
+vendor. Fact is, users don't seem to trust most vendors any more. I ask
+students in my virus seminars if they believe what they read on the back
+of an anti-virus product box. None do. I ask them if they trust anti-virus
+product vendors. None do. </P>
+
+<P>If vendors cared about users during the Michelangelo scare, they might
+have acted differently. They might have told users that Michelangelo cannot
+infect computers having a 3.5&quot; drive A:. They might have told users
+that Michelangelo and most other boot/master boot viruses can be detected
+with CHKDSK (With Michelangelo and others in the Stoned family, you'll
+see 653312 bytes free, rather than the normal 655360 bytes free in a 640
+Kb+ computer.) They might have told users that setting your clock to March
+7 or later would prevent Michelangelo damage (although it would not remove
+the virus). They might have told users of DOS that if they booted with
+an uninfected disk and typed &quot;FDISK /MBR&quot; they would completely
+remove Michelangelo from their hard disk, and didn't need an anti-virus
+product at all. But we did not hear this from vendors. They were too busy
+selling anti-virus products. </P>
+
+<P>The problem is not confined to vendors, either. Computer magazines and
+newspapers publish stories based on what they've been told by vendors .
+Users read these stories. And my students find themselves not trusting
+the computer press, either. When the computer press tells users that five
+million machines are infected with Michelangelo, and only a dozen or so
+are actually infected, reputations are tarnished, and users who learn better
+are left adrift, with no one they can trust. </P>
+
+<P>Litigation over false alarms is an accident waiting to happen. We can
+all hope that vendors improve their anti-virus products to produce fewer
+false alarms. And I suggest that if you are able to discover that your
+anti-virus product routinely produces false alarms (or causes other anti-virus
+products to produce false alarms) that you change products. </P>
+
+<P><A NAME="CommonFalseAlarms"></A><B><FONT SIZE=+1>Common False Alarms</FONT></B></P>
+
+<UL>
+<LI><FONT SIZE=-1><I>My machine won't boot.</I> Sorry. This is quite likely
+a hardware failure. Viruses rarely do this much damage. If this is Monday
+morning in the winter, and your hard disk is 2 years old, its bearings
+may be worn. Let it warm up by leaving the machine on for an hour or so,
+then turn it off and back on. You may be back in business.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I saw a &quot;1701 &quot; on the screen when I turned
+it on. Isn't this the &quot;Cascade virus&quot;?</I> Nope. 1701 is the
+number of the Starship Enterprise, and the error code you'll see when your
+hard disk subsystem is not feeling up to par, during the power-on self-test.
+Any number of hardware problems might be the cause, but this is not a virus,
+because we have not succeeded in reading one byte from the hard disk yet.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1><I>I tried booting and it told me that I was using the
+wrong version of COMMAND.COM. A virus?</I> No. A virus won't modify COMMAND.COM
+so that any error message is produced. And most modem viruses are smart
+enough to not infect COMMAND.COM at all (to help escape your watchful eye.)
+You might have copied some diskette to your root directory during your
+last session, and copied over COMMAND.COM. Replace it with the correct
+version, and your problem will likely go away. To avoid the problem in
+the future, you can set its attributes to Read only, which will prevent
+it from being accidentally copied to.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I just ran CHKDSK, and l was told l had lost clusters
+and file allocation errors. I also had a cross-link. Surely this is a virus!</I>
+No, probably not. If you haven't run CHKDSK in some time, or haven't corrected
+such problems with Norton Disk Doctor or CHKDSK /F, then the problem is
+normal if unfortunate. Most undoctored machines have some problems like
+this, which can be caused by dBASE, Windows, or just about any program
+crash. A few viruses cause progressive cross-linking, but you are not likely
+to have one of them. Keep your eyes on the machine, run CHKDSK or Norton
+Disk Doctor more often, and see what you can learn.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I just discovered some bad sectors when I ran CHKDSK.
+Is this a virus?</I> Probably not. Some boot sector viruses will place
+programs in certain locations, and mark those sectors bad in the FAT (e.g.,
+Brain and Italian). However, nearly every hard disk will have some bad
+sectors. It is probably nothing to worry about.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I tried copying a file, but got a message &quot;Error
+reading drive&quot; or &quot;Sector not found.&quot; A virus?</I> Not at
+all. Chances are your drive is due for a low-level format With most older
+drives (ST506, MFM, non-translating controllers) you ca run Norton Disk
+Doctor, Norton Disk Test, SpinRite, HDTest, Calibrate, or any other nondestructive
+low-level format program and correct the situation. With IDE, SCSI, and
+RLL drives, and drives with translating controllers, you should do a low-level
+format only if your software supports such drive types.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I just ran my favorite old scanner on my new 200 Megabyte
+partition, and found a virus in the Master Boot Record! So now tell me
+I don't have a virus.</I> OK, you don't have a virus. What you might have
+is older anti-virus software that doesn't recognize the strange look of
+this large partition. You can determine whether this is a false alarm or
+a real virus by trying to infect a standard floppy: Just put a disk with
+no write-protect tab in drive A:, do a DIR A:, and it should be infected.
+Now run the same scanner against A:. Do you have a virus on A:? If not,
+it's time to upgrade your scanner to one of a more recent vintage, that
+knows about Large partitions. A newer scanner will also happen to know
+about newer viruses. If you have a virus on A: now, you surely have one
+where your scanner first reported it.</FONT> </LI>
+
+<LI><FONT SIZE=-1><I>I was using my favorite program when I noticed that
+the letters were dripping down the screen. A virus?</I> Maybe. That one
+might be Cascade, or might be a little joke program called Drippy that
+your office mate is trying out on you. We'll need to run a scanner to be
+sure (or perhaps look in your AUTOEXEC.BAT for something like DRIPPY.COM).</FONT>
+</LI>
+
+<LI><FONT SIZE=-1><I>I just got the message &quot;Your PC is now Stoned!&quot;
+when I turned it on. Is that a virus?</I> Yes. That's the Stoned/Marijuana/New
+Zealand virus. And if you had a ping-pong ball bouncing on your screen,
+you probably had Ping-Pong/Italian/Bouncing Ball. And if you found a black
+rectangular hole over on the screen, you may have Jerusalem. And funny
+colors to the letters you type in DOS, might be Devil's Dance. None of
+these things seem to be the result of some component no longer working
+(hardware failure), but of some strange additional controlling force. If
+it's not you, and not the programs you have grown to love, it may be some
+new software that's making things happen</FONT> </LI>
+</UL>
+
+<P>If you got stumped on some of the previous questions, then you may want
+to study some more about hardware problems and recovery from them. </P>
+
+<P><A NAME="RealSymptomsofFileViruses"></A><B><FONT SIZE=+1>Real Symptoms
+of File Viruses</FONT></B></P>
+
+<P>You can also sometimes spot one or more of these symptoms, which are
+not likely to be caused by hardware failure: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Changes in the length of programs. Any program that is
+larger (by a few hundred bytes or more) than another copy of it has possibly
+been infected by a virus. Viruses never make programs smaller.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Changes in the time stamps. Most viruses won't affect
+the date or time stamp, but a few do. If you see a date stamp on a COM
+or EXE that is more recent than when you installed it, you can be suspicious.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Longer loading times. If a program seems to take a bit
+longer to load than normal, it may be that a virus has infected it. Check
+to ensure that nothing has changed to your computer's configuration that
+might account for this.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Slower operation. Some viruses will slow a program after
+it has loaded. You can look for this as a possible clue.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Unexplained drive activity. When a virus tries to infect
+files on your floppy, you will see the floppy drive light come on. If this
+light comes on for no apparent reason (the program you are running isn't
+doing this), a virus may be trying to infect it. If you get an error message
+because the floppy disk is write-protected, be extra suspicious. While
+most viruses are able to trap such error messages, some will permit them.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Unexplained reduction in available memory. Running CHKDSK
+will show you how much memory is available. This value should be the same
+whenever you boot. If you find less, it may be due to a memory-resident
+program you have run or possibly a virus.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Programs disappearing. If you run a program that was
+in this directory last time you looked, but get &quot;Bad command or file
+name&quot; when you run it now, a virus might have deleted it. Run some
+other program that you can see in that directory, and see if this error
+message repeats. If so, and both have been erased, you may have a virus.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Unexpected reboots. If your micro unexpectedly reboots
+after running your favorite program, or when you are doing nothing, a virus
+might be playing tricks.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Odd screen action. If you see characters dripping from
+the screen, balls bouncing about, ambulances driving across the horizon,
+screen colors changing, a black square on the screen, an unexpected message,
+or anything else unusual, you may have a virus.</FONT> </LI>
+</UL>
+
+<P>In general, a virus may be responsible for a wide variety of odd computer
+behavior. One strong symptom (such as a message) or two or more weak symptoms
+(such as a reduction in memory and an unexpected drive light on) should
+get you busy investigating. </P>
+
+<P><A NAME="RealSymptomsofaBootVirus"></A><B><FONT SIZE=+1>Real Symptoms
+of a Boot Virus</FONT></B></P>
+
+<UL>
+<LI><FONT SIZE=-1>You have a boot virus if a trustworthy scanner identifies
+a boot virus in memory. Boot from your hard disk, and scan. When memory
+is 90%-95% scanned, the boot virus will be reported. Record its name.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>You have a boot virus if you boot clean and a trustworthy
+scanner finds that the boot area of your machine is infected, and names
+the virus.</FONT> </LI>
+
+<LI><FONT SIZE=-1>You have a boot virus if you can boot your machine from
+your hard disk (and it does not ask you for a password), but when you boot
+from an uninfected floppy and access C: you see &quot;Invalid drive specification.&quot;</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>You have a boot virus if a trusted behavior blocker tells
+you that you it has detected a boot virus in memory when you boot, and
+you did not see this message in the first few days after installing NVC.SYS.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>You have a boot virus if CHKDSK <U>normally</U> reports
+655,360 bytes total memory, but today it reports less.</FONT> </LI>
+
+<LI><FONT SIZE=-1>You <U>might</U> have a boot virus if you find bad sectors
+on your floppy. If CHKDSK tells you that you have bad sectors on a floppy
+today, and you did not have bad sectors yesterday on that floppy, a boot
+sector virus may has written some code to those parts of the diskette and
+marked them bad.</FONT> </LI>
+</UL>
+
+<P><A NAME="CausesofFalseAlarms"></A><B><FONT SIZE=+1>Causes of False Alarms</FONT></B></P>
+
+<P>False alarms have several possible causes. </P>
+
+<P><B>False Alarms Caused By Running Two Scanners In Sequence</B></P>
+
+<P>If you run a poorly written virus scanner, followed by running another
+poorly written scanner, you may get a false alarm on a virus in memory.
+Scanner 1 reads its scan strings from a file, and places them in memory.
+One or more of its strings were copied from a book (such as Virus Bulletin),
+and so is widely used by other vendors who also copy strings from such
+sources. (Nearly every vendor will use reliable strings when they cannot
+obtain a specimen of the virus, because they want their products to detect
+the virus!) Scanner 1 exits, not clearing memory. Its strings remain until
+overwritten by the next program. Scanner 2 now runs, and tries matching
+its stored strings with what it can see in memory. It finds a match, and
+as implausible as this is, yells for help. </P>
+
+<P>Why the first scanner is &quot;poorly written&quot; is that it should
+not exit leaving unencrypted strings behind in memory. Why the second scanner
+is poorly written is that the virus in question almost certainly could
+not be located in memory where it is reported. For instance, a virus that
+loads low will never be found in the middle or top of conventional memory;
+a virus that loads high (just below 640 Kb) will never be found low. </P>
+
+<P>Well-written scanners do not leave strings in memory, so can always
+be run before a second scanner. They look for virus scan strings in memory
+in a position-sensitive way, so are unlikely to determine that a previously-run
+scanner is a virus. MEMSCAN doesn't even use scanstrings, but rather uses
+the same &quot;are you there&quot; calls that the virus uses, so it is
+will not false alarm on some other product's scan strings. NSCAN puts only
+very short strings in memory, so it is very unlikely that a false alarm
+will occur after it is run; and it doesn't use scan strings to search memory
+for viruses, but rather uses MEMSCAN for the job, so you shouldn't get
+a false alarm here. </P>
+
+<P>Deciding if you have a false alarm from this condition is simple: record
+the name of the virus found, boot clean, and run the second scanner again,
+against the entire drive. If you have a real virus, you will find the same
+virus on the drive that you recently found in memory. If no such virus
+is found on the drive, you have found a false alarm, instead. </P>
+
+<P>If you ever have a false alarm with a product, please call your vendor.
+They should want to help you and fix their product. </P>
+
+<P><B>False Alarm Caused By One Scanner Adding Checksum Info To Another</B></P>
+
+<P>Many anti-virus products write some code to files to &quot;inoculate&quot;
+the file. Inoculation is the process of scanning the file for viruses using
+scan strings, then adding to the file its checksum, or a checksum for the
+top and perhaps bottom bytes of the file. On the second pass, the scanner
+becomes a checksummer, comparing the current checksum with that stored
+in the file. This process can be very fast, and so products such as Central
+Point AntiVirus, IBM's AVSWP (Anti-Virus Software Product), and Norton
+Anti-Virus turn out to be checksummers in normal use, scanning only those
+files that haven't been checksummed. </P>
+
+<P>When a file is inoculated, the file changes and grows in size. If the
+file happens to be a program that does a checksum of itself before loading,
+it will find that it has changed, and usually exit with a warning that
+it has been modified. If the program does not check itself, then an inoculation
+false alarm can occur if two anti-virus products try to inoculate the same
+file. The second to inoculate it will never find a problem, since its checksum
+is based on a combination of the original file and the code added by the
+first inoculator, but the first inoculator always should find a problem,
+since the program has changed and grown since first inoculation. In some
+cases, the first inoculator will be able to remove the effects of the second
+inoculator. </P>
+
+<P>If you have any product capable of inoculation, and then upgrade to
+another anti-virus product, it is important to remove any old inoculations
+before discarding the old product, as there will likely be nothing in the
+new package to remove the inoculations of other anti-virus software. </P>
+
+<P><B>False Alarm Caused By Joke Program</B></P>
+
+<P>&quot;Joke&quot; programs can cause letters to drip from the screen,
+a flasher to popup in the middle of your word processing activity, or water
+to be detected in drive A:. Joke programs are not usually received with
+the same mirth and goodwill as was involved in their creation and installation.
+They are not viruses, but users frequently believe they are. </P>
+
+<P>How do joke programs differ from viruses? How can they be distinguished?
+There are several ways. Viruses rarely display anything on the screen;
+jokes would have little point if they didn't display something vaguely
+humorous. About 60% of all viruses are memory resident, and most of the
+viruses your organization will ever get are resident. In contrast, most
+joke programs are simple non-resident programs called from a batch file.
+But most important, viruses make copies of themselves, and jokes don't.
+</P>
+
+<P>Detecting a joke can be done by looking for an unfamiliar line in AUTOEXEC.BAT,
+or looking for an unfamiliar program on the machine. The DOS MEM program
+is likely to be able to show you the joke in memory, if it is resident.
+Most scanners detect joke programs, though they don't detect everything!
+You won't be able to &quot;remove&quot; the joke, except by deleting the
+file. </P>
+
+<P><B>False Alarm Caused By Hardware, Software, Or User Error</B></P>
+
+<P>Hardware, software, and user troubles continue to be confused with a
+virus. &quot;My printer won't work! Is it a virus?&quot; asks the user,
+when the printer's power cord is lying near the wall outlet. Sometimes
+distinguishing between virus and non-virus is difficult. &quot;PARITY&quot;
+can come from a machine finding itself with a bad memory chip or a virus
+that displays this message. &quot;Insert Cheeseburger in disk drive&quot;
+is likely a virus. Use your best skills in distinguishing between virus
+and non-virus, and call us if you have any doubts. </P>
+
+<P><A NAME="ItisaVirusif"></A><B><FONT SIZE=+1>It is a Virus if...</FONT></B></P>
+
+<P>There are several rules you can apply for determining that the alarm
+is not a false alarm but the real thing: </P>
+
+<OL>
+<LI><B>Your scanner defines it as a virus that is reasonably common. </B>Scanners
+sometimes false alarm on polymorphic viruses or new, rare viruses. But
+they rarely false alarm on common viruses. Some scanners produce very few
+false alarms because they use position information for its scan strings,
+not just scan strings. The chance of the string &quot;ABCDEFGHIJ&quot;
+being in a file is non-zero. But the chance of finding it in a pre-defined
+location - at the end of a series of jumps - is essentially zero. On the
+other hand, a heuristic scanner is quite likely to false alarm. Many programs
+contain code that is virus-like. Use heuristic scanners carefully, aiming
+it only at a few suspect files for the purpose of learning what they do,
+rather than for assuring yourself of their state of infection. </LI>
+
+<LI><B>Your scanner finds it in COMMAND.COM.</B> Vendors may not test their
+scanners on every program in the world, but they surely have had a chance
+to test it against COMMAND.COM. Since over 1,900 viruses infect COMMAND.COM,
+an alarm here is likely meaningful. </LI>
+
+<LI><B>Your scanner finds it in a file or boot sector today that it didn't
+find it in yesterday.</B> Any false alarm should be a repeatable event,
+if the same switches are used and the same files or sectors are examined.
+So if your scanner has never alarmed when scanning, and now does when looking
+at previously scanned stuff, you've got a virus. </LI>
+
+<LI><B>Your scanner finds two or more instances of the virus in the same
+machine.</B> Viruses are rarely loners. They like company in the machine,
+and make their own friends. If you find just one file infected with some
+exotic polymorphic, and you run this file repeatedly, you either have a
+false alarm or a virus that doesn't want to come out and play - most likely
+a false alarm. On the other hand, if 10 files are found to contain the
+XYZ virus, then at least 10 files are infected with this virus. </LI>
+
+<LI><B>Your scanner finds it in &quot;ABC.COM&quot; on one machine, but
+not in &quot;ABC.COM&quot; on other machines.</B> If the scanner is false
+alarming, then it is finding a match between one of its scan strings and
+the code in some part of the file. The scanner should give the same false
+alarm on every copy of this file that is the same version. But if two copies
+of ABC.COM version 1.234 are examined, and only one contains the virus,
+your scanner is likely on to something. Check the size of the two files
+after a clean boot: the infected one will either be larger (a &quot;parasitic&quot;
+virus) or it won't run properly (an overwriting virus). </LI>
+
+<LI><B>The suspect file on this machine is larger than on other machines,
+and you are not running any anti-virus software that adds protection to
+files. </B>Viruses add code to programs, and code takes bytes. Our smallest
+virus is about 30 bytes, our largest around 15 Kb. But the average virus
+adds 1,140 bytes or so to a file - about 1 Kb. You will need to get out
+your notepad to record such subtle differences between infected and uninfected,
+but unless the virus &quot;stealths&quot; its size, you'll be able to see
+which are infected by comparing the sizes of infected and uninfected files.
+Even a stealth virus can be caught this way if it is not resident, which
+you can force by booting clean. </LI>
+
+<LI><B>Two scanners agree that this new file is infected with something.</B>
+Scanners are sometimes wrong. Many scanners miss more viruses than they
+detect. Most can't catch all copies of any of the world's 250+ polymorphics.
+None seem to agree on what a virus should be named. So if you can find
+two of these uncooperative weapons that agree that file &quot;X&quot; is
+infected, believe it. </LI>
+</OL>
+
+<P><A NAME="ItsnotaVirusif"></A><B><FONT SIZE=+1>It's not a Virus if...</FONT></B></P>
+
+<P>How can you be sure that what you have found is not a virus? Here are
+some rules of thumb: </P>
+
+<OL>
+<LI><B>Your scanner only finds one file infected, and this is a program
+you use all the time. </B>If you use it all the time, the &quot;virus&quot;
+has had lots of time to make more copies of itself. If it has failed to
+do this, it has failed to meet the definition of a virus: code which makes
+functionally identical copies of itself without user permission. If it
+isn't a virus, we don't need to worry. (My answer to a word problem in
+5th grade was &quot;a 58 pound hamburger&quot;, and the teacher told me
+to always double check my work. ) </LI>
+
+<LI><B>Your scanner finds the virus in a datafile only. </B>A virus can
+add its code to anything it can reach, which means that your jelly donut
+is safe, your data files and documents and spreadsheets are not. But since
+MS-DOS has no idea on how to run such things, it won't be able to run a
+virus that is in them. If there is virus code in your WordPerfect document,
+then you will be able to see it when you open the file with WordPerfect.
+On the other hand, the macro viruses that infect Microsoft Word documents
+can easily infect a datafile within being visible to the user. Determine
+what the virus you have found is supposed to infect: if it only gets COM
+or EXE files, and you find it in a letter to your mom, it is a false alarm.
+</LI>
+</OL>
+
+<P>You have no chance of finding a virus in a datafile with an anti-virus
+product unless you tell the product to scan &quot;all files&quot;. Note
+that there are many scanners on the market that just grab a big gob of
+a file and with brute force look for the set of scan strings in the gob.
+The result can be silly, embarrasing, or terrifying, but they are most
+often wrong. One California vendor lost a fortune on a case involving such
+a false alarm. </P>
+
+<OL>
+<LI><B>Your late-model, trustworthy scanner identifies it only as a &quot;possible&quot;
+virus, and only in one file. </B>If the scanner you trust doesn't have
+the nerve to assert that it has found a virus, but rather wimpers that
+there might be something here, the chance is there is nothing here. Vendors
+like to be responsible, and never know whether to tell you that the sky
+is falling or that it is foggy. But you should know that your odds are
+low for getting a virus, and much lower for getting a new, rare virus.
+This doesn't mean you won't, but it does mean that your first few viruses
+are likely to be common, not rare and old, not new. </LI>
+</OL>
+
+<P>If your anti-virus product says the virus is in memory, and not on the
+disk, think back -- did you run this anti-virus product after another one?
+Most anti-virus products use scan strings in order to detect a virus. Scan
+strings are parts of virus code, and the anti-virus product searches files
+for these strings. Some anti-virus products don't encrypt the scan strings,
+so some scan string residue is left in memory. If you run anti-virus product
+A (which doesn't encrypt its scan strings) and then you run anti-virus
+product B, product B may &quot;see&quot; a residual scan string in memory
+and warn &quot;there's a virus in them thar hills&quot;. </P>
+
+<P>If your scanner is false alarming, call the vendor and ask if they are
+aware of the problem. If so, ask for a copy of the &quot;fix&quot; to be
+sent. You should not have to pay for this, or wait more than a week or
+so. </P>
+
+<P>If your scanner is false alarming, and the vendor is unaware of the
+problem, send them a sample of the program that is not getting along with
+the scanner. You have the right to expect a free solution in two weeks
+or less. </P>
+
+<P><A NAME="IfYouStillArentCertainFileViruses"></A><B><FONT SIZE=+1>If
+You Still Aren't Certain (File Viruses)...</FONT></B></P>
+
+<P>I've provided a fair amount of advice in the previous section about
+how to sort out the real thing from a false alarm. But you might still
+not be sure. If so, here's how to be sure when your scanner reports a file
+virus: </P>
+
+<OL>
+<LI>Boot clean, scan, and count the number of files that are allegedly
+infected on the machine. </LI>
+
+<LI>Make a test directory, and copy some <U>un</U>infected COM and EXE
+programs (DOS utilities such as MEM and CHKDSK work fine) to it to serve
+as <U>goats</U>. (In the old days, goats were handy offerings to those
+we had made angry. They were also edible, and reduced the need to cut the
+grass. We still use them in virus research.) </LI>
+
+<LI>Run one of the infected programs, then run each of the goats you have
+copied to the test directory. </LI>
+
+<LI>Boot clean again, and scan with your uninfected scanner. If your test
+directory contains any infected files, or if the number of infected files
+has increased, you are infected. </LI>
+</OL>
+
+<P><A NAME="IfYouStillArentCertainBootViruses"></A><B><FONT SIZE=+1>If
+You Still Aren't Certain (Boot Viruses)...</FONT></B></P>
+
+<P>If some component of your product reports a boot virus, you can doublecheck
+with this simple (and harmless) experiment: </P>
+
+<OL>
+<LI>Format a floppy in a machine that your scanner reports to be <U>un</U>infected.
+Scan it with the product that produced the alarm, to ensure that it does
+not produce an alarm. </LI>
+
+<LI>Boot the infected machine from its hard disk, and place the fresh floppy
+in A: of this machine. </LI>
+
+<LI>Access A: (by typing &quot;A:&quot; or &quot;DIR A:&quot;) </LI>
+
+<LI>Remove the floppy, take it to a clean machine, and scan it again. </LI>
+</OL>
+
+<P>If the floppy is infected, you have a boot virus. If it is not, you
+don't. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

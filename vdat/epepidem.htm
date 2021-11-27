@@ -1,0 +1,246 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Epidemiology and Computer Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>Epidemiology and Computer
+Viruses.<BR>
+by Dr. Alan Solomon</FONT></FONT></B><BR>
+<BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<P>It has been suggested in the press that computer viruses spread at an
+exponential rate; figures suggesting a doubling every two or three months
+have been suggested. These figures tend to be arrived at by fitting such
+a simple curve to two points, one of which is a rather arbitrary point
+a few years ago, when it is supposed that only one copy of one virus existed,
+and the other datum is an estimate of the current position. </P>
+
+<P>Statisticians are well aware of the danger of curve-fitting and extrapolation
+from two (rather shaky) numbers; furthermore the experience for biological
+viruses does not suggest a simple exponential curve. There is a well-researched
+model for epidemiological studies, and it has a strong justification. </P>
+
+<P>First, let us consider the factors affecting the probability that any
+given computer will be infected by a given virus. There are three main
+influences on this probability. </P>
+
+<UL>
+<P>1. The percentage of currently-infected individuals.<BR>
+2. The readiness with which the virus under consideration can replicate
+(called infectivity).<BR>
+3. The degree to which the machine in question has contact with the population
+of computers. </P>
+</UL>
+
+<P>The percentage of currently-infected individuals depends on two factors:
+</P>
+
+<UL>
+<P>4. The rate at which computers are becoming infected.<BR>
+5. The length of time that they stay infected. </P>
+</UL>
+
+<P>These factors vary. Let us define them precisely. The first analysis
+will assume that there is only one virus - later this will be generalised.
+</P>
+
+<P>The first variable, p, is the fraction of PCs that are infected with
+the virus. Let us also define I as the probability that a PC will become
+infected by &quot;exposure&quot; to another infected PC. Finally, D is
+the probability that the virus is detected. We shall assume that ince the
+virus is detected, it is eradicated from that system. </P>
+
+<P>The rate of new infections is proportional to the number of infected
+PCs, to the number of uninfected PCs and to the probability of infection.
+The rate of infections being eradicated is proportional to the number of
+infected PCs, and to the probability of detection. </P>
+
+<UL>
+<PRE>dp/dt = p.(1-p).I - p.D                           (1)
+</PRE>
+</UL>
+
+<P>Some interesting consequences of this model are as follows. First, consider
+the situation of equilibrium, so that dp/dt = 0. If we plug this into equation
+2, we get p = 0 (no infections, so no spreading) or p = 1 - D/I. This means
+that if D is greater than I, p tends to zero. A virus will die out if it
+is more likely to be detected, than to cause a new infection. We will call
+this equilibrium condition pmax = 1 - D/I. </P>
+
+<P>This is, we think, what has happened to Brain virus. The probability
+of detection is very large, as it announces itself on every infected diskette
+by the volume label (c) Brain. Before people knew that this meant a virus,
+it could spread unhindered, but now that so many PC users are aware of
+the meaning of such a volume label, it means rapid eradication of the outbreak.
+We now get very few reports of Brain from most countries (India is an exception,
+but this is perhaps because virus awareness is a relatively recent thing
+there. </P>
+
+<P>If the probability of detection is 0.1 times the probability of infection,
+then p tends to 1-D/I = 0.9. So a virus that is well hidden will be most
+successful. </P>
+
+<UL>
+<PRE>dp = p.I - p.p.I - p.D                         (2)
+
+dt = dp/(p.(I-D-I.p))                          (3)
+
+We integrate by partial fractions:
+
+1 /(p.(I-D-I.p)) = A/p + B/(I-D-I.p)           (4)
+
+                = (A.(I-D-I.p) + B.p) / (p.(I-D-I.p))        (5)
+
+So A = 1/(I-D)
+
+   B = A.I = I/(I-D)
+
+Plugging these back into the differential equation, we get:
+
+dt = (1/(I-D)).dp/p  + (1/(I-D)).dp/(1-D/I-p)                (6)
+
+Using our definition of Pmax = 1 - D/I,
+
+I.dt = (1/pmax).(dp/p) + (1/pmax).(dp/(pmax-p))              (7)
+
+Now we integrate:
+
+Pmax.I.(t - t0) = ln p - ln (pmax - p)                       (8)
+
+                = ln(p/(pmax-p))
+
+p/(pmax-p)  = exp(pmax.I.(t-t0))                             (9)
+
+This gives us a way to look at the situation at t = t0;  then
+p/(pmax-p) = 1, so p = 0.5 pmax.
+
+&gt;From (9), we can get
+
+p = pmax.exp(pmax.I.(t-t0)) - p.exp(pmax.I.(t-t0))           (10)
+
+p . (1 + exp(pmax.I.(t-t0)) ) = pmax . exp(pmax.I.(t-t0))    (11)
+
+p = pmax . exp(pmax.I.(t-t0)) / (1 + exp(pmax.I.(t-t0)) )    (12)
+</PRE>
+</UL>
+
+<P>Below, figures 1 to 3 show the proportion of computers infected for
+I = 0.04, with D between 0.01 and 0.03. Figures 4 to 9 show the curves
+with I = 0.1, giving D values between 0.01 and 0.09. </P>
+
+<P>In the more complex case of multiple viruses, it is necessary to use
+matrix algebra to track the infections of each virus, but the main interaction
+between the viruses is that when any one virus is discovered on a system,
+you must assume that all viruses on that system will be removed. This means
+that there is a weak interaction between the spread of the different viruses,
+but since multiple infections are still not common, this is an effect that
+can be ignored for the present. </P>
+
+<P>A more important effect of multiple viruses, is on the probability of
+detection. It is our experience that most people take no, or else ineffective,
+precautions against viruses until they experience one directly. At that
+point, they begin to take the problem more seriously, and install one or
+more anti-virus systems. This has a significant impact on the probability
+of detection, especially if the anti-virus system is effective. Even if
+the anti virus system is only partially effective, there must be some viruses
+that it can detect, so value for D increases. </P>
+
+<P>Thus, if one virus, has spread and been detected fairly widely, the
+chances of another virus spreading so widely are severly diminished. </P>
+
+<P>We can add this to the model above, as follows. Assume that the probability
+of detecting a virus was D1 before, but as each computer is infected, some
+virus detection software is installed. Assume that the software is not
+perfect, and that the probability of detecting the virus is changed from
+D1 to D2. Then, the average probability of detecting a virus, averaged
+over the whole population of computers, is increased as more of the computers
+have had contact with a virus. </P>
+
+<P>But, in our experience, although some precautions are taken shortly
+after a virus outbreak, it is often the case that these precautions fail
+to identify another virus for some time (outbreaks being relatively rare)
+and so the precautions fall into disuse. So, we can model D as being related
+to the number of recent outbreaks; the probability of detection is partway
+between the low probability (a computer not running a virus detector),
+and the higher probability (a computer that is running a detector), and
+the average probability is the average of these two, weighted by the current
+number of infected and uninfected computers. </P>
+
+<UL>
+<PRE>D = p . D2 + (1-p) D1
+
+So the differential equation describing the virus spread becomes:
+
+dp/dt = p.(1-p).I - p.p.D2 - p.(1-p).D1               (13)
+
+      = p.(I-D1) - p.p.(I-D2-D1)
+</PRE>
+</UL>
+
+<P>Again it is useful to look at the equilibrium condition. When dp/dt
+= 0, either p = 0 or p = (I-D1)/(I+D2-D1). Call this situation Pmax, as
+before. If D1 = D2, this reduces to the same situation as before. </P>
+
+<UL>
+<PRE>dt = dp/(p.(I-D1-p(I-D1+D2))  )                       (14)
+
+Using partial fractions again, we get
+
+dt =  1/(I-D1) (dp/p) + 1/(I-D1) (dp/(pmax - p))      (15)
+
+t - t0 = 1/(I-D1).ln(p) - 1/(I-D1).ln (pmax - p)      (16)
+
+(I-D1).(t-t0) = ln(p/(pmax-p))                        (17)
+
+p/(pmax-p) = exp(I-D1).(t-t0)                         (18)
+
+p = pmax . exp(I-D1).(t-t0) - p . exp(I-D1).(t-t0)    (19)
+
+p = pmax . exp(I-D1).(t-t0) / (1 + exp(I-D1).(t-t0))  (20)
+</PRE>
+</UL>
+
+<P>We have repeated the runs of the previous model, using I = 0.04 and
+D1 = 0.01, with values for D2 set to 0.01 (the previous case), 0.1 and
+0.5. It is clear how the improved early detection reduces the number of
+infections. This can be seen more dramatically with the other set of runs,
+where I = 0.1, D1 = 0.01 and values of D2 from 0.01 to 0.9 are run. </P>
+
+<P><B>Conclusions </B></P>
+
+<P>Early detection is a very effective way to reduce the incidence of viruses
+in a population of computers. Reducing the probability of infection would
+also be useful, but this requires controls over the flow of diskettes and
+files between the computers, and one of the major advantages of computers
+is their ability to communicate information. Obviously, the value of I
+can be reduced, but it is clear from this model that the probability of
+detection plays a much more crucial role in the spread of a virus. It is
+also noteworthy that in a situation where early detection software is installed
+and run for only a short time (as in these models) the number of computers
+infected is dramatically reduced. If the virus detector is run for a longer
+period of time after the virus infection, the effect would be even greater.
+</P>
+
+<P>One surprising outcome of this model, is that the virus detection software
+does not have to be particularly effective. For example, we found that
+if you raise the probability of detection from 0.01 to 0.5, you get most
+of the benefits of running a detector. In practice, what this is saying
+is that it takes you a bit longer to detect the virus than an efficient
+detector would take, but nowhere near as long as it would if you were not
+running any kind of detector. </P>
+
+<P>The Lotus spreadsheets that were used to do the calculations for the
+various runs of the model are available if you want to try plugging in
+some other assumptions into the model, or to make the model more elaborate.
+</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

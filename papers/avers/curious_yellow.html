@@ -1,0 +1,445 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><!-- ================================================================================  --><!-- This HTML file was created by AbiWord.                                            --><!-- AbiWord is a free, Open Source word processor.                                    --><!-- You may obtain more information about AbiWord at www.abisource.com                --><!-- ================================================================================  -->
+
+
+
+
+
+
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>/home/brandon/sams/curious_yellow.html</title>
+
+<style type="text/css">
+body
+{
+	font-family: "Times New Roman";
+	font-variant: normal;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	font-size: 12pt;
+	font-stretch: normal;
+	background-color: #ffffff;
+}
+
+@media print
+{
+	body
+	{
+		padding-top: 1.000000in; padding-bottom: 1.000000in;
+		padding-left: 1.000000in; padding-right: 1.000000in;
+	}
+}
+
+p, .Normal
+{
+	font-family: "Times New Roman";
+	margin-top: 0pt;
+	font-variant: normal;
+	margin-left: 0pt;
+	text-indent: 0in;
+	widows: 2;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	text-align: left;
+	margin-bottom: 0pt;
+	margin-right: 0pt;
+	font-size: 12pt;
+	font-stretch: normal;
+}
+
+</style></head><body><div>
+<p style="text-align: center; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">Curious Yellow: The First Coordinated Worm Design</span></p>
+<p style="text-align: center; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">&nbsp;	By Brandon Wiley</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The Warhol worm design began the theoretical discussion of so-called
+"superworms", a new type of computer worms. A worm is a computer
+program which copies itself from computer to computer in an attempt to
+reproduce as much as possible. A superworm uses more advanced
+techniques to achieve very quick infection of the network. The primary
+strategy behind the Warhol superworm is to pre-scan the network for
+vulnerable targets. When the worm is launched it already has a large
+list of targets with a known method for infection and can therefore
+quickly infect an initial seed population.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+One thing which the Warhol paper mentions is that better results might
+be achieved via a coordinated worm in which various instances of the
+worm on different computers communicate with each other in order to
+optimize infection. The Warhol paper states, however, that no
+coordinated worm has ever been created. This paper proposes the first
+design for a worm which utilizes efficient communication between worm
+instances for an optimal infection strategy.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Benefits and Difficulties of Coordination</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The purpose of adding coordination to a worm design is to raise the
+level of sophistication in the attack from a simplistic greedy strategy
+to a more game theoretically optimal cooperative divide and conquer
+strategy. There are times when a greedy strategy can be suboptimal.
+Overly zealous propagation can lead to early detection and eradication.
+Also, it is simply wasteful for a worm instance to attempt to infect a
+system which has already been infected rather than choosing an
+uninfected host as a target. Unfortunately, typical worms have no
+information on which to base a more sophisticated attack. In order to
+divide the infection tasks among operative worms, the worms must know
+about each other and have a method for dividing work among themselves.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The difficulty in creating a coordinated worm is in minimizing the
+coordination costs among worms. Since the initial goal of a worm is
+generally to reach all hosts on the Internet, the number of eventual
+worm instances will be enormous. The coordination strategy must be able
+to scale reasonably to that number of instances. If every worm had to
+coordinate with every other worm, for instance, the amount of bandwidth
+used to communicate between the worms could easily exceed that used by
+a greedy worm, defeating the benefits of coordination. The coordination
+strategy must also be simple to encode since worm designers attempt to
+make worms as small as possible.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Efficient Coordination of Worms</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+Interestingly, the problem of efficiently organizing worm instances
+into a network which can act globally but which has reasonable
+coordination costs for each node is very similar to problems found in
+peer-to-peer networks. The particular task of the division of the task
+space among all of the currently active worms is very similar to the
+problem addressed in distributed hash tables (DHT)</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+designs. One popular contemporary DHT design is called Chord. In Chord,
+each node is assigned a portion of the task space such that the space
+is divided evenly and randomly among all nodes. Chord has some useful
+properties. First, each node in the network is reachable from each
+other node in the network with a maximum of O(log N)</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+intervening nodes. Additionally, each node only needs to maintain
+knowledge of O(log N) other nodes, thus keeping coordination costs down
+to a reasonable level. </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">What this means in simple terms is that in a network of </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">one million nodes each node only has to keep track of approximately 20 </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">other nodes</span><span style="font-family: 'Times New Roman'; font-size: 12pt;"> and for one node to send a message to anothe</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">r node </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">in the most distant part of the network</span><span style="font-family: 'Times New Roman'; font-size: 12pt;"> it would take a</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">t most 20 i</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">ntervening nodes. Similarly, for a network of ten million </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">nodes, each node has to keep track of approximately 23 other nodes</span><span style="font-family: 'Times New Roman'; font-size: 12pt;"> </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">and it will take at most 23 intervening nodes to reach from one side of the network to the other. </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">There are </span><span style="font-family: 'Times New Roman'; font-size: 12pt;">advanced
+variants of the Chord architecture which layer additional properties on
+top of the guarantees provided by the basic Chord design. Anonymous
+Chord (Achord) adds the property that it is very difficult for any node
+to find out the identities of all of the other nodes in the network.
+This makes it more difficult for an attacker to disable the network by
+discovering the identities of nodes.&nbsp; By having worms form an
+Achord network, a global framework for division of the space to be
+attacked can be created with reasonable coordination costs.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Details of Coordinating Worm Attacks with Achord</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+In order to create an Achord network, each node needs to be assigned a
+unique, difficult to forge, difficult to generate identifier.
+Identifiers are assumed to be generally random and evenly distributed.
+Each task also needs such an identifier. Tasks are matched to the node
+whose identifier is the closest match. The method which Curious Yellow
+uses to assign identifiers to worms and targets is via the SHA1 hash</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+of their IP address. It is relatively difficult to choose your own IP
+address and the SHA1 hash makes the identifier approximately random and
+evenly distributed.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The method for nominating a worm to attack a target is easy. Each
+Achord node knows the IP addresses of the two nodes whose identifiers
+are closest to its own. When it learns of a new target, it calculates
+the identifier for the target and then determines if it is closer to
+the worm's own identifier or one of its neighbors. If the worm is the
+closest to the target then it attacks the target. Otherwise, it informs
+the closer neighbor of the existence of the target and then forgets
+about it. Since the identifier space is globally consistent, decisions
+about which worm should attack will always be consistent. Additionally,
+the decision about who should attack does not require immediate
+communication between the worms. Communication is only necessary to
+inform nodes of found vulnerable nodes which they are responsible for
+attacking.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Uses of a Coordinated Worm Network</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The initial deployment of the worm network using superworm pre-scanning
+techniques may take up to 15 minutes (Warhol) or merely 30 seconds
+(Flash).&nbsp; Once the initial seed network is deployed, it can be
+used as a platform for launching a second stage of activities. One
+obvious activity is distributed scanning of the network for
+vulnerabilities and further infection. Unlike Code Red, which used a
+greedy scanning strategy, Curious Yellow will have exactly one worm
+scanning each potential target. This will both reduce the load on the
+network and make detection less of a threat. The global connectedness
+of the entire worm network allows for an even more interesting type of
+distributed scanning than is at first apparent. Since all nodes are
+reachable from all other nodes, it is possible for the worm's creator
+to release code patches to all of the worms in the network and for
+these code patches to spread to the entire network even faster than the
+initial infection (less than 15 seconds). Therefore, as new exploits
+are found for previously invulnerable systems, they can be distributed
+to the worm network, which has already been building up a list of
+potential future targets. The Warhol method of pre-scanning attacks can
+thus be utilized repeatedly for rapid infection of diverse systems. The
+speed at which patches can be distributed to worms is so great that it
+will probably out-pace attempts to fix vulnerabilities. A zero-day
+exploit</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+can be used by worms for infection before news of the vulnerability has
+even been made public. Code patches can also be made to change the
+behavior of the worm to mask signature behavior which could lead to its
+detection.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The second stage of infection allows the infection to progress from
+controlling a large portion of the network to controlling the
+overwhelming majority of the network. This is just another part of the
+infection stage. Once the majority of the network has been infected,
+Curious Yellow can lay dormant until part or all of it is activated for
+some purpose.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+There are a number of possible purposes to which Curious Yellow could
+be used. One obvious use is to simply crash the majority of the
+Internet at once.&nbsp; Once it is activated, the worm network has
+achieved its purpose. A slightly more interesting use of the worm
+network would be to use it for distributed denial of service attacks
+against enemy hosts. The typical approach for this is to have all
+compromised hosts send a flood of packets</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+to the target, thus overloading it sufficiently to keep any legitimate
+packets from getting through. However, this is a naive approach when
+given such an advanced network to work with. The Curious Yellow
+infection should, if properly deployed, control the vast majority of
+the network. All of the infected nodes can act in concert towards a
+common goal. Nodes and groups of nodes can be specialized for certain
+tasks. New directives can be sent to the entire network in less than 15
+seconds. It is therefore not necessary to have the entire network gang
+up on a single machine in order to disable it. This is in fact a greedy
+rather than cooperative strategy and thus suboptimal. First of all, the
+target to be attacked is probably infected. Therefore, the worm
+controlling the target can simply be instructed to disable the target.
+Additionally, if all of the nodes surrounding the target simply drop
+traffic routed to the target then the target becomes unreachable.
+Finally, the worms controlling the hosts attempting to contact the
+target can simply ensure that no attempt to communicate to the server
+is ever made. Curious Yellow, acting globally and in unison, can make
+any host simply cease to exist as far as the network is concerned.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+Having total control of all of the Internet's traffic allows for other,
+more interesting, attacks. Traffic can be modified arbitrarily as it
+passes through the network. Defacing a website no longer requires
+actually having access to the computer containing the website. Web
+pages can be defaced automatically as they pass through the network,
+resulting in the world's collective web browsers rendering the pages
+differently than they are stored on the servers, a problem that the
+server administrators are totally powerless to fix. All of the
+unencrypted traffic on the Internet can also be observed. The entity
+controlling Curious Yellow can pick out particular individuals to
+monitor or gather statistical information about a large number of
+individuals.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+Of course, Curious Yellow's control over individual computers is not
+limited to controlling Internet traffic. As zero-day root exploits are
+found and patches distributed, worms can eventually gain superuser
+access to all of the machines, giving them access to all of the stored
+information and all of the spare resources such as hard drive space and
+CPU cycles, and the ability to surveil all of the world's
+Internet-connected computer users. By sending out code updates to the
+network which cause Curious Yellow to metamorphasize into an
+anonymizing proxy network, its owners can connect anonymously to target
+computers and control them interactively, browsing files and watching
+what users do with them. They could also program the worms to
+automatically send back potentially interesting information. The spare
+resources of the world's computers could be utilized for whatever
+agenda the owners of Curious Yellow have in mind. In general the uses
+of the network are endless. The entity which controls Curious Yellow
+controls the world's computers.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">The World After Infection</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+Dealing with the infection once it has been detected is difficult. Once
+a signature has been detected for the worm, it must be codified by the
+various competing virus scanner manufacturers and then distributed to
+infected computers, probably by voluntary downloads. Naturally, once an
+anti-virus patch for the worm becomes publicly available on the
+Internet, Curious Yellow will cause that site to disappear from the
+Internet. Inoculation will therefore have to happen by hand using
+physical media or network distribution which is secretive enough that
+that owners of Curious Yellow (subscribers to many major anti-virus
+update programs) don't find out about it. Once the patch falls into the
+hands of the creators, Curious Yellow will soon receive a counter-patch
+obsoleting the old anti-virus patch. Unfortunately, anti-virus
+distribution methods cannot keep up with the pace of Curious Yellow
+patch distribution. The only method which can eradicate the virus,
+therefore, is to disconnect the computers from the network and then
+apply via physical media patches which both eradicate the virus and
+patch the vulnerabilities which allowed it to spread. Once the virus is
+totally eradicated, the creators will wait for a new zero-day exploit
+to be discovered and then relaunch the virus with a new transmission
+vector and signature.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The only way to protect against Curious Yellow is to inoculate every
+computer with an anti-worm, Curious Blue, which uses similar technology
+to instantly distribute security patches. As soon as an exploit is
+discovered, a security patch must be released to Curious Blue before an
+exploit patch can be released to Curious Yellow. Infection and
+protection is thus primarily a race between the owners of the two
+entities. Of course, there might not be only two entities. There could
+be any number of competing vendors of Curious Blue offering different
+patches and different quality of service guarantees. Similarly, anyone
+with access to zero-day exploits could launch their own Curious Yellow.
+The battle does not end there, however. Curious Blue could act as an
+ideal platform for the initial stage of a Curious Yellow infection. All
+that is needed is an exploit in the Curious Blue code. Once one is
+found, the entire Curious Blue network can be turned, like a clever
+move in a game of Othello . The same is of course true of turning
+Curious Yellow into Curious Blue. These programs are particularly prone
+to such corruption because they are already designed to accept
+arbitrary code upgrades. They merely need to be fooled into accepting
+code which is not actually authorized.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Security, Cryptography, Signatures, and Trusted Code Updates</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The authorization of code updates is a crucial component to both
+Curious Yellow and Curious Blue.&nbsp; Without a strong authentication
+system, the worm network can easily be taken over by an arbitrary
+attacker. The obvious way to do authentication is with public key
+signatures</span><span style="font-family: 'Times New Roman'; font-size: 12pt;">.
+In order to use public key signatures, the entity deploying the worm
+creates a pair of keys, one public and one private. The public key is
+distributed with the worm. The private key is known only to the worm's
+creator. When the creator wants to send a new code update, it generates
+a signature from the code using the private key. Since the worms have
+the public key, they can check to see if the signature was in fact
+generated by the matching private key. Using this technique, no
+attacker can send code updates to the network unless he possesses the
+creator's private key or finds a vulnerability in the worm which allows
+circumvention of the signature check.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+Maintaining the secrecy of the private key is an interesting problem in
+a world overrun by competing strains of Curious Yellow and Curious
+Blue. A simple strategy which an attacker controlling one worm network
+might use to compromise another is to instruct the network to search
+all computers for files that might potentially contain the private key
+of the competing network. Due to the large size of private keys, they
+cannot be easily remembered and so much be stored electronically
+somewhere. In order to keep the private key from being discovered, the
+creator will be forced to have a special computer used for generating
+signatures which is never connected to the network. Signatures will be
+generated on this computer and then transferred to a network-attached
+computer via removable media. The attack then is to find where in the
+network signatures are first introduced.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+The worm network can be configured to search for signature files stored
+on removable media. The network can also monitor other coexisting worm
+networks to see when code updates are sent. When a received code update
+matches a signature file found on removable media, the creator of the
+worm has been detected. Naturally, the creator of a particular strain
+of Curious Yellow would prefer that his own computers were not infected
+with competing strains. Unfortunately, the only way to ensure this is
+to inoculate with a strain of Curious Blue, which will undoubtedly also
+be searching for the creator so as to have legal action taken against
+it. Assuming, however, that the creator has the resources to inoculate
+against all competing strains, it can still be tracked. As the code
+updates propagate through the network, competing strains can monitor
+the progress. Using statistical analysis of the propagation of code
+updates, the source of updates can eventually be traced. Once the
+location of the creator has been determined, physical coercion such as
+spying, threats, lawsuits, and arrest are possible to gain control of
+the private key and thus the worm network.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+In order to avoid being traced, further cryptography is necessary. So
+that the progress of code updates through the network cannot be
+monitored, the worm code needs to be encrypted so that it cannot be
+easily examined to determine which code it currently is running. It is
+still possible to examine the contents in memory, but this will be a
+somewhat difficult task to encode in a program the size of a typical
+worm. Additionally, code updates being sent over the network must be
+encrypted so that their progress cannot be observed. Even with
+encrypted connections, however, the creator can still be traced through
+timing correlations. All the the observer needs to see is that one worm
+contacted another, then that worm contacted a few others, leading into
+a cascade. Whichever worm made the first contact is the one closest to
+the creator. Defeating timing correlation requires the worm network to
+be constantly sending cover traffic to other worms. Luckily, code
+updates are generally small, so the amount of cover traffic to be
+generated is not very much. Once the network is communicating entirely
+over encrypted channels with constant cover traffic, the creator can
+send out code updates in an anonymous, untraceable manner. Not only
+that, but the creator can also use the network to render anonymous any
+other transactions, such as using it as an anonymous communications
+channel to converse with other entities and distribute files and
+information. This would be a boon to the usual cast of characters that
+could benefit from anonymous communication, such as people attempting
+to escape human-rights-violating regimes, international terrorists, and
+music fans.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Who Do You Trust?</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+In the world after the global infection of the Internet by strains of
+Curious Yellow and the commercial availability of strains of Curious
+Blue, computer users will have a choice. One can either have a computer
+which is never connected to the Internet, risk almost certain infection
+and control by the various factions controlling Curious Yellow, or
+intentionally give control to the creators of Curious Blue. There are
+multiple issues of trust involved. Initially there is the question of
+whether one places more trust in the harmlessness of the hackers or the
+professional integrity of the security professionals. If one chooses
+Curious Blue then there is the issue of which strain will actually be
+effective in protecting one from infections by Curious Yellow. There is
+the additional issue of which strain can be trusted to not contain any
+vulnerabilities which can be exploited to turn it to the other side.</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-weight: bold; font-family: 'Times New Roman'; font-size: 12pt;">Kazaa and Altnet</span></p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><br>
+</p>
+<p style="text-align: left; margin-bottom: 0in; margin-top: 0in; margin-right: 0in;"><span style="font-family: 'Times New Roman'; font-size: 12pt;">
+There is a disturbing similarity between Curious Yellow and the new
+Kazaa feature, Altnet. Kazaa is a peer-to-peer file sharing network not
+entirely unlike Achord, but lacking some of the useful features. In
+later versions of the software Kazaa bundled a feature called Altnet,
+which is a second peer-to-peer network deployed alongside Kazaa nodes.
+when Kazaa is installed, Altnet is quietly installed as well. Buried in
+the licensing agreement which users click through when installing Kazaa
+are some interesting provisions concerning Altnet. The user agrees that
+Altnet is allowed to automatically receive and install code updates and
+modify settings on the user's computer. This makes Altnet a prime
+target to be corrupted and used as a widely deployed network from which
+to launch activities. All that is needed is the proper method for
+causing the supposedly 2.5 million Kazaa nodes to accept a rogue code
+update. Interestingly, such an attack has already occurred. While Kazaa
+is the predominate licensee of the FastTrack network technology, it was
+previously second to an application called Morpheus, another
+application using the FastTrack network. Morpheus was mysteriously shut
+out from the FastTrack network despite the fact that it was supposedly
+an entirely decentralized network without a central form of control.
+The network of Morpheus clients was shut down by a rogue code update,
+eventually discovered to have been sent by the company behind Kazaa.
+This is the first example of the sort of warfare between strains. It
+could escalate into being literally a war between worm strains if an
+entity discovers the key to making Kazaa accept code updates and
+mobilizes the Kazaa network as a first stage of infection, using it for
+decentralized scanning of the network for vulnerable hosts and an
+eventual global takeover of the Internet.</span></p>
+</div>
+</body></html>

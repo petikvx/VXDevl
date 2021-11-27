@@ -1,0 +1,696 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Macro Viruses - Data Fellows</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<H1 ALIGN=CENTER><FONT COLOR="#004080"><FONT SIZE=+2>Microsoft Word document
+macro viruses</FONT></FONT></H1>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<UL>
+<LI><A HREF="#intro">Introduction </A></LI>
+
+<LI><A HREF="#dmv">WordMacro/DMV </A></LI>
+
+<LI><A HREF="#concept">WordMacro/Concept </A></LI>
+
+<LI><A HREF="#nuclear">WordMacro/Nuclear </A></LI>
+
+<LI><A HREF="#colors">WordMacro/Colors </A></LI>
+
+<LI><A HREF="#hot">WordMacro/Hot </A></LI>
+
+<LI><A HREF="#atom">WordMacro/Atom </A></LI>
+
+<LI><A HREF="#other">Other Word macro viruses and trojans </A></LI>
+
+<LI><A HREF="#protect">Protecting yourself against Word macro viruses </A></LI>
+
+<LI><A HREF="#f-prot">F-PROT and Word macro viruses</A> </LI>
+</UL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><A NAME="intro"></A></P>
+
+<H2>Introduction</H2>
+
+<P>Macro viruses are not a new concept - they were predicted as early as
+the late eighties. At that time, the first studies about the possibility
+of writing viruses with the macro languages of certain applications were
+made. </P>
+
+<P>However, macro viruses are not just a theory any more. Currently, there
+are several known macro viruses. They have all been written with WordBasic,
+the powerful macro language of Microsoft Word. These viruses spread through
+Word documents - Word's advanced template system makes it an opportune
+environment for viral mischief. This is problematic, because people exchange
+document a lot more than executables or floppy disks. Macro viruses are
+also very easy to create or modify. </P>
+
+<P>Although other word processors like WordPerfect and Ami Pro do support
+reading Word documents, they can not be infected by these viruses. It is
+not impossible to write similar viruses for these systems, however. <A NAME="dmv"></A></P>
+
+<H2>WordMacro/DMV</H2>
+
+<P>WordMacro/DMV is probably the first Word macro virus to have been written.
+It is test virus, written by a person called Joel McNamara to study the
+behavior of macro viruses. As such, it is no threat - it announces its
+presence in the system, and keeps the user informed of its actions. </P>
+
+<P>Mr. McNamara wrote WordMacro/DMV in fall 1994 - at the same time, he
+published a detailed study about macro viruses. He kept his test virus
+under wraps until a real macro virus, WordMacro/Concept, was discovered.
+At that time, he decided to make WordMacro/DMV known to the public. We
+oppose to such behaviour; although it can be argued that spreading such
+information will educate the public, we can also except to see new variants
+of the DMV virus, as well as totally new viruses inspired by the techniques
+used in this virus. McNamara also published a skeleton for a virus to infect
+Microsoft Excel spreadsheet files. </P>
+
+<P>F-PROT Professional 2.20 is able to the detect the WordMacro/DMV macro
+virus. <A NAME="concept"></A></P>
+
+<H2>WordMacro/Concept</H2>
+
+<P>WordMacro/Concept - also known as Word Prank Macro or WW6Macro - is
+a real macro virus which has been written with the Microsoft Word v6.x
+macro language. It has been reported in several countries, and seems to
+have no trouble propagating in the wild. </P>
+
+<P>WordMacro/Concept consists of several Word macros. Since Word macros
+are carried with Word documents themselves, the virus is able to spread
+through document files. This is a quite ominous development - so far, people
+have only had to worry about infections in their program files. The situation
+is made worse by the fact that WordMacro/Concept is also able to function
+with Microsoft Word for Windows 6.x and 7.x, Word for Macintosh 6.x, as
+well as in Windows 95 and Windows NT environments. It is, truly, the first
+functional multi-environment virus, although it can be argued that the
+effective operating system of this virus is Microsoft Word, not Windows
+or MacOS. </P>
+
+<P>The virus gets executed every time an infected document is opened. It
+tries to infect Word's global document template, NORMAL.DOT (which is also
+capable of holding macros). If it finds either the macro &quot;PayLoad&quot;
+or &quot;FileSaveAs&quot; already on the template, it assumes that the
+template is already infected and ceases its functioning. </P>
+
+<P>If the virus does not find &quot;PayLoad&quot; or &quot;FileSaveAs&quot;
+in NORMAL.DOT, it starts copies the viral macros to the template and displays
+a small dialog box on the screen. The box contains the number &quot;1&quot;
+and an &quot;OK&quot; button, and its title bar identifies it as a Word
+dialog box. This effect seems to have been meant to act as a generation
+counter, but it does not work as intended. This dialog is only shown during
+the initial infection of NORMAL.DOT. </P>
+
+<CENTER><P><IMG SRC="concept1.gif" HEIGHT=122 WIDTH=165></P></CENTER>
+
+<P>After the virus has managed to infect the global template, it infects
+all documents that are created with the <I>File/Save As</I> command. It
+is then able to spread to other systems on these documents - when a user
+opens an infected document on a clean system, the virus will infect the
+global document template. </P>
+
+<P>The virus consists of the following macros: </P>
+
+<UL>
+<P>AAAZAO<BR>
+AAAZFS<BR>
+AutoOpen<BR>
+FileSaveAs<BR>
+PayLoad</P>
+</UL>
+
+<CENTER><P><IMG SRC="concept2.gif" HEIGHT=341 WIDTH=338> </P></CENTER>
+
+<CENTER><P><I>Picture of the macro list in an infected machine</I> </P></CENTER>
+
+<P>Note that &quot;AutoOpen&quot; and &quot;FileSaveAs&quot; are legitimate
+macro names, and some users may already have attached these macros to their
+documents and templates. In this context, &quot;PayLoad&quot; sounds very
+ominous. It contains the text: </P>
+
+<PRE>        Sub MAIN
+
+                REM That's enough to prove my point
+
+        End Sub
+
+</PRE>
+
+<P>However, the &quot;PayLoad&quot; macro is not executed at any time.
+</P>
+
+<P>You can detect the presence of the WordMacro/Concept macro virus in
+your system by simply selecting the command Macro from Word's Tools menu.
+If the macro list contains a macro named &quot;AAAZFS&quot;, your system
+is infected. </P>
+
+<P>You could prevent the virus from infecting your system by creating a
+macro named &quot;PayLoad&quot; that doesn't have to do anything. The virus
+will then consider your system already infected, and will not try to infect
+the global template NORMAL.DOT. This is only a temporary solution, though
+- somebody may modify the viruse's &quot;AutoOpen&quot; macro to infect
+the system regardless of whether NORMAL.DOT contains the macros &quot;FileSaveAs&quot;
+or &quot;PayLoad&quot;. </P>
+
+<P>Concept replicates only on English versions of Word. However, one translated
+version to operate on French Word has been found. This variant is known
+as WordMacro/Concept.Fr. </P>
+
+<P>F-PROT Profesional is able to the detect the WordMacro/Concept macro
+virus. <A NAME="nuclear"></A></P>
+
+<H2>WordMacro/Nuclear</H2>
+
+<P>WordMacro/Nuclear was recently discovered. Like WordMacro/DMV and WordMacro/Concept,
+it spreads through Microsoft Word documents. The new virus was first spotted
+on a FTP site in Internet, in a publicly accessible area which has in the
+past been a notorious distribution site for viral code. Apparently, the
+viruse's distributor has some sense of irony; the virus was attached to
+a document which described an earlier Word macro virus, WordMacro/Concept.
+</P>
+
+<P>Whereas WordMacro/DMV is a test virus and WordMacro/Concept is only
+potentially harmful, WordMacro/Nuclear is destructive, harmful and generally
+obnoxious. It consists of a number of Word macros attached to documents.
+When an infected document is opened, the virus is executed and tries to
+infect Word's global document template, NORMAL.DOT. </P>
+
+<P>Unlike WordMacro/Concept - which pops up a dialogue box when it infects
+NORMAL.DOT - WordMacro/Nuclear does not announce its arrival in the system.
+Instead, it lays low and infects every document created with the <I>File/Save
+As</I> command by attaching its own macros to it. The virus tries to hide
+its presence by switching off the &quot;Prompt to save NORMAL.DOT&quot;
+option (in the Options dialogue, opened from Tools menu) every time a document
+is closed. That way, the user is no longer asked whether changes in NORMAL.DOT
+should be saved, and the virus is that more likely to go unnoticed. Many
+users relied on this option to protect themselves against the WordMacro/Concept
+virus, but it obviouisly no longer works against Nuclear. </P>
+
+<P>WordMacro/Nuclear contains several potentially destructive and irritating
+routines. The next time Word is started after initial infection, one of
+its constituent macros, &quot;DropSuriv&quot;, looks up the time in the
+computer's clock. If the time is between 17.00 and 17.59, the virus tries
+to inject a more traditional DOS/Windows file virus called &quot;Ph33r&quot;
+into the system (as the viruse's author has commented in the viruse's code:
+&quot;5PM - approx time before work is finished&quot;). &quot;Suriv&quot;
+is, of course, &quot;Virus&quot; spelled backwards. However, due to an
+error, this routine does not work as intended in any of the popular operating
+environments. </P>
+
+<P>Another of the viruse's macros, &quot;PayLoad&quot;, tries to delete
+the computer's system files IO.SYS, MSDOS.SYS and COMMAND.COM whenever
+the date is fifth of April. This attempt will fail due a programming error
+(virus authors never test drive the destructive parts of their code, it
+seems). And finally, the virus adds the following two lines: </P>
+
+<PRE>        And finally I would like to say:
+
+        STOP ALL FRENCH NUCLEAR TESTING IN THE PACIFIC
+
+</PRE>
+
+<P>at the end of any document printed or faxed from Word during the last
+five seconds of any minute. Since the text is added at print-time only,
+the user is unlikely to notice this embarassing change. This function is
+handled by the viral macro &quot;InsertPayload&quot;. </P>
+
+<P>The virus can be detected by selecting the Macro command from the Tools
+menu and checking whether the macro list contains any curiously named macros.
+&quot;DropSuriv&quot; and &quot;InsertPayload&quot; are obvious giveaways.
+</P>
+
+<P>F-PROT Professional 2.20 is able to the detect the WordMacro/Nuclear
+virus. <A NAME="colors"></A></P>
+
+<H2>WordMacro/Colors</H2>
+
+<P>This macro virus was posted to a usenet newsgroup on the 14th of October,
+1995. It is also known as the Rainbow virus. This macro virus infectes
+Word documents in a similar manner as the previous Word macro viruses,
+except that it does not rely only on the auto-execute macros to operate.
+Thus, this virus will be able to execute even if the automacros are turned
+off. Colors contains the following macros: </P>
+
+<UL>
+<P>AutoClose<BR>
+AutoExec<BR>
+AutoOpen<BR>
+FileExit<BR>
+FileNew<BR>
+FileSave<BR>
+FileSaveAs<BR>
+ToolsMacro<BR>
+macros</P>
+</UL>
+
+<P>All macros are encrypted with the standard Word execute-only feature.
+</P>
+
+<P>When an infected document is opened, the virus will execute when user:
+</P>
+
+<UL>
+<LI>Creates a new file </LI>
+
+<LI>Closes the infected file </LI>
+
+<LI>Saves the file (autosave does this automatically after the infected
+document has been open for some time) </LI>
+
+<LI>Lists macros with the Tools/Macro command </LI>
+</UL>
+
+<P>It is important <B>not to use the Tools/Macro command</B> to check if
+you are infected with this virus, as you will just execute the virus while
+doing this. Instead, use File/Templates/Organizer/Macros command to detect
+and delete the offending macros. Do note that a future macro virus will
+probably subvert this command as well. </P>
+
+<P>The virus maintains a generation counter in WIN.INI, where a line &quot;countersu
+=&quot; in the [windows] part is increased during the execution of the
+macros. After every 300rd increments the virus will modify the system color
+settings; the colors of different Windows objects will be changed to random
+colors after next boot-up. This activation routine will not work under
+Microsoft Word for Macintosh. </P>
+
+<P>It is interesting to note that the AutoExec macro in the virus is empty.
+It is probably included just to overwrite an existing AutoExec macro -
+which might contain some antivirus routines. WordMacro/Colors also enables
+the automatic execution of automacros if they have been disabled, and turns
+off the 'prompt to save changes to NORMAL.DOT' feature, both of which have
+been used to fight macro viruses. </P>
+
+<P>WordMacro/Colors seems to be carefully written; The virus even has a
+debug mode built-in. The virus is probably written in Portugal. </P>
+
+<P>F-PROT Professional 2.21 is able to the detect the WordMacro/Colors
+macro virus. <A NAME="hot"></A></P>
+
+<H2>WordMacro/Hot</H2>
+
+<P>WordMacro/Hot was the first Word macro virus written in Russia. It was
+found in the wild over there in January 1996. </P>
+
+<P>Hot spreads in a similar manner as the <A HREF="#concept">WordMacro/Concept</A>
+virus: when an infected DOC is first opened, virus modifies the NORMAL.DOT
+file, and will spread to other documents after that. </P>
+
+<P>Unlike the earlier Word macro viruses, Hot does not replicate with the
+<I>File/Save As</I> command - it infects only during the basic <I>File/Save</I>
+command. This means that Hot will infect only existing documents in the
+system - not new ones. </P>
+
+<P>Infected documents contain the following four macros, which are visible
+in the macro list: </P>
+
+<UL>
+<LI>AutoOpen </LI>
+
+<LI>DrawBringInFrOut </LI>
+
+<LI>InsertPBreak </LI>
+
+<LI>ToolsRepaginat </LI>
+</UL>
+
+<P>When Hot infects NORMAL.DOT, it renames these macros to: </P>
+
+<UL>
+<LI>StartOfDoc </LI>
+
+<LI>AutoOpen </LI>
+
+<LI>InsertPageBreak </LI>
+
+<LI>FileSave </LI>
+</UL>
+
+<P>Macros have been saved with the 'execute-only' feature, which means
+that a user can't view or edit them. </P>
+
+<P>WordMacro/Hot contains a counter. It adds a line like this to the WINWORD6.INI
+file: </P>
+
+<PRE>        QLHot=35112
+
+</PRE>
+
+<P>This number is based on the number of days during this century. Hot
+adds 14 to this number and then waits until this latency time of 14 days
+has passed. Hot will spread normally during this time, it will just not
+activate. </P>
+
+<P>After the 14 day pause, there is a 1 in 7 chance that a document will
+be erased when it is opened. Virus will delete all text and re-save the
+document. Hot does not do this, if it find a file called EGA5.CPI from
+the C:\DOS directory. A comment in the source code of the virus hints that
+this feature is added so that the author of the virus and his friends can
+protect themselves from the activation damage: </P>
+
+<PRE>  '---------------------------------------------------------------
+
+  '- Main danger section: if TodayNo=(QLHotDateNo + RndDateNo) ---
+
+  '- and if File C:DOSega5.cpi not exist (not for OUR friends) -
+
+  '---------------------------------------------------------------
+
+</PRE>
+
+<P>By default, there is no file by the name EGA5.CPI in MS-DOS distributions.
+</P>
+
+<P>WordMacro/Hot was the first macro virus to use external functions. This
+system allows Word macros to call any standard Windows API call. The use
+of external functions is specific to Windows 3.1x means that WordMacro/Hot
+will be unable to spread under Word for Macintosh or Word 7 for Windows
+95: opening an infected document will just produce an error message. </P>
+
+<P>F-PROT Professional 2.21a is able to detect the WordMacro/Hot virus.
+<A NAME="atom"></A></P>
+
+<H2>WordMacro/Atom</H2>
+
+<P>WordMacro/Atom was found in February 1996. It's operating mechanism
+is quite similar to <A HREF="#concept">WordMacro/Concept</A>, with the
+following differences: </P>
+
+<UL>
+<LI>All the macros in this virus are encrypted (Word's <I>execute-only</I>
+feature) </LI>
+
+<LI>The virus replicates during file openings as well, in addition to saving
+files </LI>
+
+<LI>The virus has two destructive payloads </LI>
+</UL>
+
+<P>First activation happens when the date is December 13th. At this date
+the virus attempts to delete all files in the current directory. </P>
+
+<P><IMG SRC="atom.gif" HEIGHT=121 WIDTH=297 ALIGN=RIGHT> Second activation
+happens when a <I>File/Save As</I> command is issued and the seconds of
+the clock are equal to 13. If so, the virus will password-protect the document,
+making it unaccesible to the user in the future. The password is set to
+be <B>ATOM#1</B>. </P>
+
+<P>It is not easy to give a search string for this virus: some of the replicants
+are usually in files password-protected by the virus, and thus contain
+no constant user-definable search string. </P>
+
+<P>Disabling automacros will make Atom unable to execute and spread. Turning
+on the <I>Prompt to save NORMAL.DOT</I> setting will make Atom unable to
+infect NORMAL.DOT, but it will still be able to infect documents that are
+opened or saved during the same Word session. </P>
+
+<P>WordMacro/Atom is not known to be in the wild. <A NAME="other"></A></P>
+
+<H2>Other Word macro viruses and trojans</H2>
+
+<P>In total the following macro viruses have been found between August
+1995 and January 1997: </P>
+
+<UL>
+<P>WordMacro/ABC<BR>
+WordMacro/Alliance<BR>
+WordMacro/AntiConcept<BR>
+WordMacro/Atom.A<BR>
+WordMacro/Atom.B<BR>
+WordMacro/Atom.C<BR>
+WordMacro/Atom.D<BR>
+WordMacro/Atom.E<BR>
+WordMacro/Atom.F<BR>
+WordMacro/Atom.G:De<BR>
+WordMacro/Bandung.A<BR>
+WordMacro/Bandung.B<BR>
+WordMacro/Bandung.C<BR>
+WordMacro/Bandung.D<BR>
+WordMacro/Bandung.E<BR>
+WordMacro/Bandung.F<BR>
+WordMacro/Boom:De<BR>
+WordMacro/Buero:De<BR>
+WordMacro/Chandi<BR>
+WordMacro/Chaos<BR>
+WordMacro/Clock:De<BR>
+WordMacro/Colors.A<BR>
+WordMacro/Colors.B<BR>
+WordMacro/Colors.C<BR>
+WordMacro/Colors.D<BR>
+WordMacro/Colors.E<BR>
+WordMacro/Colors.F<BR>
+WordMacro/Colors.G<BR>
+WordMacro/Colors.H<BR>
+WordMacro/Concept.A<BR>
+WordMacro/Concept.B:Fr<BR>
+WordMacro/Concept.C<BR>
+WordMacro/Concept.D<BR>
+WordMacro/Concept.E<BR>
+WordMacro/Concept.F<BR>
+WordMacro/Concept.G<BR>
+WordMacro/Concept.H<BR>
+WordMacro/Concept.I<BR>
+WordMacro/Concept.J<BR>
+WordMacro/Concept.L<BR>
+WordMacro/Concept.M<BR>
+WordMacro/Concept.O:Tw<BR>
+WordMacro/Concept.P<BR>
+WordMacro/Concept.Q<BR>
+WordMacro/Concept.R<BR>
+WordMacro/Concept.S<BR>
+WordMacro/CountTen.B<BR>
+WordMacro/Daniel.A<BR>
+WordMacro/Daniel.B<BR>
+WordMacro/Date<BR>
+WordMacro/Dietzel:De<BR>
+WordMacro/Divina.A<BR>
+WordMacro/Divina.B<BR>
+WordMacro/Divina.C<BR>
+WordMacro/DMV<BR>
+WordMacro/Doggie<BR>
+WordMacro/Easy<BR>
+WordMacro/Fist:Tw<BR>
+WordMacro/Friendly:De<BR>
+WordMacro/Gangsterz<BR>
+WordMacro/Goldfish<BR>
+WordMacro/Goodbye<BR>
+WordMacro/Goodbye.Dropper<BR>
+WordMacro/Guess<BR>
+WordMacro/Hassle<BR>
+WordMacro/Helper<BR>
+WordMacro/Hot<BR>
+WordMacro/Hybrid<BR>
+WordMacro/Imposter.A<BR>
+WordMacro/Imposter.B<BR>
+WordMacro/Irish<BR>
+WordMacro/Italian:It<BR>
+WordMacro/Johnny<BR>
+WordMacro/KillDLL<BR>
+WordMacro/Kompu<BR>
+WordMacro/LBYNJ:De<BR>
+WordMacro/Look.A:Tw<BR>
+WordMacro/Look.B:Tw<BR>
+WordMacro/Lunch.A<BR>
+WordMacro/Lunch.B<BR>
+WordMacro/MadDog.A<BR>
+WordMacro/MadDog.B<BR>
+WordMacro/Magnum<BR>
+WordMacro/MDMA.A<BR>
+WordMacro/MDMA.B<BR>
+WordMacro/MDMA.C<BR>
+WordMacro/MDMA.D<BR>
+WordMacro/Minimal<BR>
+WordMacro/MSW<BR>
+WordMacro/NF<BR>
+WordMacro/NiceDay<BR>
+WordMacro/Niki:It<BR>
+WordMacro/NJ-WMVCK.A<BR>
+WordMacro/NJ-WMVCK.B<BR>
+WordMacro/NOP.A:De<BR>
+WordMacro/NOP.B:De<BR>
+WordMacro/Npad.A<BR>
+WordMacro/Npad.B<BR>
+WordMacro/Npad.C<BR>
+WordMacro/Npad.D<BR>
+WordMacro/Npad.E<BR>
+WordMacro/Npad.F<BR>
+WordMacro/Nuclear.A<BR>
+WordMacro/Nuclear.B<BR>
+WordMacro/Nuclear.C<BR>
+WordMacro/Nuclear.D<BR>
+WordMacro/Nuclear.E<BR>
+WordMacro/Olympic.A:Tw<BR>
+WordMacro/Olympic.B:Tw<BR>
+WordMacro/Outlaw.A<BR>
+WordMacro/Outlaw.B<BR>
+WordMacro/PCW:De<BR>
+WordMacro/Phardera<BR>
+WordMacro/Pheew:NL<BR>
+WordMacro/Polite<BR>
+WordMacro/Rapi.A<BR>
+WordMacro/Rapi.B<BR>
+WordMacro/Rapi.C<BR>
+WordMacro/Rapi.D<BR>
+WordMacro/Rapi.D1<BR>
+WordMacro/Rapi.D2<BR>
+WordMacro/Rapi.E<BR>
+WordMacro/Rapi.E2<BR>
+WordMacro/Rapi.F<BR>
+WordMacro/Rapi.F<BR>
+WordMacro/Rapi.F1<BR>
+WordMacro/Rapi.F2<BR>
+WordMacro/Rapi.G<BR>
+WordMacro/Rapi.H<BR>
+WordMacro/Reflex<BR>
+WordMacro/Reflex.Dropper<BR>
+WordMacro/Satanic<BR>
+WordMacro/SaveCount<BR>
+WordMacro/Saver:De<BR>
+WordMacro/Showofxx<BR>
+WordMacro/Silly<BR>
+WordMacro/Smiley:De<BR>
+WordMacro/Spooky:De<BR>
+WordMacro/Stryx:De<BR>
+WordMacro/Stryx:De<BR>
+WordMacro/Target.A:De<BR>
+WordMacro/Target.B:De<BR>
+WordMacro/Tedious<BR>
+WordMacro/Theather.A:Tw<BR>
+WordMacro/Theather.B:Tw<BR>
+WordMacro/Twister<BR>
+WordMacro/Twno.A:Tw<BR>
+WordMacro/Twno.C:Tw<BR>
+WordMacro/Twno.D:Tw<BR>
+WordMacro/Waverley<BR>
+WordMacro/Wazzu.A<BR>
+WordMacro/Wazzu.AA<BR>
+WordMacro/Wazzu.AB<BR>
+WordMacro/Wazzu.AC<BR>
+WordMacro/Wazzu.AD<BR>
+WordMacro/Wazzu.AE<BR>
+WordMacro/Wazzu.AF<BR>
+WordMacro/Wazzu.AG<BR>
+WordMacro/Wazzu.B<BR>
+WordMacro/Wazzu.C<BR>
+WordMacro/Wazzu.D<BR>
+WordMacro/Wazzu.E<BR>
+WordMacro/Wazzu.F<BR>
+WordMacro/Wazzu.G<BR>
+WordMacro/Wazzu.H<BR>
+WordMacro/Wazzu.I<BR>
+WordMacro/Wazzu.J<BR>
+WordMacro/Wazzu.K<BR>
+WordMacro/Wazzu.L<BR>
+WordMacro/Wazzu.M<BR>
+WordMacro/Wazzu.O<BR>
+WordMacro/Wazzu.P<BR>
+WordMacro/Wazzu.Q<BR>
+WordMacro/Wazzu.R<BR>
+WordMacro/Wazzu.S<BR>
+WordMacro/Wazzu.T<BR>
+WordMacro/Wazzu.U<BR>
+WordMacro/Wazzu.V<BR>
+WordMacro/Wazzu.W<BR>
+WordMacro/Wazzu.X<BR>
+WordMacro/Wazzu.Y<BR>
+WordMacro/Wazzu.Z<BR>
+WordMacro/Weather.A:Tw<BR>
+WordMacro/Weather.B:Tw<BR>
+WordMacro/Weather.C:Tw<BR>
+WordMacro/Xenixos:De<BR>
+garbage://Concept.K<BR>
+garbage://Concept.N<BR>
+intended://Twno.B:Tw<BR>
+trojan://Concept.L.Drp<BR>
+trojan://Concept.M.Drp<BR>
+trojan://FormatC<BR>
+trojan://Switches<BR>
+<BR>
+Total count: 193 pieces of Word macro malware</P>
+</UL>
+
+<P>WordMacro/Wazzu consists of a single AutoOpen macro; this makes it language
+independent, ie. this macro virus is able to infect localized versions
+of Word as well as the english Word. </P>
+
+<P>Unlike most other macro viruses, Wazzu has really been seen in the wild,
+and it is considered common nowadays. </P>
+
+<P>Wazzu modifies the contents of documents it infects, moving words around
+and inserting the text 'wazzu '. Word Wazzu is reported to be a nickname
+for the Washington State University. </P>
+
+<P>There exists also several trojans written in the Word macro language.
+These typically delete data as soon as the trojanized document is open.
+Since these do not spread by themselves, they are not widespread and not
+considered to be a significant threat. </P>
+
+<P>Some known macro trojans are <I>WordTrojan/FormatC, WordTrojan/WeideroffnenC,
+WordTrojan/Concept.L.Drp and WordTrojan/Concept.M.Drp</I>. </P>
+
+<P><A NAME="protect"></A></P>
+
+<H2>Protecting yourself against Word macro viruses</H2>
+
+<P>There is a generic way to protect your Word against some of the known
+macro viruses. <I>However, this should not be relied on alone, as it can
+not stop even all known macro viruses</I>. Select the command Macro from
+the Tools menu and create a new macro called &quot;AutoExec&quot;. Write
+the following commands to the macro and save it: </P>
+
+<PRE>Sub MAIN
+
+        DisableAutoMacros
+
+        MsgBox &quot;AutoMacros are now turned off.&quot;, &quot;Virus protection&quot;, 64
+
+End Sub
+
+</PRE>
+
+<P>This macro will be executed automatically when Word starts. It will
+disable the feature which viruses like Concept, DMV and Nuclear use to
+attack the system. However, there are ways to create macro viruses that
+are able to bypass such protection. </P>
+
+<P>Only some of currently known Word macro viruses are able to infect nationalized
+versions on Word. In these programs, the macro language commands have been
+translated to the national language, and therefore macros created with
+the English version of Word will not work. Since these viruses consists
+of macros, they will be unable to function. However, viruses like DMV or
+Wazzu are able to spread in any version of Word. <A NAME="f-prot"></A></P>
+
+<H2>F-PROT and Word macro viruses</H2>
+
+<P>F-PROT has been able to detect Word macro viruses since October 1995.
+</P>
+
+<P>Unlike the limited free version of F-PROT, <B>F-PROT Professional</B>
+is able to disinfect macro viruses automatically with it's built-in scanning
+engine. The limited version of F-PROT includes a separate F-MACROW utility
+which can be used to detect and disinfect macro viruses. </P>
+
+<P>F-PROT Professional for Windows, Windows 95, Windows NT and OS/2 as
+well as the realtime Windows VxD scanners have these macro scanning features
+built in to their normal scanners. </P>
+
+<P>If you are running a VxD-based background protection from the F-PROT
+Professional suite, you will be notified on infected document files as
+soon as you try to open or copy them or when you are receiving such a document
+as an e-mail attachment or downloading it from www. Disinfection can also
+be done in realtime. A VxD-based solution provides significantly better
+protection than antivirus systems relying on the Word macro language. <A NAME="f-macro"></A></P>
+
+<P>
+<HR><FONT SIZE=-2>Copyright &copy; 1996 Data Fellows </FONT></P>
+
+</BODY>
+</HTML>

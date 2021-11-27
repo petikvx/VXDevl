@@ -1,0 +1,149 @@
+Warhol Worms: The Potential for Very Fast Internet Plagues
+by
+Nicholas C Weaver
+
+"In the future, everybody will have 15 minutes of fame"
+-Andy Warhol
+
+Abstract
+It is well known that active worms such as Code Red and the Morris internet worm have the potential to spread very quickly, on the order of hours to days. But it is possible to construct hyper-virulent active worms, capable of infecting all vulnerable hosts in approximately 15 minutes to an hour. Such "Warhol Worms", by using optimized scanning routines, hitlist scanning for initial propagation, and permutation scanning for complete, self coordinated coverage, could cause maximum damage before people could respond. The potential mayhem is staggering. 
+
+This is a completely new version, posted on august 15th, 2001. The original essay is still available here. 
+
+Introduction
+Active worms, programs which replicate themselves by attacking servers on network connected machines, have been a problem for many years. In the decade since the Morris worm, several low grade, low publicity, generally benign worms have propagated. Code Red was simply more of the same, albeit with more press. It is also well known that worms could be much more malicious then have been currently seen. 
+
+But one question remaining is how fast a malicious active worm could spread. Previous active worms have required several hours to spread effectively, which gives sufficient time for people to recognize the threat and limit the potential damage. Since a malicious worm would wish to do as much damage as possible, the worm can be much more devastating if it spreads quickly. A world wide infection time of under an hour would be particularly destructive. 
+
+In general, the speed of a worm's spread is dictated by the efficiency of finding new targets. Apart from optimizing the scanning code, a couple of minor variations in scan sequence can result in significant improvements in speed. The greatest benefit is from hitlist scanning: using a precompiled target list during the initial spread. Further benefit can come from permutation scanning and variants, which use a pseudo random permutation create a self coordinating but seemingly random scan. The result would be a "Warhol Worm", able to infect most or all vulnerable machines in the first 15 minutes of release. 
+
+Active Worms
+An active worm, unlike the slightly more common mail worm, needs no human interaction to spread. It starts out on a single host and scans for other vulnerable machines on the Internet. When the scan finds a machine which the worm can potentially infect, it sends out a probe to infect the target. If successful, the worm transfers over a copy of itself to the new host, which begins running the worm. 
+
+The main factor which limits how fast an active worm can spread is how fast new targets can be discovered, how many potential targets are available, and how fast they can be infected. Fewer targets will cause a worm to slow down, because any given scan is less likely to find a valid target. The time it takes to infect a target slows a worm slightly, by limiting the rate at which new worms come online. 
+
+In most cases, the biggest limitation is the rate at which a worm can scan the network. Although a single scan may take anywhere from a few milliseconds (for a local host) to a second or longer (for a remote machine), a multithreaded worm can easily scan in parallel. A properly constructed scanner should be able to have many scans outstanding, even using a TCP-like back off strategy to insure that it is scanning at the maximum possible rate. A good goal for a Warhol Worm would be 100 scans per second, an easily achievable rate. 
+
+It is also important to separate out the act of scanning and probing by only probing machines which the scan suggests are actually vulnerable. Code Red was indiscriminate in its probing, thus it tried to infect many non-vulnerable web servers. This has two negative effects: it told the recipient machine that it was running the worm (resulting in several anti Code Red web pages) and it slowed down the rate of infection, since such probes are a significant waste of effort. Similarly, a worm should never try to infect a machine which is already running a copy of the worm. 
+
+Even very fast active worms only have minor effects on the network. Since the worm itself can be small (100k is a reasonable size), a probe to attempt an infection is smaller (5k or so), and the scan itself is miniscule (a few dozen bytes may be sufficient), the actual bandwidth requirements are surprisingly low. This is in marked contrast to mail worms, which have to send out copies of themselves in order to attempt to infect a host. 
+
+The only significant network effect is a marked increase in ARP (routing related) requests, as the scanning worms keep trying to probe different machines throughout the world. This should have little effect on backbone routers, but Code Red did demonstrate effects on some routers near the periphery. There are scanning mechanisms (discussed later) which would not demonstrate these effects. 
+
+Existing Infection Strategies
+Most worms have used random scanning in order to detect new targets. The worm picks a random IP address, scans it to see if it is vulnerable, and then attempts an infection. Random scanning has some very good properties: it results in the worm scattering itself quickly through the network and the scans themselves seem to come from everywhere. Unfortunately, this begins to saturate out after a while as fewer random probes reveal potential targets. It is also very hard on some boarder routers as it generates many ARP requests. 
+
+A fully coordinated worm, where the worms explicitly coordinate their attack on the network, is a theoretical possibility but has not been seen in practice due to the difficulty in coding and coordinating the worms. 
+
+Linear scanning, where the worm scans a linear address range and partitions this range between itself and any newly infected machine, is a strategy which is not seen in practice. It lacks the good initial scattering of random scanning and an intelligent firewall should immediately detect and halt linear scans. 
+
+Finally, virulent worms often start by scanning the local subnet and logically adjacent networks for new victims. This is a very effective for infecting nearby machines, since vulnerable machines are often clustered together and this proves an excellent way to wreak havoc in internal networks. Code Red II's increased virulence was mostly caused by the included subnet scanning routines. 
+
+New Infection Strategies
+One of the biggest problems a worm faces is getting a significant initial population. Although a worm spreads exponentially during the early stages of infection, the time needed to infect the first 10,000 hosts dominates the infection time. 
+
+ 
+
+Figure 1: David Moore's graph of the initial spread of the Code Red Worm, from Caida.org
+
+There is a simple way for a Warhol worm to overcome this problem: Hitlist scanning. Long before the worm is released, the worm author collects a list of 10,000 to 50,000 potentially vulnerable machines with good network connections. The worm, when released onto an initial machine on this hitlist, begins scanning down the list. When it infects a machine, it divides the hitlist in half, communicating half to the recipient worm, keeping the other half. 
+
+This quick division insures that even if only 10-20% of the machines on the hitlist are actually vulnerable, a Warhol worm will go through the hitlist and establish itself on all vulnerable machines in under a minute. And although the hitlist may start at 200 kilobytes, it quickly shrinks to nothing during the partitioning. This provides a great benefit in constructing a Warhol Worm by speeding the initial infection. The hitlist should ideally consist of potential targets with good network connections and specific commercial interest. 
+
+
+
+Figure 2: Simulated infection rates for Random scanning with a hitlist able to compromise 10,000 machines verses one which starts on 10 machines. The lines end when 99% of the 1M vulnerable machines are infected.
+
+Constructing the hitlist is easy. Since the hitlist is constructed long before a worm is released, a slow scan would not be noticed. The Honeynet project has shown that scans occur at alarming frequencies, thus another one could be conducted without people correlating it with the later worm release. Since such a scan is just to determine what service a machine is running, not whether the targeted hole exists, it could be completed even before an exploit for the worm is developed. Finally, public servers such as the Netcraft Survey could be used to generate the hitlist for some services, without requiring a scan. 
+
+Although random scanning works well initially, it begins to die out after the number of uninfected hosts goes down. This die down can be reduced through the use of permutation scanning. In a permutation scan, an already infected machine responds differently than a potential target, as a way of telling the scanning worm that the machine is infected. Not only does this prevent needless reinfections, but it can be used to impose coordination on the worm. 
+
+In a permutation scan, all worms share a common pseudo random permutation of the IP address space. Such a permutation can be efficiently generated using any block cipher of 32 bits with a preselected key: simply encrypt an index to get the corresponding address in the permutation, and decrypt an address to get its index. 
+
+Worms infected during the hitlist phase or local subnet scanning start just after their point in the permutation and scan through the permutation, looking for vulnerable machines. Whenever it sees an already infected machine, it chooses a new, random start point and proceeds from there. Worms infected by permutation scanning would start at a random point. 
+
+This has the effect of providing a semi coordinated, comprehensive scan while maintaining the benefits of random probing. Each worm looks like it is conducting a random scan, but it attempts to minimize duplication of effort. This keeps the infection rate higher and guarantees an eventual comprehensive scan. 
+
+Additionally, the worms could be programmed to comprehensively rescan the net at regular intervals. A timer could induce the worms to wake up and rescan the section of permutation starting at itself and ending at the next worm. This would cause every address to be completely rescanned at regular, predictable intervals, detecting any machines which come onto the network. 
+
+A further optimization is a partitioned permutation scan. In this scheme, the worm has a range of the permutation that it is initially responsible for. When it infects another machine, it reduces its range in half with the newly infected worm taking the other section. When the range gets below a certain level, it switches to simple permutation scanning and otherwise behaves like a permutation scan. It offers a slight but noticeable increase in scanning efficiency. 
+
+
+
+Figure 3: Simulated infection rates for Random, Permutation, and Partitioned Permutation scanning. The lines end when complete infection of all 1M vulnerable machines is achieved. All infections started with an initial population of 10,000 acquired by the hitlist scan.
+
+Finally, if a worm detects that it's internet-wide scanning is being ARP limited, it could switch to subnet permutation scanning. In this case, a different permutation is used to generate the upper 24 bits of the address, with the lower 8 bits scanned in a sequential order for each entry. The worms, upon being scanned, give enough information to determine what scanning mechanism was used to infect itself, and what scanning mechanism it is using, so the other worms know how to respond and whether they should skip to a new location. 
+
+Subnet permutation scanning is a poor choice when the worm is not ARP limited, because the linear scans are easily detected and blocked by intelligent firewalls, so it should only be used as a fallback mechanism when the scan rate has dropped below a threshold and the shift of modes results in a significant speedup in the scan rate. 
+
+Infection Simulator
+A simple simulator was constructed for evaluating the virulence of such worms. It used a separate permutation to map between a 32 bit address space and a number of potential machines. Every timestep, each active worm is evaluated. Parameters include the number of vulnerable machines, the size of the initial population, the number of scans per second, and the time it takes to infect a machine. 
+
+Results suggest that, for 1,000,000 vulnerable machines and a starting population of 10,000 from the hitlist scan, 1 minute to process the hitlist, 100 scans per second, and 1 second to infect a machine, complete infection will occur in roughly 8 minutes, with 99% infection occurring in 6 minutes and 30 seconds. A much slower scan rate of 10 scans per second requires 50 minutes to reach the 99% mark, and slightly over an hour for complete infection. 
+
+A lower number of vulnerable hosts will naturally slow the rate of infection. Thus, if the number of vulnerable hosts is reduced to 250,000, the time is increased to a little over 20 minutes for complete infection at 100 scans/second. 
+
+The source code for simulating permutation scans, partitioned permutation scans, and random scans is included. 6 round, 32 bit RC5 was used for all permutations and PRNG purposes. The parameter for the number of outstanding infections per worm is ignored, as it would only affect the speed of hitlist scanning. 
+
+Potential Targets and Multimode Worms
+There are three very good targets for active worms to exploit: Microsoft IIS, Microsoft Exchange, and the various P2P and messenger programs. A newly discovered exploit in any of these applications would enable a highly virulent worm. But although a single exploit can provide for an effective worm, a worm which exploits multiple services and multiple holes would spread farther, able to affect more machines in a single attack. 
+
+Microsoft IIS is an amazingly vulnerable target, even in the aftermath of Code Red I and II. IIS is installed by default with Windows 2000 server and it provides a highly homogenious target. Furthermore, there is a continued negligence when it comes to maintaining patches, even on the part of Microsoft. The response following the initial breakout of Code Red demonstrated this clearly: a week after the first outbreak, the second outbreak corrupted nearly as many machines. 
+
+Microsoft Exchange is less prevalent than IIS, but it makes for a highly attractive second target for a multimode worm. Since email needs to get into the corporation, this provides an excellent route for a worm to cut through firewalls. Once inside a firewall, a worm can cause considerable havoc since many internal networks are insecure. 
+
+Finally, holes in the current generation of messenger applications (AOL IM, MSN messenger) and peer to peer file sharing programs (Napster, Kazaa) make for excellent targets for worms. Although most machines running these programs have comparatively poor network connections, these applications have a great advantage for spreading a worm: Each machine already has information about other machines running the program. 
+
+Hitlist scanning isn't necessary for a worm attacking a peer to peer application, the worm simply propagates using the information built into the protocol and application before switching to subnet and permutation scanning as a way of shortcutting gaps and disconnects in the peer to peer structure. Windows XP will undoubtedly make this attack especially effective with its bundled messenger application. 
+
+The only problem with P2P applications is that they are kept updated by the users as older versions can't connect. Thus, a worm which attacks a P2P application will need to use an unpublished exploit. 
+
+Potential Defenses
+The most effective defenses: security by design, sensible defaults, and a diversity of targets, seem unlikely to happen until after a devastating worm is released. Although buffer overflow attacks have been understood for 2 decades, network services are still written in type-unsafe, bounds-unsafe languages. Security audits seem alien to developers while sensible defaults seem to be a myth. Until a major, highly damaging outbreak occurs, followed by the inevitable billion dollar lawsuits, software companies will probably continue their bad practices. 
+
+Similarly, the Microsoft trend to use its monopoly powers to grow into new markets and force out competition has the side effect of producing homogeneous populations of computers. Homogeneous populations, whether in potatoes or computers, are always more vulnerable to diseases. 
+
+Although counter worms seem like an attractive idea, they offer effectively no benefit. They require a patch to work and can only be used to inoculate, since a malicious worm can easily disable the route it used to infect a machine. Thus they offer no benefits over a good auto updater. To make matters worse, the author of a "white worm" would face the same threat of prosecution that a malicious worm writer would face. 
+
+A faster transition to IPv6 would prevent random and permutation scans from working as the address space is too large. But this doesn't prevent worms from using structure based scanning and which take advantage of other mechanisms. It would raise the bar slightly, but not sufficiently to prevent high speed worms from being written. 
+
+Probably the best current defense against a Warhol Worm is context sensitive firewalls, which only allow traffic which corresponds to tightly defined models, internal firewalls throughout the corporate network, and regular security examinations. The general philosophy should be one of "That which is not explicitly allowed is forbidden" when designing both the network and the firewall rules. Regular backups are also essential. 
+
+A Worst Case Warhol Worm
+A worst case Warhol Worm is truly frightening, capable of doing many billions of dollars in real damage and disruption. Since it can achieve complete spread in well under an hour, and could begin doing damage immediately on infecting a machine, human mediated responses offer almost no hope of stopping it. 
+
+A malicious Warhol Worm would ideally use an unknown exploit but one which is generally unpatched would be sufficient. The ideal case for maximizing damage would be a multimode worm which infects both IIS and Exchange. IIS is used to spread the worm quickly, while Exchange is used as the primary means of crossing corporate firewalls. 
+
+The worm spreads very quickly, by hitlist scanning followed by local subnet, nearby subnet, and permutation scanning. If a particular copy of the worm finds its scanning is too slow and ARP limited, it falls back to partitioned subnet scanning. Such a worm could easily spread worldwide in the required 15 minutes, as well as quickly infesting any internal corporate networks it can reach. 
+
+In addition, the worm could also act like a low volume mail worm. Instead of being a primary mode of spreading, it is simply a secondary mode: an additional attempt to breach key corporate firewalls during the initial minutes of infection. The mail worm component is simply a very small trojan which tries to connect back to the infecting worm to transfer the rest of the worm by HTTP. It is important that any mail worm component not generate significant network traffic, so it only attempts to mail to addresses the worm discovers within major corporate and government targets. 
+
+The malicious payload is activated as soon as a machine is infected. This payload is highly devastating but constructed to not slow the worm's spread. If possible, it immediately installs hooks so that it will start again if the machine is reset. Another installed startup program attempts to reflash the bios. 
+
+It then overwrites random pieces of non system files. Although this is slower than simply deleting files, it is harder to recover. At the same time, it changes modification times to mask which files are corrupted. It also searches the local network neighborhood, attempting to overwrite sections of all files it can mount remotely. As long as it continues running, it keeps adding corruptions. 
+
+If an exchange server is infected, it places a copy of the payload in all user's mailboxes and notifies them that they have new mail. With luck, during the first few minutes of infection, a number of users will open and run the malicious payload. The odds of this happening would be improved if the worm was released during a weekday. 
+
+Finally, after an hour or two of such mayhem, if the worm is still running, it corrupts the OS and resets the machine. With luck, the BIOS flasher will reprogram the motherboard into an unrecoverable state. Of course, since data and boot routines were corrupted as soon as the worm began running on the machine, a full reinstall and restoration from backup is necessary even if the worm only has a couple moments on a machine. 
+
+Conclusions
+Malicious worms are a serious threat to our homogenous, highly connected networks. Even the largely benign, comparatively slow worms like Code Red and SirCam have caused some disruption. But the potential is far worse: spreading faster than humans can respond and leaving a wake of damaged data and corrupted machines. By the time people understand what was happening, all damage would be done. 
+
+Optimized scanning routines, hitlist scanning, and permutation scanning can be combined to produce hyper virulent Warhol Worms. Since they are so fast, such worms would be the vehicle of choice for delivering malicious payloads to the net at large. 
+
+Acknowledgments
+Thanks to Michael Constant for helping develop the Hitlist scanning concept, Jon Kuroda, Jim Ausman, and David Wagner for additional suggestions and assistance. Stuart Staniford has pointed out that, if one generates a hitlist for the entire network, and one compresses the hitlist for transfering, the hitlist propigation could flash over the entire network in a minute or two. 
+
+
+--------------------------------------------------------------------------------
+
+Why I'm keeping this page up!
+Unfortunately, the results are too simple: Any reasonably intelligent programmer who thinks about the problem will come up with a similar solution, or a coordinated worm which efficiently divides the search space. Coordinated worms are even faster but do require a level of worm to worm communication. The point of this was to just demonstrate that coordinated worms are NOT a prerequisite for truly fast propagation. 
+
+Secondly, the current worms, taking 12 hours to a day, are still fast enough to foil most human reaction: Look at the continued spread of the code red variants, roughly 3 weeks after initial infection. Changing this to under an hour would only slightly increase the reach in the current environment. 
+
+Finally, I am a personal believer in the doctrine of full disclosure, especially when the "bad guys" (skilled, malicious programmers) could easily come up with the same results without documentation. It is important for the rest of us to consider and evaluate what the realistic threat is. Saying nothing would help nobody. 
+
+We have always known, even before the Morris worm, that connected, homogeneous computer networks are vulnerable to fast moving, active worms. This, however, is an important result because it is a reminder of just HOW vulnerable it is. Human mediated defenses can not stop a fast active worm. 
+
+I will not remove this page. 

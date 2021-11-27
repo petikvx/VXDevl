@@ -1,0 +1,411 @@
+	Writing Win32 programs in assembly language using TASM
+        +----------------------------------------------------+
+
+                        written by Malfunction
+                        +--------------------+
+
+ Foreword:
+ =========
+
+ This tutorial is for the beginner who can already code in assembly
+ language and who has already coded real mode DOS programs.
+ So it's for someone like me a half year ago. :)
+ At that time I was searching for some documentation on Win32 assembly.
+ As I searched for this I mostly found assembler tutorials for
+ real mode programs. And I found lots of links pointing to Iczelion's
+ Win32 assembler tutorial, which is written for MASM and uses
+ lots of macro shit. The only Win32 ASM tutorial for TASM I have seen
+ so far was written by ... let me think ... I believe he called himself
+ Masta ... yes, Masta's Win95 ASM tutorial. That wasn't bad, but it
+ didn't explain all the stuff I wanted to know. So I decided to
+ write my own little tutorial on the subject. I wrote this with the
+ aim to write a very complete tutorial. I hope you'll like it! ;)
+
+ Coding in Win32 environment
+ ===========================
+
+ As you may know Windows runs in protected mode and so our code will
+ do so as well. Windows provides a virtual address space of
+ theoretically 4GB of memory for every process. The use of this virtual memory
+ allows the system to use the hard disk for swapping when the physical
+ memory ain't enough. When you code, you code in a so called "flat"
+ memory model. This means you don't need to care for the segment registers
+ anymore and that makes the ASM coding a hell easier. You only need
+ DWORD offsets when you address memory in Win32. In contrast to 16-bit
+ systems like DOS and Win 3.1, 32-bit systems use DWORDs as offsets.
+ Do not modify the segment registers or your program will fuck up
+ with a chance of 99,99%.
+ You will use the 32-bit registers much more than before (if you haven't used
+ them already before). Let's take the LOOP instruction for example:
+ Now the whole ECX will decrement and not only CX. Remember that!
+ In protected mode (as the name suggests) the memory can be protected.
+ So you may have read/write access, read only access or no access at all.
+ Maybe you have coded COM files in the past and you always had all
+ your code and your data in one segment. If you try the same here
+ it won't work because:
+ 1) there MUST be something in the data section or the linker will fail
+ 2) the code section is write protected, so don't put any variables in here
+ Many people tried to use interrupts in Win32 inline ASM code. But this
+ doesn't work because you don't call REAL MODE interrupts. You would call
+ the protected mode INTs and the good old DOS INTs aren't available anymore.
+ Instead of INTs you need to use the Windows API. For a complete documentation
+ take a look at Microsoft's MSDN (http://msdn.microsoft.com).
+ It is a similar case with the I/O ports. Because your program will
+ run in priviledge mode 3 (also called RING-3) you won't be able to access
+ some ports. Win95/98/ME don't protect all the I/O ports, but WinNT/2K/XP
+ do. In your DOS programs you might still be able to use some ports
+ because WinNT/2K/XP allow to use them in the Virtual x86 mode for
+ compatiblity reasons.
+ And at last I wanna remind you that you will code CASE SENSITIVE from
+ now on! It's just like in C++. :)
+ This is really important and so write MessageBoxA please and not mESSAGEboXa
+ for example! ;)
+
+ Hello World! in Win32 ASM
+ =========================
+
+ Enough theoretical stuff, let's see some code!
+
+ ; ------ CUT here ----------------------------------------------
+
+.386
+.model flat
+
+        extrn ExitProcess:proc
+        extrn MessageBoxA:proc
+
+.data
+
+        msg_title   DB "MessageBox title",0
+        msg_message DB "Hello World!",0
+
+.code
+
+start:
+        push 0
+        push offset msg_title
+        push offset msg_message
+        push 0
+        call MessageBoxA
+
+        push 0
+        call ExitProcess
+
+end start
+
+ ; ------ CUT here ----------------------------------------------
+
+ And now the explanations. :)
+
+ - .386
+ - .model flat
+
+ I think this is obvious. The processor directive MUST be before the
+ memory model and it must be at least a 386. The model directive
+ says we use a flat memory model.
+
+ - extrn ExitProcess:proc
+ - extrn MessageBoxA:proc
+
+ Here we import 2 APIs from Kernel32.dll. Do not forget the :proc after
+ the API names! The linker will give you no error, but your program
+ will definitively fuck up!
+
+ - msg_title DB "MessageBox title",0
+
+ Note that almost every string in Windows is zero terminated.
+
+ - push 0
+ - push offset msg_title
+ - push offset msg_message
+ - push 0
+ - call MessageBoxA
+
+ At this time we call an API, the MessageBoxA API to be exactly.
+ See below for more info.
+
+ - push 0
+ - call ExitProcess
+
+ Yes, no INTs anymore. We use the ExitProcess API to quit. In this
+ code example I used 0 as exit code.
+
+ Something more about APIs
+ =========================
+ 
+ The MessageBoxA call might look a little strange to you.
+ Let's see what the MSDN tells us about this API:
+
+ int MessageBox(HWND  hwndOwner,       // handle of owner window
+                LPCTSTR  lpszText,     // address of text in message box
+                LPCTSTR  lpszTitle,    // address of title of message box
+                UINT  fuStyle          // style of message box
+                );
+ 
+ In Win32, parameters aren't passed in registers anymore. Instead they are
+ pushed on the stack. You really can assume that every parameter
+ is DWORD size. If you code 'push 0' this instruction will push a
+ DWORD 0 on the stack, not a WORD.
+ If you take a closer look you will notice that the parameters are
+ pushed on the stack in the wrong order. As far as I know is this pascal
+ calling convention. So you have to push the last parameter as the first
+ one and the first parameter as the last one.
+ Then simply call the API. The return value will always be in EAX.
+
+ If you have already coded Win32 in C++, you may have wondered about
+ that A behind the MessageBox API: "In my C++ code I never typed this ...".
+ Lot's of APIs that use strings are available in two versions:
+ ANSI and UNICODE. The ones with the A are ANSI and the ones with
+ a W at the end are UNICODE (W = Wide chars).
+
+ Do not forget to save register values which you need before you call an API.
+ In good old DOS times you knew exactly which registers will be destroyed
+ by an INT call, but in the case of APIs you never know. So this is
+ especially important in loops because ECX can be anything after the API call.
+ You can only be sure that EBP won't be changed by an API call.
+ The reason why EBP won't ever be changed by any API is simple:
+ most programs use EBP to build the stack frame.
+
+ One more code example
+ =====================
+
+ Let's have another simple code example. This little program will show
+ the system time in a message box. Here we go:
+
+ ; ------ CUT here ----------------------------------------------
+
+.386
+.model flat
+
+        extrn ExitProcess:proc
+        extrn MessageBoxA:proc
+        extrn GetSystemTime:proc
+
+.data
+
+        _SYSTEMTIME struc
+                wYear DW ?
+                wMonth DW ?
+                wDayOfWeek DW ?
+                wDay DW ?
+                wHour DW ?
+                wMinute DW ?
+                wSecond DW ?
+                wMilliseconds DW ?
+        _SYSTEMTIME ends
+
+        SYSTEMTIME _SYSTEMTIME <?>
+
+        myTitle DB "tell me what time it is ...",0
+        myMessage DB "The system time is: "
+        time_string DB "00:00 h",0
+
+.code
+
+start:
+        push offset SYSTEMTIME
+        call GetSystemTime
+
+        lea edi,[time_string+4]
+        xor eax,eax
+        mov ax,[SYSTEMTIME.wMinute]
+        call convert_to_string
+
+        lea edi,[time_string+1]
+        xor eax,eax
+        mov ax,[SYSTEMTIME.wHour]
+        call convert_to_string
+
+        push 0
+        push offset myTitle
+        push offset myMessage
+        push 0
+        call MessageBoxA
+
+        push 0
+        call ExitProcess
+
+convert_to_string:
+        xor edx,edx
+        mov ecx,10
+        div ecx
+        or dl,30h
+        mov byte ptr [edi],dl
+        xor edx,edx
+        div ecx
+        or dl,30h
+        dec edi
+        mov byte ptr [edi],dl
+        ret
+
+end start
+
+ ; ------ CUT here ----------------------------------------------
+
+ How to compile and link a Win32 program?
+ ========================================
+
+ For our 'hello world' program (hello.asm) we would compile it as the following:
+
+ tasm32 /ml hello.asm
+ tlink32 /Tpe /aa /c hello.obj,,,import32.lib
+
+ As you can see you need to use tasm32.exe and tlink32.exe and not the
+ DOS verions (it's the same for td32.exe). Let's discuss the parameters
+ briefly:
+
+ /ml - compile case sensitive
+ /Tpe - set's output to PE (Portable EXE), /Tpd would be DLL
+ /aa - uses Windows API
+ /c - case sensitive linking
+ import32.lib - see below ...
+
+ How to use APIs from other DLLs?
+ ================================
+
+ Normally, you specify only the import32.lib file for the linker. This
+ is the standard file and it's used by the linker for our API references.
+ Import32.lib contains all APIs from kernel32.dll, user32.dll and gdi32.dll
+ (maybe more, but at least these ones). Let's imagine we want to use the
+ registry in our program. For that purpose we need some APIs like
+ RegOpenKeyExA. These registry APIs are in advapi32.dll. In your program
+ code you declare them as normal APIs, but how to tell the linker that
+ we wanna use it? At first, we need to make our own '.lib' file. For that
+ purpose we take the implib.exe from TASM's BIN directory:
+
+ Implib -c advapi32.lib C:\windows\system\advapi32.dll
+
+ Do not forget the -c for case sensitive. Now we need to copy the '.lib'
+ file to TASM's LIB directory. And now we can give the linker this
+ additional '.lib' file:
+
+ tlink32 /Tpe /aa /c program.obj,,,import32.lib advapi32.lib
+
+ stdcall - does is make the nasty coding easier?
+ ===============================================
+
+ Lot's of Win32 ASM sources use a model directive like the following:
+
+ .model flat, stdcall
+
+ Hmm ... what does stdcall mean? Most coders don't seem to know that.
+ They type it because they have seen it somewhere and there's no
+ problem using it. I may be wrong here, but it seems to me that this
+ is only something that shall make parameter pushing easier.
+ All the documentation on the APIs is written for C++ and it is really
+ nasty to begin with the last parameter. Let's take the call to the
+ MessageBoxA API from the 'hello world' program above. Using the stdcall
+ we could write it like this:
+
+ call MessageBoxA, 0, offset msg_message, offset msg_title, 0
+
+ Yes, all in one line. The compiler will produce the push instructions
+ for us. The special thing here is that the parameters are given in the
+ correct order. In my opinion, this makes the code less readable and
+ makes some little optimizations impossible. If you want to call an API
+ that needs lots of parameters the line with the call could be very long.
+ To continue the call in the next line you can use a '\' at the end of
+ a line. Example:
+
+ call CreateProcessA, 0, offset commandline, 0, 0, 0, 0, 0, 0,\
+                      offset startupinfo, offset processinformation
+
+ Writing your own DLL
+ ====================
+
+ Let's imagine you want to write your own DLL and you want to export
+ some of it's functions. Just write it like a normal program. The
+ exported function should be written like this:
+
+ public myFunction
+
+ myFunction PROC
+     ; your code goes here ...
+     ret
+ myFunction ENDP
+
+ If you don't declare your function as public the linker will give you
+ a warning. The initialization stuff at the entry point of your program
+ must quit with a 'ret 0Ch' and NOT with ExitProcess! The reason is simple:
+ The loader calls the entry point like this:
+
+ BOOL WINAPI DllEntryPoint(
+                HINSTANCE  hinstDLL,        // handle of DLL module
+                DWORD  fdwReason,           // reason for calling function
+                LPVOID  lpvReserved         // reserved
+               );
+
+ In your DllEntryPoint you can do some initialization stuff. This
+ entrypoint is called several times. It is called when the DLL is
+ being attached to process or thread or when it's being detached
+ from a process or thread. Check the MSDN for the different
+ values of the fdwReason parameter. Some of the registers must
+ be preserved in your DLL entrypoint. This is very important because
+ if you don't preserve them the process which loaded the DLL
+ will be terminated without any error message after the DLL
+ entrypoint was run. I don't know exactly which registers must
+ be preserved, but ESI for sure. It's a good idea to preserve simply
+ all register by using PUSHAD and POPAD. The return value
+ is only of importance when the entrypoint is called with the
+ DLL_PROCESS_ATTACH value for the fwdReason. It must be nonzero
+ (true) to signalize the LoadLibrary API that the initialization
+ was successful. If you return zero the DLL will be removed
+ from the process. Construct your entrypoint like this:
+
+dllmain:
+        pushad
+        ; ...
+        ; code
+        ; ...
+        popad
+        mov eax,1
+        ret 0Ch
+
+ To export your function you need to write a '.def' file.
+ These definition files seem to be very similar to the C++ ones. I don't
+ know much about them, but I know that you can write the following
+ to export your function:
+
+ EXPORTS
+     myFunction
+
+ That's all. To link the file you need to specify the '.def' file
+ and you must use /Tpd instead of /Tpe.
+
+ Using resources
+ ===============
+
+ The standard application icon looks boring ...
+ Let's give your program another icon! All we need is an icon (of course *g*)
+ and a '.rc' file. Again, these resource scripts are very similar (maybe
+ even equal) to the C++ ones. Again, I don't know much about '.rc' files,
+ I only used icons so far. :(
+ The contents of your resource script should look like:
+
+ 100 ICON "C:\path\filename.ico"
+
+ Having this resource files you need to compile it to a *.res file.
+ Use the brcc32.exe to do this:
+
+ brcc32.exe myfile.rc
+
+ Then you only need to give the filename of your *.res file as
+ a parameter to the linker. Simply start tlink32 /? to see how
+ to do this.
+ (I'm too lazy to type this and it's now 04:05 o'clock here *g*).
+ 
+ Last words
+ ==========
+
+ I really hope you liked this tutorial. It really took me some time to write 
+ all this stuff and two beer, one cigarette, one potion of Snus (swedish tobacco) 
+ and noisy music were needed to help me writing. :))
+ Please mail if you think this tutorial is great, if you think this
+ tutorial suckz (but then tell me WHY) or if you have a question
+ about Win32 assembly (but do not expect that I can answer it, hehe).
+ I'm happy about every mail I receive and I promise to answer.
+
+ mal.function@gmx.net
+
+(c) 2001 Malfunction
+

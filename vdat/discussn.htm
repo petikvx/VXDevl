@@ -1,0 +1,201 @@
+
+<HTML>
+<HEAD>
+   <TITLE>A Discussion of Polymorphism</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER>
+  <P><B><font color="#004080" size="+3">A Discussion of Polymorphism</font><FONT COLOR="#004080"><BR>
+    <font size="+2">by Gary M. Watson</font><BR>
+31 May 1992</FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>A polymorphic virus is a type of encrypted virus. Let's talk about those
+first. Many anti-virus programs rely on what we call a &quot;scanner&quot;
+which looks for an unusual sequence of machine language instructions or
+other unique data that indicates that a given virus is present. To defeat
+this, virus writers started encrypting their viruses by applying (for example)
+a random number exclusive-or'ed with the body of the virus. This obsfucates
+the unique string of bytes. So, programs like McAfee's scan had to do one
+of two things: look for the decryption routine (which cannot itself be
+encrypted since the 808x microprocessor would fail to execute it); or attempt
+to decrypt the body of the virus and look for the unique string of bytes
+in the body of the virus. </P>
+
+<P>Well, to defeat even this, the virus writers created polymorphism. This
+basically involves a routine in the body of the virus that, on the fly,
+and during each new infection process, actually generates a new and unique
+decryption module and algorithm to be used in the new infection. The idea
+being twofold: make sure the decryption routine does not have a predictable
+sequence of bytes in it; and second, make sure that the body of the virus
+is encrypted with a sufficiently complex and unpredictable algorithm that
+cannot be decrypted by the anti-virus scanner. </P>
+
+<P>So, what McAfee, Frisk and others did was to analyse the methods used
+by each polymorphic generator and then create an algorithm that detects
+the types of mutations created by each polymorphic virus out there. According
+to preliminary results from Vessilin Bontchev, McAfee's Scan 89B misses
+0.04% of the mutations of &quot;Fear&quot;, a typical virus that uses the
+<A HREF="engine1.htm#MTE">Mutation Engine</A> polymorphic object module;
+F-Prot misses 0.14%; and Dr. Solomon's FindVirus misses 7.86% of them.
+Bontchev considers anything less than 100% detection to be almost a complete
+failure, since any one of the missed samples could re-infect the system
+at a later date. The current release of Scan is 93 (as of this date), and
+it is unknown what its detection percentage is. </P>
+
+<P>So, how do polymorphic viruses work? Well, let's constuct a pseudo code
+version of one way that it could be done. This will be similar to the way
+that the Mutation Engine works. </P>
+
+<UL>
+<P>1. We wake up as as virus loaded into memory. No part of us is encrypted
+at this time. We consist of interrupt handlers for such things as the INT
+21H ms-dos service request, etc.; a mutation routine; and a payload of
+whatever type. </P>
+
+<P>2. We intercept a ms-dos INT 21h Open File request. We decide that this
+is a fine time to infect that file. </P>
+
+<P>3. We call the mutation routine, which creates a unique encyptor and
+decryptor pair. The mutation routine then calls the newly created encryptor,
+which takes the memory image of the virus (remember, the virus is NOT encrypted
+while in memory), writes the decryptor out to the front of a data buffer
+in memory, followed by the encrypted copy of the virus. Keep in mind that
+the virus itself contains not only the traditional virus code, but also
+the routine that generates encryptor/decryptor pairs. </P>
+
+<P>4. We infect the victim file using the memory buffer that contains the
+decryptor/encrypted virus combination. </P>
+
+<P>5. We go ahead and perform the ms-dos function call that the user had
+requested. </P>
+</UL>
+
+<P>Now, whenever the victim file is executed, ms-dos will jump to the beginning
+of the decryptor, which then decrypts the memory image of the encrypted
+virus and transfers control to the now decrypted virus, which executes
+normally. </P>
+
+<P>Most people do not understand how the mutation routine iteslf generates
+the necessary unique encryptor/decryptor pair. The method used by the Mutation
+Engine is extremely complex, but a simpler one can be devised for demonstration
+purposes, and the difference will be only in complexity, not content. </P>
+
+<P>Consider the sample encryptor/decryptor pair shown below, side by side
+for ease of comparison. For ease of human understanding, it is presented
+as if the mutation routine was creating assembly code. In reality, it merely
+emits binary machine code which is stored directly in memory. </P>
+
+<P>Note: it is my considered opinion that the following would be a fairly
+weak polymorph if it were implemented, that is, McAfee et. al. would have
+little difficulty detecting this. Therefore, I feel that presenting this
+example in a public forum poses no significant danger and has potential
+to clear up much of the misunderstanding surrounding this issue. </P>
+
+<P>Pseudo-code starts: </P>
+
+<PRE>  ;first set up registers in a confusing way.  aa thru jj are random 16 bit
+  ;numbers chosen when these routines are generated by the mutation
+  ;subroutine.  Before EcStart is called, a copy of the memory image of
+  ;the virus is moved to a data buffer which starts at vir_start.  In the
+  ;case of the decryptor, vir_start is immediately after the decryptor
+  ;routine.
+
+  EcStart:  mov bx,iter_count            DcStart:   mov cx,iter_count+aa
+                                                    sub cx,aa
+            mov bp,vir_start                        mov di,vir_start+cc
+                                                    sub di,cc
+
+  ;okay, now bx has the iteration count for the encryptor, cx, for the decryptor;
+  ;and bp and di have the pointer to the virus itself.  In reality we would
+  ;probably preserve various registers on the stack and set up various segment
+  ;registers, but this is omitted here for clarity.  The iteration count is
+  ;calculated at mutation time by dividing the size in words of the virus by
+  ;the number of words mutated in one loop of the encryptor.
+
+  ;if the above code snippets do not appear particularly random, mentally
+  ;assemble them into hex bytes and you will see the problem a scan string
+  ;based anti virus product would have.  (iter_count+aa), aa, (vir_start+cc),
+  ;and cc are effectively random byte pairs.  Note that there is no need
+  ;to obsfucate the encryptor, since it is used once then discarded.  It need
+  ;not propagate with the virus.
+
+  ;now, we (de)garble a byte.  In reality, the function done to the byte
+  ;in this case rotate right or left is chosen at random.  It merely needs
+  ;to be reversable.
+  EcLoop:   mov ax,[bp]                  DcLoop:    mov ax,[di]
+            shl ax                                  shr ax
+            mov [bp],ax                             mov [di],ax
+
+  ;oh, let's see, how about we add a random number then subtract it?
+
+            mov ax,[bp+1]                           mov ax,[di+1]
+            add ax,ee                               sub ax,ee
+            mov [bp+1],ax                           mov [di+1],ax
+
+  ;heck that was fun, let's do it again for the third byte!
+
+            mov ax,[bp+2]                           mov ax,[di+2]
+            add ax,ff                               sub ax,ff
+            mov [bp+2],ax                           mov [di+2],ax
+
+  ;just to confuse the issue, lets add/sub three different values!
+
+  &gt;&gt;&gt; Continued from previous message
+            mov ax,[bp+3]                           mov ax,[di+3]
+            add ax,gg                               sub ax,gg
+            add ax,hh                               sub ax,jj
+            add ax,jj                               sub ax,hh
+            mov [bp+3],ax                           mov [di+3],ax
+
+  ;And so on and so on.  We insert as many of these routines as we wish,
+  ;determined by a random number.  At each step of the creation of a
+  ;encryptor/decryptor pair we consult the random number generator to
+  ;decide how many and of which kind of garbling functions to include.
+  ;Obviously in a serious polymorphic routine we would make each register
+  ;interchangable as well.  In the above example, the fact that the
+  ;decryptor uses di as a pointer to the virus data would be chosen at
+  ;random.  Any other valid register could be substituted.
+
+  ;Now, iterate by adjusting the pointer register by the number of
+  ;words garbled each iteration:
+            add bp,4                                add di,4
+            dec bx                                  dec cx
+            jnz EcLoop                              jnz DcLoop
+            ret  ;to mutator routine                jmp vir_start
+                                             iter_count:dw  ?
+                                             vir_start:
+
+  ;At this point we just fall into the virus if we are the decryptor
+  ;or return to the mutator routine if we are the encryptor.
+  {end of example}
+</PRE>
+
+<P>Note that this very simple polymorphic example has few predictable byte
+strings in it, since one does not know which pointer register is to be
+used, the contents of any of the random numbers aa through jj, nor how
+many bytes the routine will choose to garble in one iteration. Note that
+by changing these factors, an extremely complex encryption takes place,
+as both the algorithm and the keying data cange considerably. Even the
+*quantity* of keying data changes from one infected file to the next. </P>
+
+<P>The strength of the polymorphic virus is in how thoroughly it mutates,
+that is, in how unpredictable the sequence of instructions is in the decryptor
+module. In particular, no more than about 4 bytes can be predictable, else
+a simple scan string could be constructed and then all the polymorphic
+code would be a waste of effort on the part of the virus writer. </P>
+
+<P>(By the way, if I have made any typos in the above code examples, *GOOD*.
+Pretend I did it on purpose to confuse any beginning virus writer who tried
+to use the code as is. Of course, I did not really show the code necessary
+to implement the polymorph, I only showed what it could do.) </P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

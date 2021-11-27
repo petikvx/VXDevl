@@ -1,0 +1,160 @@
+Identification Problems in Virus Collections
+   -- draft for a virus bulletin article
+
+
+A clean virus collection is the base of the work of every anti-virus
+researcher. When we do not collect the viruses in a clean tree, we
+will not be able to check our identification efficiently. Anyway, 
+major problems arise when we build up such a collection and no 
+"real" clean collection exits as far as I know. 
+
+Usually there are two ways to build up a virus base:
+        
+   I)  manual 
+   II) automatic
+
+The manual approach is surely the better one, but has serious drawbacks:
+        
+    A) The increasing number of viruses
+    B) The necessity of a high amount of manpower
+    C) The increasing complexity of the topic
+    D) The human factor itself.
+
+Here we have a relation between (A), (B), and (C), which means: 
+The higher the number of viruses and the higher the complexity, 
+the larger the amount of manpower we have to use. Problem (D) is 
+related to the fact, that the human mind is usually erratic, tending 
+to become tired and not being  able to handle operations, such as 
+hexdumps with a precision of 100%. That is normal, due to the fact that
+humans are no computers and were never intended to be. The result of 
+this problems is, that we use specialized tools to identify viruses 
+and step over viruses, detected by our scanners which are usually 
+trusted 100% in case of a common virus.
+
+As I assembled an ITW test-set, I found a bunch of Werewolf files in the 
+collection where some scanners claimed, they are a 1500.B, others 
+think they are 1450's and Dr.Solomon detected something similar to 
+Werewolf.1450. Researching this phaenomen shows, that this files have 
+been lurking as 1500.B's in the collection for longer than a year. 
+During this time, none of the scanners has been able to identify the 
+new variant. Most confusing is the fact, that these are not some rare 
+zoo samples, but derive from a common known VX internet site. 
+How can this be?
+
+This small example, indicates, how large the problem is in reality.
+None of the major scanners producers can have placed this files in 
+the collection and made tests with them to assure, that they are what
+they looked to be on first sight. At first it looks like, that none
+of the antivirus researchers is able to work professionally enough. 
+After a deeper analysis of the problem, this is no wonder. We know 
+currently about 22.000 recognized variants and far more unidentified 
+ones. The amount of manpower neccessary to exclude such cases is by 
+far larger than an antivirus company is able to effort. This means 
+that there is no possibility anymore to analyze every single sample 
+we receive manually. It is only possible to react to irregularities 
+of scanners. Only the scanner of Solomon would provide us with this 
+chance in this case. They do not claim to exactly know the virus and
+therefore display the irregularities in the logfile. How many companies 
+monitor their collection logs in detail every month? Ikarus Software surely 
+is not able to do so. We currently have the manpower to fulfill our most 
+neccessary work and take shortcuts wherever possible to free resources 
+for more important tasks.
+
+Ok, Ikarus is a small company but what about larger companies? An 
+average collection consists of 100.000 to 500.000 samples. I suppose
+companies like NAI or Frisk will count their samples in millions.
+How many lines of log can a man monitor before he is not able to see 
+this damn logfiles anymore and change the company or job? How long 
+does it take until he is no longer able to do his work with the
+average rate of mistakes? I may spend 5 hours a day in hexdumps
+during an 8 hour day. A precise monitoring of 100.000 samples with 
+documentation and research of the irregularities would need two weeks 
+at least. How many companies have the power to employ a man or two 
+just for analyzing the scanner logs?
+
+Automatization
+
+When we are not able to solve a problem manually, we will have to use 
+automatization or put the mass aside and concentrate our efforts to
+a minority of problem samples. The problem sample rate lies at an 
+average rate of about 15 percent. This 15 percent are the magical 
+border where our technical efforts would explode if we want to step 
+over. From this 15% we solve with interactive tools usually about 10%. 
+The last 5% are usually the real problems and fail different approaches 
+in all points, so we have to operate fully manual if we want to have
+them also solved. 5% are not much - in percent. In samples,
+this means 10.000 and more. I suppose, the standard method for this
+5% is to place them in the queue and process them when some time is 
+left. When we take a closer look, we notice a mixture between
+entirely new viruses, innocent files, damaged samples (per virus
+and per accident), misterious binary fragments and some exotic 
+file formats containing a virus where we cannot imagine at all how
+this can happen. The average time to process a file like this is
+an hour. Some will take 10 minutes, some less. This means
+with 10.000 samples, we will have a 4.8 year project for a single man
+working 40 hours a week. Not enough, in 4.8 years we will produce 
+more 5% samples than we have previously processed....
+
+The problem of the 5% generates a diffusion which generates a small
+amount of irrationality in the work of antivirus researchers. 0.5%
+will make the way into the collection as hardly recognizable 
+fluctuations. This 0.5% or 500 of 100.000 come closely to a rule. No 
+matter which method a researcher will choose, the 0.5% will remain
+and if they will ever be eliminated from a collection, with methods
+I can currently not imagine, within a year they will be back. This
+implies, that we are working in a field of fractal arrangements,
+not allowing the ultimate goal of perfection. We have won a great
+war, if we are able to minimize the 0.5% to 0.2%. Anyway I do not
+think it is possible to entirely eliminate the mistakes in a 
+virus collection.
+ 
+If you do not belief this, simply scan the Junkie.1027 family with 
+different scanners and all samples you have of this. Then research 
+the reason of the results.....
+
+Another approach is, to ignore all details. I suppose, the difference
+between the exact and the indifferent approach is the major reason why 
+we do not have a unified naming convention for viruses. It is impossible
+to synchronize the naming convention of all scanners to a naming
+convention. The barriere to this is the 5% rule. Surprisingly, the 5%
+rule does not apply if we use the indifferent approach. The 5% remains
+still the same, but we are not affected any more, nor do we recognize
+them at all - in the collection. There is only one small drawback: 
+the removal process. Indifferent identification means, we will damage 
+files during desinfection in the wild - at least the 5%. 
+
+We may also choose between damaging files of customers or a Quichotic 
+fight against the windmills of diffusion. What a choice - but it looks 
+like we have to make the best of it and return to our work, which is 
+better than leaving the world alone with an increasing number of viruses, 
+which may make it impossible to use computers at all. 
+
+I suppose, computer viruses are rather similar to a systemic law than to 
+singular malicious acts of individuals. It appears to be a part of the 
+informational side of entropy, breaking down every byte into senseless 
+bits, freeing storage into undefined states. While entropy is limited 
+to the law of thermodynamics (currently ;-)), the informational side 
+looks the same, resulting in endless loss of data, at every second in a 
+place somewhere on this planet. Viewed from above, viruses are looking 
+like security holes, destroying backup tapes or headcrashing harddisks. 
+With all of this, we are loosing information. The ancient equivalents 
+are burnt books, shattered ceramic tables, weathered stone scriptures 
+or more related to our job: mice eating up information of books (critters 
+anyway). Since the burning of the Alexandrian Library, we should consider 
+data loss as natural law. The electronic form is only faster and more 
+widespread than the ancient ones.
+
+The problems, mentioned above, are not new. Of corse, every AV-researcher
+has noticed them but it seems that nobody seems to pay too much attention 
+to these effects. Nobody seems to dare taking a closer look at these topics. 
+This would mean we are incompetent to a certain degree. It would indicate 
+we are not able to do our job. Unfortunately this is true and nobody in 
+the world will be able to change this, but everyone of us doing the best 
+job possible. I am sure, there was a person who defeats the mices and 
+insects in the Alexandrian Library, but he was obviously unable to handle 
+the burning. Anyway, without this hypothetic person, not even some second 
+level documents would have survived, like the ones from Plato and surely 
+many indirect information, such as the wonders of the world would not have 
+been maintained without the knowledge probided by this library.
+
+Keep on fighting.

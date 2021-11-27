@@ -1,0 +1,2138 @@
+
+
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+
+<title>Pouvoir exécuter du code Ring 0 sous Win9x</title>
+
+</head>
+
+<body bgcolor=#000066   text="#FFFFFF" link="#00CCFF" vlink="#00CCFF" alink="#00CCFF">
+
+<h1 align=center style='text-align:center'>Pouvoir exécuter du code Ring 0 sous Win9x</h1>
+
+<p align="right">Par <a href="mailto:chojin@skytech.org">ChoJin</a> (08/04/2000)</p>
+
+
+<h2><u>Connaissances requises:</u></h2>
+
+<p>- De bonnes connaissances sur le mode protégé (lien entre sélecteur et le privilège 
+
+  d'exécution)<br>
+
+  - Assembleur i80x86 </p>
+
+<h2><u>Utilité:</u></h2>
+
+<p>Certains pourraient se demander quelles utilités on peut tirer du Ring 0. Je 
+
+  serais tenté de répondre &quot;tout ce qu'on ne peut pas faire en Ring 3&quot;, 
+
+  c'est-à-dire avoir accès aux registres privilégiés (les registres de debug DR0-7, 
+
+  les registres de contrôles CR0-4), aux instructions privilégiées de l'OS, et 
+
+  surtout avoir un accès en lecture et écriture à toute la mémoire sans restriction. 
+
+  Enfin bref il peut y avoir beaucoup de raisons à vouloir passer en Ring 0, à 
+
+  vous de trouver la v&ocirc;tre, mais il ne faut pas en abuser, il y a souvent 
+
+  un moyen de le faire sans, donc ne passez pas en Ring 0 sous prétexte que vous 
+
+  avez la flemme d'appeler la fonction <code>VirtualProtect</code> pour donner 
+
+  un accès en écriture sur le code d'un process (par exemple).</p>
+
+<h2><u>I - Exception et Interruption</u></h2>
+
+<p>Pour pouvoir comprendre l'astuce que l'on va utiliser pour passer en Ring 0 
+
+  il nous faut tout d'abord comprendre le fonctionnement et la gestion des exceptions 
+
+  et des interruptions. Pour simplifier on va considérer que les exceptions sont 
+
+  la même chose que les interruptions. Quand une erreur intervient (division par 
+
+  0, accès écriture à une zone de mémoire Read-Only etc. ...) une exception est 
+
+  déclenchée: les Eflags sont empilés sur la pile, suivi de CS (un sélecteur vu 
+
+  que l'on est en mode protégé), puis de l'offset de retour, et enfin le système 
+
+  réalise un <code>jmp far</code> sur le code de l'exception. Le retour au programme 
+
+  (s'il y a retour) se fait au moyen d'un <code>iret</code>.</p>
+
+<p>Mais comment le système connaît-il l'adresse de l'exception ? Grâce à l'IDT 
+
+  ( Interrupt Descriptor Table). Cette table contient toutes les infos nécessaires 
+
+  au système des 256 Exceptions/interruptions (les exceptions de 0 à 31 sont déjà 
+
+  prédéfinies et non masquables et de 32 à 255 sont les interruptions masquables). 
+
+  Les numéros des exceptions et interruption sont appelées Vecteurs.</p>
+
+<p>Voici la liste des exceptions/interruptions:</p>
+
+<table border=1 cellpadding=0>
+
+  <tr> 
+
+    <th > N&deg; Vecteur</th>
+
+    <th > Description</th>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">0</p>
+
+    </td>
+
+    <td > 
+
+      <p>Divide Error</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">1</p>
+
+    </td>
+
+    <td > 
+
+      <p>Debug Exception</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">2</p>
+
+    </td>
+
+    <td > 
+
+      <p>NMI</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">3</p>
+
+    </td>
+
+    <td > 
+
+      <p>Break Point</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">4</p>
+
+    </td>
+
+    <td > 
+
+      <p>Into</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">5</p>
+
+    </td>
+
+    <td > 
+
+      <p>Bound</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">6</p>
+
+    </td>
+
+    <td > 
+
+      <p>Invalid Opcode</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">7</p>
+
+    </td>
+
+    <td > 
+
+      <p>Device Not Available</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">8</p>
+
+    </td>
+
+    <td > 
+
+      <p>Double Fault</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">9</p>
+
+    </td>
+
+    <td > 
+
+      <p>Copro Segment Overrun</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">10</p>
+
+    </td>
+
+    <td > 
+
+      <p>Invalid Task State Segment</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">11</p>
+
+    </td>
+
+    <td > 
+
+      <p>Segment Not Present</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">12</p>
+
+    </td>
+
+    <td > 
+
+      <p>Stack Fault</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">13</p>
+
+    </td>
+
+    <td > 
+
+      <p>General Protection</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">14</p>
+
+    </td>
+
+    <td > 
+
+      <p>Page Fault</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">15</p>
+
+    </td>
+
+    <td > 
+
+      <p>Reserved By Intel</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">16</p>
+
+    </td>
+
+    <td > 
+
+      <p>Floating Point Error</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">17</p>
+
+    </td>
+
+    <td > 
+
+      <p>Alignment Check</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">18</p>
+
+    </td>
+
+    <td > 
+
+      <p>Machine Check</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">19-31</p>
+
+    </td>
+
+    <td > 
+
+      <p>Intel</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p align="right">32-255</p>
+
+    </td>
+
+    <td > 
+
+      <p>Maskable Interrupt</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<h3><u>I-1 IDT</u></h3>
+
+<p>Maintenant revenons à l'IDT. L'IDT est un tableau qui permet d'associer chaque 
+
+  vecteur à un descripteur de procédure. Ce descripteur a une taille de 8 octets, 
+
+  ainsi l'IDT est un tableau dont chaque élément a une taille de 8 octets (et 
+
+  donc pour pointer sur le descripteur du n-ieme vecteur il suffit de sommer à 
+
+  l'adresse de l'IDT le numéro du vecteur*8. La question naturelle de savoir comment 
+
+  récupérer l'adresse cette IDT semble plutôt intéressante :o).En parcourant la 
+
+  liste des mnémoniques on remarque deux instructions qui se rapportent à l'IDT: 
+
+  LIDT et SIDT (LIDT=load IDT et SIDT=store IDT), LIDT permet de charger dans 
+
+  le registre IDTR du processeur une adresse, tandis que SIDT permet de récupérer 
+
+  l&#8217;adresse de l'IDT qui se trouve dans le registre IDTR.LIDT est une instruction 
+
+  privilégiée ainsi une application normale ne peut pas l'utiliser mais l'instruction 
+
+  SIDT est une instruction non protégée donc n'importe quelle application peut 
+
+  récupérer adresse de l'IDT.</p>
+
+<p>Voyons comment fonctionne ces deux instructions: ces deux instructions prennent 
+
+  en argument une adresse qui pointe sur 6 octets. Ces 6 octets ont la signification 
+
+  suivante:</p>
+
+<table border=1 cellpadding=0 width="22%">
+
+  <tr> 
+
+    <td > 
+
+      <p>47-16</p>
+
+    </td>
+
+    <td > 
+
+      <p>15-0</p>
+
+    </td>
+
+    <td > 
+
+      <p>Bit</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>IDT Base Address</p>
+
+    </td>
+
+    <td > 
+
+      <p>IDT Limit</p>
+
+    </td>
+
+    <td >&nbsp; </td>
+
+  </tr>
+
+</table>
+
+<p>IDT Base Address+IDT Limit donne l'adresse du dernier octet valide, mais c'est 
+
+  surtout IDT Base Address qui nous intéresse. Ainsi si pour récupérer le contenu 
+
+  du registre IDTR on peut procéder comme suit:</p>
+
+<p><u>dans le code: </u><br>
+
+  <code>sidt fword ptr IDT_Limit </code><br>
+
+  <u>dans les data: </u><br>
+
+  <code>IDT_Limit DW 0 <br>
+
+  IDT_BaseAddress DD 0 </code></p>
+
+<p>Après cette instruction on a donc l'adresse de l'IDT dans la variable <var>IDT_BaseAddress</var>.</p>
+
+<h3><u>I-2 IDT Descripteurs</u></h3>
+
+<p>Maintenant que l'on sait comment récupérer l'adresse de l'IDT, voyons la structure 
+
+  des descripteurs qui la compose. Il y a 3 sortes de descripteurs: Task Gates, 
+
+  Interrupt Gates, Trap Gates. Voici la structure des 8 octets pour chacun d'eux:</p>
+
+<p><u>Task Gate:</u></p>
+
+<table border=1 cellpadding=0 width="43%">
+
+  <tr> 
+
+    <td width="42%" > 
+
+      <p>31-16</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>15</p>
+
+    </td>
+
+    <td width="11%" > 
+
+      <p>14-13</p>
+
+    </td>
+
+    <td width="15%" > 
+
+      <p>12-8</p>
+
+    </td>
+
+    <td width="18%" > 
+
+      <p>7-0</p>
+
+    </td>
+
+    <td width="8%" >&nbsp; </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="42%" > 
+
+      <p>Reserved</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>P</p>
+
+    </td>
+
+    <td width="11%" > 
+
+      <p>DPL</p>
+
+    </td>
+
+    <td width="15%" > 
+
+      <p>00101</p>
+
+    </td>
+
+    <td width="18%" > 
+
+      <p>Reserved</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>+4</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="42%" > 
+
+      <p>TSS Segment Selector</p>
+
+    </td>
+
+    <td colspan=4 > 
+
+      <p>Reserved</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>+0</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p><u>Interrupt Gate:</u></p>
+
+<table border=1 cellpadding=0 width="43%">
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>31-16</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>15</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>14-13</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>12-8</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>7-5</p>
+
+    </td>
+
+    <td width="16%" > 
+
+      <p>4-0</p>
+
+    </td>
+
+    <td width="7%" >&nbsp; </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>Offset 31..16</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>P</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>DPL</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>01110</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>000</p>
+
+    </td>
+
+    <td width="16%" > 
+
+      <p>Reserved</p>
+
+    </td>
+
+    <td width="7%" > 
+
+      <p>+4</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>Segment Selector</p>
+
+    </td>
+
+    <td colspan=5 > 
+
+      <p>Ofsset 0..15</p>
+
+    </td>
+
+    <td width="7%" > 
+
+      <p>+0</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p><u>Trap Gate:</u></p>
+
+<table border=1 cellpadding=0 width="43%">
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>31-16</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>15</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>14-13</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>12-8</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>7-5</p>
+
+    </td>
+
+    <td width="16%" > 
+
+      <p>4-0</p>
+
+    </td>
+
+    <td width="7%" >&nbsp; </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>Offset 31..16</p>
+
+    </td>
+
+    <td width="6%" > 
+
+      <p>P</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>DPL</p>
+
+    </td>
+
+    <td width="12%" > 
+
+      <p>01111</p>
+
+    </td>
+
+    <td width="8%" > 
+
+      <p>000</p>
+
+    </td>
+
+    <td width="16%" > 
+
+      <p>Reserved</p>
+
+    </td>
+
+    <td width="7%" > 
+
+      <p>+4</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td width="39%" > 
+
+      <p>Segment Selector</p>
+
+    </td>
+
+    <td colspan=5 > 
+
+      <p>Ofsset 0..15</p>
+
+    </td>
+
+    <td width="7%" > 
+
+      <p>+0</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p><u>DPL: </u>Descriptor Privilege Level<br>
+
+  <u>OFFSET:</u> Offset To Procedure Entry Point<br>
+
+  <u>P: </u>Segment Present Bit<br>
+
+  <u>RESERVED:</u> Do not use<br>
+
+  <u>SELECTOR:</u> Segment Selector For Destination Code Segment </p>
+
+<p>C'est la structure de l'Interrupt Gate qui nous intéresse (remarquez que Trap 
+
+  Gate à la même structure à un code près). On voit que l'offset de l'interruption 
+
+  est découpé en deux parties: les bits 16 à 31 sont dans la partie supérieur 
+
+  des 4 derniers octets du descripteur et les bits 0 à 15 sont dans la partie 
+
+  inférieur des 4 premiers octets du descripteur.</p>
+
+<p>Ainsi si eax contient l'adresse de base de l'IDT et ebx le vecteur de l'interruption, 
+
+  pour récupérer l'offset de l'adresse de l'interruption on peut procéder comme 
+
+  suit:</p>
+
+<blockquote>
+
+
+
+  <table border="0" cellpadding="0">
+
+    <tr> 
+
+      <td> <code><font color="#FFFFCC">shl ebx,3 <br>
+
+        </font></code></td>
+
+      <td> <code><font color="#00CC00">; index*8 car 8 octets par Descripteur</font></code></td>
+
+    </tr>
+
+    <tr> 
+
+      <td> <code><font color="#FFFFCC">add eax,ebx <br>
+
+        </font></code></td>
+
+      <td> <code><font color="#00CC00">; calcul l'adresse du descripteur</font></code></td>
+
+    </tr>
+
+    <tr> 
+
+      <td> <code><font color="#FFFFCC">mov esi,dword ptr [eax+4] <br>
+
+        </font></code></td>
+
+      <td> <code><font color="#00CC00">; récupère les 16 bits supérieurs de l'offset</font></code></td>
+
+    </tr>
+
+    <tr> 
+
+      <td> <code><font color="#FFFFCC">mov si,word ptr [eax] </font></code></td>
+
+      <td> <code><font color="#00CC00">; puis les 16 bits inférieurs </font></code></td>
+
+    </tr>
+
+  </table>
+
+</blockquote>
+
+<p>Ainsi maintenant esi contient l'offset de l'interruption (et comme Windows 
+
+  est en model flat - i.e. que les sélecteurs ont 0 comme base- on peut considérer 
+
+  que esi contient l'adresse de l'interruption).</p>
+
+<h2><u>II - Passage au Ring 0</u></h2>
+
+<p>Bon c'est bien beau tout ça, mais c'est quoi le rapport avec le passage en 
+
+  ring 0 ? ;) La patience est une vertu ...</p>
+
+<h3>II - 1 Analyse de l'IDT de Windows 9x</h3>
+
+<p>Pour analyser l'IDT de Windows 9x je vais utiliser le debuger de NuMega, à 
+
+  savoir SoftIce/W.C'est vraiment le meilleur debuger que l'on peut trouver sous 
+
+  Windows 9x et NT, et c'est un outil essentiel pour tous les bidouilleurs. Vous 
+
+  trouverez un link dans la section Link (sans blague ? :o) ) sur la page de NuMega.</p>
+
+<p>Je lance la commande IDT et j'obtiens ça:</p>
+
+<table border=0 cellpadding=0 width="50%">
+
+  <tr> 
+
+    <td colspan=2 > 
+
+      <p>IDTBase=800A8000</p>
+
+    </td>
+
+    <td > 
+
+      <p>Limit=02FF</p>
+
+    </td>
+
+    <td >&nbsp; </td>
+
+    <td >&nbsp; </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>Int</p>
+
+    </td>
+
+    <td > 
+
+      <p>Type</p>
+
+    </td>
+
+    <td > 
+
+      <p>Sel:Offset</p>
+
+    </td>
+
+    <td > 
+
+      <p>Attributes</p>
+
+    </td>
+
+    <td > 
+
+      <p>Symbol/Owner</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>000</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C0001350</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=0 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+0350</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>001</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C0001360</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=3 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+0360</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>002</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C00046E0</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=3 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>Simulate_IO+02A0 </p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>003</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C0001370</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=3 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+0370</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>004</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C0001380</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=3 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+0380</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>005</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C0001390</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=3 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+0390</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>006</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C00013A0</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=0 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+03A0</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>007</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C00013B0</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=0 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+03B0</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>008</p>
+
+    </td>
+
+    <td > 
+
+      <p>TaskG</p>
+
+    </td>
+
+    <td > 
+
+      <p>0068:00000000</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=0 P</p>
+
+    </td>
+
+    <td >&nbsp; </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>009</p>
+
+    </td>
+
+    <td > 
+
+      <p>IntG32</p>
+
+    </td>
+
+    <td > 
+
+      <p>0028:C00013C0</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL=0 P</p>
+
+    </td>
+
+    <td > 
+
+      <p>VMM(01)+03C0</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>...</p>
+
+    </td>
+
+    <td >&nbsp; </td>
+
+    <td >&nbsp; </td>
+
+    <td >&nbsp; </td>
+
+    <td >&nbsp; </td>
+
+  </tr>
+
+</table>
+
+<p>Cette commande nous donne de précieuses informations. Tout d'abord on voit 
+
+  l'adresse de l'IDT : 800A8000. Demandons à SoftIce/W des infos sur cette mémoire, 
+
+  on lance la commande: &quot;page 800A8000&quot;, et on obtient: (avec la commande 
+
+  query on peut avoir d'autres informations)</p>
+
+<table border=0 cellpadding=0 width="50%">
+
+  <tr> 
+
+    <td > 
+
+      <p>Linear</p>
+
+    </td>
+
+    <td > 
+
+      <p>Physical</p>
+
+    </td>
+
+    <td > 
+
+      <p>Attributes</p>
+
+    </td>
+
+    <td > 
+
+      <p>Type</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>800A8000</p>
+
+    </td>
+
+    <td > 
+
+      <p>0092D000</p>
+
+    </td>
+
+    <td > 
+
+      <p>P D A U RW</p>
+
+    </td>
+
+    <td > 
+
+      <p>Private</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p>Ce qui est intéressant ici c'est les Attributes. Vous voyez le &quot;RW&quot; 
+
+  ? :o))))) Bienvenu dans le monde de Windows 9x, cette table est en Read and 
+
+  Write ! Cela veut dire que l'on peut la modifier à notre guise(on se demande 
+
+  pourquoi Intel s'est fait chier à protéger l'instruction LIDT justement pour 
+
+  empêcher qu'une application s'amuse avec l'IDT ...) On verra plus tard ce que 
+
+  l'on peut tirer du RW de cette table.</p>
+
+<p>Continuons notre exploration en nous intéressant cette fois ci au vecteur 0, 
+
+  on voit que ce vecteur est du type Interrupt Gate (ce qui nous permet de connaître 
+
+  la structure du descripteur de ce vecteur) puis on voit l'adresse de la routine. 
+
+  Relançons la commande page sur cette adresse: &quot;page C0001350&quot;, et 
+
+  on obtient:</p>
+
+<table border=0 cellpadding=0 width="50%">
+
+  <tr> 
+
+    <td > 
+
+      <p>Linear</p>
+
+    </td>
+
+    <td > 
+
+      <p>Physical</p>
+
+    </td>
+
+    <td > 
+
+      <p>Attributes</p>
+
+    </td>
+
+    <td > 
+
+      <p>Type</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>C0001350</p>
+
+    </td>
+
+    <td > 
+
+      <p>00110350</p>
+
+    </td>
+
+    <td > 
+
+      <p>P D A U RW</p>
+
+    </td>
+
+    <td > 
+
+      <p>Private</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p>Le Monde magique de Windows 9x continu puisque l'on voit que la fonction elle-même 
+
+  est placée dans une zone de mémoire qui est Read and Write. Et donc on peut 
+
+  aussi aller modifier le code du vecteur 0.</p>
+
+<p>Pour finir notre analyse, demandons des informations sur le sélecteur &quot;GDT 
+
+  0028&quot; (GDT permet d'avoir la Global Descriptor Table - i.e. la table qui 
+
+  stock les sélecteurs et leurs propriétés), on obtient:</p>
+
+<table border=0 cellpadding=0 width="46%">
+
+  <tr> 
+
+    <td > 
+
+      <p>Sel.</p>
+
+    </td>
+
+    <td > 
+
+      <p>Type</p>
+
+    </td>
+
+    <td > 
+
+      <p>Base</p>
+
+    </td>
+
+    <td > 
+
+      <p>Limit</p>
+
+    </td>
+
+    <td > 
+
+      <p>DPL</p>
+
+    </td>
+
+    <td > 
+
+      <p>Attributes</p>
+
+    </td>
+
+  </tr>
+
+  <tr> 
+
+    <td > 
+
+      <p>0028</p>
+
+    </td>
+
+    <td > 
+
+      <p>Code32</p>
+
+    </td>
+
+    <td > 
+
+      <p>00000000</p>
+
+    </td>
+
+    <td > 
+
+      <p>FFFFFFFF</p>
+
+    </td>
+
+    <td > 
+
+      <p>0</p>
+
+    </td>
+
+    <td > 
+
+      <p>P RE</p>
+
+    </td>
+
+  </tr>
+
+</table>
+
+<p>Ce qui est surtout important ici, c'est le DPL du sélecteur, on voit qu'il 
+
+  est en 0, cela veut dire que quand l'interruption 0 est déclenchée (division 
+
+  par zéro) le code de l'interruption se retrouve en CPL 0.</p>
+
+<p><u>Résumons:</u> L'IDT sous Windows 9x se trouve dans une zone mémoire accessible 
+
+  en écriture, l'interruption 0 (division par zéro) a son code aussi en accès 
+
+  écriture, et enfin le sélecteur correspondant a un CPL 0.</p>
+
+<h3><u>II - 2 Ring 0 Premier Méthode</u></h3>
+
+<p>Maintenant que nous avons toutes les informations que l'on a besoin, attaquons-nous 
+
+  à la première méthode pour passer en CPL 0.</p>
+
+<p>La première approche est la suivante: puisque l'IDT est accessible en écriture 
+
+  rien ne nous empêche de modifier l'adresse d'un des vecteurs et le faire pointer 
+
+  sur une fonction à nous. Pour cela il ne faut pas modifier le sélecteur de l'adresse 
+
+  puisque c'est justement lui qui permet au code d'entre en CPL 0 par contre il 
+
+  faut modifier l'offset de l'interruption et la faire pointer sur une fonction 
+
+  à nous. Bon je ne donne pas de code d'exemple car c'est assez trivial. Pensez 
+
+  juste à restaurer l'offset du vecteur modifier une fois le code Ring 0 exécuté. 
+
+  Un autre point important: comme toute interruption, votre fonction ne doit pas 
+
+  avoir de registre modifié à la sortie de la fonction et doit se terminer par 
+
+  un iretd au lieu d'un simple ret. Si vous avez quelques problèmes avec cette 
+
+  méthode n'hésitez pas à me mailer.</p>
+
+<h3><u>II - 3 Ring 0 Deuxieme Methode</u></h3>
+
+<p>Une deuxième méthode pour passer en Ring 0 (je ne suis l'inventeur d'aucune 
+
+  des deux, et je ne sais pas trop qui en premier les a inventé). Je préfère nettement 
+
+  cette méthode pour des raisons que je vous expliquerai après.</p>
+
+<p>Cette fois ci au lieu de modifier &quot;l'entry point&quot; du vecteur d'interruption, 
+
+  on va modifier directement le code de la fonction (vous vous souvenez que le 
+
+  code est aussi en writable ? :o) ).Pourquoi modifier directement le code ? L'explication 
+
+  sera plus claire après avoir donné le code d'exemple:</p>
+<blockquote><table border="0" cellpadding="0">
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;sidt 
+
+      fword ptr IDT </font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov eax , dword 
+
+      ptr [IDT+2] </font></code></td>
+
+    <td ><code><font color="#00CC00">; récupère la base address 
+
+      de l'IDT</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov 
+
+      esi , dword ptr [eax+4]</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov si , word 
+
+      ptr [eax] </font></code></td>
+
+    <td ><code><font color="#00CC00">; récupère l'offset du premier 
+
+      vecteur d'interruption</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov eax , dword 
+
+      ptr [esi] </font></code></td>
+
+    <td ><code><font color="#00CC00">; récupère les 4 premiers octets 
+
+      du code </font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov Save1 , eax 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; et les sauvegarde</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov eax , dword 
+
+      ptr [esi+4] </font></code></td>
+
+    <td ><code><font color="#00CC00">; les 4 prochains</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC"> &nbsp;mov Save2 , 
+
+      eax </font></code></td>
+
+    <td ><code><font color="#00CC00">; et les sauvegardes aussi</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov CurrentSelector 
+
+      , cs </font></code></td>
+
+    <td ><code><font color="#00CC00">; sauvegarde le sélecteur courrant 
+
+      de code</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov IntAddress 
+
+      , esi </font></code></td>
+
+    <td ><code><font color="#00CC00">; sauvegarde l'adresse de l'int</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov dword ptr 
+
+      [esi] , 530E5858h </font></code></td>
+
+    <td ><code><font color="#00CC00">; on écrit un nouveau code 
+
+      dans l'int </font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov byte ptr 
+
+      [esi+4] , 0CFh </font></code></td>
+
+    <td ><code><font color="#00CC00">; écrit du code encore</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;lea ebx , Ring0Code 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; on charge dans eax l'adresse 
+
+      de la suite de notre programme</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;xor eax , eax</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;div eax </font></code></td>
+
+    <td ><code><font color="#00CC00">; on divise par 0 comme ça 
+
+      cela éclanche l'exception 0 et donc notre code</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#CCFFFF">Ring0Code:</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> 
+
+      <p><code><font color="#00CC00">; Ici on est en CPL 0</font></code></p>
+
+    </td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> 
+
+      <p><code><font color="#00CC00">;...</font></code></p>
+
+    </td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov esi , IntAddress 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; normalement esi n'a pas été 
+
+      modifié mais bon ...</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov dword ptr 
+
+      [esi] , 53515858h </font></code></td>
+
+    <td ><code><font color="#00CC00">; on écrit du code encore</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov byte ptr 
+
+      [esi+4] , 0CFh </font></code></td>
+
+    <td ><code><font color="#00CC00">; du code ...</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC"> &nbsp;xor ecx , ecx</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC"> &nbsp;mov cx , CurrentSelector 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; on met l'ancien select or 
+
+      dans cx</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;lea ebx , Ring3Back 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; on charge l'adresse de retour</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;xor eax , eax</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;div eax </font></code></td>
+
+    <td ><code><font color="#00CC00">; et on déclenche l'int 0</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#CCFFFF">Ring3Back:</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> 
+
+      <p><code><font color="#00CC00">; Ici on est de nouveau en CPL 3</font></code></p>
+
+    </td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov 
+
+      esi , IntAddress</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov eax , Save1 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; on restaure les 4 premiers 
+
+      octets de l'int 0</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC"> &nbsp;mov dword ptr 
+
+      [esi] , eax</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov eax , Save2 
+
+      </font></code></td>
+
+    <td ><code><font color="#00CC00">; et les 4 suivants</font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> <code><font color="#FFFFCC">&nbsp;mov dword ptr 
+
+      [esi+4] , eax</font></code></td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> 
+
+      <p><code><font color="#00CC00">;...</font></code></p>
+
+    </td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+  <tr valign="top"> 
+
+    <td  nowrap> 
+
+      <p><code><font color="#00CC00">; Voila c'est Fini :o)</font></code></p>
+
+    </td>
+
+    <td ><code><font color="#00CC00"></font></code></td>
+
+  </tr>
+
+</table>
+
+  <p>&nbsp;</p>
+
+</blockquote>
+
+<p>Bon les explications maintenant, en fait c'est très simple, je récupère l'adresse 
+
+  de l'IDT, puis l'adresse de la première exception (divide by 0), puis je sauvegarde 
+
+  les 8 premiers octets du code puisque je vais en modifier 5 (c'est plus simple 
+
+  d'en sauvegarder 8 :o) ). Tout se passe donc dans ces octets mystérieux que 
+
+  je place à la place du code: 58585153CFh (n'oubliez pas que DWORD sont inversés 
+
+  en mémoire donc dans le premier mov, les octets sont à l'envers).<br>
+
+  voici la signification des ces octets: pop eax ; pop eax ; push cs ; push ebx 
+
+  ; iretd. <br>
+
+  Alors je dépile tout d'abord de la pile l'offset de retour et le sélecteur de 
+
+  retour qui a été placé sur la pile lors du déclenchement de l'int. Puis je replace 
+
+  sur la pile le sélecteur courant (dans cette exemple c'est 0028, i.e. un sélecteur 
+
+  en CPL 0) et ebx (souvenez vous que ebx est initialisé avant la division par 
+
+  zéro sur l'adresse de Ring0Code) comme ça j'ai maintenant sur la pile une nouvelle 
+
+  adresse de retour mais surtout un autre sélecteur qui lui est en CPL 0, ainsi 
+
+  le iretd va récupérer cette adresse et donc initialiser CS avec le sélecteur 
+
+  CPL 0 et nous voici donc à nouveau dans notre code mais cette fois si en CPL 
+
+  0: </p>
+
+<p>Vous pouvez faire tout ce que vous voulez ! Essayez par exemple de lire le 
+
+  registre DR7 (mov eax,DR7).</p>
+
+<p>Pour le retour c'est presque pareil, mais cette fois il faut que sur la pile 
+
+  on place l'ancien Sélecteur (qui était un sélecteur CPL 3) pour cela le code 
+
+  est légèrement différent: pop eax ; pop eax ; push ecx ; push ebx ; iretd . 
+
+  <br>
+
+  ebx contient toujours l'adresse de retour, mais ecx contient le sélecteur original. 
+
+  Voila après on termine en restaurant le code original de l'int 0.</p>
+
+<p>Pourquoi je préfère cette méthode ? Tout simplement parce que la lecture est 
+
+  plus linéaire (pas besoin de faire une fonction à part pour la partie Ring0 
+
+  etc...) et il est facile de faire une macro avec. Enfin tout ceci n'est qu'une 
+
+  question de goût.</p>
+
+<h2><u>III - Conclusion</u></h2>
+
+<p>Et voil&agrave; c'est fini, j'espère que cela vous a appris quelque chose, 
+
+  si certaines choses restent obscures ou s'il y a des erreurs n'hésitez pas à 
+
+  me mailer.</p>
+
+<h2><u>IV - R&eacute;f&eacute;rences</u></h2>
+
+<p>- Pentium® Processor Family Developer's Manual, Volume 3: 
+
+  Architecture and Programming Manual (devoloppers' insight CD-ROM)<br>
+
+  - Discussion sur IRC</p>
+
+<p>Par ChoJin - <a href="mailto:chojin@skytech.org">chojin@skytech.org</a> (08/04/2000)<br>
+
+  web site : <a href="http://chojin.skytech.org">http://chojin.skytech.org</a> 
+
+</p>
+
+</body>
+
+</html>
+

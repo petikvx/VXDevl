@@ -1,0 +1,1731 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Virus Prevention Policy</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Virus Prevention Policy<BR>
+</FONT><FONT SIZE=+1>David J. Stang, Ph.D.</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#Introduction">Introduction<BR>
+</A><A HREF="#PoliciesThatFail">Policies That Fail</A> </FONT></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#Badidea1">1: &quot;Scan Your Machine Regularly.&quot;</A>
+<BR>
+<A HREF="#Badidea2">2: &quot;Scan the server daily.&quot;<BR>
+</A><A HREF="#Badidea3">3: &quot;Don't bring in software from home.&quot;<BR>
+</A><A HREF="#BadIdea4">4: &quot;All diskettes brought into the office
+must be scanned at an official scanning station&quot;<BR>
+</A><A HREF="#Badidea5">5: &quot;Scan all new software before installing
+it.&quot;<BR>
+</A><A HREF="#Badidea6">6: &quot;Don't call BBSs.&quot;<BR>
+</A><A HREF="#Badidea7">7: &quot;Watch for virus symptoms.&quot; <BR>
+</A><A HREF="#Badidea8">8: &quot;Run a TSR to scan files as they are copied.&quot;
+<BR>
+</A><A HREF="#Badidea9">9: &quot;Users must backup their files.&quot;<BR>
+</A><A HREF="#Badidea10">10: &quot;When a virus is found, immediately remove
+it with your scanner.&quot;</A> <BR>
+<A HREF="#Badidea11">11: &quot;For best results, use two or more anti-virus
+products.&quot;</A> <BR>
+<A HREF="#Badidea12">12: &quot;Provide solid virus training to all users.&quot;</A></FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#SomeBasicRequirements">So What Works? Some Basic
+Requirements</A> </FONT></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#Requirement1">1: No User Intervention.<BR>
+</A><A HREF="#Requirement #2: Transparent Operation.">2: Transparent Operation.<BR>
+</A><A HREF="#Requirement3">3: Implement Policy with Software.</A> <BR>
+<A HREF="#Requirement4">4: Enforcement required.</A> <BR>
+<A HREF="#Requirement5">5: Automatic network installs and upgrades.<BR>
+</A><A HREF="#Requirement6">6: Automatic Central Reporting</A> <BR>
+<A HREF="#Requirement7">7: Immediate Notification</A> <BR>
+<A HREF="#Requirement8">8: Automatic Self-Repair</A> <BR>
+<A HREF="#Requirement9">9: Modularity</A> <BR>
+<A HREF="#Requirement10">10: Multi-platform support required.</A> </FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#PrinciplesinVirusPolicy">Principles in Virus
+Policy</A> </FONT></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#Principle1">1: The
+Virus Response Team</A> <BR>
+<A HREF="#Principle2">2: Prevention</A> <BR>
+<A HREF="#Principle3">3: Selected
+Anti-Virus Software Must Be Run</A> <BR>
+<A HREF="#Principle4">4: Install the Upgrades
+Now</A> <BR>
+<A HREF="#Principle5">5: Central Notification</A>
+<BR>
+<A HREF="#Principle6">6:
+Immediate, Efficient Full Identification and Analysis of Virus</A> <BR>
+<A HREF="#Principle7">7:
+Perfect, Efficient, Automated Recovery Is Always Possible</A> <BR>
+<A HREF="#Principle8">8: All
+File Servers Virus-Free At All Times.</A> <BR>
+<A HREF="#Principle9">9:
+Users who Pose Special Risks to the Organization Will Receive Special Treatment.</A>
+<BR>
+<A HREF="#Principle10">10:
+Users Must Not Run Any Software Not Approved by the Organization. <BR>
+</A><A HREF="#Principle11">11:
+Those Who Use the Machines are Responsible for the Protection of the Information
+in Them.</A> <BR>
+<A HREF="#Principle12">12:
+Those Who Provide Software will be held Accountable for the Software they
+Provide.</A> </FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#EffectiveAntiVirusPolicy">Effective Anti-Virus
+Policy</A> </FONT></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#SomeCommentsonPolicy">Some Comments on Policy</A>
+<BR>
+<A HREF="#PolicyCreation">Policy Creation</A> <BR>
+<A HREF="#PolicyImplementation">Policy Implementation</A> </FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#Isitfutile">Is it futile?</A></FONT></P>
+</UL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><A NAME="Introduction"></A><B><FONT SIZE=+3>Introduction</FONT></B></P>
+
+<P>Every day, I talk to organizations that have a security policy with
+provisions to prevent the introduction of viruses. These organizations
+have one or two or three anti-virus products installed on every computer
+in the office. And they have a virus. The virus has somehow managed to
+get past their products and get past their policy. I talk to other organizations
+who have no policy. They find that viruses get past their anti-virus products,
+the use of which was their de facto policy. </P>
+
+<P>Sometimes the virus is an unusual new stealth or polymorphic virus that
+would make trouble for any policy and anti-virus product. But most often
+the virus that has walked past policy and product is a relic of the early
+days of viruses. </P>
+
+<P>How can an old virus be plaguing your organization? It's simple: older
+viruses have had longer to multiply and are generally more common than
+new viruses. The viruses you are most likely to get are those which are
+most common. </P>
+
+<P>Older viruses generally use more primitive techniques for escaping detection.
+It is theoretically simple to detect and remove a virus that has been around
+for a year or more. </P>
+
+<P>Managers in these organizations have trouble believing that the virus
+they have is easily prevented or easily removed. If it is so easy to prevent,
+why haven't their policies and programs prevented it? If it is so easy
+to remove, why has their vendor recommended deleting infected files? If
+it is so old, why does their trusted anti-virus software tell them it is
+a &quot;new variant&quot;? </P>
+
+<P>The answers to these questions are simple but painful to hear: their
+policies or their products have failed. </P>
+
+<P>No one wants to believe their product has failed on an easy virus. Nearly
+every day, we hear that vendors have told users that the virus they have
+is &quot;new.&quot; We get a sample, and take a look. Usually, the virus
+is two or three years old. Not new to us. Probably not new to the vendor,
+either. </P>
+
+<P>This chapter is not about why anti-virus products fail. It focuses on
+policies, although policies are always tied to people and products. </P>
+
+<P>The central concerns of any policy maker are conformance, cost, and
+capability (or, if you prefer words with an &quot;e&quot;, enforceability,
+expense, and efficacy). Policies that are unknown, complex, or unpalatable
+will fail. Policies that can only be implemented with great expense will
+fail. Policies that are not efficacious will fail. </P>
+
+<P>The problem of viruses in organizations adds a new degree of difficulty
+for the policy maker. While policy makers should be able to judge the enforceability
+and expense of an anti-virus policy, they are rarely able to judge its
+efficaciousness. Anti-virus policies can seem to work (to the policy maker)
+when either there is no virus or when the virus incidents are not reported
+to the policy maker. </P>
+
+<P>Many policies are written by imitation. &quot;Other organizations have
+policy X, so it seems to make sense for our organization to have policy
+X.&quot; Unfortunately, it is as easy to borrow a policy that doesn't work
+as it is to borrow a policy that does. </P>
+
+<P>Policy implementation depends on people and products. Anti-virus policies
+for your organization cannot succeed if they require performance your people
+and products cannot deliver. Thus if you mean to prevent viruses by a policy
+that asks users to scan daily, your policy will fail if either your people
+do not follow the policy, or if the scanner is ineffective in detecting
+the rash of new viruses we are seeing daily. </P>
+
+<P>Policies are intended to be practical advice for what we can do with
+what we have. Our imagination on how to prevent viruses has always been
+limited by the limitations of our software. When all your organization
+owned was a virus scanner, all you could recommend was that users should
+scan! Traditional policies do not differ in their endorsement of scanning,
+only in their recommendations for how often scanning should occur. </P>
+
+<P><A NAME="PoliciesThatFail"></A><B><FONT SIZE=+2>Policies That Fail</FONT></B></P>
+
+<P>I begin by looking at some common policies that fail, and give some
+thought to why they fail. Often when we discuss these ideas with organizations,
+they acknowledge that their policies are not working, and agree with our
+explanations of why these policies fail. </P>
+
+<P>Why have a policy if you know it doesn't work? No one intentionally
+writes a policy that won't work. We all write one we think will work, and
+don't rewrite until we come up with something better. Often we can't come
+up with a better plan we just can't think of anything we think will work
+better. Some of the limitation of our policies is in our products: if we've
+never seen a product that could support a policy idea, how would we implement
+that policy? </P>
+
+<P>I begin this chapter with a look at some of the policies that normally
+fail. I'm not a pessimist in presenting this section first. I simply know
+that without dislodging some old thoughts, I may not be able to introduce
+some new ones. After I've shared a dozen bad ideas with you, I'll share
+a dozen good ones. </P>
+
+<P><A NAME="Badidea1"></A><B><FONT SIZE=+1>Bad idea #1: &quot;Scan Your
+Machine Regularly.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>The policy wastes corporate money.</B> You can calculate
+how many minutes it takes your scanner to check a typical hard disk. Multiply
+this by the scanning frequency you recommend (daily = 260 times a year;
+weekly = 52 times a year) to determine minutes per user per year. Now multiply
+this value by the number of users in your organization, to find how many
+minutes each year your users will be scanning if they follow the policy.
+Now compute your labor cost. <I>As a rule of thumb, a scanner's annual
+cost to use is at least 6 times its purchase price.</I></FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Scanning doesn't prevent widespread, debilitating
+infection. </B>We routinely find machines which have two or more scanners
+called by AUTOEXEC.BAT, so that scanning is done at each boot, and yet
+which are infected with a virus. The problem is that scanning is always
+done at the wrong time. Scan at 9:00 am, get infected at 9:05 am, and the
+virus has all day to spread.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Scanning misses many viruses. </B>Your vendor happily
+tells you how many viruses your scanner detects, but fails to mention how
+many it misses. The viruses missed include &quot;new&quot; viruses written
+in the past 6 months (nearly half of all viruses) and older polymorphics
+that the vendor has still not mastered. For any scanner, it is easy for
+someone with a large collection of viruses to produce viruses the product
+misses.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Scanning can spread infection. </B>Many viruses are
+now being written to infect on file open, file close, or directory traversal.
+Scanners do all these things. So when such a virus is resident, and not
+detected by your scanner, your scanner will actually spread the infection
+to everything you scan. If the scanner becomes infected, and does not let
+you know, then every time you scan, you will make things worse.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1><B>Not all users will scan. </B>Users don't scan because
+it has never paid off. Everytime they scanned, they found nothing, and
+felt they were wasting their time. They are nearly smarter than your policy,
+for they have helped you avoid drawbacks 1-4 (above).</FONT> </LI>
+</UL>
+
+<P>While we applaud user intelligence in ignoring policies recommending
+or requiring regular scanning, we know they are learning that they can
+disregard your policies with impunity. You aren't writing policies for
+your health, but for the health of the organization. <U>Good</U> policies
+must be followed! </P>
+
+<P>Comment: </P>
+
+<P>We find irregular scans an intelligent behavior, when the scanning moment
+is carefully chosen. But regular scans are nearly pointless. </P>
+
+<P><A NAME="Badidea2"></A><B><FONT SIZE=+1>Bad idea #2: &quot;Scan the
+server daily.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<P>Daily scans of your servers offer the same problems as daily scans of
+workstations: </P>
+
+<UL>
+<LI><FONT SIZE=-1>The policy wastes corporate money.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Scanning doesn't prevent widespread, debilitating infection.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Scanning misses many viruses.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Scanning can spread infection.</FONT> </LI>
+</UL>
+
+<P>In addition... </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Critical files cannot be scanned </B>on the server
+by DOS-based scanners because they are already open. Such files are unlikely
+to be infected by a DOS virus, for if they are open at the time the virus
+tries to infect, the virus will be foiled. But the virus could get in at
+a time the file is not open, with the scanner subsequently failing to get
+a chance to look at the file.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>A virus can spread throughout an entire network in
+seconds. </B>Thus detection by a scanner can be far too late. A common
+event is for an unwitting network supervisor with a virus such as Jerusalem.Sunday
+or SatanBug in memory to login and use the server. Everything they run
+becomes infected: LOGIN, MENU, ... LOGOUT. The next users to use any of
+these programs introduce the virus to their machine's memory, and will
+now infect anything they run from their hard disks, and any programs on
+the server which are in directories where they have write permission. A
+daily scan is not enough. In fact, a server scan done every 30 minutes
+is not often enough.</FONT> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>This last point is probably the most important objection to server scanning,
+and it is an objection only if it is the cornerstone of the organization's
+virus defense. We have seen many managers enraged at various anti-virus
+products because the scanner could not prevent the re-infection of the
+server. Their anger reflects a common misunderstanding of how scanners
+and viruses work. </P>
+
+<P>The fact is that scanning at intervals cannot prevent infection, regardless
+of the product. If the scanner is known to detect all copies of the virus
+currently troubling the organization, then interval scanning can be used
+to certify that a given storage device is currently clean (of this virus),
+or to show what is infected. If the product is known to be able to properly
+remove this virus from any infected file, then the product can be used
+to temporarily return the storage device to an uninfected state. But the
+scanner cannot be expected to prevent infection or re-infection. </P>
+
+<P>To prevent infection or reinfection, something must be installed in
+every workstation (since this is where the virus executes) that blocks
+or warns <I>the moment</I> an infected file is run and before it can infect
+anything else. In addition, any file copied to or from the server should
+first be scanned by a scanner resident in the server to prevent transmission
+of infected files. The software at the server should provide a double-check
+on any file the user wishes to execute, to assure that at the moment of
+execution, the file is clean. </P>
+
+<P><A NAME="Badidea3"></A><B><FONT SIZE=+1>Bad idea #3: &quot;Don't bring
+in software from home.&quot; </FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Some users will ignore this policy</B>. Those who
+follow the policy probably have no infection at home; those who ignore
+the policy are likely to have an infection at home.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Some will misunderstand the policy.</B> If they think
+this means don't bring files in from home, and follow the policy, they
+won't do any office work at home. The organization's productivity will
+suffer.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Some will understand and follow the policy, and infect
+the office anyway.</B> Such users will bring in data disks (but not programs)
+from home, and spread boot viruses.</FONT> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>Because diskettes brought in from home are the most common source of
+office infections, all programs and disks brought in from home (or anywhere)
+are suspect. But telling users to scan their floppies before using them
+doesn't work - users won't do it, whether or not you have such a policy.
+TSR scanning makes this &quot;automatic&quot;, but fails for other reasons
+discussed later. </P>
+
+<P>The biggest problem with this policy idea is that even if followed perfectly,
+a disk without a single file on it at all can be nicely infected with any
+one of 350+ boot viruses. Not only will your scanner fail to detect some
+of these viruses, given the chance to look for them, but your scanner will
+not likely be given the chance if the disk doesn't have any files on it.
+</P>
+
+<P>You must be aware that in some offices, 100% of infections have been
+by boot viruses. This policy idea may have prevented the file viruses from
+moving from home to office, but it hasn't stopped the boot viruses. </P>
+
+<P>Until we abandon floppy disk drives, we can only expect an increase
+in the rate at which boot viruses come into the office. </P>
+
+<P><A NAME="BadIdea4"></A><B><FONT SIZE=+1>Bad Idea #4: &quot;All diskettes
+brought into the office must be scanned at an official scanning station</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Users don't bring their disks to the scanning station.</B>
+Even if the machine is on their own desk, they are unlikely to always use
+it.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Scanning does not detect all viruses. </B>Even the
+most recent version of the scanner your organization uses can miss hundreds
+of viruses.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>The scanning station can become infected and infect
+any floppies brought in for scanning.</B> It is difficult to configure
+a machine that is not infectable, and unlikely for a machine so configured
+to remain so for long, left in a public place.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Scanning floppies is time-consuming, and therefore
+expensive</B>. If your users perfectly followed the policy, then you can
+calculate the costs. If it takes only 10 minutes for a user to come to
+the scanning machine, scan, and return to their office, if the user's value
+to the organization is $20 an hour, and if the user makes 3 trips a week
+to the scanning machine, the cost of this policy has exceeded the purchase
+price of the product in less than 2 or 3 months.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>A floppy that has been scanned can become infected</B>
+when placed in the drive of an infected machine. All disks begin life uninfected.
+Infection can be added to any formatted disk that is not write-protected.</FONT>
+</LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>Some think that a floppy disk that is write-protected could not get
+infected, but unfortunately, the write protection mechanism of disk drives
+does not always work, and when it doesn't work, the drive will write whatever
+the user (or virus) requests to a write-protected floppy. </P>
+
+<P>Some think that using a write-protected floppy protects their machine,
+but only read-protection can do that. Write protection protects a floppy
+from further infection; it also protects the virus on it from any cleaning
+efforts a scanner might make. </P>
+
+<P>Because write protection is a state, rather than permanent condition,
+a virus can infect when the diskette is not protected. We have found many
+viruses on write-protected floppies. We even found one in a machine that
+had hardware to prevent modification of its boot area. The virus infected
+the drive before the hardware was installed. </P>
+
+<P>I think relying on the scanning station concept is a mistake because
+it has not been demonstrated to be used effectively. </P>
+
+<P><A NAME="Badidea5"></A><B><FONT SIZE=+1>Bad idea #5: &quot;Scan all
+new software before installing it.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Scanners miss internal infections.</B> Most commercial
+products today consist of compressed EXEs. If the virus infected the program
+before it was compressed, the compression has essentially encrypted the
+virus, and the scanner will certainly fail to find the virus in the file.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1><B>Scanners miss new viruses, even if the product being
+scanned is externally infected.</B> Shareware scanners have been repeatedly
+distributed infected with new viruses. The scanner not only misses the
+virus, but helps with its propagation. If a scanner written yesterday can
+detect a virus written tomorrow, then its detection is accidental, its
+identification imprecise or incorrect, and our assurance of problem-free
+removal is low.</FONT> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>Natas is a virus now common in Mexico; it will soon become common around
+the world. According to some reports, it was distributed throughout Mexico
+in a copy of a popular scanner which is distributed via BBS as shareware.
+The shareware distribution of infected scanners, in fact, has produced
+numerous widespread infections over the past few years problems which have
+been acknowledged on the BBSs of these vendors. We should not be surprised
+to find that a scanner does not detect a given virus, if the virus is fairly
+new. </P>
+
+<P>It probably makes more sense to scan your machine <I>after</I> installing
+and running new software, rather than to scan <I>before</I> an install.
+Even if the new program was internally infected, once it has been run,
+the virus in it has a chance to run and infect other programs in your system.
+Such an infection will be outside any compression that has been added to
+the file, and your scanner should now be able to see the virus. </P>
+
+<P>The most cautious approach is to scan the installation disks before
+using them, to scan your machine before installing, then to install, run
+the new software, run some other programs, and scan again. This final scan
+will be your best chance of catching the virus, particularly if you boot
+clean so that it is not resident when scanning. </P>
+
+<P><A NAME="Badidea6"></A><B><FONT SIZE=+1>Bad idea #6: &quot;Don't call
+BBSs.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI>BBSs are not a common source of infection. </LI>
+
+<LI>BBSs are a valuable source of software and information of value to
+your organization. </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>If your office is typical, most of your infections have been by boot
+viruses. We simply do not download boot sectors from a BBS, and could not
+have accidentally gotten these viruses from a BBS session. Nor could we
+likely have gotten them from our E-mail, from CompuServe, or from our Internet
+connection. </P>
+
+<P>A policy against calling BBSs does not increase our security much, but
+it does interfere with our ability to gather free, valuable information
+and programs. </P>
+
+<P><A NAME="Badidea7"></A><B><FONT SIZE=+1>Bad idea #7: &quot;Watch for
+virus symptoms.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Most viruses display no symptoms.</B> Thus most symptom
+reports are likely to be false alarms. False alarms interfere with normal
+troubleshooting, and cause as much panic as genuine incidents.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Asking users to watch for virus symptoms is likely
+to alarm them needlessly, or interfere with their productivity</B>.</FONT>
+</LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>Distinguishing between the symptoms of a virus and the symptoms of hardware
+malfunction is not always easy. We know of one user who bought a new monitor
+because the letters were falling off her old one (this was due to the Cascade
+virus). </P>
+
+<P>In fact, there are viruses that swap parallel ports, interfering with
+print jobs; there are viruses that display parity error messages; there
+are viruses that disable the serial ports; etc. But a virus that becomes
+common cannot normally show symptoms or cause any damage, or it would have
+been caught before it got to your office, and not have become common. </P>
+
+<P>You must expect few symptoms from your next virus. The symptoms your
+next virus displays (increasing file size by 1Kb, using 1 Kb of memory,
+etc.) are unlikely to be of the magnitude detectable by off-the-shelf users.
+</P>
+
+<P><A NAME="Badidea8"></A><B><FONT SIZE=+1>Bad idea #8: &quot;Run a TSR
+to scan files as they are copied.&quot;</FONT></B> </P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>TSRs (including TSR scanners) can be easily disabled
+by users and viruses. </B>The code to disable Central Point's TSR, for
+instance, is available on most underground BBSs. Many recent viruses include
+such code. But if the virus doesn't disable the TSR, it is likely that
+the user already has. Many users today can determine when a TSR is interfering
+with something, and remove it from AUTOEXEC.BAT. Sometimes this is by accident,
+when a floppy containing an AUTOEXEC.BAT is copied to the root of C: Assume
+that the TSR you installed is no longer running.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>TSR scanners will generally fail to detect any stealth
+virus when the virus is resident. </B>All stealth boot viruses and most
+stealth file viruses will load before the TSR, thwarting its good intentions.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1><B>A TSR scanner large enough to scan for many viruses
+is too large for user memory; one small enough for memory must read from
+disk, and is thus too slow.</B> No TSR scanner detects polymorphic viruses.
+In short, TSR scanning is necessarily inept.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>A TSR that interferes with user behavior will be removed
+by the user, no matter how successfully it interferes with viruses.</B>
+Most TSR scanners slow simple tasks such as file copy by a factor of three.
+If users wanted slower computers, they wouldn't be asking for new ones.</FONT>
+</LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>We must carefully define what we are talking about here. A <I>TSR</I>
+is something that can be loaded by the user or by AUTOEXEC.BAT. &quot;TSR&quot;
+stands for &quot;Terminate and Stay Resident&quot;. TSRs are often confused
+with <I>device drivers</I>. Device drivers can only be loaded from CONFIG.SYS.
+A virus can remove a TSR from memory after it has loaded, but cannot remove
+a device driver. Your most important virus defense must therefore be done
+by device drivers, not TSRs. </P>
+
+<P>A resident <I>scanner, </I>whether a TSR or device driver, is not the
+only kind of anti-virus software that can be resident and protecting a
+machine. The resident scanner is simply a traditional scanner running from
+memory. Other kinds of resident protection include <I>behavior blockers,</I>
+<I>attribute watchers</I> (which watch for changes in a program's attributes
+from read-only to read-write a virus cannot infect a file without changing
+such an attribute), <I>heuristic sector analyzers.</I> </P>
+
+<P>Anyone wishing a resident scanner must ask the question &quot;How many
+viruses do you want to scan for?&quot; To detect 6,500 viruses, we will
+need up to 6,500 scan strings of about 10 bytes or more, as well as code
+to search files and sectors for these strings. This means that your scanner
+will need to be at least 64K in size. But over 250 viruses cannot be caught
+with scan strings, because they are polymorphic. An algorithm to catch
+a particular polymorphic virus can be 1 Kb or more. So add another 100
+Kb or so to your TSR to catch them. And your TSR will need to include some
+extra code to eliminate false alarms a 10 byte scan string can easily false
+alarm. </P>
+
+<P>If you choose to detect fewer than 6,500 viruses, then you must decide
+which viruses you want to catch. At a minimum, the TSR should catch the
+viruses your organization has had, and should catch the viruses found in
+the wild in your neighborhood. Unfortunately, no one can know what virus
+will find its way to your organization next. And most vendors won't tell
+you what viruses their TSR is able to detect. </P>
+
+<P>I do not argue against resident protection from viruses. I argue only
+against expecting that a traditional resident scanner will be able to do
+much for you. </P>
+
+<P><A NAME="Badidea9"></A><B><FONT SIZE=+1>Bad idea #9: &quot;Users must
+backup their files.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Backup is the organization's duty. </B>Most of the
+information in a user's computer doesn't belong to the user, but to the
+organization.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Most users are not provided the tools for the job</B>
+(tape or Bernoulli).</FONT> </LI>
+
+<LI><B><FONT SIZE=-1>Backups can be infected. Backup programs can get infected.
+Opening files for backup can infect them.</FONT></B> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>The tragedy of the expectation that users backup is compounded by the
+inability of most anti-virus products to remove most viruses from files.
+Consider one site that had SatanBug, and ran an anti-virus product to &quot;clean.&quot;
+The product cleaned the machine by deleting infected files. In some machines,
+most files were infected, and in every machine, COMMAND.COM was infected<I>
+Deleting files in an infected machine thus left the machine unbootable.</I>
+</P>
+
+<P>This was a large organization, with dozens of versions of DOS. The labor
+required to replace dozens of different versions of COMMAND.COM meant that
+the help desk worked through the night for several days, trying to recover
+from cleaning. It also meant that some users couldn't use their machines
+until the help desk was finished. Users did not have a copy of COMMAND.COM,
+much less anything else, backed up. </P>
+
+<P><A NAME="Badidea10"></A><B><FONT SIZE=+1>Bad idea #10: &quot;When a
+virus is found, immediately remove it with your scanner.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Most scanners destroy some percentage of files or diskettes
+when told to remove particular viruses. Thus if you remove without first
+testing removal, you may cause more harm than good.</FONT> </LI>
+
+<LI><FONT SIZE=-1>You can't learn anything about a virus if every copy
+of it is destroyed. You need to know more about the virus if you want to
+understand where it came from or why it keeps coming back. Removing the
+virus removes your ability to understand it.</FONT> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>An organization in New York used a well-known product to remove Michelangelo,
+and the product overwrote the boot sector of her hard disk with trash,
+leaving it unusable. A power company in Florida used a well-known product
+to remove Form from floppies, and left them all unusable. </P>
+
+<P>But even if your product proves to be competent in removing a file virus
+from a file, leaving it in working order and virus-free, you will want
+a copy of the virus for analysis. Without such analysis, you will never
+know what you had. And your risk of re-infection is much higher if you
+don't understand how the virus spreads. </P>
+
+<P>The analysis need not be done by you. Some organizations do a free,
+same-day analysis of any virus sent to them. </P>
+
+<P><A NAME="Badidea11"></A><B><FONT SIZE=+1>Bad idea #11: &quot;For best
+results, use two or more anti-virus products.&quot;</FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI><FONT SIZE=-1><B>Anti-virus products typically false alarm on each
+other</B>: number 1 leaves a scan string in memory; number 2 sees the string
+and thinks a virus is there. The false alarm is the result of poor coding
+on the part of both products, and the use of the same scan string often
+one that was published in a virus research journal.</FONT> </LI>
+
+<LI><FONT SIZE=-1><B>Products that &quot;inoculate&quot; files may modify
+programs that perform self-checks, preventing the inoculated program from
+running.</B> Products may try protecting each other, causing each self-check
+to fail.</FONT> </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>I discuss this idea in greater detail elsewhere. </P>
+
+<P><A NAME="Badidea12"></A><B><FONT SIZE=+1>Bad idea #12: &quot;Provide
+solid virus training to all users.&quot; </FONT></B></P>
+
+<P>Main points: </P>
+
+<UL>
+<LI>Fact: Users only need to understand how their product works, and what
+to do when it finds a virus. </LI>
+
+<LI>Fact: Your help desk or virus response team may need extensive training
+and/or extensive support from the vendor. </LI>
+</UL>
+
+<P>Comment: </P>
+
+<P>Rather than providing uniform virus training for all, provide simple
+training on essentials to users: what your policy is, how your software
+implements it, what they should do when they receive a virus alert. And
+provide advanced training to your virus swat team, so they can efficiently
+sort through false and true alarms, capture a sample of the problem for
+study, respond quickly and intelligently to contain an infection, and know
+how to tighten protection to ensure no re-infection. </P>
+
+<P><A NAME="SomeBasicRequirements"></A><B><FONT SIZE=+2>So What Works?
+Some Basic Requirements</FONT></B></P>
+
+<P>In this section, we offer ten basic requirements for any anti-virus
+software. These requirements are so important, we use them as standard
+design principles in our own product development. </P>
+
+<P><A NAME="Requirement1"></A><B><FONT SIZE=+1>Requirement #1: No User
+Intervention.</FONT></B></P>
+
+<P>Anti-virus software must require little or no user intervention. </P>
+
+<P>Systems fail if we make them too complex, or if one or more components
+is not reliable. We know that users do not always do what want, when we
+want it. The perfect anti-virus software should not expect users to be
+perfect. It should work properly on its own. </P>
+
+<P><A NAME="Requirement2"></A><B><FONT SIZE=+1>Requirement #2: Transparent
+Operation.</FONT></B></P>
+
+<P>Product operation must be transparent to the user, yet opaque to the
+virus. </P>
+
+<P>Anti-virus products cannot interfere with the user's use of the machine,
+yet it must interfere with a virus's use of the machine. Products must
+put a minimum load on the machine: little memory required, fast loading,
+fast execution. Machines should not run in any obviously different way
+with the product than without it. </P>
+
+<P><A NAME="Requirement3"></A><B><FONT SIZE=+1>Requirement #3: Implement
+Policy with Software.</FONT></B></P>
+
+<P>Anti-virus policy must be implemented with software, not user behavior.
+Software can implement your policy for you. Users cannot be counted on
+for consistent or timely behavior, no matter how motivated and trained
+they are. Nor can an organization afford to train and motivate users to
+the level where policies are automatically and perfectly always followed.
+Driver training does not stop speeders; radar does. Let software do your
+work and implement your policy. </P>
+
+<P><A NAME="Requirement4"></A><B><FONT SIZE=+1>Requirement #4: Enforcement
+required.</FONT></B></P>
+
+<P>We must be assured that the chosen software is running. There is no
+point in paying for something that is not installed, or that has been de-installed.
+</P>
+
+<P><A NAME="Requirement5"></A><B><FONT SIZE=+1>Requirement #5: Automatic
+network installs and upgrades.</FONT></B></P>
+
+<P>We cannot afford to go from machine to machine to install or upgrade
+any software. We've paid for the network, let's put it to work for us.
+</P>
+
+<P><A NAME="Requirement6"></A><B><FONT SIZE=+1>Requirement #6: Automatic
+Central Reporting</FONT></B></P>
+
+<P>Central reporting must be automatic. We cannot afford to wander the
+halls with survey forms, asking for users to complete questionnaires on
+what happened last month. We need instant, perfect notification, so that
+we can be involved in solving the problem, not merely reporting on it.
+</P>
+
+<P><A NAME="Requirement7"></A><B><FONT SIZE=+1>Requirement #7: Immediate
+Notification</FONT></B></P>
+
+<P>Immediate notification of the help team is necessary. The crew that
+will fight the fire may happen to be out on a house call when the alarm
+sounds. For many organizations, automatic paging and/or 25th line messaging
+is a requirement. </P>
+
+<P><A NAME="Requirement8"></A><B><FONT SIZE=+1>Requirement #8: Automatic
+Self-Repair</FONT></B></P>
+
+<P>Products must include ability to detect if they are infected, and ideally,
+to self-repair. The idea of running an infected product to check user machines
+is unacceptable. The idea of always &quot;booting clean and running the
+product from a write-protected floppy&quot; is not always practical as
+a general strategy. </P>
+
+<P><A NAME="Requirement9"></A><B><FONT SIZE=+1>Requirement #9: Modularity</FONT></B></P>
+
+<P>Products must be modular, so that different mixes can be tailored to
+threat, policy, environment, and user skill level. Extra components should
+be available for tightening defenses during time of infection in the organization.
+</P>
+
+<P><A NAME="Requirement10"></A><B><FONT SIZE=+1>Requirement #10: Multi-platform
+support required.</FONT></B></P>
+
+<P>Products must work across the platforms found in our offices, not just
+DOS. If you run DOS, OS/2, Windows, Windows 95, NT, NetWare, and VINES,
+you need a product that will protect you on each of these platforms. </P>
+
+<P><A NAME="PrinciplesinVirusPolicy"></A><B><FONT SIZE=+2>Principles in
+Virus Policy</FONT></B></P>
+
+<P>Our goal is to write policy that works, so you don't have to work (as
+hard). Good policy rests on a foundation of defensible principles, so we
+present some principles below, along with some policy recommendations.
+</P>
+
+<P><A NAME="Principle1"></A><B><FONT SIZE=+1>Principle #1: The Virus Response
+Team</FONT></B></P>
+
+<P><B>Goal: Create, train, motivate, and empower a team to deal effectively
+and professionally with your next virus incident.</B> </P>
+
+<P><B>Implementation:</B> </P>
+
+<P>Select a core group of virus response team members from across the organization.
+Include representatives from the help desk, MIS, management, network supervisors,
+and users. No special compensation but all with dispensation from their
+managers to perform duties as required. </P>
+
+<P>Create a mailing list and pocket cards with phone numbers (including
+home numbers) of the team members. </P>
+
+<P>Give team members identity and status. Get some tee shirts or baseball
+caps made, and give them to the team. </P>
+
+<P>Treat the team members as special people. Provide pizza and sodas for
+their organizational meetings, to encourage attendance and show your appreciation.
+</P>
+
+<P>Expect great things. Team members will be expected to stay late, work
+weekends during an incident, showing unflagging energy until the crisis
+is resolved. </P>
+
+<P>Give them a charge. Expect all users to report to a team member whenever
+an infection is found or alert occurs. Expect the team to assemble immediately
+when summoned to the war room. </P>
+
+<P><A NAME="Principle2"></A><B><FONT SIZE=+1>Principle #2: Prevention</FONT></B></P>
+
+<P><B>Goal: Prevent all infections</B> </P>
+
+<P>An Ounce of Prevention is Worth... </P>
+
+<P><B>Implementation</B> </P>
+
+<P>All users should run a smart anti-virus behavior blocking device driver
+(not a TSR, not a resident scanner), at all times. </P>
+
+<P>Users logging in should be checked to determine if an anti-virus device
+driver is running. If not, it will be automatically installed in their
+machines. </P>
+
+<P><A NAME="Principle3"></A><B><FONT SIZE=+1>Principle #3: Selected Anti-Virus
+Software Must Be Run</FONT></B></P>
+
+<P><B>Goal: Ensure return on your investment. Anti-virus software that
+is not used cannot protect you.</B> </P>
+
+<P><B>Implementation</B> </P>
+
+<P>We routinely get calls from organizations that have product X and virus
+Y, yet product X is perfectly capable of detecting virus Y. How could this
+organization have any infected machines? It happens because the first machines
+to be infected were not running the product. </P>
+
+<P>I have been called to sites that were heavily infected with a common
+virus. At the site, I typically will find two or even three anti-virus
+products per machine. (I found one machine with five different products
+installed on it!) How could they have a virus? In many cases, they had
+simply not run the software they owned. </P>
+
+<P>Some managers think they can't do anything to enforce policy. They are
+wrong. Here's how to fight inertia effectively: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Ensure that your selected anti-virus device driver is
+still running as you installed it. When the user logs in, let the login
+script run a program to determine if it is running. If it is, let them
+in to your server. If it is not, do an automatic re-install of the product,
+and log the user out, with an optional offer to reboot their machine for
+them. The user can't beat <I>this</I> system.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Run the product on the user's behalf. At the time of
+login, scan their memory.</FONT> </LI>
+</UL>
+
+<P><A NAME="Principle4"></A><B><FONT SIZE=+1>Principle #4: Install the
+Upgrades Now</FONT></B></P>
+
+<P><B>Goal: Your organization must use the very best software your vendor
+can provide.</B> </P>
+
+<P><B>Implementation</B> </P>
+
+<P>We have found organizations using anti-virus software that was two or
+three years old. </P>
+
+<P>Be sure everyone in your organization understands these facts: the number
+of viruses in the world is now about 6,500. The number of viruses in the
+world doubles every 8 or 9 months. Any scanner that is more than a few
+months old has a fair chance of missing the next virus that comes along.
+</P>
+
+<UL>
+<LI>Cope with upgrade frequency with automatic upgrades. You can't expect
+to upgrade 2,000 users every 20 minutes. But you can afford to copy a few
+files to a directory on a server, and let automatic installation/upgrade
+software do the rollout for you. Be sure you upgrade all users as frequently
+as your vendor upgrades you. And do it from your desk, without visiting
+every machine. </LI>
+
+<LI>Cope with new viruses with &quot;generic&quot; products, where possible.
+</LI>
+</UL>
+
+<P><A NAME="Principle5"></A><B><FONT SIZE=+1>Principle #5: Central Notification</FONT></B></P>
+
+<P><B>Goal: Automatic, immediate notification of a central Authority</B>
+</P>
+
+<P>Any time the anti-virus device driver finds a virus, the organization
+must be automatically notified by the software (via NetWare group, printer
+output, console output, pager, etc.). </P>
+
+<P><B>Implementation</B> </P>
+
+<P>Install products that offer intelligent signaling. </P>
+
+<P>If you use a wide-area network, you'd like an incident at a branch in
+the Philippines or Honduras to be immediately reported to your headquarters
+office. </P>
+
+<P>Your products may permit some kind of signaling between systems. If
+your products have any such capability, be sure they are configured to
+deliver! </P>
+
+<P><A NAME="Principle6"></A><B><FONT SIZE=+1>Principle #6: Immediate, Efficient
+Full Identification and Analysis of Virus</FONT></B></P>
+
+<P><B>Goal: Select proper course of action based on accurate, useful information</B>
+</P>
+
+<P>The best laid plans of mice, men, and women don't always work out. Even
+though your emphasis is best placed on prevention, something can always
+slip through. For instance, if you own the world's best device driver,
+and it is installed in every one of your workstations, it can fail because
+the user booted with their golf game diskette or because the user just
+overwrote CONFIG.SYS during a copy operation, then rebooted. So we must
+be able to remove anything that gets past our prevention barrier. To do
+that effectively, we must begin by understanding what we are dealing with.
+</P>
+
+<P><B>Implementation</B> </P>
+
+<P>Upon notification, the organization should identify the virus using
+a precision scanner, and collect a sample prior to destroying it. </P>
+
+<P>Information about the virus should be found and studied, ideally via
+on-line hypertext. </P>
+
+<P>There are two straight-forward means of implementing this principle:
+</P>
+
+<P>Collect a sample, scan it with a scanner that is precise and accurate
+to determine its name. Perform an analysis of the virus, determining what
+it does. Consult an information source to learn more about this virus.
+Call your vendor for further information. </P>
+
+<P>Send a sample of the virus to your vendor for analysis. </P>
+
+<P><A NAME="Principle7"></A><B><FONT SIZE=+1>Principle #7: Perfect, Efficient,
+Automated Recovery Is Always Possible</FONT></B></P>
+
+<P><B>Goal: Perfect recovery from any unwanted modifications to CMOSmaster
+boot record, boot record, system files, any programs.</B> </P>
+
+<P>Because it is possible to accidentally bypass the protection of a behavior-blocking
+device driver (a renamed or edited CONFIG.SYS, booting from a floppy, or
+deletion of the device driver followed by reboot), protection must include
+capability for perfect repair. </P>
+
+<P><B>Implementation</B> </P>
+
+<P>All critical files must be backed up. In the future, you may automatically
+backup some files from workstation to the server, and from there, archive
+them to tape. </P>
+
+<P>All machines will have a rescue disk, which will permit instant recovery
+of lost MBR, BR, system files, and CMOS. Later, if a user's machine is
+ever damaged, you can automatically recover it. </P>
+
+<P>Some viruses encrypt files when they infect them. The only ways to remove
+such viruses from files are </P>
+
+<UL>
+<LI>delete the infected file and restore from backups. Scan after restore,
+to ensure that your backups weren't infected. Unfortunately, most workstations
+don't have tape drives installed; most workstations haven't been backed
+up; most scanners don't have any automatic links to backup copies, so they
+can't restore uninfected files as they delete infected files. With today's
+technology, this approach is not palatable. </LI>
+
+<LI>use a program that has been written to remove this specific virus.
+Unfortunately, new viruses are being written at about 100 times the rate
+at which such programs are being written. Unfortunately, there may not
+be a remover from your vendor for the virus you get next. </LI>
+
+<LI>use a program that is able to &quot;run&quot; your infected program
+in a virtual machine, permitting the virus to do the decryption. The cleaning
+program can then finish cleaning the file. </LI>
+</UL>
+
+<P><A NAME="Principle8"></A><B><FONT SIZE=+1>Principle #8: All File Servers
+Virus-Free At All Times.</FONT></B></P>
+
+<P><B>Goal: No files containing a virus will be permitted to be stored
+on, copied to, copied from, renamed on, or executed from the server.</B>
+</P>
+
+<P><B>Implementation</B> </P>
+
+<P>Install an anti-virus NLM on all NetWare servers and perform real-time
+scans. Scan files as they are opened, copied, or renamed. There is no need
+to do any other scan of servers, and in fact, anything other than real-time
+scanning of servers will miss an infection if there is much server activity.
+</P>
+
+<P>Any NLM you select must meet these requirements: </P>
+
+<UL>
+<LI>Any events will be accompanied by automatic notification (pager, printer,
+NetWare group, console, etc.) and automatic action (move, rename, purge,
+etc.). </LI>
+
+<LI>The NLM must use little server memory, have negligible effect on server
+performance, produce no false alarms. </LI>
+
+<LI>If you have two or more servers, then the anti-virus NLMs must be able
+to send reports to a central site, and be centrally managed. </LI>
+
+<LI>With multiple servers, upgrades of each should be possible by a Supervisor
+from a single workstation. </LI>
+
+<LI>If we are going to go to the trouble of evaluating, purchasing, and
+installing an NLM, then it had better detect a high number of viruses.
+5,000 or more (at this writing) seems a reasonable minimum. </LI>
+</UL>
+
+<P>If no products exist to perform real-time scans of your server (the
+case for VINES, NetWare 2.x, NTAS, etc.) then call from menus and batch
+files some product which provides warnings when infected. </P>
+
+<P>Because viruses can infect any file on the server that a user has the
+right to modify, no executables will be stored in any directory where any
+user has write&shy;permission. Note that this is not the same as marking
+a file read&shy;only. Viruses can easily change file attributes, but cannot
+change the protections offered by NetWare or other network operating systems
+at the directory level. </P>
+
+<P>Users must ensure that their machines are virus-free before logging
+in. To ensure this, you should check each user's memory for viruses before
+they are fully logged in, with a program placed in the login script. Any
+user who experiences a virus infection will have a special login script,
+and their entire machine will be scanned from the server before they are
+permitted to login. </P>
+
+<P><A NAME="Principle9"></A><B><FONT SIZE=+1>Principle #9: Users who Pose
+Special Risks to the Organization Will Receive Special Treatment.</FONT></B></P>
+
+<P><B>Goals: By giving special attention to those who place us at greatest
+risk, we lower our overall risks with minimal increase in costs.</B> </P>
+
+<P><B>Implementation</B> </P>
+
+<P>First we must define &quot;high risk&quot; users: </P>
+
+<P>Network supervisors are high risk users. In an organization in which
+one or two resident viruses can be found, it is most often the supervisor
+who infects files on the server. When a file such as LOGIN, LOGOUT, FLAG,
+FILER, or SEND is infected, consider that such files are normally stored
+in directories where users (and their viruses) do not have write-permission.
+The only virus that can infect such files is that running in the machine
+of a supervisor. </P>
+
+<P>Anyone who enters your front door with an offer to help you technicians,
+service people, contractors, consultants, sales reps is likely infected.
+Their disks have been in hundreds of other machines and are usually not
+write protected. Their disks have a higher probability of being infected
+than any in the world. </P>
+
+<P>One strike and you are out. If a user has previously had a virus infection,
+consider them to be high risk. They have a higher probability of being
+infected again than any other user has of being infected once. Lightning
+<I>does</I> strike the same users twice! </P>
+
+<P>Feel free to add to our definition of high risk. Once you have finished,
+decide what to do about them. Here are our recommendations: </P>
+
+<UL>
+<LI>Create a network group called &quot;HIGHRISK&quot;, and place users
+such as GUEST, SUPERVISOR, and previous virus victims in this group. Let
+your login script treat them as special people. In NetWare<SUP><FONT SIZE=-2>TM</FONT></SUP>,
+the login script can read:<TT><FONT COLOR="#800000">if member of &quot;HIGHRISK&quot;
+thenDOS set risk=high...endexit &quot;novirus.bat&quot;</FONT></TT> </LI>
+</UL>
+
+<P>And then NOVIRUS.BAT can contain:<FONT FACE="Courier New"><FONT COLOR="#800000"><FONT SIZE=-1>if
+%risk% = = high goto highrisk:lowrisk[...whatever you want here]goto quit:highrisk[...scan
+their machine before admitting them. Especially important is to scan their
+memory with fast-running anti-virus software.]:quit</FONT></FONT></FONT>
+</P>
+
+<UL>
+<LI>Provide mandatory basic virus training and an anti-virus product for
+any user in the organization who has had a virus infection. </LI>
+
+<LI>Provide all users with a licensed copy of your anti-virus software
+to take home to their own machines. Insist that high risk users install
+and run it there. </LI>
+</UL>
+
+<P><A NAME="Principle10"></A><B><FONT SIZE=+1>Principle #10: Users Must
+Not Run Any Software Not Approved by the Organization.</FONT></B></P>
+
+<P><B>Goals: By eliminating unauthorized software, you eliminate piracy,
+reduce support problems, and reduce the risk of viruses. Something with
+so many benefits can hardly be ignored.</B> </P>
+
+<P><B>Implementation</B> </P>
+
+<P>Your policy might read: <I>Pirated software is a very common source
+of viruses. For this reason (as well as others), no pirated software will
+be permitted in the organization. Users will be held responsible for any
+such software found in their machines or their possession. Regular audits
+will be conducted to search for unauthorized software installed on machines.</I>
+</P>
+
+<P>To implement the policy, there are a number of things you will need
+to do: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Develop a list of authorized software, including version
+information. The list will need to be derived, in part, from your purchase
+and licensing records. Buying a single copy of a program does not mean
+that its use is authorized for 1,000 users.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Publish the list, along with your policy. Explain the
+reasons for the policy to users.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Use software to ensure that workstations do not have
+unauthorized software on them.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Inform users who have unauthorized software of what they
+have that is unauthorized. Ask them to remove this software from their
+machines.</FONT> </LI>
+
+<LI><FONT SIZE=-1>After 30 days, automatically remove such software at
+login time, again using software to do the job.</FONT> </LI>
+
+<LI><FONT SIZE=-1>If you need to find and remove a great deal of unauthorized
+software, assume that it implies a considerable need that your software
+budget has not met. Increase your annual budget for software, and give
+users a voice in what it is spent on.</FONT> </LI>
+</UL>
+
+<P><A NAME="Principle11"></A><B><FONT SIZE=+1>Principle #11: Those Who
+Use the Machines are Responsible for the Protection of the Information
+in Them.</FONT></B></P>
+
+<P><B>Goal: Those Who Receive Software will be held Accountable for Ensuring
+that it Causes No Harm to Their Machine or Information. Develop a sense
+of responsibility in your organization. Let each user defend their data,
+for if security does not begin on the desktop, that's where it ends.</B>
+</P>
+
+<P><B><TT>Implementation</TT></B> </P>
+
+<P><TT>Your user bill of rights must include the right to trust each other.
+To merit that trust, users must protect each other from viruses, by ensuring
+that the disks and files they share with others are virus-free. At the
+same time, users should treat each new disk and file with caution, assuming
+that it might contain a virus, no matter how otherwise trustworthy the
+source.</TT> </P>
+
+<P><TT>Let it be each user's policy to ensure that any disk that is shipped
+outside your office is virus free, that their machine is virus-free at
+the time of preparing such disks, and that any disks or files exchanged
+by two parties are checked at their end of the exchange.</TT> </P>
+
+<P><TT>Each user must be responsible for protecting other users in the
+organization. Each user has a sacred trust to ensure that software and
+disks they share with others are not infected.</TT> </P>
+
+<P><A NAME="Principle12"></A><B><FONT SIZE=+1>Principle #12: Those Who
+Provide Software will be held Accountable for the Software they Provide.</FONT></B></P>
+
+<P><B>Goal: You can't do it alone. Trusted software sources must work to
+merit your trust by ensuring that the software they provide is virus-free.
+If they do not do this, they must be held accountable and contribute to
+your costs of recovering from the harm caused by the software they have
+provided.</B> </P>
+
+<P><B>Implementation</B> </P>
+
+<P>I have heard so many stories of vendors shipping viruses along with
+their products that we cannot resist sharing a few stories with you. </P>
+
+<UL>
+<LI><FONT SIZE=-1>A manufacturer of CD ROMs shipped a copy of a dangerous
+polymorphic virus (&quot;Asexual&quot;) world-wide on CD. Users around
+the world were infected.</FONT> </LI>
+
+<LI><FONT SIZE=-1>A large insurance organization rented 15 computers from
+a local firm; all of the computers arrived infected with a virus named
+SatanBug. The virus quickly spread to their servers and other workstations
+in the organization. The rental company later claimed to have reformatted
+all drives before preparing them, and to have scanned all machines with
+a &quot;quality scanner.&quot; The scanner they used (if they did) was
+from a company that hasn't sold scanners in two years, and so was presumably
+a bit dated.</FONT> </LI>
+
+<LI><FONT SIZE=-1>A network consulting firm arrived at the door of a small
+company to help them with their network problem. When they placed their
+first disk in a drive, the company's anti-virus software warned that the
+disk was infected. It was discovered that all 15 disks the consultants
+arrived with were infected, but with three different boot viruses. The
+consultants claimed to have checked their disks with an anti-virus product.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>The training department in one of the world's largest
+organizations infected every student who attended courses with a virus
+named LBB Stealth. When a student called after returning home, complaining
+about the infection, the virus expert in the organization claimed that
+LBB Stealth &quot;was not a virus because it causes no damage.&quot;</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>NASA has determined, after a review of virus incidents,
+that its primary source of virus infections is products and services received
+directly from vendors. NASA now requires its suppliers to provide virus&shy;free
+software and hardware. In one instance, a supplier shipped a virus to NASA,
+NASA spent $2,500 cleaning it up, and sent the bill to the supplier, who
+paid it.</FONT> </LI>
+</UL>
+
+<P>My recommendation: <I>Vendors of software will be held liable if the
+software they ship is infected with a virus. The liability includes a cash
+payment for any documented expenses incurred by you or your staff in removing
+the virus, any costs of rebuilding machines or restoring things to their
+original condition, and any costs for lost productivity during the cleanup.</I>
+(If the vendor cannot certify their that the product is virus&shy;free,
+do you want it? And obviously, if the detection is a false alarm on the
+part of the anti-virus scanner, we cannot hold the other vendor responsible.)
+</P>
+
+<P><TT>I would recommend that this policy, in more relaxed form, be applied
+to users. Users are their brothers' keepers. They should not provide any
+diskette or file to any other user without being able to also provide reasonable
+assurance that it is virus-free. This notion runs counter to the passive,
+carefree attitude that prevails in our offices. But if users won't care
+for each other, who will?</TT> </P>
+
+<P><TT>Tell users this: <I>If security doesn't begin on your desktop, that's
+where it ends.</I></TT> </P>
+
+<P><A NAME="EffectiveAntiVirusPolicy"></A><B><FONT SIZE=+2>Effective Anti-Virus
+Policy</FONT></B></P>
+
+<P>We list in this section some ideas for policy to help prevent viruses.
+For some recommendations, we show both a basic, common sense recommendation
+and a more cautious recommendation, for those organizations wishing to
+take extra care in preventing viruses. </P>
+
+<OL>
+<LI>Don't use any software that is not a known quantity. Scan all software
+with a good scanner before running it. Use a solid anti-virus TSR or device
+driver when first running new software. More cautious: Isolate and test
+new software on a test system, where Trojan horses and viruses can do little
+damage. </LI>
+
+<LI>Because software brought in from home is the most common source of
+office infections, all programs and disks brought in from home must be
+checked for viruses. More cautious: no software may be brought into the
+office without it being checked for viruses by the virus response team
+or help desk. Most cautious, but probably ineffective and counter-productive:
+no software or data disks will be permitted to be brought in from home.
+</LI>
+
+<LI>Vendors of software will be held liable if their software is infected
+with a virus. The liability includes a cash payment for any documented
+expenses incurred by you or your staff in removing the virus, any costs
+of rebuilding machines or restoring things to their original condition,
+and any costs for lost productivity during the cleanup. (If the vendor
+cannot certify their that the product is virus&shy;free, do you want it?)
+NASA has determined, after a review of virus incidents, that its primary
+source of virus infections is products and services received directly from
+vendors. NASA now requires its suppliers to provide virus&shy;free software
+and hardware. In one instance, a supplier shipped a virus to NASA, NASA
+spent $2,500 cleaning it up, and sent the bill to the supplier, who paid
+it. </LI>
+
+<LI>Pirated software is a very common source of viruses. For this reason
+(as well as others), no pirated software will be permitted in the organization.
+Users will be held responsible for any such software found in their machines
+or their possession. Regular audits will be conducted to search for unauthorized
+software installed on machines. </LI>
+
+<LI>Install anti-virus NLMs on all NetWare servers and regularly scan all
+other servers for viruses. More cautious: No programs can be placed on
+the server by any user. A batch file will routinely sweep the server for
+such programs, and remove them. </LI>
+
+<LI>Because viruses can infect any file on the server that a user has the
+right to modify, no executables will be stored in any directory where any
+user has write&shy;permission. Note that this is not the same as marking
+a file read&shy;only. Viruses can easily change file attributes, but cannot
+change the protections offered by NetWare or other network operating systems
+at the directory level. </LI>
+
+<LI>Users must ensure that their machines are virus-free before logging
+in. To ensure this, you should check each user's memory for viruses before
+they login, with a program placed in the login script. Any user who experiences
+a virus infection will have a special login script, and their entire machine
+will be scanned from the server before they are permitted to login. </LI>
+
+<LI>The organization will provide mandatory basic virus training and an
+anti-virus product for any user in the organization who has had a virus
+infection. More cautious: do this for all users. Such products must be
+correctly installed and correctly used. </LI>
+
+<LI>All users must report all infections immediately, prior to removing
+the virus or taking any other action, to (person or unit). This group will
+determine the best course of action in tracking down additional copies
+of the virus and removing it. </LI>
+
+<LI>Each user is responsible for defending their own machines and disks
+from viruses. Security must begin on the desktop, for if it does not begin
+there, it will end there. </LI>
+
+<LI>Each user is also responsible for protecting other users in the organization.
+Each user has a sacred trust to ensure that software and disks they share
+with others are not infected. </LI>
+</OL>
+
+<P><A NAME="SomeCommentsonPolicy"></A><B><FONT SIZE=+2>Some Comments on
+Policy</FONT></B></P>
+
+<P>In this final section, I will offer a few thoughts on policy creation
+and implementation. </P>
+
+<P>You need a strong and clear policy for your organization, to provide
+a deterrent to those it would deter, and to strengthen your hand with those
+who ignore policy. </P>
+
+<P>Policies alone don't solve problems. In fact, they sometimes just create
+them. The world's best-written policy is without value if the people who
+need to follow it are not aware of it, or are not motivated to comply with
+it. You may have an administrative requirement to create a security policy.
+An internal or external audit may have suggested its creation, or senior
+management may have reacted to an article in the press regarding a security
+breach and proclaimed, &quot;Don't let this happen here.&quot; You may
+have some regulatory or statutory requirement for such a policy, or you
+may have simply decided that it just makes common sense. </P>
+
+<P>Your security policy may focus on <I>information</I> protection, recognizing
+that information security is a <I>business</I> issue, not a technical issue.
+</P>
+
+<P>Information is a corporate asset. Just like inventory, equipment, and
+employees, information has a tangible value. The late Rear Admiral Grace
+Hopper predicted that within a few years corporations will list information
+as a corporate asset in their annual reports. We are in the <I>Information
+Age</I>. As corporate reliance on computer systems increases, information
+becomes both a strategic asset and a tactical asset. It becomes a strategic
+asset from the perspective that knowledge of processes, formulas, research,
+and development provides long-term stability and growth. It becomes a tactical
+asset from the perspective that knowledge of customer needs, marketing
+data, and systems designed to respond to rapid change in these areas provide
+an organization with an enhanced ability to outperform the competition.
+</P>
+
+<P><A NAME="PolicyCreation"></A><B><FONT SIZE=+1>Policy Creation</FONT></B></P>
+
+<P>Before you begin to write a security policy, conduct your own risk assessment,
+identify the assets you want to protect, and determine what you want to
+do to protect them. Your policy should be grounded in good sense. You may
+also want to spend some time conducting company-wide discussions on topics
+such as: </P>
+
+<UL>
+<LI><I>Information ownership:</I> Whoever owns the information has the
+duty to care for it. </LI>
+
+<LI><I>Valuing our information:</I> Until we recognize the value of information,
+we cannot be expected to show proper care for it. </LI>
+
+<LI><I>The value of privacy:</I> To what extent do users desire privacy?
+Do they expect it? Is the right to privacy something on which our organization
+can agree, so that the organization can develop policy that ensures users'
+rights are protected? </LI>
+
+<LI><I>The ethics of break-ins: </I>Do we as an organization find computer
+break-ins to be immoral or moral, serious or silly? As you explore this
+issue, perhaps by using imaginary case studies and ranked comparisons (see
+<I>Network Security Secrets</I>), you may discover considerable disparity
+in staff members' attitudes toward appropriate punishment for various offenses.
+Group discussion helps bring out these attitudes and ensures that policy
+is written to fit your staff's beliefs. </LI>
+</UL>
+
+<P><B>Purpose</B></P>
+
+<P>A good policy statement should </P>
+
+<UL>
+<LI><FONT SIZE=-1>Support the organization's goals</FONT> </LI>
+
+<LI><FONT SIZE=-1>Describe your overall network security program, including
+ongoing maintenance and enforcement</FONT> </LI>
+
+<LI><FONT SIZE=-1>Itemize the results of your risk assessment, including
+the threats you are responding to and the safeguards you propose</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Define responsibilities for the implementation and maintenance
+of each safeguard</FONT> </LI>
+
+<LI><FONT SIZE=-1>Define appropriate and inappropriate behavior for users
+in such a way that the document can be used in court if security violations
+occur</FONT> </LI>
+</UL>
+
+<P>Policy is intended as a <I>change agent. </I>It defines a standard toward
+which all the winds in your office should blow, and all the trees should
+bend. Policy must, therefore, address those procedures and behaviors that
+can be changed. Your policy cannot prevent tornadoes, floods, or lightning.
+But it can provide a foundation for procedures that minimize the impact
+of such calamities when they occur. Thus it can be your organization's
+policy to back up important information carefully and regularly, and store
+it in a secure, off-site location. </P>
+
+<P>Assuming your policy addresses those things that should and can be changed,
+then you must figure out who will help write the policy, and for whom it
+is to be written. The traditional approach is for a security enthusiast
+(that is, someone with a bit of responsibility but little authority) to
+draft it, and then try to sell it to top management. Management, in turn,
+is supposed to enforce it by making users comply. This approach has two
+problems: top management often doesn't buy it; and when they do, they don't
+know how to sell it. It might be just as effective to take your ideas to
+users, let them discuss them, and let them write the draft policy. Such
+a draft they can accept it is theirs even though management has not yet
+approved it. If management later endorses the policy, good. </P>
+
+<P>A twist would be to not have users write policy for users, or management
+to write policy for users, but for users to write policy for management!
+Such a document would describe what was needed that couldn't come about
+merely by users changing their own behavior. It could include shopping
+lists of equipment needed, staff roles and responsibilities in need of
+expansion, and ideas for reorganizing departments to build greater morale,
+cohesion, and therefore security. Don't try this experiment at home, of
+course. Just because it works in other countries (like Japan) doesn't mean
+it works here. </P>
+
+<P><B>Audience</B></P>
+
+<P>After upper management and users have thoroughly discussed the proposed
+policies, you should consider rewriting and expanding your initial policy
+statement, creating several documents. Each of these documents can be aimed
+at a different audience, and can range in formality from a series of memos
+to a &quot;How to Implement It&quot; manual. Whatever the format, the purpose
+is to provide practical <I>how-to</I> advice. You certainly need a series
+of such memos (or a manual) for users, a series of memos for network managers,
+and another set of documents for managers. </P>
+
+<P><B>Content</B></P>
+
+<P>What should go into your policy? Here are some ideas: </P>
+
+<UL>
+<LI>Which information resources to protect </LI>
+
+<LI>Which software to allow on employees' PCs </LI>
+
+<LI>What happens when unapproved programs and data are detected </LI>
+
+<LI>Internal sanctions and prosecution guidelines </LI>
+
+<LI>Who the policy affects </LI>
+
+<LI>Who developed the guidelines </LI>
+
+<LI>The highest authority who has approved these guidelines </LI>
+
+<LI>Who has exactly what authorities and privileges </LI>
+
+<LI>Who can grant authorities and privileges </LI>
+
+<LI>Procedures for providing or revoking security privileges </LI>
+
+<LI>Expectations and procedures for reporting security violations and criminal
+activity </LI>
+
+<LI>Specific management and employee responsibilities for making security
+happen </LI>
+
+<LI>Explanations of the importance of the policy (a user base that understands
+the reasons for a policy is more likely to follow it) </LI>
+
+<LI>Effective date and revision dates </LI>
+
+<LI>Who enforces these guidelines and how they do it </LI>
+</UL>
+
+<P><B>Style</B></P>
+
+<P>Use colloquial language. Today, employees at all levels of organizations
+are apt to be using computers. Don't assume your reader has mastered <I>Webster's
+Unabridged Dictionary.</I> </P>
+
+<P>Don't be chummy, and don't plead, whimper, whine, or grovel. Your policy
+simply explains the deal, explains the consequences for breaches, and lays
+out the procedures for implementing each policy item. </P>
+
+<P>Be brief. The more words you write, the fewer are read. Remember KISS
+Keep It Short &amp; Simple (or Keep It Simple, Stupid). </P>
+
+<P>Create a reference card or similar device that contains the most important
+aspects of your policy. Make it easy to read and easy to use. Provide copies
+to everyone in your organization. </P>
+
+<P><A NAME="PolicyImplementation"></A><B><FONT SIZE=+1>Policy Implementation</FONT></B></P>
+
+<P>Here are some specific suggestions for your ongoing support program:
+</P>
+
+<UL>
+<LI>Good security policies depend on the knowledge and cooperation of the
+users. This is just as true of security against viruses as it is of policies
+about password management. </LI>
+</UL>
+
+<P>Policy idea: No policy is considered to be implemented until users are
+trained in the skills needed to follow the policy. </P>
+
+<UL>
+<LI>Security requires more than knowledge. It requires action. All users
+must know how to act when confronted with a breach or possible breach.
+</LI>
+</UL>
+
+<P>Policy idea: All users should know whom to call if they have questions
+or suspicions, and should know what to do, and what not to do, to minimize
+security risks. </P>
+
+<UL>
+<LI>Users should be encouraged to feel that security measures are created
+for their own benefit, rather than for no rational reason. </LI>
+</UL>
+
+<P>Policy idea: Users help set policy. Invite them to do so in open meetings
+to discuss policy proposals, and provide them with the opportunity to comment
+in writing on policy drafts. </P>
+
+<UL>
+<LI>If you want to present your policies only once, hire elephants. Because
+users are humans, they forget policies. If users don't have a twelve-month
+retention span, then hold a user-level policy review more often than once
+a year. </LI>
+</UL>
+
+<P>Policy idea: Provide policy refreshers in the form of posters, e-mail,
+memos, or staff meetings whenever you suspect a lapse in awareness. </P>
+
+<UL>
+<LI>New employees don't know what long-term employees know about your policies.
+You must inform new employees about your policies. If you just had a user
+briefing yesterday, and today you hired a new employee, you need to do
+a security policy orientation for the new employee. </LI>
+</UL>
+
+<P>Policy idea: Fully and carefully brief all new and temporary hires on
+your security policies and procedures. </P>
+
+<UL>
+<LI>For some users, the elevator doesn't stop on every floor. Just because
+you can quickly grasp the important points in your 200-page security policy
+doesn't mean that anyone else can. Break up your policy document into digestible
+bites, and feed your users one bite at a time. Twelve messages a year is
+more digestible than one big one. </LI>
+</UL>
+
+<P>Policy idea: Provide users with policy guidance in manageable units.
+</P>
+
+<UL>
+<LI>Even when users understand a policy, they may be justifiably concerned
+about how to implement it. Provide model implementation procedures and
+examples with every policy you have. As questions arise, record them (along
+with your answers and explanations) in the policy document. Share your
+updates with users. </LI>
+</UL>
+
+<P>Policy idea: Always couple policy with model procedures and examples
+of how to implement. </P>
+
+<UL>
+<LI>Some folks seem intent on getting us to worry sick about the damage
+we could cause to our computers. The backs of many floppy disk jackets,
+for example, list numerous threats to the poor floppy threats to the poor
+user, in fact. Users do not need to protect their floppies from fruit flies
+or asteroids. Follow Emerson's advice: Simplify! Be sure your policies
+focus on the truly important dangers: those that have some fair chance
+of occurring and that pose some fair risk if they occur! </LI>
+</UL>
+
+<P>Policy idea: If you've been developing policies for the last 100 years,
+throw out half of them. Cut down your security policy documents to about
+two dozen topics or less. Summarize each of the main policy points in a
+sentence or two. </P>
+
+<UL>
+<LI>So who do we call? Ghostbusters? You've got to be sure that your users
+know just whom to call for each of the problems the organization intends
+to solve. Many large firms designate an expert to be in charge of something
+or other, and then never let anyone know about it. The expert works in
+a vacuum, and the phone rings only when someone misdials. </LI>
+</UL>
+
+<P>Policy idea: Distribute Rolodex<SUP><FONT SIZE=-2>TM</FONT></SUP> cards,
+stickers, or other printed matter indicating who is dealing with what sorts
+of problems, their phone numbers, and their office locations. Ask users
+to keep these numbers handy. </P>
+
+<UL>
+<LI>We cannot know whether users have agreed to accept and follow a policy
+by notifying users of the policy merely by e-mail or memo. We cannot even
+know if the policy was received and understood. </LI>
+</UL>
+
+<P>Policy idea: Users are required to sign and return one copy of every
+policy statement they are asked to follow. </P>
+
+<P>Assigning responsibility without requiring accountability is a sure-fire
+formula for disaster. Your employees must understand that they are held
+personally accountable for complying with the information security policy.
+To be sure that everyone knows what your policies are, send (or hand-deliver)
+a copy to each and every employee. Include an acknowledgment and consent
+form with the document. Ask your employees to read the policy, to sign
+and date the attached form, and then return it to the security manager.
+</P>
+
+<P>Because only 6.2 percent of all users voluntarily return the signed
+policy within 90 days, you need to set up a little collection operation.
+Knock on doors with additional copies of your policy (&quot;I lost it&quot;),
+leave voice mail (&quot;I'm on vacation this year&quot;), wander through
+the mail room (&quot;It's in the mail&quot;), barter (&quot;I'll sign your
+dumb policy if you'll fill out your timesheet correctly&quot;), and be
+firm (&quot;Mr. Smith doesn't need to fill it out; he's head of marketing&quot;).
+</P>
+
+<P>After your tally shows that you've received signed statements from everyone,
+file the forms in personnel records, or maintain them by division, cost
+center, or other grouping. </P>
+
+<P>Here is a sample consent form: </P>
+
+<P><I>I, __________________(name), have read the (organization name) information
+security policy, dated ____. I understand it, and agree to abide by it.
+I agree to obtain prior approval whenever other job requirements seem to
+require that I deviate from the policy. I agree to alert ________________
+whenever I suspect a security breach on the part of someone else.</I> </P>
+
+<P><I>_________________________</I> </P>
+
+<P><I>Signed</I> </P>
+
+<P><I>___________________</I> </P>
+
+<P><I>Date</I> </P>
+
+<P><I>&gt;&gt; Please return the signed original of this page to _________
+&lt;&lt;</I> </P>
+
+<P><I>&gt;&gt; Please file a copy of this document in a handy place, for
+future reference. &lt;&lt;</I> </P>
+
+<P><I>&gt;&gt; Please call ___ if you have any questions, or policy suggestions.
+&lt;&lt;</I> </P>
+
+<P>Even if you manage to collect these consent pages from all employees,
+remember that your organization hires temporaries and new employees from
+time to time, and they need to be informed about security policy. Include
+a briefing and review of the information security policy as part of new
+employee orientation, and ensure that it is provided to any temps as part
+of their orientation as well. And don't forget contractors, consultants,
+vendors, customers, and anyone else who uses your network. If you don't
+have a signed consent form, you don't have much proof that they knew about
+the policy. Without such proof, prosecution (or even dismissal or reprimand)
+is more difficult. </P>
+
+<P>After everyone has read and signed the policy, don't be afraid to enforce
+it! If your policy indicates punishments for policy violations, be sure
+you follow the guidelines. Let others know when a punishment has been administered.
+Most people quickly figure out what policies are not enforced in an organization.
+If you doubt this principle, consider this: When was the last time you
+drove 55 m.p.h. on an interstate for an entire trip? </P>
+
+<P><A NAME="Isitfutile"></A><B><FONT SIZE=+1>Is it futile?</FONT></B></P>
+
+<P>Policy, procedures, and training are not enough. I once helped a small
+law firm write a policy on backing up files. It followed all the brilliant
+advice I've outlined here. I trained the staff in how to back up. I added
+automatic backup procedures to their menus. I insisted they purchase enough
+backup media for the job. Everyone agreed to follow the policy. Two months
+later, I got a call. &quot;Could you come in and help us recover a file?&quot;
+I asked about backups. &quot;Nope. Not yet.&quot; I was unable to recover
+the file, and it was lost. </P>
+
+<P>A month later, I received a very similar call. I asked about backups.
+&quot;Nope, not yet. We've been meaning to.&quot; I was unable to recover
+this file as well. Awareness is not enough. Policy frequently fails to
+do what it was intended to do. </P>
+
+<P>Is policy futile? We think not. In organizations with decent policy,
+things may still be disorganized, and mistakes still happen. But in organizations
+lacking policy, chaos reigns.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

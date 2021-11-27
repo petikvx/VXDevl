@@ -1,0 +1,562 @@
+<HTML>
+
+<!-- Mirrored from vx.netlux.org/texts/html/avcheck.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:10:59 GMT -->
+<HEAD>
+<TITLE>Antiviral Checklist</TITLE>
+</HEAD>
+<body text=#000000 bgcolor=#ffffff>
+<H1 ALIGN=CENTER>Antiviral Checklist</H1>
+<H3 ALIGN=CENTER>by Robert M. Slade</H3>
+<P ALIGN=CENTER>Copyright Robert M. Slade, 1992
+<P><BR>
+This article will outline, and explain, a checklist of steps that any
+computer user can take to reduce the risk of computer viral program infection,
+and increase the chances of detecting an infection early -- hopefully before it
+has much chance to do any damage.
+<H3><A HREF="#A00">For each computer</A></H3>
+<UL>
+<LI><A HREF="#A01">Directory list of all program files, date and size
+<LI><A HREF="#A02">List of programs run at startup
+<LI><A HREF="#A03">"Source code" for menus
+<LI><A HREF="#A04">Description of boot sector
+<LI><A HREF="#A05">Description of partition boot record
+<LI><A HREF="#A06">Description of memory map at startup
+<LI><A HREF="#A07">Description of interrupts at startup
+<LI><A HREF="#A08">Backup "originals" of software
+<LI><A HREF="#A09">Backup of hard disk directory structure
+<LI><A HREF="#A10">Clean, protected bootable system diskette
+</UL>
+<H3><A HREF="#B00">For each office</A></H3>
+<UL>
+<LI><A HREF="#B01">Description of current common viri
+<LI><A HREF="#B02">List of local virus information contacts
+<LI><A HREF="#B03">List of all hardware and software purchased, supplier and serial number
+<LI><A HREF="#B04">Designated machine for receiving/ testing new disks/software
+<LI><A HREF="#B05">Log of disks/programs received
+<LI><A HREF="#B06">Memory and disk mapping utilities
+</UL>
+<H3><A HREF="#C00">Regularly</A></H3>
+<UL>
+<LI><A HREF="#C01">Back up data
+<LI><A HREF="#C02">Monitor disk space, map, memory map
+<LI><A HREF="#C03">Monitor program file sizes
+</UL>
+<H3><A HREF="#D00">At software install/change</A></H3>
+<UL>
+<LI><A HREF="#D01">Protect original
+<LI><A HREF="#D02">Install from protected backup
+<LI><A HREF="#D03">Trial run on isolated system
+<LI><A HREF="#D04">Map memory before and after run
+<LI><A HREF="#D05">Offer "bait" files and disks
+</UL>
+<H3><A HREF="#E00">If infection found</A></H3>
+<UL>
+<LI><A HREF="#E01">Send copy to recognized researcher
+<LI><A HREF="#E02">Isolate machine and disks
+<LI><A HREF="#E03">Perform minimal disinfection
+</UL>
+<HR>
+<A NAME="A00"></A>
+<H2>For each computer</H2>
+I really feel that the following list is reasonable, achievable and necessary
+for each individual computer. All of the items, with one exception, can be
+obtained by any intermediate user with only the software supplied with the
+computer. Most of the items should be done in any case as they are good
+"technical support" practice.
+<A NAME="A01"></A>
+<H3>Directory list of all program files, date and size</H3>
+This, of course, is completely straightforward, and yet it is so seldom done.
+Yet the vast majority of file infecting viri would be instantly detected by a
+comparison between the original "clean" list and a directory listing taken
+after an infection. For best results, of course, other factors are needed,
+which will be covered in due course.
+<A NAME="A02"></A>
+<H3>List of programs run at startup</H3>
+With the number of "background" and "resident" programs running on computers
+today, it's a wonder <I>anything</I> can operate at all. If you don't know what
+your computer is supposed to be running, how on earth do you know when
+something unusual creeps in?
+<P>
+For the MSDOS world, this list can be obtained simply by printing a copy of
+the CONFIG.SYS and AUTOEXEC.BAT files. It may be felt that, because these files
+are present on the computer anyway, it is redundant to print them out. A fair
+point, but a booklet of this information at each computer will save time and
+trouble all round.
+<A NAME="A03"></A>
+<H3>"Source code" for menus</H3>
+These days the computer vendor/reseller or a technical support person installs
+the computer hardware and software, and then installs a simple menuing system
+for the user. It is not always obvious, from the disk structure, which program
+the user may be using on a regular basis.
+<A NAME="A04"></A>
+<H3>Description of boot sector</H3>
+By a description I mean something as simple as a copy on a separate diskette
+or a "hex dump" listing. But even this is a formidable object for a novice user
+to understand, let alone produce.
+<P>
+This, however, is not an insurmountable objection. The user does <B>not</B>
+have to understand what the listing means, only that a change occurs. As for
+generating the listing, that can be done by the qualified people who install
+the system. With DEBUG on the system, batch files can be written to show the
+user the first few lines of the current boot sector. It might also be a good
+idea to have printouts (of the most common) and batch files to check the boot
+sectors of floppy disks.
+<A NAME="A05"></A>
+<H3>Description of partition boot record</H3>
+Similar objections will be raised, and similar arguments defeat them. With the
+prevalence of Stoned and Michelangelo, the master/partition record is even more
+important than the boot sector. For MS-DOS machines, FixMBR allows capture, and
+F-PBR from the 1.xx versions of F-PROT allows examination, of the relevant
+sector. (FixMBR, by the way, should be a part of any BIOS DOS, and all users
+should be part of a massive letter writing campaign to Microsoft and Digital
+Research, demanding to know why the twits haven't licensed it yet.)
+<A NAME="A06"></A><A NAME="A07"></A>
+<H3>Description of memory map at startup
+<BR>Description of interrupts at startup</H3>
+These two can really be handled together, both in concept and in execution.
+Again, while the novice user can't be expected to know what all the numbers
+mean, anyone of sound mind can see whether or not they change. The one problem
+here is that, during the normal running of programs, some of these numbers do
+change. Therefore, it should be stressed that, if any change is noted, it
+should be checked again after a "reboot" of the system. At this point some of
+the benefit is lost, as the novice user may not be able to differentiate
+between a valid program which is sloppy in its use of memory, and a viral
+infection. Having this item on the checklist, however, will give the
+experienced support person an immediate baseline.
+<A NAME="A08"></A>
+<H3>Backup "originals" of software</H3>
+As we progress through the list, it will be noted that a number of the
+measures proposed are no more than those proposed for good computer management
+and support without regard to viral programs. This should not be surprising.
+The operations of viral programs are not different in kind from normal computer
+operations. (This is why it is impossible to identify a viral, as opposed to a
+valid, program by examination of the code alone.) Therefore, any operation of a
+viral program could just as easily be done by the proverbial "ingenious idiot"
+who has historically been far more deadly than any kind of malware.
+<P>
+As will be noted in future columns, I recommend that all software be
+installed from "backup originals". These disks, or copies made after
+installation, should there be any customization involved, should be kept with
+the computer. This serves two purposes. It allows for quick access to "known
+clean" software for re-installation, if necessary. (These "originals" may
+reduce or eliminate the need for "full" backups of the system, as the software
+is often the larger portion of material on the user's disk, and generally the
+most stable.) It also provides a "baseline" for a quick check for any changes
+to the software.
+<A NAME="A09"></A>
+<H3>Backup of hard disk directory structure</H3>
+Backups are a part of good procedure (and are a part of this checklist, further
+on, as well). However, while provisions are more often made for the programs
+and data to be backed up, the directory structure itself is often forgotten.
+Rebuilding the directory structure may, in fact, be the most time consuming
+part of a recovery.
+<P>
+Keeping a copy of the directory may help in other ways. Some malware, the "AIDS
+Information" trojan being a notable example, build extra directories in order
+to escape detection. Having a baseline copy of the valid directories gives one
+another means of detecting viral programs, rather than another place for them
+to hide.
+<A NAME="A10"></A>
+<H3>Clean, protected bootable system diskette</H3>
+<I>Do it now!</I>
+<P>
+<HR>
+<A NAME="B00"></A>
+<H2>For each office</H2>
+"Each computer" is pretty easy to define. An office is less so.
+<P>
+For the purposes of this checklist, an office is defined as a group of people
+who interact on a regular basis. "Regular", for this purpose, need be no more
+than once per week.
+<P>
+An office is, therefore, defined less in terms of locale and walls than in
+terms of communication. For this definition an office may consist more of those working on a common project in far-flung cities
+than of those in the next cubicle whom we never speak to. However, it need not
+follow "official" reporting lines either. An office is defined more in terms of
+how fast you can find information when you need it. The items in this next
+section of the checklist are those which may not be referred to for long
+periods of time while things are going well, but which may need to be found
+quickly once an anomaly has been identified.
+<A NAME="B01"></A>
+<H3>Description of current common viri</H3>
+This may be a prepared list, or it may be maintained in the office. For all
+systems, the major prepared list must be the Virus Catalog prepared by
+CARO/EICAR. This list is not complete, but it does cover all platforms and the
+most widely distributed viri.
+<P>
+In the MS-DOS world, another possible source is the shareware summary list
+collated by Patricia Hoffman. While this list is more complete in covering the
+1200 (1300? 1500? by the time you read this, who knows?) MS-DOS viri, it is, of
+necessity, less accurate at times.
+<P>
+Antiviral software, especially that which incorporates scanning, often
+includes listings of viri, their symptoms and features. Some of these are good,
+some less so.
+<P>
+All of these lists must be kept up to date, and it is probably an idea to
+have someone within the organization who is supporting the prepared lists with
+additional information from sources such as VIRUS-L.
+<A NAME="B02"></A>
+<H3>List of local virus information contacts</H3>
+Who ya gonna call?
+<P>
+This is a very difficult section to advise on. For my part, I can think of
+perhaps twenty people in the world of whom I could state, with confidence, that
+they were competent in the field. This is not to say that there are not more,
+but it is an esoteric field, with few standards to judge by.
+<P>
+The information is hard to come by, for one thing. The popular, and even the
+technology trade media, has very little appreciation for the difficulties and
+traps of virus hunting. The recent experience with Michelangelo points this out
+sharply. Almost all the articles in advance of the March 6 date stressed that
+the virus could be defeated by making backups or resetting the date. None
+mentioned that a BSI could corrupt non-standard disk formats used by many
+backup programs, and none pointed out the difference between the "DOS" date and
+the "system" or "clock" date.
+<P>
+Virus "experts", in common with most system level hackers, tend to be
+charter members of "Egos-R-Us". This is bad enough. However, what is worse is
+that everyone with an outdated copy of SCAN thinks he or she is a virus expert,
+and assumes the arrogance without necessarily having the expertise to back it
+up. (Given that the general population, even of advanced computer users, has
+very little background in the subject, the problem of proving credentials is
+often moot.)
+<P>
+So, how can you find a local expert? Some indications:
+<P>
+Points for:
+<UL>
+<LI>is a "member" of VIRUS-L, and has been for a least a year<BR>
+<LI>if no Internet access, reads all three Fidonet echoes<BR>
+<LI>is a contributing member<BR>
+</UL>
+Points against:
+<UL>
+<LI>"one antiviral fits all"<BR>
+<LI>boasts of the size of his/her virus collection<BR>
+<LI>warns against BBSes and online services<BR>
+<LI>recently joined the net and immediately flamed the moderator :-)<BR>
+</UL>
+<A NAME="B03"></A>
+<H3>List of all hardware and software purchased, supplier and serial number</H3>
+As I mentioned before, this is one of the items that should be a part of any
+office computer "kit" simply on the basis of good management. The reason for
+its inclusion on the virus fighting side is partly in an attempt to track where
+a virus came from. (Again, as I have mentioned before, originals should be
+protected, copied, and the "copies" protected before installation.) More and
+more companies are becoming aware of the need for software auditing, and this
+may become very helpful here. (It is less helpful in those companies which take
+a "righteously indignant" stance against shareware.) The hardware list is also
+valuable, as certain pieces of hardware will affect the operation of the
+computer, particularly in regard to memory utilization.
+<A NAME="B04"></A>
+<H3>Designated machine for receiving/ testing new disks/software</H3>
+Now <B>this</B> recommendation I <B>know</B> is going to stir up a storm. It
+always does. Why spend good money on a machine that is going to be used for
+nothing except testing software?
+<P>
+This appears to be based in the deeply rooted prejudice which says that the
+only important part of a computer system is the part you can see, feel and
+throw through windows at times of stress. Let's look at the picture in real
+financial terms. If you buy two copies of a commercial antiviral program (for
+an "office" of, say, twenty computers), plus the "upgrade fees" for a year,
+you've spent about $400. $300 will get you a bare bones PC for testing, and,
+in addition to antiviral testing you can also detect trojans, which relatively
+few antiviral programs do. (An AT level machine should only be $500, even low
+end Macs can now be had for about $1500.) A designated machine also allows you
+"pro-active" rather than reactive protection.
+<P>
+Besides, very likely you already have a computer that no one in the office
+will use because of its age and "obsolescence". However, a word of warning is
+in order here: we have seen cases, most recently with Michelangelo, where older
+machines will not detect the full range of functions of the viral program.
+There are also a number of viri which are "version specific" in terms of the
+operating system; but it is relatively easy to set up a situation which allows
+for quick changing of the operating system.
+<P>
+One point I also stress in regard to testing is to make sure that the hard
+disk is not empty. There are some "prima donna" viri which refuse to operate
+unless it is "worth their while" in terms of the amount of file space used.
+Keep the drive about 80 percent full.
+<A NAME="B05"></A>
+<H3>Log of disks/programs received</H3>
+Many large companies think they already have this. Many smal companies see
+this measure as far too draconian. As usual, the truth lies somewhere in
+between.
+<P>
+Corporations, both large and small, and government departments, often have
+policies restricting the use of software. Usually these schemes make some
+statement regarding bringing disks and software into the office. These policies
+are, of course, universally disregarded, even by those who drafted them. Such
+procedures are unnecessarily restrictive, unworkable, and fail to address the
+issues that prompted them in the first place.
+<P>
+The intent is good. The institution wishes to protect the copyright of
+authors and other companies (or at least wishes to avoid being sued for failing
+to do so). The policy is also supposed to prevent the intrusion of viral and
+trojan software into the company, and, in some cases, the extraction of
+sensitive data from company files.
+<P>
+Unfortunately, I have yet to see such a policy which actually does so. In
+most cases, the procedures are both insufficient to the intended outcome, and
+damaging to normal business practice. I will use some examples from the
+government of Canada. (Anyone gloating over the foolishness of this institution
+does not know the policies within their own company.)
+<P>
+The Treasury Board is the governing body in financial matters, and therefore
+publishes directives covering pretty much all aspects of federal government
+practice. Several years ago, it published a circular stating that all computer
+related software or hardware had to have an associated purchase order before it
+entered government premises. At first glance, this would appear to be sound,
+and even an advantage for software companies. Not so. If you are reviewing
+software, a local government office cannot afford to purchase the necessary
+variety of software and still keep within its budget. Of course, it <B>is</B>
+possible to cut a P.O. for the software for no money. This takes about as long
+as the review process itself, as well as potentially putting the software
+company at risk (there being other policies regarding minimum and maximum
+pricing). Even if you intend to purchase the software next fiscal year, you
+cannot review it in this fiscal year if you have no funding left for that line
+item, or cannot afford to "lose" that funding this year.
+<P>
+Federal government policy also provides for tracking of all inventory through
+accession numbers. The system works well for desks and cars, but not so well
+for computers and software. (I had a hard time convincing the "materiel [sic]
+management" people in one office that it did not make sense to issue one
+accession number to twelve video cards, but it did make sense to issue one
+number to one card, three disks of setup software and one manual -- for the
+same card.) Because of the difficulty in putting items into inventory (obtain
+the inventory coding for the item, obtain an accession number, affix a label --
+you ever try to find space for a 2cm by 6cm label on a video card? -- and enter
+up to 46 fields of data into the inventory data base - by paper form, since
+only two people in the local office have access to the data base itself) very
+few software related items were ever entered into inventory. Data disks were
+never labelled: after all, what do you do with a carton of 100 blank disks,
+which are probably headed for thirty different offices?
+<P>
+In order to effectively track infections, however, even data diskettes and
+customer data diskettes have to be identifiable. The system for doing so must
+be easy, must not interfere with normal work, and must be <B>rigorously
+enforced</B> -- <B>by the users</B>.
+<P>
+The trouble with most policies of this type is that these considerations are
+not "designed in" from the beginning. Trying to make transitory computer
+materials fit an inventory system designed for permanent fixtures, or
+forbidding the entry of disks into the company, simply means that people will
+ignore the policies in favour of greater productivity. The specifics of
+recording and tracking will have to vary with the corporate climate and
+culture. If an intent, and some relevant background, is presented to employees
+(rather than a mandated procedure), the users will come up with a solution ...
+and one that is far more effective than those imposed by head office.
+<A NAME="B06"></A>
+<H3>Memory and disk mapping utilities</H3>
+In an earlier column I mentioned the need for memory and disk lists for each
+computer. These areas do not need to be checked constantly, in most situations,
+so there is no need for a copy of these utilities with each computer. The
+utilities should, however, be available quickly and easily, should anything
+prompt a check. Checks should also be done on a regular basis, and these tools
+can be used on each computer in turn.
+<P>
+Having said that, many of the utilities needed are already a part of the
+operating system. In the MS-DOS world, CHKDSK, while it will not show you a
+graphical map of the disk, will provide information on the number of bad
+sectors or hidden files. With MS-DOS 5, the MEM program provides needed
+information regarding memory and interrupt usage. The Mac world, and the GUI
+OSes in general, tend to provide less of these tools, but I believe that
+ResEdit is now part of the Mac OS.
+<P>
+In any case, these utilities are widely available both commercially and as
+shareware. Commercial utility packages often do "double duty": PCTOOLS probably
+is sold most often for its backup capability, but can provide helpful
+information for other areas as well. Shareware tools sometimes lack the
+interface of the commercial tools, and more often are dedicated to a single
+task, but frequently have useful features not found in their commercial
+counterparts. (Neither PCTOOLS nor Norton have the ease of access to specific
+sectors that the shareware SHOWFAT has.)
+<P>
+I would also like, at this point, to bring up a related issue. I have been
+receiving feedback, from many sources, all tending to the same theme: "why not
+just scan the computer and have done with it." It has, perhaps, escaped the
+attention of these readers that at no point in this checklist have I required
+the purchase of any specific antiviral software. This is deliberate for three
+reasons. First, this checklist is intended as a conceptual guide and is, as far
+as possible, intended for the non-specialist user of any system. Second, it is
+intended to show that virus protection is possible without specialized software
+(although antiviral software can ease the burden tremendously.) Third, the most
+important aspect of virus protection is that the user know the system. That
+cannot happen if the user is relying on some "magic bullet": there never will
+be a magic bullet that will give 100% protection.
+<P>
+<HR>
+<A NAME="C00"></A>
+<H2>Regularly</H2>
+As with "what is an office" so here, "what is regularly?" This is going to
+depend on your situation, but, in general, it is going to mean "more often than
+you do now." The items under this section of the list are particularly those that should be going on regularly for
+good maintenance and support anyway.
+<A NAME="C01"></A>
+<H3>Back up data</H3>
+Our good old friend, the backup. Why stress the data? Three reasons. First,
+programs and structure should be backup up at installation and at every change
+in configuration. They need not be backed up between times. Second, backing up
+data only reduces backup time and increases the frequency with which people are
+wiling to do a backup. Third, you can buy another copy of Perfect Writer
+tomorrow. Can you buy another copy of your last months receivables?
+<A NAME="C02"></A>
+<H3>Monitor disk space, map, memory map</H3>
+Especially if you partition programs from data, checking the free space can
+give you a quick indication of many problems. On a disk map, check for
+increasing numbers of bad sectors showing up, or programs which insist on
+moving to the end of the disk. Again, the memory map should primarily be
+checked at boot time. You need not understand what all the numbers and
+interrupts mean, but if they change you might have a serious problem.
+<A NAME="C03"></A>
+<H3>Monitor program file sizes</H3>
+If programs are partitioned from data (and data should here include any
+configuration files which change frequently), disk space should give a quick
+check for prepending or appending file infecting viri. A listing of the files
+themselves would indicate specific infections. Generally speaking, a check of
+the sizes of program files takes less time than might be realized at first.
+Modern commercial programs take up a lot of space, but the number of individual
+files is not excessive. (Except for those of us who have to have all the very
+latest in freeware utils ... :-)
+<P>
+<HR>
+<A NAME="D00"></A>
+<H2>At software install/change</H2>
+This area should not require any definition. I should, however, mention one
+thing in regard to "change". There are, unfortunately, still a number of
+programs which modify their own code when a change is made in the
+configuration. I am not including these minor amendments in this section's
+definition of "change". When changes have been made which affect the size or
+composition of a program file, the program should be backed up (either by
+itself or as part of a full "system" backup) and the printout list of program
+file sizes should be redone. The following items, however, are recommended more
+in the case of installation of new software or a major upgrade.
+<A NAME="D01"></A>
+<H3>Protect original</H3>
+I have mentioned before that I feel commercial software vendors are negligent,
+in the face of an obvious and present danger, in continuing to ship software on
+disks which are not only writable, but not even protected. Always protect the
+original disk immediately you remove it from the package. Following this
+procedure will ensure that you know whether the new software infected your
+machine, or the machine infected the software.
+<A NAME="D02"></A>
+<H3>Install from protected backup</H3>
+With the original disk protected, make a backup copy. Then, protect the backup
+copy, and perform the installation from the protected backup. You are allowed
+to make an archival backup, and this procedure allows you to store the
+"original" original offsite, and the "backup" original new the computer, in
+case of the need for disaster recovery.
+<P>
+Unfortunately, software manufacturers still insist on various types of copy
+protection schemes. Recently, the most popular have involved writing changes to
+the program based on a "registration" of your name and company -- on the
+original disk. The practice of using a "backup" original will allow you, in
+this case, to keep the manufacturer's software disk protected. However, there
+are still some schemes that require reading from and writing to the
+manufacturer's disk. Whenever possible this practice should be avoided.
+<P>
+As in a previous column, I am sure that some will object that it is far
+easier to simply scan the disks for viri and "have done with it". I do, in
+fact, recommend scanning all disks. Note that both original and "backup"
+original should be scanned <B>after they have been protected</B>. Also to my
+previous reasons regarding not stressing the use of scanners, may I add the
+fact that scanners, by their nature, will never be able to protect you against
+all viri, although they should protect you against most.
+<A NAME="D03"></A>
+<H3>Trial run on isolated system</H3>
+Once again, this should be a part of general practice, regardless of the
+existence of viral programs. A trial run allows you to find any bugs in the
+program, and to review its usefulness. Recently, a trojan version of SCAN was
+uploaded to a local bulletin board. It created all kinds of havoc because it
+was "approved" by the board -- on the basis, of course, of having passed a
+virus scan. A single run on an isolated system would have detected the problem.
+<P>
+There will be, of course, complaints that this measure is too expensive for
+the normal office. However, one might compare the cost of a commercial virus
+detection program (or even, say, a full set of the VIRUSCAN suite) against the
+cost of a "vanilla" XT clone: about $300 or less. The test machine need not be
+sophisticated, although there will undoubtedly eventually be viral programs
+which will require a higher level processor to run. The majority, however, of
+"successful" viri will target the widest possible set of platforms, and will
+therefore work as well, or better, on low end machines. One should also
+consider that the majority of "mutated strains" will be put together very
+crudely by "teenage mutant basement hackers", and that these will undoubtedly
+be put together on cheaper machines.
+<P>
+One caveat: we have seen a number of instances of malicious programs which will
+not trigger until the hard disk is "filled" to a certain level. Keep the test
+machine loaded, not with a minimal set of files, but about 80% full.
+<A NAME="D04"></A>
+<H3>Map memory before and after run</H3>
+With the mapping of memory for all machines it was not important to understand
+any of the entries. When testing new software, this understanding becomes more
+vital. However, the one significant part of this test is quite simple: has
+anything new been left behind, active, in memory.
+<A NAME="D05"></A>
+<H3>Offer "bait" files and disks</H3>
+Some antiviral programs are starting to do this to "trap" viri. However, I am
+more concerned, here, with the variety of "bait" to be offered. As with the
+level of disk usage, remember that some viral programs will only infect certain
+types of files, others will only infect files of a certain size, and yet others
+look for specific internal characteristics (such as long strings of NUL
+characters.) Offer a number of different files which you know the sizes of, and
+can quickly check.
+<P>
+<HR>
+<A NAME="E00"></A>
+<H2>If infection found</H2>
+Once you find an infection, what do you do about it?
+<P>
+First thing is, don't panic. Remember that a lot of viral programs don't do
+any damage -- at least not intentionally. While you should not go blithely on
+as if nothing had happened when you find a virus, don't overreact, either. And,
+instead of focussing on the immediately obvious problem of the infection
+itself, try to take a few steps for future protection.
+<A NAME="E01"></A>
+<H3>Send copy to recognized researcher</H3>
+This step is vitally important, and all too often neglected. Get a copy of the
+virus. Copy an infected program to a disk, or infect a floppy disk with a boot
+sector infector. The instant reaction is to sweep it under the rug: that helps
+no one. On the one hand, people are afraid of the reputation of viri as being
+related to pirate software. However, if no one ever tries to find out how they
+spread, how can we make the studies to determine this? On the other, new
+variants spring up all the time, and we need to track and trace these
+mutations.
+<A NAME="E02"></A>
+<H3>Isolate machine and disks</H3>
+As mentioned, do not simply carry on as before. The floppy disks used in the
+machine are often neglected in the panic. Remember that the most successful of
+viral programs have always been boot sector viri, and these are always spread
+by diskettes.
+<A NAME="E03"></A>
+<H3>Perform minimal disinfection</H3>
+Please let me stress the "minimal". Do the <B>least</B> that you can do, and
+still ensure security. While there is some doubt as to the wisdom of
+"disinfecting" of program files, it is surely better to delete one file than to
+restore the whole directory. It is better to delete and restore one directory
+than to restore the whole disk.
+<P>
+And. No one. Ever, yet. Has found a virus which requires a low level format.
+No LLFs. Got that?
+<P>
+However, do perform a thorough disinfection. Many people, while going far
+too far in gouging an infection out of their workstation, will fail to check
+out their floppy diskettes and backups. One of the most Frequently Asked
+Questions on VIRUS-L is "I cleaned off Stoned but now it's back, how come?"
+Easy answer. You didn't check your disks.
+<P>
+Also, with few exceptions, when disinfecting power down cold and start fresh.
+If you have a virus in memory, none of your disinfection methods can be
+guaranteed, and some may even harm.
+<P>
+Once again, note that this checklist does not require any specific antiviral
+software. Antivirals will be dealt with in due course.
+<P>
+</BODY>
+
+<!-- Mirrored from vx.netlux.org/texts/html/avcheck.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:10:59 GMT -->
+</HTML>
+<HR></CENTER>
+<FONT SIZE=-2>
+Last Modified September 01, 1995

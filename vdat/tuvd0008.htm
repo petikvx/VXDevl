@@ -1,0 +1,123 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - MCB Stealth (Darkman/VLAD)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>MCB Stealth<BR>
+by<BR>
+Darkman/VLAD</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<CENTER><PRE><B>------------
+Introduction
+------------</B></PRE></CENTER>
+
+<UL>
+<PRE>  If you don't know anything about direct memory allocation, Memory Control
+Blocks (MCB) and Terminate and Stay Resident programming, then this article
+might be a bit too advanced for you.
+
+  MCB Stealth is used to hide the allocated memory, by releasing the
+memory before a known memory diagnostic program is executed. When the
+program exits, the newly released memory gets allocated once again.
+
+  When a program is executed (function 4B00h), the procedure is as follows:
+    1. Check if the executed program is a known memory diagnostic program.
+    2. Find the last Memory Control Block (MCB) in chain.
+    3. Free the previously allocated memory.
+
+  When a program exits (function 4Ch and 31h), the procedure is as follows:
+    1. Check if the memory is released.
+    2. Find the last Memory Control Block (MCB) in chain.
+    3. Allocate the newly freed memory.
+
+I would like to thank Clive Sharp for helping me with the English.
+
+---------------------------------------------------------------------
+Checking if the executed program is a known memory diagnostic program
+---------------------------------------------------------------------
+
+  There are quite a few ways to check if an executed program is a known memory
+diagnostic program, but I've used the following way:
+
+  First I open the file, then I get the system File Control Block (FCB) from
+the System File Table (function 1220h and 1216h) and then I close the file.
+Then I compare the filename (offset 20h) from the system File Control
+Block (FCB) against my list of filenames of known memory diagnostic programs.
+
+  These files are known memory diagnostic programs:
+    CHKDSK.EXE  DOS Chkdsk
+    MEM.EXE     DOS Mem
+    MFT.EXE     Quarterdeck Manifest
+
+-------------------------------------------------
+Find the last Memory Control Block (MCB) in chain
+-------------------------------------------------
+
+  If a known memory diagnostic program is being executed, then I get the
+segment of the first Memory Control Block (MCB) in the chain from Get list of
+lists (function 52h), offset -02h. The following is the description of the
+Memory Control Block (MCB):
+
+ ----------------------------------------------------------------------------
+ Offset  Size    Description
+ ----------------------------------------------------------------------------
+   00h     1     Block type: 5Ah if last block in chain, otherwise 4Dh
+   01h     2     PSP segment of owner, 0000h if free, 0008h if belongs to DOS
+   03h     2     Size of memory block in paragraphs
+ ----------------------------------------------------------------------------
+
+  To find the segment of the last Memory Control Block (MCB) in the chain, I
+add the size of memory block in paragraphs (offset 03h) to the current Memory
+Control Block (MCB) and increase that by one, then I have the new Memory
+Control Block (MCB). Then I determine the block type, to see if the new Memory
+Control Block (MCB) is the last in chain, if it isn't I will continue the
+process until I find the last Memory Control Block (MCB) in chain.
+
+------------------------------------
+Free the previously allocated memory
+------------------------------------
+
+  To free the previously allocated memory, I add the size of the previously
+allocated memory from the size of memory block in paragraphs (offset 03h) and
+then I execute the actual program.
+
+-------------------------------
+Check if the memory is released
+-------------------------------
+
+  There are quite a few ways to check if the memory is released, I use a
+boolean variable, which tells me if the newly released memory has to be
+allocated once again. If I have to allocate the newly released memory once
+again I find the last Memory Control Block (MCB) in chain, as described above.
+
+-------------------------------
+Allocate the newly freed memory
+-------------------------------
+
+  To allocate the newly released memory, I subtract the size of the newly
+released memory from the size of memory block in paragraphs (offset 03h) and
+then I exit the current program.
+
+---------------------
+Final tips and tricks
+---------------------
+
+  - You could make sure that the executed memory diagnostic program doesn't
+    allocate your virus memory, but I don't find that necessary, because there
+    is hardly any chance of that happening.
+  - You could create a Memory Control Block (MCB) in front of your virus and
+    just modify the PSP segment owner (offset 01h).</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

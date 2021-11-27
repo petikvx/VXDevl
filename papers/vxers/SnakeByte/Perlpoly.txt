@@ -1,0 +1,72 @@
+
+ Polymorphism in Perl Viruses
+ by SnakeByte [ SnakeByte@kryptocrew.de ]
+ http://www.kryptocrew.de
+
+
+
+ After writing something about EPO and Encryption in Perl Viruses I somehow
+ felt that I also have to do this. So I will explain here some techniques
+ which could be used in Perl to create polymorphic perl viruses.
+
+ There are several things we could do to make every infection of the virus
+ different from all others, to confuse a possible Anti Virus Scanner.
+ The first one is to add random, comments to each line :
+
+ for ($a = 0; $a < @Virus; $a++){
+  $comment = int(rand(65535));
+  @Virus[$a] .= " \#$comment" ;
+ }
+
+ You could also include characters or other stuff, but once there is a
+ Scanner for perl viruses, the first thing it will do is to remove all
+ comments =)
+
+ So this is very weak, but until there is a scanner, we could use this.
+ Another thing we could do to make every virus different, is to
+ change the linebreaks. In perl linebreaks are just used for better
+ reading, so we could remove every linebreak and insert some, ( nearly )
+ everywhere we want to.
+
+ printf("testme");
+ printf("cool");
+
+ could also be :
+
+ printf(
+ "testme"); printf("cool"
+ );
+
+ so here could we get a nice range of variability =)
+ But once scanners are implemented, they will just remove all linebreaks,
+ and unnecessairy spaces, so this would not help in the long run.
+
+ Ok, let's start with something that might also work in the long run,
+ replacing all variables with others.
+
+ $myvars2 = "MyVars:Virus:whatever:myvars2";	      # all the variables you use
+ @MyVars = split(":", $myvars2);		      # read them into an array
+ for ( $x = 0; $x < @MyVars; $x++ ){
+  $newVar = chr(int(rand(25)+65));                    # we take all letters
+  $newVar .= int(rand(65535));			      # + a random number
+  $Virus =~ s/@MyVars[$x]/$newVar/;		      # and replace the variable =P
+ }
+
+
+ Easy and effective, this makes string scanning useless and forces the AV's to use
+ wildcards =) This is better poly than the one described above, but we can even
+ go on. We could swap instructions when generating the decryptor, and use
+ other ones, doing the same stuff ( don't think you need code for this *g* )
+
+ When swapping and replacing instructions, you are also able to insert trash code,
+ like $DD34424 = "sdfkölsdjfpi3"; to make the virus even more variable, such a trashcode
+ generator should be written as a sub to be able to use simple expressions like
+ $myCode .= "whatever" + &trashcode;
+ this way you can keep the code short and effective.
+
+ In my mind when you use EPO and Polymorphism in Perl Viruses AV's will have
+ a very hard time to detect and remove perl viruses... ;)
+ 
+
+ 
+ 

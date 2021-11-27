@@ -1,0 +1,222 @@
+The Art of Stealthy Viruses
+
+First off, I would like to give thanks to RattleSnake for motivating me to write this paper. It all started with his Typo program. Typo is a key logger program that Rattlesnake wrote (you can find it on his site @ http://rs.box.sk ). Typo was blacklisted or in other words, detected by most anti-virus programs. After finding out it was blacklisted I sat and thought…damn, it must have been blacklisted due to Typo’s popularity. So I wanted to help Rattle write a stealthier key logger. Unfortunately, my research pulled me into polymorphism and viruses other than key logger’s and other like programs.
+
+
+This paper is broken down by the following ten section’s:
+
+-I. Intro
+-II. Virus signature
+-III. Polymorphic viruses
+-IV. Mutation Engines
+-V. Polymorphic Decryptors
+-VI Polymorphic Levels
+-VII. How anti-virus apps actually work
+-VIII. Cryptanalysis
+-IX. Scan Engine
+-X. Conclusion
+
+I. Intro
+~Disclaimer~
+I do not take any responsibility for what you (the reader) do with this information. This article is intended for educational purposes only. If you implement a couple of your own techniques along with these, you can code a very sneaky virus. So if some idiot decides to do so after reading this article and gets in trouble, I do not take ANY responsibility for their actions. One thing I ask is if someone would like to post this article on a site other than neworder.box.sk they ask me for permission before doing so. A little credit to the author would be nice as well ;)
+
+This paper is intended for users who are unaware how stealthy viruses are coded and how anti-virus applications work. I will not go into depth on the different types of viruses and how they infect etc. My goal of this paper is to inform individuals who are unaware how sneaky viruses are coded and how anti-virus apps work. Knowledge of computer viruses and computers in general is a plus. Also, a little back round of asm would help as well. But I think all should gain some type of knowledge from this paper so enjoy.
+First off, I think we should talk about the virus signature, also known as the “virus pattern” of any virus.
+
+II. Virus Signature a.k.a. (Virus Pattern)
+Ok, think of a virus signature as a digital fingerprint. It can be used to detect and identify specific viruses. The virus signature is the unique string of bits, or the binary pattern, of a virus. The Virus Signature is sometimes referred to as the virus mask. Anti-virus software uses the virus signature to scan for the presence of malicious code. The Virus Signature is the virus itself. It’s the code that tells what the virus does, how it infects files, and how it’s spread. Now let’s take a look at polymorphic viruses.
+
+III. Polymorphic Viruses
+A polymorphic virus is simply a virus, which is encrypted. A virus that changes its virus signature or it’s (binary pattern) every time it replicates and infects a new file in order to keep it from being detected by an anti-virus program. Or in other words, the encrypted virus changes itself with each infection. Polymorphic viruses can range from boot and file DOS viruses to windows viruses and even macro viruses. There are even virus-writing toolkits available to help make these viruses.
+Viruses are called polymorphic if they do not (or can but with great difficulty) get detected using the so-called virus masks. Virus Masks are just specific parts of non-changing virus code or the “unencrypted virus code”.
+
+There are two main ways to make your virus polymorphic:
+
+1. By encrypting the main code of the virus with non-constant keys with random sets of decryption commands. Or just use a “mutation engine” which pretty much does the same thing for you.
+
+2. By changing the executable virus code.
+
+An encrypted virus consists of a virus decryption routine and an encrypted virus body. If a user launches an infected program, the virus decryption routine first gains control of the computer, then decrypts the virus body. Next, the decryption routine transfers control of the computer to the decrypted virus.
+
+An encrypted virus infects programs and files as any simple virus does. Each time it infects a new program, the virus makes a copy of both the decrypted virus body and its related decryption routine, encrypts the copy, and attaches both to a target.
+
+To encrypt the copy of the virus body, an encrypted virus uses an encryption key that the virus is programmed to change from infection to infection. As this key changes, the scrambling of the virus body changes, making the virus appear different from infection to infection. This makes it extremely difficult for anti-virus software to search for a virus signature extracted from a consistent virus body. However, the decryption routines remain constant from generation to generation, a weakness that anti-virus software quickly evolved to exploit. Instead of scanning just for virus signatures, virus scanners were modified to also search for particular a sequence of bytes that identified a specific decryption routine.
+
+IV. Mutation Engines (MtE)
+
+All a Mutation engine is, is code that can be linked or added to a regular program or virus that will do the following:
+1.Encrypt itself as well as the program that is linked to it
+2.Create a decryptor that will be run first before the main program
+3.Each Decryptor that it creates has a different signature (virus signature)
+
+In a polymorphic virus, the mutation engine and virus body are both encrypted. When a user runs a program infected with a polymorphic virus, the decryption routine first gains control of the computer, then decrypts both the virus body and the mutation engine. Next, the decryption routine transfers control of the computer to the virus, which locates a new program to infect.
+
+At this point, the virus makes a copy of both itself and the mutation engine in random access memory a.k.a. (RAM). The virus then invokes the mutation engine, which randomly generates a new decryption routine that is capable of decrypting the virus, yet bears little or no resemblance to any prior decryption routine. Next, the virus encrypts this new copy of the virus body and mutation engine. Finally, the virus appends this new decryption routine, along with the newly encrypted virus and mutation engine, onto a new program. As a result, not only is the virus body encrypted, but also the virus decryption routine varies from infection to infection. This confounds an Anti-virus scanner searching for the sequence of bytes, (Virus Mask) which identifies a specific decryption routine, which I will discuss more in depth a bit later. With no fixed signature to scan for, and no fixed decryption routine, no two infections look alike.
+
+Here’s a sample of a polymorphic virus using a generic MtE:
+
+MOV DX,10 ;Real part of the decryptor!
+MOV SI,1234 ;junk
+AND AX,[SI+1234] ;junk
+CLD ;junk
+MOV DI,jumbled_data ;Real part of the decryptor!
+TEST [SI+1234],BL ;junk
+OR AL,CL ;junk
+main_loop: ADD SI,SI ;junk instruction, real loop!
+XOR AX,1234 ;junk
+
+
+Here we see how a simple polymorphic virus works. Basically, it’s just a bunch of irrelevant instruction’s to confuse the anti-virus engineers.
+
+Interested in writing a mutation engine? If so than check this site out:
+http://z0mbie.host.sk/kme_eng.html/ >
+
+Want to see an MtE in action? Check this…
+http://www.avp.ch/avpve/poly-gen/vme.stm >
+
+V. Polymorphic Decryptors
+If you have no back round with the Assembly language then I suggest you skip this section. Well after seeing MtE’s and how they work, I think it’s time we have a look at how to decrypt an encrypted virus. The simplest example of a partially polymorphic decryptor is the following set of instructions. Now keep in mind that, not a single byte of the virus or its decryptor remains the same while infecting different files as a result of the use of this.
+
+MOV reg_1, count ; reg_1, reg_2, reg_3 are selected from
+MOV reg_2, key ; AX,BX,CX,DX,SI,DI,BP
+MOV reg_3, _offset ; count, key, _offset may also be variable
+_LOOP:
+xxx byte ptr [reg_3], reg_2 ; xor, add, sub
+DEC reg_1
+Jxx _loop ; ja, jnc
+; encrypted virus code and data follow
+
+
+More complicated polymorphic viruses utilize much more complicated algorithms for their decryption method. The above instructions or their equivalents are diluted by not changing any instructions like NOP, STI, CLI, STC, CLC, DEC and/or the unused register, XCHG etc…
+
+However, polymorphic viruses of full value use even more complicated algorithms. This results in numerous random instructions like SUB, ADD, XOR, ROR, ROL in any random order and quantity in the virus decryptor. All encryption is also being done by random construction set, which may contain virtually all the instructions of Intel processors (ADD, SUB, TEST, XOR, OR, SHR, SHL, ROR, MOV, XCHG, JNZ, PUSH, POP) with all possible addressing modes. This holds true for AMD’s as well.
+
+There is a set of seemingly meaningless instructions and combinations that are not disassembled by debugging products of some companies (for example, the CS:CS or CS:NOP combinations). So the truth is, if you add almost all instructions used by a processor (unused instructions or “junk”) and you add some instruction combinations like CS:CS or the CS:NOP, anti-virus engineers would be highly baffled trying to crack the decryption method of your virus. Especially if the anti-virus researchers debugging software doesn’t even disassemble your decryption code. ;)
+
+VI. Polymorphism Levels
+
+Anti-Virus writers put polymorphic viruses into a system of levels according to the complexity of code in the virus decryption method. This system was introduced by Dr. Alan Solomon and then enhanced by Vesselin Bontchev. The levels are:
+
+Level 1: Viruses having a set of decryptors with constant code, choosing one while infecting. Such viruses are called "semi-polymorphic" or "oligomorphic". (Some examples are: "the Cheeba virus", "the Slovakia virus", and “the Whale virus").
+
+Level 2: A Virus decryptor contains one or several constant instructions; the rest of it is changeable.
+
+Level 3: The decryptor contains unused functions "junk" like NOP, CLI, STI etc.
+
+Level 4: The decryptor uses interchangeable instructions and changes their order (instructions mixing). Decryption algorithm remains unchanged.
+
+Level 5: All of the above mentioned techniques are used, decryption algorithm is changeable, repeated encryption of virus code and even partial encryption of the decryptor code is possible.
+
+Level 6: Per mutating viruses is the main code of the virus, which is subject to change. It’s divided into blocks that are positioned in random order while infecting. Despite of that, the virus continues to be able to work. Such viruses “may” be unencrypted but usually are not. Some polymorphic viruses that fall under this category would be the O97M.Cybernet.Gen, AOD.385.B, and W32.Finaldo.B@mm viruses.
+
+VII. How anti-virus apps actually work (Polymorphic Detection)
+
+Back in the 90’s, Anti-virus researchers first fought back by creating special detection routines designed to catch each polymorphic virus, one by one. By hand, line by line, they wrote special programs designed to detect various sequences of computer code known to be used by a given mutation engine to decrypt a virus body. This approach proved inherently impractical, time-consuming, and costly. Each new polymorphic requires it’s own detection program. Also, a mutation engine produces seemingly random programs, which can properly perform decryption and some can generate billions upon billions of variations. Moreover, many polymorphics use the same mutation engine, thanks to the Dark Avenger and other virus authors who have distributed engines. This help’s AV’s out greatly since they know the MtE’s decryption algorithm before hand. Also, different engines used by different polymorphics often generate similar decryption routines, which makes any identification based solely on decryption routines completely unreliable. This approach also leads to mistakenly identifying one polymorphic as another. These shortcomings led anti-virus researchers to develop generic decryption techniques that trick a polymorphic virus into decrypting and revealing itself.
+
+What happens when a new virus is released?
+When an anti-virus company receives a new virus, they take a binary pattern of the file and add it to a database called the Virus Pattern File. (The VPF database is norm for all AV companies.) During scanning, the binary code inside the VPF is compared to the code of the files on your computer, and if there is a match, the file is considered to be infected with a virus.
+
+NOTE: All input to a computer is converted into binary numbers, made up of the digits "0" and "1." When programs tell a computer what to do, the instructions are in machine language, expressed in binary code.
+
+There are four steps Anti-virus engineers uses to detect a new virus strain:
+
+Step One: Detect the virus signature (if possible).
+Step Two: Virus detection with the help of the mask after deleting "junk" instructions.
+Step Three: Begin to decrypt the algorithmic virus.
+Step Four: If it’s impossible to find the virus signature, the engineer would than fire up Striker (the emulator) to make the virus decrypt itself and reveal the virus pattern to the researcher.
+
+The reason anti-virus researchers would not be able to find the virus mask is usually due to the algorithm in the decryption method and the amount of “junk” the decryptor uses. As I previously said, it is not surprising to find virtually all the processor instructions inside a very well coded decryptor. Viruses like O97M.Cybernet.Gen, AOD.385.B, and W32.Finaldo.B@mm are highly polymorphic and would be a definite step 4, level 6 virus.
+
+How are Virus Patterns Found and Recreated?
+They are generated according to the specific file format and means of virus infection. After deciding what polymorphic level the virus falls under, they than (depending on the level) begin to detect the virus signature using the four steps above. When any Windows file is infected, Anti-Virus engineers carefully follow the process that windows uses to handle this file type until they locate the virus’s entry point. Once its "hidden" place is discovered, a virus pattern for the scanning program will be generated from this part of the file.
+
+Anti-virus companies have teams of specialized anti-virus engineers who collect the virus patterns of all newly detected viruses. However, with the number of viruses growing so rapidly, finding every unique virus pattern becomes a difficult job. An incomplete virus pattern could incorrectly identify normal, i.e. non-infected, files as being virus-infected. When a new virus pattern is isolated, it is rigorously tested by scanning many types of files to ensure that it does not cause false alarms. Only after the testing is successful will the virus pattern be complete and put into the VPF (Virus Pattern File Database).
+
+VIII. What is Cryptanalysis?
+
+It’s the study of a cryptography program (MtE). Cryptanalysis purpose is finding weaknesses in a particular program and breaking the code used to encrypt the data without knowing the code’s key. Pretty much cracking, only difference is that anti-virus researchers are cracking a virus which uses a certain “key” on the keyboard (which only the virus author’s knows) to decrypt the virus. While a cracker is cracking a program, he/she is usually trying to crack a particular serial phrase.
+
+There are four basic steps in typical cryptanalysis:
+Step one - Determine the language being used for that particular virus.
+Step two - Determine the system being used – this can be a time-consuming stage in the process and involves counting character frequency, searching for repeated patterns and performing statistical tests.
+Step three - Reconstruct the system’s specific keys
+Step four - Reconstruction of the plain text – this step typically takes place at the same time as the keys are reconstructed.
+
+IX. Scan Engine
+
+The scan engine is the heart of any anti-virus software, and the true measure of its quality. It is the part of the program that scans your files and detects viruses.
+
+No matter how attractive an anti-virus program's user interface is, its ease of use, or its function set, it is the scan engine that determines how good the software is at catching viruses. When an anti-virus program scans a disk drive or directory, it sends the files one-by-one to the scan engine for comparison with the virus pattern file (VPF). A superior scan engine will perform this check quickly, while using relatively little system resources.
+
+Now let’s dive a little more in depth on how these scanners really work. Anti-Virus scanners works by using scan strings. They work by searching for a pattern of bytes in a fixed position and a fixed sequence. This fixed position and sequence is referred to as the “Virus Mask” which we discussed earlier. The AV scanner also uses what’s called the “Variable scan strings”. Now all the scanner does while searching for a virus is look for bytes in variable position’s but in a fixed sequence. This is all done inside of an emulator or a “virtual computer” if I may. Anti-Virus engineers got clever and decided to develop a way to trick a polymorphic virus (an encrypted virus) into decrypting itself. When you fire up any Anti-Virus application and begin to scan files for viruses, what is happening is every single file placed in this scanner is actually running inside of an emulator created by RAM. Files placed in this “emulator” execute as if running on a real computer. The scanner monitors and controls the program file as it executes inside the virtual computer. A virus running inside the virtual computer can do no damage because it is isolated from the real computer. When a scanner loads a file infected by a polymorphic virus into this virtual computer, the virus decryption routine executes and decrypts the encrypted virus body. This exposes the virus body to the scanner, which can then search for signatures in the virus body that precisely identify the virus strain. If the scanner loads a file that is not infected, there is no virus to expose and monitor. In response to non-virus behavior, the scanner quickly stops running the file inside the virtual computer, removes the file from the virtual computer, and proceeds to scan the next file. This process of making an encrypted virus decrypt itself is called “generic decryption”. The process is like injecting a mouse with a serum that may or may not contain a virus, and then observing the mouse for adverse affects. If the mouse becomes ill, researchers observe the visible symptoms, match them to known symptoms, and identify the virus. If the mouse remains healthy, researchers select another vial of serum and repeat the process. The key problem with generic decryption is speed. Generic decryption is of no practical use if it spends five hours waiting for a polymorphic virus to decrypt inside the virtual computer. Similarly, if generic decryption simply stops short, it may miss a polymorphic before it is able to reveal enough of itself for the scanner to detect a signature. So, to solve this problem, generic decryption employs “heuristics,” a generic set of rules that helps differentiate non-virus from virus behavior. Most scanners come equipped with heuristics.
+
+Heuristics allows you to edit your anti-virus scanner by changing a virus probability. As an example, a typical non-virus program will in all likelihood use the results from math computations it makes as it runs inside the emulator. On the other hand, a polymorphic virus may perform similar computations; yet throw away the results because those results are irrelevant to the virus. In fact, a polymorphic may perform such computations solely to look like a clean program in an attempt to elude the virus scanner. Now this is where heuristics comes to play. Heuristic based generic decryption looks for such inconsistent behavior. An inconsistency increases the likelihood of infection and prompts a scanner that relies on heuristic based rules to extend the length of time a suspect file executes inside the virtual computer, giving a potentially infected file enough time to decrypt itself and expose a lurking virus.
+
+Anti-Virus researchers have a tough ass job indeed. Generic decryption must rely on a team of anti-virus researchers able to analyze millions of potential virus variations, extract a signature, and then modify a set of heuristics while also guarding against the implications of changing any heuristic rules. This requires extensive, exhaustive testing. Without this commitment, heuristics quickly becomes obsolete, inaccurate, and inefficient.
+
+Here’s an example of how the scanner works using heuristics:
+
+Promoter Rules:
+If a NOP instruction is encountered, then increase virus probability by .5%.
+If the contents of a register are destroyed before being scanned, increase virus probability by 10%.
+
+Inhibitor Rules:
+If the program generates DOS interrupts, decrease virus probability by 15%.
+If the program does no memory writes within 100 executed instructions, decrease Virus Probability by 5%.
+
+The scan engine assumes that every file has a 10% probability of infection. Emulation continues as long as the virus probability is greater than zero. This virus probability is updated as the various rules observe virus-like or non-virus-like behavior during the scan.
+
+The downfall of heuristics demand continual research and updating. Heuristic rules tuned to detect five hundred viruses, for example, may miss ten of those viruses when altered to detect five new viruses. Heuristic’s can also be altered to pinpoint any program or file, which shares attributes of being a potential virus. Which in turn, lengthens the time it takes to scan that particular program.
+
+X. Conclusion
+
+-The ONLY way known at the moment to stop a well-coded polymorphic virus is to trick the virus by making the virus decrypt itself in RAM (Generic Decryption). Once the virus has “decrypted itself” the AV scan engine scan’s the virus like usual. The scanner searches for virus signatures in those areas of virtual memory that were decrypted and/or modified in any way by the virus. This is the most likely location for virus signatures. There are other way’s to detect stealthy viruses such as decryption with the laws of mathematics for an example but generic decryption is by far the easiest.
+
+-If you decide to code a program that will give anti-virus engineers a difficult time detecting, they will rely on the complexity of your code. You definitely want to keep these four laws in the back of your mind while coding your program.
+The degree of complexity of polymorphic code (a percentage of all the instructions of the processor, which may be met in the decryptor code).
+Anti-emulator technique usage.
+Inconsistent of decryptor size.
+Level of difficulty of decrypting the decryptor’s algorithm.
+
+-If you write a key logger or virus and don’t “hide the code” in any way than there’s a good chance it will get blacklisted. Do use some type of encryption in your code. Another thing, which may help, would be to add some type of Anti-Virus and maybe even a firewall destroyer in your program. Example: NET STOP "Norton AntiVirus Auto Protect Service". But you need to have admin status of the machine it’s going to get installed on in order for this to work. Thx to ParticleMan from NewOrder.box.sk for the “net stop service” info.
+
+-Make a virus, which performs the same mathematical computations solely to look like a clean program in an attempt to elude the virus scanner.
+
+-Make a virus, which targets non-anti-virus systems.
+
+-To trick the AV’s emulator or “virtual computer” you may want to design a polymorphic virus that decrypts half the time, yet remains dormant at other times. Anti-virus software could not reliably detect such a virus if it does not decrypt itself every time the file is loaded into the virtual computer. In this case, a hand-coded detection routine will be needed.
+
+-Lastly, imagine a host program that waits for the user to press a specific key and then terminates. A polymorphic infecting this host might only take control just after the user enters the required keystroke. If the user enters the keystroke, the virus runs. If not, the virus gets no opportunity to launch. However, inside the virtual computer created by generic decryption, the program would never receive the needed keystroke, and the virus would never have a chance to decrypt.
+
+-Some other things you can do is use anti-scan string methods. For an example, avoid the use of code that is common to every decryptor. Be sure to make enough alternatives so that it makes multiple variable scan strings not an option for AV vendors.
+
+-To fool Av’s cryptanalysis simply add more encryption to the body of the virus. For instance, a loop using a single XOR with byte/word would be pretty easy to crypt-analyze but a loop using XOR b/w, ADD b/w, SUB b/w, ROL b/w, all in one loop would be very hard to crypt-analyze.
+
+-Avoid using MtE’s. Instead, create your own encryption and decryptor for your virus. Most anti-virus companies are already familiar with most MtE’s encryption methods. If you are determined to use an MtE use one that is not popular.
+
+Note: A virus must change things in order to infect a system. In order to avoid detection, a virus will often take over system functions likely to spot it and use them to hide itself. A virus may or may not save the original of things it changes so using anti-virus software to handle viruses is always the safest option for the average user.
+
+A little history of computer viruses
+
+There are three kinds of viruses. These are, simple viruses, encrypted viruses and polymorphic viruses. Simple viruses are the easiest to detect. They are not encrypted at all and with each infection, the virus always makes an exact copy of itself. So virus researchers just need to scan for the virus pattern.
+
+Next came encrypted viruses. The idea was to hide the fixed signature by scrambling the virus making it unrecognizable to any anti-virus scanner.
+Now we have the SHOCKA BOOM of all viruses, the polymorphic virus. I will not go into any more detail about polymorphic viruses.
+The Tequila and Maltese Amoeba viruses caused the first widespread polymorphic infections in 1991. In 1992, Dark Avenger, author of Maltese Amoeba, distributed the Mutation Engine, to other virus authors with instructions on how to use it to build more polymorphics. It is now common practice for virus authors to distribute their mutation engines, making them widely available for other virus authors to use as if they were do-it-yourself kits. Today, in 2004, anti-virus researchers report that polymorphic viruses comprise about 35 percent of more than 20,000 known viruses.
+
+References
+
+http://www.viruslist.com/eng/viruslistbooks.html?id=50/ >
+http://www.webopedia.com/TERM/p/polymorphism.html/ >
+http://www.ciphers.de/technology/polymorphic_cipher.php/ >
+
+
+
+
+
+
+This article comes from Security-Protocols :: The Bug Hunters Blog
+http://security-protocols.com
+
+The URL for this story is:
+http://security-protocols.com/modules.php?name=News&file=article&sid=2100

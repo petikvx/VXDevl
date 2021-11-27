@@ -1,0 +1,678 @@
+<HTML>
+ 
+<!-- Mirrored from vx.netlux.org/texts/html/striker.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:19 GMT -->
+<HEAD>
+ <TITLE>Pages 1--16 from  Untitled</TITLE></HEAD>
+<body text=#000000 bgcolor=#ffffff>
+<h2>Understanding and Managing Polymorphic Viruses. </h2>
+The Symantec Enterprise Papers Volume XXX <BR>
+<A href="#DocumentBody">Document Body</A>
+<A href="#PageLinks">Page Navigation Panel</A>
+<strong><A name=page1> Page 1</A></strong>
+<A href=#page2>2</A>
+1
+<BR>
+<A href=#page1>1</A>
+<strong><A name=page2> Page 2</A></strong>
+<A href=#page3>3</A>
+<BR>
+<B>Table of Contents <BR>
+Introduction 1 <BR>
+The Evolution of Polymorphic Viruses 1 <BR>
+</B>Simple Viruses 1 <BR>
+Encrypted Viruses 1 <BR>
+Polymorphic Viruses 3 <BR>
+<P>
+<B>The Scale of the Problem 4 <BR>
+</B><P>
+<B>Polymorphic Detection 4 <BR>
+</B>Generic Decryption 5 <BR>
+Heuristic-Based Generic Decryption 8 <BR>
+<P>
+<B>The Striker System 9 <BR>
+</B>Striker's Strategic Advantages 10 <BR>
+<P>
+<B>Outlook 11 <BR>
+</B><P>
+<B>Additional Anti-virus Information 11 <BR>
+Contacts for Media 11 <BR>
+About the Author 12 <BR>
+Further Reading 12 <BR>
+About Symantec 13 </B>
+2
+<BR>
+<A href=#page2>2</A>
+<strong><A name=page3> Page 3</A></strong>
+<A href=#page4>4</A>
+<BR>
+<B>1 <BR>
+Introduction <BR>
+</B>Polymorphic computer viruses are the most complex and difficult viruses to detect, often requiring <BR>
+anti-virus companies to spend days or months creating the detection routines needed to catch a <BR>
+single polymorphic. <BR>
+<P>
+This white paper provides an overview of polymorphics and existing methods of detection, and <BR>
+introduces Symantec's Striker ª technology, a new, patent-pending method for detecting polymorphics. <BR>
+<P>
+Norton AntiVirus 2.0 for Windows 95 is the first Symantec anti-virus product to include Striker; <BR>
+Symantec will integrate Striker into other Norton anti-virus products as it introduces new editions. <BR>
+<P>
+<B>The Evolution of Polymorphic Viruses <BR>
+</B>A computer virus is a self-replicating computer program that operates without the consent of the <BR>
+user. It spreads by attaching a copy of itself to some part of a program file, such as a spreadsheet <BR>
+or word processor. Viruses also attack boot records and master boot records, which contain the <BR>
+information a computer uses to start up. Macro viruses attack such files as word processing docu-ments <BR>
+or spreadsheets. <BR>
+<P>
+Most viruses simply replicate. Some display messages. Some, however, deliver a payload Ñ a portion <BR>
+of the virus program that is designed to corrupt programs, delete files, reformat a hard disk, or crash <BR>
+a corporate-wide network, potentially wiping out years of data and destroying critical information. <BR>
+<P>
+<B>Simple Viruses <BR>
+</B>A simple virus that merely replicates itself is the easiest to detect. If a user launches an infected pro-gram, <BR>
+the virus gains control of the computer and attaches a copy of itself to another program file. <BR>
+After it spreads, the virus transfers control back to the host program, which functions normally. <BR>
+<P>
+Yet no matter how many times a simple virus infects a new file or floppy disk, for example, the <BR>
+infection always makes an exact copy of itself. Anti-virus software need only search, or scan, for <BR>
+a tell-tale sequence of bytes Ñ known as a signature Ñ found in the virus. <BR>
+<P>
+<B>Encrypted Viruses <BR>
+</B>In response, virus authors began encrypting viruses. The idea was to hide the fixed signature by <BR>
+scrambling the virus, making it unrecognizable to a virus scanner. 
+3
+<BR>
+<A href=#page3>3</A>
+<strong><A name=page4> Page 4</A></strong>
+<A href=#page5>5</A>
+<BR>
+<B>2 <BR>
+Decryptor <BR>
+Key <BR>
+Body <BR>
+</B><P>
+1. Count = #VirusBytes 2. Temp = FetchNextByte <BR>
+3. Temp = Decrypt( Temp) 4. StoreNextByte( Temp) <BR>
+5. Decrement Count 6. If Count&gt; 0, GOTO 2 <BR>
+7. #$^#@^#^#!^!#^!#^!^ 8. !#@%$!@%!@%!@# <BR>
+9. $#&amp;!&amp;%!#&amp;#!%^!!# <BR>
+<P>
+<B>Virus Decryption Routine <BR>
+Encypted Virus Body <BR>
+</B>... <BR>
+<P>
+<I>Figure 1. An encrypting virus always propagates using the same decryption routine. However, <BR>
+the key value within the decryption routine changes from infection to infection. Consequently, <BR>
+the encrypted body of the virus also varies, depending on the key value. <BR>
+</I><P>
+<I>Figure 2. This is what an encrypted virus looks like before execution. <BR>
+</I>1. Count = #VirusBytes 2. Temp = FetchNextByte <BR>
+3. Temp = Decrypt( Temp) 4. StoreNextByte( Temp) <BR>
+5. Decrement Count 6. If Count&gt; 0, GOTO 2 <BR>
+7. S$^#@^#^#!^!#^!#^!^ 8. !#@%$!@%!@%!@# <BR>
+9. $#&amp;!&amp;%!#&amp;#!%^!!# <BR>
+<P>
+<B>Virus Decryption Routine <BR>
+Encypted Virus Body <BR>
+First Decrypted Byte <BR>
+</B>... <BR>
+<P>
+<I>Figure 3. At this point, the virus has executed its first five instructions and has decrypted the <BR>
+first byte of the encrypted virus body. </I>
+4
+<BR>
+<A href=#page4>4</A>
+<strong><A name=page5> Page 5</A></strong>
+<A href=#page6>6</A>
+<BR>
+<B>3 <BR>
+</B>An encrypted virus consists of a virus decryption routine and an encrypted virus body. If a user <BR>
+launches an infected program, the virus decryption routine first gains control of the computer, <BR>
+then decrypts the virus body. Next, the decryption routine transfers control of the computer to the <BR>
+decrypted virus. <BR>
+<P>
+An encrypted virus infects programs and files as any simple virus does. Each time it infects a new <BR>
+program, the virus makes a copy of both the decrypted virus body and its related decryption routine, <BR>
+encrypts the copy, and attaches both to a target. <BR>
+<P>
+To encrypt the copy of the virus body, an encrypted virus uses an encryption key that the virus is <BR>
+programmed to change from infection to infection. As this key changes, the scrambling of the virus <BR>
+body changes, making the virus appear different from infection to infection. This makes it extremely <BR>
+difficult for anti-virus software to search for a virus signature extracted from a consistent virus body. <BR>
+<P>
+However, the decryption routines remain constant from generation to generation Ñ a weakness that <BR>
+anti-virus software quickly evolved to exploit. Instead of scanning just for virus signatures, virus <BR>
+scanners were modified to also search for the tell-tale sequence of bytes that identified a specific <BR>
+decryption routine. <BR>
+<P>
+<B>Polymorphic Viruses <BR>
+</B>In retaliation, virus authors developed the polymorphic virus. Like an encrypted virus, a polymorphic <BR>
+virus includes a scrambled virus body and a decryption routine that first gains control of the comput-er, <BR>
+then decrypts the virus body. <BR>
+<P>
+However, a polymorphic virus adds to these two components a third Ñ a mutation engine that gen-erates <BR>
+randomized decryption routines that change each time a virus infects a new program. <BR>
+<P>
+In a polymorphic virus, the mutation engine and virus body are both encrypted. When a user runs a <BR>
+program infected with a polymorphic virus, the decryption routine first gains control of the computer, <BR>
+then decrypts both the virus body and the mutation engine. Next, the decryption routine transfers <BR>
+control of the computer to the virus, which locates a new program to infect. <BR>
+<P>
+At this point, the virus makes a copy of both itself and the mutation engine in random access memory <BR>
+(RAM). The virus then invokes the mutation engine, which randomly generates a new decryption <BR>
+routine that is capable of decrypting the virus, yet bears little or no resemblance to any prior decryp-tion <BR>
+routine. Next, the virus encrypts this new copy of the virus body and mutation engine. Finally, the <BR>
+virus appends this new decryption routine, along with the newly encrypted virus and mutation engine, <BR>
+onto a new program. <BR>
+<P>
+1. Count = #VirusBytes 2. Temp = FetchNextByte <BR>
+3. Temp = Decrypt( Temp) 4. StoreNextByte( Temp) <BR>
+5. Decrement Count 6. If Count&gt; 0, GOTO 2 <BR>
+7. Search for an EXE file 8. Change the attributesÉ <BR>
+9. Open the fileÉ <BR>
+<P>
+<B>Virus Decryption Routine <BR>
+Decypted Virus Body <BR>
+</B>É <BR>
+<P>
+<I>Figure 4. This is the fully decrypted virus code. </I>
+5
+<BR>
+<A href=#page5>5</A>
+<strong><A name=page6> Page 6</A></strong>
+<A href=#page7>7</A>
+<BR>
+As a result, not only is the virus body encrypted, but the virus decryption routine varies from infection <BR>
+to infection. This confounds a virus scanner searching for the tell-tale sequence of bytes that identi-fies <BR>
+a specific decryption routine. <BR>
+<P>
+With no fixed signature to scan for, and no fixed decryption routine, no two infections look alike. <BR>
+The result is a formidable adversary. <BR>
+<P>
+<B>The Scale of the Problem <BR>
+</B>The Tequila and Maltese Amoeba viruses caused the first widespread polymorphic infections in 1991. <BR>
+<P>
+In 1992, in a harrowing development, Dark Avenger, author of Maltese Amoeba, distributed the <BR>
+Mutation Engine, also known as MtE, to other virus authors with instructions on how to use it to <BR>
+build still more polymorphics. <BR>
+<P>
+It is now common practice for virus authors to distribute their mutation engines, making them widely <BR>
+available for other virus authors to use as if they were do-it-yourself kits. <BR>
+<P>
+Today, anti-virus researchers report that polymorphic viruses comprise about five percent of the <BR>
+more than 8,000 known viruses. <BR>
+<P>
+Of these, SARC reports only a small number of polymorphics "in the wild" Ñ just 20 as of mid-1996. <BR>
+Yet this represents an increase of 25 percent from 16 polymorphics in the wild in mid-1995, <BR>
+a year earlier. Also, anti-virus researchers have identified 50 mutation engines. SARC reports 13 <BR>
+mutation engines in the wild as of mid-1996, up 30 percent in one year from 10 mutation engines <BR>
+reported in the wild as of mid-1995. <BR>
+<P>
+Two polymorphics Ñ One Half and Natas Ñ rank among the 20 most-prevalent computer viruses, <BR>
+according to the <I>1996 Computer Virus Prevalence Survey </I>conducted by the National Computer <BR>
+Security Association (NCSA). <BR>
+<P>
+One Half slowly encrypts a hard disk. Natas, also known as SatanBug. Natas, is highly polymorphic, <BR>
+designed to evade and attack anti-virus software. It infects .COM and .EXE program files. <BR>
+<P>
+<B>Polymorphic Detection <BR>
+</B>Anti-virus researchers first fought back by creating special detection routines designed to catch <BR>
+each polymorphic virus, one by one. By hand, line by line, they wrote special programs designed to <BR>
+detect various sequences of computer code known to be used by a given mutation engine to decrypt <BR>
+a virus body. <BR>
+<P>
+This approach proved inherently impractical, time-consuming, and costly. Each new polymorphic <BR>
+requires its own detection program. Also, a mutation engine produces seemingly random programs, <BR>
+any of which can properly perform decryption Ñ and some mutation engines generate billions upon <BR>
+billions of variations. <BR>
+<P>
+<B>4 </B>
+6
+<BR>
+<A href=#page6>6</A>
+<strong><A name=page7> Page 7</A></strong>
+<A href=#page8>8</A>
+<BR>
+Moreover, many polymorphics use the same mutation engine, thanks to the Dark Avenger and other <BR>
+virus authors who have distributed engines. Also, different engines used by different polymorphics <BR>
+often generate similar decryption routines, which makes any identification based solely on decryption <BR>
+routines wholly unreliable. <BR>
+<P>
+This approach also leads to mistakenly identifying one polymorphic as another. These shortcomings <BR>
+led anti-virus researchers to develop generic decryption techniques that trick a polymorphic virus <BR>
+into decrypting and revealing itself. <BR>
+<P>
+<B>Generic Decryption <BR>
+</B>Generic decryption assumes: <BR>
+<P>
+° The body of a polymorphic virus is encrypted to avoid detection. <BR>
+° A polymorphic virus must decrypt before it can execute normally. <BR>
+° Once an infected program begins to execute, a polymorphic virus must immediately usurp control <BR>
+of the computer to decrypt the virus body, then yield control of the computer to the decrypted virus. <BR>
+<P>
+A scanner that uses generic decryption relies on this behavior to detect polymorphics. Each time it <BR>
+scans a new program file, it loads this file into a self-contained virtual computer created from RAM. <BR>
+Inside this virtual computer, program files execute as if running on a real computer. <BR>
+<P>
+The scanner monitors and controls the program file as it executes inside the virtual computer. A <BR>
+polymorphic virus running inside the virtual computer can do no damage because it is isolated from <BR>
+the real computer. <BR>
+<P>
+When a scanner loads a file infected by a polymorphic virus into this virtual computer, the virus <BR>
+decryption routine executes and decrypts the encrypted virus body. This exposes the virus body to the <BR>
+scanner, which can then search for signatures in the virus body that precisely identify the virus strain. <BR>
+<P>
+If the scanner loads a file that is not infected, there is no virus to expose and monitor. In response <BR>
+to nonvirus behavior, the scanner quickly stops running the file inside the virtual computer, removes <BR>
+the file from the virtual computer, and proceeds to scan the next file. <BR>
+<P>
+The process is like injecting a mouse with a serum that may or may not contain a virus, and then <BR>
+observing the mouse for adverse affects. If the mouse becomes ill, researchers observe the visible <BR>
+symptoms, match them to known symptoms, and identify the virus. If the mouse remains healthy, <BR>
+researchers select another vial of serum and repeat the process. <BR>
+<P>
+<B>5 </B>
+7
+<BR>
+<A href=#page7>7</A>
+<strong><A name=page8> Page 8</A></strong>
+<A href=#page9>9</A>
+<BR>
+<B>6 <BR>
+</B>Decryption Loop <BR>
+Host Program Simulated DOS and Other Data <BR>
+Structures <BR>
+<P>
+<B>Modified Memory Virtual Machine Program Off Disk <BR>
+</B>Virus <BR>
+Mutation Engine <BR>
+<P>
+<I>Figure 5. The generic decryption engine is about to scan a new infected program. <BR>
+</I><P>
+<B>Modified Memory <BR>
+</B>Host Program <BR>
+Simulated DOS and Other Data <BR>
+Structures <BR>
+<P>
+<B>Virtual Machine <BR>
+</B>Decryption Loop <BR>
+1. Fetch Byte 2. Decrypt Byte <BR>
+3. Store Byte 4. Loop to 1 <BR>
+<P>
+Virus <BR>
+Mutation Engine <BR>
+<P>
+<I>Figure 6. The generic decryptor loads the next program to scan into the virtual machine. Notice <BR>
+that each section of memory in the virtual machine has a corresponding modified memory cell <BR>
+depicted on the right-hand side of the virtual machine. The generic decryption engine uses this <BR>
+to represent areas of memory that are modified during the decryption process. </I>
+8
+<BR>
+<A href=#page8>8</A>
+<strong><A name=page9> Page 9</A></strong>
+<A href=#page10>10</A>
+<BR>
+<B>7 <BR>
+</B>Host Program 1. Fetch Byte <BR>
+2. Decrypt Byte 3. Store Byte <BR>
+<P>
+4. Loop to 1 <BR>
+<P>
+Simulated DOS and Other Data <BR>
+Structures <BR>
+<P>
+<B>Virtual Machine <BR>
+</B>Decryption Loop <BR>
+<B>Modified Memory <BR>
+</B>x Virus <BR>
+Mutation Engine <BR>
+<P>
+<I>Figure 7. At this point the generic decryption engine passes control of the virtual machine to the <BR>
+virus and the virus begins to execute a simple decryption routine. As the virus decrypts itself, <BR>
+the modified memory table is updated to reflect the changes to virtual memory. <BR>
+</I><P>
+Mutation Engine <BR>
+Virus <BR>
+<P>
+Host Program 1. Fetch Byte <BR>
+2. Decrypt Byte 3. Store Byte <BR>
+<P>
+4. Loop to 1 <BR>
+<P>
+Simulated DOS and Other Data <BR>
+Structures <BR>
+<P>
+<B>Virtual Machine <BR>
+</B>Decryption Loop <BR>
+<B>Modified Memory <BR>
+</B>x x <BR>
+x x <BR>
+<P>
+<I>Figure 8. Once the virus has decrypted enough of itself, the generic decryption engine advances <BR>
+to the next stage. </I>
+9
+<BR>
+<A href=#page9>9</A>
+<strong><A name=page10> Page 10</A></strong>
+<A href=#page11>11</A>
+<BR>
+The key problem with generic decryption is speed. Generic decryption is of no practical use if it <BR>
+spends five hours waiting for a polymorphic virus to decrypt inside the virtual computer. Similarly, if <BR>
+generic decryption simply stops short, it may miss a polymorphic before it is able to reveal enough <BR>
+of itself for the scanner to detect a signature. <BR>
+<P>
+<B>Heuristic-Based Generic Decryption <BR>
+</B>To solve this problem, generic decryption employs "heuristics," a generic set of rules that helps <BR>
+differentiate non-virus from virus behavior. <BR>
+<P>
+As an example, a typical nonvirus program will in all likelihood use the results from math computa-tions <BR>
+it makes as it runs inside the virtual computer. On the other hand, a polymorphic virus may <BR>
+perform similar computations, yet throw away the results because those results are irrelevant to the <BR>
+virus. In fact, a polymorphic may perform such computations solely to look like a clean program in <BR>
+an attempt to elude the virus scanner. <BR>
+<P>
+Heuristic-based generic decryption looks for such inconsistent behavior. An inconsistency increases <BR>
+the likelihood of infection and prompts a scanner that relies on heuristic-based rules to extend the <BR>
+length of time a suspect file executes inside the virtual computer, giving a potentially infected file <BR>
+enough time to decrypt itself and expose a lurking virus. <BR>
+<P>
+<B>8 <BR>
+</B><P>
+Mutation Engine <BR>
+Virus <BR>
+<P>
+Simulated DOS and Other Data <BR>
+Structures <BR>
+<P>
+<B>Scanned Area <BR>
+Virtual Machine <BR>
+</B><P>
+Decryption Loop <BR>
+<B>Modified Memory <BR>
+</B>x x <BR>
+x x <BR>
+<P>
+<I>Figure 9. Now the generic decryption scanner searches for virus signatures in those areas of <BR>
+virtual memory that were decrypted and/ or modified in any way by the virus. This is the most <BR>
+likely location for virus signatures. </I>
+10
+<BR>
+<A href=#page10>10</A>
+<strong><A name=page11> Page 11</A></strong>
+<A href=#page12>12</A>
+<BR>
+<B>9 <BR>
+Promoter Rules <BR>
+Inhibitor Rules <BR>
+</B>° If the contents of a register are destroyed before being used, increase VirusProbability by 1.2%. <BR>
+° If a NOP instruction is encountered, then increase VirusProbability by .5%. <BR>
+<P>
+° If the program does no memory writes within 100 executed instructions, decrease VirusProbability by 5%. <BR>
+° If the program generates DOS interrupts, decrease VirusProbability by 15%. <BR>
+<P>
+<I>Figure 10. Initially the generic decryptor assumes that every file has a 10% probability of <BR>
+infection. Emulation continues as long as the virus probability is greater than zero. This virus <BR>
+probability is updated as the various rules observe virus-like or non-virus-like behavior during <BR>
+emulation. <BR>
+</I><P>
+Unfortunately, heuristics demand continual research and updating. Heuristic rules tuned to detect <BR>
+500 viruses, for example, may miss 10 of those viruses when altered to detect 5 new viruses. <BR>
+<P>
+Also, as virus writers continue trying to make viruses look like clean programs, heuristics can easily <BR>
+balloon to the point where almost any program might share attributes that trigger the scanner to <BR>
+lengthen the time it takes to examine a file. <BR>
+<P>
+In addition, generic decryption must rely on a team of anti-virus researchers able to analyze millions <BR>
+of potential virus variations, extract a signature, then modify a set of heuristics while also guarding <BR>
+against the implications of changing any heuristic rules. This requires extensive, exhaustive regression <BR>
+testing. Without this commitment, heuristics quickly becomes obsolete, inaccurate, and inefficient. <BR>
+<P>
+<B>The Striker System <BR>
+</B>Symantec's Striker system provides anti-virus researchers with a new weapon to detect polymorphics. <BR>
+<P>
+Like generic decryption, each time it scans a new program file, Striker loads this file into a self-contained <BR>
+virtual computer created from RAM. The program executes in this virtual computer as if <BR>
+it were running on a real computer. <BR>
+<P>
+However, Striker does not rely on heuristic guesses to guide decryption. Instead, it relies on virus <BR>
+profiles or rules that are specific to each virus, not a generic set of rules that differentiate nonvirus <BR>
+from virus behavior. <BR>
+<P>
+When scanning a new file, Striker first attempts to exclude as many viruses as possible from consid-eration, <BR>
+just as a doctor rules out the possibility of chicken pox if an examination fails to detect scabs <BR>
+on a patient's body. <BR>
+<P>
+For example, different viruses infect different executable file formats. Some infect only .COM files. <BR>
+Others infect only .EXE files. Some viruses infect both. Very few infect .SYS files. As a result, as it <BR>
+scans an .EXE file, Striker ignores polymorphics that infect only .COM and .SYS files. If all viruses are <BR>
+eliminated from consideration, then the file is deemed clean. Striker closes it and advances to scan <BR>
+the next file. 
+11
+<BR>
+<A href=#page11>11</A>
+<strong><A name=page12> Page 12</A></strong>
+<A href=#page13>13</A>
+<BR>
+<B>10 <BR>
+</B>If this preliminary scan does not rule out infection, Striker continues to run the file inside the virtual <BR>
+computer as long as the behavior of the suspect file is consistent with at least one known polymor-phic <BR>
+or mutation engine. <BR>
+<P>
+For example, one polymorphic virus is known to perform math computations and throw away the <BR>
+results. A second polymorphic may never perform such calculations. Instead, it may use specific ran-dom <BR>
+instructions in its decryption routine. A third polymorphic may call on the operating system as it <BR>
+decrypts. <BR>
+<P>
+Striker catalogs these and nearly 500 other characteristics into each virus profile, one for each <BR>
+polymorphic and mutation engine. <BR>
+<P>
+Consider a set of generic heuristic rules that identify A, B, C, D, and E as potential virus behaviors. <BR>
+In contrast, a Striker profile calls for Virus 1 to execute behaviors A, B, and C. As it decrypts, Virus 2 <BR>
+executes behaviors A, B, and D, while Virus 3 executes behaviors B, D, and E. <BR>
+<P>
+If Striker observes behavior A while running a suspect file inside the virtual computer, this is consis-tent <BR>
+with viruses 1 and 2. However, it is not consistent with Virus 3. Striker eliminates Virus 3 from <BR>
+consideration. <BR>
+<P>
+The heuristic-based system must continue searching for all three viruses, however, because it <BR>
+observes behavior that is consistent with its generic rules. <BR>
+<P>
+If Striker next observes behavior B, this is consistent with viruses 1 and 2. Striker must continue <BR>
+scanning for these two viruses. However, the heuristics again continue to search for all three viruses. <BR>
+<P>
+Finally, if Striker observes behavior E, this eliminates Virus 2 from consideration, and Striker now <BR>
+pursues a single potential virus. <BR>
+<P>
+The heuristic-based scanner continues to search for all three viruses. <BR>
+Under Striker, this process continues until the behavior of the program running inside the virtual <BR>
+computer is inconsistent with the behavior of any known polymorphic or mutation engine. At this <BR>
+point, Striker excludes all viruses from consideration. <BR>
+<P>
+On the other hand, a heuristic-based system scans for all viruses all the time. It must find some <BR>
+behavior inconsistent with all behaviors. <BR>
+<P>
+<B>Striker's Strategic Advantages <BR>
+</B>Clearly the first advantage to Striker's approach is speed. The profiles enable Striker to quickly <BR>
+exclude some polymorphic viruses and home in on others. In contrast, heuristics labor on, scanning <BR>
+all program files against all available generic rules of how all known polymorphics and all known <BR>
+mutation engines might behave. <BR>
+<P>
+The profiles also enable Striker to process uninfected files quickly, minimizing impact on system <BR>
+performance. In contrast, heuristic-based scanning is more likely to decrease system performance, <BR>
+because uninfected files must also be scanned against all generic rules for how all known polymor-phics <BR>
+and mutation engines might behave. <BR>
+<P>
+Second, anti-virus researchers are no longer forced to rewrite complex heuristic rules to scan for <BR>
+each new virus, then exhaustively test and retest to ensure they do not inadvertently miss a polymor-phic <BR>
+the software previously detected. 
+12
+<BR>
+<A href=#page12>12</A>
+<strong><A name=page13> Page 13</A></strong>
+<A href=#page14>14</A>
+<BR>
+<B>11 <BR>
+</B>Third, with Striker, a team of anti-virus researchers may work in parallel, building profiles for many <BR>
+new polymorphic viruses, swiftly adding each to Striker. Each profile is unique, much like a virus sig-nature, <BR>
+independent of any other profile. The old profiles still work, and the new profile does not <BR>
+affect the old. Exhaustive, time-consuming regression testing is no longer necessary. It becomes easy <BR>
+to update anti-virus software by compiling new virus profiles into the Norton Antivirus database file <BR>
+that is posted online monthly or obtained on floppy disk. <BR>
+<P>
+<B>Outlook <BR>
+</B>To date, generic decryption has proved to be the single most effective method of detecting poly-morphics. <BR>
+Striker improves on this approach. <BR>
+<P>
+Yet it is only a matter of time before virus authors design some new, insidious type of virus that <BR>
+evades current methods of detection. <BR>
+<P>
+Virus authors might design a polymorphic virus that decrypts half the time, for example, yet remains <BR>
+dormant at other times. Anti-virus software could not reliably detect such a virus if it does not decrypt <BR>
+itself every time the file is loaded into the virtual computer. In this case, a hand-coded detection <BR>
+routine will be needed. <BR>
+<P>
+Or, imagine a host program that waits for the user to press a specific key and then terminates. A <BR>
+polymorphic infecting this host might only take control just after the user enters the required key-stroke. <BR>
+If the user enters the keystroke, the virus runs. If not, the virus gets no opportunity to launch. <BR>
+However, inside the virtual computer created by generic decryption, the program would never receive <BR>
+the needed keystroke Ñ and the virus would never have a chance to decrypt. <BR>
+<P>
+A small number of viruses are already resistant to detection by generic decryption. There's no <BR>
+doubt that virus authors will continue to design new viruses, using new technologies, creating new <BR>
+problems. Anti-virus researchers will need to deal with these new threats, just as Striker today <BR>
+delivers the solution that best protects computer users against polymorphics. <BR>
+<P>
+<B>Additional Anti-virus Information <BR>
+</B>° <I>Internet Security Professional Reference, </I>New Riders Publishing. <BR>
+° <I>A Short Course on Computer Viruses, </I>Dr. Frederick B. Cohen, John Wiley &amp; Sons, Inc. <BR>
+° "Generic Decryption Scanners: The Problems," Carey Nachenberg and Alex Haddon, Virus Bulletin, <BR>
+August 1996. <BR>
+<P>
+<B>Contacts for Media <BR>
+</B>Questions from the media regarding Striker should be directed to: <BR>
+<P>
+Lori Cross Symantec Press Center <BR>
+Senior Public Relations Manager www. symantec. com/ PressCenter <BR>
+Symantec Corp. <BR>
+310-449-5258 <BR>
+lcross@ symantec. com 
+13
+<BR>
+<A href=#page13>13</A>
+<strong><A name=page14> Page 14</A></strong>
+<A href=#page15>15</A>
+<BR>
+<B>12 <BR>
+About the Author <BR>
+</B>Carey Nachenberg is a senior software engineer in the Peter Norton Group at Symantec Corporation. <BR>
+As the developer of Striker, Carey leads the team at the Symantec AntiVirus Research Center (SARC) <BR>
+that is integrating Striker into all Symantec anti-virus products. SARC is committed to providing swift, <BR>
+global responses to computer virus threats, proactively researching and developing technologies that <BR>
+eliminate such threats and educating the public on safe computing practices. <BR>
+<P>
+<B>Further Reading <BR>
+</B>This document is one of a series of papers on Symantec's enterprise network strategy and its network <BR>
+management product offerings. Additional papers include: <BR>
+<P>
+<I>° The Truth About Virus Outbreaks in a Networked Environment <BR>
+° Addressing Today's Access to the Enterprise Network <BR>
+° Workstation Access Control: A Key Element in Securing Enterprise Network <BR>
+° Reducing Network Administration Costs with Remote Workstation Recovery Tools <BR>
+° Using Backup Products for Enterprise-wide Storage Management <BR>
+° Enterprise Developer: Creating Client/ Server Applications in an Enterprise Environment <BR>
+° Managing Distributed Networks with the Norton Enterprise Framework Architecture <BR>
+° Improving the Bottom Line with Project Management Software <BR>
+° Trends in Project Management Software: Open Connectivity and Client/ Server Architecture <BR>
+° Using Remote Control Software to Gain Access to the Enterprise Network <BR>
+° Building the Ecosystem: Enabling the Next Generation of Client/ Server Computing <BR>
+° Understanding and Controlling Viruses in 32-Bit Operating Environments <BR>
+° Why Norton Utilities is a Natural Complement to the Windows 95 Environment <BR>
+° Reducing the Cost of Enterprise Computing with Inventory, Distribution, and Metering Tools <BR>
+° Managing Desktop Interfaces Across the Enterprise <BR>
+° A Strategy for the Migration to Windows 95 <BR>
+° File Management and Windows 95 <BR>
+° Using the Object Windows Library 2.51 with Symantec C++ <BR>
+° Understanding Virus Behavior in the Windows NT Environment <BR>
+° Integrating Remote Communications into Enterprise Computing <BR>
+° Understanding the Benefits of Electronic Commerce Technologies <BR>
+° Using Outsourcing to Reduce IT Labor Costs <BR>
+</I><P>
+For copies of these papers or information about Symantec enterprise network products, call <BR>
+1-800-453-1135 and ask for C317. Outside the United States contact the sales office nearest you <BR>
+(listed on the back cover). 
+14
+<BR>
+<A href=#page14>14</A>
+<strong><A name=page15> Page 15</A></strong>
+<A href=#page16>16</A>
+<BR>
+<B>About Symantec <BR>
+</B>Symantec Corporation is a leading software company with award-winning application and system <BR>
+software for Windows, Windows 95, Windows NT, DOS, Macintosh, and NetWave computer systems. <BR>
+Founded in 1982, Symantec has grown rapidly through the success of its products and a series of 16 <BR>
+acquisitions resulting in a broad line of business and productivity solutions. The company has several <BR>
+enterprisewide products that have been introduced recently and others that are under development. <BR>
+<P>
+Symantec's acquisitions have strongly influenced the company's innovative organization. The company <BR>
+is organized into several product groups that are devoted to product marketing, engineering, techni-cal <BR>
+support, quality assurance, and documentation. Finance, sales, and marketing are centralized at <BR>
+corporate headquarters in Cupertino, California. <BR>
+<P>
+<B>13 </B>
+15
+<BR>
+<A href=#page15>15</A>
+<strong><A name=page16> Page 16</A></strong>
+<BR>
+Symantec, the Symantec logo, and Norton AntiVirus are U. S. trademarks of Symantec Corporation. Striker is a trademark of Symantec Corporation. Microsoft, Windows, and Windows 95 are registered trademarks of Microsoft Corporation. <BR>
+Other brands and products are trademarks of their respective holder( s). <BR>
+<P>
+© 1996 Symantec Corporation. All Rights Reserved. Printed in the U. S. A. 614-2020-25 9/ 96 07-71-00627 <BR>
+<P>
+<B>WORLD HEADQUARTERS </B>10201 Torre Avenue <BR>
+Cupertino, CA 95014 USA <BR>
+1 (800) 441-7234 <BR>
+1 (541) 334-6054 <BR>
+World Wide Web site: <BR>
+http:// www. symantec. com <BR>
+<P>
+Australia: +61 2 879 6577 <BR>
+Brazil: +55 11 530 8869 <BR>
+Canada: 1( 416) 446-8495 <BR>
+France: +33 1 34 63 07 02 <BR>
+Germany: +49 2191 991155 <BR>
+<P>
+Italy: +39 2 22 478 033 <BR>
+Japan: +81 3 3498 0550 <BR>
+Mexico: +52 5 661 7978 <BR>
+New Zealand: +64 9 309 5620 <BR>
+The Netherlands: 06 0992277 <I>(freefone) <BR>
+</I>Russia: +7 095 320 0733 <BR>
+<P>
+Singapore: +65 321 8980 <BR>
+Sweden: +46 1734 662969 <BR>
+Switzerland: +41 72 22 80 20 <BR>
+Taiwan: +886 2 729 9506 <BR>
+UK: 0800 526459 <I>(freefone) </I>
+16
+<H1> <A name=PageLinks>Page Navigation Panel </H1>
+<A href=#page1>1</A>
+<A href=#page2>2</A>
+<A href=#page3>3</A>
+<A href=#page4>4</A>
+<A href=#page5>5</A>
+<A href=#page6>6</A>
+<A href=#page7>7</A>
+<A href=#page8>8</A>
+<A href=#page9>9</A>
+<BR>
+<A href=#page10>10</A>
+<A href=#page11>11</A>
+<A href=#page12>12</A>
+<A href=#page13>13</A>
+<A href=#page14>14</A>
+<A href=#page15>15</A>
+<A href=#page16>16</A>
+</BODy>
+<!-- Mirrored from vx.netlux.org/texts/html/striker.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:20 GMT -->
+</HTML>

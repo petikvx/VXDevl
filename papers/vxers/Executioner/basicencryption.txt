@@ -1,0 +1,137 @@
+			   BASIC ENCRYPTION
+			   ----------------
+
+Vocabulary:
+
+ciphertext    - the encrypted data
+plaintext     - the unencrypted data
+key	      - the value used to encrypt or decrypt the data
+
+   This article is going to be about the types of encryption normally used
+in viruses.  The most common method is known as a cylindrical decryptor,
+meaning it cycles through a loop doing the same thing until the code is
+done being decrypted.
+
+   The most common operation used to encrypt a virus is the XOR
+instruction. This is also known as a no-carry addition, or a two-input XOR
+(because there is another XOR that takes three inputs).  The way it works,
+is two bytes or words are input, and where there is a 1 and 1, the output
+is a 0.  With a 1 and 0, the output is 1.  With a 0 and 0, the output is
+0.  If you look at a binary addition, you will see why it is sometimes
+referred to as no-carry addition.  The primary benefit to XOR encryption,
+is that is a self-inverse function, meaning if you encrypt by XORing the
+plaintext 45h, you can also decrypt by XORing the ciphertext with 45h.	It
+also produces output that is generally radically different from the
+plaintext, obscuring text strings from prying eyes.
+
+   Other common instructions are the ADD and SUB instructions, which are
+the basis for the offset alphabet method of encryption.  At some point in
+your life, you have probably seen a method of encryption where you wrote a
+C for A, D for B, E for C, etc.  Well, this is the same thing.	Very
+simple.  INC and DEC are the same type of operation, but they are smaller
+size-wise, and they are limited in the variance (they don't take a
+parameter, thus they only are useful for hiding text strings, unless
+combined with another method.)
+
+   Another type of operation that could only be used for a computer, is
+the ROR and ROL instructions.  These instructions rotate the bits in a
+word X spaces to the right or left, respectively.
+
+   A major disadvantage to all methods above is that they have 256
+permutations each for XOR/ADD/SUB, 2 permutations for INC/DEC, and 8
+permutations for ROR/ROL.  Or 65536, 2, and 16 permutations for the
+different methods, respectively, if word-length encryption is used.  One
+method to give more variance is to use two or more different operators in
+conjunction (it is important to note that they must actually be different
+operations.  Two ADD instructions can be represented as a single addition.
+An ADD and a XOR on the other hand cannot be represented as one
+operation.)
+
+   Code for a basic encryptor/decryptor follows:
+
+encrypt:
+	call	random			; get a random value in AX
+	mov	byte ptr [patch], ah	; store key
+	mov	si, offset v_start	; SI -> plaintext
+	mov	di, offset buffer	; DI -> ciphertext
+encrypt_byte:
+	lodsb				; get one byte of plaintext
+	xor	al, ah			; XOR plaintext with key
+	stosb				; store one byte of ciphertext
+	cmp	si, offset v_finish	; check if at end of plaintext
+	jne	encrypt_byte
+
+decrypt:
+	lea	si, [bp+v_start]	; SI -> ciphertext
+	mov	cx, v_length		; CX = length of ciphertext
+decrypt_byte:
+	xor	byte ptr [si], 0	; XOR ciphertext with key
+	org	$-1			; the key is patched in when the
+patch	db	?			; virus is encrypted as above
+	inc	si			; go to next byte of ciphertext
+	loop	decrypt_byte		; perform next iteration of
+					; decryption loop
+   One method that allows for an enormous range of ciphertexts is the
+substitution cipher, which defines an translation table, much like an
+alternate alphabet, of length 256.  Plaintext bytes are looked up in the
+table and transposed.  This gives 256! permutations, or 1x2x3x...x255x256,
+which is an enormous number.  It can also be easily coded using the XLATB
+instruction which was designed with this type of thing in mind.  XLATB
+takes the byte at ES:BX and puts it in AL.
+
+   A rarely used method of encryption is the MUL/DIV set of instructions.
+The main reason that it's not looked on very favorably is because it doubles
+the length of the virus, because both take either an 8-bit or 16-bit input
+and return a 16- or 32-bit output.  On the other hand, it's not as common
+(certainly hasn't been in any virus that I've analysed personally), so it
+might not show up as a decryption loop.  To encrypt with DIV, the following
+code will do the trick:
+
+; BX holds key
+; DS:SI holds location of plaintext
+; ES:DI holds location of ciphertext
+	mov	cx, (v_length+1)/2
+encrypt_loop:
+	lodsw
+	div	bx
+	stosw				; store quotient
+	xchg	dx, ax			; XCHG xx, accum saves a byte
+	stosw				; store remainder
+	loop	encrypt_loop
+
+   To decrypt is slightly different.  You load the first word, then multiply
+by the key, and then add the remainder.  Code follows:
+
+; BX holds key
+; DS:SI holds location of ciphertext
+; ES:DI holds location of plaintext
+
+	mov	cx, (v_length+1)/2
+decrypt_loop:
+	lodsw				; get quotient
+	mul	bx			; multiply by the key
+	add	ax, word ptr ds:[si]	; using LODSW again would require
+	add	si, 2			; saving the current AX and then
+	stosw				; switching it back to STOSW it
+	loop	decrypt_loop
+
+   Note: when you save the virus, you must save an even number of words, or
+else you will not save the dividend, meaning on the decryption the last word
+will be completely unknown due to garbage in memory.
+
+   The main problem with encryption of a virus is that the decryptor is
+always known, because the virus has to execute it to actually run.  This
+means programs like TBCLEAN can usually trace through the decryptor and
+disinfect the file.  Just as a side note, because this is not an article
+on anti-debugging, if you put this code in your decryption loop, TBCLEAN
+will stop processing the file:
+
+	cli				; disable interrupts
+	neg	sp			; fool TBCLEAN into thinking there
+					; is a stack crash
+	neg	sp			; restore the stack pointer
+	sti				; enable interrupts
+
+ - Executioner
+
+

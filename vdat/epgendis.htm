@@ -1,0 +1,527 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Computer Viruses - Generic Disinfection</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>GENERIC DISINFECTION<BR>
+</FONT><FONT SIZE=+2>by Peter Szor</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><B><FONT SIZE=+1>1 INTRODUCTION </FONT></B></P>
+
+<P>Traditionally, anti-virus scanners have only been able to disinfect
+viruses that have been analysed beforehand by product developers. Around
+10,000 viruses have been found during the past 10 years. So far, producers
+of anti-virus products have been pretty much able to keep up with the new
+viruses, adding detection and disinfection routines for most new viruses.
+We can expect this situation to change in the future: when there are, say,
+50,000 viruses, no vendor will be able to analyse every single virus separately.
+</P>
+
+<P>As the number of viruses keeps on growing, more and more viruses are
+only detected, as the developers do not consider every virus to be important
+enough to add specific disinfection routines for it. Unfortunately, some
+users will eventually get infected by such a virus. </P>
+
+<P>It is possible (but more difficult) to disinfect unknown viruses. There
+are several approaches to this problem: one known method is to trace the
+execution of a possibly infected program until the virus has restored the
+host to its original state. This method works, but cannot be considered
+truly reliable. An alternative is to emulate the program and collect information
+on its execution, using this information together with generic rules to
+do rule-based disinfection. Although this is difficult to implement, it
+produces surprisingly good results. How many viruses can be removed this
+way? Testing a generic disinfector is a very difficult task. Testing how
+many particular viruses it can handle does not make sense, because it is
+a generic anti-virus product. It is more important to test how many different
+types of viruses we can handle by using these kinds of methods. However,
+a figure of 60% is quite possible. Most anti-virus programs do not even
+come close to this percentage (for example, my old program, called Pasteur).
+</P>
+
+<P><B><FONT SIZE=+1>2 HOW A VIRUS INFECTS A PROGRAM </FONT></B></P>
+
+<P>Before we can talk about generic disinfection, we should understand
+how a virus infects a program. In most cases, a virus adds itself to the
+end of a file. If this is the case, the virus modifies the beginning of
+the program to transfer control to itself. Unless the virus is very primitive,
+it saves the beginning of the file within the virus code, because it will
+be necessary to execute the victim file correctly after infection. This
+technique is called the `appending' method. </P>
+
+<UL>
+<PRE>CODE CODE CODE CODE CODE CODE CODE  CODE  CODE
+CODE CODE CODE CODE CODE CODE CODE  CODE  CODE
+CODE CODE CODE CODE CODE CODE CODE  CODE  CODE</PRE>
+
+<P><B>a. Victim program </B></P>
+
+<PRE>J  ODE CODE CODE CODE CODE CODE CODE CODE CODE              C
+M  ODE CODE CODE CODE CODE CODE CODE CODE CODE     VIRUS    C
+P  ODE CODE CODE CODE CODE CODE CODE CODE CODE              C</PRE>
+
+<P><B>b. Infected program </B></P>
+</UL>
+
+<P>Every virus adds new functionalities to the victim. The infected victim
+will execute the virus code, which will infect other files or system areas
+or go resident in memory. After this, the virus code repairs the beginning
+of the victim in memory and starts it. This sounds very simple: unfortunately,
+it is that, at least from the point of view of the virus, which modifies
+a few bytes in the victim file and saves a piece of the file's original
+code into the virus body (in this example: `CCC'). </P>
+
+<P>When we started to analyse viruses, there were no problems with conventional
+disinfection. We had enough time to analyse them, because there were only
+a few viruses. We could spend weeks with every new sample until we had
+all the information necessary to clean them successfully. </P>
+
+<P>Basically, the cleaning process is as easy as the infection. All we
+need to know is: </P>
+
+<UL>
+<P>- how to find the virus (in most cases, with a search- string selected
+from the virus)<BR>
+- where the original beginning of the victim file (`CCC') can be found
+in the virus body&lt;VR&gt; - the size of the virus in bytes. </P>
+</UL>
+
+<P>If we have all this information, we can remove the virus easily: `Let's
+read the original beginning from the virus code and put it back in its
+original place, then truncate the file at its original end, calculating
+where this is from the virus size'. That's it! This method might have been
+interesting in case of the first ten viruses, but everybody who has spent
+years with viruses hates it: it is just too tedious. </P>
+
+<P>So, we developed `goat' systems to make virus samples automatically.
+These systems save time. We can calculate the place of the original bytes
+in the virus body by comparing many infected samples to non-infected ones,
+using a special utility. This system works as long as the virus is not
+encrypted, self-mutating, or polymorphic. Of course, it must not have an
+anti-goat mechanism or new infection technique which our disinfector does
+not know how to handle. If one of these problems occur, we will have to
+analyse the virus manually. If we are lucky, it is enough. If not, we will
+have to change our anti-virus strategy by adding new functions to it, or
+by modifying already existing ones. This can take a lot of time, and is
+therefore not efficient enough. </P>
+
+<P><B><FONT SIZE=+1>3 GENERIC DECRYPTORS </FONT></B></P>
+
+<P>Most of the better anti-virus products have a generic decryptor to combat
+polymorphic viruses, so it appears we can solve the biggest problem that
+way. We can decrypt the virus so we can use the old search-string technique
+once again: this is great. Basically, the generic decryptor method is a
+part of the generic disinfection technique. There are two different generic
+decryptor methods: single-stepping (by using Int 01h, Int 03h) and emulating.
+Unfortunately, each has both advantages and disadvantages. </P>
+
+<UL>
+<P><B>3.1 SINGLE-STEPPING METHOD </B></P>
+</UL>
+
+<P>Single-stepping is based on the Int 01h function. It is generated automatically
+by the processor at the end of each machine instruction if the trace bit
+(TF) in FLAGS is set. This is what makes the T command of DEBUG work for
+single-stepping. </P>
+
+<P>If we are using the single-stepping method, we should not develop a
+processor emulator. We should not care which kind of operating system must
+be emulated, because we can use the current one by calling the harmless
+interrupts directly from the system. But the main question is: which interrupt
+is harmless? We should also know which code is not dangerous. What can
+we do if the virus is using anti- debugging techniques and we start to
+execute it in a controlled way? What can we do if the virus uses an instruction
+which is simply buggy on the current processor? </P>
+
+<P>For example: the Finnpoly virus pushes its decryptor to the stack and
+starts to execute it by a CALL SP instruction. This instruction works on
+every Intel processor except 386DX and 386SX, where the CALL goes to offset
+FFFF instead of the current value in SP register. So if we start to trace
+the virus by using Int 01h on a 386 system, the virus will crash, together
+with the analyser. Yes, a virus like this cannot infect our environment,
+because it will not work on it. But what happens if we are scanning files
+on the network in a case like this? And finally, what happens if the `controlled'
+environment is buggy? In this case, the virus writer has a chance to write
+a virus which can escape from the analyser; and that is where we should
+stop for a second. We should not execute the virus in a controlled way,
+because we cannot be 100% sure that the virus cannot escape from the analyser.
+</P>
+
+<UL>
+<P><B>3.2 EMULATING METHOD </B></P>
+</UL>
+
+<P>Implementing a real processor emulator requires much more work than
+using the single-stepping method. The first question: is which processor
+should be emulated? If we think about it, the answer is very easy: most
+good anti- virus packages will still work on an XT. Why? Because most viruses
+do not use instructions from processors other than 8086, which means that
+if we are developing only 286 (or higher) products we cannot find viruses
+on XT. I am sure most of the developers have not seen an XT machine in
+the last five years, but many people still use them: that is why we cannot
+change our system fast enough. Unfortunately, some viruses need a 286 or
+a 386 to work. If a virus uses 386 code, it cannot spread on an XT or on
+a 286. The 286 is still a very common platform, especially in east-European
+countries. </P>
+
+<P>Thus, to summarise, we should develop an emulator which can emulate
+8086, 286, and 386 code. This should be sufficient for a long time. </P>
+
+<P>Most anti-debugging tricks are based on pre-fetch queue tricks, or on
+the use of Int 01h and Int 03h. If we have an intelligent emulator, then
+we do not have a big problem with such anti-debugging techniques. We can
+avoid or emulate them. However, there are other problems involved with
+emulating. Basically, the biggest question is: where should we stop in
+the emulating process? At first glance, it does not seem too difficult.
+The answer is: we should stop when we decrypt the virus. Unfortunately,
+this process is quite difficult. </P>
+
+<P>Every encrypted or polymorphic virus has a different decryptor size,
+which means we need to emulate different amounts of instructions. One virus
+might need 1000 instructions to be emulated and decrypted, while another
+may need a few million. Virus writers understood this, so they started
+to use tricks against generic decryptors and heuristic analysers. One `dirty
+trick' is the use of loops before the real decryptor comes: </P>
+
+<UL>
+<PRE>1112    MOV     CX,FFFF
+1115    LOOP    1115
+</PRE>
+</UL>
+
+<P>Let's say the analyser starts to emulate the first 2000 instructions.
+If it finds some suspicious code, then it can emulate more. If the analyser
+cannot recognise a loop, however, then it cannot find the virus, because
+it will stop before the loop has finished and the real virus code has started.
+Fortunately, good emulators can handle this situation easily. </P>
+
+<P>There are other anti-emulating tricks which we must also be able to
+handle. Every emulator stops when it recognises that the program comes
+back to DOS. In the following examples, we can see that virus writers have
+started to use this phenomenon in their tricks: </P>
+
+<UL>
+<PRE>CMOSDEAD.3622 virus
+
+ 011A8DBC2B01 LEA  DI,[SI+012B]
+ 011EB80812   MOV  AX,1208; DECREMENT SYSTEM FILE TABLE
+ 0121CD2F     INT  2F ; REFERENCE COUNT, but DI points
+ to 12B
+ 0123051901   ADD  AX,0119
+ 01268BD0     MOV  DX,AX
+ 0128B9B30D   MOV  CX,0DB3
+ 012BB44C     MOV  AH,4C
+ 012DCD21     INT  21
+</PRE>
+</UL>
+
+<P>Int 2Fh/AX=1208 is a DOS 3+ internal function. It decrements one byte
+where ES:DI points. If the emulator does not emulate this interrupt, then
+it will stop its process at 012D, because it thinks the program comes back
+to DOS. Here, DI points to 012B, which means that this interrupt will decrement
+the byte at 012B from B4h to B3h. So the MOV AH, 4C instruction at 012B
+changes to MOV BL,4C (which happens to be the `Are you there' call of this
+virus). </P>
+
+<UL>
+<PRE>Letter_H.665 virus
+
+ 05E3B80035   MOV  AX,3500
+ 05E6CD21     INT  21
+ 05E88D941502 LEA  DX,[SI+0215]
+ 05ECB80025   MOV  AX,2500
+ 05EFCD21     INT  21
+ 05F140       INC  AX
+ 05F2B80000   MOV  AX,0000
+ 05F5F7F0     DIV  AX
+ 05F7B8014C   MOV  AX,4C01
+ 05FACD21     INT  21
+</PRE>
+</UL>
+
+<P>Interrupt 0h (internal hardware) is automatically called after DIV or
+IDIV operations that result in error or overflow. Normally it is set by
+DOS to display an error message and abort the current program. This virus
+hooks Int 00h before it deliberately performs a division by zero on purpose
+at 05F5h, which means it can start the full infection process from Int
+00h. </P>
+
+<P>There are many other problems with the emulating method, but it is a
+much safer technique than single-stepping. Unfortunately, emulation is
+slow: Users will not be pleased if they have to wait for any length of
+time. It does not help to say `our product is based on emulation, please
+wait a few hours', because the users will choose other, faster anti-virus
+packages. A good emulator should therefore be as fast as possible: speed
+is one of the most important aspects of anti-virus products from the users
+point of view. </P>
+
+<P><B><FONT SIZE=+1>4 HOW DOES A GENERIC DISINFECTOR WORK? </FONT></B></P>
+
+<P>The idea of doing generic disinfection without any information on the
+original file is not new; it was first developed by Frans Veldman, more
+than three years ago. Unfortunately, there is only one common generic cleaner
+available: TBCLEAN. The main question is: why? </P>
+
+<P>Basically, the generic disinfection method is simple but great: the
+disinfector loads the infected file and starts to emulate it until the
+virus restores the infected file to its `original' form, and is ready to
+execute it. So the generic disinfector can use the virus to perform the
+most important part of the cleaning process. The virus has the beginning
+of the original file. All we need to do is copy the cleaned program back
+into the file. </P>
+
+<P>However, there are still a few questions which have not been answered:
+</P>
+
+<P><B><FONT SIZE=+1>4.1 WHICH EMULATION METHOD SHOULD WE USE? </FONT></B></P>
+
+<P>As explained above, the generic decryptor method is very similar to
+generic disinfection. We should `execute' instructions only until the virus
+gives control to the original program. In my opinion, emulating is much
+safer. It is the only way to be 100% sure that the virus cannot escape
+from the analyser. We need an intelligent emulator which can emulate and
+control the `execution' of the infected program. I will demonstrate what
+controlling means later. </P>
+
+<UL>
+<P><B>4.2 HOW CAN THE DISINFECTOR BE SURE THAT THE FILE IS INFECTED? </B></P>
+</UL>
+
+<P>We can use all the techniques we used for heuristic scanners. In my
+opinion, a generic disinfector is a combination of a heuristic scanner
+and a heuristic disinfector. This way, our disinfector will not remove
+the `unknown from the unknown' [1] but will remove the virus from the unknown.
+</P>
+
+<P>The one big problem with all heuristic products is false alarms. If
+the generic disinfector removes everything from the file which looks like
+a virus, it might remove non-virulent code, too, and corrupt the file.
+Heuristics is a science which is developing quickly, so we will find better
+ways to reduce false-alarms. </P>
+
+<UL>
+<P><B>4.3 WHERE IS THE ORIGINAL END OF THE FILE? </B></P>
+</UL>
+
+<P>This question is also very important. We cannot always just remove the
+part of the program that gained control; otherwise we cannot handle viruses
+like One_Half. This virus modifies the body of the original program by
+putting its polymorphic decryptor in 10 blocks at random into the original
+file end minus 64K. (Every One_Half- infected file looks like a Swiss cheese.
+See Figure 1.) In most cases, we can truncate the file to which the first
+JMP points, but not with viruses like One_Half. If we truncate the file
+in that position, we will remove too much, and the `disinfected' program
+will not work anymore. The other problematic task is removing too few bytes
+from the program: in this case, other virus scanners might find search-strings
+from the file after disinfection. </P>
+
+<P>We should collect information about the virus during emulation. That
+way we can get a very good result. </P>
+
+<P><B><FONT SIZE=+1>5 HOW MANY VIRUS TYPES CAN WE HANDLE THIS WAY? </FONT></B></P>
+
+<P>There is an almost unlimited number of methods which a virus can use
+to infect programs or system areas. It is true that we cannot handle all
+viruses by using only generic disinfection techniques - but we can handle
+most of them. </P>
+
+<UL>
+<P><B>5.1 BOOT SECTOR INFECTORS </B></P>
+</UL>
+
+<P>The PC virus problem started with a boot sector virus (Brain). Unfortunately,
+it is relatively easy to write a boot sector virus. Nowadays, file viruses
+outnumber boot sector viruses with a big margin: only about 5% of all viruses
+infect boot sectors. So, it is not a very big problem to handle boot sector
+viruses with conventional methods. However, if a new virus is found in
+the wild, it is more likely to be a boot sector virus than a file infector,
+because boot sector viruses are usually better spreaders. Fortunately,
+most virus writers have not recognised this situation. Also, there have
+been very few polymorphic boot sector viruses so far, which is fortunate,
+since they are obviously much more difficult to handle. </P>
+
+<P>We can also use generic methods to detect and disinfect boot sector
+viruses. We should emulate the boot sector code as we did for files. There
+are at least 12 different techniques which can be used to infect boot sectors
+or Master Boot Sectors. Most of these involve saving the original boot
+sector somewhere before changing the code in the boot sectors. If we can
+find the virus heuristically, it is possible to locate the original boot
+sector, too. In case of diskettes it can often be found at the end of the
+root-directory, at the very end of the disk, or in areas marked as bad
+sectors. In the case of MBR infectors, it can usually be found on the Track
+0. </P>
+
+<P>Most anti-virus products have a function for locating the original boot
+record, so it is not necessary to have pre- defined information about the
+disinfection. There are boot sector viruses which do not save the original
+boot sector or master boot sector anywhere before infecting. In such cases,
+the boot record should be overwritten with clean, generic code. </P>
+
+<UL>
+<P><B>5.2 FILE INFECTORS </B></P>
+</UL>
+
+<P>There are many more possible ways to infect files, because there are
+so many different file structures. The biggest problem is the overwriting
+method, in which the virus overwrites the beginning of the file with its
+body, without saving the original code. Such viruses are impossible to
+disinfect without information about the file structure before infection.
+So, while it is not possible to disinfect viruses like this, it is easy
+to detect them using heuristics. Around 10% of viruses are overwriting,
+and cannot be disinfected. </P>
+
+<P>There are also other problematic cases, such as: Windows application
+infectors, device driver infectors, cluster infectors, batch file infectors,
+object file infectors and macro infectors. Together, these account for
+only about 1% of all viruses. </P>
+
+<P>Several other viruses cause problems for heuristic techniques. Such
+viruses use different infection techniques, with `dirty tricks' specifically
+designed to make detection and disinfection with generic methods difficult.
+These viruses make up to 15% of all viruses. </P>
+
+<P>When we combine overwriting viruses and other special cases, the result
+is that about 30% of all viruses cannot be handled with generic methods
+easily, or at all. A listing of all infection techniques and whether or
+not they are suitable to be handled by generic methods would go beyond
+the scope of this paper. </P>
+
+<P>There remains only one problem with viruses against which we can easily
+use generic disinfection techniques. If the part of the virus code where
+the virus repairs the infected program cannot gain control during emulation,
+then the disinfector cannot get the necessary information. We should control
+the `execution' of the virus code very intelligently. For example, when
+the virus make its `Are you there?' call, the emulator should give the
+answer the virus wants. This way, the virus thinks that its code is already
+resident in memory, and repairs the host file. </P>
+
+<P><B><FONT SIZE=+1>6 HEURISTIC FLAGS IN AHD </FONT></B></P>
+
+<P>AHD (Advanced Heuristic Disinfector) is currently a test project. It
+uses the generic disinfection method combined with a heuristic scanner.
+These are the heuristic flags of the program: </P>
+
+<UL>
+<PRE> 1 Encryption. A code decryptor function found.
+ 2 Open existing file (r/w). The program opens another
+   executable file for write. This flag is very common
+   in viruses as well as in normal programs (like
+   make.exe).
+ 3 Suspicious file access. Might be able to infect a
+   file. AHD can give additional information about the
+   virus type like, such as recursive infection
+   structure (direct action).
+ 4 Time/Date trigger routine: this virus might have an
+   activation routine.
+ 5 Memory-resident code. This program is a TSR.
+ 6 Interrupt hook. When the program hooks a critical
+   interrupt, like Int 21h, we can display all the
+   hooked interrupts. (Int XXh .. Int YYh)
+ 7 Undocumented Interrupt calls. AHD knows a lot of
+   `undocumented' interrupts, so this flag will be
+   displayed when the interrupt looks tricky, like the
+   VSAFE/VWATCH uninstall, which is very common in
+   modern viruses.
+ 8 Relocation in memory. The program relocates itself in
+   a very tricky way.
+ 9 Looking for memory size. The program tries to modify
+   BIOS TOP memory by overwriting the BIOS data area at
+   location 0:413h.
+10 Self-relocating code.
+11 Code to search for files. The program tries to
+   find other executable programs (*.COM,*.EXE also
+   *.C“M, *.‚X‚ which means the same for DOS.)
+12 Strange memory allocation.
+13 Replication. This program overwrites the beginning
+   of other programs.
+14 Anti-debugging code.
+15 Direct disk access (boot infection or damage).
+16 Use of undocumented DOS features.
+17 EXE/COM determinator. The program tries to check
+   whether a file is a .COM or an .EXE file.
+18 Program load trap.
+19 CMOS access. The program tries to modify the CMOS
+   data area.
+20 Vector code. This is found only in viruses. The
+   virus tries to use the cleaner as a vector.
+</PRE>
+</UL>
+
+<P><B><FONT SIZE=+1>7 DISINFECTION EXAMPLES </FONT></B></P>
+
+<P>Here are two examples of disinfection using AHD. In the first case,
+the virus is polymorphic. It uses the original Mutation Engine (MtE). </P>
+
+<UL>
+<PRE> X:\FILEVIRS\MTE\ZEPPELIN\MOTHER.COM
+ - Encrypted code
+ - Self-relocating code
+ - Code to search for files
+ - Open existing file (r/w)
+ - Suspicious file access
+ - Time/Date trigger routine
+  -&gt; Probably infected with an unknown virus
+ 1. COM started -&gt; E9 FC 13 53 6F
+ 2. It changed to -&gt; EB 3C 90 53 6F
+ 3. Original file size: 5119 , Virus size: 4097
+ Virus can be removed.
+</PRE>
+</UL>
+
+<P>Next, let's take a look at a disinfection where the virus is a VCL variant.
+VCL (Virus Creation Laboratory) is one of the most commonly used virus-writing
+toolkits. </P>
+
+<UL>
+<PRE> X:\FILEVIRS\VCL\0379\VCL379.COM
+ - Self-relocating code
+ - Code to search for files
+ - Open existing file (r/w)
+ - Suspicious file access
+ - Time/Date trigger routine
+  -&gt; Probably infected with an unknown virus
+ 1. COM started -&gt; E9 E5 03 90 90
+ 2. It changed to -&gt; 90 90 90 90 90
+ 3. Original file size: 1000 , Virus size: 379
+ Virus can be removed.
+</PRE>
+</UL>
+
+<P><B><FONT SIZE=+1>8 WHAT TO DO IN THE FUTURE? </FONT></B></P>
+
+<P>We should work more on generic disinfection. It can produce surprisingly
+good results. It is also necessary to develop better and better emulators.
+New infection techniques emerge from time to time, such as the inserting
+method. Nexiv_Der belongs in this category: this virus uses a peculiar
+method of infection; tracing the execution of a victim file (using single-stepping)
+and randomly inserting a call to its own code in the middle of the host.
+This makes it difficult to use the emulation method on it [3]. Fortunately,
+there are not too many viruses like this, but that may change in the future.
+</P>
+
+<P>In my opinion, we should test the combination of other anti-virus techniques,
+too; not only heuristic scanners and generic disinfections, but generic
+disinfectors and integrity checkers as well. Generic disinfection is not
+a revolutionary idea, but I believe it will be one of the methods that
+will keep virus scanners alive for a few more years to come. </P>
+
+<P>BIBLIOGRAPHY </P>
+
+<PRE> [1] Frans Veldman, `Combating Viruses Heuristically',
+     Proceedings of the Third International Virus
+     Bulletin Conference, September 1993, Amsterdam.
+ [2] Vesselin Bontchev, `Infection Techniques', Extract
+     from Ph.D thesis, in print.
+ [3] Peter Szor, `Nexiv_Der: Tracing the Vixen', Virus
+     Bulletin, April 1996.
+
+
+<HR WIDTH="100%"></PRE>
+
+</BODY>
+</HTML>

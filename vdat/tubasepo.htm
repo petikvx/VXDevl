@@ -1,0 +1,311 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Short Introduction to EPO</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<p align="center"> <b><font color="#004080" size="+3">Short introduction to EPO</font><font color="#004080"><br>
+  <font size="+1">By DoxtorL. /[T.I]</font></font></b></p>
+<hr>
+<blockquote>
+  <PRE>
+Here is a short introduction to E.P.O.
+To learn something you have to know basics of Portable Executable Layout.
+
+EPO stands for Entry Point Obscured .
+
+What does it mean? 
+------------------
+
+A normal program contains a lots of Api calls
+
+for example:
+
+              push 0
+Source:
+              call ExitProcess          
+
+if we replace this "Api call" by a virus call we have got an example of
+what is E.P.O
+
+But the Api call has to be executed
+
+look at the next diagram:
+
+                                  
+                      Call (Api call before infection)
+                Source -----------------------------> Aim (go to Api address)
+                 |                                     ^
+                 |                                     |
+                 |                                     |
+                 | Call (after infection)              |Jump
+                 |                                     |
+                 |                                     |
+                 |                                     |  
+                 V                                     |
+              BeginningOfVirus                      EndOfVirus
+
+
+The call is performed from Source address. 
+in the host the called address is Aim
+We change the called address.Now, it's BeginningOfVirus address.
+
+When the virus has terminated its job, it performs a jump to the 
+"Aim" address in the host program.
+
+Now, the programs looks like:
+
+      
+         push 0
+Source:
+
+         call BeginningOfVirus
+       
+         [...]
+
+BeginningOfVirus:
+         
+         pusha             ;save registers        
+         
+         < Virus Code >
+
+         popa              ;restore registers 
+
+         jmp Aim           ;go to the inital place
+
+
+We need to know a little bit more about the opcodes of some instructions,
+performing a jump or a call
+
+Especially those ones:
+
+I) 
+*****
+
+Source:
+
+jmp Aim
+
+[...]
+
+Aim:
+
+
+%% coded as  : db 0e9h
+               dd offset Aim - offset Source - 5
+
+(there exist others direct jmp, but no needed for our purposes)
+It doesn't matter if Source address is greater than Aim one, the code works too.
+
+II)
+*****
+
+source:
+
+jmp [Aim]  ;jmp to the address contained in dword Aim
+
+[...]
+
+Aim:
+dd X
+
+
+%% coded as:  db 0ffh,25h
+              dd offset Aim 
+
+III)
+*****
+
+source:
+
+call Aim
+
+
+
+%% coded as:  db 0e8h
+              dd offset Aim - offset Source - 5
+
+In fact, only the last two instructions are used in the apis call process per-
+formed by Windows. But the direct (far) jump opcode is needed in what is following.
+
+How does a simple EPO technic works?
+------------------------------------
+
+First we search for byte e8h,
+
+its surely the beginning of "Call Aim" instruction. (that is, db 0e8h following
+by a dword X)
+
+We need to do that, to find a file pointer ,pointing to the entry point of
+program.
+
+In the different headers of a Portable Executable (PE for short) we can
+find the virtual address (VA for short) of entry point of program
+and VA of code section (we need the first VA to find this one, because
+code section isn't necessary the first section)
+
+We can get the  PointerToRawData of code section. (it is located in
+section code header). It's a file pointer.
+
+VA isn't a file pointer, a VA + ImageBase value gives you a memory address.
+
+A file pointer to entry point is got from the formula:
+
+%%% Entry Point Pointer=   PointerToRawdata of Code Section
+                     
+                         + (VA of Entry Point - VA of Code Section)
+
+Using this pointer ( a dword), we can scan the section code to find
+e8h byte.
+
+Are we sure the byte e8h (we just find) the first byte of a call?
+No we aren't!
+
+Here is the correct layout of an Api call:
+
+Instructions:              opcodes:
+
+
+call Aim                   db 0e8 
+                           dd x
+
+[...]
+
+Aim:
+
+jmp [YYYY]                 dw 0ff25h
+                           dd "YYYY"
+
+
+"Aim" isn't an Api address at all!
+
+However, we have a method to check if a call is an api call or not.
+We have just to check if the word ff25h is at the address "Aim"!
+
+First, we need to compute the VA of "Aim"
+
+VA Aim -  VA of "0e8h" byte -5=X
+
+then we've got :
+
+                   VA Aim= X+ VA of "0e8h"+5
+
+The VA of Aim is knew. We need to get a file pointer for the VA of Aim.
+There is no information in the different headers of the PE file to know dir-
+ctly where is "jmp [YYYY]" :(
+
+The VA of Aim is used to know in wich section we can find it.
+
+(Sometime, this VA isn't in the mapped PE file.
+The reason is quite simple, the e8 byte wasn't an opcode for a Call at all!)
+
+
+However, most of the time it's in code section itself.
+
+Let's assume it. We 've got the formula:
+
+Pointer to Aim = PointerToRawdata of Code Section
+                 +(VA of Aim - VA of Code Section)
+
+
+Let's assume this value (a dword) is in EAX register
+and we have mapped the PE target in memory:
+
+               add eax,BaseAddressOfMapping
+               cmp dword ptr [eax],25ffh 
+               jnz NoJmpHere                
+
+do the test we need.               
+
+(before to perform this test, we have to be sure the address in eax is in
+the file itself, else fault protection page will surely occure!)
+
+Now ,we build the new "call" to replace the previous one.
+
+We want:
+
+Instructions:                     opcodes:
+
+Source:
+call Beginning of virus           db 0e8h
+                                  dd Y
+
+
+Since ,
+VA of beginning of virus- VA of Source =Y - 5
+
+Then :
+
+         Y=VA of Beginning of Virus - VA of Source + 5
+
+
+Let's assume VA of the end of virus code is EndOfVirus
+
+We want to jump to real aim of the Api call
+
+We Want :
+
+
+Instructions:             Opcodes:
+
+EndOfVirus:                
+            
+jmp Aim                   db 0e9h
+                          dd Z
+
+We compute the needed dword appearing in jump instruction: db 09eh,dd Z
+(Z is the unknown dword we are searching for).
+
+Once more we have:
+
+VA Aim- VA of EndOfVirus=Z-5
+
+then:
+
+            Z=VA Aim -VA EndOfVirus+5
+
+
+Example of code obtained:
+
+
+before infection:
+
+Source:
+db 0e8h        ;
+dd offset Aim  ;Call Aim
+
+[...]
+
+Aim:
+
+
+After infection:
+
+
+db 0e8h                                       ;
+dd  offset BeginningOfVirus -offset Source+5  ;call BeginningOfVirus
+
+[...]
+
+Aim:
+
+[...]
+
+BeginningOfVirus:
+
+[...]
+
+EndOfVirus:
+db 0e9h 
+dd offset Aim-Offset EndOfVirus+5
+
+I hope this tutorial will help you to understand a basic EPO technic.
+Up to now, antiviruses scanners seems to have a bad trip to detect infected
+files by a virus using EPO. However this article can be used for AV use too!
+So this basic technic will be outdated soon , i suppose.
+But there is two things you can do, to make the job of AV more harder.
+Think by yourself...answers are included in this article ;)
+</pre>
+</blockquote>
+<hr>
+</BODY>
+</HTML>

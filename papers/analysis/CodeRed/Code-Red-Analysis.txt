@@ -1,0 +1,266 @@
+The following is a detailed analysis of the "Code Red" .ida worm that we reported on July 17th 2001.
+
+This analysis was performed by Ryan Permeh and Marc Maiffret of eEye Digital Security. The disassembly (complete with comments) was done by Ryan "Shellcode Ninja" Permeh.
+
+Table of Contents
+=================
+1. Introduction
+2. Explanation
+3. Deep Analysis
+4. Conclusion
+5. Appendix
+6. Credits
+
+
+Introduction
+============
+On Friday July 13th we received packet logs and information from 2 network administrators that were experiencing large amounts of attacks targeting the recent .ida vulnerability that eEye Digital Security discovered (http://www.eeye.com/html/Research/Advisories/AD20010618.html) on June 18, 2001. After reviewing the logs sent to us we determined that in fact someone had released a worm into the Internet that was spreading rapidly through IIS web servers.
+
+The full analysis of the .ida "Code Red" worm has provided numerous new details as to the functionality and method of propagation of this worm. For instance this worms purpose ultimately seems to be to perform a denial of service attack against www.whitehouse.gov. Also it has been found that only US English Windows NT/2000 systems will show the defaced ("Hacked by Chinese !") web page. 
+
+We've designated this the .ida "Code Red" worm, because part of the worm is designed to deface web pages with the text "Hacked by Chinese" and also because code red mountain dew was the only thing that kept us awake all last night to be able to disassemble this exploit even further.
+
+
+Explanation
+===========
+As stated earlier the .ida "Code Red" worm is spreading throughout IIS web servers on the Internet via the .ida buffer overflow attack that was published weeks ago.
+
+The following are the steps that the worm takes once it has infected a vulnerable web server.
+
+1. Setup initial worm environment on infected system.
+2. Setup a 100 threads of the worm
+3. The first 99 threads are used to spread the worm (infect other web servers).
+	-The worm spreads itself by creating a sequence of random IP addresses. However, the worm's randomization of IP addresses to attack is not all together random. In fact there seems to be a static seed that the worm uses when generating new IP addresses to try to attack. Therefore every computer infected by this worm is going to go through the same list of random IP addresses to try to infect. The "problem" with that is that the worm is going to end up reinfecting systems and also end up crossing traffic back and forth between hosts to end up creating a denial of service type affect because of the amount of data that will be transferred between all the IP addresses in the sequence of random IP addresses. The worm could have done truly random IP generation and that would have allowed it to infect a lot more systems a lot faster. We are not sure why that was not done but a friend of ours did pose an interesting idea... If the person who wrote this worm owned an IP address that was one of the first hundred or thousand etc... to be scanned then they could setup a sniffer and anytime and IP address tried to connect to port 80 on their IP address they would know that the IP address that connected to them was infected with the worm and they would therefore be able to create a list of the majority of systems that were infected by this worm.
+4. The 100th thread checks to see if it is running on a English (US) Windows NT/2000 system.
+	-If the infected system is found to be a English (US) system then the worm will proceed to deface the infected systems website. That means... the local web servers web page will be changed to a message that says Welcome to http://www.worm.com !, Hacked By Chinese!. This hacked web page message will stay "live" on the web server for 10 hours and then disappear and never appear again unless the infected system is re-infected by another host.
+	-If the system is not a English (US) Windows NT/2000 system then the 100th worm thread is also used to infect other systems.
+5. Each worm thread checks for c:\notworm
+	-If the file c:\notworm is found, the worm goes dormant.
+	-If the file is not found then each thread will continue to attempt to infect more systems.
+6. Each worm thread will now check the infected computers time.
+	-If the time is between 20:00 UTC and 23:59 UTC then the worm will proceed to use this thread to attack www.whitehouse.gov. The attack consists of the infected system sending 100k bytes of data to port 80 of www.whitehouse.gov therefore potentially performing a denial of service attack against www.whitehouse.gov.
+	-If the time is below 20:00 UTC then this worm thread will try to find and infect new web servers.
+
+In testing we have calculated that the worm can attempt to infect roughly half a million IP addresses a day and that was a ruff estimate made from using a very slow network.
+
+As of writing this document (July 18 6:49pm) we have had reports from administrators that have been probed by over 12 thousand unique hosts. That basically means at least 12 thousand hosts have been infected by this worm.
+
+In testing we have seen that sometimes the worm does not execute correctly and will continue to spawn new threads until the infected machine crashes and has to be rebooted. We have not been able to isolate the cause of this behavior.
+
+
+Deep Analysis
+=============
+The following is a very detailed analysis of what the worm is doing at each step of its infection. Full disassembled and commented worm code is available at our website http://www.eeye.com. It will be provided as both a assembly text dump and as a IDA (Interactive Disassembler) database file. We have chosen not distribute the worm code in this eMail as to not clog up your bandwidth anymore then we already are >:-]
+
+Note: We will use CODEREF comments in the analysis to reference where we are in the disassembled code so you can "follow along" with us.
+
+The tools that we used to perform this detailed analysis were:
+IDA (Interactive Disassembler) from www.datarescue.com. IDA is an advanced disassembler that made this analysis possible.
+MS VC++ debugging environment. We used this to monitor modified pieces of the worm as they interacted with IIS.
+Ryan's brain + Marc's brain + private eEye tools. No... you cant have any of those.
+
+We will be heavily referencing the disassembled worm code in the following analysis.
+
+In an attempt to make this easier to understand we have broken the functionality of the worm into 3 parts. The core worm functionality, the worm hack web page functionality and the attack www.whitehouse.gov functionality.
+
+
+Core worm functionality
+-----------------------
+1. Initial infection vector (i.e. host is vulnerable to the .ida attack and gets hit with this worm).
+
+The initial infection starts to take place when a web server, vulnerable to the .ida attack, is hit with a HTTP get request that contains the necessary code to exploit the .ida attack and uses this worm as its payload.
+
+At the time of the .ida overflow a systems stack memory will look like the following:
+	<MORE 4E 00>
+	4E 00 4E 00 4E 00 4E 00
+	4E 00 4E 00 4E 00 4E 00
+	4E 00 4E 00 4E 00 4E 00
+	92 90 58 68 4E 00 4E 00
+	4E 00 4E 00 4E 00 4E 00
+	FA 00 00 00 90 90 58 68
+	D3 CB 01 78 90 90 58 68
+	D3 CB 01 78 90 90 58 68
+	D3 CB 01 78 90 90 90 90
+	90 81 C3 00 03 00 00 8B
+	1B 53 FF 53 78
+
+EIP is overwritten with 0x7801CBD3 which an address within msvcrt.dll. The code at 0x7801CBD3 disassembles to:
+	call ebx
+When EIP is overwritten with call ebx it then causes program flow to divert back to the stack. The code on the stack jumps into the worm code that's held in the body of the initial HTTP request.
+
+2. Sets up some initial stack variables
+CODEREF: seg000:000001D6 WORM
+
+At this point we are executing the initial code of the worm. The first thing to happen is that the worm sets up a new stack for its own use. The new stack is 218h bytes, filled with CCh. The worm code then moves on to initialize its function jump table.
+
+The entire worm heavily uses an EBP stack based memory offset system. This means that all variables are referenced as EBP-X values. On our website we have a document called worm-ebp.txt that attempts to track stack usage throughout the course of the worm code.
+
+3. Load functions (create the "jump table")
+CODEREF: seg000:00000203 DataSetup
+
+The first thing the worm code does is reference the data portion of the exploit code at EBP-198h. The worm then needs to setup its internal function jump table. A function jump table is a stack based table used to store function addresses. It allows the worm to generate the function addresses at run time (This makes the worm have a better chance of executing cleanly on more systems). 
+
+The technique used by this worm is what is called an RVA (Relative Virtual Addresses) lookup. Basically this means that all functions, or specifically GetProcAddress, are found within IIS itself. For more details on RVA please consult any good PE (Portable Executable, the executable file format for Microsoft platforms) documentation, or read through the assembly code of this worm.
+
+In a nutshell, RVA techniques are used to get the address of GetProcAddress. GetProcAddress is then used to get the address of LoadLibraryA. Between these two functions all other functions that the worm may need can be easily found. The worm uses these two functions to load the following functions:
+
+From kernel32.dll:
+GetSystemTime
+CreateThread
+CreateFileA
+Sleep
+GetSystemDefaultLangID
+VirtualProtect
+
+From infocomm.dll:
+TcpSockSend
+
+From WS2_32.dll:
+socket
+connect
+send
+recv
+closesocket
+
+Finally the worm stores the base address of w3svc.dll which it will later use to potentially deface the infected website.
+
+4. Check the number of threads the worm has created.
+CODEREF: seg000:00000512 FUNC_LOAD_DONE
+
+Here the worm seems to perform a WriteClient (Part of the ISAPI Extension API), sending "GET" back to the attacking worm. This possibly could be a way of telling attacking worms that they have successfully infected a new host.
+
+Next the worm code will count the number of worm threads already in action. If the number of threads is 100 then control is shifted to the Worm hack web page functionality. 
+
+If the number of threads is below 100 then the worm creates a new thread. Each new thread is an exact replica of the worm (Using the same code base). 
+
+The worm now continues its path of execution.
+
+6. Checks for the existence of c:\notworm
+CODEREF: seg000:0000079D DO_THE_WORK
+
+There seems to be a to be built in "lysine deficiency" (See Jurassic Park, or Caesar's paper on this at www.rootkit.com). A "lysine deficiency" is a built in check to keep malicious code from spreading further.
+
+In this case the "lysine deficiency" is a check for the existence of the file c:\notworm. If this file exists then the worm will become dormant. This means it will not attempt to make connections out to other IP addresses to try to infect.
+
+If this file does not exist then the worm continues onto the next step.
+
+7. Check the infected systems time (computer clock)
+CODEREF: seg000:00000803 NOTWORM_NO
+
+The worm will now check the infected systems local time (in UTC). If the hour is greater then 20:00 UTC then the worm will proceed to goto the first step of the attack www.whitehouse.gov functionality.
+
+If the time is less than 20:00 UTC then the worm will attempt to continue to try to infect new systems.
+
+8. Infect a new host (send .ida worm to a "random" IP address on port 80).
+
+At this point the worm will resend itself to any IP addresses which it can connect to port 80 on. It uses multiple send()'s so packet traffic may be broken up. On a successful completion of send, it closes the socket and goes to step 6... therefore repeating this loop infinitely.
+
+
+Worm hack webpage functionality
+-------------------------------
+This functionality is called after a hundred threads are spawned within the worm.
+
+1. Check if local system default language is English us then goto step 6 of core worm functionality.
+CODEREF: seg000:000005FE TOO_MANY_THREADS
+
+The first thing the worm does is get the local codepage. A codepage specifies the local operating system language (I.E. English (US), Chinese, German etc...). It then compares the local codepage against 0x409. 0x409 is the codepage for English (US) systems. If the infected system is an English (US) system then the worm will proceed to deface the local systems webpage. If the local codepage is not English (US) then this worm thread will goto step 6 of core worm functionality.
+
+2. Sleep for 2 hours.
+CODEREF: seg000:00000636 IS_AMERICAN
+
+This worm thread now sleeps for 2 hours. We anticipate that this is to allow the other worm threads to attempt to spread the infection before making a presence known via defacing the infected systems webpage.
+
+3. Attempt to modify infected systems webpages in memory.
+CODEREF: seg000:0000064F HACK_PAGE
+
+This worm uses an interesting technique called "hooking" to effectively deface (alter) an infected systems webpages. Hooking is modifying code in memory to point to code that the worm provides. In this case the worm is modifying w3svc.dll to change the normal operation of a function called TcpSockSend. TcpSockSend is what w3svc.dll (IIS core engine) uses to send information back to the client. By modifying this, the worm is able to change data being written back to clients who request web pages of an infected server.
+
+To perform hooking, first the worm makes the first 4000h bytes of w3svc.dll's memory writable. In a normal situation the memory for w3svc.dll (and basically all mapped dll's) is read-only. It uses the function VirtualProtect to change the memory of w3svc.dll to be writable, saving the old state to a stack variable. 
+
+It then uses the saved codebase of w3svc.dll (from step 3 of core worm functionality) as a start point to search the import table (again see PE header documentation) for the address of TcpSockSend. Once the address for TcpSockSend is located the worm then replaces TcpSockSend's actual address with an address within the worm.
+
+The address that TcpSockSend now points to is a function within the worm that will return the "Hacked by Chinese !" webpage. The CODEREF for this function is seg000:00000C9A FAKE_TCPSOCKSEND.
+
+This thread of the worm now sleeps for 10 hours. During this 10 hours all web requests to the infected server will return the "Hacked by chinese !" webpage.
+
+After the 10 hours is up this thread will return w3svc.dll to its original state, including re-protecting memory.
+
+Execution after this proceeds to step 6 of the core worm functionality.
+
+
+Attack www.whitehouse.gov functionality
+---------------------------------------
+Sooner or later every thread within the worm seems to shift its attacking focus to www.whitehouse.gov.
+
+1. create socket and connect to www.whitehouse.gov on port 80 and send 100k byes of data
+CODEREF: seg000:000008AD WHITEHOUSE_SOCKET_SETUP
+
+Initially the worm will create a socket and connect to 198.137.240.91 (www.whitehouse.gov/www1.whitehouse.gov) on port 80.
+
+CODEREF: seg000:0000092F WHITEHOUSE_SOCKET_SEND
+If this connection is made then the worm will create a loop that performs 18000h single byte send()'s to www.whitehouse.gov.
+
+CODEREF: seg000:00000972 WHITEHOUSE_SLEEP_LOOP
+After 18000h send()'s the worm will sleep for about 4 and a half hours. It will then repeat the attack against www.whitehouse.gov (goto step one of Attack www.whitehouse.gov functionality).
+
+
+Appendix
+========
+This is associated information about the "Code Red" worm including how to stop the worm, commentary on the worm, and dispelling common misconceptions about this worm.
+
+
+How to secure your system from this .ida "Code Red" worm?
+---------------------------------------------------------
+Microsoft patch for this .ida vulnerability
+http://www.microsoft.com/technet/treeview/default.asp?url=/technet/security/bulletin/MS01-033.asp
+The worm spreads itself to new vulnerable systems via the .ida vulnerability. Applying this patch will keep your server from being infected. However, as stated earlier, because of the way the worm creates its list of "random" IP addresses to attack, you could still be affected by a high traffic overload denial of service.
+
+eEye Digital Security Advisory for .ida vulnerability
+http://www.eeye.com/html/Research/Advisories/AD20010618.html
+We initially discovered the .ida vulnerability which is being used by this worm as its infection vector. The above advisory details our research of that specific vulnerability. We worked with Microsoft to help them create a patch for the .ida vulnerability.
+
+SecureIIS - Application firewall, stops known and unknown IIS vulnerabilities.
+http://wwww.eeye.com/secureiis
+We do produce a product that protects IIS web servers from attack which is one of the reasons that we were so quick to research this worm. Funny enough in our initial testing we couldn't get the worm to work because we forgot we had SecureIIS enabled on the lab web server. heh.
+
+
+I have been infected by this worm what can I do?
+------------------------------------------------
+The first thing you must do is goto the Microsoft security site, as referenced above, and install the .ida patch ASAP. The worm will remain in memory until you reboot your server so make sure to reboot after installing the .ida patch.
+
+
+I think I am infected, how can I tell?
+--------------------------------------
+
+An infected system will show an increase in load (processor/network). It will also show a number of external connections (or attempts) to port 80 of random IP addresses. You can see this by doing a "netstat -an" from a MS-DOS prompt. Either way do not take any chances... if your system is missing the .ida patch then install it ASAP and reboot.
+
+
+How to setup your IDS to detect this specific worm?
+---------------------------------------------------
+The following is part of the packet data that is sent for this .ida "Code Red" worm attack:
+GET /default.ida?NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN%u9090%u6858%ucbd3%u7801%u9090%u6858%ucbd3%u7801%u9090%u6858%ucbd3%u7801%u9090%u9090%u8190%u00c3%u0003%u8b00%u531b%u53ff%u0078%u0000%u00=a  HTTP/1.0
+Just add that to your IDS signature database.
+
+
+What are some common misconceptions about the "Code Red" worm?
+--------------------------------------------------------------
+1. It connects to worm.com.
+	This worm only specifies www.worm.com in the initial HTTP GET request HOST: header and in the defaced page show on English (US) systems. This worm does _not_ connect to www.worm.com. This worm operates completely independent and can spread and infect systems without having a single point of failure. What that means is that this worm will be wild on the Internet until there is a _VERY_ high degree of systems that go and install the .ida patch.
+
+2. This worm is based off of hsj's "proof of concept" .ida exploit.
+	This worm is _NOT_ based off of hsj's "proof of concept" .ida exploit. His exploit code had no worm functionality. It was a simple exploit shell that had little to no implicit functionality. It was designed to prove to administrators the seriousness of this vulnerability so that they would install patches ASAP.
+
+
+Credits
+=======
+Ken Eichman of Chemical Abstracts Service
+Matthew Asham of Left Coast Systems Corp
+and a large handful of administrators who gave us much needed data to piece this together.
+
+Signed,
+eEye Digital Security
+T.949.349.9062
+F.949.349.9538
+http://eEye.com/Retina - Network Security Scanner
+http://eEye.com/Iris - Network Traffic Analyzer
+http://eEye.com/SecureIIS - Stop known and unknown IIS vulnerabilities

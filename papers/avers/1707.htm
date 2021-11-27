@@ -1,0 +1,392 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="1707_files/new_SFPS_style.css"><title>Antivirus Concerns in XP and .NET Environments</title></head><body style="margin: 5px;" bgcolor="#ffffff">
+<!-- start header -->
+
+<!-- end header -->
+
+<table border="0" cellpadding="5" cellspacing="0" width="600">
+	<tbody><tr>
+	<td>
+<div id="article">
+	<span class="headline">Antivirus Concerns in XP and .NET Environments</span><br>
+	<span class="author">Roger A. Grimes</span>, 
+	<span class="source"></span> 
+	<span class="date"></span><br>
+	<p class="firstParagraph">
+		
+	</p>
+	<span class="body">
+		<table border="0" cellspacing="0" width="100%">
+
+
+<tbody><tr>
+<td class="text">
+<p class="text">
+After Windows NT was released, it took virus writers five years to
+learn how to infect it. Windows NT 3.1 and the Win32 API were released
+in late 1993, but it wasn't until August 1998 that <a href="http://securityresponse.symantec.com/avcenter/venc/data/w32.cabanas.html" target="blank">W32.Cabanas</a>
+became the first NT virus by capturing coveted kernel mode access. .NET
+and some of Microsoft's other initiatives have not been as lucky. The
+purpose of this article is to discuss antivirus (AV) concerns with .NET
+and Microsoft Windows XP.
+</p><p class="text">
+<b>.NET Review</b>
+</p><p class="text">.NET was officially announced by Microsoft in July
+2000 at a Microsoft Professional Development Conference. Since then,
+what .NET has meant and the products involved have changed (and been
+renamed). .NET is an idea and a programming platform. The basic concept
+is an evolving extension of Microsoft's Object Linking Embedding (OLE)
+introduced back in the early days of Windows 3.0. OLE allows you to
+copy objects and data created in one application, like a spreadsheet
+graph, to other applications. OLE evolved into ActiveX objects, which
+are executables you can download and run within an Internet browser. </p><p class="text">
+.NET takes it two steps further by allowing the entire application to
+be hosted elsewhere (potentially allowing your environment to follow
+you, no matter where you go) and allowing different distributed
+software parts to make up one application. For example, your Windows
+desktop settings, your applications, and your data may be available to
+you where ever you compute. Running by an Internet kiosk in an airport?
+Just login and access your desktop and your data. Different
+applications will co-exist together, over the web, to bring you that
+integrated environment. One vendor will handle the login and
+authentication, another will store your data, and each of your
+applications will be made up of specifically customized components.
+I'll take two thesauruses, a math equation editor, and a French
+translation dictionary please. Hold the autocorrect.
+</p><p class="text">All of this magic happens because of new
+distributed .NET programming platform and a horde of new Microsoft
+developer tools and languages: C# (C Sharp), Visual J#, VB.NET, Visual
+Studio .NET, ASP.NET, increased reliance on XML, and a host of other
+new programming tools and platforms. </p><p class="text">
+The .NET execution framework reminds many people of Java's model. In
+order for a Java applet to run, it must be executed in a Java Virtual
+Machine (JVM) environment. .NET executables (regular Windows 32-bit
+Portable Executables) run on top of a similar environment called the
+Common Language Runtime or CLR. This is what you are installing when
+you install the Microsoft .NET Framework component. The CLR runtime
+engine performs security checks, does type checking, checks memory
+pointers, loads other component dependencies, and Just-In-Time (JIT)
+compiles the platform-independent source code into executable code. And
+further, there are intermediate source code representations (called
+Microsoft Intermediate Language or MSIL), class files, class loaders,
+and separate treatment between trusted and untrusted code. Untrusted
+code is sandboxed and prevented from accessing or risking system
+resources. This should sound a whole lot like Java to anyone. </p><p class="text">
+I bring up this comparison because .NET is more complex than Java, and
+complexity doesn't mix well with security. I often hear that Java is
+very secure because it has only had one widespread in-the-wild exploit.
+I love Java and the people who designed it did so with security as top
+priority. But the truth is that Java has had dozens of security holes
+patched since its release. Just because the white-hatters are the ones
+finding them doesn't make it a secure platform. Many Java exploits have
+been found by breaking assumptions between its mesh of interoperating
+components. See, in order for Java security to work, all the components
+must work 100% of the time. If one fails, they all fail. Because .NET's
+execution model is roughly similar, it isn't a hard stretch to believe
+that many holes will be found in .NET.
+</p><p class="text">
+<b>Web Services</b>
+</p><p class="text">Web services are the reason for all the complexity.
+Web services are XML applications, interfaces, and data, designed to be
+shared across multiple platforms around the Internet. A web service
+might be a single application hosted by an Application Service Provider
+(ASP) or it could be a combination of several different vendor's web
+services making up one application experience for the user. For
+example, consider a typical online transaction such as buying a pair of
+jeans. You may use one web service to authenticate your login to the
+manufacturer's web site, another to help get you the perfect fit, and
+another to determine delivery details and payments.
+</p><p class="text">Microsoft's Passport was the first example of a
+web service. Passport allows you to use a single login name and
+password for all web sites that support Passport authentication. It has
+tens of millions of users and it has had a series of security issues
+over the years. In one such instance in May of this year, it was
+discovered that a remote attacker could send a rather trivial,
+malicious URL to hotmail.com, be able to change anyone's password and
+take over the passport account. Maliciously altered Passport accounts
+can be used to buy goods online and to view confidential data. </p><p class="text">
+The idea that a single, widespread web service with a vulnerability
+that can immediately expose tens of millions of people to new threats
+has security experts paying attention. Today's conventional worms and
+viruses are infecting millions of computers in ten minutes. But a
+crafty web service worm could potentially conduct millions of falsified
+commercial transactions in a matter of minutes, something a MS-Office
+macro virus can't hope to do.
+</p><p class="text">The complexity and popular use of .NET's execution
+model worries security experts. The widespread sharing of applications,
+code, and data around the Internet is bound to culminate in interesting
+future exploits. Lucky for us so far, .NET exploits have been limited
+to some 'growing pain' problems with Microsoft Passport and a few worms
+and viruses.
+</p><p class="text">
+<b>.NET Viruses</b>
+</p><p class="text">
+There are already at least three .NET worms and viruses:  Donut, Serot and Sharpei.  <a href="http://www.cnn.com/2002/TECH/internet/01/13/donut.virus.idg/index.html" target="blank">Donut</a>,
+discovered on January 9, 2002, was the first .NET virus. Sent only to
+researchers as concept malware, the buggy Donut attempts to infect all
+the .EXE files in the current folder and up to 20 folders above it. It
+contains a never-executed payload display message and only a small
+amount of MSIL code. It is mostly normal 32-bit assembly language and
+the .NET files it infects are turned into regular looking PE files.
+Donut was the first .NET virus, but it only had a short lead on the
+others.
+</p><p class="text">
+Donut was quickly followed up by the <a href="http://securityresponse.symantec.com/avcenter/venc/data/w32.serot@mm.html" target="blank">Serot,</a>
+worm which arrives as an impersonated email from support@microsoft.com.
+It infects all .NET (MSIL) .EXE files on drive C: and will attempt to
+send itself to all email addresses in the Windows Address Book and
+those it finds in the Internet Explorer cache folder. Like the virus
+that followed it, Serot contains a VBS file that does the mass mailing
+effort. This appears to be easier to do in a script language for the
+crackers than in MSIL. Serot attempts to terminate antivirus processes
+on infected PCs and contains a plug-in architecture similar to the one
+successfully used in the <a href="http://www.symantec.com/avcenter/venc/data/w95.hybris.gen.html" target="blank">Hybris</a> worm.  
+</p><p class="text">
+Then the <a href="http://zdnet.com.com/2100-1105-850076.html" target="blank">Sharpei</a>
+virus was discovered on February 26, 2002. It arrives in email
+pretending to be a Microsoft patch, MS02-010.EXE. Written in C#, it
+drops a Sharp.VBS file that sends itself to all contacts in the
+Microsoft Outlook address book. After messages are sent, the evidence
+is deleted from the Sent Items folder in Outlook. </p><p class="text">
+Both the Sharpei and Donut viruses are direct action infectors, meaning
+they execute and do their damage upon running, and then exit until the
+next execution. All three "concept" programs have their problems and
+are unlikely to spread far. Antivirus researchers expect the future to
+bring memory-resident .NET viruses.
+</p><p class="text">Note: Peter Szor, with Symantec, did detailed
+write-ups on Donut and Sharpei for the Virus Bulletin publication. You
+can visit <a target="_blank" href="http://www.peterszor.com/">www.peterszor.com</a> or <a target="_blank" href="http://www.virusbtn.com/">www.virusbtn.com</a> for detailed reading on .NET infections.
+</p><p class="text">
+Because all three .NET malware programs are very buggy and require .NET
+to be installed, none spread very far outside research laboratories.
+But a crucial point, that malware writers are ready to exploit the .NET
+framework, has been proven. It won't be a five-year wait this time.
+Meanwhile, new features in other Microsoft platforms have raised
+concern among AV experts.
+</p><p class="text">
+</p><h2>Windows XP Concerns</h2>
+<p class="text">Windows XP has an improved model of NT's HAL, kernel,
+and user mode processes. Overall, with XP and Server 2003, Microsoft
+has increased the stability and security of their operating systems.
+True, Internet Explorer and Outlook continue to be the weak points in
+Microsoft's Trustworthy Computing initiative, but their core operating
+systems are becoming more secure out of the box. At the same time,
+Microsoft cannot resist (and consumers demand) new features, and XP has
+plenty of those. Some have been exploited, most haven't...yet. The next
+part of this article will briefly discuss the new feature XP sets that
+concern computer security analysts.
+</p><p class="text">
+<b>Windows Media Player</b>
+</p><p class="text">It used to be that you only had to worry about
+malicious executable content. Data was data was data, and it could not
+be launched as an attack. Times change and data content is often
+exploited in today's multimedia world. The content itself can be used
+maliciously, in a buffer overflow or through embedded script languages.
+Another common ruse is for the file to have a header claiming it is one
+type of file, but instead it contains something completely different,
+bypassing security-checking mechanisms. The multimedia program itself
+is often used for the attack. If the interface allows scripting or
+"skin" updating, rogue coders can instruct the program to do things
+that would otherwise be constrained by one of Internet Explorer's
+security zones.
+</p><p class="text">Microsoft's Windows Media Player is installed by
+default on every version of Windows. The original release of XP came
+with version 8.0, although anyone can upgrade to version 9 for free.
+Several holes have been found with the Windows Media Player over the
+last few years, and Microsoft has patched them when reported. The older
+versions of Windows Media Player have more security holes than the
+newer versions, but many people are hesitant to upgrade because of
+their bulkiness and the restrictive Digital Rights Management features
+of the newer versions. To be fair to Microsoft, let's not forget that
+Flash files, RealPlayer, Winamp, and just about every other popular
+media distribution content has be found to have one or more exploit
+holes over the past year. But network administrators would appreciate
+it if Windows Media Player was not installed by default and upgrades
+were not offered to end-users via Windows Update when it has been
+removed on purpose.
+</p><p class="text">
+<b>WebDAV (Web Digital Authoring and Versioning)</b>
+</p><p class="text">WebDAV is a feature installed on machines with XP
+or IIS 5, or greater. WebDAV is a HTTP protocol extension that allows
+users to publish and collaborate on documents that are stored on the
+web. Contrary to common belief, WebDAV is a popular open standard and
+not just a Microsoft feature. There have been a handful of exploits
+against Microsoft's implementation of WebDAV, including DoS and buffer
+overflows. The biggest problem with WebDAV is that it is installed and
+turned on by default when most people don't use it. It's a good,
+powerful collaboration tool, it just needs more security analysis and
+should not be turned on by default. WebDAV is not turned on by default
+on Server 2003 and IIS 6.
+</p><p class="text">
+<b>Remote Desktop Connection</b>
+</p><p class="text">Remote Desktop Connection allows one XP Pro PC to
+remotely connect and control another XP Pro PC with a PC Anywhere-style
+session. Remote Desktop, as it is called in the System Control Panel
+applet, uses Terminal Server's Remote Desktop Protocol (RDP) over TCP
+port 3389. It is not turned on by default, and so far has not been
+exploited. Still, knowing that it is installed as an inactive shell on
+every Windows XP computer, many of which are poorly secured, raises
+some concerns. </p><p class="text">
+<b>Remote Assistance</b>
+</p><p class="text">
+Unlike Remote Desktop Connection, Remote Assistance is turned on by
+default. It allows one XP user to invite, using either email or instant
+messaging, another XP user to have remote control access over their PC.
+Besides desktop control, the remote user can participate in chat
+sessions and transfer files. Invitations can be open for many days, and
+the default is 30 days. One of the main concerns is that there is no
+vetting mechanism to guarantee who is who in the remote assistance
+scenario. There exists the possibility that a malicious remote user may
+impersonate a tech support person and plant malicious files. While
+there have been no public exploits using Remote Assistance, AV experts
+worry about poorly password protected connections and buffer overflow
+attacks.
+</p><p class="text">
+<b>Internet Connetion Firewall (ICF)</b>
+</p><p class="text">Microsoft's first attempt at a desktop firewall is
+laudable, but comes up a bit short. ICF's main deficiency is that it
+lacks the ability to block outgoing port traffic. Many malware
+programs, once installed, will initiate outbound communications to
+continue their maliciousness. It could be a remote access trojan
+contacting its originating hacker to advertise the successful intrusion
+or an email worm with its own SMTP engine sending itself out around the
+world. In either of these two cases, because ICF allows all outgoing
+requests by default, the end-user will not be warned. Most of today's
+personal desktop firewalls would stop the request and alert the user. I
+hope if Microsoft continues to support ICF as firewall product that
+additional features sets will be added and its usefulness increased.
+ICF is also installed on Server 2003.
+</p><p class="text">
+<b>UPnP</b>
+</p><p class="text">Universal Plug and Play is another feature that
+should be turned off by default. UPnP allows a Windows machine to
+discover UPnP devices (ex. printers, scanners, etc.) on the network and
+to auto-configure their use. UPnP ended up being XP's first big
+publicly touted hole in December 2001. It was a buffer overflow and
+could be successfully exploited over the Internet, and if a firewall
+did not block UDP port 1900, it could be used to gain complete control
+of the machine. Luckily, UPnP is not even installed on Microsoft's
+latest offering, Windows 2003.
+</p><p class="text">
+<b>Simple File Sharing</b>
+</p><p class="text">XP the Home Edition has a feature called Simple
+File Sharing. When a folder is shared, it is immediately accessible to
+everyone on the local network and no specific permissions can be set.
+The folder can be set as read-only, but if changes are allowed, full
+control is given to anyone who can see the folder. AV experts worry
+that if a virus or worm gets loose on a home network with Windows XP
+Home, the malware will have no problem traveling machine to machine
+using network shares
+</p><p class="text">
+<b>Windows Messenger</b>
+</p><p class="text">Microsoft's Windows Messenger is installed by
+default on XP Pro and Home editions. Instant messaging (IM) clients
+open additional avenues for attacks. First, there have been many buffer
+overflow attacks against instant messaging clients, even when not
+turned on and only installed. Second, IM clients allow yet another
+avenue for the unsuspecting Joe User to receive malicious files. Many
+antivirus programs do not monitor IM file transfers. Third, there are
+malicious programs and viruses that specifically target Microsoft's IM
+clients. Although not attacked nearly as much as IRC and AOL's AIM
+clients, instant messaging is a technology being used before the
+security is all in place.
+</p><p class="text">
+<b>Office XP</b>
+</p><p class="text">Although only affiliated with Windows XP by name
+only, here's a good point to discuss a potential security problem in
+Microsoft Office XP. One of the most touted features of Office XP is
+its ability to read and write files in XML format. Macro viruses, which
+for several years were the number one infection type, have been mostly
+tamed by Office's macro security and antivirus software. XML has the
+potential to allow yet another round of new technology viruses into our
+Office documents. This is because XML is an everyman's language. An XML
+file is what you define it to be. Besides text, it can contain
+executable code, scripting, multi-media content, whatever programmers
+might want it to contain. As has been proven so many times in the past,
+flexibility and choice increases the risk of malicious exploitation. </p><p class="text">
+I'm sure there are some features I missed that may be exploited in the
+future, but at the moment these are the main ones garnering increased
+scrutiny by security professionals.
+</p><p class="text">
+<b>Windows XP Security</b>
+</p><p class="text">Before this paper ends, I want to point out that
+security has been strengthened in Windows XP, and much more so in
+Windows 2003. XP was the first Microsoft operating system to offer a
+firewall (ICF), and it's better than nothing for the consumer that
+isn't motivated to install another vendor's personal firewall product.
+XP has Encrypted File System (EFS), Windows File Protection (WFP),
+Certificate Services, IPSEC, Kerberos, Software Restriction Policies,
+and System Restore. All of these additional features fight malicious
+code and are welcome additions to the Microsoft family. All security
+reviews of Server 2003 have been positive. More unnecessary features
+have been turned off by default and file and registry settings
+strengthened. </p><p class="text">
+</p><h2>Summary</h2>
+<p class="text">
+The complexity of the .NET execution platform worries security experts.
+Once it is widespread, malicious coders will find holes in between the
+interoperable layers and then execute security exploits. The persuasive
+nature of web services means that one malware threat could quickly
+compromise a large number of machines. There are already three .NET
+viruses and worms. Although they are buggy, future viruses and worms
+will be able to perform without error as crackers begin to target .NET.
+</p><p class="text">Windows XP contains much new functionality, some
+of which has been exploited, and other features which have yet to be
+maliciously explored. XP also contains many new security features, like
+Windows File Protection and Internet Connection Firewall, which
+strengthens the OS's response to security threats.
+</p><p class="text">
+<i><a href="mailto:%22rogerg@cox.net%22">Roger A. Grimes</a>, CPA, MCSE
+(NT/2000), CNE (3/4), A+, has been fighting malicious code since 1987
+and is the author of Malicious Mobile Code: Virus Protection for
+Windows (O'Reilly). He is a frequent writer and speaker on computer
+security topics. His next book, Honeypots for Windows (APress) will be
+available near the end of the year.</i>
+
+<!-- OAS -->
+
+</p></td>
+</tr>
+
+<!-- If you have relevant links, remove the comment tag below it -->
+<!--
+
+<TR>
+<TD VALIGN="TOP" CLASS="rightcolumn">
+ <IMG SRC="/images/pixel.gif" WIDTH="110" HEIGHT="1" ALT=""><BR>
+ <DIV CLASS="rightcolumn">
+ <SPAN CLASS="text"><b>Relevant Links</b><BR><BR></SPAN>
+
+ <A CLASS="bulletlink" TARGET="_blank"
+HREF="***URL of relevant link***">***Name of link***</A><BR>
+<SPAN CLASS="text"><i>
+***name of link author (person or company)***
+<BR><BR></i></SPAN>
+
+
+ </DIV>
+</TD>
+</TR>
+
+-->
+<!-- If you have relevant links, remove the comment tag above it -->
+
+</tbody></table>
+
+	</span>
+</div>
+	</td>
+	</tr>
+</tbody></table>
+
+			<!-- End Content -->
+<br>
+<p style="color: rgb(102, 102, 102); font-size: 8pt;" align="center"><a href="http://www.securityfocus.com/privacy">Privacy Statement</a><br>Copyright 2005, SecurityFocus</p>
+
+</body></html>

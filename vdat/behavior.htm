@@ -1,0 +1,254 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Behavior Blocking: Dynamic Code Analysis</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="BehaviorBlockingDynamicCodeAnalysis"></A><B><FONT COLOR="#004080"><FONT SIZE=+3>Behavior
+Blocking<BR>
+Dynamic Code Analysis</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>If we cannot realistically expect to detect viruses with scan strings
+because of their proliferation, because of the increase in polymorphics,
+etc. then we must find some other way of detecting them. Ideally, users
+should strive to buy a product that prevents viruses from infecting rather
+than merely detecting them after they have infected. This kind of protection
+is available with behavior blocking. </P>
+
+<P><A NAME="Definition"></A><B><FONT SIZE=+1>Definition</FONT></B></P>
+
+<P>Behavior blocking is defined as the process of dynamic code analysis.
+The sequence of actions of a program are monitored to determine if the
+actions are consistent with the behavior of viruses. Because a blocker
+cannot merely monitor action, but must prevent certain actions, the smart
+behavior blocker must employ some technique to prevent the actual results
+of a sequence of steps. (For instance, the behavior blocker could permit
+a program to execute in a &quot;virtual machine&quot; until it had determined
+that the sequence of actions was legitimate or was virus-like; if legitimate,
+then the actions could be echoed to the real machine. The virtual machine
+could include virtual CPUs, virtual drives, etc.) The techniques used by
+one behavior blocker may differ from those used by another, but the underlying
+principle will be the same: a sequence of code execution will be monitored
+until it is determined that the sequence is safe or is harmful; if harmful,
+the code will not be permitted to actually execute and the user will be
+notified. </P>
+
+<P><A NAME="HistoryoftheIdea"></A><B><FONT SIZE=+1>History of the Idea</FONT></B></P>
+
+<P>The idea of behavior blocking is not entirely new. Andy Hopkins was
+one of the first to offer a behavior blocker named Bombsqad, a TSR which
+would alert the user whenever a boot sector was written to, a file was
+written to, and so on. It simply watched the usage of DOS interrupts, and
+when a designated event took place, stopped the event and alerted the user,
+awaiting permission to continue. The problem with his approach was that
+it could not distinguish between a virus and a user. So the user would
+attempt to write to a file, and the warning would be triggered. After a
+number of false alarms the user would eventually abandon the behavior blocker.
+</P>
+
+<P>Bombsqad is no longer used. Many detractors of the technique assumed
+that behavior blocking had to cause false alarms, and dismissed the approach.
+Today, behavior blocking is not widely accepted as an approach, in part
+because of the inadequacy of the early demonstrations of it. </P>
+
+<P>A number of products come with components that could be considered to
+be behavior blockers. For example, products from Thunderbyte and Computer
+Healthcare include resident file attribute monitors. If a virus is to infect
+an executable file (in a &quot;parasitic&quot; way), it can do so only
+if the file attributes permit it. If a file is marked read-only, then the
+virus must change this attribute to read-write before infecting. Of course,
+viruses have been clearing file attributes, infecting, then restoring attributes
+since the Jerusalem virus (1987). A resident attribute monitor can intercept
+the process of clearing attributes, or the process of changing the read-only
+attribute to read-write, or the process of changing any attribute. It can
+be selective or clumsy, be programmed to permit exceptions (such as changes
+caused by ATTRIB) or not, and can even be self-learning (let the user come
+up with an attribute changer of their own, a self-learning resident attribute
+monitor can be told to ignore these kinds of changes, and won't bother
+the user again when this same program is used to change other attributes.)
+</P>
+
+<P>Another approach to behavior blocking can be found in Norton's resident
+scanner, which intercepts Ctrl-Alt-Del, and checks the floppy drives for
+boot viruses. If it finds the floppy infected, it does not permit the warm
+reboot, but rather warns the user that the disk is infected. This effectively
+prohibits a reboot from infecting a machine with a boot virus, &quot;blocking&quot;
+the infection. </P>
+
+<P><I>Smart</I> behavior blocking has been in use worldwide for several
+years. One such product, NVC.SYS, was developed by RE Solutions in Malaysia,
+and marketed in Asia by Extol and elsewhere by Norman Data Defense Systems.
+It is a device driver is able to &quot;see&quot; the difference between
+an uninfected TSR (such as IPX or NETX) loading into memory and an infected
+TSR loading into memory. It is able to see the difference between the behavior
+of a database program which writes bytes to a database, and a virus which
+writes bytes to an executable. Another smart behavior blocker that has
+been on the market for many years is FileGuard, part of the Avast anti-virus
+package from ALWIL Software of Prague, the Czech Republic. </P>
+
+<P><A NAME="HowSmartBehaviorBlockingWorks"></A><B><FONT SIZE=+1>How Smart
+Behavior Blocking Works</FONT></B></P>
+
+<P>A <I>smart</I> behavior blocker is able to disentangle the complex behavior
+of a virus from the complex behavior of a user running complex software.
+The basic design of such an instrument requires that viruses be very well
+understood by the designer, and that detailed sequences of behavior, not
+simple coarse behaviors, be examined and analyzed. The designer of a smart
+behavior blocker must use statistical analysis to determine the probabilities
+that particular behavior sequences are those of a virus or of a user. A
+coarse behavior blocker might simply stop writing to a COM file, which
+may be an entirely valid action (e.g., some MS-DOS patches write directly
+to executables). A smart behavior blocker might reason as follows: </P>
+
+<TABLE BORDER=2 bordercolor="#000000" >
+<TR>
+<TD width="367" bgcolor="#FFFFFF"><B><FONT COLOR="#FFFFFF">Action</FONT></B>
+</TD>
+
+<TD width="367" bgcolor="#FFFFFF"><B><FONT COLOR="#FFFFFF">Comment</FONT></B>
+</TD>
+</TR>
+
+<TR>
+<TD width="367" bgcolor="#FFFFFF">A process opens a file of type &quot;COM&quot;
+</TD>
+
+<TD width="367" bgcolor="#FFFFFF">Nothing wrong so far.</TD>
+</TR>
+
+<TR>
+<TD width="367" bgcolor="#FFFFFF">The process reads to the end of the file
+and then adds to the end of it, increasing its size. </TD>
+
+<TD width="367" bgcolor="#FFFFFF">Still nothing wrong, but suspicious.
+</TD>
+</TR>
+
+<TR>
+<TD width="367" bgcolor="#FFFFFF">The process returns to the beginning
+of the file and patches the code to point to the segment that was appended
+to the file. </TD>
+
+<TD width="367" bgcolor="#FFFFFF">Definitely something wrong. Like virus
+activity, and must be stopped, reversed, and reported. </TD>
+</TR>
+</TABLE>
+
+<P><A NAME="AdvantagesofBehaviorBlocking"></A><B><FONT SIZE=+1>Advantages
+of Behavior Blocking</FONT></B></P>
+
+<P>Behavior blocking has its advantages: </P>
+
+<UL>
+<LI>Because the behavior blocker prevents the virus from infecting, it
+eliminates the need for removal from all but the original infected file.
+</LI>
+
+<LI>A behavior blocker can have a long shelf-life. Advanced algorithms
+can be used so that upgrades need not be done with the frequency of scanner
+updates. Because the behavior blocker does not scan for specific viruses
+but instead looks at the program's behavior, it need not be upgraded each
+time a new virus is discovered. </LI>
+</UL>
+
+<P><A NAME="BehaviorBlockingvResidentScanning"></A><B><FONT SIZE=+1>Behavior
+Blocking v. Resident Scanning</FONT></B></P>
+
+<P>Behavior blockers are sometimes confused with resident scanners. In
+fact, they are completely different technologies. Resident scanners are
+scanners that stay in memory, and scan a file or boot area when triggered
+by some event. Therefore, the problems with resident scanners are the same
+as those we have already enumerated for scanners. In addition, resident
+scanners necessarily occupy large amounts of memory, something most users
+cannot spare these days. To cut down on memory consumption, most resident
+scanners do not contain any code to detect polymorphic viruses. This is
+not surprising the code required would exceed the amount of memory a user
+is willing to allocate to such a program, and the resident scanner would
+slow the machine far too much. But a smart behavior blocker can detect
+and stop all polymorphic viruses at the time they try to go resident or
+infect a file. After all, a resident polymorphic virus goes into memory
+exactly the way a non-polymorphic virus does; a polymorphic's infection
+process is exactly the same as a non-polymorphic's process. </P>
+
+<P>Smart behavior blocking's effectiveness is shown by Norman tests, in
+which only 12 viruses of 1,000 new 1994 viruses (&lt;1.2%) got past the
+1993 version of the Norman device driver. In comparison, the most recent
+versions of traditional non-resident scanners missed more than 20% of these
+viruses. </P>
+
+<P><A NAME="FunctionsofaBehaviorBlocker"></A><B><FONT SIZE=+1>Functions
+of a Behavior Blocker</FONT></B></P>
+
+<P>What might a behavior blocker be asked to do? Thinking of &quot;behavior&quot;
+alone, here is a short list: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Prevent a virus from going resident by loading low and
+allocating memory.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Prevent a virus from going resident by loading to the
+top of conventional memory and not allocating memory.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Prevent a virus (or any other code) from writing to the
+master boot sector or boot sector.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Prevent a virus from adding its code to programs, whether
+resident or direct action.</FONT> </LI>
+
+<LI><FONT SIZE=-1>Prevent a virus from tunneling around anti-virus or other
+software in an effort to gain control of the machine without detection.</FONT>
+</LI>
+</UL>
+
+<P>If we did not split hairs, and permitted a resident behavior blocker
+to do other forms of anti-virus work, and wished it to be generic (working
+with all viruses), then we could add to this list of functions: </P>
+
+<UL>
+<LI><FONT SIZE=-1>Determine if a boot virus is resident at the time the
+behavior blocker is loaded, and optionally disable the resident code.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>Determine if a floppy disk is infected with some boot
+virus, and if so, clean it.</FONT> </LI>
+</UL>
+
+<P>We might also expect that the behavior blocker would signal users audibly
+and visually (whether in DOS or Windows), would recommend the proper course
+of action, would record the event in a log, and would transmit relevant
+information to a server if the user is on a network. It happens that all
+of these capabilities are provided by the behavior blockers of ALWIL Software
+and Norman Data Defense Systems. </P>
+
+<P><A NAME="DrawbacksofBehaviorBlocking"></A><B><FONT SIZE=+1>Drawbacks
+of Behavior Blocking</FONT></B></P>
+
+<P>Even smart behavior blocking may never be always smart enough. Some
+programs, for instance, write to themselves in a virus-like way. Installation
+and upgrade routines may patch existing files in a virus-like way. WINCIMand
+other communication programs may create temporary marker files when a batch
+download is requested, then dribble bytes into these existing files during
+a download, in a virus-like way. Programmers compiling to a file which
+already exists may overwrite the existing file in a virus-like way. Access
+control products and products which use stealth boot virustechnology to
+redirect the view of the master boot sector (such as MicroHouse's EZDrive
+and OnTrack's Disk Manager) can look like they are stealth boot viruses
+in memory. Odd boot sectors on a floppy can be detected as boot viruses
+by generic examiners, and get an unneeded cleaning. </P>
+
+<P>In the end, whether a behavior blocker works well for a user, without
+false alarms, depends on exactly what other software they are using. In
+the future, the very, very smart behavior blocker will probably be able
+to deal with exceptions, so that certain pre-defined or user-defined events
+do not trigger it. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

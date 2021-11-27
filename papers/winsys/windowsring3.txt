@@ -1,0 +1,1244 @@
+                           Windows Ring 3 Level
+                           ====================
+
+1.INTRODUCTION
+--------------
+Programmer sous Windows... Voilà une phrase qui paraît simple ajourd'hui !
+Quand on entend cela, en réfléchissant 10 secondes, on pense Visual Basic,
+Delphi,...
+Ces languages sont des languages qui permettent de programmer des
+applications, des utilitaires. C'est une programmation qui est principalement
+axée sur l'algorithmique et l'interface, et qui est finalement assez portable
+d'un système à l'autre. Nous allons ici essayer d'aborder des notions bien
+utiles à un autre style de programmation, beaucoup plus orienté système.
+
+Windows est un système qui a été concu à la base pour les processeurs de
+type 386 Intel et supérieurs. Pourquoi ?
+Parce que le 386 est le 1er processeur Intel à offrir un mode protégé bien
+concu et offrant de nouvelles et réelles possibilités. Le 286 possédait bien
+un mode protégé, mais ce mode était finalement très limité.
+Qu'est-ce que le mode protégé ? Le mode protégé un est mode du processeur, qui
+permet principalement:
+- la protection:
+   Elle permet à un programmes de s'exécuter en  parallèle avec d'autres, sans
+   pour autant pouvoir aller écrire dans la mémoire réservée aux autres
+   programmes, etc...
+- la commutation:
+   La commutation permet au système de passer d'une tâche à l'autre, ce qui
+   est la base des systèmes multitâches.
+- le status priviligié:
+   Cela permet au système d'exploitation d'être "au dessus" des autres
+   programmes, et donc de pouvoir les contrôler, leur interdire certaines
+   actions, certaines instructions, etc...
+- la mémoire virtuelle:
+   Elle permet aux programmes d'utiliser plus de mémoire qu'il n'y en a
+   réellement, grâce à des principes de swap file, et de mapping.
+
+Le mode protégé propose 4 niveaux de protections. Windows en utilise 2:
+- le Ring 3 Level:
+   Aussi appelé "User Mode", il est utilisé par toutes les applications
+   courantes sous Windows. Ce niveau permet à un programme de s'exécuter, sans
+   se préoccuper des autres programmes. Pour accéder aux fonctions systèmes,
+   le programme doit utiliser les APIs, pour justemment sortir de ce Ring 3.
+- le Ring 0 Level:
+   Il est aussi appelé "Supervisor mode", et est utilisé exclusivement par le
+   kernel et les drivers (fichiers VXD,386,...). Il n'y a aucune restriction à
+   ce niveau.
+
+Dans cet article, nous allons parler un peu plus en détail du Ring 3, associé
+au système Windows. Cela va nous donner un mélange d'Assembleur, de plusieurs
+notions particulières à Windows, de mode protégé, et de normes et structures
+définies par Microsoft. Nous verons ensuite quelques APIs très pratiques se
+rapportant à ces sujets, et qui pourraient éventuellement vous aider dans la
+réalisation de programmes divers, mais orientés système bien sûr !
+
+
+2.L'ASSEMBLEUR 32 BITS
+----------------------
+La 1ère nouveauté à bien comprendre est la notion de 32 bits. Cette notion
+paraît simple, on double la capacité des registres du processeur. Mais
+derrière cette notion, toutes une série d'avantages indirects apparaissent.
+Sur 16 bits, on peut représenter 65535 valeurs. Sur 32 bits, on peut en
+représenter 65535*65535 ce qui fait a peu près 4.3 milliards de valeurs.
+Les registres 16 bits AX,BX,CX,DX,SI,DI,SP,BP,IP et Flags voient ainsi leur
+capacité augmenter et passer à 32 bits, devenant ainsi les registres
+EAX,EBX,ECX,EDX,ESI,EDI,ESP,EBP,EIP,EFlags. Par exemple, si nous considérons
+le registre EAX, il se décompose maintenant de la manière suivante:
+
+<--------------- EAX --------------->
+		  <------- AX ------>
+
++-----------------+--------+--------+
+|                 |   AH   |   AL   |
++-----------------+--------+--------+
+
+<-poids forts         poids faible ->
+
+Le 1er avantage des registres 32 bits est au niveau des calculs. Tout les
+calculs en 32 bits peuvent désormais se faire dans un registre sans problème,
+même avec des nombres extrêmement grands.
+Le 2ème avantage est au niveau des adresses mémoires. En 16 bits, le grand
+problème était qu'avec un registre, on ne pouvait adresser que des blocs de
+mémoire de 65535 octets, c'est à dire 64 Kb. En 32 bits, étant donné que nous
+pouvons adresser 4.3 milliards de valeurs, nous avons accès sans utiliser de
+registres de segments à 4.3 Gb de mémoire.
+Le 3ème avantage est au niveau des opérations utilisant le registre compteur
+(ECX). Le registre ECX est un registre qui est très utilisé par toute une série
+d'instructions, par exemple les instructions LOOP, REP, etc... Ces
+instructions deviennent vraiment puissantes lorsqu'elles sont utilisées en
+mode 32 bits.
+Le 4ème avantage est au niveau de la rapidité. En effet, proportionnellement,
+si vous devez remplir un bloc mémoire de N bytes en exécutant N boucles qui
+écrivent chaque fois le contenu d'un registre 8 bits, vous exécuterez cette
+tâche presque 4 fois plus vite en exécutant (N/4) boucles qui écriraient
+chaque fois le contenu d'un registre de 32 bits.
+
+L'assembleur 32 bits voit aussi apparaître plusieurs nouvelles instructions,
+ainsi que plusieurs nouveaux adressages.
+REMARQUE: Certaines de ces instructions, il est vrai, existait déjà sur 286.
+Je vous en cite ici quelques un(e)s:
+JMP registre  ;sauts indirects via la valeur d'un registre
+CALL registre
+ENTER         ;instructions pour faciliter la gestion de BP et de variables
+LEAVE         ; locales dans les fonctions
+STOSW         ;instructions de gestion des chaînes de mots 32 bits
+LODSD
+MOVSD
+...
+
+ATTENTION !!! En mode protégé, les registres CS,SS,DS et ES ne représentent
+plus des adresses segments comme en mode réel. Il est interdit d'y toucher,
+c'est le rôle du kernel.
+
+
+3.PROCESS ET THREADS
+--------------------
+Tout d'abord, il nous faut bien distinguer tout les "types" de programmes
+Windows qui existent à l'heure actuelle:
+- Win16:
+   Ce sont les programmes 16 bits pour Windows 3.x. Ces programmes
+   fonctionnent toujours sous Windows 9x, mais leur structure tout à fait
+   différente et dépassée ne nous intéressent pas ici.
+- Win32s:
+   Ce sont les programmes 32 bits pour Windows 3.x. Ces programmes
+   fonctionnent plus ou moins selon le même principe que les programmes 32
+   bits sous Windows 9x, mais étant donné les nombreux changements dans
+   l'interface et dans le système entre ces 2 versions, ils sont beaucoup
+   moins performants que les véritable programmes Win32.
+- Win32:
+   Ce sont les programmes 32 bits pour Windows 9x, dont nous allons discuter
+   dans cet article.
+
+Qu'est-ce qu'un process ?
+Quand vous lancez un programme sous Windows, le système va charger le fichier
+exécutable du disque, et le place dans la mémoire grâce à la méthode des MMF,
+qui sera décrire au chapître 7. Un process est simplement un programme en état
+d'exécution: c'est le code du programme, mais aussi les variables, l'état des
+registres, et toute une série d'autres paramètres qui dépendent de
+l'exécution, comme les paramètres d'environnements, l'emplacement en mémoire,
+etc... Tout cet ensemble forme un process.
+On dit que Windows est multitâche, parce que Windows permet à plusieurs
+process de s'exécuter en parallèle. Le processeur n'exécute qu'une instruction
+à la fois, mais c'est le kernel qui s'occupe de "fournir" au processeur les
+instructions du bon process à exécuter au bon moment, de sauvegarder les
+résultats (les registres,...), et de donner la main à un autre process, et
+ainsi de suite...
+
+On dit aussi que Windows est multithread. De quoi s'agit-il ?
+En fait, un process lui-même peut exécuter plusieurs tâches à la fois.
+Ces tâches s'apparentent à des fonctions, qui peuvent s'exécuter en
+parallèle à l'intérieur d'un process. On appelle ces fonctions des threads.
+
+Pour être plus correct, un process Windows représente plutôt la structure
+physique et les données au moment de l'exécution (code, mémoire,
+environnement, pile, ...), tandis qu'une thread représente une exécution
+(donc principalement des valeurs de registres). Les registres d'une thread
+ne forment pas une énorme quantités de bytes. Ils sont stockés dans une
+structure que l'on appelle le contexte de la thread.
+C'est une structure interne à Windows, dont on peut trouver la déclaration
+dans le fichier WINNT.H du Microsoft SDK. C'est une des rares structures
+de Windows qui dépend en grande partie du processeur (registres différents
+sur une plate forme Intel ou Alpha par exemple).
+D'autres informations propres à la thread (informations de gestion d'erreur,
+...) sont stockées dans une autre structure, appelée Thread Information Block.
+Ces informations sont stockées à l'adresse FS:0. Au contraire du contexte,
+elles peuvent être modifiées sans problèmes par la thread elle-même.
+
+Donc, quand nous lancons un programme, Windows crée un process, en réservant
+une zone mémoire, y copie toute une série de bytes (données, code,
+environnement,...), puis Windows crée une thread. C'est la thread principale,
+celle qui commence l'exécution du programme. Donc, tout process se compose
+d'au moins une thread, sinon ce n'est pas un process, c'est un espace mémoire
+non exécutable. Ensuite, suivant la manière dont le programme est concu et
+dont on l'utilise, cette thread va peut-être avoir besoin de créer une autre
+thread. Windows va alors préparer un nouveau contexte pour cette thread, y
+stocker une valeur originale pour EIP, créer une nouvelle pile en donnant à ce
+contexte une nouvelle valeur à ESP et enfin, rajouter ce contexte à la liste
+des threads à exécuter. Les 2 threads vont s'exécuter dans le même espace
+mémoire réservé au process, vont partager les mêmes variables globales, les
+mêmes environnements, etc... 
+Il existe un moyen d'aller soi-même écrire dans le contexte d'une thread, nous
+analyserons cette méthode au chapître 8.
+
+Par contre, entre 2 process, il n'existe pas de moyen direct (REMARQUE:
+j'entend par moyen direct une série d'instructions assembleur en Ring 3)
+pour un process d'accéder à la mémoire de l'autre process, sauf dans des cas
+bien précis prévus à l'avance, et qui sont de plus en plus rares avec
+l'apparition des threads. Il existe cependant une méthode détournée, dont nous
+parlerons dans le chapître 8.
+
+
+4.LA MEMOIRE VIRTUELLE
+----------------------
+Nous l'avons cité plus haut, la mémoire virtuelle est un des avantages
+déterminants du mode protégé par rapport au mode réel. En fait, Windows gère
+la mémoire physique de notre ordinateur, de manière à la faire apparaître au
+process comme un gros bloc de mémoire de 4.3 Gb. En réalité, Windows
+effectue du mapping, c'est à dire qu'il donne l'impression au process que ses
+4.3 Gb de mémoire se suivent et sont présents, alors qu'en fait, ces 4.3 Gb de
+mémoire sont disséminés un peu partout, aussi bien en mémoire physique que sur
+le disque, ou bien même partagés avec d'autres programmes.
+
+En fait, Windows gère la mémoire physique par petits blocs de 4 Kb.
+Chacun de ces blocs possède un indicateur qui indique si le bloc est présent
+en mémoire physique, et un ensemble de flags qui indique les possibilités
+d'accès au bloc. Un bloc peut être accessible en exécution, en lecture, ou
+en écriture. Ces 3 possibilités peuvent être combinées.
+Quand le process a besoin d'accéder à un bloc, Windows regarde si le bloc est
+en mémoire physique. S'il y est, il n'y a pas de problème. Si le bloc n'y est
+pas, Windows il essaie de charger le bloc dans une zone libre de la mémoire
+physique, pas nécessairement dans une zone contigue. S'il n'y a plus de place
+en mémoire, Windows essaie de libérer un bloc non accessible en écriture, qui
+n'est plus utilisé depuis longtemps (Windows vérifie cela grâce à un compteur
+qui est décrémenté à intervalle régulier quand le bloc de code n'est pas
+exécuté). S'il n'y a en a plus, Windows libère alors un bloc qui est
+accessible en écriture et qui n'a plus été utilisé depuis longtemps, mais
+l'écrit dans le swap file (puisque c'est un bloc modifiable en écriture, il
+a pu être modifié, et donc son contenu ne peut pas être rechargé tel quel
+du disque).
+
+Tout cela permet donc au process de croire qu'il dispose de 4.3 Gb de mémoire.
+Une fois cet espace mémoire virtuel réservé par Windows, Windows va devoir
+préparer cet espace à accueillir le process. Windows va charger par la méthode
+des MMF décrite au chapître 7 le fichier exécutable du programme (fichier PE,
+voir chapître 5), ainsi que toutes les DLLs dont le programme va avoir besoin
+(nous parlerons des DLLs au chapître 6).
+
+Voici enfin pour terminer ce chapître la structure de cette mémoire mappée:
+- de 00000000h à 00000FFFh:
+   Ces 4 Kb sont utilisés par compatibilité avec les programmes Win16 et les
+   programmes DOS. Ils sont inacessibles par le process, provoquant une
+   exception s'il un accès est tenté.
+- de 00001000h à 003FFFFFh:
+   Ces 4 Mg sont aussi utilisés par compatibilité, mais ils sont accessibles
+   par le process. Il est cependant peu recommandé d'aller y écrire sans
+   raison particulière.
+- de 00400000h à 7FFFFFFFh:
+   Ces 2 Gb représente l'espace privé assigné au process. C'est à dire que
+   c'est dans cet espace que vont se retrouver entre autres, le fichier
+   exécutable du programme, les piles,...
+- de 80000000h à BFFFFFFFh:
+   Ce bloc de 1 Gb est partagé par tout les process Win32. Cette zone de
+   mémoire est en fait utilisée par Windows pour mapper toutes les allocations
+   mémoires (allocations sur le tas, les DLLs comme KERNEL32.DLL,...)
+- de C0000000h à FFFFFFFFh:
+   Ce bloc de 1 Gb contient le système d'exploitation (drivers, structures,
+   ...). Malheureusement sous Windows 9x, cette zone est accessible par les
+   process, à la différence de Windows NT, ce qui est une des causes pour
+   lesquelles Windows 9x est beaucoup moins sécurisé.
+
+
+5.LES FICHIERS PE
+-----------------
+Depuis la version 4.0 (95), Windows a introduit un nouveau format pour les
+fichiers exécutables: le format PE (Portable Executable).
+Le fichier PE commence par un classique header Dos (MZ). Ce header est
+conservé par compatibilité, et sert surtout à afficher un message d'erreur si
+le programme est lancé sous une vieille version de Dos.
+REMARQUE: dans les schémas ci-dessous, les notations "offset" représente un
+déplacement dans le fichier, tandis que les notations "RVA" indique une
+Relative Virtual Address, c'est à dire un déplacement à partir de l'adresse
+de base du process. Cependant, vu que le fichier PE est mappé dans la mémoire
+du process à partir de l'adresse de base, cette RVA est aussi équivalente à un
+offset dans le fichier.
+
+Header MZ:
+ OFFSET BYTES     CONTENU
++------+-----+----------------------------------------------------------------
+| +00  |  2  | signature 'MZ'= 4Dh 5Ah
++------+-----+----------------------------------------------------------------
+| +02  |  2  | nombre bytes dernière page du fichier (1 page=512 bytes)
++------+-----+----------------------------------------------------------------
+| +04  |  2  | nombre pages du fichier
++------+-----+----------------------------------------------------------------
+| +06  |  2  | nombre de relocations DOS
++------+-----+----------------------------------------------------------------
+| +08  |  2  | taille du header en paragraphes (1 paragraphe=16 bytes)
++------+-----+----------------------------------------------------------------
+| +0A  |  2  | nombre minimum de paragraphes à ajouter en fin de mémoire
++------+-----+----------------------------------------------------------------
+| +0C  |  2  | nombre maximum de paragraphes à ajouter en fin de mémoire
++------+-----+----------------------------------------------------------------
+| +0E  |  2  | SS (nécessite une relocation DOS)
++------+-----+----------------------------------------------------------------
+| +10  |  2  | SP
++------+-----+----------------------------------------------------------------
+| +12  |  2  | checksum
++------+-----+----------------------------------------------------------------
+| +14  |  2  | IP
++------+-----+----------------------------------------------------------------
+| +16  |  2  | CS (nécessite une relocation DOS)
++------+-----+----------------------------------------------------------------
+| +18  |  2  | offset table des relocations (40h => fichier PE)
++------+-----+----------------------------------------------------------------
+| +1A  |  2  | numéro d'overlay
++------+-----+----------------------------------------------------------------
+
+Ce header MZ est complété par quelques nouveaux champs, de manière à former
+un header MZ Etendu.
+
++------+-----+----------------------------------------------------------------
+| +1C  |  4  | RESERVE
++------+-----+----------------------------------------------------------------
+| +20  |  2  | RESERVE
++------+-----+----------------------------------------------------------------
+| +22  | 26  | RESERVE
++------+-----+----------------------------------------------------------------
+| +3C  |  4  | offset du nouveau header PE ou 0
++------+-----+----------------------------------------------------------------
+
+Le double mot à l'offset 3Ch du header MZ indique donc l'offset du header PE.
+
+Header PE:
++------+-----+----------------------------------------------------------------
+| +00  |  4  | signature 'PE..' (= 50h 45h 00h 00h)
++------+-----+----------------------------------------------------------------
+| +04  |  2  | CPU requis: 0=inconnu,14Ch=386,14Dh=486,14Eh=pentium,...
++------+-----+----------------------------------------------------------------
+| +06  |  2  | nombre de sections
++------+-----+----------------------------------------------------------------
+| +08  |  4  | date et heure
++------+-----+----------------------------------------------------------------
+| +0C  |  4  | offset d'une table des symboles (pour debuggers) ou 0
++------+-----+----------------------------------------------------------------
+| +10  |  4  | nombre de symboles (pour debuggers)
++------+-----+----------------------------------------------------------------
+| +14  |  2  | taille du header optionnel (habituellement 0Eh)
++------+-----+----------------------------------------------------------------
+| +16  |  2  | flags selon chaque bit:
+|      |     | bit  0: pas d'information de relocation
+|      |     | bit  1: 1=exécutable,0=objet/librairie
+|      |     | bit  2: RESERVE objet/librairie
+|      |     | bit  3: RESERVE objet/librairie
+|      |     | bit  4: 1=besoin de RAM
+|      |     | bit  8: 1=nécessite 32 bits
+|      |     | bit  9: 1=pas d'information de debugging
+|      |     | bit 10: 1=ne pas exécuter d'une disquette ou disque amovible
+|      |     | bit 11: 1=ne pas exécuter d'un réseau
+|      |     | bit 12: 1=fichier système
+|      |     | bit 13: 1=DLL
+|      |     | bit 14: 1=nécessite uniquement un CPU
++------+-----+----------------------------------------------------------------
+
+Ce header PE est lui aussi complété par un header optionnel, dont la taille
+est donnée dans le champ +14 du header PE.
+
+Header PE optionnel:
++------+-----+----------------------------------------------------------------
+| +18  |  2  | signature 0Bh 01h
++------+-----+----------------------------------------------------------------
+| +1A  |  1  | version majeure du Linker ou 0
++------+-----+----------------------------------------------------------------
+| +1B  |  1  | version mineure du Linker ou 0
++------+-----+----------------------------------------------------------------
+| +1C  |  4  | taille du code (.code) +++
++------+-----+----------------------------------------------------------------
+| +20  |  4  | taille des données initialisées (.data,.rdata)
++------+-----+----------------------------------------------------------------
+| +24  |  4  | taille des données non initialisées (.bss)
++------+-----+----------------------------------------------------------------
+| +28  |  4  | EIP initial
++------+-----+----------------------------------------------------------------
+| +2C  |  4  | adresse de base du code dans la mémoire du process
++------+-----+----------------------------------------------------------------
+| +30  |  4  | adresse de base des données dans la mémoire du process
++------+-----+----------------------------------------------------------------
+| +34  |  4  | adresse de base de l'image dans la mémoire du process
+|      |     | (habituellement 00400000h). Si Windows peut charger le
+|      |     | programme à cette adresse (habituellement), il n'y aura pas de
+|      |     | relocation.
++------+-----+----------------------------------------------------------------
+| +38  |  4  | alignement de l'objet
++------+-----+----------------------------------------------------------------
+| +3C  |  4  | alignement du fichier (souvent 1000h=4096d)
++------+-----+----------------------------------------------------------------
+| +40  |  2  | version majeure de l'OS requise (habituellement 4) ou 0
++------+-----+----------------------------------------------------------------
+| +42  |  2  | version mineure de l'OS requise (habituellement 0) ou 0
++------+-----+----------------------------------------------------------------
+| +44  |  2  | version majeure du programme ou 0
++------+-----+----------------------------------------------------------------
+| +46  |  2  | version mineure du programme ou 0
++------+-----+----------------------------------------------------------------
+| +48  |  2  | version majeure du Subsystem requise (habituellement 4)
++------+-----+----------------------------------------------------------------
+| +4A  |  2  | version mineure du Subsystem requise (habituellement 0)
++------+-----+----------------------------------------------------------------
+| +4C  |  2  | version majeure de Win32 requise ou 0
++------+-----+----------------------------------------------------------------
+| +4E  |  2  | version mineure du Win32 requise ou 0
++------+-----+----------------------------------------------------------------
+| +50  |  4  | taille du programme (somme des sections)
++------+-----+----------------------------------------------------------------
+| +54  |  4  | taille de tout les headers
++------+-----+----------------------------------------------------------------
+| +58  |  4  | checksum (si driver NT) ou 0
++------+-----+----------------------------------------------------------------
+| +5C  |  2  | Subsystem requis: 1=driver,2=GUI (pas de console),
+|      |     |  3=CUI (console),5=OS/2,7=POSIX
++------+-----+----------------------------------------------------------------
+| +5E  |  2  | flags DLL selon chaque bit:
+|      |     | bit  0: 1=notification process attachments
+|      |     | bit  1: 1=notification thread detachments
+|      |     | bit  2: 1=notification thread attachments
+|      |     | bit  3: 1=notification process detachments
++------+-----+----------------------------------------------------------------
+| +60  |  4  | taille reserved stack
++------+-----+----------------------------------------------------------------
+| +64  |  4  | taille committed stack
++------+-----+----------------------------------------------------------------
+| +68  |  4  | taille reserved heap
++------+-----+----------------------------------------------------------------
+| +6C  |  4  | taille committed heap
++------+-----+----------------------------------------------------------------
+| +70  |  4  | flags RESERVE
++------+-----+----------------------------------------------------------------
+| +74  |  4  | nombre de blocs RVA-tailles (blocs de 8 bytes ci-dessous)
++------+-----+----------------------------------------------------------------
+
+Le champ +34 du header PE optionnel contient l'adresse de base du programme
+dans la mémoire du process. C'est à dire qu'à cet adresse (habituellement
+00400000h), vous retrouverez le début du header MZ du fichier exécutable.
+
+Le header PE optionnel va maintenant se composer d'une série de blocs de 8
+bytes, contenant chaque fois une RVA et une taille, qui représentent les
+différents objets du fichier PE. C'est le champ +74 du header PE optionnel qui
+indique le nombre total de ces blocs.
+
++------+-----+----------------------------------------------------------------
+| +78  |  4  | RVA Export Table
++------+-----+----------------------------------------------------------------
+| +7C  |  4  | taille Export Table
++------+-----+----------------------------------------------------------------
+| +80  |  4  | RVA Import Table
++------+-----+----------------------------------------------------------------
+| +84  |  4  | taille Import Table
++------+-----+----------------------------------------------------------------
+| +88  |  4  | RVA Ressources
++------+-----+----------------------------------------------------------------
+| +8C  |  4  | taille Ressources
++------+-----+----------------------------------------------------------------
+| +90  |  4  | RVA Exceptions
++------+-----+----------------------------------------------------------------
+| +94  |  4  | taille Exceptions
++------+-----+----------------------------------------------------------------
+| +98  |  4  | RVA Sécurité
++------+-----+----------------------------------------------------------------
+| +9C  |  4  | taille Sécurité
++------+-----+----------------------------------------------------------------
+| +A0  |  4  | RVA Base Relocation Table
++------+-----+----------------------------------------------------------------
+| +A4  |  4  | taille Base Relocation Table
++------+-----+----------------------------------------------------------------
+| +A8  |  4  | RVA Debug
++------+-----+----------------------------------------------------------------
+| +AC  |  4  | taille Debug
++------+-----+----------------------------------------------------------------
+| +B0  |  4  | RVA Image Description
++------+-----+----------------------------------------------------------------
+| +B4  |  4  | taille Image Description
++------+-----+----------------------------------------------------------------
+| +B8  |  4  | RVA Machine Spécifique
++------+-----+----------------------------------------------------------------
+| +BC  |  4  | taille Machine Spécifique
++------+-----+----------------------------------------------------------------
+| +C0  |  4  | RVA Thread Local Storage
++------+-----+----------------------------------------------------------------
+| +C4  |  4  | taille Thread Local Storage
++------+-----+----------------------------------------------------------------
+...(certains nouveaux objets peuvent encore apparaître ici)
+
+Le header PE et le header PE optionnel sont parfois complété par des bytes à 0
+pour réaliser un alignement correct. Nous trouvons ensuite le header des
+Sections, qui est plus facilement accessible en ajoutant à l'offset du header
+PE optionnel la taille de ce header PE optionnel (champ +14 du header PE),
+lorsqu'il existe.
+
+Le header de section est un header qui existe pour chaque section. Le nombre
+de sections est contenu dans le champ +6 du header PE.
+
+Header Sections:
++------+-----+----------------------------------------------------------------
+| +00  |  8  | nom ASCII de la section (si 8 caractères=> pas de 00h)
++------+-----+----------------------------------------------------------------
+| +08  |  4  | taille de la section en RAM
++------+-----+----------------------------------------------------------------
+| +0C  |  4  | RVA du chargement de la section. Cette valeur peut être alignée
+|      |     | suivant la valeur du champ +38 du header PE optionnel.
++------+-----+----------------------------------------------------------------
+| +10  |  4  | taille des données arrondie au multiple suivant de l'alignement
+|      |     | du fichier (champ +3C du header PE optionnel).
++------+-----+----------------------------------------------------------------
+| +14  |  4  | RVA de la section ou 0 (si données unitialisées)
++------+-----+----------------------------------------------------------------
+| +18  |  4  | RESERVE objet/librairie
++------+-----+----------------------------------------------------------------
+| +1C  |  4  | RESERVE objet/librairie
++------+-----+----------------------------------------------------------------
+| +20  |  2  | RESERVE objet/librairie
++------+-----+----------------------------------------------------------------
+| +22  |  2  | RESERVE objet/librairie
++------+-----+----------------------------------------------------------------
+| +24  |  4  | flags selon chaque bit:
+|      |     | bit  5: 1=code exécutable
+|      |     | bit  6: 1=charger les données du fichier
+|      |     | bit  7: 1=initialiser les données à 0
+|      |     | bit  9: 1=section de commentaires
+|      |     | bit 11: RESERVE objet/librairie
+|      |     | bit 12: 1=common block data
+|      |     | bit 15: 1=far data
+|      |     | bit 17: 1=purgeable
+|      |     | bit 18: 1=non déplacable
+|      |     | bit 19: 1=section should be paged in before execution starts ?
+|      |     | bit 20->23: alignement ?
+|      |     | bit 24: relocations étendues
+|      |     | bit 25: 1=inutile une fois process lancé (sert pour des données
+|      |     |         de relocation,des routines de démarrage, des drivers
+|      |     |         exécutés une seule fois,...)
+|      |     | bit 26: 1=ne peut pas être placé dans le cache
+|      |     | bit 27: 1=ne peut pas être paged out (drivers) ?
+|      |     | bit 28: 1=section partagée entre plusieurs instances d'un même
+|      |     |         programme
+|      |     | bit 29: 1=execute acces
+|      |     | bit 30: 1=read acces
+|      |     | bit 32: 1=write acces
++------+-----+----------------------------------------------------------------
+
+La 1ère section est alignée à partir du début du fichier suivant la valeur
+d'alignement du fichier, donc se trouve souvent à l'offset 1000h du fichier.
+
+Dans un fichier exécutable classique, il y a plusieurs sections que l'on
+retrouve courrament. Nous allons ici les analyser une par une plus en détail:
+
+.text:
+Cette section contient le code exécutable du programme, ainsi que la table
+de jump initialisée au début du chargement du programme, pour contenir les
+adresses des APIs nécessaires utilisées par le programme. Cette section
+possède habituellement les accès execute et read.
+La table de jump est utilisée par les compilateurs etc, pour permettre
+facilement un accès aux APIs, indépendant de la version du système utilisée.
+Si par exemple vous codez un programme qui effectue une instruction
+"call TerminateProcess", voici la manière dont cela sera codé dans le
+programme assembleur:
+
+call [XXXXXXXX]
+...
+XXXXXXXX: jmp [YYYYYYYY]
+où:
+XXXXXXXX représente une seule étiquette pour plusieurs appels de la même API
+         à des endroits différents du code.
+YYYYYYYY représente un double mot de la jump table contenant l'adresse réelle
+de l'API appelée. La jump table est créée au chargement du process.
+
+.bss:
+Cette section contient les données non initialisées. Le plus souvent, c'est là
+que l'on trouvera les emplacements des variables statiques. Cette section
+possède habituellement les accès read et write.
+
+.rata:
+Cette section contient les données qui sont initialisées et non modifiables.
+C'est là que l'on trouvera les constantes et chaînes de caractères. Cette
+section possède habituellement un accès read.
+
+.data:
+Cette section contient les données qui sont initialisées et modifiables.
+C'est là que l'on trouvera les variables globales. Cette section possède
+habituellement les accès read et write.
+
+.edata (Export Table):
+Cette section contient les déclarations des fonctions exportées par le fichier
+(habituellement dans ce cas une DLL). Ces fonctions sont alors accessibles par
+d'autres programmes de manière assez simple. Les APIs Windows sont elles-mêmes
+mises à la disposition des programmes de cette manière, via plusieurs DLL.
+
+Header Export Directory:
++------+-----+----------------------------------------------------------------
+| +00  |  4  | caractéristiques
++------+-----+----------------------------------------------------------------
+| +04  |  4  | date et heure
++------+-----+----------------------------------------------------------------
+| +08  |  2  | version majeure
++------+-----+----------------------------------------------------------------
+| +0A  |  2  | version mineure
++------+-----+----------------------------------------------------------------
+| +0C  |  4  | offset dans le fichier du nom d'exportation (nom de la DLL)
++------+-----+----------------------------------------------------------------
+| +10  |  4  | base
++------+-----+----------------------------------------------------------------
+| +14  |  4  | nombre de fonctions (<> nombre réel d'exportations)
++------+-----+----------------------------------------------------------------
+| +18  |  4  | nombre de noms (=nombre réel d'exportations)
++------+-----+----------------------------------------------------------------
+| +1C  |  4  | offset dans le fichier des adresses des fonctions (4 bytes)
++------+-----+----------------------------------------------------------------
+| +20  |  4  | offset dans le fichier des noms de fonctions (séparés par 00h)
++------+-----+----------------------------------------------------------------
+| +24  |  4  | offset dans le fichier des ordinaux des fonctions (2 bytes)
++------+-----+----------------------------------------------------------------
+
+Le nombre réel de fonctions exportées est représenté par la valeur du champ
++18. Avec ce nombre, on peut faire une rechercher à partir de l'offset dans
+le fichier des noms de fonctions (champ +20=pointeur). L'indice résultant de
+la recherche peut être utilisé dans la table des ordinaux (table de words
+à partir de l'adresse du champ +24), pour aller lire un 2ème indice.
+Ce 2ème indice représente l'emplacement dans le tableau de ddwords pointé par
+le champ +1C de l'adresse de la fonction exportée recherchée.
+ATTENTION !!! Les valeurs de ces pointeurs sont positionnées au chargement
+du fichier en mémoire, et donc cette recherche n'est pas possible dans le
+fichier .EXE lui-même !
+
+.idata (Import Table):
+Cette section contient les déclarations des fonctions importées par le fichier
+(par exemple les APIs). Ces fonctions sont alors accessibles par le programme
+de manière assez simple. La section se compose d'un Header Import Directory
+pour chaque fichier (DLL) contenant des fonctions qui sont importées.
+
+Header Import Directory:
++------+-----+----------------------------------------------------------------
+| +00  |  4  | RVA vers un tableau de RVA vers les Descriptions des Fonctions
+|      |     | Importées (RVA=0 => fin)
++------+-----+----------------------------------------------------------------
+| +04  |  4  | date et heure
++------+-----+----------------------------------------------------------------
+| +08  |  4  | index dans la liste pour le 1er Forwarder ?
++------+-----+----------------------------------------------------------------
+| +0C  |  4  | RVA vers le nom du fichier (DLL) contenant les imports
++------+-----+----------------------------------------------------------------
+| +10  |  4  | RVA vers un tableau de RVA vers les Descriptions des Fonctions
+|      |     | Importées. devient array de pointeur =first thunk
++------+-----+----------------------------------------------------------------
+
+Les champs +00 et +10 semblent être les mêmes. Mais à l'exécution, le 1er
+champ pointe sur un tableau de pointeurs vers les descriptions des fonctions
+importées, tandis que le champ +10 contient un double mot contenant l'adresse
+de la fonction importée.
+
+Description des Fonctions Importées:
++------+-----+----------------------------------------------------------------
+| +0   |  2  | ordinal
++------+-----+----------------------------------------------------------------
+| +2   |  n  | chaîne du nom de la fonction
++------+-----+----------------------------------------------------------------
+
+L'indice résultant de la recherche à travers les chaînes des descriptions de
+fonctions pointées par les RVA du tableau pointé par le champ +00 représente
+l'indice dans le tableau pointé par le champ +10 d'un double mot contenant
+l'adresse de la fonction importée.
+ATTENTION !!! Les valeurs de ces pointeurs sont positionnées au chargement
+du fichier en mémoire, et donc cette recherche n'est pas possible dans le
+fichier .EXE lui-même !
+
+.rsrc (Ressources):
+Cette section contient toutes les ressources utilisées par le programme.
+Les ressources représentent les données structurées au format de Windows, qui
+permettent de contenir des menus, des chaînes, des boîtes de dialogues, des
+images, etc... Nous n'insisterons pas ici sur cette section, car le nombre de
+types de ressources différentes est assez consistant.
+
+
+5.LES DLLS
+----------
+Les DLLs sont une solution intéressante proposée par Windows pour partager
+facilement et efficacement des fonctions entre divers programmes. Etant donné
+que Windows lui-même doit pouvoir offrir des fonctions aux programmes, les
+APIs Windows sont elles-mêmes contenues dans des DLLs. Les 3 DLLs importantes
+de Windows sont:
+KERNEL32.DLL (fonctions de gestion mémoire, disques, exécution, ...)
+USER32.DLL (interface utilisateur, gestion clavier, souris, ...)
+GDI32.DLL (gestion de l'affichage à l'écran, fenêtres, contrôles, ...)
+
+A l'heure actuelle, KERNEL32 est toujours chargée à une adresse fixe,
+l'adresse BFF70000h. On retient habituellement cette adresse, car elle permet
+toute une série de recherche sur des APIs, etc... dont nous reparlerons.
+
+Une DLL est donc un fichier PE, qui offre plusieurs fonctions exportées,
+utilisables par d'autres programmes. C'est donc une librairie, mais chargée
+en temps réelle, et utilisée à la demande des programmes (Dynamic Link
+Library).
+Cette DLL contient une routine particulière:
+
+BOOL WINAPI DllEntryPoint(
+ HINSTANCE hinstDLL, // handle to DLL module
+ DWORD fdwReason,    // reason for calling function
+ LPVOID lpvReserved  // reserved
+);
+
+Le 2ème paramètre (fdwReason) est particulièrement important, il indique
+pourquoi Windows a appelé la fonction DllEntryPoint.
+Windows peut appeler cette fonction dans 4 cas, avec les valeurs suivantes:
+DLL_PROCESS_ATTACH: indique l'attachement de la DLL au process courant.
+DLL_THREAD_ATTACH: indique l'attachement de la DLL au thread courant.
+DLL_PROCESS_DETACH: indique le détachement de la DLL du process courant.
+DLL_THREAD_DETACH: indique le détachement de la DLL du thread courant.
+Cette fonction permet donc à la DLL d'initialiser des données au chargement,
+de les libérer au déchargement, etc...
+ATTENTION !!! Ces constantes sont renvoyées à la fonction DllEntryPoint,
+uniquement si les bits correspondants sont activés dans le header PE
+optionnel (champ +5E). Cependant, par défaut ces flags sont tous activés.
+
+Les fonctions que la DLL offrent aux autres programmes sont regroupées dans
+la section Export du fichier, et sont souvent exportables sous 2 formes.
+La 1ère est la forme ASCII, qui fournit donc la fonction quand on la demande
+par son nom.
+Il y a aussi une 2ème fomme d'exporation, par valeur ordinale, c'est à dire
+que l'on demande d'utiliser une fonction par son numéro. Cette méthode est
+maintenue par compatibilité avec Windows 3.x.
+
+Il est aussi important de retenir qu'une DLL est toujours mappée à la même
+adresse dans la mémoire d'un process.
+
+
+6.LES APIS
+----------
+Windows met donc à la disposition des programmeurs tout un ensemble de
+fonctions, qui sont contenues, ou du moins appelables via des APIs. Ces APIs
+sont stockées dans des DLLs, et sont facilement appelables dans n'importe
+quel programme.
+Certaines de ces APIs existent sous 2 versions différentes selon le système:
+sous Windows 9x, nous trouvons les APIs Ansi (terminées par un "A")
+sous Windows NT, nous tronvons les APIs Unicode (terminées par un "W")
+Ces 2 normes interprétent les chaînes de caractères de manière différentes,
+il est donc important de bien utiliser la bonne API sur le bon système.
+
+Lors de la programmation en assembleur, il est important de connaître l'état
+des registres au retour des APIs.
+EAX contient habituellement la valeur de retour.
+Les contenus des registres EBX, ESI, EDI, et EBP sont préservés.
+Les contenus des registres ECX et EDX sont perdus.
+Les contenus des registres de segment sont préservés.
+
+Comment appeler les APIs Windows ?
+Le moyen le plus facile est de les appeler de manière classique dans le
+programme, de sorte que le compilateur se charge du link etc... pour vous.
+Cependant, il peut être intéressant de connaître d'autres techniques de
+recherche et d'appel d'une API, qui permettent ainsi d'éviter des informations
+de linkage concernant ces APIs, ce qui peut être intéressant dans le cas
+de hooking de programme, de rajout de routines à un programme, ou autres...
+
+1ère technique:
+===============
+Cette technique permet d'accéder à une API ou une fonction de manière
+dynamique, avec le moins d'informations de linkage possible. Pour cela, il
+nous faut utiliser 2 APIs que Windows met à notre service. Les APIs
+GetModuleHandle ou LoadLibraryA et l'API GetProcAddress.
+
+HMODULE GetModuleHandle(
+ LPCTSTR lpModuleName        // address of module name to return handle for
+);
+
+Cette API renvoie un Handle vers l'API de nom lpModuleName, si elle est déjà
+chargée en mémoire.
+
+HINSTANCE LoadLibraryA(
+ LPCTSTR lpLibFileName        // address of filename of executable module
+);
+
+Cette API renvoie un Handle vers l'API lpLibFileName, en la chargeant
+éventuellement en mémoire si elle n'y est pas encore.
+
+FARPROC GetProcAddress(
+ HMODULE hModule,      // handle to DLL module
+ LPCSTR lpProcName     // name of function
+);
+
+Cette API renvoie l'adresse de l'API de nom lpProcName et de DLL de Handle
+hModule (obtenu par appel à GetModuleHandle ou LoadLibraryA).
+Il ne reste ensuite plus qu'à effectuer un call vers cette adresse, pour
+exécuter cette API.
+
+2ème technique:
+===============
+La 1ère technique est pratique, cependant, elle dépend elle-même de 2 APIs,
+dont on ne connait pas forcément l'adresse.
+Cependant, ces APIs sont souvent importées par des programmes, et donc leur
+adresses se trouvent souvent dans la jump table du process.
+La 2ème technique consiste donc à rechercher dans la section Import du fichier
+PE du programme après la valeur des 2 APIs, et de sauter directemment à ces
+adresses lors de l'appel de ces APIs, de manière à éviter d'utiliser des
+informations de linkage concernant ces APIs.
+
+3ème technique:
+===============
+Cette 3ème technique est la plus puissante, mais elle est plus longue à
+implémenter. Le principe est d'essayer de rechercher dans le fichier KERNEL32
+.DLL (qui contient les 2 APIs) les informations d'Exportation de ces 2 APIs
+ce qui permet de connaître leur adresse dans KERNEL32.DLL.
+Or nous savons que KERNEL32 est toujours chargée au même endroit dans la
+mémoire du process, à savoir l'adresse BFF70000h. Donc, on peut facilemment
+calculer l'adresse de ces 2 APIs, et grâce à celles-ci, connaître l'adresse
+de toute fonction à utiliser dans notre programme, sans information de
+linkage nécessaire.
+De manière plus générale, à la place de se baser sur l'adresse BFF70000h, on
+peut aussi se servir du contenu de la pile au début du process. En effet, le
+début du process est appelé via un CALL par une routine contenue dans
+KERNEL32.DLL . Donc, la pile au démarrage du process contient l'adresse d'une
+routine de KERNEL32.DLL. Sachant que Windows charge les fichiers dans des
+blocs de 4K, on peut donc à partir de cette adresse remonter la mémoire en
+parcourant les bytes écrits alignés sur 4K, de manière à localiser la chaîne
+'MZ' du header MZ du fichier KERNEL32.DLL, qui nous donnerai ainsi l'adresse
+effective et certaine de KERNEL32.DLL.
+
+
+7.MEMORY MAPPED FILES
+---------------------
+Sous Windows, il existe 3 techniques de gestion de la mémoire: les allocations
+virtuelles (permettre au process d'utiliser des blocs mémoires contenus dans
+son espace mémoire adressable, principalement l'API VirtualAlloc), les tas
+("heaps"), et les Memory Mapped Files (MMF). Cette technique permet de
+déclarer une zone de mémoire, accessible par tout les process, et contenant
+des données. Cette technique peut être utile pour partager des données entre
+des process, mais cette technique est surtout utile pour la gestion de
+fichiers. En effet, il est possible assez facilement de charger un fichier de
+cette manière dans la mémoire du process, de travailler sur ce fichier comme
+s'il s'agissait d'un bloc de données, et enfin de réécrire ces données de la
+mémoire vers le fichier original. Cela permet surtout d'éviter d'utiliser les
+fonctions de déplacement de pointeur de fichier,etc,... et cela permet
+d'utiliser la puissance des instructions assembleur de répétitions,de
+recherche, etc... sur des fichiers.
+Windows lui-même se sert activement des MMF, pour le chargement du fichier
+exécutable dans la mémoire du process, pour le chargement de DLLs, etc...
+Voici les APIs utilisées pour gérer les MMF:
+
+HANDLE CreateFile(
+ LPCTSTR lpFileName, // pointer to name of the file
+ DWORD dwDesiredAccess,  // access (read-write) mode
+ DWORD dwShareMode,  // share mode
+ LPSECURITY_ATTRIBUTES lpSecurityAttributes,     // pointer to security attributes
+ DWORD dwCreationDistribution, // how to create
+ DWORD dwFlagsAndAttributes,   // file attributes
+ HANDLE hTemplateFile          // handle to file with attributes to copy
+);
+
+Cette API ouvre le fichier pointé par lpFileName, dans le mode d'ouverture
+spécifié par dwDesiredAccess (combinaison de GENERIC_READ et GENERIC_WRITE),
+dwShareMode à NULL pour éviter le partage du fichier, lpSecurityAttributes à
+NULL, dwCreationDistribution à OPEN_ALWAYS (pour créer si le fichier n'existe
+pas et l'ouvrir s'il existe), dwFlagsAndAttributes à FILE_ATTRIBUTE_NORMAL
+pour posséder des attributs de fichiers normaux, et hTemplateFile à NULL.
+
+HANDLE CreateFileMapping(
+ HANDLE hFile,       // handle to file to map
+ LPSECURITY_ATTRIBUTES lpFileMappingAttributes,  // optional security attributes
+ DWORD flProtect,    // protection for mapping object
+ DWORD dwMaximumSizeHigh,    // high-order 32 bits of object size
+ DWORD dwMaximumSizeLow,     // low-order 32 bits of object size
+ LPCTSTR lpName  // name of file-mapping object
+);
+
+Cette API crée un handle vers un objet qui va servir pour le MMF.
+hFile peut être un handle d'un fichier déjà ouvert avec CreateFile, ou bien la
+valeur INVALID_HANDLE_VALUE, pour créer un MMF général.
+lpFileMappingAttributes est mit à NULL, flProtect est mit à PAGE_WRITECOPY,
+(pour permettre à Windows de créer une copie du mapping si plusieurs
+programmes venaient à modifier le mapping en même temps), dwMaximumSizeHigh et
+dwMaximumSizeLow représentent la taille que l'on réserve (si on utilise un
+handle de fichier déjà ouvert, on peut spécifier 0 pour ces 2 valeurs, ce qui
+implique que Windows réserve automatiquement un espace de taille égal à la
+taille du fichier ouvert) et lpName pointe vers le nom que l'on donne au MMF
+(peut être NULL si l'objet mappé n'est utilisé que par notre programme). L'API
+nous renvoie le handle du MMF.
+
+LPVOID MapViewOfFile(
+ HANDLE hFileMappingObject,  // file-mapping object to map into address space
+ DWORD dwDesiredAccess,  // access mode
+ DWORD dwFileOffsetHigh,     // high-order 32 bits of file offset
+ DWORD dwFileOffsetLow,  // low-order 32 bits of file offset
+ DWORD dwNumberOfBytesToMap  // number of bytes to map
+);
+
+Cette API réalise le mapping proprement dit. hFileMappingObject doit contenir
+la handle résultant de CreateFileMapping, dwDesiredAccess peut avoir la valeur
+FILE_MAP_ALL_ACCESS, dwFileOffsetHigh et dwFileOffsetLow spécifient un
+pointeur 64 bits sur le 1er byte à mapper du fichier (peuvent être à NULL,
+dans ce cas tout le fichier est mappé), et dwNumberOfBytesToMap indique le
+nombre de bytes à mapper (NULL mappe tout le fichier). La valeur de retour
+est NULL en cas d'erreur, ou un pointeur vers le MMF en cas de succès.
+
+BOOL UnmapViewOfFile(
+ LPCVOID lpBaseAddress       // address where mapped view begins
+);
+
+Cette API ferme un MMF, en libérant la mémoire utilisée par le mapping et en
+écrivant les modifications éventuelles dans le fichier sur le disque.
+
+BOOL CloseHandle(
+ HANDLE hObject      // handle to object to close
+);
+
+Cette API permet de fermer un handle Windows. Si un fichier a été utilisé
+pour le mapping, elle doit être utilisée avec le handle de ce fichier.
+Elle doit aussi être utilisée avec le handle du MMF (handle renvoyé par la
+fonction CreateFileMapping).
+
+BOOL FlushViewOfFile(
+ LPCVOID lpBaseAddress,       // start address of byte range to flush
+ DWORD dwNumberOfBytesToFlush // number of bytes in range
+);
+
+Cette API permet d'écrire le contenu du MMF sur le disque, pour éviter des
+pertes de données. lpBaseAddress représente l'adresse de base à partir duquel
+se trouvent les données à écrire, et dwNumberOfBytesToFlush représente le
+nombre de bytes à écrire sur le disque.
+
+HANDLE OpenFileMapping(
+ DWORD dwDesiredAccess,      // access mode
+ BOOL bInheritHandle,    // inherit flag
+ LPCTSTR lpName      // pointer to name of file-mapping object
+);
+
+Cette API permet à un autre process que celui qui a créé le MMF de l'ouvrir
+et d'y accéder. Cette technique permet à des process d'utiliser les MMF pour
+échanger ou partager des données. dwDesiredAccess peut prendre la valeur
+FILE_MAP_ALL_ACCESS, bInheritHandle indique si les process créés par le
+process qui ouvre l'objet mappé peuvent utiliser le handle (habituellement
+FALSE), et lpName pointe sur le nom donné au MMF. Donc, pour partager un MMF
+entre plusieurs process, il faut absolumment donner un nom au MMF lors de sa
+création dans le 1er process.
+
+Toutes ces APIS permettent donc de gérer les MMFs. Nous vous conseillons
+cependant de lire les documentations précises de Microsoft (SDK) pour obtenir
+des informations précises sur tout les paramètres de ces APIs.
+
+
+8.APIS D'ACCES PROCESS-THREADS
+------------------------------
+Dans ce chapître, nous allons analyser plus attentivement différentes
+techniques et APIs pour accéder à d'autres threads et à d'autres process à
+partir du process courant. Cela peut sembler inutile, mais pour un programmeur
+système, cela peut permettre toute une série de choses: debugging, patching,
+communications inter-process,...
+
+BOOL CreateProcess(
+ LPCTSTR lpApplicationName,  // pointer to name of executable module
+ LPTSTR lpCommandLine,   // pointer to command line string
+ LPSECURITY_ATTRIBUTES lpProcessAttributes,  // pointer to process security attributes
+ LPSECURITY_ATTRIBUTES lpThreadAttributes,       // pointer to thread security attributes
+ BOOL bInheritHandles,       // handle inheritance flag
+ DWORD dwCreationFlags,  // creation flags
+ LPVOID lpEnvironment,       // pointer to new environment block
+ LPCTSTR lpCurrentDirectory,     // pointer to current directory name
+ LPSTARTUPINFO lpStartupInfo,        // pointer to STARTUPINFO
+ LPPROCESS_INFORMATION lpProcessInformation      // pointer to PROCESS_INFORMATION
+);
+
+Cette API permet de créer un nouveau process.
+lpApplicationName et lpCommandLine permettent de spécifier l'exécutable du
+process et une ligne de commande éventuelle. lpProcessAttributes et
+lpThreadAttributes sont habituellement NULL sont Windows 9x.
+bInheritHandles indique si les handles ouverts par le process courant peuvent
+être utilisés par le nouveau process. On peut par défaut mettre cette valeur
+à NULL.
+dwCreationFlags permet de définir la manière dont est créé le nouveau process,
+ainsi que les priorités du process. Habituellement, ce paramètre est mit à
+NORMAL_PRIORITY_CLASS. La valeur DEBUG_PROCESS est elle aussi intéressante,
+nous y reviendrons peut-être dans un prochain article.
+lpEnvironment pointe sur un bloc d'environnement. Si ce paramètre est NULL,
+le nouveau process hérite de l'environnement du process courant.
+lpCurrentDirectory pointe sur une chaîne qui spécifie le répertoire d'ou sera
+exécuté le process. Si ce paramètre est NULL, ce répertoire sera le répertoire
+du process courant.
+lpStartupInfo pointe sur une structure qui définit la manière dont la fenêtre
+principal du nouveau process doit apparaître. On peut utiliser l'API
+GetStartupInfo(&StartupInfo) pour remplir une structure avec les paramètres
+du process courant.
+lpProcessInformation est une structure qui contiendra une série d'informations
+sur le process créé:
+
+typedef struct _PROCESS_INFORMATION { // pi
+ HANDLE hProcess;
+ HANDLE hThread;
+ DWORD dwProcessId;
+ DWORD dwThreadId;
+} PROCESS_INFORMATION;
+La valeur dwProcessId de cette structure est notamment très importante.
+
+HANDLE OpenProcess(
+ DWORD dwDesiredAccess, // access flag
+ BOOL bInheritHandle,   // handle inheritance flag
+ DWORD dwProcessId      // process identifier
+);
+
+Cette API permet d'ouvrir un process, ce qui va nous permettre d'aller
+travailler dans ce process (nous l'appelerons process esclave).
+dwDesiredAccess peut être rempli avec la valeur PROCESS_ALL_ACCESS.
+bInheritHandle
+bInheritHandles indique si le handle qui va être obtenu peut être utilisé par
+un process qui serait créé par le process courant. Habituellement FALSE.
+dwProcessId représente l'identificateur du process, tel qu'obtenu dans la
+structure PROCESS_INFORMATION de l'API CreateProcess.
+Cette API nous renvoie donc un handle, que nous allons utiliser dans les 2
+APIs suivantes:
+
+BOOL ReadProcessMemory(
+ HANDLE hProcess,    // handle of the process whose memory is read
+ LPCVOID lpBaseAddress,  // address to start reading
+ LPVOID lpBuffer,    // address of buffer to place read data
+ DWORD nSize,    // number of bytes to read
+ LPDWORD lpNumberOfBytesRead         // address of number of bytes read
+);
+
+Cette API permet de lire le contenu de la mémoire virtuelle du process
+esclave. hProcess représente le handle du process esclave, tel qu'obtenu via
+l'API OpenProcess. lpBaseAddress représente l'adresse dans le process esclave
+du bloc de bytes que l'on veut aller y lire.
+lpBuffer représente un buffer dans le process courant, où vont être copiés
+les bytes lus du process esclave.
+nSize permet de spécifier le nombre de bytes à lire dans le process esclave.
+lpNumberOfBytesRead contiendra au retour le nombre de bytes effectivement lus
+dans le process esclave.
+
+BOOL WriteProcessMemory(
+ HANDLE hProcess,    // handle to process whose memory is written to
+ LPVOID lpBaseAddress,   // address to start writing to
+ LPVOID lpBuffer,    // pointer to buffer to write data to
+ DWORD nSize,    // number of bytes to write
+ LPDWORD lpNumberOfBytesWritten      // actual number of bytes written
+);
+
+Cette API permet d'aller écrire dans la mémoire virtuelle du process esclave.
+hProcess représente le handle du process esclave, tel qu'obtenu via l'API
+OpenProcess. lpBaseAddress représente l'adresse dans le process esclave ou
+l'on veut aller écrire des bytes.
+lpBuffer représente un buffer dans le process courant, qui contient les bytes
+à aller écrire dans le process esclave.
+nSize permet de spécifier le nombre de bytes à écrire dans le process esclave.
+lpNumberOfBytesRead contiendra au retour le nombre de bytes effectivement
+écrits dans le process esclave.
+
+Grâce à ces 2 APIs, il est donc possible d'accéder à n'importe quel byte de
+la mémoire d'un process choisi.
+Une 3ème API vient compléter ces 2 APIs:
+
+BOOL FlushInstructionCache(
+ HANDLE hProcess,    // handle to process with cache to flush
+ LPCVOID lpBaseAddress,  // pointer to region to flush
+ DWORD dwSize        // length of region to flush
+);
+
+Cette API peut servir dans certains cas délicats. En effet, si vous allez
+modifier le process esclave à l'endroit par exemple ou se trouvent les
+instructions courantes, il se pourrait que le processeur aie déjà chargé
+les instructions dans le cache du processeur. Cette API permet d'
+éventuellement remettre à jour le cache du processeur pour qu'il corresponde
+aux modifications apportées à la mémoire d'un process.
+hProcess représente le handle du process esclave.
+lpBaseAddress spécifie l'adresse du bloc qui a été mis à jour dans la mémoire
+du process esclave.
+dwSize spécifie la taille du bloc qui a été mis à jour dans la mémoire du
+process esclave.
+
+Maintenant, il pourrait être aussi intéressant d'aller écrire dans une thread.
+Nous l'avons vu, une thread se compose principalement de valeurs de registres.
+Il pourrait donc être pratique de pouvoir aller modifier le contenu de
+certains registres d'une thread. Pour cela, il existe 2 APIs, qui permettent
+de modifier le contexte d'une thread. Chacune de ces 2 APIs nécessite un
+masque dans la structure contexte, qui indique quel sont les registres à lire
+ou à écrire.
+
+Mais avant cela, Windows conseille
+vivement de suspendre la thread qui va être modifée:
+
+DWORD SuspendThread(
+ HANDLE hThread      // handle to the thread
+);
+
+Cette API suspend donc la thread de handle donné. hThread représente le handle
+de la thread, par exemple le handle de la thread principale (provenant de la
+structure PROCESS_INFORMATION.
+
+Voici maintenant un schéma de la structure contexte d'une thread:
+
+typedef struct _CONTEXT {
+ DWORD ContextFlags;
+
+ DWORD   Dr0; // actifs si CONTEXT_DEBUG_REGISTERS
+ DWORD   Dr1;
+ DWORD   Dr2;
+ DWORD   Dr3;
+ DWORD   Dr6;
+ DWORD   Dr7;
+
+ FLOATING_SAVE_AREA FloatSave; // actif si CONTEXT_FLOATING_POINT
+
+ DWORD   SegGs; // actifs si CONTEXT_SEGMENTS
+ DWORD   SegFs;
+ DWORD   SegEs;
+ DWORD   SegDs;
+
+ DWORD   Edi; // actifs si CONTEXT_INTEGER
+ DWORD   Esi;
+ DWORD   Ebx;
+ DWORD   Edx;
+ DWORD   Ecx;
+ DWORD   Eax;
+
+ DWORD   Ebp; // actifs si CONTEXT_CONTROL
+ DWORD   Eip;
+ DWORD   SegCs;
+ DWORD   EFlags;
+ DWORD   Esp;
+ DWORD   SegSs;
+} CONTEXT;
+
+Le champ ContextFlags est une combinaison des valeurs CONTEXT_DEBUG_REGISTERS,
+CONTEXT_FLOATING_POINT, CONTEXT_SEGMENTS, CONTEXT_INTEGER et CONTEXT_CONTROL.
+Il indique quels sont les registres qui seront effectivement modifés.
+ATTENTION !!! Modifier les registres d'une thread en cours d'exécution est
+très dangereux, plus particulièrement pour les registres sensibles qui sont
+les registres de segments, Eip, SegCs ainsi que EFlags (ce registre contient
+par exemple les bits d'activation du processeur en mode protégé).
+
+BOOL GetThreadContext(
+ HANDLE hThread,     // handle of thread with context
+ LPCONTEXT lpContext     // address of context structure
+);
+
+Cette API lit le contexte de la thread spécifiée, et le place dans la
+structure lpContext, suivant le masque ContextFlags.
+
+BOOL SetThreadContext(
+ HANDLE hThread,     // handle of thread with context
+ CONST CONTEXT *lpContext        // address of context structure
+);
+
+Cette API modifie le contexte de la thread spécifiée, suivant le masque
+ContextFlags.
+
+Après ces modifications, il est nécessaire de redémarrer la thread, qui a été
+suspendue. Voici l'API nécessaire:
+
+DWORD ResumeThread(
+ HANDLE hThread      // identifies thread to restart
+);
+
+Cette API redémarre donc une thread qui a été suspendue.
+
+
+9.D'AUTRES APIS INTERESSANTES
+-----------------------------
+Dans ces derniers chapîtres, vous pouvez peut-être avoir une meilleure idée de
+la diversité des APIs que Windows peut nous offrir, et ce n'est qu'un début !
+Je vous propose ici encore quelques autres APIs que je ne suis pas parvenu à
+classer, mais qui m'ont semblées intéressantes, voire curieuses...
+
+LPVOID VirtualAlloc(
+ LPVOID lpAddress,   // address of region to reserve or commit
+ DWORD dwSize,   // size of region
+ DWORD flAllocationType,     // type of allocation
+ DWORD flProtect         // type of access protection
+);
+
+Cette API permet de réserver ou de commuter un ensemble de pages pour qu'il
+apparaisse dans la mémoire virtuelle du process.
+lpAddress spécifie l'adresse dans le process courant que l'on va affecter.
+dwSize spécifie la taille de la mémoire que l'on va affecter.
+flAllocationType peut prendre 3 valeurs, dont 2 principales:
+MEM_COMMIT:prépare la mémoire pour qu'elle soit accessible.
+MEM_RESERVE:réserver la mémoire pour un appel éventuel MEM_COMMIT par après.
+ Cette partie de la mémoire ne peut plus être réservée par une autre fonction
+ de gestion de mémoire de Windows.
+(MEM_TOP_DOWN: spécifie que l'on veut l'adresse la plus haute possible)
+flProtect permet de spécifier le type d'accès possible à la mémoire concernée:
+PAGE_READONLY, PAGE_READWRITE, PAGE_EXECUTE, PAGE_EXECUTE_READWRITE,
+PAGE_GUARD (provoque une exception lors d'un accès), PAGE_NOACCESS (interdit
+tout accès), PAGE_NOCACHE (ne permet pas le caching de cette partie de
+mémoire).
+Cette API renvoie l'adresse de la région qui a été affectée.
+REMARQUE: Windows affecte par process des régions de pages qui font 64K, donc
+l'adresse renvoyée peut différer de l'adresse demandée.
+
+HANDLE CreateRemoteThread(
+ HANDLE hProcess,    // handle to process to create thread in
+ LPSECURITY_ATTRIBUTES lpThreadAttributes,       // pointer to thread security attributes
+ DWORD dwStackSize,  // initial thread stack size, in bytes
+ LPTHREAD_START_ROUTINE lpStartAddress,  // pointer to thread function
+ LPVOID lpParameter, // pointer to argument for new thread
+ DWORD dwCreationFlags,  // creation flags
+ LPDWORD lpThreadId  // pointer to returned thread identifier
+);
+
+Cette API étrange permet à un process d'aller créer une thread dans un autre
+process (que nous appelerons process esclave) !
+hProcess contiendra le handle du process esclave.
+lpThreadAttributes peut être NULL.
+dwStackSize contient la taille de la pile de la nouvelle thread (NULL implique
+que la taille de la pile sera la même que celle de la 1ère thread du process).
+lpStartAddress contient l'adresse de la thread dans la mémoire du process
+esclave.
+lpParameter pointe vers un argument éventuel à passer à la fonction de la
+nouvelle thread.
+dwCreationFlags peut être à NULL, ou à CREATE_SUSPENDED, ce qui implique dans
+ce cas qu'il faut un appel à ResumeThread pour effectivement démarrer
+l'exécution de la thread.
+lpThreadId pointe vers une variable qui contiendra l'identificateur de la
+thread créée dans la mémoire virtuelle du process esclave.
+
+BOOL TerminateProcess(
+ HANDLE hProcess,    // handle to the process
+ UINT uExitCode  // exit code for the process
+);
+
+Cette APi est l'API qui permet de terminer un process quelconque de Windows,
+simplement en connaissant son handle. C'est l'API qui est utilisée lorsque
+vous terminer un process via la commande "Fin de tâche" de Windows.
+
+void RegisterServiceProcess(
+ DWORD dwProcessId      // process identifier
+ DWORD dwStatus         // service status
+);
+
+Cette API non documentée permet de convertir un process en service sous
+Windows 9x.
+dwProcessId représente l'identificateur du process.
+dwStatus prend une des 2 valeurs suivantes: RSPSIMPLESERVICE (active le
+service) ou RSPUNREGISTERSERVICE (désactive le process en tant que service).
+Cette API étant non documentée, il est nécessaire de charger KERNEL32.DLL
+et d'importer l'adresse de cet API manuellement, via GetProcAddress, comme
+vu au chapître 6.
+
+Et enfin, pour terminer, je vous propose de vous renseigner sur l'API
+DeviceIoControl dont nous reparlerons probablement, qui est l'API de Windows
+qui permet de dialoguer avec tout les périphériques, par le biais du device
+driver (VXD) correspondant.
+
+
+10.CONCLUSION
+-------------
+Voilà, j'espère que cet article vous a plu. J'ai essayé de condenser beaucoup
+de techniques relatives à Windows souvent peu évoquées dans les manuels ou les
+documentations des languages de programmation !
+Pour plus d'infos concernant les APIs Windows, je vous conseille de parcourir
+le fichier Win32.hlp fournit dans le SDK Windows, qui est une véritable mine
+d'or pour cela !!!
+
+References:
+La bible PC
+Microsoft SDK
+Win32.hlp
+Win32Asm homepage
+Lord Julus's homepage
+29 Virus EZine
+Virogen's homepage
+
+                                                           Rix-Agressor-Shogun
+                                                               Securiweb @1999

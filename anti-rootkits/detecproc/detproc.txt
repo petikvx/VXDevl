@@ -1,0 +1,51 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++This is a little Disclaimer for if you havn't read the one on our site.   +
++The tools and tutorials KD-Team develops and publishes are only ment for          +
++educational purpose only.WE DO NOT encourage the use of this tools and          +
++tutorials for mailicious purpose.We learned a lot during the development of them  +
++so we hope you also learn and don't just use it without any brains.   +
++We take completly NO responsability for any damage caused by them nor           +
++are we or our isp responsible for what you do with them.     +
++Greetz: KD-Team                   +
++http://www.kd-team.com                           +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Detect Hidden Processes
+
+This is a little program to detect if a rootkit is hiding a process.
+It will only work if the rootkit does NOT hook ntOpenProcess()
+Bit of theorie:
+
+
+Normally a rootkit works with the concept of "what they can't see , they can't touch".
+With this in our mind we only need to find a way to access what we can't see. In other
+words just guess what could exist.
+
+This mapped to the technical aspect of it means that normally when a rootkit hides the
+process it's intended to hide, it hides everything that could possibly give feedback
+to the user about the process. So we could assume the rootkit would not be concerned
+about functions like OpenProcess() or ntOpenProcess() since for that the user must 
+know what PID it wants. This leads us to thinking that if we just guess aka bruteforce
+the possible pids we could know if they are hidden.
+
+so the basic concept is:
+
+- do a openProcess() on all processes and display the pids where it succeeds.
+- compare the output to the PIDs in your taskmgr
+
+If something appears in the list from this app that is NOT in the list of your taskmgr.
+it COULD mean you have a rootkit.
+We say COULD cause there are some system PIDs that are not show by default.
+get something like process explorer from www.sysinternals.com to be sure.
+
+Just as with our detectcon, since this is a POC for this technique the comparison 
+you'll have to do it manually. Maybe in the future we'll automate it.
+
+On a sidenode. This technique will not work very long since most rootkits update every
+second. So as soon as this is known most mayor rootkits will properly hook openProcess()
+Greetz,
+
+KD-Team
+
+p.s There is a minor bug in sometimes a process has got 4 pids. 
+We are not sure how this comes since haven't researched it yet.

@@ -1,0 +1,262 @@
+<html>
+<head
+<title>Heterogeneous Computer Viruses In A Networked UNIX Environment</title>
+</head>
+<body text=#000000 bgcolor=#ffffff>
+<h2>Heterogeneous Computer Viruses In A Networked UNIX Environment</h2>
+<p>
+<a href=mailto:radatti@cyber.com>Peter V. Radatti</a><br>
+
+<p>
+
+Copyright &copy; September 1991, March 1996 by Peter V. Radatti  All 
+rights reserved. 
+
+
+<p>
+This paper is intended to inform the UNIX and computer communities 
+about formally undocumented computer virus problems.  My 
+observation of these problems were made at heterogeneous UNIX 
+network sites and confirmed by discussions with system administrators 
+at other sites.  I believe that these problems are not limited to UNIX or 
+heterogeneous networks.  Furthermore, I expect the problems to 
+expand in complexity, scope and virulence. 
+<p>
+I have observed non-UNIX personal computers attached to a 
+heterogeneous network that were infected with computer viruses 
+originating from UNIX workstations.  The UNIX systems were not the 
+original point of entry for  the viruses.  The viruses were dormant 
+while on the UNIX nodes and became harmful when they migrated to 
+their target systems.  The UNIX systems acted as unaffected carriers of 
+computer viruses for other platforms of computers.  For the sake of 
+simplicity, I have coined the phrase &quot;Typhoid Mary Syndrome&quot; when 
+describing this problem. 
+<p>
+Typhoid Mary was an unfortunate New York City carrier of Typhoid 
+Fever in the 1930's.  Although Mary was an unaffected carrier of the 
+disease, she unknowingly spread it to members of almost every 
+establishment in which she was employed.   The similarities between 
+Typhoid Mary and the computer problem named Typhoid Mary 
+Syndrome are close. 
+<p>
+Networks and specifically UNIX because of its ability to provide 
+networked file systems are susceptible to this problem.  Using an 
+example of MS-DOS personal computers on a network of UNIX 
+systems, the Typhoid Mary Syndrome would be in effect if the viruses 
+that were targeted against the MS-DOS platforms migrated to the 
+UNIX systems.  Once on the UNIX system, the viruses remain 
+dormant until they migrate to an MS-DOS platform. 
+<p>
+I became aware of this problem when I took part in the investigation of 
+an infection of personal computers on a network with a large 
+population of UNIX workstations and servers.  The virus was 
+manually attacked on the personal computers using virus scanners.  
+During the infection, all of the target platform computers were 
+disconnected from the network and unused.  All removable media was 
+checked.  Once all infected files were identified and removed, the 
+personal computers were reattached to the network.  A few weeks 
+later, a sanity check, using the same virus scanner, was performed on 
+the target platform with positive results.  The same computer virus 
+strain had reinfected the systems.  Since the systems and all removable 
+media had been cleansed, the network came under suspicion. 
+<p>
+In retrospect, this problem had to exist.  The use of network file 
+systems that were exported from the UNIX platform to the personal 
+computer platforms provided an easy, powerful method of transferring 
+data, including executables.  Some network designs provide all third 
+party software from a network disk for ease of maintenance and 
+reduced storage overhead.  This easy access provides an open door for 
+viruses.  What I found surprising was the fact that the viruses were 
+able to migrate out of the common storage areas into users' home 
+directories.  Users had several reasons for performing this action, the 
+most prevalent being, to have a &quot;safe&quot; copy of the program.  
+Additional methods of migration may exist that I have not considered.  
+Some migration functions may be a deliberate act of the virus 
+designer.  This may be accomplished using a similar design as 
+demonstrated by the Internet Worm which was able to migrate to 
+dissimilar UNIX systems and then adapt to its new host environment. 
+<p>
+The most obvious method of reducing the possibility of the Typhoid 
+Mary Syndrome is to carefully regulate and control what type of files 
+can move  between platforms.  Although it is possible to infect data 
+files, the virus would be rendered harmless in a non-executable file.  It 
+is therefore reasonable to assume that the movement of data files such 
+as word processing documents across platforms is safe. <i> March 1996, 
+Not any more! WinWord Concept Virus has proven this wrong. - pvr</i> 
+<p>
+The examples presented have been the result of direct single action 
+events such as a user copying MS-DOS executables over the network.  
+When the problem enters multilevel action events or includes time 
+delay events, then the complexity of the problem increases.  If the 
+virus copied had been the Friday the 13th virus and the re-infection 
+had been delayed by external events, then the results of the infection 
+on the target machine would be felt at a variable time plus the time 
+required to reach activation after the initial transfer of the virus to the 
+carrier system.  &quot;Effective Interval:, Ei = Td + Ta where;  Td = delay 
+in transfer to target, Ta = positive value activation interval.  A third 
+level of complexity is introduced through the import and export of 
+files. Files can be imported through may sources, including removable 
+media such as magnetic tape.  There have been several documented 
+cases of manufacturers delivering shrink-wrapped software which 
+contained viruses. A fourth level of complexity can be introduced 
+through the use of Wide Area Networks such as the Internet or more 
+traditional computer bulletin boards. 
+<p>
+In addition to the Typhoid Mary Syndrome, there are several other 
+types of harmful software that are native to and targeted against UNIX 
+systems.  They are Trojan horses, logic bombs and worms.  Worms 
+require considerable commitment and a strong understanding of the 
+UNIX system to write.  For the immediate future,  worm attacks will 
+be rare due to the skill required to author one.  As has happened  with 
+computer viruses, that skill may become more common place if anyone 
+publishes  the source code to a worm.  The increasing availability of 
+UNIX systems could combine  with a &quot;recipe&quot; to place the required 
+skill and systems into the hands of otherwise  ineffective potential 
+authors. 
+<p>
+Trojan horses and logic bombs are simple programs that can be 
+written by  programmers of high school skill level.  Trojan horses 
+appear to be performing desired processing while creating damage.  
+They are spread by unsuspecting users who copy them in order to take 
+advantage of their usefulness.  Many Trojan horses are hidden in 
+computer games.  A recent Trojan horse that was spread via the 
+Internet was called &quot;choosegirl.game&quot;. 
+<p>
+Logic bombs or time bombs are simple programs that wait for an event 
+to occur such as midnight and then damage the system.  A simple time 
+bomb might wait until 10 minutes before a scheduled system backup 
+and then destroy the file system. 
+<p>
+Viruses that directly target UNIX systems have been written and 
+demonstrated under controlled research conditions.  The first 
+computer virus ever written was for the UNIX system.  Viruses are not 
+currently a major problem for UNIX, however, as the popularity of the 
+UNIX system grows, so will the treat. 
+<p>
+Anyone wishing to comment on this paper may contact me: 
+<p>
+Peter V. Radatti <br>
+CyberSoft, Inc.                                  <br>
+Telephone: (610) 825-4748, FAX: (610) 825-6785   <br>
+E-mail: radatti@cyber.com  Web URL: http://www.cyber.com
+<p>
+<p>
+Copyright, September 1991 and March 1996 by Peter V. Radatti.  All 
+rights reserved. 
+<p>
+<b>====================================================================<br>
+I have chosen to keep this paper almost as originally published in 1991 
+with just a few touch-ups while the bulk of the updates are contained 
+in Post Notes.  I think this should interest people researching the 
+history of UNIX anti-virus development. - pvr<br> 
+====================================================================</b>
+
+<h2><i>Post Note:  July 1994</i> </h2>
+
+This paper now appears to me as dated.  The number of viruses that 
+directly attack UNIX systems has increased, although they are still 
+small in number.  Currently, there are the AT&amp;T Virus, (a.k.a.: 
+Usenix Virus), the Ls Virus and the Chapter-13 Virus.  There is also a 
+compiler defiler &quot;virus&quot;, however, it has not been found in the wild 
+and therefore does not count.  Additionally, UNIX systems now 
+directly execute Microsoft Windows, MS-DOS and Apple Mac 
+executables in emulation mode.  These emulators are all directly 
+susceptible to attack.  Beside the emulation mode, UNIX executing on 
+IBM PC type platforms has been found, in the wild, executing MS-
+DOS viruses.  The MS-DOS virus infected UNIX executables.  The 
+processor and BIOS are both the same and many viruses can co-exist 
+on both platforms.  I assume that the same will be true of Apple 
+Mac(s) and all other systems that can run UNIX.  
+<p>
+Pete 
+<p>
+<hr>
+
+<h2><i>Post Post Note:  March 1996</i> </h2>
+
+Every time I review this paper, the greater my smile.  For the last 5 
+years, some of the companies in the anti-virus industry have been 
+telling my customers not to purchase UNIX anti-virus products and 
+have poo poo'ed this paper.  As of  this month, it seems that everyone 
+is jumping on the bandwagon.   At least two well known anti-virus 
+companies are claiming to be first on the market with a UNIX anti-
+virus product.  Shame on them for not telling the truth when they have 
+been picking up my product literature and white papers since 1990!   
+<p>
+It's nice to be vindicated, even at the cost of increased competition. 
+<p>
+In addition, the number of attack programs directed against UNIX is 
+increasing.  Many people dismiss everything that is not a virus, 
+however, my argument is that if the program destroys your system, do 
+you care that it wasn't a virus?  The following is a list of UNIX 
+specific pattern models that VFind Version 5.0 Release 0 has in its 
+internal database.  There are also external databases delivered with the 
+product. 
+<p>
+<pre>
+attack1         AT&amp;T Attack Virus (a.k.a. Usenix Virus) (1) 
+attack2         AT&amp;T Attack Virus (a.k.a. Usenix Virus) (2) 
+attack3         AT&amp;T Attack Virus (a.k.a. Usenix Virus) (3) 
+chptr13         Chapter 13 Virus                        (1) 
+chptr13a        Chapter 13 Virus                        (2) 
+vdlcode1        Internet Worm Grappler 
+ls_virus        LS Virus 
+trjpswd1        Trojan Password Steal By Mail           (1) * 
+trjpswd3        Trojan Backdoor Password Inserted           * 
+trjpswd4        Trojan Backdoor Sendmail Attack             * 
+</pre>
+<p>
+The following is included in the VFind 5.0 Release 0 &quot;cyber01.vdl&quot; 
+external database. 
+<p>
+<pre>
+Trojan Bin Remove Attack (1)    Generic recursive remove from 
+				   root directory   (1) * 
+Trojan Bin Remove Attack (2)    Generic recursive remove from 
+				   root directory   (2) 
+Trojan Passwd Steal By Mail (4) Generic Password Steal By Mail (4) * 
+Trojan Passwd Steal By Mail (5) Generic Password Steal By Mail (5) * 
+</pre>
+<p>
+* - We have labeled this a Trojan Horse attack, however, the code is a
+very popular payload for all types of attack and can easily be used in
+a virus. 
+<p>
+<p>
+The following will be added in VFind Version 5.1 Release 1 internal 
+database. 
+<p>
+<pre>
+X21             X21 UNIX Virus 
+X23             X23 UNIX Virus 
+</pre>
+<p>
+In addition, all PC Boot Sector Viruses destroy UNIX on PC systems.  
+In 1994, there were no observed PC Boot Sector Virus infections on 
+Unix systems in the wild.  On March 6, 1995 an entire international 
+network of Unix on PC systems was destroyed  by Michelangeo with 
+many smaller repeat performances in 1996. 
+<p>
+Many MS-DOS specific viruses can also execute on PC based UNIX 
+systems but they do not usually infect files correctly.   The normal 
+result is a destroyed file system from attempted infection.  Slow 
+infectors tend to cause corruption of the file system while fast infectors 
+destroy the system within minutes.  There was one observed case, in 
+the wild, of a pure MS-DOS virus infecting a Unix compiled COBOL 
+program.  This program was executed by &quot;cron&quot; every night and the 
+file system was destroyed.   It took the victim approximately a week to 
+determine that they were not suffering a hardware failure because they 
+reloaded the virus from their backup tapes every morning.   (They 
+were not a customer at the time. &lt;smile&gt;) 
+<p>
+Pete 
+<p>
+<center>
+Heterogeneous Viruses          Sixth Printing, March 1996      <br>
+Copyright &copy; 1996 by Peter V. Radatti.  All Rights Reserved.
+</center> 
+
+</body>
+
+<!-- Mirrored from vx.netlux.org/texts/html/heterogeneous.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:15 GMT -->
+</html>

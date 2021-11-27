@@ -1,0 +1,293 @@
+<html>
+<body bgcolor=#ffffff text=#000000>
+<h2>RUSSIAN ANTI-VIRUS TECHNOLOGY VERSUS WESTERN TOOLS</h2>
+<b>Dmitry Yu. Mostovoy, Yury P. Lyashchenko</b><br>
+<i>DialogueScience, Inc.,<br>
+ul. Vavilova 40, GSP-1, 117967, Moscow, Russia<br>
+E-mail: <a href=mailto:dmost@dials.msk.su>dmost@dials.msk.su</a> , <a href=mailto:lyu@dials.msk.su>lyu@dials.msk.su</a><br>
+<br>
+This is text of the lecture in Varna (Bulgaria, September 1994),
+on the symposium &lt;Computing in Nuclear Physics&gt;</i><pre>
+
+Abstract
+
+        A method of protecting against computer viruses is described
+        that is based not the traditional accumulation of data about
+        potentially infinite number of new viruses but on storing
+        information on a finite number of existing files in a computer.
+        This method, by directly addressing BIOS for gaining access to
+        the hard disk, guarantees reliable protection against virus
+        attacks.
+
+
+INTRODUCTION
+
+The anti-virus packages popular in the West like Microsoft Anti-Virus
+and Norton Anti-Virus resemble each other in composition, functions,
+and capabilities. They are polyphages with an external database
+containing information about three to four thousand known viruses.
+They may additionally include a resident sentry and a simple disk
+inspector to check the CRC of files.
+
+Why is this particular trend dominating the design of anti-virus
+programs in the West? A few years back in the early stages of the
+development of anti-virus tools, this strategy proved quite effective
+and thus gained a strong foothold in the anti-virus market.
+Nonetheless, a few viruses like Dark Avenger, Black Friday, Falling 
+letters, etc, whose names clearly suggest their malicious 
+activities, caused havoc all over the computer world.
+
+But now the virus situation has changed radically. Thanks to modern
+infection recovery software tools and to the user's deeper knowledge,
+no computer virus is today allowed to flare up on a world-wide scale;
+some virus or a group of related viruses may proliferate within the
+confines of an institution, city, region or a country. Such local
+epidemics are as a rule easily diagnosed and suppressed immediately.
+But sustained intellectual efforts are needed to fight against these
+epidemics which cause immense financial losses. Conventional anti-virus
+utilities, even if they are capable of recognizing a large number of
+various types of viruses, loose their efficacy and become less
+reliable under the present virus situation. At present, anti-virus
+programs are available for about 4000 concrete infectors but computer
+viruses are being released almost every other day. A user, when the
+4001-st virus invades his computer, is helpless to combat the saboteur
+with the conventional software aids.
+
+Furthermore, the policy "to every viral stain, a concrete
+antivirus body" is generally expected to be slated to meet a dead end,
+certainly not because of the drawbacks inherent in the design of
+anti-virus programs. An anti-virus routine may contain the description
+of viruses as an internal module or as an external database which it
+references. In either case, anti-virus program is size limited, whereas
+viruses may grow in number unboundedly.
+
+Side by side with the ever-increasing number of simple 
+infectors (the so-called student viruses), complex stealth 
+viruses based on elegant hiding algorithms are also designed and 
+proliferated. Only an anti-virus software that goes deep into the 
+operating system to the BIOS level can detect them.
+
+Additionally, polymorphic viruses do not contain any characteristic 
+blocks in their codes, and therefore their detection requires the 
+construction of complicated recognition algorithms based on processor 
+emulation.  But such algorithms will perceptibly slow down the 
+operation of anti-virus programs.
+
+In Russia in particular and in former Soviet republics in general,
+computer virus is really a national calamity from intellectual, moral,
+social and material standpoints and has assumed formidable dimensions.
+Intellectually it is a defeat because it is a challenge to
+conscientious programmers, morally it is a misfortune because the
+State has so far not safeguarded its citizens against this evil by
+adequate legislation, socially it is a vice because the society has
+not provided enough opportunities for the young talented programmers
+to tap their skill and knowledge to useful purposes and materially it
+is a disaster for the havoc it causes to national economy.  Well, 
+these factors together with easy accessibility to modern computing 
+systems, all contributed to the so-called Russian virus explosion. 
+Its stray splinters can be tracked in the West, too. This naturally 
+stimulated intensive search for new methods and techniques to 
+counteract the hazard.
+
+
+VIRUS DETECTION METHODS
+
+Therefore our company diverted our efforts in searching an entirely
+new anti-virus technology for the problem: the result was the birth of
+Advanced Diskinfoscope (ADinf) - a powerful diagnostic tool for
+x-raying computer disks and diskettes at BIOS level. Organizing a
+compact database containing information about finite number of files
+in each particular drive is evidently a much better reliable
+prevention method than storing data on all potentially infinite number
+of viruses.
+
+ADinf is a breakthrough in anti-virus technology as it deploys, unlike
+in the conventional packages mentioned above, a basically new strategy
+- its data integrity checker searches for viruses by keeping a close
+watch over the changes taking place in a disk. Moreover, it scans a
+disk, reading the data, sector by sector, directly via BIOS without
+the assistance of the operating system. Such a search reveals every
+virus known or unknown, polymorphic or stealth.
+
+At the first start, ADinf retrieves full information on the master
+boot record of a disk, boot sectors of logical drives, addresses of
+bad clusters, directory tree structure, file information including
+size, time and date of creation, and CRC. In subsequent sessions, 
+ADinf checks the integrity of these data by collation and reports all 
+changes that have taken place since the last session, paying special
+attention to those changes which it suspects to be the result of virus
+activity. On detecting such changes, it immediately generates an
+on-screen warning message. Any change in file size or CRC without any
+alteration in file creation time and date, or change in file creation
+time showing a figure greater than 58 in seconds or a file date
+greater than the current date are expertized by ADinf as induced by
+virus activity. ADinf can keep strict watch over a user-specified
+list of UNCHANGEABLE files and warns about any change, however minor
+it may be, in such files. Its scan report gives full information about
+newly created and deleted subdirectories, newly created, deleted,
+moved, renamed files, newly appeared bad clusters, integrity of boot
+sectors and other vital areas. It locks up all sites easily liable to
+virus injection.
+
+This philosophy has been partly realized by several software
+designers, for example, McAfee Associates in Sentry, Symantec
+Corporation in Norton Anti-Virus, Central Point Corporation in
+Microsoft Anti-Virus and others. But they all have a common demerit in
+that they do not utilize these checkers to full capacity. They detect
+only the changes in files but fail to notice such operations as the
+creation of new files, renaming of files, movement of files from one
+directory to another, creation and deletion of directories, changes in
+boot sectors and the master boot record. Virulent viruses may be
+designed and are being designed precisely on these operations. Second,
+these anti-virus packages keep control over a fixed set of files. If
+certain files are deleted or new files are created, the disk
+information tables in them need to be recompiled - and this is rather
+inconvenient to the user. The most important drawback is that they
+check a disk by reading through the operating system. Though there is
+an "anti-stealth" option in them, modern stealth viruses hiding at Int
+13h or disk controller, easily dodge detection by these packages.
+
+Such a rigorous disk control in ADinf should seemingly be
+time-consuming and inconvenient to the user. But ADinf is surprisingly
+fast as it reads the sectors, accessing a disk via BIOS without the
+assistance of DOS, thereby leaving no peepholes for stealth viruses.
+In just 30 seconds it scans a 200Mb disk in a 486/33 system, while Dr
+Solomon requires 45 seconds and Microsoft Anti-Virus three minutes to
+complete its checks. The Diskinfo tables, which ADinf creates for its 
+internal use, take about 40Kb disk space. Advanced DinkinfoScope
+provides a comprehensive system of menu options to meet the exacting 
+preferences and taste of any connoisseur user. It accepts a 
+user-defined list of filename extensions of files to be taken under 
+its control, skips the directories, from its checks when told, where 
+files are subject to constant changes. Its originality and 
+indispensability are readily apparent in its customizability, instant 
+checks, expertise and high prediction reliability.
+
+ADinf program incorporates a unique algorithm that has no parallel in
+any other anti-virus tool, namely, the routine which searches for
+stealth viruses utilizing their dodging capabilities. Strangely, the
+hiding tactics is the weakest link in the dodging code that betrays a
+stealth virus. It suffices to compare the file information generated
+by DOS with the actual disk information: a discrepancy between them
+confidently predicts the presence of stealth stains in a machine. In
+other words, the ability of a virus to mask itself unmasks its
+presence! Thus, generation of disk information at the BIOS level
+opened a way for designing such comparison algorithms.
+
+ADinf detects infection in time and thus assists in localizing virus
+epidemics. What, if a virus, even a boot infector, infiltrates a
+computer? ADinf instantly reinstates the original boot sector from the
+image it holds in its tables and thus recovers a system from disaster.
+This operation is conducted at the BIOS level followed by immediate
+system rebooting in order to prevent reinfection. If it is a file
+infector, ADinf Cure Module - the curing companion to ADinf - easily
+restores the file to its original shape in toto.
+
+
+VIRUS REMOVAL TECHNIQUES
+
+ADinf Cure Module easily recovers infected files, without knowing the
+format and behavior of a virus, i.e., it is a universal tool designed
+to combat the strategies and tactics deployed by modern file infectors
+and thus to aid in arresting local epidemics.
+
+The principle underlying ADinf Cure Module is simple and
+straightforward. Despite the multifarious diversity of viruses and
+their modifications, paradoxically, there are only a few paths by
+which a virus is injected into a file. This is the basic strategy of
+ADinf Cure Module. In its daily scanning sessions, ADinf informs ADinf
+Cure Module about the changes, if any, in a file since the last check.
+ADinf Cure Module immediately scrutinizes these files and stores their
+new information in its tables for restoring them after a virus attack.
+When a virus attaches itself to a file, ADinf at once detects the
+changes and calls for the Cure Module which tries to reinstate the
+original shape of an infected file by comparing its status before and
+after an attack. If ADinf Cure Module reports that a file has been
+restored successfully, it really means what it says.
+
+Thus, an infected file is recovered by reinstating its original status
+from the image of its structure stored in ADinf Cure tables.
+Consequently, a knowledge as to which virus infected the file is not
+mandatory. Tables containing the necessary information for recovering
+files take about 300 Kb on a 200Mb drive.
+
+ADinf Cure Module cannot cure a file for each and every virus but it
+does cure a file for almost all viruses. The restoration performance
+is 97%, even for as-yet-unknown viruses. ADinf withstood this
+performance percentage in an efficacy test conducted with a large
+collection of files infected with various viruses widespread in
+Eastern Europe. This performance is undoubtedly quite impressive. Of
+course, no package can claim 100% efficacy.
+
+Disk inspectors are also not a panacea against computer viruses.  
+Their main demerit is the need for running them daily so as to keep a 
+record of the changes taking place in a disk. Although such a run 
+takes about 30 - 40 seconds per day, majority of computer users 
+prefer to follow the proverb "peasant crosses himself only when it 
+thunders", and begin to look for anti-virus problems only when his 
+computer goes mad.  In such cases, disk inspectors are helpless.  
+But, if the user is far-sighted, then  a disk inspector with a curing 
+module will provide ample safety of his machine.
+
+
+OTHER TOOLS
+
+Advanced Diskinfoscope, ADinf, and its curing module form the core of
+the DialogueScience Anti-Virus kit designed on the technology described
+above. Additionally, this Anti-virus kit also includes the polyphage
+Virus Hunter, which is extremely popular in Russia under the name
+Aidstest. Virus Hunter recognizes and eradicates the viruses that are
+widespread in Russia, and is upgraded almost every other week.
+Therefore, it is an essential tool as a preliminary check for the
+software products from Russia. Since, among the Russian viruses there
+are also unconventional infectors, Virus Hunter is unavoidable even if
+the user has a universal tool like ADinf Cure Module at his disposal.
+The only drawback is that Virus Hunter cannot recognize complex
+polymorphic viruses.
+
+The latest add-on to the DialogueScience Anti-Virus kit is a
+new-generation polyphage Dr.Web. On the whole it functions very much
+like the traditional polyphage Virus Hunter, namely, it recognizes
+those viruses that are known to it by certain characteristic blocks in
+the virus code. But, what is new in its technology is that owing to the
+built-in emulator Dr.Web tracks down to the virus, even if the virus is
+camouflaged by encoders, compressors and vaccines. Consequently, it
+easily detects and kills complex polymorphic viruses. And built-in
+heuristic scaner makes Dr.Web possible to detect unknown viruses in 80%
+probability.
+
+The DialogueScience Anti-Virus Kit also includes a resident sentry. But
+it radically differs from the sentries in western anti-virus utilities
+in that it is supported by a special card. Owing to this hardware
+support, The DialogueScience Anti-Virus Kit guarantees almost cent
+percent data integrity, security and protection against any virus. It
+is the cheapest hard-&-software anti-virus protection system available
+in the world's computer market today.
+
+
+CONCLUSIONS
+
+The DialogueScience Anti-Virus Kit is dominating in Russia and former
+Soviet republics: registered users of the Kit or of any components 
+run to several thousands, while unregistered users count in millions
+due to software piracy prevalent in this region.
+
+
+REFERENCES
+
+1. N. N. Bezrukov, Computer viruses, Nauka, Moscow, 1991 (in Russian).
+
+2. N. N. Bezrukov, Handbook on Computer Virology.
+   Ukrainskaya Sovetskaya Entsiklopediya, Kiev, 1991 (in Russian).
+
+3. D. Yu. Mostovoy, Modern technologies of defence against viruses.
+   MirPK, No. 8, 1993, Moscow (in Russian).
+
+4. D. Yu. Mostovoy, A Method of Detecting and Eradicating Known and 
+   Unknown Viruses. Security and Control of Information Technology in 
+   Society / R.Sizer et al. (Editors). Elsevier Science B.V. 
+   (North-Holland), 1994.
+
+5. DialogueScience Anti-Virus Kit, User's Guide, Moscow, 1993.
+
+=====================================================================

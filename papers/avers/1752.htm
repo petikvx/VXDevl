@@ -1,0 +1,1004 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="1752_files/new_SFPS_style.css"><title>Worm Propagation In Protected Networks</title></head><body style="margin: 5px;" bgcolor="#ffffff">
+<!-- start header -->
+
+<!-- end header -->
+
+<table border="0" cellpadding="5" cellspacing="0" width="600">
+	<tbody><tr>
+	<td>
+<div id="article">
+	<span class="headline">Worm Propagation In Protected Networks</span><br>
+	<span class="author">SecurityFocus </span>, 
+	<span class="source"></span> 
+	<span class="date"></span><br>
+	<p class="firstParagraph">
+		
+	</p>
+	<span class="body">
+		<!-- InstanceBegin template="../SecurityFocus%20Infocus/Templates/sf-infocus.dwt" codeOutsideHTMLIsLocked="false" --><!-- teaser
+
+
+end teaser -->
+
+<table border="0" cellspacing="0" width="100%">
+
+
+<tbody><tr>
+<td class="text">
+
+<!-- InstanceBeginEditable name="ARTICLE" -->
+<br>
+<table align="center" width="70%"><tbody><tr><td class="rightcolumn">
+<p><i>Editor's note:</i> this document was
+  originally published as a part of the DeepSight Threat Management System, a <a href="http://enterprisesecurity.symantec.com/products/products.cfm?ProductID=158&amp;EID=0" target="nonlocal">paid service</a> offered by Symantec Corp (SecurityFocus is owned by Symantec) and is offered
+    to the community free of charge as a time-delayed release.</p>
+<p>Other anti-virus vendors are encouraged to <a href="mailto:content-editor@securityfocus.com">submit</a> their analyses
+      to SecurityFocus for publication as well. Reprinted with permission.</p>
+</td></tr></tbody></table>
+<!-- teaser
+		Many documents explore worm propagation methods across the global Internet. In contrast, this analysis 
+		focuses on the impact of three prominent worms (Blaster, Slammer, and Code Red I/II) 
+		inside protected (corporate) networks, once the security perimeter has been breached.
+-->
+
+<h1>Introduction</h1>
+
+<h2>Background</h2>
+
+Malicious code, also referred to by common terms such as viruses, worms, and
+trojans, are a significant
+component of the scope of attacks that a modern IT organization must be prepared
+to defend against if
+they are operating with any Internet connectivity at all. The general term of
+malicious code, an umbrella
+term, is used to describe any code that performs unsolicited activity without
+the authorization of the user,
+and the more common and specific terms are often seen in technical write-ups
+of specific instances, or in
+the press due to their wide spread recognition.
+<p class="text">
+Worms, a specific case of malicious code, are sometimes called blended threats
+and differ from traditional
+viruses primarily because they are able to propagate across a network with no
+intervention from the user.
+Whereas traditional viruses generally are defined as requiring some interaction
+with the user, possibly
+running a program, or perhaps clicking on a link to download some component via
+a Web site; worms
+have the capability to spread with no user interaction at all; most often this
+involves searching out hosts
+that are running vulnerable services and exploiting these vulnerabilities. Worms
+are especially dangerous
+because they require no action from a user; therefore if there is an outbreak,
+they are able to spread far
+quicker, and the spread is not confined to business hours in the affected region
+of the globe.
+</p><p class="text">
+The discussion of worms and worm propagation strategies has been ongoing for
+a number of years, but
+it has been primarily in the last three years that the true significance of what
+a worm can do has been
+recognized in the more mainstream areas of network security and virus detection.
+The significance of
+worm propagation was truly noted in a wide spread fashion with the outbreak of
+Code Red in July of
+2001. In addition to propagating, Code Red also performed a Denial of Service
+(DoS) attack on a single
+IP that, at the time, was registered to the White House. Since Code Red, the
+development of more
+complex infection strategies and payload components has proceeded to the point
+where the W32.SQLExp
+worm in January 2003 achieved worldwide propagation far faster than any human
+initiated intervention
+could have stopped the threat.
+</p><p class="text">
+
+One outgrowth of this focus on worm activity is that a lot of research and analysis
+of vulnerabilities and
+worm propagation techniques has been published to aid security practitioners
+in evolving their policies
+and technologies. When examining this research, a couple of noteworthy things
+can be seen. Most of the
+research that has been pursued has looked at the spread of worms in the context
+of the global Internet
+rather than the rate that it will spread through an isolated private sector of
+the Internet, a corporate
+network for example. When looking at a global threat, and trying to estimate
+response time with given
+protection scenarios, this difference can be critical.
+
+</p><p class="text">
+The importance of how a worm behaves in a limited, isolated, sector of the Internet
+gains importance
+when you consider that many organizations do not have enough publicly routable
+IP addresses, and
+therefore use private networks (eg. 10.X.X.X, 172.16.X.X, 192.168.X.X) behind
+network address
+translation devices for a majority of their Internet-connected computers. As
+these systems are not
+directly connected to the Internet; worm infestations must spread to these systems
+from already
+compromised internal hosts, and therefore the propagation behavior of worms on
+LANs can be a
+significant issue. The same issue can be seen even if an organization has public
+IP addresses, but
+employs strong firewall rules. Traditionally, many people felt that ensuring
+a firewall was in place and
+protecting hosts was enough, but as was shown by W32.SQLExp and Blaster, this
+is a flawed assumption.
+
+
+
+</p><h2>Worm Propagation Factors</h2>
+
+        Numerous analysis documents and projects have focused on the propagation factors
+        of various worms in an attempt to determine the most influential factors in the propagation rate,
+        and to determine the strategies that are likely to be used by worm authors in the future. The paper
+        by Tom Vogt entitled "Simulating and optimising worm propagation algorithms" is an attempt
+        to do exactly that. Vogt builds a simulation network to test the impact of various strategies on the overall rate
+        of propagation. Throughout these tests Vogt outlines some of the factors with the largest impact on the
+        simulations of propagation.
+		<p class="text">
+		</p><ol>
+        <li>Address selection: The method of address selection is of tremendous importance
+        in the overall
+        rate of spread across the Internet. Different methods can include fully random,
+        local preference
+        random, and sequential scanning.</li>
+        <li>Threading: A single thread of scanning results in a significantly slower rate
+        of propagation than
+        multiple threads, simply because the thread usually blocks until a scan or infection
+        is complete
+        before moving onto the next host.</li>
+       	<li>Pre-scanning: Doing pre-scanning to determine if a host is listening on a
+        given port prior to
+        sending data to the host is more efficient. This is only applicable for connection
+        oriented services,
+        or services that require a large amount of data to be sent in order to compromise.</li>
+        <li>Method of scanning or infection: The use of efficient routines to minimize
+        the wait time for
+        infection or scan results. An example of this wait would be lowering the timeout
+        variable if using
+        TCP and the standard socket library.</li>
+		</ol>
+		<p class="text">
+        In Vogt&#8217;s paper, he comments on the impact of these different factors
+        in global scale propagation, but
+        pays little attention to the impact that these factors will have in a more localized,
+        isolated environment
+        that is a component of a large global environment. Organizations with connectivity
+        to the Internet should
+        consider the impact that different strategies are likely to have on the local
+        environment, as some
+        strategies inappropriate for rapid global spread can have far greater significance
+        when looked at from the
+        perspective of a localized environment.
+      </p>
+	  
+	  
+<h2>Why Analyze Old Worms?</h2>
+        
+		Worms released since the first Code Red worm provide an excellent opportunity
+        to examine different
+        strategies and vulnerabilities that have been successfully leveraged to build
+        a successful worm. While
+        each of the worms employed different strategies resulting in significantly different
+        propagation rates, they
+        all achieved a substantial degree of success, often finding a small crack
+        to penetrate an organization&#8217;s
+        security posture. Analysis of these worms, why they were successful, and an examination
+        of the
+        protective strategies advocated in hindsight can allow organizations to better
+        position and prioritize
+        network security spending to protect against possible future worms.
+
+<p class="text">
+    As additional motivation for considering this topic, we just need to
+          look at the "Simulating and optimizing
+        worm propagation algorithms" paper. In the paper Vogt briefly
+          discusses the impact that a truly malicious
+        payload would have when combined with an effective and fast spreading worm. He
+        models the effect
+        that two types of malicious payloads would have, one being a randomly timed deletion
+        of the hard drive,
+        the other being a randomly timed DoS attack on a given Web site. In both cases
+        the result would be
+        catastrophic, and likely result in far greater amounts of lost productivity for
+        any infected organization
+        than anything previously seen. In his paper Vogt refutes the often cited, but
+        ill-conceived wisdom that a
+        worm that destroyed its host would not propagate successfully. This is not an
+        attempt to glamorize or
+        threaten IT organizations, but rather to highlight the first significant modeling
+        of propagation with a
+        randomly timed destructive routine. The most telling statement made by Vogt is:
+		
+		</p><p class="text">
+		</p><ul>
+		&#8220;At the end of this simulation run, there were 2,774 infected and 1,979
+        not infected systems left, of an initial 166,730. While this not quite "annihilation",
+        it does mean that within two minutes, 161,977 hosts or about 97% of the vulnerable population were wiped
+        out.&#8221;
+		</ul>
+		
+		<p class="text">
+        The fact that a worm has not been written that successfully spreads and contains
+        a highly destructive
+        payload is fortunate, but currently there are vulnerabilities that could provide
+        a successful exploit path for
+        a worm such as this. In the Conclusions section, we will be providing an analysis
+        of these vulnerabilities,
+        a suggestion of the possible form that a worm might take for each vulnerability,
+        and discussion about
+        which of our recommended approaches are likely to pay dividends and control widespread
+        infection.
+        
+		</p><p class="text">
+		The wide variety of services that the worms analyzed in this document target
+        makes for a strong
+        comparison of the effect of various protection strategies. As these worms all
+        attack a widely deployed
+        network service, but each has a different network footprint, we are able to compare
+        the effectiveness of:
+		</p><p class="text">
+		</p><ul>
+<li>Network perimeter firewalling/router ACL application</li>
+<li>Intrusion Prevention or Detection Systems (IDS/IPS)</li>
+<li>Host based firewalls</li>
+<li>Aggressive/fast patching strategies</li>
+<li>Stronger network segmentation</li>
+		</ul>
+		
+		<p class="text">
+        Each of these solutions has been cited as a panacea when examining the impact
+        of the worm in
+        hindsight. In reality, each strategy has a limited applicability and a distinctive
+        cost in terms of dollars and
+        of service impact. Additionally, some of these strategies are completely unfeasible
+        for certain
+        vulnerabilities or environments (we see this primarily in the analysis of patching
+        for W32.SQLExp).
+
+
+</p><h2>Which Worms to Analyze</h2>
+        The choice of appropriate worms for this analysis was difficult, and in the end,
+        we chose worms that
+        affected Windows systems primarily because they were widespread, long-lived,
+        and each had a distinctive
+        difference in the attacked services network footprint. While the fact that Windows
+        systems have been
+        affected by the largest array of worms is obvious, the Threat Analyst Team does
+        not believe this is due to
+        any inherent superiority in other platforms, rather it is indicative of the density
+        of similarly configured
+        hosts.
+		<p class="text">
+		
+        </p><h3>Code Red I Family</h3>
+		
+        The Code Red family of worms targeted a port hosting a widely deployed public
+        service, HTTP. The Code
+        Red worms leveraged a vulnerability in the Microsoft IIS HTTP implementation
+        that allowed arbitrary
+        code execution with the privileges that the IIS server is running under, usually
+        LocalSystem. The use of a
+        widely deployed service on a port that many firewalls and network perimeters
+        leave open ensured that
+        organizations that had not yet deployed a patch, and were unable or unwilling
+        to block TCP port 80, were
+        likely to be infected.
+        <p class="text">The vulnerability leveraged by Code Red and subsequent variants occurs in the
+        processing of .ida files,
+        used by Indexing Services. The overflow occurs in processing of a request, usually
+        in the form of a URL
+        encoded GET request.
+        </p><p class="text">The worm itself began spreading on July 12, 2001, and two and a half years later,
+        the original and its
+        variants remain a problem on the Internet today with infected systems continuing
+        to attempt to
+        propagate the worm. Other than systems that are badly administered, another common
+        problem are
+        hosts installed from original media, and infected before the patches can be downloaded
+        and applied. This
+        is a more significant problem for home users, but should not be ignored by administrators
+        working rapidly
+        to re-install a system that was providing IIS services.
+        </p><p class="text">Code Red I contained a flaw in its address selection, and a second version of
+        Code Red I that fixed this
+        particular flaw, dubbed Code Red version 2, was released shortly after. A third
+        worm, Code Red II,
+        substantially different and not based on the original worm, inherited the Code
+        Red moniker, and will not
+        be examined in this analysis. Instead we will be confining our analysis to Code
+        Red versions 1 and 2.
+        </p><p class="text">One interesting fact about the Code Red I worms was that they existed solely
+        in memory; no files were
+        written to disk, and if a machine was rebooted, this cleared the infection from
+        the system until the next
+        exploitation. Once discovered, this memory-only existence allowed administrators
+        to apply the patch,
+        reboot the host, and no traces would remain of the compromise.
+        </p><p class="text">
+		</p><ul>
+		<i>MS Index Server and Indexing Service ISAPI Extension Buffer Overflow Vulnerability</i><br>
+        <a href="http://www.securityfocus.com/bid/2880">http://www.securityfocus.com/bid/2880</a>
+		</ul>
+		
+		
+        <h3>W32.SQLExp (also known as SQL Slammer or SQL Sapphire)</h3>
+		
+        This worm, which was given multiple names by different organizations including
+        W32.SQLExp, SQL
+        Slammer, and SQL Sapphire, was notable in that it spread with a single UDP datagram.
+        The use of UDP
+        ensured that the worm could essentially use a fire and forget mechanism for propagation,
+        and spread at
+        a rate greater than any worm previously seen.
+		<p class="text">
+        The worm spread to systems running the Microsoft SQL Server engine, and took
+        advantage of a buffer
+        overflow in the SQL Server Resolution Service, which operates on UDP port 1434.
+        The overflow can be
+        triggered by a single UDP datagram, meaning that the only way to mitigate against
+        this is to drop the
+        offending packet before it reaches the service.
+		</p><p class="text">
+        By sending a single UDP datagram to randomly selected hosts, W32.SQLExp was not
+        confined by having
+        to wait for any particular blocking socket call to return to continue propagation,
+        instead the sendto()
+        function returns as soon as the data is written into the outbound queue. The
+        use of UDP is beneficial
+        when we consider the research by Vogt that showed a significant portion of the
+        time spent during
+        propagation in many worm designs is spent waiting for responses from vulnerable
+        or non-existent hosts,
+        and the use of UDP removes this bottleneck.
+		</p><p class="text">
+        Various analyses of the global propagation rate, both theoretical and observed,
+        indicated that a majority
+        of the vulnerable systems had been infected within the first 15 minutes of worm
+        propagation, a
+        testament to the speed of the fire and forget method of exploitation.
+		</p><p class="text">
+		</p><ul>
+        <i>Microsoft SQL Server 2000 Resolution Service Stack Overflow Vulnerability</i><br>
+        <a href="http://www.securityfocus.com/bid/5311">http://www.securityfocus.com/bid/5311</a>
+		</ul>
+		
+		
+        <h3>W32.Blaster</h3>
+        W32.Blaster targeted Distributed Component Object Management (DCOM) over Remote
+        Procedure Calls
+        (RPC). Windows RPC is used to allow a remote system to use a service operating
+        on a remote system
+        without having that service be bound to a standard port, and without having to
+        know the port in
+        advance. The DCOM implementation allows software on remote systems to request
+        components from a
+        host, without those components running at the time. RPC is used by many system
+        management tools in
+        Windows networks, and is installed and operates by default on almost all Windows
+        systems.
+        <p class="text">In August 2003, a vulnerability was disclosed that allowed stack memory to be
+        overwritten by a
+        malformed packet. The problem occurred in the processing of a network/file-system
+        path for a DCOM
+        request. The development of an exploit that was robust on different service packs
+        and language versions
+        took some time, but once an exploit was released that contained a so-called universal
+        offset, the
+        groundwork for a robust work was present.
+		</p><p class="text">The worm itself took this universal offset exploit and used other tools, including
+        TFTP to transfer the
+        worm binary onto the infected system. In comparison to the Code Red and W32.SQLExp
+        worms,
+        W32.Blaster was quite rudimentary, and it was surprising to some people that
+        it was as effective as it
+        turned out to be.
+		</p><p class="text">
+		</p><ul>
+        <i>Microsoft Windows DCOM RPC Interface Buffer Overrun Vulnerability</i><br>
+        <a href="http://www.securityfocus.com/bid/8205">http://www.securityfocus.com/bid/8205</a>
+  		</ul>
+		
+
+<h2>Network Configuration</h2>
+
+        In order to compare and contrast the effect these worms have had, and different
+        paths through which
+        they may have gained access to a network, we need to establish a "typical" network
+          configuration
+        consisting of the various systems that were most often cited as the access point
+        for the worms. For the
+        purposes of this paper, the network in question is logically segmented into a
+        DMZ protected by router
+        Access Control Lists, and an internal network that is behind a firewall that
+        performs network and port
+        address translation (NAT/PAT) in addition to proxying many protocols from inside
+        the network to the
+        Internet. The following diagram outlines the basic topology.
+		<p class="text">
+		</p><div align="center">
+		<img src="1752_files/3worms.jpg" alt="Figure 1. Network configuration border design" height="456" width="304"><br>
+		<font size="-2"><b>
+        Figure 1. Network configuration border design
+		</b></font></div>
+		
+		<p class="text">
+		Email services are provided by Exchange servers running behind the firewall,
+        and external email is
+        relayed through a Unix system in the DMZ, thus ensuring that the Exchange systems
+        are not exposed
+        directly. The exchange systems are running IIS in addition to Exchange.
+        </p><p class="text">HTTP Services for the public and clients are deployed in the DMZ with application
+        and database servers
+        also in the DMZ. The DMZ is protected by a border router that allows only TCP
+        80 (HTTP), 443 (HTTPS),
+        25 (SMTP) through to select systems. Access to the DMZ from the corporate LAN
+        is relatively permissive
+        to allow management of data on the DMZ. But connections from the DMZ back inside
+        the corporate LAN
+        are confined to a very limited number of host/port pairs to ensure the integrity
+        of the internal network.
+        </p><p class="text">VPN connections are provided for off-site employees, and terminate on the firewall.
+        The VPN system is
+        designed such that the client will ensure that all network connectivity must
+        go through the VPN while the
+        VPN is connected, this ensures that the system cannot be easily used to proxy
+        compromised traffic from
+        a remote system.
+        </p><p class="text">The corporate network contains 5000 desktop or workstation computers, 400 servers
+        providing email, file
+        and printer storage, and network management (Active Directory). This includes
+        servers that are deployed
+        for test deployment, development, and other purposes. The desktop systems are
+        a relatively balanced
+        mix of Windows 2000 and XP, the servers are all Windows 2000, Exchange 2000,
+        and SQL Server 2000.
+        Laptops and other mobile devices are placed directly on the protected LAN when
+        the employees are in
+         the office. This opens the possibility of an infected laptop provides an alternative
+        path of compromise for
+        worms.
+        </p><p class="text">The DMZ network contains 150 systems, primarily Windows 2000 Server, most with
+        IIS installed and
+        configured to allow remote administration or Web services. The router allows
+        connections to a few of the
+        HTTP servers only. A single SMTP host that includes attachment stripping is used
+        to sanitize and forward
+        to the internal corporate mail servers.
+        </p><p class="text">While it would be possible to add significant complexity to this network design,
+        both in terms of services
+        provided and security precautions taken, the design is sufficient to model the
+        risks that the analyzed
+        worms present.
+
+
+</p><h1>Analysis</h1>
+
+<h2>Code Red v1 and v2</h2>
+
+
+        The Code Red worm, both version 1 and version 2, employed a random address selection
+        routine,
+        although weaknesses in the initial seed of the worm meant that version 1 of the
+        Code Red worm
+        attempted to spread to the same list of IP addresses on each run of the worm.
+        Version 2 fixed this initial
+        seed weakness, and consequently saw far greater spread across the Internet, with
+        hosts that were
+        untouched by the first version becoming victims of the second one.
+        <p class="text">One observation of the rate of SYN probes sent out by a Code Red version 2 infected
+        server was eleven
+        packets per second [<a href="#ref1">ref 1</a>]. We can assume that this rate of propagation was also noted
+        in Code Red version 1,
+        but because of the weakness of initial address selection, it may have been possible
+        for a system to not be
+        scanned. For the purposes of our calculation, we will assume a random address
+        selection with 11 probes
+        per second each to a unique address.
+        </p><p class="text">In our example network, Internet access to port 80 is blocked to all systems
+        in the corporate network,
+        and is allowed only to systems providing Web services that are located in the
+        DMZ. Of the servers
+        providing public Web services, if we assume that most had the patch successfully
+        deployed, and
+        therefore, just a single host was vulnerable and listening on this port, we can
+        discover the risk from a
+        minimal infestation. Due to the cost of patch deployment, only systems
+        that were deemed &#8220;at risk&#8221; of
+        exploitation (meaning those that were exposed remotely) had the patch deployed.
+        There were a number
+        of other servers in the DMZ, including SQL servers, Domain Controllers, and monitoring
+        systems that
+        were running vulnerable IIS, but these were not accessible from the Internet
+        due to perimeter routing.
+        Even though these servers are not accessible from the Internet, they are still
+        accessible once the worm
+        has penetrated the perimeter.
+        </p><p class="text">Once this publicly exposed server is attacked, and compromised, the scanning
+        routine starts. The infected
+        machine will randomly select IP addresses to attempt to connect to, at an average
+        rate of 11 packets per
+        second. The address range for this random selection is the complete Internet,
+        and the chance that this
+        single infected host will infect other hosts on the same network is relatively
+        remote, around 1 in 4.2
+        billion. It would take over 12 years for a single infected host to traverse the
+        address range of the
+        Internet. Assuming that no other hosts are vulnerable and remotely accessible,
+        the speed of an outbreak
+        on the local network will be quite slow.
+        
+        </p><p class="text">
+        For random scanning propagation, we can use the calculation of:
+		</p><p class="text">
+</p><ul><pre>        AddressRange
+-----------------------------
+2 VulnAddress PropagationRate
+</pre></ul>
+<p class="text">
+
+Where:
+</p><ul>
+<li>AddressRange is equal to the complete Address Space that is traversed in the scanning routine</li>
+<li>VulnAddress is equal to the number of hosts in the network that are at risk</li>
+<li>PropagationRate is the number of vulnerable hosts per second that are targeted by an infected host</li>
+</ul>
+<p class="text">
+        This calculation was derived from the statistical fact that assuming a randomly
+        dispersed brute force
+        guessing routine, it takes an average of n/2 attempts to determine a given value
+        from a pool of n size. If
+        you divide the size the pool by the number of possible correct values, you will
+        determine the number of
+        guesses, on average, that it will take to guess a single correct value. Once
+        you take into account the
+        number of connection attempts it can perform per second, on average, you can
+        determine the average
+        time it will take.
+		</p><p class="text">
+        For Code Red v2, the calculation is:
+</p><ul><pre> 253*255*255*255
+-----------------
+    2*100*11
+</pre></ul>
+
+<p class="text">
+        This type of random address selection, although effective at spreading a global
+        worm widely, and utilizing
+        the exponential growth of numbers of infected hosts to fully compromise the Internet,
+        is not terribly
+        effective at spreading inside a protected network once it has penetrated the
+        firewall on a single system.
+        The fact that every address in the IPv4 address space has an equal chance of
+        infection means that there
+        is a relatively small chance of infection of any specific address or address
+        ranges. The Code Red worm is
+        a perfect example of a worm that was designed for global reach and global propagation,
+        rather than
+        designed to cause problems on a local network once it has penetrated the perimeter.
+        </p><p class="text">For organizations that had deployed patches to as many of their systems as they
+        could, and had
+        reasonably configured firewalls / perimeter filtering, Code Red, and worms that
+        did not have an optimized
+        propagation algorithm would be a minor threat to their operations, and the outgoing
+        connections to the
+        Internet from the infected system would likely identify this system before a
+        significant number of other
+        internal hosts were affected.
+        </p><p class="text">In the case of Code Red, a worm that targets a vulnerability in a widely deployed
+        service that must
+        remain open, border filtering to limit the infection is not always feasible.
+        Despite the potentially slower
+        infection rate due to random scanning, hosts on the interior of the network that
+        did not have the patch in
+        place were at risk, and should an infection gain a toehold, the consequences
+        would have been significant.
+        This vulnerability certainly proved that patch application for all systems, not
+        just those exposed to the
+        uncontrolled networks, needs to be performed. Deployment of a personal firewall
+        might have been a
+        reasonable option to limit the exposure of systems that have IIS installed by
+        default, but do not use the
+        standard HTTP port for any service.
+
+
+
+
+
+</p><h2>W32.SQLExp</h2>
+
+        The W32.SQLExp worm was a generation ahead of the Code Red worm mainly due to
+        the speed with
+        which it spread. As was outlined earlier, many estimates show this worm compromising
+        almost all the
+        vulnerable, addressable hosts on the Internet in less than 20 minutes. This is
+        significantly quicker than
+        the speed that Code Red spread at.
+		<p class="text">
+        The address selection employed by W32.SQLExp was in the same vein as that used
+        by Code Red versions
+        1 and 2. It was a random address selection. As identified in the &#8220;Simulating
+          and Optimising Worm
+        Propagation Algorithms&#8221; paper, this is not the most efficient
+          approach, but it was effective.
+        </p><p class="text">W32.SQLExp was optimized extremely well, but did contain weaknesses in the address
+        selection that
+        meant that any given infected host would not be able to propagate to the complete
+        Internet.
+        </p><p class="text">As with Code Red, W32.SQLExp was optimized to spread globally in a rapid fashion,
+        with a single infected
+        host behind the protected network perimeter, each selection of a new host would
+        have a 1/4.2 billion
+        chance of hitting another vulnerable host on the network. Because the worm spreads
+        at wire-speed,
+        instead of taking 12 years to completely traverse the Internet address range
+        as Code Red was subject to,
+        W32.SQLExp can traverse the same address range in 48 hours (assuming no duplication
+        of addresses, in
+        reality this is very unlikely, but it highlights the difference in propagation
+        speed on a single host).
+        </p><p class="text">
+		Worm size = 404 bytes UDP + 30 bytes Ethernet framing = 434 bytes.
+        </p><p class="text">
+		On a 100Mbit switched full-duplex network, at 80% utilization (a conservative
+        estimate) 23,041
+        W32.SQLExp UDP packets can be sent per second. If this were a 1000Mbit connection,
+        the amount of
+        time to spread would be correspondingly lower, likely around 5 hours to traverse
+        4.2 billion addresses.
+        </p><p class="text">Using the same equation that was used for Code Red, and assuming that 150 hosts
+        are vulnerable
+        (possibly running Visio or other product that shipped MSDE, or were deemed lower
+        on the patching
+        priority list) in the network.
+</p><ul><pre> 255*255*255*255
+-----------------
+   2*150*23,041
+</pre></ul>
+
+<p class="text">
+        There would be an average of 612 seconds, between W32.SQLExp gaining access to
+        the protected
+        network via a host 100Mbit network, and the secondary infection. Once another
+        host was infected, this
+        interval would be halved, and it quickly becomes apparent that complete compromise
+        would occur in
+        under an hour. The resulting traffic from the scanning would be significant,
+        and would likely saturate the
+        LAN and the outgoing connection causing tremendous disruption.
+        </p><p class="text">It is impossible to accurately gauge the range of addresses that W32.SQLExp would
+        arrive at for
+        propagation, due to weaknesses in the address generation routine identified in
+        the analysis. The point of
+        this exercise is to demonstrate that a single host that is connected to the internal
+        LAN once it has been
+        infected W32.SQLExp was a far greater risk than a single host compromised by
+        Code Red.
+        </p><p class="text">The other complicating factor with W32.SQLExp was that there were many more applications
+        that were
+        at risk due to the distribution of the Microsoft Desktop Engine, and that many
+        applications that
+        distributed MSDE did not have updates available which made successful patching
+        an incredibly difficult,
+        and sometimes futile exercise. One point that should be considered is that on
+        most installations of MSSQL,
+        the UDP 1434 port was not required for proper functionality, and it certainly
+        was not needed on
+        most MSDE installations. The fact that this port was not required would seem
+        to lend weight to a firewall
+        solution.
+        </p><p class="text">In our sample network, appropriate border filtering, denying incoming traffic
+        on this unneeded port,
+        ensured that the DMZ was not infected from the Internet. A mobile laptop was
+        the greatest risk, and
+        once it had been moved, logically, behind the filtered perimeter, it was able
+        to infect a significant number
+        of other systems. Additionally, because administration of the hosts in the DMZ
+        was important, traffic from
+        the corporate network, thought safe, to the DMZ was relatively unfiltered and
+        therefore the SQL servers
+        deployed in the DMZ could also be infected from a single laptop or VPN user.
+        </p><p class="text">Personal firewalls for these mobile computers would have reduced the risk significantly,
+        but due to the
+        speed that this worm spreads, it takes just a single infected host to compromise
+        all the relatively
+        unprotected systems behind the perimeter. Another option to consider would have
+        been personal
+        firewalls deployed across the enterprise. While this option would certainly control
+        the spread of a worm
+        like W32.SQLExp (on most systems that were vulnerable UDP/1434 was not required
+        to be open), the
+        difficulty with managing a personal firewall rollout of this size would be significant.
+        </p><p class="text">One approach that would pay dividends is to treat mobile computers, whether through
+        the VPN or
+        laptops as untrusted and possibly hostile. Adding another network segment, a
+        mobile computer zone,
+        would mean that filters could be put in place to control the access that these
+        computers have to the
+        corporate network. Appropriate filtering rules (allowing only connections to
+        necessary servers for
+        example) would mean that those critical servers could be patched first in a patch
+        management scheme,
+        ensuring that should a worm begin to spread, it can be contained to a specific
+        network segment.
+
+
+</p><h2>W32.Blaster</h2>
+
+        The Blaster worm was incredibly slow spreading globally, and some commentators
+        questioned whether it
+        was a significant worm because of that. The slow speed was especially evident
+        when comparing Blaster
+        to the speed of W32.SQLExp&#8217;s propagation. One surprising element
+          of this slower spread was the fact
+        that many organizations found their Internal networks to be affected far more
+        negatively than was seen
+        for earlier worms.
+        <p class="text">Blaster propagated in a fashion that tended to favor addresses numerically close
+        to the infected host.
+        Blaster generates a random number modulo 20, and if the result is greater than
+        or equal to 12, it bases
+        its scanning off of the local address, if it is less than 12, it picks a random
+        network to begin scanning.
+        Once the scanning routine has chosen a starting point, it sequentially scans,
+        incrementing the IP address
+        by one, and maintains this pattern until it is restarted, whereupon it once again
+        produces a random
+        number modulo 20. The result is that a host, until it is restarted, will scan
+        sequentially from a given
+        starting address with a 40% chance that it will pick an address related to the
+        current IP.
+        </p><p class="text">The &#8220;Simulating and Optimising Worm Propagation Algorithms&#8221; paper
+          notes that sequential scanning is
+        incredibly inefficient at spreading a worm, and in this case, that assumption
+        is born out as true. There is
+        an interesting correlation though, and that is that because of the preference
+        for local addresses, Blaster
+        was far more effective at compromising every vulnerable host in a local network.
+        </p><p class="text">This is particularly notable when you consider that in this day and age of network
+        security products,
+        including antivirus, firewalls, change control policies, patch management policies,
+        IDS/IPS systems, most
+        organizations are not wide open to threats. Rather, there are two types of vulnerable
+        hosts that are at
+        risk of infection, those that are exposed to the Internet and remain unpatched,
+        and those that are not
+        patched or well hardened but are well protected from the external environment
+        by firewalls. In many
+        situations, the real risk to most organizational networks these days is the interaction
+        of these two classes
+        of vulnerable hosts.
+        </p><p class="text">When we examine our example network, a concerted patching effort was implemented
+        due to the wide
+        spread exposure of TCP/135, especially for desktop systems, but mysterious, unidentified
+        failures in
+        patching left just short of 25 percent of the systems vulnerable to attack [<a href="#ref2">ref 2</a>].
+        Personal firewalls were also
+        strongly advised, especially those high risk mobile PCs.
+        </p><p class="text">One complication is that the RPC port is used for managing systems in a Windows
+        environment.
+        Therefore deploying a personal firewall on all the systems will likely require
+        a number of systems with
+        exceptions, and as not every application fully documents what is required to
+        operate correctly, therefore
+        troubleshooting some configuration problems may become far more complex.
+        </p><p class="text">As with W32.SQLExp, the best approach is likely to try and segment the network
+        with mobile hosts
+        segmented from the other internal network. One concern with this approach is
+        that if one of the servers
+        that is running Exchange had a silent failure with the patch application, then
+        135 would be exposed and
+        the worm can hop past the firewall segmenting the mobile network.
+        
+
+
+</p><h1>Conclusions</h1>
+
+<h2>Summary</h2>
+        Worms are making advancements that optimize the rates that they spread at, and
+        increasingly, a
+        successful worm can be measured in two fashions. Worms that are highly efficient
+        at global Internet
+        spread are typically much slower at fully compromising a local network with a
+        single infected host that is
+        behind the perimeter filtering. Therefore, the fastest spreading Internet worms,
+        Code Red and SQL
+        Slammer for example, are less efficient at fully compromising a LAN than a worm
+        that has a preference
+        for local addresses, evidenced by the W32.Blaster worm. It is possible for a
+        worm to pursue a hybrid
+        model, where a network is chosen randomly, and then that network is sequentially
+        scanned.
+        <p class="text">There are some strategies that, once employed, can narrow the gap in efficiency
+        in both cases, UDP
+        based worms, or worms that do not rely on standard TCP stack communication will
+        be able to spread
+        faster, because they do not have to wait for a connection information, such as
+        the SYN+ACK or RST of
+        TCP, to occur. This effectively allows the system to saturate the outgoing link,
+        and not become slowed
+        down by some of the strategies that have been suggested and implemented (such
+        as Tarpitting).
+        Ultimately though, schemes that scan randomly have far greater spread across
+        the Internet, while
+        sequential scans will have far greater impact on the local area network.
+		
+		
+</p><h2>Recommendations and Looking Forward</h2>
+        Organizations must begin to address the weaknesses that are inherent in the topology
+        that has been
+        commonly deployed in the past. The notion that there is a safe local network,
+        and a hostile external
+        network is a misnomer. As devices become more network aware and mobile, this
+        differentiation between
+        internal and external machines, trusted and untrusted will continue to erode.
+        As additional sites and
+        organizations connect via VPN connections, demands are made to provide more access
+        to services, we
+        can expect overall system security will decrease.
+        <p class="text">Application proxying, often used these days for HTTP and SMTP services can certainly
+        help. And we can
+        expect more proxying and filtering technologies are deployed to support new network
+        services, such as
+        Instant Messaging and NetPhone, Video Conferencing applications.
+        </p><p class="text">
+        While proxying technologies will advance, one of the more profound changes will
+        be in embedding
+        filtering and firewall services in the network fabric itself. As the move to
+        switched and VLANed networks
+        helped to increase the efficiency of many organizations networks, the move toward
+        this emerging
+        technology that can control access to the network based on policy compliance
+        will have an effect on
+        helping to control outbreaks of worms on networks with solid perimeter protection.
+        In the meantime
+        increasing the segmentation and filtering between network segments is likely
+        to limit the actual worm
+        exposure of the whole network.
+
+
+        </p><h3>Workstation Service</h3>
+        On November 11, 2003, Microsoft released Security Bulletin MS03-049, which outlined
+        a vulnerability
+        discovered in the Workstation service. This vulnerability is the fifth remotely
+        exploitable vulnerability
+        found that is accessible through the RPC Interface in Windows systems. The workstation
+        service is used
+        to authenticate and request services from other Windows hosts, and therefore,
+        in a corporate
+        environment it is impossible to fully block or turn off this service.
+        <p class="text">The essential nature of this service means that sites that utilize VPNs and laptops
+        will be unwilling to filter
+        the port, meaning that machines that move between the protected LAN and other
+        networks will be at
+        risk.
+        </p><p class="text">Further analysis by the discoverers of this vulnerability, eEye, indicates that
+        this is a stack based
+        overflow, making exploitation significantly easier for a number of exploit authors,
+        and they outline some
+        details of the vulnerability that will likely speed the creation of public exploits.
+        </p><p class="text">In recent history, most worms are built around known, publicly released exploitation
+        mechanisms, and in
+        general, the release of public exploits, and the reliability of these public
+        exploits, is correlated with the
+        chances that a worm will be written to exploit the vulnerability. Despite all
+        of these factors supporting the
+        creation of a successful worm, at the time of this writing an exploit that is
+        reliable across multiple service
+        packs and versions of Windows has not been written. In addition, the only Windows
+        2000 exploit
+        available relies on the file system being a FAT32 rather than NTFS.
+
+
+        </p><h3>Messenger</h3>
+        On October 15, 2003, Microsoft released Security Bulletin MS03-043, which outlined
+        a vulnerability
+        discovered in the MS Messenger Sub-System. This system is available on every
+        deployed version of
+        Windows, and is listening by default. The system is used to send pop-up notifications
+        to users about
+        events that occur on the network, and is utilized in print functions, network
+        administrator information
+        broadcasts, and other functions.
+        <p class="text">The vulnerability, upon further investigation, appears to be a heap overflow,
+        and if exploitation occurs, it
+        will be more difficult to do reliably than the stack based overflows that resulted
+        in all the worms analyzed
+        in this document. The fact that this vulnerability has been released since October
+        15, 2003, and a
+        successful exploit has not yet surfaced publicly indicates that this vulnerability
+        may not be the fruitful
+        opportunity for worm development that it was originally thought to be.
+        </p><p class="text">This vulnerability is present over UDP, and is accessible through a number of
+        ports, most commonly
+        UDP/135 and an ephemeral port, usually UDP/1026.
+        </p><p class="text">A worm exploiting this service would be incredibly fast spreading owing to the
+        use of UDP as the network
+        protocol, meaning that it could utilize the strategy employed by W32.SQLExp to
+        fire and forget
+        exploitation packets. Should an exploit be discovered that utilizes this strategy,
+        it is likely that this will be
+        an incredibly fast spreading worm, and the Threat Analyst Team believes that
+        there is a reasonable
+        chance that exploitation will occur over 1026 as well as, or rather than,
+        135, simply because activity over
+        135 means that this port has far greater scrutiny.
+  
+   
+       
+<!-- InstanceEndEditable -->
+
+<br>
+<br>
+</p><h2>References</h2>
+
+[<a name="ref1"><b>ref 1</b></a>] This number was taken from the Caida analysis. In various analysis documents,
+        the rate of propagation was reported
+        anywhere from 4 &#8211; 11 SYN packets per second, we have chosen to
+          use the fastest rate reported.
+<p class="text">
+[<a name="ref2"><b>ref 2</b></a>] This number of failed patch applications was taken from a thread on a security
+        mailing list where many individuals were
+        reporting significant silent failure of the patch, leaving systems vulnerable.
+
+
+
+<br><br>
+<!-- OAS --></p></td>
+</tr>
+
+<!-- If you have relevant links, remove the comment tag below it -->
+
+<tr>
+<td class="rightcolumn" valign="top">
+ <img src="1752_files/pixel.htm" alt="" height="1" width="110"><br>
+ <div class="rightcolumn">
+
+<h2>Community Credits</h2>
+
+
+        Staniford, Paxson, and Weaver. "<a href="http://www.icir.org/vern/papers/cdc-usenix-sec02/" target="nonlocal">How to Own the Internet in Your Spare
+          Time</a>" In Proceedings of
+        2002 Summer USENIX Conference, Berkeley, CA, August 2002. Usenix Association,
+        USENIX.
+     
+		<p class="text">
+        Tom Vogt. "<a href="http://www.securityfocus.com/data/library/WormPropagation.pdf" target="nonlocal">Simulating and Optimising Worm Propagation Algorithms (PDF document)</a>" 29th
+          September 2003.
+		  
+        </p><p class="text">
+		Moore, Shannon, and Brown. &#8220;<a href="http://www.caida.org/outreach/papers/2002/codered/codered.pdf" target="nonlocal">Code-Red: a case study on the
+          spread and victims of an Internet worm (PDF document)</a>&#8221; 
+        </p><p class="text">
+		Moore, Paxson, Savage, Shannon, Staniford, and Weaver. &#8220;<a href="http://www.computer.org/security/v1n4/j4wea.htm" target="nonlocal">Inside
+          the Slammer Worm</a>&#8221;
+        
+  
+<!-- InstanceEndEditable --></p></div>
+</td>
+</tr>
+
+<!-- If you have relevant links, remove the comment tag above it -->
+
+</tbody></table><!-- InstanceEnd -->
+	</span>
+</div>
+	</td>
+	</tr>
+</tbody></table>
+
+			<!-- End Content -->
+<br>
+<p style="color: rgb(102, 102, 102); font-size: 8pt;" align="center"><a href="http://www.securityfocus.com/privacy">Privacy Statement</a><br>Copyright 2005, SecurityFocus</p>
+
+</body></html>

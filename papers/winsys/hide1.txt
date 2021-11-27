@@ -1,0 +1,103 @@
+Hiding your program from the Ctrl+Alt+Del list
+-----------------------------------------------------------------------------
+By Bill T.
+Thursday, June 24, 1999
+
+
+Introduction:
+-----------------------------------------------------------------------------
+
+Here's a question that I have seen a lot.  To accomplish this, you need to
+resister the program as a service, by passing its process ID to the
+RegisterService() function.                                                  
+
+This method makes use of the API GetProcAddress to get the function pointer
+for RegisterServiceProcess API.  This function pointer is then used to call
+the RegisterServiceProcess function.
+
+
+
+Hiding the Application:
+-----------------------------------------------------------------------------
+
+; defined in the data section
+    szKernel32      db   "Kernel32.dll",0
+    szRSP           db   "RegisterServiceProcess",0
+
+; code to hide application from alt+ctrl+del
+    push   offset szKernel32        
+    call   GetModuleHandle           ; get the handle of kernel32.dll
+    push   offset szRSP
+    push   eax
+    call   GetProcAddress            ; get the address of the function
+    mov    ebx, eax                  ; save the pointer into ebx
+
+    call   GetCurrentProcessId       ; get the current process's id
+
+    push   1                         ; 1 = Register as Service
+    push   eax                       ; process id
+    call   ebx                       ; call RegisterServiceProcess
+
+
+
+Cleaning Up:
+-----------------------------------------------------------------------------
+
+You should always call RegisterServiceProcess again (using the previously
+described methods), but instead passing a 0 for the dwType argument, so that
+your program will unregister itself, and frees up its resources.
+
+; code to un-hide application from alt+ctrl+del
+    push   offset szKernel32        
+    call   GetModuleHandle           ; get the handle of kernel32.dll
+    push   offset szRSP
+    push   eax
+    call   GetProcAddress            ; get the address of the function
+    mov    ebx, eax                  ; save the pointer into ebx
+
+    call   GetCurrentProcessId       ; get the current process's id
+
+    push   0                         ; 0 = UnRegister as Service
+    push   eax                       ; process id
+    call   ebx                       ; call RegisterServiceProcess
+
+
+RegisterServiceProcess:
+-----------------------------------------------------------------------------
+
+The RegisterServiceProcess function registers or unregisters a service
+process. A service process continues to run after the user logs off.
+
+To call RegisterServiceProcess, retrieve a function pointer using
+GetProcAddress on KERNEL32.DLL. Use the function pointer to call
+RegisterServiceProcess.
+
+
+DWORD RegisterServiceProcess(
+    DWORD dwProcessId,
+    DWORD dwType
+);
+
+Parameters
+
+  dwProcessId
+      Specifies the identifier of the process to register as a service
+      process. Specifies NULL to register the current process.
+
+  dwType
+      Specifies whether the service is to be registered or unregistered.
+      This parameter can be one of the following values.
+
+      Value      Meaning
+      0          Unregisters the process as a service process.
+      1          Registers the process as a service process.
+
+Return Values
+
+  The return value is 1 if successful or 0 if an error occurs.
+
+-----------------------------------------------------------------------------
+
+Copyright (C) 1999
+Bill T.  (billasm@usa.net)
+

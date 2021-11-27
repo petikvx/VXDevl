@@ -1,0 +1,577 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Macro Viruses - Symantec</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT FACE="ARIAL"><FONT COLOR="#004080"><FONT SIZE=+3>Macro
+Viruses<BR>
+</FONT><FONT SIZE=+1>by Symantec</FONT></FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<OL>
+<LI><A HREF="#antidmv">Anti-DMV (alias MDMADMV)</A> </LI>
+
+<LI><A HREF="#atom">Atom</A> </LI>
+
+<LI><A HREF="#boom">Boom</A> </LI>
+
+<LI><A HREF="#colors">Colors (alias RainBow)</A> </LI>
+
+<LI><A HREF="#concept">Concept (alias Prank, WordMacro)</A> </LI>
+
+<LI><A HREF="#conceptfrb">Concept.FR.B</A> </LI>
+
+<LI><A HREF="#dmv">DMV</A> </LI>
+
+<LI><A HREF="#formatc">FormatC</A> </LI>
+
+<LI><A HREF="#friendly">Friendly</A> </LI>
+
+<LI><A HREF="#hot">Hot</A> </LI>
+
+<LI><A HREF="#imposter">Imposter</A> </LI>
+
+<LI><A HREF="#infezione">Infezione</A> </LI>
+
+<LI><A HREF="#irish">Irish</A> </LI>
+
+<LI>XM.Laroux </LI>
+
+<LI><A HREF="#nop">NOP</A> </LI>
+
+<LI><A HREF="#nuclear">Nuclear</A> </LI>
+
+<LI><A HREF="#parasite">Parasite</A> </LI>
+
+<LI><A HREF="#polite">Polite</A> </LI>
+
+<LI>XM.Sofa </LI>
+
+<LI><A HREF="#wazzu">Wazzu</A> </LI>
+
+<LI><A HREF="#xenixos">Xenixos</A> </LI>
+</OL>
+
+<H1>General Overview: Word Macro Virus Family</H1>
+
+<P>The Word Macro family of viruses use the WordBasic macro language to
+infect and replicate in and among MS Word documents and templates. Most
+notably, this new family of viruses is platform independent - they will
+infect documents and templates on DOS, Macintosh, Windows 3.x, Windows
+95 and Windows NT operating systems. </P>
+
+<P>These viruses use several of the features of the MS Word &quot;environment&quot;
+to auto-execute viral macro code. Once an infected document is opened and
+the virus launched, generally, the virus will infect the user's NORMAL.DOT
+template. This template is the basis for the majority of other documents
+and templates and is globally available to all other MS Word templates
+on the system. Once entrenched in the NORMAL.DOT file, the virus will spread
+to all other documents and templates as they are opened. Note that, by
+default, the NORMAL.DOT template is the first document opened when you
+launch MS Word without specifying a different document on the command line.
+This will immediately put the virus in control every time you launch MS
+Word. </P>
+
+<P>Word Macro viruses force documents to be saved as MS Word templates,
+despite what the name or extension of the document file might be recorded
+as. Forcing documents to be saved as templates is used as a means of propagation
+as macros are not saved in standard .DOC files. Only templates can contain
+any actual macro code and therefore be used as a carrier. <A NAME="antidmv"></A></P>
+
+<H1>Anti-DMV (alias MDMADMV)</H1>
+
+<P>This is a modified version of the macro virus DMV. This uses only one
+(1) macro, AutoClose, and therefore infects the global template when infected
+documents are closed. If the global template is infected, then documents
+will be infected as they are closed. </P>
+
+<P>On the first day of any month (for example: March 1, April 1, June 1),
+this virus unsuccessfully checks the platform it is running on, and attempts
+to delete files on the user's system. Because of a bug in the code, the
+virus always assumes it is running on a Windows 95 system. If the day is
+correct, it will attempt to delete files in the following directories:
+</P>
+
+<P>C:\SHMK (all files) </P>
+
+<P>C:\WINDOWS (all help files) </P>
+
+<P>C:\WINDOWS\SYSTEM (all Control Panel files) </P>
+
+<P>These commands will be unsuccessful on Macintosh platforms, but have
+a high probability of deleting at least some files on PCs running DOS,
+Windows 3.1, Windows 95 or Windows NT. <A NAME="atom"></A></P>
+
+<H1>Atom</H1>
+
+<P>The Atom macro virus consists of four (4) macros. These are named Atom,
+AutoOpen, FileOpen, and FileSaveAs, and are stored in encrypted form in
+infected documents. If these macros are somehow unencrypted, they will
+be encrypted again when the document is opened. The AutoOpen, FileOpen,
+and FileSaveAs macros are used to infect documents and the global template.
+</P>
+
+<P>On December 13 of any year, Atom of it will attempt to delete all files
+in the current directory (this assumes your document directory). <A NAME="boom"></A></P>
+
+<H1>Boom</H1>
+
+<P>The Boom macro virus uses four (4) macros: AutoOpen, AutoExec, System,
+and DateiSpeichernUnter. Because DateiSpeichernUnter is German for FileSaveAs,
+standard documents will only be infected when using German editions of
+Word. </P>
+
+<P>The AutoOpen macro copies itself and the other macros to the global
+template and calls the AutoExec macro. The AutoExec macro will call the
+system macro if the current time is 13:13:13 (13 minutes and 13 seconds
+after 1pm). The System macro will change the main menu bar from &quot;File
+Edit View Insert…&quot; to &quot;Mr. Boombastic and Sir WIXALOT are watching
+you!!!!&quot; if it is run on February 13,1995. </P>
+
+<P>It beeps as each menu item is changed. It then prints out the following
+string 5,000 times: </P>
+
+<BLOCKQUOTE>
+<P>&quot;Mr. Boombastic and Sir WIXALOT : Don't Panik, all things are removeable
+!!! Thanks VIRUSEX !!!&quot; </P>
+
+<P>It then creates a new template that contains the text: </P>
+
+<P>&quot;Greeting from Mr. Boombastic and Sir WIXALOT !!!&quot; </P>
+
+<P>&quot;Oskar L., wir kriegen dich !!!&quot; </P>
+
+<P>&quot;Dies ist eine Initiative des Institutes zur Vereidung und Verbreitung
+von Peinlichkeiten, durch in der Offentlichkeit stedhende Personen, unter
+der Schirmherrschaft von Rudi S.!&quot; </P>
+
+<P>It then sends the file to the printer. </P>
+
+<P>Written in German. </P>
+</BLOCKQUOTE>
+
+<P><A NAME="colors"></A></P>
+
+<H1>Colors (alias RainBow)</H1>
+
+<P>The Colors macro virus is similar in nature to the other macro viruses
+(Concept, Nuclear and DMV) in that documents are saved as templates containing
+viral macros. Infection is triggered by auto-macros as well as menu commands.
+</P>
+
+<P>Macros called by the virus are: AutoExec, AutoClose, AutoOpen, FileExit,
+FileNew, FileSave, FileSaveAs, Macros and ToolsMacro </P>
+
+<P>When any of the above macros are invoked, a counter is incremented.
+This counter is stored in the [windows] section of WIN.INI file (the entry
+is &quot;countersu&quot;). Every 300 times this occurs, the payload is
+triggered. The trigger is to save random values for the desktop colors
+stored in the WIN.INI. The next time the user starts Windows, the desktop
+colors are altered. As with Nuclear, these macros are copied &quot;ExecuteOnly&quot;
+and, as such, automatically encrypted by MS Word. They are not normally
+available for viewing and editing, despite being visible in the macro list.
+<A NAME="concept"></A></P>
+
+<H1>Concept</H1>
+
+<P>The Concept virus uses five (5) macros to infect and spread. The macros
+are named: AAAZAO, AAAZFS, AutoOpen, FileSaveAs and PayLoad. All are easily
+visible from the Tools, Macro… menu. Upon infection, the virus will check
+for the presence of the PayLoad macro. It will then check for the presence
+of a macro named &quot;FileSaveAs.&quot; If either are found, the virus
+will abort infection, otherwise the infection process begins. </P>
+
+<P>The first stage of infection that the user will see is a dialog box
+displaying the number &quot;1&quot; and an OK button. Once the OK button
+is pressed by the user, the virus gains control. The virus replaces the
+File, Save As… function with its own, which forces the user to save all
+documents as new templates. In addition, without notice, the virus will
+take the contents of the AAAZAO macro and place it in another macro called
+AutoOpen in the new templates and copy the AAAZFS, AAAZAO and PayLoad macros
+to the new file. The AutoOpen macro is automatically started each time
+a template is opened. Thus, the virus replicates to the new documents.
+</P>
+
+<P>Other than the number &quot;1&quot; displayed during initial residency,
+there is no message displayed. However, a message is contained in the PayLoad
+macro: </P>
+
+<P><TT><FONT FACE="Courier New">That's enough to prove my point</FONT></TT>
+<A NAME="conceptfrb"></A></P>
+
+<H1>Concept.FR.B</H1>
+
+<P>This is a variant of the original Concept virus. It is identical in
+nature and function, however it has been modified and translated to work
+with French language versions of Microsoft Word. </P>
+
+<P>Written in French. <A NAME="dmv"></A></P>
+
+<H1>DMV</H1>
+
+<P>The DMV macro virus was written and published by Joel McNamara in December
+of 1994. In his paper, McNamara outlines the potential of macro viruses
+and the vulnerability of documents, e-mail and OLE environments. At the
+tail end of his document, McNamara provides complete, commented source
+code for a fully infectious &quot;Document Macro Virus,&quot; DMV. In addition
+to the source code provided, the document is intentionally infected! Although
+the intention of the paper may have been to instruct and advise, his paper
+has been posted on major Internet newsgroups and bulletin board services
+and has been used as a tutorial for writing some of the first macro viruses.
+McNamara has been heavily criticized by prominent members of the anti-virus
+community for making his paper available to the general public in an unabridged
+form. Malicious suggestions and replication code found in McNamara's paper
+were implemented in the Nuclear macro virus. </P>
+
+<P>The DMV macro virus uses a single macro, AutoClose, which auto-executes
+when an infected document is closed. At each stage of infection, the virus
+displays a message box explaining action as it is completed. None of the
+original code is destructive, although suggestions are made as to where
+destructive commands can be inserted. Dialogs are displayed with the following
+messages: </P>
+
+<P><TT><FONT FACE="Courier New">Counting global macros.</FONT></TT> </P>
+
+<P><TT><FONT FACE="Courier New">AutoClose macro virus is already installed
+in NORMAL.DOT.</FONT></TT> </P>
+
+<P><TT><FONT FACE="Courier New">Infected NORMAL.DOT with copy of AutoClose
+macro virus.</FONT></TT> </P>
+
+<P><TT><FONT FACE="Courier New">AutoClose macro virus already present in
+this document.</FONT></TT> </P>
+
+<P><TT><FONT FACE="Courier New">Saved current document as template.</FONT></TT>
+</P>
+
+<P><TT><FONT FACE="Courier New">Infected current document with copy of
+AutoClose macro virus.</FONT></TT> </P>
+
+<P><TT><FONT FACE="Courier New">Macro virus has been spread. Now execute
+some other code (good, bad, or indifferent).</FONT></TT> <A NAME="formatc"></A></P>
+
+<H1>FormatC</H1>
+
+<P>The FormatC macro is not truly a virus, but a Trojan Horse. It cannot
+and will not replicate. Although simplistic in nature, it can wreak great
+havoc on an unprotected system. It uses only one macro, AutoOpen, which
+automatically launches when the document is opened. The macro is tagged
+&quot;ExecuteOnly&quot; and, as such, automatically encrypted by MS Word.
+It is not normally available for viewing and editing, despite being visible
+in the macro list. </P>
+
+<P>When FormatC triggers, it runs an unconditional format on your C drive,
+in a minimized DOS box. Standard procedures can be used to recover from
+the DOS format. <A NAME="friendly"></A></P>
+
+<H1>Friendly</H1>
+
+<P>The Friendly macro virus consists of twenty (20) macros, several of
+which are identical in content, but have different names to insure functionality
+of the virus when running under German or English-language editions of
+Word. Most of the macros in this virus simply call other macros which reproduce
+or deliver its payload. When the virus is run, it checks to see if it is
+running on a German or English version of Word, and also drops a virus
+onto the user's hard disk by calling DOS programs. Because of the use of
+DOS programs, the screen will briefly change to text mode with only a cursor
+in the upper left corner of the screen each time the virus is run. </P>
+
+<P>The virus on the disk only reproduces, except on January 1<SUP>st</SUP>,
+when it prints the message &quot;Eine gute neues Jahr!&quot; - which literally
+translates from German as &quot;A good new year!&quot; The virus program
+&quot;dropped&quot; by this macro virus is detected by NAV as &quot;Little
+Brother (Gen1)&quot;, while subsequent infections are detected as &quot;Little
+Brother.395.&quot; <A NAME="hot"></A></P>
+
+<H1>Hot</H1>
+
+<P>The Hot virus uses four (4) macros to infect and spread. In an effort
+to elude virus scanners which check only for the macro names, the virus
+will name the macros differently depending on the infection routine. When
+the virus infects the NORMAL.DOT global template, it names the macros:
+AutoOpen, FileSave, InsertPageBreak and StartOfDoc. When it infects a document
+(from the global template) it names the macros: AutoOpen, DrawBringInFrOut,
+InsertPBreak and ToolsRepaginat. Therefore, although it uses only four
+(4) true macros, it has 7 different names for them. </P>
+
+<P>All of the macros are easily visible from the Tools, Macro… menu. In
+addition, these macros are &quot;ExecuteOnly&quot; and, as such, automatically
+encrypted by MS Word. They are not normally available for viewing and editing,
+despite being visible in the macro list. </P>
+
+<P>Most notably with this virus, Hot is the first to use the Word Basic
+ability to call any standard Windows API. This grants the virus enormous
+opportunity to use advanced calls and features of Windows. </P>
+
+<P>The virus does deliberately destroy data. Upon initial infection, the
+virus adds an entry to the WINWORD6.INI file (found in the \WINDOWS directory),
+in the [Microsoft Word] section. The entry is QLHot=<TT><FONT FACE="Courier New">mmdddyy</FONT></TT>,
+where mmddyy is the date of first infection. Every time an infected document
+is open, the virus compares the stored date against the current date. The
+virus stays dormant for the first fourteen (14) days, after that, there
+is chance that the virus will trigger (based upon some calculations). </P>
+
+<P>When the virus triggers, it deletes all information in the document
+as it is opened. Specifically, when the document is opened and the virus
+triggers, it highlights all text in the file, deletes the text, and then
+saves the document again, completely empty. The exception is if the file
+EGA5.CPI exists in the C:\DOS directory, in which case the virus simply
+closes the file without any damage. </P>
+
+<P>First discovered in the wild in Russia. <A NAME="imposter"></A></P>
+
+<H1>Imposter</H1>
+
+<P>The Imposter virus uses two (2) macros to infect and spread. In an effort
+to elude virus scanners which check only for the macro names, the virus
+will name the macros differently depending on the infection routine. When
+the virus infects the NORMAL.DOT global template, it names the macros:
+FileSaveAs and DMV. When it infects a document (from the global template)
+it names the macros: AutoClose and DMV. Therefore, although it uses two
+(2) true macros, it has three different names for them. </P>
+
+<P>Imposter is based on DMV and has no payload or trigger event. A message
+box entitled DMV is displayed when the global template is first infected.
+<A NAME="infezione"></A></P>
+
+<H1>Infezione</H1>
+
+<P>This virus deletes all document and global macros named AutoClose, presumably
+because Microsoft's antidote to the Concept virus resides in a macro by
+this name. Infected documents and templates will have a single macro named
+AutoOpen. </P>
+
+<P>First discovered in the wild in Italy. <A NAME="irish"></A></P>
+
+<H1>Irish</H1>
+
+<P>The Irish virus uses four (4) macros to infect and spread. In an effort
+to elude virus scanners which check only for the macro names, the virus
+will name the macros differently depending on the infection routine. When
+the virus infects the NORMAL.DOT global template, it names the macros:
+AntiVirus, AutoOpen, WordHelp and WordHelpNT. When it infects a document
+(from the global template) it names the macros: AntiVirus, FileSave, WordHelp
+and WordHelpNT. Therefore, although it uses four (4) true macros, it has
+six different names for them. </P>
+
+<P>The WordHelp and WordHelpNT macros do not appear to run automatically.
+However, if they are executed manually by the user, they will turn the
+Windows desktop colors green. Additionally, WordHelpNT attempts to set
+the screen saver to Marquee with the message &quot;Happy Saint Patties
+Day ... CDJ 1995.&quot; The screen saver portion of the payload does not
+function well under Windows 95. <A NAME="nop"></A></P>
+
+<H1>NOP</H1>
+
+<P>This macro virus only reproduces. It infects other documents using two
+(2) macros that are identical to each other. It copies itself to macros
+named AutoOpen and NOP in standard documents. Because it uses German menu
+commands, this macro virus will only propagate with German-language editions
+of Word. </P>
+
+<P>Written in German. <A NAME="nuclear"></A></P>
+
+<H1>Nuclear</H1>
+
+<P>The Nuclear virus uses nine (9) macros to infect and spread. The macros
+are named: AutoExec, AutoOpen, DropSuriv, FileExit, FilePrint, FilePrintDefault,
+FileSaveAs, InsertPayload and PayLoad. All are easily visible from the
+Tools, Macro… menu. In addition, these macros are &quot;ExecuteOnly&quot;
+and, as such, automatically encrypted by MS Word. They are not normally
+available for viewing and editing, despite being visible in the macro list.
+</P>
+
+<P>When an infected host document or template is opened, the virus is launched
+from the AutoOpen macro automatically by MS Word. The virus checks for
+the presence of a macro named &quot;AutoExec.&quot; If found, the virus
+aborts the infection process, otherwise it copies all of the viral macros
+to the global template. Immediately after copying the macros, if the date
+is April 5<SUP>th </SUP>of any year, Nuclear checks for the presence of
+and then clears all attributes except the System attribute on C:\IO.SYS,
+C:\MSDOS.SYS and C:\COMMAND.COM. Then it deletes C:\COMMAND.COM. </P>
+
+<P>Another means of infection is when the user attempts to save a document
+with the Save As… function. It copies all of the viral macros from the
+global template to the newly created file as it is saved. In addition,
+it forces the documents to be saved as templates, so that the macros as
+stored within the new file. </P>
+
+<P>The third infection macro, AutoExec, is automatically launched when
+MS Word is first executed. Here again the macro checks for the presence
+of a macro named &quot;AutoExec.&quot; If found, the virus aborts the infection
+process, otherwise it copies all of the viral macros to the global template.
+Following the infection check, the virus polls the system time. If the
+time is between 5:00pm and 5:59pm (inclusive) on any day, the macro uses
+an elaborate DEBUG routine to drop a binary virus to the C:\DOS directory.
+Once the binary virus is in memory and infectious, the macro removes any
+trace of the dropping and infection routines. </P>
+
+<P>The Ph33r virus dropped by Nuclear is a fully replicating virus unto
+itself. Once dropped and launched, it will infect both .COM and .EXE files.
+In addition, it can infect Windows executables as well as standard DOS
+executables. </P>
+
+<P>The message carried by the virus is displayed only when printing, and
+then only in the last 4 seconds of any minute (if the time in seconds is
+56, 57, 58 or 59). When printing any infected Word file during that time
+bracket, the macro virus will insert a message on the last page which is
+printed along with the rest of the document: </P>
+
+<P><TT><FONT FACE="Courier New">And finally I would like to say: <BR>
+STOP ALL FRENCH NUCLEAR TESTING IN THE PACIFIC!</FONT></TT> <A NAME="parasite"></A></P>
+
+<H1>Parasite</H1>
+
+<P>This virus replaces &quot;and&quot; with &quot;not&quot;, and on the
+16<SUP>th</SUP> of the month is also replaces &quot;.&quot; with &quot;,&quot;
+and &quot;a&quot; with &quot;e&quot; on all Word documents. Also on the
+16<SUP>th</SUP>, it displays the following message while starting Microsoft
+Word: </P>
+
+<P><TT><FONT FACE="Courier New">&quot;Parasite virus version 1.0 !&quot;</FONT></TT>
+</P>
+
+<P>It displays the following message while closing Microsoft Word: </P>
+
+<P><TT><FONT FACE="Courier New">&quot;Your computer is infected with the
+Parasite Virus, version 1.0!&quot;</FONT></TT> </P>
+
+<P>This virus uses six (6) <I>different</I> macros that appear under different
+names in the global template and infected document files. Note that macros
+1 and 2 may appear more than once under two different names. Each infected
+file will contain seven macros, two of which will be identical in content,
+as shown in the table below:</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD WIDTH=126>Macro</TD>
+
+<TD WIDTH=192>NORMAL.DOT Name(s)</TD>
+
+<TD WIDTH=204>Document Name(s)</TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro1</TD>
+
+<TD WIDTH=192>Para</TD>
+
+<TD WIDTH=204>AutoOpen 
+<P>Para </P>
+</TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro2</TD>
+
+<TD WIDTH=192>FileSaveAs 
+<P>Site </P>
+</TD>
+
+<TD WIDTH=204>Site</TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro3</TD>
+
+<TD WIDTH=192>Payload</TD>
+
+<TD WIDTH=204>Payload </TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro4</TD>
+
+<TD WIDTH=192>AutoExec</TD>
+
+<TD WIDTH=204>K </TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro5</TD>
+
+<TD WIDTH=192>AutoOpen</TD>
+
+<TD WIDTH=204>A678 </TD>
+</TR>
+
+<TR>
+<TD WIDTH=126>Macro6</TD>
+
+<TD WIDTH=192>AutoExit</TD>
+
+<TD WIDTH=204>I8U9Y13 </TD>
+</TR>
+</TABLE>
+
+<P>Parasite initially infects the global template when an infected document
+is opened. Once the global template is infected, documents are infected
+when they are opened, or when they are saved using the FileSaveAs option.
+<A NAME="polite"></A></P>
+
+<H1>Polite</H1>
+
+<P>Polite is a word macro virus that is made up of two (2) macros: FileClose
+and FileSaveAs. It is a fairly simple macro virus and is not encrypted.
+</P>
+
+<P>The FileClose macro first displays a message box with the title &quot;Activization&quot;
+and the message &quot;I am Alive!&quot; Next it checks to see if the normal.dot
+file is already infected, if it isn't it will copy it's two macros infecting
+the normal.dot file. </P>
+
+<P>The FileSaveAs macro is the one that actually infects other documents.
+When you chose FileSaveAs from the file menu a message box pops up with
+the message &quot;Shall I infect the file ?&quot; If you click &quot;yes&quot;
+your file will be infected, otherwise the file will save as normal without
+being infected. This is obviously how the virus got its name. <A NAME="wazzu"></A></P>
+
+<H1>Wazzu</H1>
+
+<P>This virus uses one (1) macro to infect and spread. Infected documents
+and templates will have a macro called: AutoOpen. </P>
+
+<P>Each time a document is opened while the virus is active, Wazzu rearranges
+up to three words, and may also insert the word &quot;Wazzu&quot; in a
+document. Documents will become infected upon opening. <A NAME="xenixos"></A></P>
+
+<H1>Xenixos</H1>
+
+<P>The Xenixos virus uses eleven (11) different macros to reproduce, and
+then attempts to deliver and activate its payload. This virus carries many
+payloads (triggered actions) depending upon various criteria. A list follows:
+</P>
+
+<UL>
+<LI>If the system time reads the first 30 seconds of any minute, &quot;Nemesis
+Corp.&quot; is attached to the end of the file being printed. </LI>
+
+<LI>If the system time reads the last 15 seconds of any minute, the file
+is encrypted with password &quot;xenixos&quot;. </LI>
+
+<LI>On any day in May, a DOS comand is added to AUTOEXEC.BAT to format
+the hard drive the next time the system is started. </LI>
+
+<LI>On any day in March, the virus attempts to drop a variant of the Neuroquila
+virus onto the hard drive. A line is also inserted in AUTOEXEC.BAT that
+attempts to call the virus. Fortunately, the virus author made a mistake
+in writing the routine, so the virus is not dropped onto the user's system.
+</LI>
+
+<LI>It redefines the Tools…Macro menu item. Instead of displaying macro
+information, the virus prints out a message box stating (in German) that
+this option is not available. </LI>
+</UL>
+
+<P>Written in German. 
+<HR WIDTH="100%"><FONT FACE="ARIAL"><FONT SIZE=-2>Copyright &copy; 1996
+Symantec Corporation </FONT></FONT><BR>
+</P>
+
+</BODY>
+</HTML>

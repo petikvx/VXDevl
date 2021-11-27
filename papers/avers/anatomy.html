@@ -1,0 +1,1396 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="Generator" content="Microsoft Word 97"><title>Anatomy of a Commercial-Grade Immune System</title>
+
+<meta name="keywords" content="anatomy of a commercial-grade immune system ">
+<meta name="doccomm" content=""></head>
+<body link="#0000ff"><a href="#main"><img src="anatomy_files/clear.html" height="1" border="0" width="1" alt="Skip to main content"></a>
+
+<table border="0" cellspacing="0" cellpadding="25">
+<tbody><tr valign="top" align="left">
+<td>
+
+<a name="main"></a><center><b></b><h2><b>Anatomy of a Commercial-Grade Immune System</b></h2>
+<br>
+Steve R. White, Morton Swimmer, Edward J. Pring,
+<br>William C. Arnold, David M. Chess, John F. Morar
+<br>
+IBM Thomas J. Watson Research Center
+<br>P.O. Box 704
+<br>Yorktown Heights, NY  10598
+</center>
+<p>
+<b>Abstract</b>
+
+</p><p>We have built the first commercial-grade immune system that can find, analyze 
+and cure previously unknown viruses faster than the viruses themselves can spread. 
+The system solves several important problems. A single console allows a customer 
+administrator to decide whether viruses are submitted for analysis automatically, 
+or whether explicit approval is required, and permits new virus definitions to be 
+distributed automatically in response to a new virus, or held for the administrator's 
+approval. A novel active network architecture permits the system to handle a vast 
+number of customer submissions quickly, so the system can handle floods due to an 
+epidemic of a fast-spreading virus, or due to submission of many uninfected files. 
+The analysis center can analyze most viruses automatically, and with greater speed 
+and precision than human analysts can. The analysis center runs the viruses in a 
+virtual environment, so the process is safe and lets our programs analyze the 
+behavior of the virus in real time. Viruses can be replicated in a number of 
+operating system and application environments, including various national languages. 
+Upconversion and downconversion of macro viruses are handled automatically. Both the 
+active network and the analysis center are scaleable, so the system can easily accommodate 
+ever-increasing loads. End-to-end security of the system allows the safe submission of 
+virus samples and ensures authentication of new virus definitions. During the 
+presentation, we will give a live demonstration of a pilot that we have run with 
+customers, and review our experience with the pilot system.
+<br>
+
+</p><p><b>Introduction</b>
+
+</p><p>For the most part, virus incidents in the past occurred in a fairly regular pattern. 
+Viruses spread slowly, most customers updated anti-virus software regularly, and 
+anti-virus companies could usually keep ahead of the problem by analyzing the rafts 
+of viruses circulated from both helpful and marginal sources. It was unusual for 
+customers to get a new virus that had never been seen before, and for which a cure 
+was not already available. New viruses were found at the rate of a few per day on 
+average. Today new viruses are found at the rate of 8-10 per day, which is still 
+well within the capabilities of the human virus analyzers at most anti-virus vendors.
+
+</p><p>In the new world of Internet-born viruses, however, viruses can become very widespread 
+shortly after their first infection and in some cases before a cure is available. 
+Virus incidents in the future will resemble the Internet Worm and the Melissa virus 
+more than they did the now-ancient Stoned virus. Each new virus will have the 
+potential to rage out of control unless a cure is made available quickly and 
+distributed widely.
+
+</p><p>Worse, there is nothing to prevent viruses from being written at a much faster 
+pace that they are today. It is, in fact, easy to imagine viruses written at a 
+fast enough pace that even a dedicated effort to hire and train new human virus 
+analyzers could not keep up.
+
+</p><p>Taken together, these two trends paint a disturbing picture: More new viruses 
+than humans can handle, spreading more quickly than humans can respond. Whatever 
+we do to solve this problem, it will look quite different from the current solution.
+
+</p><p>To solve this problem, we have built the first commercial-grade immune system 
+that can find, analyze and cure previously unknown viruses faster than the viruses 
+themselves can spread [1].
+
+</p><p>The system solves several important problems. While rapidity of response requires 
+the entire system to be capable of automated operation, customer administrators can 
+control which parts of their system are automated and which parts require manual 
+intervention. A novel active network architecture permits the system to handle a 
+vast number of customer submissions quickly, so the system can handle floods due 
+to an epidemic of a fast -spreading virus. A virus analysis center can analyze 
+most viruses automatically, and with greater speed and precision than human 
+analysts can. Both the active network and the analysis center are scaleable, so 
+the system can easily accommodate ever-increasing loads. End-to-end security of 
+the system allows the safe submission of virus samples and ensures authentication of 
+new virus definitions. We are piloting this immune system with customers, in 
+conjunction with Symantec Corp.  
+
+</p><p>The remainder of this paper is structured as follows. We review some historical 
+incidents of very rapidly spreading viruses, and viruses that caused widespread concern. 
+We use these examples to understand what a system must do to solve the problem of 
+epidemics of fast-spreading viruses. We discuss the three types of loads that will 
+be placed on such a system - average loads, peak loads and overloads - and the 
+requirements that such a system must satisfy. We then describe in detail our 
+implementation of an immune system, focusing on the novel elements of the active network 
+and virus analysis center, which work together to keep the system in constant operation 
+and capable of handling very large virus epidemics. We close with a look at the 
+capabilities of the pilot immune system, and a summary of current work in progress.
+
+</p><p><b>Epidemics and Floods</b>
+
+</p><p>Any system that solves virus problems during an emergency must face the fact that 
+the world is a very big place. There are hundreds of millions of PCs installed in the 
+world at the time of this writing. Large anti-virus companies serve (easily) tens of 
+millions of PCs. If just a tiny number of these decide to submit a possibly new virus 
+for analysis on any given day, the anti-virus company could be faced with tens of 
+thousands of new submissions. You can be sure that all of those customers are concerned 
+enough to want their virus dealt with right away. Similarly, even if a recent virus 
+has already been analyzed and a cure made available, concern that it is becoming 
+widespread rapidly can cause huge numbers of people to request an update to their virus definitions. 
+
+</p><p>A virus epidemic, in particular, presents both problems simultaneously. A new, very 
+fast spreading virus could easily infect over a hundred thousand machines in one day.  
+If most of those machines forward a copy for analysis, very long queues will develop at 
+the anti-virus vendor. As recent virus incidents have taught us, for every person that 
+gets such a virus, hundreds more will request updated definitions to ensure that they 
+are protected from it. That's a lot of downloads in a single day!
+
+</p><p>We now examine several incidents that illustrate these problems, describe the nature 
+of the problem in more detail, and discuss the various causes of these kinds of massive 
+loads on a system that handles virus emergencies.
+
+</p><p><b>The Internet Worm</b>
+
+</p><p>In November of 1988, a graduate student at Cornell University unleashed what came to be 
+called the Internet Worm on the then-tiny Internet. It spread among two flavors of Unix systems 
+on the Internet, infecting them directly without needing any human intervention. As a 
+result, it spread extremely quickly. In a few hours after it was first released, it was all 
+over the world. Within a day, it had infected hundreds, or perhaps thousands of Unix 
+systems [2, 3]. Only fast and intensive efforts by teams of dedicated experts prevented it 
+from becoming a permanent pest on the Internet.
+
+</p><p>The Internet Worm was the first example of a virus that took advantage of the Internet 
+explicitly to spread, and it spread (arguably) more quickly than any other virus to date. 
+Today, the Internet is approximately a thousand times larger than it was in 1988 [4], 
+and the world depends on it much more critically. A similar virus today would be a much 
+larger problem.
+
+</p><p><b>The Michelangelo Virus</b>
+
+</p><p>The Michelangelo virus was a run-of-the-mill boot virus that was discovered late in 1991. 
+If an infected machine were booted on March 6 of any year, the Michelangelo virus would effectively 
+destroy all data on the system's hard drives [5]. A curious hysteria gripped much of the 
+Western world in the weeks prior to March 6, 1992. Though there was no evidence that the 
+virus was widespread and, indeed, good evidence that it was not, hype and publicity 
+catapulted the threat to the front page of newspapers and the top story of television 
+news programs. On March 5, 1992, the day before the dreaded Michelangelo virus was to 
+strike, hordes of people crowded into software stores, denuding shelves of anything that 
+resembled anti-virus software, then rushed home to their computers, fearing that doom 
+was about to befall them.
+
+</p><p>Of course, the sky did not fall the next day. Sure, some computers were infected with 
+the Michelangelo virus, and some of them had their data destroyed, but not very many. 
+Our own estimates at the time were that more disks died of routine hardware failure that 
+day than were affected by the Michelangelo virus.
+
+</p><p>The Michelangelo virus never did cause the gigantic epidemic that some feared, but 
+that's not the point. The point is that people thought it would, so they bought, updated 
+and used anti-virus software in much greater number that week than in any other week 
+previous. Their demand for updates was the highest it had ever been.
+
+</p><p>One way to see the flood of interest unleashed by Michelangelo Madness is in the 
+following figure, which shows the number of reports of various viruses to central incident 
+monitoring desks in large companies, around the first week of March, 1992. Each point represents 
+two weeks of reported incidents for every 1000 PCs in the reporting population [6]. 
+As you can see, a few Michelangelo virus infections were reported, but there were many 
+more reports at the time of the Stoned virus (which was then the most prevalent virus) 
+and far more reports of all other viruses. Notice two important things about this graph. 
+The first is that the number of reported incidents is much larger in the two weeks around 
+March 6 than at any other time, indicating that people scanned their systems and found 
+viruses that were already there and probably had been for some time. Publicity caused people 
+to react. The second thing to notice is that about five times as many viruses were reported in 
+that period, suggesting that about five times as many people in this corporate population 
+scanned their systems than usual.
+<br>
+ 
+</p><p><b>Figure 1:</b> Reported incidents of viruses around March 6, 1992, the date when the Michelangelo 
+virus was first to strike. Because the popular hysteria caused so many people to scan their 
+systems, reported incidents of all viruses were approximately five times higher than usual.  
+This early example of a flood indicates that peak loads on a virus system can be much 
+higher than average loads.
+
+</p><p>An even more telling statistic is that anti-virus vendors sold more copies of their products 
+in the week preceding March 6 than in the entire rest of that year [7]. From this, we can 
+estimate that the demand for anti-virus updates that week was at least 52 times higher 
+than usual in the population as a whole. If most of those sales were in the few days 
+before March 6, which is likely given the buying hysteria reported in news media, 
+demand for updates might have been over a hundred times higher in those few days.
+
+</p><p><b>The Melissa Virus</b>
+
+</p><p>On the afternoon of March 26, 1999, support desks at major anti-virus vendors began to get 
+calls about pieces of mail that were arriving in people's electronic mailboxes.  Each 
+piece of mail had a subject line of "Important Message From [the name of the sender]", and 
+contained an attached Microsoft Word document, along with the text "Here is that document 
+you asked for ... don't show anyone else ;-)".  The attached document caused the Microsoft 
+Word macro-warning dialog to appear when it was opened. When opened, the document contained 
+a list of Web sites.  Some anti-virus products warned of a possibly new virus in the document.  
+When anyone receiving the mail contacted the person that had apparently sent it, the 
+sender would deny having sent any such thing.  Based on the number of calls that began to 
+come in, and the questions that began to be asked on various Web sites and newsgroups, 
+whatever was causing this was rapidly becoming widespread.
+
+</p><p>Once anti-virus experts obtained copies of the document, analysis was simple.  The virus, 
+eventually dubbed "Melissa" (or "WM97/Mellisa.A"), was relatively simple, but also very 
+significant.  It infected other documents just like other macro viruses, installing itself 
+in the global template and infecting documents that the user subsequently worked on. It 
+also had another, more important, infection route. The virus accessed Microsoft Outlook, if 
+it was installed on the machine, and emailed a copy of itself, as an attachment with the 
+subject and content as described above, to the first fifty people in every accessible Outlook 
+address book [8, 9].  Since the mail would arrive from someone who had the recipient in 
+his or her address book, it was often opened, and the attached document was often opened 
+as well, despite the warnings from Microsoft Word. Some people, presumably, had turned those 
+warnings off previously to avoid the inconvenience of an extra mouse click when opening 
+documents containing macros.
+
+</p><p>March 26, 1999 was a Friday.  News of the Melissa virus spread quickly, by word-of-mouth, 
+by alerts from anti-virus and security companies, and by extensive press coverage [10, 11].  
+Updates to anti-virus programs to handle the new virus were quickly developed and made 
+available, and many corporate security officers worked overtime to update their networks, 
+and install stop-gap patches to forbid mail with certain subject lines, or upgrade 
+mail-server virus scanners to include the new signature.  Nonetheless, over the next 
+few days, some enterprise mail systems had to be taken down in order to purge copies 
+of the virus from the systems. Some mail systems crashed because of the excess load 
+caused by the fast-spreading messages. Within some companies, the impact of Melissa 
+was as serious as the impact of the Internet Worm on the Internet as a whole over a 
+decade earlier.
+
+</p><p>Melissa also had some subtler and more insidious effects.  While the initial distribution 
+of the virus was in a document containing a list of Web sites, and was posted to the newsgroup 
+alt.sex, Melissa was able to spread to other documents as well.  When an infected document is 
+opened on a system where the virus has not run before, it is that document, and whatever it 
+contains, that is mailed out to fifty people on every mailing list.  There have been cases 
+where a sensitive company document became infected, and later mailed copies of itself out, 
+to addresses including some that should not have had a copy of the document. Concerned that 
+the Melissa virus might send their own confidential documents outside the organization, 
+some companies shut down their email systems entirely until they could be sure that the 
+virus was cleaned up. This often took days.
+
+</p><p>The Melissa virus could be contained by largely manual methods because of three facts. 
+(1) It began to spread on a Friday (giving the world a weekend of breathing space to install 
+countermeasures before businesses opened on Monday). (2) It was easy to detect and prevent, 
+since the virus consists of fewer than 100 lines of code, and took no serious steps to hide 
+itself. (3) It was a rare occurrence, so anti-virus workers and company security officers 
+were willing to work the weekend to develop and deploy solutions.  If a Melissa-like event 
+were to occur every Monday, or even daily, the manual resources to combat it would be hard 
+to find and sustain.
+
+</p><p>Nevertheless, Melissa caught anti-virus vendors unprepared. The demand for updated virus 
+protection was so large that major anti-virus vendors could not keep up with the flood 
+of requests. Their download sites, and in some cases their information Web sites, failed 
+to respond, presumably due to insufficient network or server capacity. Our own study at 
+the time showed major anti-virus vendors unable to update many of their customers for a 
+period of several days during the peak of the Melissa virus concern. While an outage of 
+several days might be tolerated when there are no pressing virus problems, reliable 
+availability of a cure is most urgent when there is a virus emergency.
+
+</p><p><b>The ExploreZip Worm</b>
+
+</p><p>A little over two months after the Melissa virus made headlines, a worm called 
+"ExploreZip" began to spread in the Internet, using methods similar in some ways to Melissa, 
+but very different in others.  ExploreZip is a 32-bit Windows application, not a set of 
+Microsoft Word macros.  However, it spreads itself in a similar way: when an infected 
+program is run, the worm sends a copy of itself as an attachment to email.  The worm 
+looks through the victim's electronic in-basket for addresses to send itself to, and it 
+disguises its mail as replies to the mail that it finds.  So if I am infected, and you 
+send me mail, you will get back what seems to be a reply from me, saying "I received your 
+email and I shall send you a reply ASAP.  Till then, take a look at the attached zipped docs."  
+The worm itself is attached, disguised as a self-extracting ZIP archive.  If you attempt 
+to open the attachment, the worm displays a convincing-looking archive error, but also installs 
+itself in your system, and begins sending more copies of itself, this time under your name.
+
+</p><p>Infected systems do more than send out copies of the worm as mail.  They also actively 
+look across the local network (the "Network Neighborhood", in Windows terms) for further 
+systems to infect, and for files to destroy.  The worm is designed to destroy files 
+with certain extensions: c, h, cpp, asm, doc, xls, and ppt.  These represent both 
+program code and documents, the files that are most likely to contain valuable information.  
+Whenever the worm finds a system whose drives or directories have been shared, and are 
+writable, on the local network, it will destroy files with these extensions on those 
+drives and directories. If it finds what seems to be a Windows directory, it will copy 
+itself into it and patch that WIN.INI file, in hopes of infecting any system using that 
+copy of Windows [12, 13, 14].
+
+</p><p>ExploreZip spread quickly and destructively [15].  Despite the experience that the world 
+had had just two months before with Melissa, the worm was able to spread to many companies 
+and individuals, and destroy hundreds of thousands of files .  We have reports of companies 
+where the worm was known to be active on the network, but because it took time to identify 
+and locate the actual infected machine, important (and insufficiently backed-up) files 
+were destroyed in the interim.  ExploreZip, like Melissa, illustrates that it is important 
+not only to detect and remove viruses from your organization, but to do it quickly, to 
+minimize the amount of damage (in the form of leaked information, destroyed files, or 
+anything else) that they can do.
+
+</p><p>With viruses like ExploreZip, the threat grows much more substantial the longer they 
+fester within an organization.
+
+</p><p><b>Types of Loads</b>
+
+</p><p>With the exception of a few large incidents like those noted above, virus incidents in 
+the past trickled in at a regular rate. In the vast majority of cases, new viruses were acquired 
+by anti-virus vendors in "collections", and were analyzed and updated virus definitions for 
+them distributed, long before these viruses affected any customer. A new virus seen for 
+the first time by a customer could be handled as an adjunct to the normal process of 
+analyzing collections, albeit with higher priority. 
+
+</p><p>As a result, most anti-virus vendors have tuned their processes for dealing with new 
+viruses to the average rate at which new viruses come in, and assume that there are a 
+small number of incidents of any new virus. As we have seen, however, Internet viruses 
+change these assumptions dramatically, and it becomes crucial to deal smoothly with 
+much larger, faster spreading incidents.
+
+</p><p><b>Average load</b>
+
+</p><p>The average load on a virus protection system consists of the average rate at which 
+samples are submitted for analysis, and the average rate of update requests by customers. 
+If only a few viruses a day are created, and only a few of these show up in customer 
+incidents, then the submission rate is very small and easily handled manually. If 
+customers update primarily as a preventative measure, and do so regularly, the update 
+rate may be fairly large but it is very predictable. This makes it easy to calculate the 
+hardware and software capacity necessary to deal with this average load.
+
+</p><p>Handling average loads is what a typical doctor does in scheduling time for patient 
+visits, confidently predicting an average rate of unconnected maladies.
+
+</p><p><b>Peak loads</b>
+
+</p><p>As we have seen in the simple examples above, peak loads on a virus protection system 
+can be more than an order of magnitude larger than average loads. In the past, most 
+anti-virus vendors handled these as exceptions and regarded it as acceptable if they 
+could not respond quickly, or at all. We have argued that we must handle peak loads 
+much more smoothly and routinely than in the past.
+
+</p><p>If the Red Cross could only handle the number of injuries seen on an average day, 
+they wouldn't be much good in an emergency.
+
+</p><p><b>Overloads</b>
+
+</p><p>No matter how diligently we design a virus protection system, it will always be 
+possible for it to be subjected to more requests for analysis, or more requests for 
+updated virus definitions, than it can handle. There are two important questions.
+
+</p><ol>
+<li>Under what conditions can overloads occur? If the least increase in
+demand causes an overload, the system is useless in emergencies, and
+failures in these important situations may well erode confidence in the
+system even under normal conditions. Where possible, a good system will
+anticipate peak loads much higher than average loads, and perform well
+under most conceivable conditions.
+<p>
+</p></li><li>If an overload does occur, what is the effect on the
+users? Do users merely experience a delay, until more capacity becomes
+available? Are they told that the system is unavailable and then
+required to submit their request again at some unspecified later time?
+Is their request thrown away entirely, without notification? Where
+possible, a good system will take care of users without further action
+on their part.
+</li></ol>
+
+<p><b>Causes of Peak Loads</b>
+
+</p><p>Having decided that it is critical to do a good job of handling most conceivable peak loads, 
+we turn our attention to their various causes.
+
+</p><p><b>Epidemics</b>
+
+</p><p>The immune system is designed primarily to address widespread epidemics of fast-spreading 
+viruses.  Each time such an epidemic occurs, the system will experience a sudden and 
+dramatic increase in load.  While ordinarily the system will see slow-spreading new viruses 
+sent in from only a few users over a matter of hours or days, during an epidemic caused 
+by a fast-spreading virus, the system may see thousands or even tens of thousands of 
+submissions in a single day.  As the world becomes more connected, and other factors that 
+we have identified in this paper come into play, these epidemics are likely to become 
+significantly more common.  
+
+</p><p>But the epidemics that drove the initial development of the system are not the only possible 
+cause of peak loads, and some of the other possible causes are in fact potentially more 
+difficult to deal with.
+
+
+</p><p><b>Upload floods</b>
+
+</p><p>A system that is designed to cope well with a flood of actual infected samples will not 
+necessarily cope well with a sudden flood of samples that are not in fact infected at all.  
+Analyzing a non-infected file to be sufficiently sure that it contains no virus can be 
+more difficult and time-consuming that verifying that an infected sample contains a virus.  
+If some factor in the world causes many users to become suspicious of a particular non-infected 
+file or files in the same short time-span, the system may be flooded with non-infected files.  
+The humor columnist Dave Barry caused a vast upsurge of traffic on a university Web site 
+some years ago, simply by mentioning the site in his widely read column.  If some comedian or 
+widely-distributed joker were to say, for instance, that COMMAND.COM or EXPLORER.EXE contained 
+a dangerous new virus, thousands of people might hear the rumor or misunderstand the joke, 
+and submit uninfected copies of these files to the immune system.  Similarly, if some other 
+anti-virus program in wide use were to release a set of signatures that caused a false 
+positive on some widely-distributed file, users would quickly flood the system with copies 
+of that (uninfected) file, thinking that it probably contained a new virus.  To avoid 
+overloading the analysis center with time-consuming analyses of uninfected files, the 
+system must provide a way to deal gracefully with this sort of load as well.
+
+
+</p><p><b>Download floods</b>
+
+</p><p>In our discussion of the Michelangelo virus, we say how press coverage of a particular 
+virus caused a sudden large rise in the demand for anti-virus software.  In the same way, 
+we can expect that whenever some dangerous-sounding new virus is mentioned in the press, 
+some percentage of users will decide, right then, to update their anti-virus software 
+(which may have been allowed to get out of date before the coverage).  Widely distributed 
+hoax rumors describing fictional dangerous viruses can be expected to have the same effect.  
+If the system is not structured to support peaks in the demand for downloads, users with an 
+important need to get updates (due to an actual new virus) may be unable to access the 
+system, due to overloading of the download links by users responding to hoaxes or hype.
+
+
+</p><p><b>Widespread false positives</b>
+
+</p><p>False positives, in which anti-virus software claims that there is an infection when 
+none is present, have been an ongoing problem in the anti-virus industry since its 
+inception. Every organization that distributes virus definitions has had this problem, 
+sometimes spectacularly so [16]. Widespread false positives - those which hit on very 
+common files - could be real problems.
+
+</p><p>Before 1995, PC viruses were slow-moving file and boot viruses, which took six months 
+to two years to become prevalent worldwide, if they ever did [17]. A virus definition that 
+caused a widespread false positive was embarrassing but not fatal. The embarrassed 
+organization would issue an update that (hopefully!) fixed the problem, sometimes accompanied 
+by a notice to users of the problem. Organizations would update their virus definitions 
+every few months. As a result, false positives that were discovered in previous months would 
+have long since been fixed, and seldom affect most organizations.
+
+</p><p>Macro viruses, first seen in the wild in the PC world in 1995, spread much more quickly 
+than the previous generation of file and boot viruses. These new viruses could become 
+prevalent around the world in a matter of a few months. Organizations responded to 
+this new threat by increasing the frequency with which they updated virus definitions 
+to once a month, or even more often. As they did, anti-virus vendors had to decrease 
+the time it took to respond to new viruses, and to respond to newly discovered false 
+positives. The situation remained tenuously in balance.
+
+</p><p>The new generation of self-mailing viruses like Melissa and ExploreZip, and the 
+faster viruses that will follow them, can become prevalent around the world in days, 
+or even hours. A system which can respond to a new, rapidly spreading virus in days 
+or hours could also, if nothing were done to prevent it, distribute virus definitions 
+that cause a widespread false positive in days or hours. While this same system might 
+be able to distribute a correction quickly, lots of people could have been affected 
+in the meantime. Now, however, these falsely detected files could be sent up to the 
+virus protection system to be analyzed, clogging the system itself and preventing it 
+from working on legitimate viruses. This makes it more important than ever for false 
+positives to be prevented in the first place.
+
+</p><p><b>Abuse</b>
+
+</p><p>Peak loads on a virus protection system can be generated by abuse of it, even by 
+legitimate and well-meaning customers of the system. If a user were to submit 
+thousands of files to the system, the system could spend all of its time trying to 
+analyze these files, and be unable to service legitimate customers.
+
+</p><p>Clearly, these problems must be anticipated and solved by any useful system.
+
+</p><p><b>Requirements of a Commercial-Grade Solution</b>
+
+</p><p>It is trivial to claim that a system solves this problem. It is even rather easy 
+to build a system that only appears to, or does so badly. It is easy to make a toy system. 
+It is more of a challenge to create a system that actually solves the problem of 
+fast-spreading viruses, and does so reliably enough, and safely enough, that businesses 
+will trust their critical operations to it. In this section, we discuss what a 
+commercial-grade system must do.
+
+</p><p><b>Solve the Problem: Cure a Virus Faster than It Spreads</b>
+
+</p><p>It may seem obvious, but a solution to the problem must, well, actually solve 
+the problem: it must cure a new virus faster than the virus spreads. There are many 
+useful things that could be done instead, and some them even sound similar. You 
+could make it easier for customers to get virus samples to a room full of virus 
+analyzers. You could provide the virus analyzers with some tools to make their 
+job easier. You could post virus definition updates on the Web as fast as your 
+fingers can dance across the keyboard. However, unless the system can find, 
+analyze and create a cure for a new virus, then deploy that cure faster than 
+the virus can spread, it doesn't solve the problem. Only a fast, end-to-end 
+solution will work.
+
+</p><p><b>Detect New and Unknown Viruses</b>
+
+</p><p>The first step in the solution is to detect new, previously unknown viruses 
+at each client system. Fortunately, the anti-virus industry has developed a 
+number of heuristics that do a reasonable job of this. The better your 
+heuristic detection, the more effective you can be at combating new viruses. 
+You can't cure what you can't find.
+
+</p><p><b>Handle Epidemics and Floods</b>
+
+</p><p>By their very nature, fast-spreading viruses tend to infect lots of 
+computer very quickly; they tend to cause epidemics. A system that updates 
+virus definitions is nice, but if it is not available or does not respond 
+quickly when there is an epidemic, it does not solve the problem. Similarly, 
+a system that becomes unavailable when there are floods of various kinds 
+misses the point of being there for customers in an emergency.
+
+</p><p><b>Speed Requires Automation</b>
+
+</p><p>To respond quickly enough to fast-spreading viruses, the system must 
+deploy a cure for a new virus within hours of its first discovery. (It may 
+need to be even faster in the future.) In some cases, having to wait for a 
+human to become available to examine a possibly infected machine, analyze a 
+virus or test an update will mean the difference between nipping the virus 
+in the bud and enduring a massive infection. To achieve a response that is 
+consistently fast enough, the entire process of finding, analyzing, and 
+curing a virus must be capable of automation. Customers can, of course, 
+require manual intervention where it is consistent with their business 
+processes and their evaluation of the risks, but the option to automate 
+the entire process will be necessary.
+
+</p><p><b>Scale Up with the Problem</b>
+
+</p><p>The virus problem is always changing. Just this year, we saw, in Melissa, 
+an entirely new type of virus that spread faster than any PC virus in history.  
+In ExploreZip, we saw this rapid spread coupled with an extremely destructive payload.
+
+</p><p>The virus problem will continue to change. It is entirely possible that 
+viruses will be created at a much larger rate than they have been in the past. 
+It is quite likely that they will spread even more quickly than they do today. 
+As we have seen again and again, the problem can get suddenly worse without 
+warning. A solution to the problem must be capable of scaling up when this 
+happens, not months or years later. Both the architecture and the implementation 
+must be capable of quickly scaling up to meet a much larger threat than we have seen to date. 
+
+</p><p><b>Maintain Safety and Reliability</b>
+
+</p><p>Clearly, a solution to the problem of epidemics must work reliably, especially 
+during an epidemic. Perhaps not so obvious is that it needs to work almost flawlessly 
+all the time. The reason has to do, again, with speed. A system that is fast enough 
+will have to be automated. If customers cannot trust the system enough to enable 
+its automation, they face the awful problem of trying to decide which is worse: 
+risking a massive infection or risking the cure. If the system is reliable, and 
+safe, and performs consistently all the time, customers will be able to trust it 
+when it counts most.
+
+</p><p><b>Keep the Customer in Control</b>
+
+</p><p>The customer must have sufficient flexibility to incorporate the system into 
+his or her infrastructure consistent with the organization's policies. It is not 
+about technology; it is about protecting the customer.
+
+
+</p><p><b>Immune System Architectural Overview</b>
+
+</p><p>In order to cure a new virus faster than it spreads, we have built an 
+immune system for the world's computers. Much like the biological immune 
+system, it defends the "body" of computers against viruses that are seen once 
+by any of them. It can find, analyze, and create a cure for a new, previously 
+unknown virus, then make that cure available to all of the computers. It 
+can do this completely automatically, and quite fast - most importantly, 
+faster than the virus itself can spread.
+
+</p><p>To see how this immune system functions, we now step through an example 
+of detecting a virus at a client system, sending a sample of the virus to a 
+local administrator, transporting it to a virus analysis center, analyzing it, 
+and distributing the cure. In this example, all of the steps can be done 
+automatically, with no humans at any of the computers involved.
+
+
+</p><p>Figure 2: Overview of the Immune System. A new, previously unknown virus 
+is found in a client in one organization. A sample of the virus is 
+transported through the organization's administrator, to the immune system's 
+active network, where it travels through a hierarchy of gateways. If it 
+cannot be handled directly by the gateways, it reaches the analysis center, 
+where it is analyzed and a cure is prepared. The cure is distributed to 
+the infected organization and made available to others who have not yet 
+encountered the virus. The entire process can be done automatically.
+
+
+</p><p><b>Virus Detection</b>
+
+</p><p>A possibly new virus is detected on a client system. This is done 
+by an anti-virus product on that system, and can be done in a number of 
+ways. Heuristics can detect a new, previously unknown virus either by 
+its appearance, by simulating how it will behave when run, or by 
+actually observing the behavior of the program or system [18, 19]. 
+It is also possible that the anti-virus program has a signature that 
+identifies the virus, but it cannot verify or disinfect the virus. 
+This could happen either because it is a new virus that is similar to 
+some existing virus, or because it is a known virus for which a signature 
+was extracted but, perhaps because it was never seen in the wild before, 
+no verification or disinfecting information was derived. (It is also 
+possible that it is not a virus at all, but we will deal with that 
+later in this example.)
+
+</p><p>The client cannot determine if the file or other object is actually 
+infected, but the heuristic or signature detection raised enough suspicion 
+that further analysis is necessary.  To that end, a sample of the 
+suspicious object is extracted, packaged in a harmless form, and sent 
+off to an anti-virus administrator system over the organization's 
+internal network.
+
+
+</p><p><b>Administrator System&gt;</b>
+
+</p><p>The administrator system permits control and auditing of what leaves 
+and enters the organization's internal network via the immune system. 
+An organization can have one or more administrator systems that collect 
+captured samples and decide what action to take. The administrator system 
+may have access to more recent virus definitions that handle the submitted 
+sample. In this case, it can process the sample immediately by returning 
+updated definitions to the immune system client that submitted the sample.
+
+</p><p>If the administrator system cannot handle the sample by itself, it can 
+forward the sample higher in the immune system hierarchy for analysis. 
+Before it is sent, the administrator might want to have potentially confidential 
+information stripped from the sample.  For instance, the administrator 
+might want a potentially infected Microsoft Word document to have its 
+text removed or replaced in order to avoid exposing possibly sensitive information 
+outside the organization. This can be done automatically while leaving the 
+operation of the virus intact for later analysis. Similarly, Microsoft 
+Excel documents can be stripped by removing or replacing the contents of 
+the spreadsheet cells, without affecting the macros.
+
+</p><p>Once samples are prepared for submission, there is a process that selects 
+which samples should be forwarded for automated analysis. If an administrator 
+system suddenly receives a thousand samples, it is likely that they are all 
+infected with the same virus. Only a few representative samples will be 
+submitted at first. Then, when the results of analyzing those samples are 
+returned, the rest of the samples pending submission will be checked to see 
+if they can be handled immediately. Samples that still can't be handled 
+locally (e.g. those infected with a different virus) are then queued for 
+submission.
+
+</p><p>The administrative system also keeps track of the status of various samples - 
+waiting to be submitted, submitted but not yet analyzed, analysis complete and 
+updated virus definitions ready, etc. This makes it easy for the human administrator 
+to understand the status of any active virus incidents in the organization.
+
+</p><p>To ensure rapid response to a new virus, all of these functions can be 
+carried out automatically. The administrator can also configure the system 
+to require human intervention and choice in deciding if files need to be 
+stripped, in prioritizing samples for submission or in submitting the samples themselves.
+
+</p><p><b>Active Network</b>
+
+</p><p>Once samples are submitted from the administrator system, an active network 
+processes them and transports them across the Internet for potential analysis by 
+a central virus analysis center. This active network is designed to deal with 
+epidemics or floods by handling as many submitted samples as possible within 
+the network itself, leaving the analysis center to concentrate on a single 
+copy of a new virus rather than its many siblings. Standard Internet transport 
+and security protocols are used throughout to ensure reliable and safe transmission.
+
+</p><p>The active network is a key part of a commercial-grade immune system. Without 
+it, the system could not handle epidemics or floods. Without its security measures, 
+the system would be vulnerable to eavesdropping and malicious spoofing.
+
+</p><p>This active network is described in more detail below. For our example, we 
+assume that the sample appears to be a new virus, which cannot be handled within 
+the network itself. It is therefore transported securely via the Internet to the 
+virus analysis center.
+
+</p><p><b>Virus Analysis</b>
+
+</p><p>Automated virus analysis is one of the keys to building an immune system. 
+The virus analysis center's job is to analyze the virus sample, to use the 
+results of this analysis to create and test a cure for the new virus, and to 
+package that cure as a virus definition update which can be distributed to 
+users. This is another component of the immune system which is easy to do 
+poorly, and which has been the subject of intense research and development 
+at IBM Research for several years.  The virus analysis center is described 
+in more detail below.
+
+</p><p><b>Cure Distribution</b>
+
+</p><p>Once the virus analysis center has created a cure in the form of a virus 
+definition update, the update must be returned to the client that reported 
+the initial infection. It must also be made available to other systems 
+within the reporting organization and other systems around the world, 
+so that they can be protected from the virus before the virus spreads to them.
+
+</p><p>In our pilot immune system, the update is returned via the active 
+network, using the same standard Internet transport and security protocols 
+as were used for the sample on the way up. Once the update is received by 
+the administrator system, any samples that are still waiting to be submitted 
+are scanned to see if the updated virus definitions can handle them. 
+(In particular, a copy of the original virus sample that was submitted for 
+analysis is scanned.) When a sample can be handled by the new definitions, 
+those definitions are sent to the client that submitted the sample. The 
+clients install the updated virus definitions, scan themselves, and can 
+disinfect whatever viruses are found. At the same time, the updated definitions 
+can be made available to other client systems in the organization.
+
+</p><p>As before, the immune system is designed so that all of this can 
+happen automatically in the interest of rapid response. Also as before, 
+the administrator can select which actions require human deliberation: 
+sending the updated virus definitions to clients, scanning the clients with 
+the updated definitions, and disinfecting any viruses that are found.
+
+
+</p><p><b>An Active Network to Handle Epidemics and Floods</b>
+
+</p><p><b>Overview</b>
+
+</p><p>The role of the active network is twofold. Under average loads, it provides 
+a safe, reliable means of transporting virus samples from a customer to the virus 
+analysis center, and transporting the resulting new virus definitions back to 
+the customer. Under peak loads, such as epidemics and floods, it has the 
+critical responsibility of handling potentially huge volumes of traffic both 
+ways without clogging up the analysis center with requests to analyze the same 
+virus (or the same clean file) over and over again. By its nature, the virus 
+analysis center performs very computationally intensive tasks, and it cannot 
+feasibly keep up with the millions of potential files that the immune system may 
+receive during an epidemic or flood. The active network must intermediate 
+between these requests and the analysis center.
+
+
+</p><p>Figure 3: The Active Network. Administrator systems, which send virus samples 
+to the immune system, form the leaves of the active network. Samples travel 
+through a hierarchy of filters, which handle the sample if it has already been 
+analyzed as uninfected or as a known infected file. Otherwise, they forward it 
+to the analysis center for analysis, resulting in updated virus definitions which 
+are distributed downward to the gateways, to the administrator systems, and 
+ultimately to the clients.
+
+</p><p>The active network is composed of nodes called "gateways", which are arranged 
+in a tree. The leaves of the tree are individual administrator systems, from which 
+sample submissions originate and to which virus definition updates are delivered. 
+The root of the tree is the virus analysis center. The purpose of this hierarchical 
+structure is to ensure that adequate computing power is available to administrators 
+to address their needs even when there are epidemics and floods.
+
+</p><p>Each gateway has two primary functions when a virus sample is submitted. 
+First, it checks to see if it can handle the sample by itself. It does this by 
+trying to match a checksum  of the sample file with a database of checksums that 
+correspond to previously analyzed files - files that are known to be clean and 
+files known to contain a particular virus. If a match is found, a result is returned 
+indicating that the file is not infected, or that it is known to be infected and 
+can be handled with a virus definition set of a particular version or later. This 
+can be done very quickly since the checksum is part of the header of the request. 
+If the checksum matches that of a previously analyzed file, the sample file itself is 
+not even transmitted to the gateway. If the checksum matches that of a file that has 
+already been forwarded higher in the active network for further analysis, the 
+gateway does not have to receive the file. Instead, it waits for the results of 
+the analysis in progress, and sends its results to everyone who submitted that 
+same file. This means that floods of clean files, or known infected files like 
+ExploreZip, can be dealt with very quickly at the lowest levels of the active network.
+
+</p><p>The second function of a gateway is to scan the sample file with the latest 
+virus definitions, to see if these definitions handle the virus. It may be, for 
+instance, that an administrator system, or a gateway lower in the tree, has not 
+yet received the latest virus definitions. If the sample file can be handled, this 
+definition file is returned, and the administrator system or lower gateway node is 
+updated. This means that epidemics of a known virus, even one that was just 
+examined by the analysis center a few minutes ago, can be handled quickly by the 
+active network.
+
+</p><p>If the sample file has not been analyzed before, and is not handled by the 
+latest virus definitions, the gateway forwards the sample to the next higher node 
+in the tree, which may be another gateway or may be the analysis center.
+
+</p><p>Under average loads, the gateways are flow-through systems. Sample files are 
+held in the gateways only long enough to check them for known viruses. If they 
+cannot be handled directly by the gateway, they are immediately sent to the 
+next higher node. Under normal conditions, the rate at which files move through 
+the gateways is dependent only on the rate at which the analysis center can 
+accept them at the top of the tree. Under exception conditions, such as 
+extremely heavy loads or a temporary outage higher in the network, sample 
+files are held in a queue for transmission. This optimizes the speed with 
+which samples can be processed under normal conditions, while providing a 
+graceful method of dealing with exception conditions.
+
+</p><p>Once a sample has been examined by the analysis center, a message is 
+returned to the active network indicating whether or not the sample was infected. 
+The gateway adds this result to its database of previous results, using the 
+file's checksum as an index. If any files in the submission queue have this 
+same checksum, they are removed from the queue. Status messages for all of 
+these files are returned down the gateway tree to the administrator systems 
+that submitted them, just as if they had all been analyzed. At the same time, 
+the gateway returns the checksum the gateways lower in the tree so they can 
+similarly update their databases.
+
+</p><p>If the sample was infected, or if the sample contained a false positive that 
+has now been corrected, an updated virus definition file is returned to the 
+gateway. The gateway scans its submission queue to determine if any pending 
+samples can be handled with this new definition file. For any samples that 
+can now be handled, the updated virus definition file is returned to the 
+gateways lower in the tree so they can similarly check their submission queues, 
+and ultimately to the administrator system so the new definitions can be 
+distributed. At the same time, status information is returned down the gateway 
+tree to the administrator system, to inform the administrator of the identity 
+of the virus and the version number of the virus definition file that handles 
+this virus.
+
+</p><p><b>Safety and Reliability</b>
+
+</p><p>A system that is intended to handle virus emergencies must be reliable, 
+especially in an emergency, and must not expose customers to risks such 
+as disclosure of their sensitive information or the delivery of a forged 
+virus definition file from an unscrupulous source. The immune system 
+represents a significant advance over current industry practice in both 
+of these dimensions.
+
+</p><p>To meet the objective of reliability, a system must have a transaction 
+protocol that guarantees delivery of the sample to the appropriate gateway 
+or analysis center, ensures that an appropriate response is generated, and 
+guarantees delivery of the updated virus definitions (or other response) 
+back to the administrator system. We would not want to put the customer in 
+the position of wondering if the sample arrived at the analysis center, 
+or if a response might have gotten lost on the way back. In order to 
+handle certain kinds of floods, the transaction protocol must permit 
+meta-information about the sample (e.g. its checksum) to be sent, and acted 
+upon, without having to send the entire sample file, which may potentially 
+be quite large and time consuming to transmit.
+
+</p><p>To meet the objective of security, a virus protection system must encrypt the 
+virus sample, virus definition files and any information sent along with them, 
+to prevent disclosure of potentially sensitive customer information. In fact, the 
+immune system encrypts the entire transaction stream that sends virus samples and 
+virus definitions through the active network. A virus protection system must also 
+authenticate the updated virus definition files, both to certify to the administrator 
+that they came from the authentic analysis center, and to ensure that they have not 
+been changed en route. The immune system does this too.
+
+
+</p><p>Figure 4: The Active Network Protocol Stack. The special-purpose transaction 
+protocols that implement the active network are built on top of international 
+standards for structured data, reliable transport, and secure communications.
+
+</p><p>We have created special-purpose transactions for use in the active network. 
+These transactions send samples up, and send back status information and virus 
+definition files. However, we have been careful to use only international standard 
+protocols for the structure, transport and security protocols on which this 
+communication is based. As a transaction protocol we use HTTP, an Internet standard. 
+For security, we use SSL, an Internet security standard. We use DES, RSA and DSA 
+as the underlying cryptographic primitives, which are international standards. We 
+use TCP/IP, again an Internet standard, as a transport protocol.
+
+</p><p>It is notoriously difficult to get transaction and security protocols right, 
+and attempting to create new ones when established, well-understood protocols will 
+do is ill advised at best. For a system that must be reliable and must be secure, 
+time-tested international standards are the right choice.
+
+</p><p>It should be clear, however, that the active network is not "Web-based" in any sense. 
+Administrator systems are not Web browsers. The immune system software that they run 
+cannot connect to any machines other than immune system gateways. Indeed, it is 
+incapable of even talking to other machines on the Internet because these other 
+machines do not share the SSL encryption keys that the gateways use for communication. 
+Similarly, gateways are not Web servers. They do not serve Web pages at all, and 
+Web browsers cannot communicate usefully with them because the browsers do not know 
+the SSL encryption keys that the gateways use.
+
+</p><p><b>Scaling the Active Network</b>
+
+</p><p>The active network is designed to be easy to scale up to larger transaction volumes 
+as the nature of the virus problem changes. Additional gateways can be added to the 
+tree, and the gateways around them reconfigured to understand the addition of the 
+new gateways. Nothing else needs to change. As an example, if it turns out that 
+there is a particularly large amount of traffic coming from the Isle of Skye,it would 
+be easy to set up an additional gateway specifically to handle traffic from that location. 
+If the computer-using population of Europe doubles overnight, doubling the number of 
+gateways devoted to Europe would ensure balanced traffic.
+
+</p><p>In practice, we expect that even high, peak traffic can be processed successfully 
+with only a handful of gateways.
+
+</p><p><b>Automated Virus Analysis Center</b>
+</p><p><b>Overview</b>
+
+</p><p>The job of the analysis center is to determine if the sample contains a virus 
+by actually getting the virus to spread. If it does contain a virus, the analysis 
+center analyzes it and produces a virus definition update that can detect, 
+verify and disinfect the virus. This virus definition file is tested to ensure 
+that it works correctly on all available sample of the virus. A problem in any 
+phase of this process results in the virus sample being sent to human analysts for 
+processing. Once it completes testing, the virus definition file is then sent out 
+via the active network to all organizations that submitted samples of this virus.
+
+</p><p>As shown in Figure 5, the analysis center consists of a network of computers, 
+isolated from the rest of the world by a firewall for security purposes. Pools of 
+NT and IBM RISC/6000 worker systems are used to do each phase of sample processing. 
+A supervisor system is in charge of coordinating all activity inside the analysis center. 
+
+
+</p><p>Figure 5: The Virus Analysis Center. Samples come into the virus analysis center 
+from the active network through a firewall, which isolates the virus analysis center from 
+the rest of the Net. Samples are queued for processing under control of a supervisor 
+system, which tracks priorities and status, assigning tasks to pools of worker systems, 
+until analysis is complete and updated virus definition files are returned to the 
+active network through the firewall. A server stores virus replication environments and 
+contains an archive of everything done in the analysis center. The pools of worker 
+systems can be expanded dynamically to scale the analysis center to larger workloads.
+
+</p><p>When a sample arrives in the virus analysis center, it is placed on a queue pending 
+analysis. Since the active network is designed to be a flow-though system in most 
+cases, we expect all submitted samples that require analysis to end up in this queue. 
+If there are many submissions in a short period of time, which is characteristic of 
+virus emergencies such as epidemics, this queue may need to be rather large.
+
+</p><p>A priority is assigned to the sample, which is used to determine the resources 
+allocated to that sample. While the priority system is very flexible, its current 
+use is very simple. Urgent customer samples are put through with high priority, and 
+get first use of any available worker machines for processing. Normal customer samples 
+are put through with medium priority, getting use of machines that are not in use 
+by urgent cases. "Zoo" samples are those submitted by virus lab personnel for 
+routine analysis, usually from large collections of viruses not known to be in the 
+wild anywhere. These are assigned low priority, and are analyzed when no customer 
+samples need work. Multiple samples with the same priority are processed in the order 
+in which they arrive at the analysis center.
+
+</p><p><b>The Supervisor&gt;</b>
+
+</p><p>A supervisor system oversees the flow of samples through the system. It is 
+responsible for keeping track of what worker machines are available, parceling out 
+work to them, noticing when an assigned task is complete, and noticing if something 
+goes wrong during a task and intervention is needed.
+
+</p><p>Each sample goes through a number of processing stages, which we describe below. 
+The supervisor keeps track of the current stage of each sample. It knows what must 
+be done to it next, and what machine resources it needs to carry out that task.
+
+</p><p>When a worker system becomes available, the supervisor selects the next sample 
+on the queue that can use that particular system for its next analysis stage. It 
+dispatches a task to that machine along with the virus sample and its history. When 
+the task is complete, the supervisor adds the result of the task to the history of 
+the sample and puts the sample back on the queue to await its next stage of processing.
+
+</p><p>Once a sample has completed all of the processing stages, its history is archived 
+and the resulting virus definition, if any, is sent out.
+
+</p><p>The supervisor provides architectural isolation to the various tasks, separating 
+machine resource concerns, prioritization and queuing from the actual job of analyzing 
+the virus. The resulting architecture is robust enough to run continuously, a critical 
+feature of a system that needs to respond to virus emergencies. It is also modular 
+enough that new methods for analyzing viruses, even analysis tasks for entirely new 
+kinds of viruses, can be added both easily and dynamically. 
+
+</p><p><b>Integration with Back Office Systems</b>
+
+</p><p>The virus analysis center is integrated with back office systems that track customer 
+incidents, build new virus definitions, and maintain a database of virus definitions. 
+This is complicated by the fact that human virus analysts and the virus analysis center 
+will be analyzing viruses (albeit different viruses) at the same time. Customer incident 
+numbers must be assigned consistently so that technical support staff can respond 
+properly to customer calls about the status of a sample that has been submitted. Virus 
+definition version numbers must be assigned sequentially so that it is clear that one 
+set of definitions is a superset of previous definitions, and this must be done no matter 
+who creates the new definition - human or machine.
+
+</p><p><b>Virus Analysis Tasks</b>
+
+</p><p>As illustrated in Figure 6, a sample goes through a number of steps in order to 
+determine if it is infected and to analyze whatever virus might be present. The type of 
+virus it might contain is first classified, then the virus is replicated enough times for 
+analysis to be reliable. The virus is analyzed, and information to detect, verify and 
+disinfect the virus is extracted. This information is used to create a virus definition, 
+which is then tested against all of the samples of the virus. If all of these steps are 
+successful, the updated virus definitions are returned.
+
+</p><p>These processes are each implemented as modular, isolated tasks. The supervisor can 
+dispatch any of them to any number of worker systems at any time. As a result, 
+several viruses can be analyzed simultaneously and several machines can be devoted to 
+the analysis of a single, difficult virus. These tasks are now described in some detail.
+
+
+</p><p>Figure 6: Processes within the Analysis Center. The supervisor directs virus 
+samples through the various processing. Computationally intensive stages, such as 
+replication, can be done in parallel to complete the process more quickly. The fail-safe 
+design of the analysis center defers problematic samples, at any stage, to a human analyst.
+
+</p><p><b>Classification</b>
+
+</p><p>The first step in analyzing a virus is to try to determine what type of virus it is, 
+so that specialized type-specific routines can be brought to bear. For Microsoft Word 
+files, the classification task currently identifies the version of Word and determines, 
+as best it can, the language of the file (English, French, etc.). For Microsoft Excel 
+files, it determines the version of Excel. For DOS file viruses, it determines if 
+they are COM or EXE files. To ensure reliability, this classification is done by 
+examining the structure of the file, rather than by looking at the filetype. 
+
+</p><p><b>Creation of the replication environment</b>
+
+</p><p>Once the sample has been classified, it must be replicated, both to determine that 
+it is, in fact, a virus, and to create enough samples that it can be analyzed reliably. 
+The first step in replication is to set up a virtual environment in which the virus 
+is likely to replicate. For Microsoft Word and Excel viruses, we use the version 
+(and language) of Word or Excel determined by the classifier, running in a Windows 
+emulator on an IBM RISC System/6000 under AIX. For DOS file viruses, we use a DOS 
+emulator running under Windows NT.
+
+</p><p>Running viruses in an emulated environment provides two benefits. First, it 
+is easy to ensure that the virus runs safely, and is incapable of infecting any 
+real machine in the analysis center. Second, it allows us to instrument the 
+environment so that the analysis center can sense what the virus is doing as it 
+does it. This is a valuable aid in analysis.
+
+</p><p>When an appropriate replication environment has been selected, an image of that 
+environment is obtained from the server and installed on one or more worker machines of 
+the proper type.
+
+</p><p><b>Replication</b>
+
+</p><p>Replication tasks are now dispatched to the worker machines whose replication environments 
+were set up in the previous step. Replication tasks run the virus in the emulated 
+environment, trying to make it infect "goat" files (uninfected files of known 
+structure put there for exactly this purpose). To try to infect the "goat" files, 
+the system emulates the actions that an expert human virus analyst would try. For 
+instance, DOS executable "goat" files are run as programs in the emulated environment 
+after the virus has been run to infect that environment. Microsoft Word "goat" files 
+are read into Microsoft Word as documents, modified and written back out. Key 
+sequences are inputted to the emulated machine to simulate a user typing.  The goal 
+of replication is to obtain enough virus samples to permit analysis to be done reliably. 
+If, for some reason, the first set of replication tasks do not generate enough samples, 
+more can be dispatched, and the process can be repeated until enough samples are available. 
+
+</p><p><b>Analysis</b>
+
+</p><p>Once enough samples have been replicated, the virus can be
+analyzed. In fact, some of this analysis has already been done as part
+of the replication task, since it had to know enough about the virus to
+determine if it had replicated and that there were a sufficient number
+of good samples. If several different forms of a virus have been
+generated (e.g. upconversions of macro viruses), each form is analyzed
+separately and may result in an additional virus definitions.
+Completing the analysis involves activities like extracting a good
+signature string for the virus, constructing a map of all of its
+regions for verification, and creating disinfection information. These
+turn out to be very challenging technical problems, which the
+anti-virus industry largely believed to be impossible when we first
+started working on them. Their solution is described elsewhere [21,
+22]. The result of virus analysis is a set of source files from which
+virus definitions can be produced.
+</p><p><b>Definition generation</b>
+
+</p><p>The definition generation task starts with the virus definition source produced by 
+the analysis task and creates a complete set of virus definition files, including 
+definitions for all viruses to date. Human analysts can also create updated virus 
+definitions, of course, as a result of their manual analysis of viruses. In order to 
+ensure consistency between definitions generated by humans and those generated 
+automatically, and to ensure regularity of the sequence numbering of virus definitions, 
+both humans and the analysis center use a single definition generation system. When 
+a new set of definitions is to be generated, the definition generation system is 
+locked by either the human or the analysis center, a new sequence number is created, 
+the definition is generated and tested, and the definition generation system is 
+then unlocked for subsequent use. As a result, the definition generation step is 
+a serialized resource in the system, and is a bottleneck if it not sufficiently fast.
+
+</p><p><b>Test</b>
+
+</p><p>Once an updated virus definition file is available, the test task uses these 
+definitions to ensure that all of the samples can be detected, and that all of the 
+goat files can be returned to their original form by disinfecting them. The virus 
+definition must properly detect, verify and disinfect all files. No exceptions are 
+permitted. Once a virus definition file has passed test, it is packaged up and sent 
+out by the supervisor system to the active network as a solution to the submitted virus.
+
+</p><p><b>Deferring Problematic Samples</b>
+
+</p><p>No matter how good we get at analyzing viruses automatically, some samples may 
+lie beyond the current state of the art. The analysis center might decide at any 
+stage that it could not process a sample further. It might be unsuccessful at 
+replicating the virus. It might be unable to analyze the replicants. It might fail 
+the test phase.
+
+</p><p>The inability to process a sample can happen because it contains a new or 
+complex type of virus that the analysis center cannot currently handle. Alternatively, 
+the sample might be uninfected, in which case it will not replicate. In the former 
+case, a human analyst will have to examine the virus, create a virus definition 
+update, and help us understand how to enhance the analysis center to handle 
+such viruses in the future. In the latter case, a human can verify that no virus 
+is present, and update the active network so it recognizes this file as uninfected 
+if it is ever seen again.
+
+</p><p>In any case, problematic samples are deferred from the analysis center to a 
+human analyst.  When a sample is deferred, the human analyst is provided with 
+all of the results that were obtained by the analysis center, including 
+classification information, replicants, analysis and the results of any testing. 
+This information can give the human analyst a valuable head start. When the 
+human analyst is finished, she returns information to the analysis center that 
+allows sample processing to complete.
+
+</p><p><b>Safety and Reliability</b>
+
+</p><p>The analysis center has been designed to operate 24 hours a day, producing safe, 
+reliable virus definitions. It is fault tolerant; if a worker machine experiences a 
+hardware failure, it is automatically removed from the pool of machines and any 
+tasks assigned to it are reassigned. It is transaction based; it recovers from 
+serious failures such as power outages by simply backing up to a previous good 
+state and continuing its operation, without losing any submitted samples. It 
+is isolated from outside interference by a strict firewall.
+
+</p><p>Viruses are stored in non-executable form whenever possible. They are only 
+executed on virtual machines from which they cannot escape.  Detection signatures 
+are extracted so as to ensure extremely low false positive rates. Full verification 
+information is added to virus definitions, so that disinfection is only attempted 
+if a virus exactly matches the one analyzed. This eliminates the risk that a (rare) 
+false positive could lead to an improper attempt to disinfect. Virus definitions 
+undergo rigorous testing before they are released.
+
+</p><p>Finally, if a problem is encountered in any phase of the analysis, the 
+sample is deferred to human analysts. This fail-safe policy ensures that the 
+analysis center only produces dependable definitions.
+
+</p><p><b>Scaling the Analysis Center</b>
+
+</p><p>The design of the analysis center anticipates the necessity of responding to 
+an increased load on the system in the future. Individual virus incidents are 
+handled in parallel, and each individual processing step can also be done in 
+parallel. In particular, the most time consuming step in sample processing is 
+replication, in which several potential environments might have to be tried 
+before one is found in which the virus spreads sufficiently to generate enough 
+replicants. The replication step, too, can be done in parallel: replication in 
+different environments can be attempted simultaneously.
+
+</p><p>Because of this parallelism, simply reconfiguring the analysis center with 
+more worker machines increases the rate at which an individual virus can be analyzed, 
+and the overall throughput of the analysis center. Adding new worker machines to 
+the analysis center can be done dynamically, without having to take the system 
+down. When a new worker machine is added, the supervisor notices the new resource, 
+adds it to its resource pool, and starts using it immediately. Roughly, doubling 
+the number of worker machines doubles the overall throughput of the analysis center, 
+up to the point where definition generation is a bottleneck.
+
+</p><p>Similarly, when a new type of virus arises, new analysis modules can be 
+added to the system dynamically. If, for instance, we develop the capability 
+to analyze a new class of Unix viruses, the analysis modules can be added 
+to the system and can begin processing new Unix viruses without any interruption 
+in the service of the analysis center.
+
+
+</p><p><b>How the Immune System Handles Loads</b>
+
+</p><p>We have suggested that a system designed to respond to virus emergencies must 
+handle average loads flawlessly. It must handle very heavy peak loads without 
+denying service to any customer and should, at worst, inflict only slight delays. 
+If something does cause an overload condition, the system should handle it gracefully, 
+without requiring any action on the part of customers and, at worst, recover and continue 
+to process requests as any backlog of requests is cleared up. No commercial 
+anti-virus system currently satisfies these criteria. The immune system does.
+
+</p><p><b>Average Loads</b>
+
+</p><p>Under average conditions, the immune system is designed to handle the load of 
+new viruses, and demand for virus definition updates to deal with submitted samples, 
+with ease. (See below for performance estimates of the pilot system.) In fact, there 
+is so much spare capacity in the pilot system that will use it to analyze the 
+hundreds of new zoo viruses we expect to receive in collections during the pilot 
+period, and still expect to have capacity left over. The active network and 
+analysis center are designed to be robust, fault-tolerant systems that operate 24 hours a day.
+
+</p><p><b>Peak Loads</b>
+
+</p><p>During peak loads, the immune system continues to operate as usual, but focuses its 
+efforts on urgent customer incidents.
+
+</p><p>During an epidemic, a few samples of the new virus from each administrator system will 
+be transported to the analysis center by the active network. When they arrive at the 
+analysis center, they take priority over lower priority zoo viruses, which will 
+wait in the queue until customer incidents are completed. The first of these 
+customer samples will be analyzed, typically in less than an hour. Once an updated 
+virus definition is available, all of the remaining samples in the queue will be 
+scanned with the new definitions, and the definitions will be sent out to all 
+affected organizations. The pilot version of the analysis center could easily 
+handle thousands of infected organizations in that first hour; the active network 
+would deal with any that submitted samples subsequently.
+
+</p><p>Similarly, during a widespread panic in which people think a particular 
+(uninfected) file might be infected, a few samples of the file will be sent from each 
+administrator system. The analysis center will recognize that it cannot find a virus 
+in the file, and defer its analysis to a human. Once the human has determined that the 
+file is clean, the analysis center sends that message to all organizations that have 
+submitted it so far. Subsequent submissions of that same file are handled immediately at 
+the lowest levels of the active network.
+
+</p><p><b>Overload</b>
+
+</p><p>The immune system is designed so that overload is a rare exception. While it could 
+occur during an extremely wide epidemic of a very fast-spreading virus, we think it 
+is more likely to happen due to a network outage or other failure. In the former case, 
+the input queue in the analysis center could fill up before the first sample of the 
+virus has completed analysis. In the latter case, the administrator systems might 
+not be able to contact the gateway, or the gateway might not be able to contact the 
+analysis center. In any of these cases, samples that cannot be transmitted are 
+enqueued on the administrator system or the gateway, as appropriate.
+
+Once the backlog is cleared or the communications problem fixed, the enqueued samples are 
+transported as usual. The only effect of overload is increased delay in transporting the 
+samples. The same is true on the downward path, as updated virus definition files are 
+sent to customers. No samples are lost, service is never denied to any customer, and 
+customers are not required to intervene to ensure that their samples are processed and 
+their updated virus definitions are returned.
+
+</p><p><b>Current Capabilities and Performance</b>
+
+</p><p>We are currently working on a customer pilot of the immune system described here. 
+In the pilot, we are working with a small number of large customers to validate the 
+usefulness of the system in their environment and to understand what enhancements would 
+be most valuable as we build towards a system which could be deployed as a product. 
+This section discusses the capabilities of the pilot system, which might be substantially 
+different from any possible product implementation.
+
+</p><p><b>Active Network</b>
+
+</p><p>While the active network is capable of being fully hierarchical, the pilot system uses 
+a single gateway as the contact point for all pilot customers. This is consistent with 
+the very small number of pilot customers and the expected peak loads on the pilot 
+system. In a possible product version, we would expect at least two levels of 
+hierarchy, with gateways deployed in several of the major geographies of the world.
+
+</p><p>Even so, we estimate that the active network in the pilot system is capable of 
+supporting an upload rate of 100,000 virus samples per day, and a download rate of 
+approximately 10,000 virus definitions per day.  The gateway's database of results 
+from previously analyzed samples, which it uses to handle any future submission of 
+these same samples, will hold 10 million results in 1 GB of disk.
+
+</p><p><b>Analysis Center</b>
+
+</p><p>In the pilot configuration, the analysis center is equipped with three AIX worker 
+machines (which are used primarily for macro virus replication) and three NT worker 
+machines (which are used for all other analysis tasks). This already provides 
+substantial benefits from parallelism. Additional worker machines can be added dynamically.
+
+</p><p>The input queue in the analysis center is currently capable of holding approximately 
+8,000 samples that are awaiting analysis. It can be expanded easily by increasing the 
+total disk space on the supervisor system.
+
+
+</p><p><b>Macro Viruses</b>
+
+</p><p>The analysis center can currently analyze Microsoft Word and Microsoft Excel 
+macro viruses in Office 95, Office 97 and Office 2000 formats. It can handle 
+Microsoft Word documents that are in any of ten languages: English, French, 
+German, Italian, Spanish, Polish, Dutch, Brazilian Portuguese, Japanese and Taiwanese. 
+A Japanese virus will not spread in an English version of Microsoft Word, nor 
+will an Office 2000 virus spread in an Office 95 version of Microsoft Word. A 
+separate replication environment is used for each format and language, to ensure that 
+viruses in these formats and languages execute and spread properly in the virtual 
+machines. This means that the analysis center can successfully replicate and analyze 
+viruses that are specific to any of these versions of Microsoft Word or Excel, and 
+specific to any of these languages.
+
+</p><p>Macro viruses that are written for Office 95 will often be converted to Office 
+97 format when the document they infect is modified with Office 97, and similarly 
+for Office 2000. These are called "upconverted" viruses, and are converted to a 
+different format that cannot be detected by anti-virus software that is looking for 
+their Office 95 version. Similarly, Microsoft Excel viruses in Office 97 documents 
+can be "downconverted" to Office 95 format. The analysis center automatically does 
+all upconversions and downconversions, analyzing all of the resulting formats along 
+with the original one. This helps ensure that all of the various forms of the virus 
+will be handled by the virus definitions that are returned.
+
+</p><p>Polymorphic macro viruses change their appearance every time they spread. Devolving 
+macro viruses can sometimes fail to copy all of their macros when they spread, losing 
+pieces of themselves as they go. Mass copying macro viruses will copy any macros 
+that happen to be in any document they infect, picking up extra macros as they go. 
+The analysis center will currently recognize each of these conditions, produce 
+replicants of the virus, and defer them to a human for analysis.
+
+</p><p>In tests to date, the analysis center analyzes and produces complete definitions 
+for over 80% of the macro viruses that are in the wild. If the analysis center is 
+working on only a single macro virus, it can typically complete analysis of it 
+from beginning to end in 30 minutes in its current configuration. If many macro 
+viruses are queued up for analysis at the same time, so the worker machines are 
+used most efficiently, the analysis center can complete analysis of four viruses 
+per hour on average.  As the number of worker machines is increased, the turnaround 
+time will continue to decrease and the throughput will continue to increase, though 
+the increase is not linear.
+
+
+</p><p><b>DOS File Viruses</b>
+
+</p><p>DOS file viruses are replicated in a virtual DOS machine under Windows NT. 
+While a variety of DOS environments could be tried on a given virus, the current 
+system uses only one virtual DOS environment. Polymorphic viruses are deferred 
+for human analysis at present, though the technology for analyzing them automatically 
+has been well understood for some time.
+
+</p><p>In tests to date, the analysis center replicates over 80% of the DOS file 
+viruses that are in the wild, though complete definitions are produced for only 
+about 50% of the viruses in the wild. If the analysis center is working on only a 
+single DOS file virus, it can typically complete analysis of it from beginning to 
+end in 20 minutes. If many DOS file viruses are queued up for analysis at the same 
+time, so the worker machines are used most efficiently, the analysis center can 
+complete analysis of seven viruses per hour on average. Increasing the number of 
+worker machines will continue to increase the throughput, though not linearly. 
+It will not have a significant effect on the turnaround time.
+
+
+</p><p><b>Conclusions and Future Work</b>
+
+</p><p>Solving the problem of epidemics of fast-spreading viruses requires a very 
+different approach than the anti-virus industry has taken historically. The 
+immune system that we have developed solves this problem, and does so safely 
+and reliably, so it can be used by real customer organizations in day-to-day operation.
+
+</p><p>We will be using the results of our customer pilot to understand any changes that 
+might be needed for a commercial deployment. 
+
+</p><p>In addition to tidying up the existing technology, we have a list of useful 
+technologies to add over time. Beyond simple DOS file viruses and Microsoft Word 
+and Excel macro viruses, there are a number of important virus classes to add 
+to the immune system. We have technology in place that analyzes boot viruses, 
+but have not yet integrated it into the immune system. We are working on technology 
+that handles bimodal and polymorphic viruses, as well as Access and PowerPoint viruses 
+and Win32 viruses. We have started work on the important class of inter-machine worms, 
+which require the ability to emulate an entire network of machines on which the worm might spread.
+
+</p><p>We expect the virus problem to continue to evolve, just as it has for the past 
+decade or so, and sometimes in unexpected directions. The immune system is likely to 
+be an important tool to control their spread for the foreseeable future.
+
+</p><p><b>Acknowledgements</b>
+
+</p><p>The authors gratefully acknowledge the assistance of the Norton AntiVirus group at 
+Symantec Corp., and especially the members of SARC and the people working on the 
+Symantec Digital Immune System™.
+
+</p><p>The authors thank all of the people who have, over the years, contributed to IBM 
+AntiVirus and to IBM's immune system technology, especially Igor Bazarov, Abhay Bhandarkar, 
+Pascal Bizien, Jeff Boston, Jean-Michel Boulay, Voytek Chwilka, Anni Coden, Laura Copel, 
+Galen Doak, Gleb Esman, John Evanson, Christian Falterer, Richard Ford, Donny Gilor, 
+Sarah Gordon, Guner Gulyasar, Sanjeev Hatwal, Rob Herstein, Bruce Hicks, Srikant Jalan, 
+Jeff Kephart, Robert B. King, Andy Klapper, Sophia Krasikov, Ken Lockhart, Claudia McGhee, 
+Mahesh Moorthy, Alex Morin, Milosz Muszynski, Daniel Norton, Bill Palis, Charlie Parker, 
+Raju Pavuluri, Frederic Perriot, August Petrillo, Alexey Polyakov, Sankar Ramalingam, 
+Andrew Raybould, Martin Retsch, Rhonda Rosenbaum, Janet Savage, Alla Segal, Rich Segal, 
+Bill Schneider, Bob Schultz, Gregory B. Sorkin, Riad Souissi, Glenn Stubbs, 
+Till Teichmann, Gerry Tesauro, Stefan Tode, Kenny Tran, Hooman Vassef, Senthil Velayudham, 
+Ian Whalley, Michael Wilson, Jonathan Woodbridge and Ahmad Ziadeh.
+
+</p><p><b>References</b>
+
+</p><p>[1] The technology of an earlier, demonstration version of the immune system was described in: 
+Jeffrey O. Kephart, Gregory B. Sorkin, Morton Swimmer, and Steve R. White, "Blueprint for a 
+Computer Immune System", Proceedings of the 1997 International Virus Bulletin Conference, 
+San Francisco, California, October 1-3, 1997. Also 
+http://www.av.ibm.com/InsideTheLab/Bookshelf/ScientificPapers/Kephart/VB97/
+
+</p><p>[2] Donn Seeley, "A Tour of the Worm", USENIX Conference Proceedings, pp. 287-304, 
+Winter 1989, San Diego, CA.
+
+</p><p>[3] Eugene H. Spafford, "The Internet Worm: Crisis and Aftermath", Communications of 
+the ACM, Vol. 32, No. 6, pp. 678-687, June 1989.
+
+</p><p>[4] Internet Software Consortium, http://www.isc.org/dsview.cgi?domainsurvey/host-count-history
+
+</p><p>[5] A description of the Michelangelo virus can be found on the Web at: 
+http://www.symantec.com/avcenter/venc/data/stoned.michelangelo.html
+
+</p><p>[6] Steve R. White, Jeffrey O. Kephart, and David M. Chess, "The Changing Ecology of 
+Computer Viruses", Proceedings of the Sixth International Virus Bulletin Conference, 
+Brighton, UK, 1996, pp. 189-202.
+
+</p><p>[7] Private communication from several anti-virus vendors.
+
+</p><p>[8] A description of the Melissa virus can be found on the Web at: http://www.symantec.com/avcenter/venc/data/mailissa.html
+
+</p><p>[9] CERT Advisory, http://www.cert.org/advisories/CA-99-04-Melissa-Macro-Virus.html
+
+</p><p>[10] Matt Richtel, "Super-Fast Computer Virus Heads Into the Workweek", New York 
+Times, Technology Section, March 29, 1999.
+
+</p><p>[11] Steve R. White, "All Aboard the Melissa Express", antivirus online, 
+http://www.av.ibm.com/BreakingNews/VirusAlert/Melissa/
+
+</p><p>[12] A description of the ExploreZip worm can be found on the Web at: 
+http://www.symantec.com/avcenter/venc/data/worm.explore.zip.html
+
+</p><p>[13] CERT Advisory, http://www.cert.org/advisories/CA-99-06-explorezip.html
+
+</p><p>[14] David Chess, "PrettyPark and ExploreZip - More programs not
+to run!", antivirus online,
+http://www.av.ibm.com/BreakingNews/VirusAlert/PrettyPark/
+</p><p>[15] Associated Press, "Worm Attack May Be Slowing, Experts", New York Times, 
+Technology Section, June 15, 1999.
+
+</p><p>[16] Steve White, "The Mother of All False Positives", Virus Bulletin, December 1991, page 2.
+
+</p><p>[17] Steve R. White, Jeffrey O. Kephart, and David M. Chess,
+"Computer Viruses: A Global Perspective", in Proceedings of the Fifth
+International Virus Bulletin Conference, Boston, 1995, pages 185-191.
+</p><p>[18] Symantec Corporation, "Understanding Heuristics: Symantec's Bloodhound Technology", 
+Symantec White Paper Series, Volume XXXIV, http://www.symantec.com/avcenter/reference/heuristc.pdf 
+
+</p><p>[19] Gerald Tesauro, Jeffrey O. Kephart, Gregory B. Sorkin,
+"Neural Networks for Computer Virus Recognition", IEEE Expert, Vol. 11,
+No. 4, Aug. 1996, pp. 5-6. Also
+http://www.av.ibm.com/InsideTheLab/Bookshelf/ScientificPapers/Tesauro/NeuralNets.html
+</p><p>[20] Fred Cohen, "Computer Viruses - Theory and Experiments", Minutes of the 7th Department of 
+Defense / NBS Computer Security Conference, pp. 240-263, Sept. 24-26, 1984.
+
+</p><p>[21] Jeffrey O. Kephart and William C. Arnold, "Automatic Extraction of Computer Virus 
+Signatures", Proceedings of the 4th International Virus Bulletin Conference, Jersey, UK, 
+1994, pp. 179-194.
+
+</p><p>[22] U.S. Patent 5,485,575, David M. Chess, Jeffrey O. Kephart, and Gregory B. Sorkin, 
+"Automatic Analysis of a Computer Virus Structure and Means of Attachment to its Hosts".
+
+</p></td></tr></tbody></table>
+<p>&nbsp;
+</p><p>&nbsp;
+<a href="http://www.research.ibm.com/antivirus/SciPapers.htm">back to index</a>
+
+</p></body></html>

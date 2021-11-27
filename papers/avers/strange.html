@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (WinNT; U) [Netscape]">
+   <meta name="AUTHOR" content="Costin Raiu">
+   <meta name="CREATED" content="19990425;16410490">
+   <meta name="CHANGEDBY" content="Costin Raiu">
+   <meta name="CHANGED" content="19990425;16440334">
+<style>
+	<!--
+		@page { size: 8.5in 11in; margin-left: 1.25in; margin-right: 1.25in; margin-top: 1in; margin-bottom: 1in }
+		P { margin-bottom: 0.08in }
+	-->
+	</style></head>
+
+<body>
+
+<div style="margin-bottom: 0in;"><b><font size="+1"></font></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b><font size="+2">Brewing-up with the CAFEBABE</font></b></div>
+
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+
+<p style="margin-bottom: 0in;"><i>Costin RAIU, &lt;<a href="mailto:craiu@gecad.ro">craiu@gecad.ro</a>&gt;</i>
+</p><div style="margin-bottom: 0in;"><i>GeCAD, Romania</i></div>
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>Introduction:</b>
+</p><div style="margin-bottom: 0in;"></div>
+
+
+<p style="margin-bottom: 0in;">Do you remember the old good days, when an
+anti-virus researcher only had to deal with conventional file and boot
+viruses? Maybe not, but I do. In the six years I have worked in this field,
+the virus scene has changed dramatically, with viruses continually taking
+on new forms.
+
+</p><p style="margin-bottom: 0in;">We saw multi-partite viruses, then polymorphic
+boot viruses. Batch infectors appeared, 'inserting' polymorphic viruses
+designed to slow scanners, followed by NE and PE (Windows 95 and NT viruses.
+Then came macro viruses, targeting most versions of Word, Excel, and recently
+Access. For each new virus type the anti-virus industry has had to 'adapt'
+to the new conditions and invest huge amounts of resources (time and money)
+into researching new engines, new file formats and so on.
+
+</p><p style="margin-bottom: 0in;">Having watched the steps taken by the virus
+writers in the past, I thought that there was little more to surprise me.
+However, a new sample sent to me by Eugene Kaspersky was indeed a surprise
+- a Java virus.
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>But Isn't Java Virus-proof?</b>
+</p><div style="margin-bottom: 0in;"></div>
+
+
+<p style="margin-bottom: 0in;">Java viruses have long been a hot topic.
+Questions such as 'Is it possible to write a Java virus?' or 'Could a Java
+virus spread from computer to computer, maybe via the Internet?' have generated
+a lot of traffic on many discussion lists and newsgroups. The main argument
+against Java viruses is that applets are run in a highly controlled environment,
+called the 'sandbox'. An applet, as mentioned above, is a Java program
+designed to be run in web browsers, but without having access to files
+or arbitrary network connections on the Java computer.
+
+</p><p style="margin-bottom: 0in;">However, Java also allows you to build real
+applications, which have full control (in the running context) over the
+system, like any standard program. Real Java applications cannot be run
+by web browsers such as Netscape Navigator or Microsoft's Internet Explorer
+(IE). Therefore, a Java virus could (theoretically) only work as an application,
+and not as an applet.
+
+</p><p style="margin-bottom: 0in;">Of course, if the sandbox is not implemented
+correctly, a malicious program could (again, theoretically) 'escape' from
+its cage and gain access to the various resources provided by the Java
+Virtual Machine (JVM). Fortunately, the current versions of both Netscape
+Navigator and IE have no known JVM implementation problems of the sort
+necessary to allow this.
+
+</p><p style="margin-bottom: 0in;">Thus, for a Java program to replicate (requiring
+access to files on the local machine), it must run as a full Java application
+and not an applet. As Java applications are relatively rare compared to
+Java applets (which can be found on many web pages), the chance of 'in
+the wild' infections seems low.
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>A Strange Brew Indeed</b>
+
+</p><p style="margin-bottom: 0in;">The sample of Java/StrangeBrew I received
+was around 4 KB in size. It was able to infect other class files and the
+infected files could infect further, so it is really a virus. StrangeBrew
+is a native Java virus, which is able to infect both applets and applications.
+However, it can only spread if run as an application, using the JAVA.EXE
+program from the JDK (and equivalents on other operating systems), or a
+similar tool such as the Jview utility from Microsoft. It will not spread
+if launched from web browsers such as Navigator or IE. However, it does
+work if run as a signed applet from Sun's HotJava browser, or a browser
+running the security plugin that allows signed applets to run as full Java
+applications. The infection will break the applet signature, but a signed
+dropper is also a possibility. The virus uses the 'System.getProperty'
+method to obtain the current working directory (user.dir) then instantiates
+a 'File' object to list all the files in that directory. It checks each
+object and, if accessible, whether the size is a multiple of 101 bytes
+and if the file name ends with `.class'. This is a self detection test
+- StrangeBrew assumes such files are already infected. Interestingly, the
+size test is the same as that used by Win95/Marburg and several other viruses
+from the Spanish group responsible for it. There is currently no evidence
+linking StrangeBrew with that group. StrangeBrew first looks in the current
+directory for .class files whose size is divisible by 101. When such a
+file is found, the virus creates a new RandomAccessFile object to access
+it. The author chose RandomAccessFile instead of DataInput and DataInputStream
+because it uses 'seek' operations to work with a file - operations that
+are only supported by the RandomAccessFile object. A class loader could
+be written without using seek operations, but it was probably much easier
+to write the parser using them. The candidate file is opened in read-only
+mode. Initially the virus only performs some tests on the file - the actual
+infection routine is called later. One might wonder why StrangeBrew needs
+to search for infected files in the current directory. The answer is simple
+- it must load its code from somewhere, because it cannot access its own
+code from memory. Therefore, it has to look for an infected file, then
+open it, parse the class data and headers, and load the virus body into
+two dynamically allocated arrays (2860 and 1030 bytes long, respectively).
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>The Loader</b>
+
+</p><p style="margin-bottom: 0in;">The routine responsible for loading the virus
+code into memory is quite complex. It parses the class file directly, using
+the methods provided by the RandomAccessFile class. After opening a .class
+file, the virus skips the first eight bytes (the four-byte CAFEBABEh signature
+and the four-byte version information header). Then it reads the constant-pool
+count variable from the header, moving the current read pointer to the
+constant pool array.
+
+</p><p style="margin-bottom: 0in;">According to the JVM documentation 'the constant
+pool array is a table of variable-length structures representing various
+string constants, class names, field names, and other constants that are
+referred to within the ClassFile structure and its substructures.' Each
+entry in the constant pool contains a tag byte and a variable amount of
+data depending on the tag info. The tag byte can have eleven different
+values, thus to parse the constant pool an application needs to handle
+each of these tags. StrangeBrew has this ability. After reading the constant
+pool, the next six bytes in the header are skipped (the access flags, this
+class and super class items). It then reads the interfaces count and skips
+the array holding interface information (each interface info structure
+is two bytes long). Next, the virus reads the fields count number and skips
+the fields table. Then it seeks to the offset of the first method in the
+class, and checks its code size. If the size of the method's code is not
+2826 bytes, the virus moves on to processing the next file in the directory.
+Otherwise, it decides that the file is infected. This is a safe check,
+because infected files have, as their first method, `public void Strange
+Brew Virus', which is the virus' bytecode body. After finding a copy of
+itself in a .class file, the virus again reads the methods count from the
+header and 2860 bytes from that offset. The extra space (2860-2826 bytes)
+is reserved for properties of the class. The virus code is loaded in one
+of the two dynamically allocated arrays.
+
+</p><p style="margin-bottom: 0in;">The other array is filled with the last 1030
+bytes of the constant pool. (The virus has its own entries in the constant
+pool, which are stored in the last 1030 bytes.) After loading the two arrays
+with data, a flag is set `true'. If that flag is still unset after processing
+all the files in the directory, execution stops as the virus was unable
+to load its code from a file.
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>The Infection Mechanism</b>
+
+</p><p style="margin-bottom: 0in;">The infection code is much more complicated
+than the loader, having around 1000 Java bytecode source lines. As mentioned
+above, the virus will only reach the infection code if it is able to load
+a copy of itself from an infected file in the current directory. If that
+condition is accomplished, it looks in the current work directory for .class
+files whose size is not divisible by 101. If such a file is found, a new
+RandomAccessFile object is instantiated, and used to open the host in read-write
+mode.
+
+</p><p style="margin-bottom: 0in;">Once again the virus skips the first eight
+bytes of the header and reads the const pool count value. This is stored
+for later use when the virus adds 123 new entries to the constant pool.
+Changing the constant pool size and adding new entries is necessary in
+order to add new bytecode to the class - at the time of writing, I can
+see no way of infecting a .class file without somehow changing the constant
+pool.
+
+</p><p style="margin-bottom: 0in;">Returning to the StrangeBrew virus, we should
+mention that the routine used to parse the constant pool is very similar
+to that used in the virus loader. Thus, the virus contains a great deal
+of redundant code. The relevant parser code could have been written as
+a Java procedure (method), but loading it along with the main virus code
+would be very complicated.
+
+</p><p style="margin-bottom: 0in;">After parsing the constant pool again, the
+virus saves a pointer to the access flags member of the class. Then it
+reads the this_class index in the constant pool, and saves it for future
+reference. After skipping the interfaces section and the fields section,
+StrangeBrew saves a pointer to the methods count and reads the number of
+methods in another temporary variable. Next, it reads the access flags
+properly for the first method in the class, and the length of the attribute
+used to store the method code. After skipping some irrelevant data, the
+virus loads the code length property of the method attribute data (whose
+size is tested for 2826 bytes in the loader) one more time. The next step
+is to read all the data from the first method in memory, and create a new
+header for it. Then it writes the new header and the entire code from the
+class which was loaded before creating the new header. After that, it reads
+again the just written data and stores it in an internal array (it will
+write it to the file later). Then, the virus writes its native Java bytecode
+into the new file, and also appends the data saved in the previous test,
+including the initial code found in the class. To work correctly, all the
+code belonging to the virus needs to be parsed dynamically in order to
+update all constant pool references. This very short, yet powerful, routine
+is designed to handle all bytecode cases, and it is probably the way the
+core of a Java virus detection engine should to be implemented. As the
+Java bytecode contains variable references, a simple CRC on the code buffer
+cannot be used. Therefore, a Java bytecode parser is required to extract
+the bytecodes, and to CRC them after that.
+
+</p><p style="margin-bottom: 0in;">StrangeBrew's constant pool entries (the
+1030 byte array, filled by the loader earlier) are inserted at the end
+of the host's constant pool. All the entries in this section of the constant
+pool are then processed to correct for any code relocation that might be
+necessary. Similarly, some parts of the method information data structure
+are also patched. Finally, the constant pool count entry in the header
+is set to match the size change caused by the additional 1030 bytes. The
+actual routines that work with the class code are quite complex, and a
+detailed analysis of each piece of code is difficult. The following is
+just a brief explanation of how this part of the virus works.
+
+</p><p style="margin-bottom: 0in;">As mentioned above, in order to gain control,
+the virus will rewrite the first method in the class to include a call
+to itself - the Strange Brew Virus() method. During infection the method
+is padded with NOPs to align the virus code such that the file size will
+be a multiple of 101 bytes.
+
+</p><p style="margin-bottom: 0in;">Nevertheless, the infection code is buggy.
+It fails to process the virus body correctly, so infecting some Java class
+files will result in an 'intended' virus. Due to exception handling, no
+error message appears when executing such damaged replicants. Despite this,
+the infection routine worked well with several small class files. I had
+no trouble replicating it to custom 4 KB bait classes, and the resulting
+files were able to carry the infection further.
+
+</p><p style="margin-bottom: 0in;">This, and the reasons pointed out above,
+means that it is very unlikely this virus will become a serious concern
+in the wild. However, those high-end anti-virus products that cannot afford
+to miss such a virus will have to implement Java class loaders and bytecode
+parsers in their engines (if they have not already done so).
+</p><div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>&nbsp;
+
+<div style="margin-bottom: 0in;"><b></b></div>
+
+
+<p style="margin-bottom: 0in;"><b>Epilogue:</b>
+
+</p><p style="margin-bottom: 0in;">StrangeBrew is the first Java virus. It infects
+Java class files, but only runs if the file is executed as a native Java
+application, and not as an applet. It does not work under 'vanilla' Navigator
+or IE browsers and was probably written as a 'proof of concept'. Its infection
+mechanism is both primitive (only searching for target files in the default
+directory) and quite advanced (in its infection routines). It should not
+be very complicated to write encrypted Java viruses and, therefore, polymorphic
+ones. Detecting them might pose some problems to the anti-virus world,
+but since Java applications are not actively exchanged, it seems unlikely
+these will be seen in the wild. This parallels the Access virus situation,
+but the technical and programming skills required to write a Java infector
+are much greater.
+
+</p><p style="margin-bottom: 0in;">Virus Information:
+
+</p><p style="margin-bottom: 0in;"><b>Aliases:</b> Java/StrangeBrew.A
+</p><div style="margin-bottom: 0in;"><b>Type:</b> Non-resident, direct action
+Java class file infector.</div>
+
+<div style="margin-bottom: 0in;"><b>Self recognition: </b>Files whose size
+is exactly divisible by 101 are assumed infected. It looks for its bytecode
+in such files by checking the first method size is 2826 bytes.</div>
+
+<div style="margin-bottom: 0in;"><b>Hex pattern:</b> <font face="Arial, sans-serif"><font size="-2">3626
+1506 1008 0715 2615 2564 0460 6860 6036 06A7 0066 0615 0604 6415 1610 1860</font></font></div>
+
+<div style="margin-bottom: 0in;"><b>Payload:</b> None.</div>
+
+<div class="frame-contents"><b>Disinfection:</b> Delete infected files,
+or use a program capable to disinfect it</div>
+
+<div style="margin-bottom: 0in;"></div>&nbsp;
+
+</body></html>

@@ -1,0 +1,101 @@
+    Continuing with recent report off the Internet on the Mutating Engine:
+    Part 3/4
+                 *************************************
+                                 22 Jun 92
+
+                            Mutation Engine Report
+            Copyright (c) 1992 by  VDS Advanced Research Group
+                           All Rights Reserved
+
+      For over 90% of the mutations, MtE generates a convoluted
+16-bit XOR-type encryption; however, in many cases it uses indirect
+ways to apply the XOR mask to a memory value. For example, it
+computes the mask, and then gets the value to be decrypted into a
+register, applies the mask and put the result back into that memory
+location. Besides, memory access is done using many different
+instructions such as MOV and XCHG. There are also many redundant
+instructions peppered freely throughout the decryptor.
+      In some cases (5.5%), MtE generates a decryptor with a null
+effect. The decryptor does not actually decrypt anything, and the
+virus code is in plaintext. The frequency of such cases seems to
+depend on the random number generator. It is funny to note that
+some popular scanners misidentify such extreme cases where the
+virus is not even encrypted. To handle these mutations, it is
+sufficient to extract a signature from the MtE itself. It is also
+possible to extract one from known MtE-based viruses and identify
+the virus directly. At any rate, a scan string from MtE itself
+should be used in case a future virus creates a plaintext variant.
+      We must also mention that even these plaintext mutations
+contained a fully working copy of MtE. They successfully propagated
+and generated encrypted mutations in future generations. MtE
+appears to generate correct code in all cases. The deviation
+between new generations started using plaintext parents and new
+generations started using encrypted parents was negligible.
+
+                       III. Mutation Types and Detection Algorithms
+
+      MtE generates 4 "types" of mutations. They are as follows:
+
+      1.  Double-reference (detectable using Method-1) ( ~ 91.0% )
+      2.  SUB-NEG (detectable using Method-2)   ( ~  2.0% )
+      3.  Single-reference (detectable using Method-3) ( ~  1.5% )
+      4.  Plaintext or no-reference  ( ~  5.5% )
+
+      By implementing three algorithms and one scan string for the
+plain mutations, it is possible to recognize MtE-based viruses
+while keeping false positives to an acceptable level. We have one
+such program that achieved 100% hit rate during our tests. Some
+others also claim 100% hit rate; and we have tested them as well.
+      A more detailed analysis of mutation types is not made public
+due to possible misuse of such information.
+
+                  IV.   Live Tests and Results
+
+      Test #1     Base Virus Name: Dedicated
+
+                             SCAN 91     F-PROT 2.04       CatchMTE 1.0
+
+      by Name (1)             67                69          60
+      as MtE  (2)             933               931         940
+      misidentified           -0                -0          N/A
+      missed                  -0                -0          -0
+      Hit Rate                100%              100%        100%
+
+(1)  SCAN91 --> [Mut],  F-PROT 2.04 --> Dedicated, CatchMTE --> Dedicated
+(2)  SCAN91 --> [DAME], F-PROT 2.04 --> MtE,       CatchMTE --> MtE-based
+
+      Test #2     Base Virus Name: Pogue
+
+                             SCAN 91     F-PROT 2.04       CatchMTE 1.0
+
+      by Name (1)             0           0                 56
+      as MtE  (2)             935         936               944
+      misidentified (3)       -65         -61               N/A
+      missed                  -0          -3                -0
+      Hit Rate                93.5%       93.6%             100%
+
+(1)  SCAN91 --> N/A,  F-PROT 2.04 --> N/A,    CatchMTE --> Pogue
+(2)  SCAN91 --> [DAME], F-PROT 2.04 --> MtE,  CatchMTE --> MtE-based
+(3)  SCAN91 --> [7S], F-PROT 2.04 --> Gotcha, CatchMTE --> N/A
+
+                      A.    Comments on Test Results
+
+      It seems that both F-PROT 2.04 and SCAN 91 misidentify some
+Pogue mutations that are in plaintext. F-PROT "quickscan" missed
+ALL mutations. You are advised to use SECURE scan mode of this
+product. The extra speed comes with 0% hit rate on MtE-based
+viruses!
+      F-PROT 2.04 missed three encrypted Pogue mutations. We
+examined these samples and found them to be of Type-3, and
+detectable using Method-3. The samples worked as expected. One of
+those three that were missed was called "suspicious" and guessed to
+be a variant of the Gotcha virus. We can only speculate that F-PROT
+lacks Method-3 detection algorithm and uses a heuristic in such
+cases. Surprisingly, Virx 2.3 missed one of these same mutations.
+Due to annoying user interface, we were unable to include Virx 2.3
+in our full test suite.
+      It should be noted that misidentification of 6% of Pogue
+mutations is a little alarming. All these misidentified mutations
+were found to be working and capable of generating new mutations.
+
+

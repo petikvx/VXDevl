@@ -1,0 +1,547 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>Assembler under Windows</TITLE>
+<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#ffffff">
+
+<B><FONT SIZE=6><P ALIGN="CENTER">Assembler under Windows</P>
+</B></FONT><P ALIGN="JUSTIFY">In this tutorial we’ll be using Assembler to write a simple windows program. What ever for? you might wonder. Well, when you use Assembler to write any kind of code, you have to handle all the details yourself. This is tedious and boring in the long run, but writing a few programs like this can be very instructive. Since you’ll be handling everything yourself, you’ll be exposed to a lot of issues that a high level programming language hides from you. Admittedly, C/C++ is not <I>that</I> high level, but even it hides some of the raw details from the programmer in order to make his work a little easier. By writing a small windows program using assembler, you’ll understand Windows95, the Intel processor and C/C++ a little better.</P>
+<P>You’re probably familiar with our style by now, cause you need to know C under Windows before you can tackle this tutorial, so you know we’re going to feed you small anaemic programs that don’t do much by themselves, but demonstrate important concepts as simply and in as uncluttered a style as possible. We’ll start off with a really simple Windows C program.</P>
+<P ALIGN="JUSTIFY">Program1.c</P>
+<PRE>#include&lt;windows.h&gt;
+_stdcall WinMain(HINSTANCE i, HINSTANCE j, char *k, int l)
+{
+HANDLE p;
+char aa[100];
+sprintf(aa,"%d",i);
+MessageBox(0,aa,aa,0);
+p=GetModuleHandleA(0);
+sprintf(aa,"%d",p);
+MessageBox(0,aa,aa,0);
+}</PRE>
+<P ALIGN="JUSTIFY">Under C windows, we had called Messagebox() with four parameters like this.</P>
+<PRE>MessageBox ( 0,aa,aa,0);</PRE>
+<P ALIGN="JUSTIFY">Here, the first parameter stood for the handle of the owner window, the second parameter gave us the address of the text of the message box, the third parameter represented the address of the title of the message box and the forth parameter stood for the style of the message box.</P>
+<P ALIGN="JUSTIFY">When we call MessageBox() with four parameters we are actually pushing these numbers onto the stack, and then calling the function. MessageBox() then comes along and picks up the parameters off the stack and uses them as it wishes.</P>
+<I><P ALIGN="JUSTIFY">p=GetModuleHandleA(0)</P>
+</I><P ALIGN="JUSTIFY">Through this line, we store the return value of GetModuleHandleA() in the pointer p. On building and executing, we see that the two MessageBox()’s display the same value, proving that the value returned by GetModuleHandleA and the value of i are the same ( i.e. 4194304). Now why whould we want to tell you about this? We’ll get to that a little later, just keep this little program in mind.</P>
+<FONT SIZE=4><P ALIGN="JUSTIFY">Prog 1.asm:</P>
+</FONT><PRE>.486p
+.model flat,STDCALL
+extrn MessageBoxA:PROC
+&nbsp;
+.data
+a db 'This is an asm prog',0
+b db 'This is another line in the asm prog',0
+&nbsp;
+.code
+start:
+push 0
+push offset [a]
+push offset [b]
+push 0
+call MessageBoxA
+end start</PRE>
+<P ALIGN="JUSTIFY">Type this code through any text editor and save it as 1.asm. Then assemble it using Borland’s assembler, Tasm32. The correct syntax is :-</P>
+<PRE>tasm32 /ml 1.asm</PRE>
+<P ALIGN="JUSTIFY">This will give you a file called 1.obj (The switch /ml tells the assembler to only assemble and not call the linker automatically). After assembly, you have to call the linker, just like with a compiler. Borland’s linker is called Tlink32 and the correct syntax is :-</P>
+<P ALIGN="JUSTIFY">&nbsp;</P>
+<PRE>tlink32 /c 1.obj, 1.exe,,import32, </PRE>
+<P ALIGN="JUSTIFY">The switch /c stands for Case Sensitive Link, 1a.obj is the name of the .obj file spat out by the assembler, 1a.exe is the name of the target file and import32 is the name of a .lib file which has to be linked in for the programs to work.</P>
+<P ALIGN="JUSTIFY">Now let’s examine the program line by line. </P>
+<PRE>.486p </PRE>
+<P ALIGN="JUSTIFY">The first line of the program is quite important and is called a Directive. Anything that starts with a ‘.’ (period) is a directive or instruction to the assembler. Directives do not end up producing any code, but they influence the way code is created. Here .486p tells the assembler that processor instructions starting from the 8086 to the 80486 are valid and that all protected mode instructions may also be used. If I now use an instruction belonging to the 80586 (the Pentium), the assembler will give me an error. Intel processors are backward compatible, that means that the 80486 understands and accepts the instructions of all Intel processors created before it.</P>
+<PRE>.model flat, STDCALL</PRE>
+<P ALIGN="JUSTIFY">This line starts with a ‘.’ as well so we can safely say that it’s a directive as well. Here we’re setting the memory model we intend to use. When working under DOS, we use pointers made up of two parts, segments and offsets, while under Windows pointers are just a long. So by saying .model flat we tell the assembler to use the memory model used by Windows.</P>
+<P ALIGN="JUSTIFY">STDCALL defines the calling convention. The calling convention sets the way the stack is handled by a program. Under the standard calling convention (STDCALL), the parameters are pushed onto the stack <I>backwards</I>, so the last parameter in the list is pushed first onto the stack and the first comes last. Here the callee (the function that’s been called) restores the stack by mopping up the parameters on it. Another common calling convention is the C calling convention. There too the parameters are passed backwards, but this time the caller (the code which calls the other function) cleans up the stack. </P>
+<PRE>.data</PRE>
+<P ALIGN="JUSTIFY">Every .exe file has a .data and a .code segment. By writing this directive, we’re telling the assembler that all that follows should be placed in the .data segment. The .data segment contains, what else, the data or the variables, while the .code contains the actual instructions.</P>
+<PRE>a db 'This is an asm prog',0
+b db 'This is another line in the asm prog',0</PRE>
+<P ALIGN="JUSTIFY">Here we’re creating two variables in the .data segment named simply a and b. In assembler, the datatype of a variable is declared after the name of the variable and db tells the assembler that these variables are chars (Declare Byte). After that we have a string that these variables point to and we round off with a zero; null terminating these strings like C/C++ has taught us to.</P>
+<PRE>.code</PRE>
+<P ALIGN="JUSTIFY">This directive states that everything from now on should be placed in the .code section in the .exe file.</P>
+<PRE>start:</PRE>
+<P ALIGN="JUSTIFY">Any word which ends with a ‘:’ is a label. A label is just a marker placed in the code so that we can conveniently jump to or refer to it. The actual name of the label doesn’t matter. It could have been anything. Name it ‘blah’ if you wish, just make sure you replace all the references made to start, with blah.</P>
+<P ALIGN="JUSTIFY">By the way, until now, absolutely NO code has been generated. Our first proper instruction follows now.</P>
+<PRE>push 0
+push offset a
+push offset [b]
+push 0
+call MessageBoxA</PRE>
+<P ALIGN="JUSTIFY">The push instruction will, as the name suggests push a value onto the stack. Here we’re pushing all the values that MessageBox() requires. A leading and trailing 0 and the address of two strings right in the middle. The keyword offset tells the assembler to push the address of the variable onto the stack and not the value of the variable. The [ ]’s are optional and generally stand for indirection (like the * operator in C/C++). TO prove they’re optional, one variable has ‘em and the other doesn’t. are explained a little later.Then we use the assembler instruction call to call the function MessageBox (MessageBoxA is the actual name of the function).</P>
+<P ALIGN="JUSTIFY">We have to declare a function which is not defined within the program as external and so we have the line </P>
+<PRE>extrn MessageBoxA:PROC</PRE>
+<P ALIGN="JUSTIFY">earlier in the program. This means that the function (also called a procedure or PROC) is in a .Dll, or in an .obj which will be linked with this .asm file. That’s why we need to link in import32.lib; it contains data about the location of MessageBox and which .Dll it’s in.</P>
+<PRE>end start</PRE>
+<P>The last line of an assembler program should always be end. The string after end is the label which marks the starting point of the program. Here it’s start.</P>
+<FONT SIZE=4><P ALIGN="JUSTIFY">Prog 1a.asm:</P>
+</FONT><PRE>.486p
+.model FLAT ,Stdcall
+&#9;
+.data
+&nbsp;
+.code
+start:
+push 0
+end start</PRE>
+<P ALIGN="JUSTIFY">This program simply generates an illegal operation warning. We’re pushing 0 onto the stack and then not clearing it up by poping it off and this destabilises the stack. Windows spots the problem and before it can get any worse, shuts down the program. If left unattended (as it would be under DOS), the machine would just freeze. </P>
+<P ALIGN="JUSTIFY">HInst is a variable which is defined as a dd or long (Declare Dword). We’re not going to be using it just yet.</P>
+<I><FONT SIZE=4><P ALIGN="JUSTIFY">Prog 1b.asm: </P>
+</I></FONT><PRE>.486p
+.model FLAT ,Stdcall
+&nbsp;
+extrn GetModuleHandleA:PROC
+&nbsp;
+.data
+&nbsp;
+.code
+start:
+push 0
+call GetModuleHandleA
+end start</PRE>
+<P ALIGN="JUSTIFY">Compile and link this and you get no errors. On execution you get nothing. Nothing surprising about that, ‘cause we’re not displaying anything. All that we did was push stuff and call a function. We’ll do more a little later.</P>
+<PRE>push 0
+call GetModuleHandleA
+&nbsp;</PRE>
+<P ALIGN="JUSTIFY">We’re pushing 0 onto the stack once more but this time it’s with a purpose. I’d mentioned earlier that when we push stuff onto the stack we’re actually passing parameters. Here by pushing 0 onto the stack and then calling GetModuleHandleA() we’re actually passing the parameter 0 to the function GetModuleHandleA() and then calling that function. It’s like saying GetModuleHandleA(0); in C/C++.</P>
+<P ALIGN="JUSTIFY">When GetModuleHandleA() is called using the call instruction it returns a value as it normally does, only in assembler (and internally even in the C/C++ compiler) the return value is stored in the EAX register. This tidbit of information will prove useful a little later.</P>
+<P ALIGN="JUSTIFY">A bit of theory before we proceed any further.</P>
+<P ALIGN="JUSTIFY">In C/C++ here’s how we declare a structure zzz with i,j,k as it’s member variables.</P>
+<PRE>struct
+{
+int i;
+int j;
+int k;
+}zzz;</PRE>
+<P ALIGN="JUSTIFY">To initialize the member variables we say zzz.i = 10; and internally this is converted into machine code.</P>
+<P ALIGN="JUSTIFY">Let's assume that when we created zzz, it commenced at location 100 in memory.</P>
+<P ALIGN="JUSTIFY">Therefore,</P>
+<P ALIGN="JUSTIFY">i will be allocated memory locations 100-101</P>
+<P ALIGN="JUSTIFY">j will be allocated memory locations 102-103</P>
+<P ALIGN="JUSTIFY">k will be allocated memory locations 104-105 </P>
+<P ALIGN="JUSTIFY">Since zzz.i = 10 internally C goes to memory location 100-101 &amp; puts 10 there.</P>
+<P ALIGN="JUSTIFY">Hence we can very easily claim that there is nothing like a struct in C i.e. whenever we say zzz we are actually computing an offset from the memory location where zzz starts.</P>
+<FONT SIZE=4><P ALIGN="JUSTIFY">prog 2b.asm</P>
+</FONT><PRE>.486p
+.model FLAT ,Stdcall
+WNDCLASS struc
+Style dd ?
+WndProc dd ?
+CbCExtra dd ?
+WndExtra dd ?
+HInstance dd ?
+HIcon dd ?
+HCursor dd ?
+Background dd ?
+Menuname dd ?
+ClassName dd ?
+IconSm dd ?
+WNDCLASS ends
+extrn GetModuleHandleA:PROC
+.data
+a WNDCLASS &lt;?&gt;
+.code
+start:
+push 0
+call GetModuleHandleA
+zzz proc
+zzz endp
+end start</PRE>
+<P ALIGN="JUSTIFY">In this program we’ve declared a structure we’re all familiar with, WNDCLASS. In assembly, a structure starts with <I>&lt;structure name&gt; struct </I>and ends with <I>&lt;structure name&gt; ends</I> in-between these two lines the actual members are declared just like any old variable. Hence the lines read :-</P>
+<PRE>WNDCLASS struc
+WNDCLASS ends</PRE>
+<P ALIGN="JUSTIFY">with all the rest of the stuff in-between. We defined the data type of the member variables as dd which means that they’re all longs. The "?" indicates that the values of the member variables are undefined. Removing this "?" will give us no errors. </P>
+<PRE>typedef struct tagWNDCLASSW {
+UINT style;
+WNDPROC lpfnWndProc;
+int cbClsExtra;
+int cbWndExtra;
+HINSTANCE hInstance;
+HICON hIcon;
+HCURSOR hCursor;
+HBRUSH hbrBackground;
+LPCWSTR lpszMenuName;
+LPCWSTR lpszClassName;
+} WNDCLASSW, *PWNDCLASSW, NEAR *NPWNDCLASSW, FAR *LPWNDCLASSW;
+typedef WNDCLASSW WNDCLASS;</PRE>
+<P ALIGN="JUSTIFY">Here’s the actual definition of WNDCLASS as it is under header files the world over. As you can see, there is no difference bwteen the two, exept perhaps minor differences in the member names.</P>
+<P ALIGN="JUSTIFY">In the .data section there’s an additional line. </P>
+<PRE>&#9;a &#9;WNDCLASS&#9;&#9;&lt;?&gt;</PRE>
+<P ALIGN="JUSTIFY">This means that the object a looks like WNDCLASS and the &lt;?&gt; at the end tells the assembler that the members will be initialised later. If you’d said</P>
+<PRE>a WNDCLASS &lt;1,2,3,4&gt;</PRE>
+<P ALIGN="JUSTIFY">it would have meant that the assembler is to initialise the first four members to these values and leave the rest uninitialised.</P>
+<P ALIGN="JUSTIFY">In short all that we did was create a structure WNDCLASS and in the .data section we created an object a that looks like WNDCLASS.</P>
+<I><FONT SIZE=4><P ALIGN="JUSTIFY">prog 3.asm</P>
+</I></FONT><PRE>.486p
+.model FLAT ,Stdcall
+WNDCLASS struc
+Style dd ?
+WndProc dd ?
+CbCExtra dd ?
+WndExtra dd ?
+HInstance dd ?
+HIcon dd ?
+HCursor dd ?
+Background dd ?
+Menuname dd ?
+ClassName dd ?
+IconSm dd ?
+WNDCLASS ends
+extrn GetModuleHandleA:PROC
+extrn RegisterClassA:PROC
+.data
+Hi db 'Hi',0
+a WNDCLASS &lt;?&gt;
+.code
+start:
+push 0
+call GetModuleHandleA
+mov [a.HInstance],eax
+mov [a.WndProc] , offset zzz
+mov [a.ClassName] ,offset Hi
+push offset a
+call RegisterClassA
+zzz proc
+zzz endp
+end start</PRE>
+<P ALIGN="JUSTIFY">This program’s a little bigger than what we’ve been dealing with, but it’s not all that different.</P>
+<P ALIGN="JUSTIFY">While writing any code in assembler, one should always remember that the usual place the assembler places values is in the processor’s registers. In case we have to change the values of any of our variables we have to do it through these registers. That’s precisely what we’ve been doing through out the above program.</P>
+<P ALIGN="JUSTIFY">Let’s take <FONT FACE="Courier New" SIZE=2>mov [a.HInstance],eax </FONT><FONT SIZE=4>for example.</P>
+</FONT><P ALIGN="JUSTIFY">eax is a register which in our case stores the return value of the function GetModuleHandleA. This value stored in the eax register is then moved into [a.HInstance]. </P>
+<P ALIGN="JUSTIFY">The value of eax is 4194304 (4 MegaBytes) so by <I><FONT SIZE=4>mov [</FONT>a.HInstance<FONT SIZE=4>],eax</I></FONT> we move 4194304 into a.HInstance i.e. we are changing the value of a.HInstance from an undefined value to 4194304. </P>
+<P ALIGN="JUSTIFY">Now’s the time to explain the rational behind the use of GetModuleHandleA. Under C - Windows, the handle to our program is passed to WinMain() as the very first parameter. Unfortunately, under assembler, we don’t have a WinMain(), so we have to use GetModuleHandleA to get us the handle of the program. Under C - Windows, we set Hinstance to the value of i, but under assembler, we have to manually find out the handle we need. That’s why we demonstrated earlier that functions return values in the register eax and that the value returned by GetModuleHandleA is the same as the value of i. The reason both are 4 MB is because that’s where the program starts in memory. Since that’s as unique a number as any other, Windows uses it as the handle of the program.</P>
+<P ALIGN="JUSTIFY">The order in which the members of the structure are defined is most crucial. RegisterClassA() is passed the address of this structure. It assumes that the fifth member is a.HInstance. So if one happens to interchange the fifth member with the first or, for that matter any two members, then nothing will work. Remember the earlier explaination about structures in C/C++?</P>
+<P ALIGN="JUSTIFY">In the program we’ve carefully initialised the important members of a before moving onto RegisterClassA().They are initialised in the code section as follows:-</P>
+<PRE>&#9;mov &#9;&#9;[a.HInstance],eax
+&#9;mov&#9;&#9;[a.WndProc] , offset zzz
+&#9;mov&#9;&#9;[a.ClassName] ,offset Hi
+&nbsp;</PRE>
+<P ALIGN="JUSTIFY">We initialise [a.HInstance] to the value stored in eax. </P>
+<PRE>&#9;mov &#9;&#9;[a.HInstance],eax</PRE>
+<P ALIGN="JUSTIFY">And here set a.WndProc to the address of zzz through these lines. </P>
+<PRE>&#9;mov&#9;&#9;[a.WndProc] , offset zzz</PRE>
+<P ALIGN="JUSTIFY">&nbsp;The offset zzz menas that it is the address of zzz (our future callback function) that is moved into [a.WndProc] </P>
+<P ALIGN="JUSTIFY">The zzz proc is defined in the latter half of the program, but this will not give any errors since the assembler is smart enough to make multiple passes through the code. That is, if the function zzz is called and if the assembler fails to find the address of this function, then it goes through the entire code once more to pin down zzz. An error is displayed only when it is unable to find the function even after multiple passes. </P>
+<P ALIGN="JUSTIFY">[a.classname] is given the address of the variable Hi. Hi is a variable of the datatype db. That means that Hi is a char (Declare Byte). We’re also stored the string "Hi" in Hi and null terminated it.</P>
+<PRE>mov &#9;&#9; [a.ClassName] ,offset Hi</PRE>
+<P ALIGN="JUSTIFY">We then push the address of a onto the stack and call the function RegisterClassA() by saying,</P>
+<PRE>push &#9;offset a
+call &#9; RegisterClassA</PRE>
+<P ALIGN="JUSTIFY">And that’s all there is to it!</P>
+<FONT SIZE=4><P ALIGN="JUSTIFY">prog 4.asm</P>
+</FONT><PRE>.486p
+.model FLAT ,Stdcall
+WNDCLASS struc
+Style dd ?
+WndProc dd ?
+CbCExtra dd ?
+WndExtra dd ?
+HInstance dd ?
+HIcon dd ?
+HCursor dd ?
+Background dd ?
+Menuname dd ?
+ClassName dd ?
+IconSm dd ?
+WNDCLASS ends
+&nbsp;
+extrn GetModuleHandleA:PROC
+extrn RegisterClassA:PROC
+extrn CreateWindowExA:PROC
+extrn PostQuitMessage:PROC
+extrn DefWindowProcA:PROC
+&nbsp;
+.data
+hInst dd 0
+Hi db 'Hi',0
+ttl db 'Test Assembler Program',0
+a WNDCLASS &lt;?&gt;
+.code
+start:
+push 0
+call GetModuleHandleA
+mov [a.HInstance],eax
+mov [a.WndProc] , offset zzz
+mov [a.ClassName] ,offset Hi
+push offset a
+call RegisterClassA
+push 0
+push [hInst]
+push 0 ;menu
+push 0 ;parent hwnd
+push 0 ;height
+push 0 ;width
+push 0 ;y
+push 0 ;x
+push 0 ;style
+push offset ttl
+push offset Hi
+push 0 
+call CreateWindowExA
+&nbsp;
+zzz proc uses ebx edi esi, hwnd:DWORD, wmsg:DWORD, wparam:DWORD, lparam:DWORD
+mov eax,[wmsg]
+cmp eax,2 ;WM_DESTROY
+je wmdestroy
+defwndproc:
+push [lparam]
+push [wparam]
+push [wmsg]
+push [hwnd]
+call DefWindowProcA
+jmp finish
+&nbsp;
+wmdestroy:
+push 0
+call PostQuitMessage ;Quit
+xor eax,eax
+&nbsp;
+finish: 
+ret
+&nbsp;
+zzz endp
+end start</PRE>
+<P ALIGN="JUSTIFY">In this program CreateWindow() makes it’s debut. It has a huge parameter list of eleven members and we’ve got to fill them all in. Just remember, that in assembler the function is called CreateWindowsExA (which is it’s actual internal name). </P>
+<P ALIGN="JUSTIFY">Here’s how the parameters were passed.</P>
+<PRE>&#9;push &#9; 0
+&#9;push &#9;[hInst]&#9;&#9;;hInstance
+&#9;push &#9;0&#9;&#9;;menu
+&#9;push 0 &#9;&#9;;parent hwnd
+&#9;push &#9;0&#9;&#9;;height
+&#9;push 0&#9;&#9;;width
+&#9;push &#9; &#9;0&#9;&#9;;y
+&#9;push &#9; &#9;0&#9;&#9;;x
+&#9;push &#9; &#9;0&#9;&#9;;style
+&#9;push &#9;offset ttl
+&#9;push &#9;offset Hi
+&#9;push &#9; 0
+&#9;call &#9;CreateWindowExA</PRE>
+<P ALIGN="JUSTIFY">CreateWindowExA returns a window number in eax. Our aim is to deposit this value in the variable newhwnd which is defined as a long. Hence we say,</P>
+<I><P ALIGN="JUSTIFY">mov &#9;&#9;[newhwnd],eax</P>
+</I><P ALIGN="JUSTIFY">zzz proc uses ebx edi esi,hwnd:DWORD, wmsg:DWORD, param:DWORD,lparam:DWORD </P>
+<P ALIGN="JUSTIFY">All that stuff after ‘proc’ helps the assembler to properly generate code to deal with the parameters passed to zzz. By telling the assembler that we’re using ebx, edi and esi (3 registers), we’re actually telling the assembler to save the values present in these registers and to restore them once the procedure ends. Right after that we tell the assembler that this procedure is passed four parameters and that they are to be referred to as hwnd, wmsg, param and lparam respectively. </P>
+<PRE>mov eax,[wmsg]
+cmp eax,2 ;WM_DESTROY
+je wmdestroy</PRE>
+<P ALIGN="JUSTIFY">We then move the value of wmsg into eax and compare it with 2 using the instruction cmp (which compares two numbers by subtracting the one on the right of the comma from the one on the left and setting the flags accordingly), to check for a WM_DESTROY. If equal, we jump to the label wmdestroy and if not, we go to defwndproc.</P>
+<PRE>defwndproc:
+push [lparam]
+push [wparam]
+push [wmsg]
+push [hwnd]
+call DefWindowProcA
+jmp finish</PRE>
+<P ALIGN="JUSTIFY">In defwndproc, we push four parameters onto the stack and then call DefWindowProcA. Then we’re off to the label finish where we issue a ret (that’s the same as a C/C++ return) and leave the procedure.</P>
+<PRE>wmdestroy:
+push 0
+call PostQuitMessage ;Quit
+xor eax,eax</PRE>
+<P ALIGN="JUSTIFY">Under the wmdestroy label we call PostQuitMessage with the one and only parameter set to zero and return a 0 by placing a zero in eax. Here we utilise a sneaky trick to set the eax register (the register which contains return values) to zero. </P>
+<P ALIGN="JUSTIFY">When you XOR a number with itself, the answer is always zero. Instead of saying xor eax,eax to set eax to zero, we could have simply said mov eax,0, but what’s life without a little spice?!</P>
+<P ALIGN="JUSTIFY">Program5.asm</P>
+<PRE>.486p
+.model FLAT ,Stdcall
+WNDCLASS struc
+Style dd ?
+WndProc dd ?
+CbCExtra dd ?
+WndExtra dd ?
+HInstance dd ?
+HIcon dd ?
+HCursor dd ?
+Background dd ?
+Menuname dd ?
+ClassName dd ?
+IconSm dd ?
+WNDCLASS ends
+&nbsp;
+extrn GetModuleHandleA:PROC
+extrn RegisterClassA:PROC
+extrn CreateWindowExA:PROC
+extrn PostQuitMessage:PROC
+extrn DefWindowProcA:PROC
+extrn ShowWindow:PROC
+&nbsp;
+.data
+hInst dd 0
+Hi db 'Hi',0
+ttl db 'Test Assembler Program',0
+newhwnd dd 0
+&nbsp;
+a WNDCLASS &lt;?&gt;
+.code
+start:
+push 0
+call GetModuleHandleA
+mov [a.HInstance],eax
+mov [hInst],eax
+mov [a.WndProc] , offset zzz
+mov [a.ClassName] ,offset Hi
+push offset a
+call RegisterClassA
+push 0
+push [hInst]
+push 0 ;menu
+push 0 ;parent hwnd
+push 0 ;height
+push 0 ;width
+push 0 ;y
+push 0 ;x
+push 0 ;style
+push offset ttl
+push offset Hi
+push 0 
+call CreateWindowExA
+mov [newhwnd],eax
+&nbsp;
+push 3
+push [newhwnd]
+call ShowWindow
+&nbsp;
+zzz proc uses ebx edi esi, hwnd:DWORD, wmsg:DWORD, wparam:DWORD, lparam:DWORD
+mov eax,[wmsg]
+cmp eax,2 ;WM_DESTROY
+je wmdestroy
+defwndproc:
+push [lparam]
+push [wparam]
+push [wmsg]
+push [hwnd]
+call DefWindowProcA
+jmp finish
+&nbsp;
+wmdestroy:
+push 0
+call PostQuitMessage ;Quit
+xor eax,eax
+&nbsp;
+finish: 
+ret
+&nbsp;
+zzz endp
+end start</PRE>
+<P ALIGN="JUSTIFY">In this program, after creating the window in memory, we view the window by using ShowWindow(). This function requires two parameters and these are pushed onto the stack by us. </P>
+<PRE>push&#9;3
+push &#9;[newhwnd]
+call ShowWindow</PRE>
+<P ALIGN="JUSTIFY">the variable [newhwnd] contains the window number. The window will appear and disappear within seconds. The next program stabilises it.</P>
+<FONT SIZE=4><P ALIGN="JUSTIFY">prog7.asm</P>
+</FONT><PRE>.486p
+.model FLAT ,Stdcall
+WNDCLASS struc
+Style dd ?
+WndProc dd ?
+CbCExtra dd ?
+WndExtra dd ?
+HInstance dd ?
+HIcon dd ?
+HCursor dd ?
+Background dd ?
+Menuname dd ?
+ClassName dd ?
+IconSm dd ?
+WNDCLASS ends
+&nbsp;
+MSGSTRUCT struc
+msHWND dd ?
+msMESSAGE dd ?
+msWPARAM dd ?
+msLPARAM dd ?
+msTIME dd ?
+msPT dd ?
+MSGSTRUCT ends
+&nbsp;
+extrn GetModuleHandleA:PROC
+extrn RegisterClassA:PROC
+extrn CreateWindowExA:PROC
+extrn ShowWindow:PROC
+extrn GetMessageA:PROC
+extrn DispatchMessageA:PROC
+extrn ExitProcess:PROC
+extrn DefWindowProcA:PROC
+extrn ShowWindow:PROC
+extrn PostQuitMessage:PROC
+&nbsp;
+.data
+hInst dd 0
+Hi db 'Hi',0
+ttl db 'Test Assembler Program',0
+newhwnd dd 0
+a WNDCLASS &lt;?&gt;
+c MSGSTRUCT &lt;?&gt;
+.code
+start:
+push 0
+call GetModuleHandleA
+mov [a.HInstance],eax
+mov [hInst],eax
+mov [a.WndProc] , offset zzz
+mov [a.ClassName] ,offset Hi
+push offset a
+call RegisterClassA
+push 0
+push [hInst];hInstance
+push 0 ;menu
+push 0 ;parent hwnd
+push 0 ;height
+push 0 ;width
+push 0 ;y
+push 0 ;x
+push 0 ;style
+push offset ttl
+push offset Hi
+push 0
+call CreateWindowExA
+mov [newhwnd],eax
+&nbsp;
+push 3
+push [newhwnd]
+call ShowWindow
+&nbsp;
+msg_loop:
+push 0
+push 0
+push 0
+push offset c
+call GetMessageA
+cmp ax,0
+je end_loop
+push offset c
+call DispatchMessageA
+jmp msg_loop
+&nbsp;
+end_loop:
+push 0
+call ExitProcess
+&nbsp;
+zzz proc uses ebx edi esi, hwnd:DWORD, wmsg:DWORD, wparam:DWORD, lparam:DWORD
+mov eax,[wmsg]
+cmp eax,2 ;WM_DESTROY
+je wmdestroy
+defwndproc:
+push [lparam]
+push [wparam]
+push [wmsg]
+push [hwnd]
+call DefWindowProcA
+jmp finish
+&nbsp;
+wmdestroy:
+push 0
+call PostQuitMessage ;Quit
+xor eax,eax
+&nbsp;
+finish: 
+ret
+&nbsp;
+zzz endp
+end start</PRE>
+<P ALIGN="JUSTIFY">The function GetMessageA requires four parameters. We’ve pushed these four parameters onto the stack before calling GetMessageA. The first three values pushed are zero's and the fourth parameter is the address of the object c which looks like MSGSTRUCT (A structure chich contains 6 longs). GetMessageA when called returns different values for different messages. This return value is stored in the ax register.</P>
+<P ALIGN="JUSTIFY">Using the instruction cmp, we find out if ax is equal to 0. If it’s not equal to 0, then we push the address of c onto the stack, call DispatchMessage and loop up to the label msg_loop. If ax is equal to 0, then we jump out of the loop to end_loop. There the parameter of ExitProcess, 0 is pushed on the stack and ExitProcess is called, ending the program smoothly.</P>
+<P ALIGN="JUSTIFY">And that’s it. When this program is assembled and run, you’ll see a window on the screen. To close the window you’ll have to use the three fingered salute (CTRL + ALT + DEL) and End Task the offending application. </P>
+<P ALIGN="CENTER">&nbsp;</P></BODY>
+</HTML>

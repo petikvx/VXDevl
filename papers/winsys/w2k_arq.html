@@ -1,0 +1,232 @@
+<html>
+<head>
+<title>Win2K architecture</title>
+</head>
+
+<body>
+<h1>Microsoft Windows 2000 Architecture</h1>
+<p>
+From: <b>"System architecture"</b><br>
+Salomon, David and Mark E. Russinovich. 
+<i>Inside Microsoft Windows 2000</i>. Third Edition,<br>
+Microsoft Press.
+<p>
+WEB of authors:
+<a href="http://www.sysinternals.com">http://www.sysinternals.com</a>
+(Book not available here)
+<hr>
+
+<h3>Chapter 2</h3>
+
+<h2>System Architecture</h2>
+Now that we've covered the terms, concepts, and tools you need to be familiar with, we're ready to start our exploration of the internal design goals and structure of Microsoft Windows 2000 (originally Windows NT). This chapter explains the overall architecture of the system the key components, how they interact with each other, and the context in which they run. To provide a framework for understanding the internals of Windows 2000, let's first review the requirements and goals that shaped the original design and specification of the system.
+<p>
+<b>Operating System Model</b><br>
+In most multiuser operating systems, applications are separated from the operating system itself the operating system code runs in a privileged processor mode (referred to as kernel mode in this book), with access to system data and to the hardware; application code runs in a nonprivileged processor mode (called user mode), with a limited set of interfaces available, limited access to system data, and no direct access to hardware. When a user-mode program calls a system service, the processor traps the call and then switches the calling thread to kernel mode. When the system service completes, the operating system switches the thread context back to user mode and allows the caller to continue.
+<p>
+Windows 2000 is similar to most UNIX systems in that it's a monolithic operating system in the sense that the bulk of the operating system and device driver code shares the same kernel-mode protected memory space. This means that any operating system component or device driver can potentially corrupt data being used by other operating system components.
+<p>
+
+<h2>Is Windows 2000 a Microkernel-Based System?</h2>
+Although some claim it as such, Windows 2000 isn't a microkernel-based operating system in the classic definition of microkernels, where the principal operating system components (such as the memory manager, process manager, and I/O manager) run as separate processes in their own private address spaces, layered on a primitive set of services the microkernel provides. For example, the Carnegie Mellon University Mach operating system, a contemporary example of a microkernel architecture, implements a minimal kernel that comprises thread scheduling, message passing, virtual memory, and device drivers. Everything else, including various APIs, file systems, and networking, runs in user mode. However, commercial implementations of the Mach microkernel operating system typically run at least all file system, networking, and memory management code in kernel mode. The reason is simple: the pure microkernel design is commercially impractical because it's too inefficient.
+<p>
+Does the fact that so much of Windows 2000 runs in kernel mode mean that it's more susceptible to crashes than a true microkernel operating system? Not at all. Consider the following scenario. Suppose the file system code of an operating system has a bug that causes it to crash from time to time. In a traditional operating system or a modified microkernel operating system, a bug in kernel-mode code such as the memory manager or the file system would likely crash the entire operating system. In a pure microkernel operating system, such components run in user mode, so theoretically a bug would simply mean that the component's process exits. But in practical terms, the system would crash because recovering from the failure of such a critical process would likely be impossible.
+<p>
+
+All these operating system components are, of course, fully protected from errant applications because applications don't have direct access to the code and data of the privileged part of the operating system (though they can quickly call other kernel services). This protection is one of the reasons that Windows 2000 has the reputation for being both robust and stable as an application server and as a workstation platform yet fast and nimble from the perspective of core operating system services, such as virtual memory management, file I/O, networking, and file and print sharing.
+<p>
+The kernel-mode components of Windows 2000 also embody basic object-oriented design principles. For example, they don't reach into one another's data structures to access information maintained by individual components. Instead, they use formal interfaces to pass parameters and access and/or modify data structures.
+<p>
+Despite its pervasive use of objects to represent shared system resources, Windows 2000 is not an object-oriented system in the strict sense. Most of the operating system code is written in C for portability and because C development tools are widely available. C doesn't directly support object-oriented constructs, such as dynamic binding of data types, polymorphic functions, or class inheritance. Therefore, the C-based implementation of objects in Windows 2000 borrows from, but doesn't depend on, features of particular object-oriented languages.
+
+
+<h2>Portability</h2>
+Windows 2000 was designed to run on a variety of hardware architectures, including Intel-based CISC systems as well as RISC systems. The initial release of Windows NT supported the x86 and MIPS architecture. Support for the Digital Equipment Corporation (DEC) Alpha AXP was added shortly thereafter. Support for a fourth processor architecture, the Motorola PowerPC, was added in Windows NT 3.51. Because of changing market demands, however, support for the MIPS and PowerPC architectures was dropped before development began on Windows 2000. Later Compaq withdrew support for the Alpha AXP architecture, resulting in Windows 2000 being supported only on the x86 architecture.
+
+<pre>
+NOTE
+--------------------------------------------------------------------------------
+ The next architecture to be supported by a future version of Windows 2000 is 
+the new Intel Itanium processor family, the first implementation of the 64-bit 
+architecture family being jointly developed by Intel and Hewlett-Packard, called 
+IA-64 (for Intel Architecture 64). The 64-bit version of Windows will provide a 
+much larger address space for both user processes and the system. Although this 
+is a major enhancement that extends the scalability of the system significantly, 
+to date, moving Windows 2000 to a 64-bit platform hasn't necessitated major 
+changes in the kernel architecture of the system (other than the support in the 
+memory manager, of course). For information on preparing applications now so that 
+they can be ported to 64-bit Windows more easily later, see the section of the 
+Platform SDK documentation entitled "Win64 Programming Preview" (also available 
+online at msdn.microsoft.com). For general information on 64-bit Windows, search 
+for the keyword "64-bit" on www.microsoft.com/windows.
+---------------------------------------------------------------------------------
+</pre>
+
+<p>
+Windows 2000 achieves portability across hardware architectures and platforms in two primary ways:
+<p>
+Windows 2000 has a layered design, with low-level portions of the system that are processor-architecture-specific or platform-specific isolated into separate modules so that upper layers of the system can be shielded from the differences between architectures and among hardware platforms. The two key components that provide operating system portability are the kernel (contained in Ntoskrnl.exe) and the hardware abstraction layer (contained in Hal.dll). (Both these components are described in more detail later in this chapter.) Functions that are architecture-specific (such as thread context switching and trap dispatching) are implemented in the kernel. Functions that can differ among systems within the same architecture (for example, different motherboards) are implemented in the HAL.
+<p>
+The vast majority of Windows 2000 is written in C, with some portions in C++. Assembly language is used only for those parts of the operating system that need to communicate directly with system hardware (such as the interrupt trap handler) or that are extremely performance-sensitive (such as context switching). Assembly language code exists not only in the kernel and the HAL but also in a few other places within the core operating system (such as the routines that implement interlocked instructions as well as one module in the local procedure call facility), in the kernel-mode part of the Win32 subsystem, and even in some user-mode libraries, such as the process startup code in Ntdll.dll (a system library explained later in this chapter).
+
+
+<h2>Symmetric Multiprocessing</h2>
+Multitasking is the operating system technique for sharing a single processor among multiple threads of execution. When a computer has more than one processor, however, it can execute two threads simultaneously. Thus, whereas a multitasking operating system only appears to execute multiple threads at the same time, a multiprocessing operating system actually does it, executing one thread on each of its processors.
+<p>
+As mentioned at the beginning of this chapter, one of the key design goals for Windows NT was that it had to run well on multiprocessor computer systems. Windows 2000 is also a symmetric multiprocessing (SMP) operating system. There is no master processor the operating system as well as user threads can be scheduled to run on any processor. Also, all the processors share just one memory space. This model contrasts with asymmetric multiprocessing (ASMP), in which the operating system typically selects one processor to execute operating system code while other processors run only user code. The differences in the two multiprocessing models are illustrated in Figure 2-1.
+</p>
+<center>
+<img src=fig_2-1.jpg>
+</center>  
+
+<center>Figure 2-1 Symmetric vs. asymmetric multiprocessing</center>
+
+<p>
+Although Windows NT was originally designed to support up to 32 processors, nothing inherent in the multiprocessor design limits the number of processors to 32 that number is simply an obvious and convenient limit because 32 processors can easily be represented as a bit mask using a native 32bit data type.
+<p>
+The actual number of supported processors depends on the edition of Windows 2000 being used. (The various editions of Windows 2000 are described in the next section.) This number is stored in the registry value HKLM\SYSTEM\CurrentControlSet\Control\Session\Manager\Licensed Processors. Keep in mind that tampering with that data is a violation of the software license and will likely result in a system crash upon rebooting because modifying the registry to allow use of more processors involves more than just changing this value.
+
+
+<h2>Scalability</h2>
+One of the key issues with multiprocessor systems is scalability. To run correctly on an SMP system, operating system code must adhere to strict guidelines and rules. Resource contention and other performance issues are more complicated in multiprocessing systems than in uniprocessor systems and must be accounted for in the system's design. Windows 2000 incorporates several features that are crucial to its success as a multiprocessor operating system:
+
+<ul>
+  <li>
+   The ability to run operating system code on any available processor and on multiple processors at 
+   the same time
+  </li>
+  <li>
+   Multiple threads of execution within a single process, each of which can execute simultaneously on 
+   different processors
+  </li>
+  <li>
+   Fine-grained synchronization within the kernel as well as within device drivers and server 
+   processes, which allows more components to run concurrently on multiple processors
+  </li>
+</ul>
+
+In addition, Windows 2000 provides mechanisms (such as I/O completion ports described in Chapter 9) that facilitate the efficient implementation of multithreaded server processes that can scale well on 
+multiprocessor systems.
+
+Multiprocessor synchronization is described in Chapter 3. Multiprocessor thread scheduling details are covered in Chapter 6.
+
+
+<hr>
+
+<h2>Architecture Overview</h2>
+With this brief overview of the design goals and packaging of Windows 2000, let's take a look at the key system components that comprise its architecture. A simplified version of this architecture is shown in Figure 2-2. Keep in mind that this diagram is basic it doesn't show everything. The various components of Windows 2000 are covered in detail later in this chapter.
+<p>
+<center>
+<img src=fig_2-2.jpg>
+</center>
+<center>Figure 2-2 Simplified Windows 2000 architecture </center>
+<p>
+In Figure 2-2, first notice the line dividing the user-mode and kernel-mode parts of the Windows 2000 operating system. The boxes above the line represent user-mode processes, and the components below the line are kernel-mode operating system services. As mentioned in Chapter 1, user-mode threads execute in a protected process address space (although while they are executing in kernel mode, they have access to system space). Thus, system support processes, service processes, user applications, and environment subsystems each have their own private process address space.
+
+The four basic types of user-mode processes are described as follows:
+
+<ul>
+<li>
+Fixed (or hardwired) system support processes, such as the logon process and the session manager, that are not Windows 2000 services (that is, not started by the service control manager).
+</li>
+<li>
+Service processes that host Win32 services, such as the Task Scheduler and Spooler services. Many Windows 2000 server applications, such as Microsoft SQL Server and Microsoft Exchange Server, also include components that run as services.
+</li>
+<li>
+User applications, which can be one of five types: Win32, Windows 3.1, MS-DOS, POSIX, or OS/2 1.2.
+</li>
+<li>
+Environment subsystems, which expose the native operating system services to user applications through a set of callable functions, thus providing an operating system environment, or personality. Windows 2000 ships with three environment subsystems: Win32, POSIX, and OS/2.
+</li>
+</ul>
+
+In Figure 2-2, notice the "Subsystem DLLs" box below the "Service processes" and "User applications" boxes. Under Windows 2000, user applications don't call the native Windows 2000 operating system services directly; rather, they go through one or more subsystem dynamic-link libraries (DLLs). The role of the subsystem DLLs is to translate a documented function into the appropriate internal (and undocumented) Windows 2000 system service calls. This translation might or might not involve sending a message to the environment subsystem process that is serving the user application.
+<p>
+The kernel-mode components of Windows 2000 include the following:
+<ul>
+<li>
+The Windows 2000 executive contains the base operating system services, such as memory management, process and thread management, security, I/O, and interprocess communication.
+</li>
+<li>
+The Windows 2000 kernel consists of low-level operating system functions, such as thread scheduling, interrupt and exception dispatching, and multiprocessor synchronization. It also provides a set of routines and basic objects that the rest of the executive uses to implement higher-level constructs.
+</li>
+<li>
+Device drivers include both hardware device drivers that translate user I/O function calls into specific hardware device I/O requests as well as file system and network drivers.
+</li>
+<li>
+The hardware abstraction layer (HAL) is a layer of code that isolates the kernel, device drivers, and the rest of the Windows 2000 executive from platform-specific hardware differences (such as differences between motherboards).
+</li>
+<li>
+The windowing and graphics system implements the graphical user interface (GUI) functions (better known as the Win32 USER and GDI functions), such as dealing with windows, user interface controls, and drawing.
+</li>
+</ul>
+<p>
+Table 2-1 lists the filenames of the core Windows 2000 operating system components. (You'll need to know these filenames because we'll be referring to some system files by name.) Each of these components is covered in greater detail both later in this chapter and in the chapters that follow.
+<p>
+<center>
+Table 2-1 Core Windows 2000 System Files
+</center>
+<table align=center border="2" width="85%">
+<tr bgcolor="AAAAAA#">
+  <th>Filename</th> 
+  <th>Components</th> 
+</tr>
+<tr>
+  <td> 
+	Ntoskrnl.exe 
+  <td> 
+	Executive and kernel 
+  </td> 
+</tr>
+<tr>
+  <td> 
+	Ntkrnlpa.exe 
+  </td> 
+  <td> 
+	Executive and kernel with support for Physical Address Extension (PAE), which allows 
+	addressing of up to 64 GB of physical memory 
+  </td> 
+</tr>
+<tr>
+  <td> 
+	Hal.dll 
+  </td> 
+  <td> 
+	Hardware abstraction layer 
+  </td> 
+</tr>
+<tr>
+  <td> 
+	Win32k.sys 
+  </td> 
+  <td> 
+	Kernel-mode part of the Win32 subsystem 
+  </td> 
+</tr>
+<tr>
+  <td> 
+	Ntdll.dll 
+  </td> 
+  <td> 
+	Internal support functions and system service dispatch stubs to executive functions
+  </td> 
+</tr>
+<tr>
+  <td> 
+	Kernel32.dll,
+	Advapi32.dll,
+	User32.dll,
+	Gdi32.dll
+  </td> 
+  <td>
+	CoreWin32 subsystem DLLs
+  </td>
+</tr> 
+</table>
+<p>
+Before we dig into the details of these system components, though, let's examine the differences between Windows 
+2000 Professional and the various editions of Windows 2000 Server.
+<p>
+<hr>
+</body>
+</html>

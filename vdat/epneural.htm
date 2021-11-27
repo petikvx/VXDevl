@@ -1,0 +1,237 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Virus Detection - The 'Brainy' Way</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>VIRUS DETECTION-'THE
+BRAINY WAY'<BR>
+Glenn Coates &amp; David Leigh</FONT></FONT></B><BR>
+
+<HR WIDTH="100%"></P></CENTER>
+
+<P><B>ABSTRACT </B></P>
+
+<P>This paper explores the potential opportunities for the use of Neural
+Networks in the detection of computer viruses. </P>
+
+<P>Neural computing aims to model the guiding principles used by the brain
+for problem solving, and apply them to a computer domain. It is not known
+how the brain solves problems at a high level;however, it is widely known
+that the brain uses many small highly interconnected units called 'neurons'.
+</P>
+
+<P>Like the brain, a neural network can be trained to solve a particular
+problem or recognise a pattern by example. The outcome is an algorithm-driven
+recogniser which does not exhibit the same behaviour as a deterministic
+algorithm. According to the way in which it has been trained, it may make
+'mistakes'. That is, it may declare a positive result for a smple which
+is actually negative, and vice-versa. The ratio of correct results to incorrect
+results can usually be improved by more and better training. </P>
+
+<P>Can such pattern recognition be harnessed to the use of virus detection?
+It could be argued that the characteristics of virus patterns, no matter
+how they are expressed, are suitable subjects for detection by Neural Networks.
+</P>
+
+<P><B>INTRODUCTION </B></P>
+
+<P>The received wisdom is that neural computing is an interesting 'academic
+toy' of little use, apart from modelling the animal brain. If this is true,
+then it is surprising that 7 out of 10 of the UK's leading blue chip companies
+are either investigation the potential of neural computing technology or
+are actually developing neural applications[Con94]. If leading edge companies
+are prepared to spend money on this 'academic toy', then maybe there are
+advantages to be gained from its use. </P>
+
+<P>Without investigation new techniques (for example heuristic scanning),
+one must accept that the rapid rise in new viruses will exert a heavy speed
+penalty from existing virus scanners. As a result of this rise in virus
+numbers and sophistication, there will be an increasing conflict between
+acceptable speed and acceptable accuracy. It is easy to become complacent
+and rely on increasing processor power to bail us out of this problem,
+but processor design is increasingly becoming a mature technology. </P>
+
+<P>What follows are the results of a feasibility study into the utilisation
+of neural networks within the field of virus detection. </P>
+
+<P><B>WHAT IS A NEURAL NETWORK? </B></P>
+
+<P>The working of the brain are only known at a very basic level. It contains
+approximately ten thousand million processing units called neurons, each
+of these neurons is connected to approximately ten thousand others. This
+network of neurons forms a highly complex pattern recognition tool, capable
+of conditional learning. </P>
+
+<P>This individual neuron is stimulated by one or more inputs. In the biological
+neuron, some inputs will tend to excite the neuron, whilst others may be
+inhibitory. That is to say, some carry more 'weight' than others. This
+is mirrored in the mathematical model via the use of a 'weighting mechanism'.
+The neuron accumulates the total value of its inputs, before passing through
+a threshold function to determine its final output. This output is then
+fired as an input to another (or a number of) neurons, and so on. In the
+biological neuron, the axon performs the threshold function. The mathematical
+model would typically used a sigmoid function or a simple binary 'yes/no'
+threshold function. The reader is referred to [Mar93] for further discussion.
+</P>
+
+<P><B>NEURAL NETWORK DEVELOPMENT </B></P>
+
+<P>When approaching a problem using a neural network, it is not always
+necessary to know in detail what is to be done before planning its use.
+In this sense, they are quite unlike procedurally-based computer programs,
+which have been written with a distinct goal in mind if they are to work
+properly. It is not even like a declarative program, for the same rule
+should apply. It is, perhaps, more like an expert system, where the outcome
+depends on the way in which an expert has answered a pre-defined series
+of questions. </P>
+
+<P>In this approach, a 'standard' three-layer neural network is constructed
+using the 'back propagation' learning algorithm. The architecture consists
+of an input layer, a hidden layer, and an output layer. Training is carried
+out by submitting a 'training set' of data to the network's input, observing
+what output is given, and adjusting the variable weights accordingly. Each
+neuron in the network processes its inputs, with the resultant values steadily
+percolating through the network until a result is given by the output layer.
+This output result is then compared to the actual result required for the
+given input, giving an error value. On the basis of this error value, the
+weights in the network are gradually adjusted, working backwards from the
+output layer. This process is repeated until the network has learnt the
+correct response for the given input [DTI95]. </P>
+
+<P>In this instance, the inputs represent the virus information, or other
+data concerning a virus-infected file. There are only two possible outputs,
+corresponding to 'possible virus found' and 'file appears to be OK'. The
+training data is divided into two classes, one containing the data for
+an infected file;and the other, uninfected files. When a suitable output
+is generated for the training data, the network is checked with a separate
+'validation set'. if the output for the validation set is not acceptable,
+it is merged with the original training set and the entire process is repeated.
+</P>
+
+<P>The result should be a very robust fuzzy recogniser capable of coping
+with unseen data. Because neural networks can process deeply hidden patterns,
+some have provided decisions superior to those made by trained humans.
+</P>
+
+<P><B>EXISTING SYSTEMS </B></P>
+
+<P>In 1990, a neural network was developed which acted as a 'communications
+link' between the mass of virus information available and end-user observations.
+By answering a set of standard questions regarding information on virus
+symptoms, the virus could be classified, and a set of remedies was given.
+Due to the nature of neural networks, the system could cope with incomplete
+and erroneous data provided by the end user. Even when faced with a new
+mutation, the system still gave suitable counter-measures and information.
+See [Gui91] for a full discussion. </P>
+
+<P><B>IDENTIFICATION OF VIRUS CODE PATTERNS VIA NEURAL NETWORKS </B></P>
+
+<P>A neural network could be constructed to learn the actual machine code
+patterns of a specific virus. However, as most viruses are mutations of
+existing viruses, a network could be made to identify a virus family. This
+carries the advantage of being capable of identifying future variants.
+This would result in a set of sub-networks linked together to provide the
+end solution. </P>
+
+<P>At the lowest level this could be done at the bit level. </P>
+
+<P>Although recognition at this level would be very difficult (if not impossible
+for a human) a neural network would be capable of it. The only limiting
+factors would be the volume and quality of the training data. The number
+of input neurons for a 1/2K virus code segment with a one-neuron output
+would be 4096. Given this, according to the 'geometric pyramid rule', the
+number of neurons in the hidden layers would be 64. </P>
+
+<P>The number of virus samples for effective recognition would be in the
+region of at least 525,000. This figure should then be trebled for the
+number of non-infected files. Others would argue far more, due to the problems
+associated with false positives. </P>
+
+<P>At a higher level, the input data could be represented at the byte level,
+where each byte would correspond to a single input neuron. In this context,
+the number of hidden neurons would be reduced to 22, and the number of
+virus samples would be at least 23,000. Again, the same applies for the
+number of non-infected files. This figure could be reduced further by pre-processing
+the code segment by extracting operand information, which could also increase
+accuracy and training time. </P>
+
+<P>The British Technology Group, with the involvement of Oxford University,
+conducted research into such a solution. Although no formal documentation
+was procued, the results are believed to be negative. </P>
+
+<P>From this, it can be seen that the use of neural networks in virus detection
+only seems practical at a high level. After all, a virus expert armed with
+a 'Virus Detection Language' and a 'Generic Decryption Engine' can provide
+a 100% accurate scanning result with advanced polymorphic viruses such
+as Pathogen in a relatively short period of time. </P>
+
+<P><B>A NEURAL NETWORK POST-PROCESSOR </B></P>
+
+<P>Rather than utilising a neural network to solve the virus alone, one
+could be used to process high level information, for example, that generated
+by a heuristic scanner. </P>
+
+<P>Currently, most heuristic scanners use a form of emulation in order
+to determine the behaviour of a program file. Should that program appear
+to execute a suspicious activity, a 'flag' is set indicating this. However,
+some of these flags indicate more virus-like activity than others. In order
+to solve this problem, the flags are weighted via a score. Therefore, a
+flag indicating a 'suspicious memory reference' may be given more weighting
+than a flag indicating an 'inconsistent EXE header'. The total weights
+of the set flags are computed, and if a set threshold value is met, the
+heuristic scanner issues a suitable warning. </P>
+
+<P>In the example of a well-known heuristic scanner, 35 of these flags
+are used. The weights are applied on an experimental basis. Initially,
+the weights are applied using a 'best-guess approach', based on the virus
+experts' knowledge. The reuslts of this are then tested on a virus collection
+and on a clean set of files. The results are analysed, and the weights
+adjusted accordingly. This cycle continues until satisfactory results are
+obtained. </P>
+
+<P>This process will probably increase in complexity over the next few
+years. In the above example, the number of flags could literally double
+due to the increase in knowledge, new techniques employed by the virus
+writers, and further development of heuristic scanners. It is imminent
+that the cycle of adjust, re-adjust will become far more complex and time-consuming.
+For example, why should flag-x be given a weight of 8, and not 7 or 9,
+and flag-y be given a weight of 1, and not 2? </P>
+
+<P>Already, one can see that the illustrated cycle is very similar in nature
+to that used in neural network training. Indeed, a neural network could
+be used in place of the weighting mechanism and bias imposed by the virus
+expert. Based on the results of other neural network applications, the
+results should be very accurate, because the neural network will 'learn'
+the 'optimum' weights. The human element is removed, and the entire learning
+process is automated. </P>
+
+<P>In terms of network size, the number of input neurons would be 35, with
+6 hidden neurons, and 1 output neuron. In theory, the minimum number of
+infected samples required for training would be at least 432. However,
+there would be no detrimental effects from training the network with higher
+samples, in order to reflect current virus numbers. </P>
+
+<P><B>CONCLUSIONS </B></P>
+
+<P>Neural computing is no longer seen as a pure academic subject. Indeed,
+many companies are now looking towards the use of neural networks as serious
+tools. Many systems are currently in use, with very high success rates.
+</P>
+
+<P>It has been found that it may be feasible to use neural computing technology
+in the virus detection field. However, at a low level the results are unclear.
+There seems to be greater accuracy using deterministic techniques. </P>
+
+<P>Using a neural network as a pre-/post-processing tool could offer a
+powerful addition to the virus expert's toolbag. Just one example is with
+the heuristic scanner. The authors believe other uses will also exist.
+</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

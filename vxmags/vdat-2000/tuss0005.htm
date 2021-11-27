@@ -1,0 +1,357 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Development of Emulation Systems</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>Evolving Polymorphism<BR>
+-<BR>
+What - Why - How</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>             
+<B>.--------------.
+| Introduction |
+'--------------'</B></PRE>
+
+<PRE>    Welcome to a discussion of a new form of polymorphism, created by me, which
+I have named &quot;Evolving Polymorphism&quot;.  This new form of polymorphism will not
+only revolutionize the structure of polymorphic engines, but will also drive
+the AV insane and provide a method to keep your viruses alive in the wild for
+much longer than was previously possible.  
+
+<B>.-----------------------.
+| The mechanics of life |
+'-----------------------'</B></PRE>
+
+<PRE>    Before we go into evolving systems, there is one distinction which must be
+made, and that is of the genotype and the phenotype.  A genotype is the genetic
+strand of information which an entity uses as a template for replication (for
+instance, in the human, it is DNA).  A phenotype is the behaviour exhibited by
+an entity.  In complex genotype-&gt;phenotype phenomenon, it is almost impossible
+to determine the resultant phenotype from a given genotype, and impossible to
+determine a genotype from a given phenotype, except through trial and error. 
+
+    This is because of the properties of linear and non-linear systems.  In a
+linear system, each component of the system does not interact with the other
+parts of the system.  To understand the system, it is broken down into its
+smallest components, each of which are studied, then the workings of the system
+can be realized from the workings of each of its parts.  
+
+    In non-linear systems however, the behaviour of each component is dependant
+on the behaviour of components around it.  This is like all life as we know
+it... in the human body for example... if you know how each of the possible
+cells in our structure work, this will not enable you to discover the workings
+of the entire human body, because the cells of the human will act differently
+in isolation, than they do when working cohesively with each other.  
+
+    A virus's genotype could be seen as its assembly code.  The phenotype could
+be seen as the behaviour of the virus as it replicates and spreads around the
+world.  The spread of the virus is an example of a non-linear system, as if you
+know one place where the virus struck, it is almost impossible to discover who
+the author of the virus is.  This is because of the complexity of the network
+of computers around the world... which allows a virus to spread from one side
+of the world to another.  
+
+    Anyway, onto general evolution theory.
+
+    There are said to be 3 properties necessary for evolution in a system, they
+are reproduction, heredity, and mutation.  Reproduction in an entity is the
+ability to make a copy/duplicate of itself, which is also able to replicate in
+the same manner.  Heredity is the handing down of genotypes from one generation
+of entity to another, so that the child of an entity will show characteristics
+in its genotype of its parent(s) genotype.  Mutation, is the altering of the
+genotype as it is passed down from a parent to its child, in random ways, to
+produce similar yet different genotypes.  Small changes in genotypes may result
+in similar phenotypes, or wildy different phenotypes.  
+
+    Over time, from a single parent entity able to asexually reproduce, an
+entire community of different entities will come forth.  This is because, in
+any system, there is a relative scarcity of resources needed by the entities
+inside it, such as space to reproduce/live in, and energy.  As the entities
+reproduce and mutate... entities which are better suited to the environment or
+conditions presented by it, will have a better chance of surviving, and create
+many more children using the same genotype.  Mutation makes sure the genotype
+mutates slowly, so that the best possible genotype/phenotype will eventually be
+discovered (in theory anyway).  
+
+    Some people argue that evolution is the sole characteristic common to all
+living entities, but that discussion is beyond the scope of this one ;) Now,
+let us take a giant leap from evolution theory to polymorphism history.  
+
+<B>.----------------------.
+| Polymorphism history |
+'----------------------'</B></PRE>
+
+<PRE>    In the beginning (well, nearly), viruses were unencrypted and the whole
+virus was just one giant constant scan string the AV companies used to detect
+each virus.  When encryption became the standard, the AV companies switched to
+using the virus decryptor as the virus signature.  Although this meant more
+false-alarms, it wasn't all that bad a detection method, and coupled with other
+methods (ie: emulating the decryption process then applying signatures to the
+resultant unencrypted code), viruses were detected succesfully again (however,
+emulation as I just wrote about came much later).  
+
+    Then, oglimorphism was created.  This simply consisted of selecting one of
+a few variants of decryptor to be used in each virus generation.  Obviously,
+this was of no major hassle to the AV as they just had to search for a few
+extra scan strings (or in the case of emulation, not even that).  Soon however,
+real polymorphic engines came into vogue, and viruses were capable of creating
+their own decryptors on the fly, with completely different decryptors between
+each virus (which was impossible to detect with scan strings, until emulation).
+
+    This was only the beginning of polymorphism however!  Soon, the utility of
+junk do-nothing code was discovered.  SMEG was created and released, an engine
+which created decryptors so littered with junk code that the AV software code
+emulators either slowed down considerably before detecting the virus, or just
+bailed out completely.  
+
+    Junk code wasn't the end however, because the AV quickly realised that junk
+code could just be completely ignored, and actually used as a way of detecting
+polymorphic engines which overused it.  Also, with emulation being developed,
+the VW needed a new form of polymorphism.  
+
+    As it was, polymorphism simply got slightly more complex.  People started
+to track register usage in their polymorphic generators, which meant that more
+realistic junk could be generated without flagging heuristics.  Also, the junk
+code itself was littered with anti-emulation instructions.  These come in many
+forms, such as actual instructions which will not work correctly when under an
+emulator, to confusing the emulator as to when the decryption loop has actually
+finished by littering code with 'junk' interrupt code.  
+
+    So, with the odds quickly rising against the VW, it was decided that things
+had to be done to prevent the AV discovering algorithms to detect polymorphic
+decryptors to begin with.  First, anti-bait code was used... but THEN... the
+biggest advance in polymorphism in a long time, came to light.
+
+    Slow polymorphism... the bane of the AV!  Slow polymorphism worked by
+varying the code generated by the polymorphic engine, depending on various
+things such as generation number of the parent... day of the year... BIOS date
+on the computer, slow changing things such as that.  This meant that the AV
+would only detect a certain set of polymorphic decryptors in the virus to begin
+with, thinking they had covered all possibilities.  On another day however, or
+another computer, the virus would spread happily, undetected by the AV.  
+
+    After the initial boom of slow polymorphism, no major new developments have
+occured in the field of polymorphism.  The AV have, however, been developing
+emulation and automated-virus-algorithm-extraction programs, making the field
+of war, very uneven.  With the discovery of evolving polymorphism however, that
+is all about to change...  
+
+<B>.--------------------------------------.
+| Evolving polymorphism implementation |
+'--------------------------------------'</B></PRE>
+
+<PRE>    Evolving polymorphism combines evolution theory with slow polymorphism, and
+depends on an highly advanced and configuration polymorphic code generator. The
+idea behind it, is to create a form of slow polymorphism which uses evolution
+to 'learn' how each AV program is detecting it and varying generated decryptors
+to stay undetectable.  Although the theory behind it is simple enough, actually
+implementing it is somewhat more complex.  
+
+    To begin, a polymorphic engine must be created.  Whenever a random choice
+is to be made (ie: between various junk instructions, between layouts of the
+decryptor, etc), this is replaced with a table of equal probabilities for each
+thing being done, which is then randomly selected.  Whenever it is possible for
+a certain peice of code to be disabled in decryptor generation while still
+generating a valid decryption/encryption algorithm, a random probability choice
+table could also to be created, however it is better to allow the probability
+tables to have 0% and 100% values instead, which makes things easier.  
+
+    The rule of the thumb is to make the polymorphic engine as variable and
+configurable as possible, and all random choices should be done according to
+probability tables, except of course, the random number generator itself.  The
+more configurations possible in the engine, the longer the evolving code will
+be usefull (below a certain threshold of options however, the evolving code is
+of no use whatsoever, which is why it is best to create an evolving polymorphic
+virus from scratch rather than modifying an existing engine).  
+
+    There are two main ways of implementing evolving polymorphism in a virus
+now that these main ideas have been put into code.  These are high evolution
+and low evolution.  Note that both have pro's and con's, but neither is better
+than the other, at least, that has not been determined.  It is possible to
+include both in a virus and use probability tables to determine which are to be
+used, but that is slightly redundant.  
+
+    In high evolution, the resident portion of the virus is the part to guide
+evolution.  The resident portion of the virus checks for the virus in files as
+they are processed on the computer.  The way(s) in which this is done depends
+on the VW, some examples are when a file is executed, opened, read, deleted,
+searched for, etc.  When an infected file is found, the current table of the
+infected file itself is loaded into memory, and the current tables being used
+are modified slightly in the direction of the tables of the infected file being
+processed.  When an infected file is to be written... the variables in the
+current table may be mutated slightly, and then the polymorphic decryptor is
+generated and written with the virus into the now infected file, before making
+the probability tables normal again.  
+
+    In low evolution, the loading portion of the virus is the part to guide
+evolution.  When the virus loads from an executed file, if it is already in
+memory, it locates the probability tables in memory and modifies them slightly
+in the direction of its own parameter tables.  Then it returns execution to the
+host like normal.  
+
+    There is a problem in these evolution methods however, as it's possible for
+someone to do multiple accesses to the same file, making the probability tables
+of the currently running virus to look like the tables in a certain file.  This
+can be fixed slightly however, by either restricting the types of access which
+will update your parameter tables, or by creating a list of files which have
+already been processed in this session and avoiding them.  There is another
+easy way to do this...  
+
+    It is possible for the probability table alteration procedure to evolve
+itself as well, by using its own probability table and altering it.  It may
+decide not to base its decisions on files which are its direct descendants or
+ancestors (by using generation counters), or to do so.  It may decide, with a
+changing probability, to completely randomize its probability tables from time
+to time.  In such ways, its possible for the evolving code to evolve itself as
+well! 
+
+    Although with random small mutations across the entire set of probability
+tables will have somewhat of a slow polymorphism effect... by controlling the
+mutation rates, slow polymorphism can be better controlled.  Mutation rates can
+be high or low... and/or they can operate only on certain sections of types of
+probability tables depending on slow factors such as date/time/etc.  
+
+    Some mutation problems are sure to occur.  If you mutate wildly, then most
+heredity information will be lost, destroying the point of evolution.  Also,
+bait files will give the AV a better view of your virus.  If you mutate too
+slowly however... your virus may not be adaptive enough to defeat new threats
+to it, such as AV algorithms.  
+
+<B>.------------------------------.
+| Evolving polymorphism theory |
+'------------------------------'</B></PRE>
+
+<PRE>    So, now you know how an evolving polymorphism implementation may look like,
+but you are probably still wondering how the polymorphic generator 'learns' to
+to evade AV software detection algorithms.  
+
+    For the first generation of your virus, if you wanted to release it into
+the wild, you can simply let the virus multiple around your own test computer
+for a while, and let the diversity of code multiply, while you delete examples
+which are detected heuristically by all the AV software you have on hand.  Then
+you can randomly select one to initialize an infection epidemic.  Of course,
+you don't HAVE to do this, as the virus will learn to evolve itself over time
+anyway.  
+
+    As the virus first begins to spread, it generates some nicely structured
+family trees, which, if the virus spreads to enough computers, will set up into
+nice colonies, with descendant viruses travelling back and forth between
+computer systems from time to time to influence each other's growth.  This is
+all nice and fine... as the virus is undetected as yet.
+
+    The fun begins when a selection pressure is applied to the virus, in the
+form of AV predation ;)  When an AV vendor gets the virus, they may take one of
+a few different paths.  Either they will disassemble the entire virus's engine,
+create a static generator for the engine and create bait files to get samples
+to create an algorithm to detect the virus (that would take days/weeks)... or
+they can use emulation to defeat the virus decryptor and grab the scan strings,
+or, they may use a silly little algorithm or X-RAY to detect the family tree of
+the virus THEY got, OR they could 'try' to generate bait files and work from
+there ;) 
+
+    So, lets say they use an emulation system to defeat the virus.  Suddenly,
+the virus dissapears from a pile of computers as people use the AV software,
+however other family trees of the virus which have a genetic predisposition to
+include anti-emulation code in their decryptors, live on and multiply.  These
+copies of the virus quickly reinfect all the computers which it was wiped out
+from, and the virus has re-established itself.  
+
+    On the other hand... the AV may use X-RAY to detect the virus.  But, that
+will only detect a tiny percentage of the virus family population that does not
+use complex encryption methods.  After a few weeks, the viruses using better
+encryption methods re-infect the computers it was wiped out from.  If the AV
+are stupid enough to use a silly algorithm, the viruses using different code
+characteristics re-infect cleaned computers, undetected once again.  
+
+    As for generating bait files... due to the slow polymorphic nature of
+evolution... they will think the polymorphic generator is very crude and will
+not generate much code variations.  Little do they know, that the algorithm
+that they spend so much time on creating... is of little use against the other
+billion different table probability configurations... and the other copies of
+the virus quickly re-infect computers in an undetectable form ;) 
+
+    The only real hassle the evolving polymorphic virus has, is of the AV
+detecting all possible variants of the virus's polymorphic engine.  Due to the
+construction of the evolving polymorphic engine however, they will have to
+completely rip out the engine from your virus, and insert it in a sequential
+bait maker, to get something to test their algorithms on.  This however, is a
+-MAJOR- hassle, and even then, they may miss out on a few types of your virus,
+and you know whta happens then ;)))  Before they did this however, they would
+have to actually notice the nature of your polymorphic engine to begin with,
+and if your decryptors are good enough, it's likely that it will take them ages
+just to get a clean copy of your virus to begin with! 
+
+<B>.-----------------------------------.
+| Further applications of evolution |
+'-----------------------------------'</B></PRE>
+
+<PRE>    Evolution in the virus does not have to stop there!  Evolving tables such
+as those usable in polymorphism, can also be utilized in metamorphism, and even
+simple encrypted TSR viruses.  In these simple viruses, the virus can learn to
+turn on/off various stealth features or infection abilities... as these may be
+slowing down certain computers or creating compatability problems on certain
+computers, making the user suspicious, getting the virus detected.  Evolving
+polymorphism could be coupled with evolving code selection, to make the virus
+almost impossible for the AV to detect as well as making the virus almost
+impossible for the computer user to notice to begin with! 
+
+    Also, so far we have covered simple polymorphic evolution.  More complex
+forms can be derived... such as when a family tree installs itself on the
+computer, it could store the average probability tables in a certain section of
+the computer (ie: a bad sector).  Then, if another copy of the virus gets onto
+the computer months later, and finds that the old copies of the virus have all
+mysteriously vanished, probably due to some AV software... it may decide to use
+a probability table inverse of that used by the now extinct family tree.  This
+could go on ad infinitum, until a new immune strain of the virus is created...
+and maybe it will make the AV pay for destroying all its relatives too... ;) 
+
+<B>.-------------.
+| Conclusions |
+'-------------'</B></PRE>
+
+<PRE>    The great thing about evolving polymorphism, is that as the virus spreads
+around the world... in each country, it will learn to evade the algorithms used
+by each AV product used there (different AV are used in different countries). 
+If two such strains from completely different sides of the world come together,
+they both can carry back genetic code with each other to learn to evade other
+AV software should it ever come into predominance in its country! 
+
+    The only problem with evolving polymorphism is that it requires the VW to
+create a -VERY- variable polymorphic engine... and the virus size may increase
+quite a bit with all the extra tables and code.  The good news is, that the
+more the virus spreads, the better its genetic code gets, and the more the AV
+try to remove the virus, the better the virus gets at evading AV software ;) 
+Luckily, the evolution principle does not restrict virus evolution to evading
+algorithms or scan strings created especially for that virus... as even generic
+virus detection and removal spurs the virus to create generically undetectable
+code ;) 
+
+    I will soon create an complex evolving polymorphic virus and begin to do
+some tests with various AV software to get some statistics.  Unfortunately,
+there is no way any such test could get results as reliable as those which
+would be gotten from releasing the virus into the wild and tracking its
+evolution ;)  Of course, that would be illegal... however the results of the
+experiment would be interesting ;)  At the very least, using a small network of
+computers and various AV packages over time will result in some basic results
+with which evolving polymorphism algorithms can be more finely tuned ;) 
+
+    I hope to see some new evolving polymorphic viruses from you soon!
+
+                                        Methyl [<A HREF="groups1.htm#IRG">Immortal Riot/Genesis</A>]
+
+</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

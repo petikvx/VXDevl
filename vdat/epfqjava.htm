@@ -1,0 +1,190 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Java Security - Frequently Asked Questions</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+
+<H2 ALIGN=CENTER><FONT COLOR="#004080">Java Security: Frequently Asked
+Questions</FONT></H2>
+
+<H3 ALIGN=CENTER><FONT COLOR="#004080">The Unofficial Answers from the
+Princeton Secure Internet Programming Team</FONT></H3>
+
+<CENTER><P>
+<HR><I>Last modified: Wednesday 28 August 1996 </I><BR clear=all>
+<p></P></CENTER>
+
+<H3>Is Java secure?</H3>
+
+<P>Nothing in life is completely secure; Java is no exception. Several
+specific security problems have been discovered and fixed since Java was
+first released. If you're using an up-to-date Web browser, you are usually
+safe against the known attacks. However, nobody is safe against attacks
+that haven't been discovered yet. </P>
+
+<P>If somebody says Java is safe because ``hackers aren't smart enough
+to exploit the problems,'' don't believe them. We're disappointed that
+some people who should know better are still spouting this nonsense. We've
+discovered several security problems, and we're pretty sure we're not the
+smartest people in the world. If one group of hackers creates a Java-based
+attack and shares it with their friends, we're all in trouble. </P>
+
+<P>Other Web ``scripting'' tools such as JavaScript, Visual Basic Script,
+or ActiveX face the same sorts of problems as Java. ``Plug-in'' mechanisms
+provide no security protection. If you install a plug-in, you're trusting
+that plug-in to be harmless. </P>
+
+<H3>What are the risks?</H3>
+
+<P>There are two classes of security problems: nuisances and security breaches.
+A nuisance attack merely prevents you from getting your work done - for
+example it may cause your computer to crash. Security breaches are more
+serious: your files could be deleted, your private data could be read,
+or a virus could infect your machine. </P>
+
+<P>If you are the victim of a security breach, any data stored on your
+machine may be read or corrupted by a bad guy. If you've got important
+company secrets on your computer, maybe you should surf the net on another
+machine. </P>
+
+<P>In the not-too-distant future, your computer may be able to digitally
+sign documents that are legally binding, just like your paper signature.
+Your computer may also be able to spend your money. In a world like that,
+security becomes even more important than it is right now. </P>
+
+<H3>How common are security breaches?</H3>
+
+<P>So far, there have been no publicly reported, confirmed cases of security
+breaches involving Java, though there have been some suspicious events
+that might possibly have involved Java security problems. Of course, the
+lack of reported cases is no guarantee that there haven't been breaches
+that either weren't discovered or weren't reported. But it does indicate
+that breaches are rare. </P>
+
+<H3>Who is at risk?</H3>
+
+<P>You're at risk if you're running a Java-enabled browser and you visit
+a Web page written by a person you don't know or don't trust. Since the
+two most common browsers, Netscape Navigator and Microsoft Internet Explorer,
+are Java-enabled, most people surfing the Web are at risk. </P>
+
+<H3>How can I protect myself?</H3>
+
+<P>If you maintain sensitive data on your computer that you think an unscrupulous
+adversary might want, you should disable Java and JavaScript, as well as
+not installing plug-ins, except from well-known vendors. </P>
+
+<P>If you don't disable Java, think twice before visiting a Web site belonging
+to a person you don't know or don't trust. Of course, some people will
+be perfectly happy just living with the risk. </P>
+
+<P>You can reduce the damage caused by a potential security breach by taking
+common-sense precautions like backing up your data frequently and keeping
+sensitive data off your Web-surfing machine. </P>
+
+<H3>Won't digital signatures solve all of the problems?</H3>
+
+<P>No, they'll only help a little. Digital signatures let you know who
+wrote an applet, but they don't help you decide whether you can trust the
+author. </P>
+
+<H3>Is this problem ever going to go away?</H3>
+
+<P>No. Security will always be an issue with any network software. As long
+as vendors are racing their products out the door and adding new functionality
+with each and every release, you can expect security bugs will always exist.
+Writing crash-proof software is hard. Writing secure software is even harder.
+</P>
+
+<H3>Which is more secure: Netscape Navigator or Microsoft Internet Explorer?</H3>
+
+<P>In our judgement, the latest versions of the two browsers offer roughly
+comparable levels of security. </P>
+
+<H3>Which version of my browser should I use?</H3>
+
+<P>Generally, the latest version is the safest. Be sure to regularly check
+your browser vendor's Web pages for announcements of new versions. Look
+carefully - the announcements are not always prominent. </P>
+
+<P>If you use Microsoft Internet Explorer 3.0, be sure to apply Microsoft's
+<A HREF="http://www.microsoft.com/msdownload/iepatch.htm">patch</A> which
+fixes a security problem. </P>
+
+<H3>What about ``black widows?''</H3>
+
+<P>There's a report circulating on the net, claiming to come from the USGS, containing 
+  various misleading and inflammatory statements about Java security, and using 
+  the term ``black widows.'' Some statements attributed to us in that report are 
+  simply false. You can read our original paper and see for yourself. </P>
+
+<H3>What about ``hostile applets?''</H3>
+
+<P>This is a general term for Java applets (programs) that exploit security
+bugs. There are some pages on the Web that demonstrate, with appropriate
+warning messages, some hostile applets. The applets we've seen are <A HREF="http://www.math.gatech.edu/~mladue/HostileApplets.html">nuisance
+attacks</A> rather than damaging attacks. </P>
+
+<H3>I run a Web server. Am I at risk?</H3>
+
+<P>Not directly. Java can only potentially attack the browser, not the
+server. </P>
+
+<P>Of course, you should be careful about which Java applets appear on
+your server. Unless you wrote the applet yourself, you don't necessarily
+know what it's doing. If you copy somebody else's applet, it could possibly
+be a <I>trojan horse</I> - doing something useful as well as being malicious.
+</P>
+
+<H3>What about JavaScript?</H3>
+
+<P>Java and JavaScript, despite the similarity of their names, are not
+related. (Isn't marketing wonderful?) JavaScript has its own security problems,
+so you may also want to disable JavaScript. </P>
+
+<H3>What did your lawyers tell you to say?</H3>
+
+<P>This information is our opinion only. It is not the opinion of Princeton
+University or of our research sponsors. We do not and cannot guarantee
+that you will be safe if you follow our advice. </P>
+
+<H3>Where can I find more information?</H3>
+
+<P>A book on this topic, <A HREF="http://www.rstcorp.com/java-security.html">Java
+Security: Hostile Applets, Holes and Antidotes</A> by <A HREF="http://www.rstcorp.com/~gem">Gary
+McGraw</A> and <A HREF="http://www.cs.princeton.edu/~felten">Edward Felten</A>,
+will published by <A HREF="http://www.wiley.com">Wiley</A> this fall. </P>
+
+<P><A HREF="http://java.sun.com">JavaSoft</A> has their own <A HREF="http://java.sun.com/sfaq/">Frequently
+Asked Questions about Applet Security</A>. </P>
+
+<P><A HREF="http://home.netscape.com">Netscape</A> has a <A HREF="http://home.netscape.com/newsref/std/java_security_faq.html">Netscape
+Navigator 2.02 Security-Related FAQ</A> which you may find interesting.
+To see how they plan to evolve their security model, you may want to read
+<A HREF="http://developer.netscape.com/standards/java-security2.html">Netscape's
+Java Security Architecture</A>. </P>
+
+<P>Mark LaDue, at Georgia Tech, has a page of <A HREF="http://www.math.gatech.edu/~mladue/HostileApplets.html">hostile
+applets</A> to demonstrate how serious the problem can be. </P>
+
+<P>David Hopwood, at Oxford University, has also been active in <A HREF="http://ferret.lmh.ox.ac.uk/~david/java/">breaking
+Java</A>. </P>
+
+<P><A HREF="http://www.microsoft.com">Microsoft</A> doesn't (yet) have
+a Java security FAQ, but you may want to read their <A HREF="http://www.microsoft.com/intdev/signcode/">proposals
+for code signing</A> (part of their <A HREF="http://www.microsoft.com/intdev/">Internet
+Development Toolbox</A>), or maybe <A HREF="http://www.microsoft.com/devnews/guimay96.htm">``Dr.
+GUI Gets Webbed''</A>, for a more whimsical look at Microsoft's vision
+of the Web's future. </P>
+
+<CENTER><P>
+<HR><p></P></CENTER>
+
+</BODY>
+</HTML>
+
+
+

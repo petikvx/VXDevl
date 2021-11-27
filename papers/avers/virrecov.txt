@@ -1,0 +1,421 @@
+              Removing or Disarming PC Viruses
+                         Guidelines
+                    Version 1.1  3/15/94
+  
+  These guidelines provide a basis for a strategy you can
+use to remove viruses from microcomputers running DOS.   It
+is NOT intended as a step-by-step procedure.   The way you
+will remove viruses is highly dependent on your local
+context, experience, and system management style.
+  
+  Much of the damage from microcomputer viruses is caused by
+inept attempts at removing them.   For this reason, this
+document emphasizes starting with "safe" techniques before
+proceeding to more "dangerous" ones.
+  
+  NCIS (National Center for Information Security) constantly
+improves its products.   If you see ways to improve any
+aspect of this document, please contact us.   An NCIS point
+of contact appears at the end of this document.
+
+
+1.  Determine if you really have an infection with a virus.
+If you do, find out as much as you can about it.
+
+  Use a virus detection application for this.  Most virus
+  infections just don't signal themselves...not too many say
+  "GOTCHA!".  On the other hand, most microcomputer
+  misbehavior is NOT viral in origin.
+  
+  Watch out for the "false positive" phenomenon.
+  
+     *  Since most file (program) infections are multiple,
+     any report of infection in a single file (program) is
+     suspect.  This is not the case in system-area infections
+     which are often single.
+     
+     *  Watch out for reports of "virus in memory" if you're
+     using a competing program's TSR.  Some TSRs contain
+     viral "search strings" in their code.
+  
+  Most anti-virus packages have a modest library of viruses.
+  If you need more information, Pat Hoffman's "VSUM" is a
+  nice hypertext source.   It's proprietary, so  you need to
+  purchase a license.   This information might determine
+  what you do next.
+  
+     a.  Turn your computer off, then back on, booting with a
+     clean (i.e., non-infected), write-protected disk.
+     
+       Re-booting by pressing CTL-ALT-DEL or even with the
+       "reset" button may not be enough to clear memory of
+       some viruses!  It's best to completely power-down and
+       then power-up.
+     
+     b.  Re-scan the suspect disk.
+     
+       A positive finding at this point has more credence.
+     
+     c.  Use another virus detection package.
+     
+       A positive finding at this point is ALMOST
+       definitive, especially if you find the same virus.
+       (Unfortunately, there's no standardization of virus
+       nomenclature, so different packages might have
+       different names for the same virus.  Compare the
+       packages' documentation to determine if they're the
+       same.)
+
+2.  Remove or Disarm the virus.
+
+  a.  File-infecting viruses
+  
+     Read both (1) and (2), below, before you proceed.  You
+     may find you don't REALLY want to get into the grief of
+     using the anti-virus package, (choice (1)),  to remove
+     the file-infecting virus.
+     
+     (1)  If your scanner says it can remove it...
+     
+       (a)  Rename the infected file first and record the
+       file's size.  Try to find the size of the original
+       (uninfected) file from archive or backup.
+       
+          A virus won't execute if its host file doesn't
+          execute.  If you rename the infected file with some
+          non-executing name, it can't execute and the virus
+          won't launch.  Use the anti-virus package to do
+          this if it can, or rename it manually using DOS'
+          REN command or some other method for renaming.
+       
+       (b)  Copy the renamed file to a floppy disk.
+       
+          This allows you to work on the file in a safe and
+          more isolated environment.  You could use your hard
+          disk for this, but a fat-finger mistake might ruin
+          a perfectly good day!
+       
+       (c)  Erase the offending file from the hard disk and
+       overwrite it.
+       
+          Use one of the utilities, like Norton's WIPEFILE,
+          that completely obliterates the file so some hero
+          doesn't UNERASE it.  Of course, if you haven't got
+          any other backup copy, think about keeping it.
+          (And shame on you if there's no backup copy!)
+       
+       
+       (d)  Remove the virus from the renamed copy of the
+       file on the floppy disk with the virus-removal
+       program.
+       
+          The sad truth about removing viruses from
+          files...YOU CAN'T BASE YOUR RECOVERY STRATEGY ON
+          IT!   You better have an (uninfected) archive or
+          backup copy, and here's why.  There's at least four
+          possible outcomes of virus "removal".
+          
+          No.1 - Virus is removed and because the virus was
+             an appending or prepending one, no good code is
+             lost.  Terrific!
+          
+          No.2 - Virus (or something) is removed, but <<<
+             IT'S THE WRONG VIRUS!!! >>> (There's got to be
+             a perfect match, right down to the byte,
+             between the virus identified and the virus
+             removed.)  The file won't execute.  This is OK,
+             too, because you know it right away...it's not
+             what you had in mind, but you can live with it.
+             It forces you to use the backup copy.  No
+             problem!
+          
+          No.3 - Virus is removed but leaves the program in a
+             crippled state. You may not know the file is
+             corrupted until it does an unpleasant number on
+             some data...and your career.  Bummer!
+          
+          No.4 - The virus removal tool is nothing but sales
+             hype and you've lost two hours fiddling while
+             your boss burns.
+          
+       (e)  Test the results of the removal.
+       
+          Scan the file for viruses again.  Is the result of
+          scanning negative?  Check the file's size.  Has the
+          file's size changed?  Is it the same size as the
+          archive file?  Will it execute?  You've got to use
+          your judgment and earn those big bucks.
+       
+       (f)  If, in your judgment, the disinfected file is
+       safe, copy it back to the hard disk. At this point,
+       you may be wondering why ANYBODY would bother with
+       virus removal!  Why not just make a solid diagnosis,
+       delete the infected file, overwrite it, and restore
+       from backup?  In light of the whole virus-removal fan
+       dance, a very good question!
+     
+     
+     
+     
+     
+     
+     (2).  If your scanner says it can't remove the virus or
+     if you want to do it quickly, easily, and effectively in
+     the first place!
+     
+       (a)  Rename the infected file.
+       
+          You'll want to do this ASAP so the file doesn't get
+          accidentally executed.  You can use DOS' REN
+          command or any other method to do this.
+       
+       (b)  Replace the renamed file with a (virus-free)
+       backup copy.
+       
+          THERE'S NO SUBSTITUTE FOR BACKUPS!!
+       
+       (c)  Destroy the renamed file.
+       
+          After you erase it be sure to use some utility to
+          completely wipe out the file.
+       
+       ...Special considerations for networks infected with
+       file-infecting viruses.
+       
+       [1.]  Consider NOT "downing" the server right away.
+       
+          You'll need to be running anyway in order to
+          recover, so just keep running.
+       
+       [2.]  Terminate all user connections, closing all the
+       files you can.
+       
+       [3.]  Log on with supervisor privilege and scan with
+       the best set of scanners you have.
+       
+       [4.]  Let the scanner rename the suspect files if it
+       can and log them.
+                              
+          Just be sure they're renamed.
+          
+       [5.]  Restore the renamed files from backup.
+       
+          If you don't have an uninfected backup you've got
+          rely on the tender mercies your anti-virus package's
+          removal feature.  Read 2a(1), above, and lots of
+          luck!
+          
+       [6.]  Determine which users have permission to access
+       the infected file and pay them a visit.
+       
+          Their workstations may be infected, too.
+          
+  b.  Removing System Area Viruses
+  
+     Spend some time researching how you're going to remove
+     the virus. Be conservative.  Think about simple, non-
+     destructive, techniques first. Get help from a
+     microcomputer expert if you need it.
+     
+     You need to have first-rate backups and a hard disk
+     rescue system. (They're NOT the same thing.)   Please see
+     Rescue Disk at the end.
+     
+       (1)  Back up your system the best way you can.
+       
+          Your call, of course, but this ensures you can get
+          back to the infected state, at the very least.   If
+          you don't back up, even a dumb mistake can bite you.
+          If you are forced into the repartition/re-format
+          Armageddon you MUST have them.
+       
+       (2)  Use the rescue disk's SYS.COM to restore the
+       system files and command interpreter.  If this fails,
+       go to the next step.
+       
+          There's cases where this just might do the trick
+          ...and it's risk-free!   Of course, its success
+          depends on the nature of the offending virus.  Re-
+          scan the hard disk and test it.   If this fixes the
+          problem, you're through!  Keep an eye on things for
+          a while, though.
+       
+       (3)  Use the rescue disk's FDISK utility with the
+       switch that reestablishes the master boot record.  The
+       command is "FDISK /MBR", without the quotes, of
+       course.
+       
+          This is also a non-destructive technique.  If this
+          does it, stop here.
+       
+       (4)  Use your virus removal tool to remove the virus.
+       Scan.   Test.
+       
+          By the way, don't give up if your first-line anti-
+          virus product fails to remove it.   There's cases
+          where it takes the third package to successfully
+          remove one.  Be persistent.  There's much to be
+          gained by fixing the problem at this point.  If you
+          don't buy this, just read on.  If everything seems
+          in order, great!  Don't believe it.  Watch the
+          machine for a while.
+       
+       (5)  If the virus just can't be removed by gentle
+       means or the removal causes "collateral" damage  GO
+       DOWN THIS LIST IN ORDER UNTIL YOU FIND SOMETHING THAT
+       WORKS.
+       
+          (a)   Use some set of utilities, like Norton's, to
+          re-establish partition tables, Master Boot Records,
+          and anything else you can. Restore directories-only
+          (plus their sub-directories and files) from backup,
+          if required.  Scan.  Test.
+          
+            I'm not suggesting you jump right into this.
+            You need some experience with these utilities
+            before exposing your hard drive to untested
+            keystrokes.
+          
+          (b)   Re-format the hard disk and restore
+          directories-only (plus their sub-directories and
+          files) from backup.  Scan.  Test.
+          
+            This is the next step up the hassle/stress
+            continuum.  At this point you're burning bridges
+            behind you.  Have a backup-restore procedure you
+            trust.
+          
+          (c)   Re-partition and re-format the hard disk and
+          restore directories-only (plus their sub-
+          directories and files) from backup.  Scan.  Test.
+          
+            More bridges burned.  May you never get this
+            far!
+          
+          (d)  Perform a low-level format, re-partition, and
+          re-format the hard disk.  Restore directories-only
+          (plus their sub-directories and files) from backup.
+          Scan.    Test.
+       
+3.  Look around for other infected PCs and floppy disks.
+
+  If you found one infection, you probably have others,
+  including the original "vector".   Remember, viruses are
+  successful because they exploit our best human tendencies,
+  like sharing information (read here, "disks").  Be
+  understanding with people in tracing your infections.
+  Remember, it's often their better natures that results in
+  infections (e.g., sharing information, working at home).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      (*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)(*)
+
+                         RESCUE DISK
+
+  You need a critical set of information to help get back in
+business, ...a RESCUE FLOPPY DISK.  Luckily, this is not such
+a bear as it sounds. There's several systems out there that
+can help.  There's TouchStone's "CHECK-IT PRO and, of course,
+good ol' Norton Utilities (An hour spent studying Norton
+Utilities is worth scores of them later on.  Use them to
+recover a friend's data.  You'll amaze and dazzle her and win
+a buddy-for-life.)
+  
+  Each of your systems should have a rescue floppy disk.
+It must be bootable, write-protected, virus-free, and
+contain:
+
+1.  DOS Utilities
+
+  a.  COMMAND.COM
+  
+     This lets you use the familiar internal DOS commands.
+     
+  b.  SYS.COM
+  
+     You'll use this as one of the first things you try in
+     order to restore your system area.   Sometimes all you
+     need to do is restore the system files with SYS.
+  
+  c.  FORMAT.EXE
+  
+     Reformatting the hard disk will usually destroy the
+     system area virus.  It's a pretty drastic action because
+     you're loosing all that data.   It comes to this
+     sometimes.
+  
+  d.  FDISK.EXE
+  
+     OK, you've done everything you can think of, asked all
+     the experts, exhausted all your alternatives, your
+     partition table is gone, your disk is trashed, and your
+     future is dubious, ...you can always repartition your
+     disk!  Repartitioning a hard disk destroys its data.
+     MISS THIS TREAT if you can.
+     
+     There is one non-destructive FDISK function, "FDISK
+     /MBR".  This recreates the hard disks master boot
+     record.
+  
+  
+  
+  e.  BACKUP.EXE and RESTORE.EXE
+  
+     I include these for completeness.  You may want to use
+     these in a "SysMan's Last Stand" situation.
+  
+  f.  RECOVER.EXE
+  
+     This lets you get back data from a bad/defective disk.
+     It's another "SysMan's Last Stand", but you may get to
+     this point.
+     
+2.  Important system files:
+
+  CONFIG.SYS  and
+  AUTOEXEC.BAT
+  
+  These are nice to have.  If they're recent enough, they'll
+  at least save you some keystrokes.
+
+3.  Utilities to record and restore your critical system area
+data, like the FAT and partition table.
+
+  While you're at it, you might as well save the CMOS data,
+  too. While not directly related to virus recovery, this is
+  important for you to have in order to recover from fat-
+  finger CMOS damage and battery failures.
+
+4.  Data files created by #3.
+
+  By the way, it's worth pointing out that these data need
+  to be recorded BEFORE the virus infection occurs!
+  
+  You should also have a set of utilities, like Norton's,
+  around on bootable, write-protected, virus-free floppy
+  disk.  This lets you do general detective work and cleanup
+  from the A: drive.
+  
+          Michael S. Arant, Analyst
+          NCIS(006), Bldg.203A
+          VAMC
+          Martinsburg, WV  25401
+          
+          FTS 700-940-4057
+          Comm. 304-263-0811 (ext.4057)
+          FORUM/Internet:     ARANT.MICHAEL@FORUM.VA.GOV
+          
+          
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

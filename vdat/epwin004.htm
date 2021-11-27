@@ -1,0 +1,198 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Windows 95 and Viruses</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>WINDOWS 95 AND VIRUSES
+<BR>
+</FONT><FONT SIZE=+2>By David Emm </FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>With the growth in the use of Windows 95, it becomes increasingly important
+to understand the way in which viruses will operate under Windows 95. We
+examined a number of different viruses, most of which are 'in the wild',
+to see how effectively they are able to spread and what impact they have
+on a Windows 95 system. We focus here on the following areas: </P>
+
+<PRE>(1)  <A HREF="#001">Windows 95 and boot sector viruses;
+</A>(2)  <A HREF="#002">Windows 95 and file viruses [including multipartite viruses, like Natas];
+</A>(3)  <A HREF="#003">Windows 95 and macro viruses;
+</A>(4)  <A HREF="#004">Protecting your system;
+</A>(5)  <A HREF="#005">Conclusions.</A>
+</PRE>
+
+<P><A NAME="001"></A><B>(1) WINDOWS 95 AND BOOT SECTOR VIRUSES </B></P>
+
+<P>If a PC running Windows 95 is booted normally, the system prevents attempts
+to write to track 0, or the boot sector. A message is displayed, informing
+the user that direct disk access has been disabled, and the system is halted
+[requiring the user to press &lt;Ctrl&gt; &lt;Alt&gt; &lt;Del&gt; to re-start
+the computer]. On the face of it, this may appear to limit the ability
+of boot sector viruses to infect the system, given that boot sector viruses
+write to the partition sector [Master Boot Record, MBR] or the boot sector
+of the hard disk. </P>
+
+<P>However, direct disk writes are disabled only when Windows 95 is up-and-running.
+And boot sector viruses infect at a BIOS level, before any operating system
+[DOS, Windows 95, Windows NT, OS/2, Novell NetWare, etc.] has been loaded.
+So while it may prevent any program from writing to the start of the hard
+disk 'post festum', after Windows 95 has been loaded, it will not prevent
+infection by a boot sector virus. It is also worth noting that Tequila
+virus was able to write to that partition sector successfully [see (2)
+below]. </P>
+
+<P>Of the boot sector viruses we looked at [Form, Empire Monkey, Parity.b,
+Stealthboot, Jumper, Telefonica, Purcyst, Beijing, Michelangelo and Exebug],
+all were able to infect the hard disk. </P>
+
+<P>When a PC infected with a boot sector virus is re-booted normally, Windows
+95 loads in 'MS-DOS compatibility mode', rather than using its native 32-bit
+file system. However, this is not immediately apparent: it is only when
+you dig a little deeper into the system, or attempt to load a 32-bit application,
+that it becomes apparent; otherwise, the 'look and feel' is the same. </P>
+
+<P>After the initial infection, when the PC is re-booted 'dirty', Windows
+95 produces a 'Performance Dialog' dialog, containing the following message:
+</P>
+
+<P>WARNING: Your computer may have a virus. The Master Boot Record on your
+computer has been modified. Would you like to see more information about
+this problem? </P>
+
+<P>There are several important things to note about this dialog: </P>
+
+<UL>
+<P>(1) the reference to the 'Master Boot Record' [MBR] is also displayed
+if the PC is infected with Form virus, which infects the boot sector, not
+the MBR; </P>
+
+<P>(2) this dialog appears only on the first re-boot after the infection
+takes place; </P>
+
+<P>(3) this dialog is not displayed for every boot sector virus. Of the
+viruses looked at [listed above], Michelangelo and Telefonica did not produce
+this dialog. </P>
+</UL>
+
+<P>All the viruses looked at went memory resident under Windows 95. Most
+of these were able to infect floppy disks, although a small number caused
+problems which would be noticed by the user; these are detailed below:
+</P>
+
+<P>Stealthboot successfully infected floppy disks, but appeared to go into
+a continuous loop when trying to infect an infected floppy disk; </P>
+
+<P>Telefonica failed to infect floppy disks; </P>
+
+<P>Michelangelo successfully infected floppy disks, but an attempt to read
+an infected floppy disk produced a 'General Failure Reading . . .' [this
+occurs under DOS and Windows 3.xx also; Michelangelo was 'designed' for
+360Kb floppy disks and contains a bug which leads it to mis-handle high
+density disks]. </P>
+
+<P>Several of the viruses looked at are stealth viruses; that is, they
+are designed to conceal themselves when active in memory [Empire Monkey,
+Parity.b, Steathboot, Telefonica, Purcyst and Exebug]. All of these stealth
+viruses were able to stealth effectively under Windows 95. Of course, any
+good anti-virus product should detect stealth viruses in memory. </P>
+
+<P>In general, removal was very straightforward. Most of the viruses could
+be removed by booting from either a DOS system disk, or a Windows 95 system
+disk [that is, a disk formatted in command line session, with the syntax
+FORMAT A: /U /S] and running </P>
+
+<PRE>        FINDVIRU C: /REPAIR
+</PRE>
+
+<P>However, in the case of Empire Monkey, an attempt to boot from a Windows
+95 system disk caused the PC to hang. Our advice to users of Windows 95,
+therefore, is to retain their original DOS system disk; or to use Dr Solomon's
+'Magic Bullet'. </P>
+
+<P><A NAME="002"></A><B>(2) WINDOWS 95 AND FILE VIRUSES </B></P>
+
+<P>All the viruses looked at are DOS file viruses [Yankee Doodle, Cascade,
+Jerusalem, Frodo, Tequila and Natas]. Of these, Tequila and Natas are multipartite
+viruses; that is, when an infected program is run, the virus then infects
+the partition sector [MBR]. The infected programs were run in a command
+line session under DOS. </P>
+
+<P>Yankee Doodle and Cascade went memory resident and replicated normally;
+but only within a single command line session. Programs run in another
+command line session remained uninfected by these viruses. </P>
+
+<P>Any attempt to run a program infected with Jerusalem virus caused the
+command line session to crash. The system as a whole remained stable, however;
+and this session could be closed using &lt;Ctrl&gt; &lt;Alt&gt; &lt;Del&gt;.
+</P>
+
+<P>It was possible to run a program infected with Frodo. However, Windows
+95 crashed [after displaying a 'fatal exception' error] when an attempt
+was made to task-switch. This may be explained possibly by the fact that
+Frodo attempts to modify the partition sector [to add its payload routine].
+When the PC was re-booted, Windows 95 loaded normally. An examination of
+the partition sector showed it to be unchanged. </P>
+
+<P>We were able to run a program infected with Natas. However, on attempting
+to run an uninfected program in the same command line session, Windows
+95 crashed [after displaying a 'fatal exception' error]. When the PC was
+re-booted, Windows 95 loaded normally. An examination of the hard disk
+showed no signs of Natas. </P>
+
+<P>Tequila successfully infected the partition sector [also KRNL386.EXE
+and COMMAND.COM] when an infected program was run. Tequila goes memory
+resident only after the PC is re-booted from an infected partition sector:
+however, an attempt to re-boot the system caused a 'Windows protection
+error' and a 'Write fault error writing device AUX' on successive re-boots.
+</P>
+
+<P><A NAME="003"></A><B>(3) WINDOWS 95 AND MACRO VIRUSES </B></P>
+
+<P>Concept and Nuclear viruses infected and replicated in the same way
+under Windows 95 as they do under Windows 3.xx [see Virus Report, Issue
+No. 1]. </P>
+
+<P><A NAME="004"></A><B>(4) PROTECTING YOUR SYSTEM </B></P>
+
+<P>When Windows 95 is up-and-running, WinGuard provides comprehensive protection
+against virus infection. Any disk accessed [using Explorer or in a command
+line session] is checked for boot sector viruses; and files are checked
+when copied or executed. For additional security, WinGuard performs an
+initial memory check when it loads. </P>
+
+<P>It is important to remember, however, that DOS lies underneath Windows
+95 [if you press &lt;Esc&gt; during boot-up, you will see a standard AUTOEXEC.BAT
+loading, for example]. DOS is the active operating system until Windows
+95 has loaded. Moreover, it is possible to re-boot the system in 'MS-DOS
+compatibility mode'. In both cases, a DOS-based TSR is required to provide
+on-access protection for a Windows 95 PC. VirusGuard, loaded from AUTOEXEC.BAT,
+provides comprehensive protection during boot-up and if the PC is booted
+in 'MS-DOS compatibility mode'. </P>
+
+<P><A NAME="005"></A><B>(5) CONCLUSIONS </B></P>
+
+<P>In general, boot sector viruses are able to infect and replicate successfully
+under Windows 95, which requires the same degree of anti-virus protection
+as a DOS/Windows 3.xx system. </P>
+
+<P>This is equally true for macro viruses, which target applications like
+Word for Windows, rather than the operating system itself. </P>
+
+<P>File viruses, and multipartite viruses, appear to have less scope to
+replicate under Windows 95. Some like Cascade, are able to infect and replicate
+only within a single session. Others, like Jerusalem or Tequila, are likely
+to produce system errors. Precisely because the operation of file viruses
+is less 'smooth' under Windows 95, they may cause adverse side-effects
+which do not occur under DOS. For this reason, it is essential to deploy
+effective anti-virus measures which will ensure that the PC remains virus-free.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

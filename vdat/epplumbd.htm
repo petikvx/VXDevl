@@ -1,0 +1,201 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Plumbing The Depths</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+<FONT SIZE=-1></FONT>
+
+<CENTER><P ALIGN=CENTER><B><FONT COLOR="#004080"><FONT SIZE=+3>PLUMBING
+THE DEPTHS<BR>
+</FONT><FONT SIZE=+1>[Dr. Solomon]</FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<P>PC users sometimes resort to drastic measures to remove a virus. The
+use [more precisely, misuse] of low-level programs like FDISK, to remove
+viruses, is more common than might be expected. In most cases, of course,
+viruses can be removed, with a minimum of fuss, using an anti-virus program.
+So wielding such tools as FDISK is heavy-handed. However, it's quite often
+worse than using a 'sledgehammer to crack a nut'; in many cases, 'the nut'
+fails to crack. It is worth examining what effect utilities like FDISK
+and FORMAT have on the hard disk; and how this relates to a virus infection.</P>
+
+<P>Most users resort to the use of such 'heavy artillery' when their anti-virus
+program [or several anti-virus programs] have failed to remove a virus.
+This is uncommon, but it can happen, for a variety of reasons. It is advisable
+to contact Technical Support at this point, rather than panicking and seeking
+an 'easy solution', which may be worse than the problem. Of course, the
+'advisable' course of action is not necessarily the one which is chosen.
+So let's take a look at exactly what effect FORMAT and FDISK have on a
+disk.</P>
+
+<P>First, let's consider the use of the program FORMAT. This is designed
+to prepare a disk for use. If the hard disk is formatted using the syntax</P>
+
+<PRE>FORMAT C: /U /S</PRE>
+
+<P>it will have the following effect on the disk</P>
+
+<UL type=disc>
+<LI>A new boot sector, and the system files, are written to the disk [if
+<B>/S </B>is used, this creates a system boot sector, enabling the PC to
+be booted from the hard disk].</LI>
+
+<LI>The File Allocation Table [FAT] is overwritten. The FAT is the 'index'
+used by DOS and Windows 95 to keep track of the clusters [also known as
+allocation units, or blocks] belonging to each file.</LI>
+
+<LI>The root directory is overwritten [this contains entries for all files
+and directories in the root directory of the drive.</LI>
+
+<LI>The /U parameter ensures that the above data is not saved, before it
+is overwritten. </LI>
+</UL>
+
+<P>The data area of the disk is not overwritten. However, since the FAT
+and root directory is zeroed, data on the disk is not be easily recoverable
+[it would have to be 'stitched together', by hand, by someone experienced
+in data recovery techniques.</P>
+
+<P>If the hard disk is formatted using the syntax specified above [after
+booting from a clean DOS system disk], any virus in the boot sector, or
+the file area, will be removed. This includes file viruses and viruses
+which infect the hard disk boot sector [such as Form or Daboys]. The command</P>
+
+<PRE>SYS C:</PRE>
+
+<P>will also remove a virus from the hard disk boot sector, since this
+will have the same effect as adding /S to the FORMAT command.</P>
+
+<P>However, it should be noted that FORMAT affects <B>only</B> the area
+of the disk covered by the operating system. Viruses which infect the partition
+sector [Master Boot Record, MBR] will not be removed by a re-format of
+the hard disk. The partition sector is <B>not</B> affected by FORMAT. Partition
+sector viruses [Parity.b, StealthBoot, NYB, etc.] and multipartite viruses
+[Natas, Junkie, etc.], which infect the partition sector, will 'survive'
+a re-format of the hard disk. It should be remembered that boot sector
+viruses [most of which infect the partition sector of the hard disk] represent
+a significant percentage of the viruses reported to Technical Support.</P>
+
+<P>FORMAT has a slightly different effect on floppy disks. In the first
+place, there is no partition sector on a floppy disk; the first sector
+on the disk is the boot sector. Consequently, the entire disk falls within
+the area controlled by the operating system. In addition, when a floppy
+disk is formatted, format-pattern is written to every sector, overwriting
+any data which was previously on the disk. A re-format of a floppy disk
+[using the syntax described above] will remove <B>any</B> virus.</P>
+
+<P>Having discovered that FORMAT does not remove partition sector viruses,
+the unsuspecting user's next 'port of call' is to run FDISK.</P>
+
+<P>FDISK is used to partition the hard disk [a PC's hard disk may be sub-divided
+into four partitions, or volumes]; and to set the active [or bootable]
+partition. Following the scenario outlined above, where the hard disk has
+been partitioned already, FDISK will refuse to re-partition the hard disk
+unless the active partition is first deleted.</P>
+
+<P>So, what actually happens when FDISK is used? The partition table is
+deleted; and replaced with a new partition table, defined by the user.
+In addition, format-pattern is written to the start of each track on the
+hard disk [up to a certain point, which includes the root directory and
+File Allocation Table].</P>
+
+<P>The important thing to note, with reference to removing a partition
+sector virus, is that it is <B>only</B> the partition table which is deleted
+and replaced. The partition executable code, and the error messages in
+the partition sector, remain untouched. Most partition sector viruses,
+however, modify the partition executable code, without affecting the partition
+table. So FDISK will have no effect on this type of virus. Of course, the
+first time our unsuspecting user realises this . . . is after re-formatting
+the hard disk [again!] and re-loading a backup. </P>
+
+<P>Consider the plight of a user who has run FORMAT to re-format the hard
+disk [and then re-loaded a backup]; and who has then run FDISK to delete
+and replace the partition table [and re-loaded a backup, again] . . . only
+to discover that the hard disk is still infected.</P>
+
+<P>It is worth raising the issue of FDISK /MBR at this point. Since this
+is frequently seen as an easy way of removing partitions sector viruses,
+it is important to outline what it does to the partition sector; and to
+explain why it is inadvisable to use this as a virus removal method.</P>
+
+<P>FDISK /MBR re-writes the partition executable code and the error messages
+in the partition sector, without affecting the partition table. Since <B>most</B>
+partition sector viruses do not modify the partition table, this would
+appear to be a useful way of removing these viruses. However, let the incautious
+user beware!</P>
+
+<OL type=1 start=1>
+<LI>Some partition sector viruses write code over the entire partition
+sector, including the partition table. Empire Monkey is the best known
+virus which does this. Empire Monkey writes its own code to the partition
+sector, re-locating the original, clean sector [in encrypted form] to another
+sector on the first track of the hard disk [cylinder 0, head 0, sector3].
+When the PC is booted normally, the virus loads into memory and decrypts
+the original partition sector, so the PC boots normally. However, if the
+PC is booted from a clean DOS system disk, the virus is not loaded, the
+original partition sector remains encrypted and the hard disk remains inaccessible
+at an operating system level [any attempt to access the hard disk results
+in the message 'Invalid drive specification']. If FDISK /MBR is used, it
+will replace most of the virus code with partition executable code and
+error messages; but it will assume that whatever is located in the area
+where the partition table should be is a valid partition table; this code
+will not be changed. Since this is not a valid partition table, but the
+remnants of the virus, the PC will fail to boot normally. Remember that
+FDISK /MBR [in the above scenario] has removed most of the virus code;
+and the virus is the only mechanism for decrypting the original partition
+sector. [One of the variants of Exebug also writes over the partition table].</LI>
+
+<LI>One-Half virus does not modify the partition table; so FDISK /MBR will
+successfully remove the virus from the partition sector [One-half also
+infects files; so it is necessary to clean the files using an anti-virus
+program, or replace the files with backup copies]. In addition to simply
+infecting the partition sector, the virus gradually encrypts cylinders
+on the hard disk. If the infected PC is booted normally, and the virus
+is memory-resident, it decrypts these cylinders 'on the fly'. However,
+using FDISK /MBR to remove the virus also removes the mechanism for decrypting
+the relevant cylinders. The result is data loss.</LI>
+
+<LI>It is not only viruses which modify the partition sector. This sector
+may be modified by security software being used on the PC. In addition,
+if the user has installed disk management software, this will involve modifications
+to the partition sector. In both cases, use of FDISK /MBR to remove a virus
+will have an adverse effect.</LI>
+</OL>
+
+<P>So, what conclusions can be drawn from all this? The first thing to
+state is that neither FORMAT nor FDISK is <B>necessary</B> to remove a
+virus. If they are used at all, following a virus infection, it should
+be for convenience, <B>not</B> necessity. For example, it may be that the
+PC is infected by a multipartite virus; and there are a great number of
+infected files; in which case, it may be more convenient to simply re-load
+a backup. In any event, if this course of action is appropriate, things
+should be done in the following order.</P>
+
+<UL type=disc>
+<LI>Boot from a clean DOS system disk;</LI>
+
+<LI>Use TOOLKIT /ID to copy a blank sector over cylinder 0, head 0, sector
+1. Then run FDISK /MBR, to re-write the partition executable code and error
+messages.</LI>
+
+<LI>Run FDISK, to delete [and then re-create] the partition table.</LI>
+
+<LI>Re-format the hard disk, using the syntax</LI>
+
+<PRE>FORMAT C: /U /S</PRE>
+
+<LI>Re-load a backup. </LI>
+</UL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><BR>
+</P>
+
+</BODY>
+</HTML>

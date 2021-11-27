@@ -1,0 +1,633 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Anti-virus - ANTIVIRUS SCANNER ANALYSIS 1997</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="back001.gif">
+
+<CENTER>
+  <P><B><FONT COLOR="#004080"><FONT SIZE=+3>ANTIVIRUS SCANNER ANALYSIS<BR>
+    </FONT><FONT SIZE=+2> <font size="+1">BASED ON JOE WELL'S LIST OF PC VIRUSES 
+    IN THE WILD 10/1998 <br>
+    Marko Helenius</font></FONT></FONT></B></P>
+  <hr>
+</CENTER>
+<P align="center"> Virus Research Unit, University of Tampere,<br>
+  Department of Computer Science, <br>
+  P.O.BOX 607, 33101 TAMPERE, FINLAND, <br>
+  Tel: +358 3 215 7139, Fax: +358 3 215 6070, <br>
+  E-mail: <a href="mailto:cshema@uta.fi">cshema@uta.fi</a>, <br>
+  <a href="http://www.uta.fi/laitokset/virus">http://www.uta.fi/laitokset/virus</a>, 
+  <a href="ftp://ftp.cs.uta.fi/pub/vru">ftp://ftp.cs.uta.fi/pub/vru</a> </P>
+<hr>
+<P>
+
+
+The author introduces methods and results of an antivirus scanner analysis
+carried out at the Virus Research Unit during the years 1998 and 1999. The
+analysis  was  performed  with DOS-, Windows 95,  Windows  NT  and  memory
+resident  versions  of  the scanners. In addition  the  analysis  includes
+experimental analysis of behaviour blockers for MS-DOS. The test was based
+on Joe Well's list of PC viruses in the wild 10/1998. The author discusses
+also drawbacks and benefits of the analysis.
+</P>
+<P> <b>ACKNOWLEDGEMENTS </b></P>
+<P>
+Permission  is granted to distribute copies of this information,  provided
+that  the contents of the files and information is not changed in any  way
+and the source of the information is clearly mentioned. For republication,
+permission  must  be  obtained  from the Virus  Research  Unit.  To  avoid
+publishing  misleading information those who wish  to  quote  the  results
+should discuss the matter with the Virus Research Unit.
+</P><P>
+A  lot  of  co-operation  with other computer  antivirus  researchers  was
+required  to accomplish the analysis. I would specially like to thank  the
+following  persons,  who have been of great help  when  carrying  out  the
+analysis.
+</P>
+<ul>
+  <li> Bill Arnold, IBM Watson Research Center </li>
+  <li> Dmitry Gryaznov, Network Associates </li>
+  <li> Eugene Kaspersky, Kaspersky Lab </li>
+  <li> Fridrik Skulason, FRISK Software International </li>
+  <li> Gerard Vuille, Metropolitan Network BBS Inc. </li>
+  <li> Igor Muttik, Network Associates </li>
+  <li> Jan Hruska, Sophos Plc. </li>
+  <li> Jimmy Kuo, Network Associates </li>
+  <li> Mikko Hypponen, Data Fellows Ltd. </li>
+  <li> Miroslav Trnka, Eset Ltd. </li>
+  <li> Pauld Ducklin, Sophos Plc. </li>
+  <li> Pavel Baudis, ALWIL Software </li>
+  <li> Petr Odehnal, Grisoft Software Ltd. </li>
+  <li> Sarah Gordon, IBM Watson Research Center </li>
+  <li> Shane Coursen, The Wildlist Organization International </li>
+  <li> Shimon Gruper, eSafe Technologies </li>
+  <li> Stuart Taylor, Sophos Plc. </li>
+  <li> Tarkan Yatiser, VDS Advanced Research Group </li>
+  <li> Tjark Auerbach, H+BEDV GmbH </li>
+  <li> Vesselin Bontchev, FRISK Software International </li>
+  <li> Yury Lyashchenko, DialogueScience Inc. </li>
+</ul>
+<P> <b>1. INTRODUCTION </b></P>
+<P> End users and normal magazine evaluators are not usually able to evaluate 
+  accurately the most critical part of antivirus products. They cannot evaluate 
+  how well antivirus products can prevent or find viruses (Bontchev 1994, Helenius 
+  1996). This is not possible, because typically they do not have sufficient access 
+  to viruses and sufficient skills to prepare a decent test bed (see term "virus 
+  test bed" in <a href="#AP">Appendix 1</a>). This analysis has been prepared 
+  to serve the purpose of providing accurate information on how well each antivirus 
+  scanner can find and prevent viruses found on the field. However, it should 
+  be remembered that the results reflect only the time of December 1998 and there 
+  have been improvements in many products after that time period. In fact some 
+  of the scanners can now find the viruses they missed then. This does not, however, 
+  necessarily mean that they would find all viruses if a new antivirus scanner 
+  analysis would be prepared based on current situation. </P>
+<P>
+One  problem  of  antivirus scanner evaluations is that it  is  too  often
+unclear  how  antivirus evaluators are evaluating antivirus  products  and
+what  viruses they are using in their tests. Antivirus scanner  evaluation
+is  very  challenging and it is easy to make mistakes.  In  fact,  I  must
+admit,  that  even  after thorough preparing and after  negotiations  with
+other  computer  antivirus  researchers, it is possible,  that  even  this
+analysis may still contain mistakes. Therefore I believe that it should be
+revealed to the public how the antivirus scanner analysis was prepared and
+what  viruses were used. Also I believe, that a person evaluating computer
+antivirus  products  should  admit the lacks of  his/her  tests  to  avoid
+spreading misleading information and it should be clear what was  actually
+tested.  To give more exact view of our work I have briefly presented  our
+methods of testing and some facts that readers should be aware of.
+</P><P>
+The  following sections present problems with preparing the test bed,  how
+the analysis was carried out, results of the analysis and what a reader of
+the analysis should be aware of.
+</P>
+<P> <b>2. PREPARING THE TEST BED </b></P>
+<P> The test bed was chosen to included viruses from Joe Well's list's first part 
+  (Wells 1998). The first part contains viruses (see <a href="#AP">Appendix 1</a>), 
+  which have been reported as being in the wild by at least two computer antivirus 
+  researchers and thus these viruses are most likely to possess potential threat 
+  for computer users. The test bed consisted of 82 boot sector viruses (see Appendix 
+  1) infected on 214 target files, 88 file viruses (see Appendix 1) infected on 
+  10174 target files and 82 macro viruses (see Appendix 1) infected on 3254 document 
+  files. Exact content of the test bed and exact detection results can be found 
+  from separate files included in the full version of this report (see Helenius 
+  1999). </P>
+<P> <b>2.1 EXCLUDING NON-VIRUSES </b></P>
+<P> Trojan horses (see <a href="#AP">Appendix 1</a>), joke programs (see Appendix 
+  1), intended viruses (see Appendix 1), first generation viruses (see Appendix 
+  1), innocent files and other non-viruses should be excluded from the test bed 
+  (Bontchev 1993). Otherwise products, which are good at detecting true viruses, 
+  but have not been designed to detect non-viruses would have lower score than 
+  they are worthy of and products, which are giving false alarms (see Appendix 
+  1) could perform well. After all we should be analysing how well products can 
+  detect viruses. In this analysis a lot of work was used to exclude Trojan horses, 
+  joke programs, droppers, first generation viruses, innocent files, intended 
+  viruses (see Appendix 1) and damaged files from the test bed. The non-virus 
+  removal process was carried out with help of an invention implemented at the 
+  Virus Research Unit. The invention is called as "Automatic and Controlled Virus 
+  Code Execution System" (see Helenius 1995 and Helenius 1998) and it automatically 
+  executes virus code in controlled area and saves infected areas into specific 
+  network directory. The system is a powerful tool for automatic virus replication, 
+  because it is implemented in such way, that it can be left to work on its own. 
+  It automatically recovers from hanging (see Appendix 1), data damage and CMOS 
+  memory failures (see Appendix 1) that execution of malicious software may cause. 
+  During the summer 1997 the system was extended to the Windows environment and 
+  this made possible also automatic replication of macro viruses (Helenius 1998). 
+</P>
+<P> <b>2.2 PROBLEMS WITH THE TEST BED </b></P>
+<P>
+For a virus to be included "In the Wild" test bed, it must have been found
+on  the  "field"  at least once. This is not, however, as  obvious  as  it
+sounds. How do we know, that a virus has been found on the field at  least
+once?  Someone  must have reported to some antivirus researcher  that  the
+virus  has  been found on the field, but how do we know that  someone  has
+reported  the virus to some antivirus researcher. One solution is  to  use
+Joe  Well's  list  (Wells 1999), which includes viruses, which  have  been
+reported  as  found on the field according to main antivirus  researchers.
+The  list does not, however, contain all the viruses found from the field,
+because  all the cases are not reported to the list maintainers.  However,
+Joe  Well's  list  seems  to  be currently the  only  accurate  source  of
+information  and it is the only list for which most antivirus  researchers
+give their support.
+</P><P>
+Another problem with Joe Well's list is that it does not have always exact
+information,  which variant of the virus was found on the field.  In  most
+cases  the exact variant can be identified directly, but sometimes further
+examination  is  needed. This causes problems when constructing  the  test
+bed.  Fortunately I have received samples of the viruses from the Wildlist
+maintainers.  However, sometimes there have been errors with  the  samples
+and  therefore  it is possible to have incorrect variants. Mistakes  while
+selecting  the  variant  are  always possible.  I  have  almost  certainly
+identified  correct variants, but still I cannot be absolutely  sure  that
+all the variants were chosen correctly.
+</P>
+<P> <b>2.3 REPORT FILE VERIFICATION </b></P>
+<P>
+After the scanning reports were ready, the scanning reports and percentage
+calculation   logs  were  sent  for  verification  to  antivirus   product
+producers.  This  caused  the analysis to be more accurate,  because  some
+faults in the original reports were revealed.
+</P>
+<P> <b>2.4 CROSS-REFERENCES </b></P>
+<P>
+I  believe,  that  it  should be known to the public,  what  was  actually
+analysed  and how we concluded the results in the analysis.  This  is  the
+reason  for  preparing cross-references, which clearly show  which  sample
+files  were  found  by which products. First we are using  awk-scripts  to
+organise the report files into analogous format. After this we are using a
+specific program, which unites the report files as a cross-reference.  The
+cross-references are available in the full version of this analysis.
+</P>
+<P> <b>3. RESULTS OF THE ANALYSIS </b></P>
+<P>
+The following sections describe the results and virus scanning methods  of
+the  analysis. The detection percentages were calculated so that for  each
+virus  an average of detection was calculated. In other words if a scanner
+could  detect only part of the sample files of a certain virus, an average
+of  the detected samples was calculated for each partially detected virus.
+A  drawback of this method is that it does not perfectly take into account
+that  a  partly  detected  virus may cause trouble  for  a  user,  because
+undetected  files may cause re-infection of the virus. On the other  hand,
+even unreliably detected virus does get caught. This slows down the spread
+of  the  virus and thus unreliable detection should be taken into account.
+Anyway, because estimating reliable detection would be too unreliable, the
+average count method was chosen.
+</P>
+<P> <b>3.1 VIRUS DETECTION ANALYSIS OF DOS SCANNERS </b></P>
+<P>
+The analysis of DOS-scanners (See terms known virus scanning and heuristic
+scanning  at  Appendix  1) was carried out against file,  macro  and  boot
+sector  viruses. File and macro virus detection capabilities were analysed
+by executing DOS-scanners from batch files by using the switches presented
+in table 1.
+</P>
+<blockquote>
+  <PRE>
+Product                     Command line
+Avast 7.70                  LGUARD [PATH] /P /S /R[REPORT]
+AVG 5.0                     AVG [PATH] /scan /report
+AVP 3.0                     AVP /W=[REPORT] /S /N [PATH]
+Dr. Solomon 7.74            FINDVIRU [PATH] /REPORT=[REPORT] /LOUD /VID
+Dr.Web 3.27a                DRWEB [PATH] /OK /SD /RP[REPORT]
+F-PROT 3.03                 F-PROT [PATH] /LIST /REPORT=[REPORT]
+H+BEDV Avscan 4.44          AVSCAN [PATH] /LH[REPORT] /Q /S
+McAfee Scan 4.00.02         SCAN /REPORT [REPORT] /RPTALL /NOMEM /SUB [PATH]
+NOD 32                      NOD32 [PATH] /log+ /SUBDIR+ /LOG=[REPORT]
+Norman Virus Control 4.60   NVC32X [PATH] /LF:[REPORT] /B /LA /U /S
+Norton Antivirus 4.0        Executed from the graphical user  interface
+Sweep 3.16                  SWEEP -ALL -REC -NK -NAS -NB -P=[REPORT]
+Thunderbyte 8.09            TBSCAN [PATH] largedir expertlog noautohr batch
+                            log logname=[REPORT]
+</PRE>
+</blockquote>
+<P align="center"> Table 1: Command line switches when analysing DOS-scanners 
+</P>
+<P>                                     
+Detection  of  boot  sector  viruses was  analysed  with  help  of  Dmitry
+Gryaznov's  Simboot, which emulates infected floppy diskettes  by  writing
+infected diskette images to memory and by assigning a memory segment as  a
+floppy  drive (Gryaznov 1994, p. 160). If there were viruses,  which  were
+not  found  or if there were differences between DOS and Windows  95  boot
+sector virus detection results, these cases were investigated manually.
+Table 2 presents the results of  the DOS-scanner virus detection analysis.
+</P>
+<blockquote>
+  <PRE>
+DOS-scanner                 Boot sector viruses File viruses Macro viruses(%)
+
+Avast 7.70 - 23                           100       98.61    99.98
+Avg 5.023, Build 1237                     98.78     100      96.33
+AVP 3.0 (Build 126)                       100       100      100
+Dr. Solomon's Antivirus Toolkit 7.91      99.39 *   100      100
+Dr. Web 3.27a                             97.56     97.44    95.12
+F-PROT 3.03                               100       100      100
+H+BEDV Avscan 4.44                        97.56     93.17    65.85
+McAfee Scan 4.00.02                       99.39 *   100      100
+NOD 32                                    100       100      99.98
+Norman Virus Control 4.60.28              100       99.52    98.58
+Norton Antivirus 4.0 (22.12.1999)         99.39 *   99.41    100
+Sweep 3.16                                100       99.72    100
+Thunderbyte 8.09                          100       99.86    99.8
+</PRE>
+</blockquote>
+<P align="center"> Table 2: Virus detection analysis of DOS scanners </P>
+<P>
+In  most  cases  detection  results were  good  and  there  are  no  major
+differences between products. The only clear exception seems to be  H+BEDV
+Avscan's  macro  virus detection capability. An asterisk (*)  after  virus
+detection  results means that the product missed one or more  boot  sector
+viruses only on 5.25 inch diskettes. As 5.25 inch diskettes are rare  this
+is not such a problem that most users should be concerned.
+</P>
+<P> <b>3.2 VIRUS DETECTION ANALYSIS OF MEMORY RESIDENT SCANNERS FOR DOS </b></P>
+<P>
+Memory  resident scanners were analysed against file and macro viruses  by
+copying files when the memory resident part of a product was activated. In
+case of Avast's Rguard, Dr. Solomon's Antivirus Toolkit's Virus Guard  and
+McAfee  Scan's Vshield memory resident scanners were analysed in  addition
+by  file execution method. These products can detect more viruses, if  the
+infected  file is executed. Automatic and controlled virus code  execution
+system made the file execution method possible. It was assumed that if the
+product  could  prevent change from the executable system  areas  and  the
+product could prevent execution of the infected file, the virus was found.
+Otherwise  the  product could not completely find the virus.  Boot  sector
+virus tests of memory resident scanners were carried out by writing one by
+one image files (See Appendix 1) of infected diskettes on floppy diskettes
+and then attaching the infected diskettes with the "CHKDSK"-command. Table
+3 presents results of the memory resident scanner analysis.
+</P>
+<blockquote>
+  <PRE>
+Memory resident scanner     Boot sector viruses File viruses Macro viruses(%)
+
+Avast 7.70 - 23, Rguard                   100      86.91         0
+AVGSYS 5.0 /BOOT+ /SCAN+ /OPEN+           71.95    47.56         0
+Dr. Solomon's Antivirus Toolkit 7.91      97.56    90.62         0
+McAfee Scan 4.00.02, Vshield              92.2     63.19(59.76)  0
+Norton Antivirus 4.0 (22.12.1999), Navtsr 98.78    98.58         76.83
+Sweep 3.16, Intercheck                    100      99.72         0
+Thunderbyte 8.09, TbScanX                 87.8     56.45         0
+</PRE>
+</blockquote>
+<P>
+ Table 3: Virus detection analysis of memory resident scanners for MS-DOS
+</P><P>
+McAfee Association's Vshield was analysed both with and without the  /POLY
+switch activated. The better detection result is with the /POLY switch and
+the other one without the switch. AVGSYS was loaded with the /BOOT+ /SCAN+
+/OPEN+ options enabled.
+</P><P>
+In  most  cases memory resident scanners cannot detect as many viruses  as
+off-line scanners. The only exception seems to be Sophos Intercheck, which
+actually relies on the DOS-scanner with stand-alone installation or on the
+Netware scanner with network installation. Also Norton Antivirus's  Navtsr
+can detect almost as many viruses as the off-line scanner. Another general
+note  is  that  all products except Norton Antivirus cannot  detect  macro
+viruses.  Most  producers  do not wish to strain their  DOS-versions  with
+macro virus detection capabilities.
+</P>
+<P> <b>3.3 VIRUS DETECTION ANALYSIS OF DOS BEHAVIOUR BLOCKERS </b></P>
+<P>
+The  analysis included also virus detection analysis of behaviour blockers
+(See  Appendix  1)  with the file virus test bed. If a virus  could  cause
+change in some areas of the system, this was interpreted as a failure  for
+a  behaviour  blocker to prevent a virus infection. This is  probably  the
+first time when behaviour blocker's virus detection capabilities have been
+analysed.  However,  it should be remembered that, the  results  are  only
+experimental, they concern only file viruses and that a thorough behaviour
+blocker  analysis  would  have  included  a  vulnerability  analysis  (See
+Appendix 1).
+</P>
+<blockquote>
+  <PRE>
+Behaviour blocker                    Boot sector viruses File viruses (%)
+
+Avast 7.70 - 23, Fguard                 Not analysed         81.53
+AVGSYS 5.0 /DWRI+ /FWRI+ /RENM+ /TUNN+  Not analysed         87.54
+Norman Virus Control 4.60.28            Not analysed         79.34
+</PRE>
+</blockquote>
+<P align="center"> Table 4: Virus detection analysis of behaviour blockers for 
+  MS-DOS </P>
+<P>
+While the results are only experimental they show that behaviour blockers,
+if  correctly used, can prevent most of the file viruses, but on the other
+hand  the  results  also  clearly show that some  viruses  can  circumvent
+behaviour blockers.
+</P>
+<P> <b>3.4 VIRUS DETECTION ANALYSIS OF WINDOWS 95 SCANNERS </b></P>
+<P>
+Windows  95  scanners  were analysed against file  and  macro  viruses  by
+executing the scanning from the graphical user interface. The scanning was
+performed  with  default  options. I may have changed  some  options  like
+preventing  some scanners from cleaning viruses and log creation  options,
+but  such  options,  which could affect virus detection capabilities  were
+left  in  their  default  position.  There  is,  however,  one  exception.
+Thunderbyte antivirus was used with low heuristic sensitivity. The  reason
+for  this  is  to  prevent  the  product  from  increasing  its  heuristic
+sensitivity after few viruses were found.
+</P><P>
+The  boot  sector  virus  detection analysis of Windows  95  scanners  was
+performed by writing diskette image files (see Appendix 1) one by  one  on
+floppy  diskettes  and usually launching the scanning from  the  graphical
+user  interface.  The keyboard controller part (see  Appendix  1)  of  the
+Automatic  and  Controlled Virus Code Execution System  was  utilised  for
+automating  this  task.  Some products made  it  possible  to  launch  the
+scanning from the command line and this was utilised when possible.  Table
+4 presents the results of the Windows 95 scanner analysis.
+</P>
+<blockquote>
+  <PRE>
+Windows 95 scanner          Boot sector viruses File viruses Macro viruses (%)
+
+Avast32 7.70 (9.12.1998)                  100       98.61     99.98
+AVG 5.0, Build 1237                       100       96.89     96.33
+Dr. Solomon's Antivirus Toolkit 7.91      99.39 *   100       100
+eSafe Protect 2.0                         100       97.37     97.43
+F-Secure Antivirus 4.02                   100       100       100
+H+BEDV Antivir 9X 1.08 (12.11.1998)       93.41     96        97.43
+McAfee VirusScan 4.0.2                    99.39 *   100       100
+NOD32 1.12                                100       100       99.98
+Norman Virus Control 4.60                 100       99.52     98.58
+Norton Antivirus 5.00.00 (22.12.1998)     99.39 *   100       100
+Sweep 3.16                                100       99.72     100
+Thunderbyte 4.00, Build 1111              100       99.99     99.8
+</PRE>
+</blockquote>
+<P align="center"> Table 5 Virus detection analysis of Windows 95 scanners </P>
+<P>
+In  most cases Windows 95 versions could detect the same number of viruses
+as  the  DOS version. Again  an asterisk (*) after virus detection results
+means that the product missed one or more boot sector viruses only on 5.25
+inch diskettes.
+</P>
+<P> <b>3.5 VIRUS DETECTION ANALYSIS OF MEMORY RESIDENT SCANNERS FOR WINDOWS 95 
+  </b></P>
+<P>
+Analysis  of  memory resident scanners for Windows was  performed  against
+file  viruses, macro viruses and boot sector viruses. File and macro virus
+detection  capabilities  of the Windows 95 memory resident  scanners  were
+analysed  by  copying files. Only Avast for Windows  95  was  analysed  by
+executing files. Memory resident scanners for the Windows environment were
+analysed by writing infected diskette image files on floppy diskettes  and
+accessing the diskettes with the "CHKDSK"-command.
+</P>
+<blockquote>
+  <PRE>
+Windows 95 scanner          Boot sector viruses File viruses Macro viruses(%)
+
+Avast32 7.70 (9.12.1998)                 100        97.73      99.98
+AVG 5.0, Build 1237                      73.13      49.19      71.29
+Dr. Solomon's Antivirus Toolkit 7.91     99.39 *    100        100
+eSafe Protect 2.0                        100        97.37      97.43
+F-Secure Antivirus 4.02                  100        100        100
+F-StopW (12.10.1998)                     100        100        98.78
+H+BEDV Antivir 9X 1.08 (12.11.1998)      93.41      96         97.43
+McAfee VirusScan 4.0.2                   99.39 *    100        100
+NOD32 1.12                               100        100        99.98
+Norman Virus Control 4.60                100        99.52      98.58
+Norton Antivirus 5.00.00 (22.12.1998)    99.39 *    98.58      98.78
+Sweep 3.16 (Intercheck)                  100        99.72      100
+Thunderbyte 4.00, Build 1111             97.07      99.99      99.8
+</PRE>
+</blockquote>
+<P align="center"> Table 6: Virus detection analysis of memory resident scanners 
+  for Windows 95 </P>
+<P>
+Most analysed scanners seemed to work as well as Windows 95 scanners.  The
+only  clear  exception seems to be AVG, which could detect  fewer  viruses
+than Windows 95 version of the scanner.
+</P>
+<P> <b>3.6 VIRUS DETECTION ANALYSIS OF WINDOWS NT SCANNERS </b></P>
+<P>
+Likewise  Windows  95  scanners, also Windows NT  scanners  were  analysed
+against  file  and  macro  viruses  by executing  the  scanning  from  the
+graphical user interface. The scanning was performed with default options.
+Some  options  may  have been changed like preventing some  scanners  from
+cleaning  viruses and log creation options, but such options, which  could
+affect  virus detection capabilities were left on their default  position.
+Again  Thunderbyte  antivirus was analysed with low heuristic  sensitivity
+selected.  Because  of  time  restrictions, boot  sector  virus  detection
+capabilities were not analysed in the Windows NT environment.
+</P>
+<blockquote>
+  <PRE>
+Windows NT scanner               File viruses (%) Macro viruses (%)
+
+Avast32 7.70 (9.12.1998)                  98.61         99.98
+AVG 5.0, Build 1237                       96.89         96.33
+Dr. Solomon's Antivirus Toolkit 7.91      100           100
+eSafe Protect 2.0                         97.37         97.43
+H+BEDV AvWin/NT 1.08 (12.11.1998)         95.99         97.43
+Network Associates McAfee VirusScan 4.0.2 100           100
+NOD 32 1.12                               100           99.98
+Norman Virus Control 4.60                 99.52         98.58
+Norton Antivirus 5.00.00 (22.12.1998)     100           100
+Sweep 3.16                                99.72         100
+Thunderbyte 4.00, Build 1381              99.99         99.8
+</PRE>
+</blockquote>
+<P align="center"> Table 7: Virus detection analysis of Windows NT scanners </P>
+<P>
+In  most  cases  Windows NT scanner could detect as many  viruses  as  the
+Windows 95 version of the product.
+</P>
+<P> <b>4. DISCUSSION AND CONCLUSIONS </b></P>
+<P>
+A  lot  of  work was assigned to carry out everything as well as possible.
+Accomplishing  an antivirus scanner analysis requires a lot  of  work  and
+still  there  is  always  something to improve.  Also  this  analysis  has
+drawbacks, which a reader of the results should be aware of. First of  all
+performance  of  integrity  checking programs (see  Appendix  1)  was  not
+analysed.  Also products' disinfection capabilities were not  examined.  A
+thorough analysis should also include a false alarm rate analysis. Because
+of  restricted  time the false alarm rate analysis was  not  included.  In
+addition,  the  tests  were  not carried out  while  viruses  were  memory
+resident although this is often the case, when a computer is infected with
+a  virus. It should be also noted that all viruses found on the field were
+not  included, because only viruses, which were in Joe Well's list's first
+part  were  included.  In  addition, we might  have  done  mistakes  while
+checking  correct variants of the viruses in the test bed. Also it  should
+be noted, that we did not try to measure how common each virus is and thus
+the  percentages  do  not  directly  measure  the  actual  risk  level  of
+infection.  Instead the percentages just present, how many  per  cents  of
+viruses used in this analysis the products could detect. A lot of work was
+used  to  exclude non-viruses, droppers and first generation viruses  from
+the  test  bed. However, we might have done mistakes and therefore  it  is
+possible  to have non-viruses included although I believe that  there  are
+only  few  such mistakes. Also it should be noted that we did not  try  to
+check whether a product can reliably detect a virus or not e.g. we did not
+count  cases,  where  a product did not detect all replicates  of  a  same
+virus.  In  addition the results reflect only one time period and  current
+detection results could be different. It is also possible, that there were
+some  faults in scanning methods, which could affect the results.  Because
+of  the mentioned drawbacks the results give only an overall impression of
+the performance of the tested products.
+</P><P>
+Regardless  of the drawbacks I believe, that there are some advantages  in
+this  analysis. We succeeded to include memory resident, DOS,  Windows  NT
+and Windows 95 versions of scanners in the analysis. One great achievement
+is  that  boot sector virus detection analysis could be performed  in  the
+Windows  95  environment. Also behaviour blocker's  file  virus  detection
+capabilities were estimated probably for the first time ever. In  addition
+the  test  bed  included a large set of files. The full  version  of  this
+analysis  includes  also advanced cross-references,  which  clearly  show,
+which viruses were detected by which product and by which name.
+</P>
+<P> <b>REFERENCES </b></P>
+<blockquote> 
+  <blockquote>
+    <PRE>
+Bontchev 1993  Bontchev  Vesselin, "Analysis and Maintenance  of  a  Clean
+          Virus    Library",    <a href="epvirlib.htm">Available</a>   at   ftp://ftp.informatik.uni-
+          hamburg.de/pub/virus/texts/viruses/virlib.zip (August 14, 1999)
+Bontchev 1994  Bontchev  Vesselin,  "An Analysis of  Antivirus  Scanners",
+          18.11.1994,  Available  electronically  via  anonymous  ftp   as
+          ftp://ftp.informatik.uni-hamburg.de/pub/virus/texts/tests/vtc/pc-
+          av/1994-07/tests-01.zip (August 14, 1999)
+Bontchev 1998  Bontchev  Vesselin,  "Methodology  of  Computer  Anti-Virus
+          Research",  Doctoral Thesis, Faculty for Informatics, University
+          of Hamburg, 1998
+Gryaznov 1994   Gryaznov  Dmitry,  "Simboot:  A  New  Tool   for   Testing
+          Scanners",  An  article from the proceedings of the  eicar  1994
+          conference held in London, England 23.-25.11 1994, hosted by S&S
+          International Plc.
+Helenius 1995   Helenius  Marko,  "Automatic  and  Controlled  Virus  Code
+          Execution System",
+          An  article  from  the proceedings of the eicar 1995  conference
+          held  in  Zurich,  Switzerland  27.-29.11  1995.  Available   at
+          ftp://ftp.cs.uta.fi/pub/vru/documents/automat.zip  (August   14,
+          1999)
+Helenius 1996  Helenius Marko, "Problems with Analysing Computer Antivirus
+          Software  and  Some  Possible Solutions", An  article  from  the
+          proceedings of the eicar 1996 conference held in Lintz,  Austria
+          17.-19.11.1996. To order the proceedings, please  contact  eicar
+          at http://www.eicar.com (August 14, 1999)
+Helenius 1998  Helenius Marko, "Automatic and Controlled Macro Virus
+         Execution and Automating the Windows Environment", In
+         proceedings of the Eicar 1998 Conference held in Munich, Germany
+         16.-18.3 1998, Available at
+         ftp://ftp.cs.uta.fi/pub/vru/documents/autowin.zip (August 2,
+         1999)
+Helenius 1999   Helenius  Marko, "Antivirus Scanner Analysis  1999",  Full
+         version,  Available  at 
+         ftp://ftp.cs.uta.fi/pub/vru/documents/TEST1999.ZIP (24.8.1999)
+Wells 1998,1999     Wells  Joe,  "PC Viruses in the  Wild",  Available  at
+          http://www.wildlist.org/WildList/  (August 14, 1999)
+</PRE>
+    <a name="AP"></a></blockquote>
+</blockquote>
+<P><b> APPENDIX 1: DEFINITIONS OF SOME TERMS </b></P>
+<P>
+BEHAVIOUR  BLOCKING  Means strategies to monitor,  that  programs  do  not
+perform illegal operations during execution of programs.
+</P><P>
+BOOT SECTOR VIRUS Means a virus, which replicates on boot sectors of
+floppy disks and/or on boot and/or partition sectors of hard disks.
+</P><P>
+CMOS MEMORY FAILURE Means a situation where a computer's CMOS memory's
+content is changed by malicious program code. Execution of some malicious
+program code may cause CMOS memory failures.
+</P><P>
+COMPUTER VIRUS  Means program code,  which has a capability  to  replicate
+recursively by itself. Computer viruses may include operations, which  are
+typical  for Trojan horses and malicious toolkits, but this does not  make
+viruses as Trojan horses or malicious toolkits.
+</P><P>
+DROPPER  Means  a  trojan horse or a malicious toolkit, which  installs  a
+virus.
+</P><P>
+FALSE ALARM Means a situation,  where an antivirus product announces  that
+it  has  found a virus, when in reality there is no virus on the announced
+object.
+</P><P>
+FILE VIRUS Means a virus, which replicates on executable files.
+</P><P>
+FIRST GENERATION VIRUS Means the first replication generation of a virus.
+Often viruses are distributed as a known sample containing a first
+generation virus and sometimes later replicates of a virus are different
+from the first generation. A first generation virus can be, but does not
+need to be, a dropper.
+</P><P>
+HANGING  Means a situation where a computer is halted. Execution  of  some
+malicious  code  may  cause hanging because of poor quality  in  malicious
+program code, compatibility problems or on purpose.
+</P><P>
+HEURISTIC SCANNING Means computer virus searching strategies, which aim
+for finding unknown viruses by recognising virus specific behaviour in
+program code.
+</P><P>
+IMAGE FILE a bit to bit image of a hard disk or a floppy diskette.
+integrity checking Means strategies to verify that integrity of desired
+system areas has not been violated.
+</P><P>
+INTENDED VIRUS Means program code, which has been designed to work like a
+virus, but for some reason the program code is not able to replicate
+recursively. Intended viruses are often encountered in poorly organised
+virus collections.
+</P><P>
+JOKE PROGRAM Means a program,  which imitates harmful operation, but  does
+not  actually  accomplish the object of imitation. Joke  programs  can  be
+classified  as malware because they operate deliberately against  system's
+specification.
+</P><P>
+KEYBOARD CONTROLLING DEVICE A device which a computer uses for controlling
+another computer's keyboard.
+</P>
+<P> KNOWN VIRUS SCANNING Means computer virus detection methods, which aim for 
+  finding and identifying viruses known so far or close variants of the viruses 
+  known so far. </P>
+<P>
+MACRO VIRUS Means a virus, which uses application macros for replication.
+malicious toolkit Means a toolkit program, which has been designed to help
+such  malicious  intentions,  which are aimed  against  computer  systems.
+Furthermore,  malicious toolkits may operate exactly as  a  user  of  them
+assumes  and  therefore they are different from Trojan  horses.  Malicious
+toolkits  include such programs as virus creation toolkits,  sniffers  and
+hacking programs.
+</P><P>
+MEMORY RESIDENT SCANNING Means on-line virus scanning strategies, which
+occur before executable code gets it's chance to be executed. In other
+words memory resident scanning prevents infection.
+</P><P>
+TROJAN HORSE Means self-standing program code, which performs or claims to
+perform something useful, while in the same time intentionally performs,
+unknowingly to the user, some kind of destructive function (see also
+Bontchev 1998). Self-standing means that, in distinction to viruses, the
+program code does not have the capability to replicate. The program code
+may be attached to any part of a system's program code. Trojan horses may
+include operations, which are typical for malicious toolkits but this does
+not make trojan horses as malicious toolkits.
+</P><P>
+VIRUS TEST BED A specially prepared set of virus samples meant to be  used
+for  computer antivirus product evaluation. Typically a virus test bed  is
+prepared  so  that  there are several specimens  per  each  virus  and  an
+important  objective in preparing a test bed is to ensure that each  virus
+specimen is capable of replicating recursively.
+</P>
+<P> VULNERABILITY ANALYSIS An analysis that investigates antivirus product's capability 
+  to prevent or detect different types of attack typical for viruses. </P>
+<hr>
+</BODY>
+</HTML>

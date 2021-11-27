@@ -1,0 +1,361 @@
+
+ Scanning ideas to defeat Intrusion Detection Systems
+
+ 
+ by SnakeByte [ SnakeByte@kryptocrew.de ]
+ http://www.kryptocrew.de/snakebyte/
+
+
+ This paper will present some ideas, I got a month ago, which will make it
+ possible to perform a portscan on an IDS protected system, without being detected.
+ They also will offer an intruder several other possibilities to fool around
+ with a firewall and giving him other advantages. This paper is not about
+ TCP IP or other lower protocols, but deals with higher protocols which
+ can be abused to get to the wanted goal. I will present some perl source code
+ here and try to discuss possible countermeasures.
+
+ I got into this, when I thought of a possibility to perform a TCP full
+ connect scan to a host, without having to reveal my real IP. It should to work
+ on every system easily, so it can also be realized without the possibility
+ to create raw IP packets, like on some Windows Systems or Unix Systems without
+ having root privileges. So it should be something like the FTP bounce scan,
+ which uses an ftp server to get the wanted information.
+
+ The FTP protocol allows us to connect to an FTP server, and make it connect
+ to our own computer, so you force the server to connect to you.
+ Due to the fact that it is possible to connect to every port with this,
+ you can check if a port is open, by analyzing the reply we get from the FTP.
+ The scan works by first setting the IP and port with the PORT command, and
+ then initializing the transfer ( by doing a list or get request ) 
+ If we got a "425 Can't build data connection: Connection refused."  
+ we know that the port is closed. The 150 and 226 replys tell us, that we 
+ just tried to connect to an open port. To perform such a scan you can use
+ nmap[1] with the -b option.
+ 
+ But nowadays most ftp servers will not allow such a scan, they check if the
+ Port on the other side is really a ftp client, and if not they reply the same
+ error message they give when the port is closed, so other methods
+ need to be created.
+
+ This is way of portscanning a host, has another big disadvantage,
+ it does not allow the attacker to get banner information while scanning,
+ which is often useful to get information about the running daemons and to
+ create automatic tools, which automatically exploit them. In addition to
+ this, the TCP full connect portscan, gets detected by every IDS.
+
+ So the first idea i got into my mind, was to use a proxy. Using proxys
+ is very often used to mascerade an IP, when you are connecting from
+ a local area network to another net, to which a router controls traffic.
+ A lot of socks proxies are freely available for everybody, and get often
+ used for IRC war clones and other things.
+
+ So i quickly wrote a perl script, which just connects to a socks 4 or 5
+ server, and try to make a connection to the target host. If it retrieves 
+ an error, we know that this is a closed port.
+ if we receive an established connection, we have an open port and can 
+ retrieve the banner.
+
+ ----8<------( cut here )-----------------
+
+  #!/usr/bin/perl
+  #
+  # Usage :
+  #
+  #  sockscan.pl <SOCKS-PROXY> <SOCKSPORT> <TARGET> <STARTPORT> <ENDPORT>
+  # 
+  #
+  # written by SnakeByte [ SnakeByte@kryptocrew.de ]
+  # www.kryptocrew.de/snakebyte/  
+  #
+
+  use Net::SOCKS;
+
+  if (@ARGV < 5){
+   print "\nThis tool performs a portscan on a host,\n";
+   print "over a socks proxy to hide your IP\n";
+   print "and to make it possible, to see ports, which\n";
+   print "are blocked to certain IP Ranges\n";
+   print "written by SnakeByte [Snakebyte\@kryptocrew.de]\n\n";
+   print "Usage : \n";
+   print "sockscan <SOCKS-PROXY> <SOCKSPORT> <TARGET> <STARTPORT> <ENDPORT>\n\n";
+   exit;
+  } 
+
+  print "sockscan by SnakeByte [ SnakeByte\@kryptocrew.de ]\n";
+
+  $proxy = @ARGV[0];
+  $proxyport = @ARGV[1];
+  $target = @ARGV[2];
+  $startport = @ARGV[3];
+  $endport = @ARGV[4];
+
+  print "scanning $target ...\n";
+
+  my $sock = new Net::SOCKS(socks_addr => $proxy,
+                            socks_port => $proxyport,
+                            # user_id => $ID, 
+                            # user_password => $pass,
+                            protocol_version => 4);
+
+  for ($i = $startport; $i <= $endport; $i++){
+   $f = $sock->connect(peer_addr => $target, peer_port => $i);
+
+   if ($sock->param('status_num') == SOCKS_OKAY ) {
+    print "--- Port $i open ! --- \n";
+    # here we could easily retrieve a banner
+   }
+   $sock->close();
+  }
+
+  print "\nScan finished..\n"; 
+
+ ----8<-----------------------------------
+
+ By scanning a host from another IP, an attacker is able to go around
+ firewalls, by using a socks proxy. If the proxy is inside a privileged
+ IP range, the firewalls allows us to bypass.
+ It is also nice for scanning the socks proxy itself, by using
+ the loopback IP ( 127.0.0.1 ), which will also bypass most local firewall
+ settings. This will not work with all kind of socks proxies, because some
+ of them have settings, to forbid them to connect to the loopback IP and
+ the local IP at all.
+
+ This is very nice for scanning a host anonymously, but how can we use this
+ to defeat an IDS ? Most Intrusion Detection Systems check for a limited
+ amount of connections from a secific IP to different ports in a specified
+ amount of time. A list with some dozen or even hundred socks proxies, can
+ be retrieved on several webpages, so we can simply change our script,
+ to use a different socks proxy for every port, at random. So IDS systems will
+ not log a scan, because the connection attempts are coming from several, different
+ hosts. This allows an attacker to perform a distributed scan, whithout having
+ to install some trojan clients for scanning on other hosts.
+
+ But what exactly is the advantage of such a scanning technique, in contrary to
+ a normal, non-distributed scan ? 
+ When you connect to a single port on a target machine, no IDS System will 
+ think this is an attack, and not take any countermeasures. But if you connect to
+ several ports in a short time, every better IDS knows this is a portscan. So what
+ we are trying here is to make every host just connect to a single or a few ports,
+ so the IDS will not detect an attack, because each host just connects to some,
+ few ports, and this after waiting some time ( when they are choosen from the list again )
+
+ ----8<------( cut here )-----------------
+
+  #!/usr/bin/perl
+  #
+  # Usage :
+  #
+  #  sockscan2.pl <SOCKSFILE> <TARGET> <STARTPORT> <ENDPORT>
+  # 
+  #
+  # written by SnakeByte [ SnakeByte@kryptocrew.de ]
+  # www.kryptocrew.de/snakebyte/  
+  #
+
+  use Net::SOCKS;
+
+  if (@ARGV != 4 ){
+   print "\nThis tool performs a portscan on a host,\n";
+   print "and to make it possible, to defeat an IDS , which\n";
+   print "by scanning from various socks proxies\n";
+   print "written by SnakeByte [Snakebyte\@kryptocrew.de]\n\n";
+   print "Usage : \n";
+   print "sockscan2 <SOCKSFILE> <TARGET> <STARTPORT> <ENDPORT>\n\n";
+   exit;
+  } 
+
+  print "sockscan2 by SnakeByte [ SnakeByte\@kryptocrew.de ]\n";
+ 
+  $proxyfile = @ARGV[0];
+  $target = @ARGV[1];
+  $startport = @ARGV[2];
+  $endport = @ARGV[3];
+
+  print "scanning $target ...\n";
+  open (FILE, "<$proxyfile");
+  @proxylist=<FILE>;
+  close FILE;
+
+  $a=-1;
+
+  for ($i = $startport; $i <= $endport; $i++){
+
+  $a++;
+  if ( $a <= (@proxylist) ){ $a = 0; }
+  ($proxy, $proxyport)=split(":",@proxylist[$a]);
+ 
+  my $sock = new Net::SOCKS(socks_addr => $proxy,
+                            socks_port => $proxyport,
+                            protocol_version => 4); 
+
+   $f = $sock->connect(peer_addr => $target, peer_port => $i);
+
+   if ($sock->param('status_num') == SOCKS_OKAY ) {
+    print "--- Port $i open ! --- \n";
+   }
+   $sock->close();
+  }
+
+  print "\nScan finished..\n"; 
+
+ ----8<-----------------------------------
+
+
+ An example proxy list will look like this :
+
+  host1.com:1080
+  host2.com:1080
+  host3.com:1080
+
+
+ As you see it is very easy using these techniques to perform a distributed scan.
+ Of course it is very slow, but i think this can also be adopted using different
+ threads, so you connect to more than one socks proxy at a time.
+
+ But then you need a list with enough proxies, so they don't repeat too fast.
+ So this is very nice to fool some IDS Systems, but an intruder should not use
+ this from his own PC, because there might be some socks proxies logging all
+ connection attemps, which might be used later by a sysadmin to search for
+ the source of an attack.
+
+ But socks proxies are not the only ressource for such kind of information
+ gathering, for example, we can also abuse wingates with exactly the
+ same effect. We know that wingates are also very often
+ public available on the internet. And most of the time, the admins are too
+ lazy to set a password on them, making them available for everybody.
+ This makes it easily possible to (ab)-use them for portscanning.
+
+
+ ----8<------( cut here )-----------------
+
+ #!/usr/bin/perl
+ #
+ #
+ # This script has been tested with Wingate 4
+ # and performs a portscan over a wingate telnet proxy.
+
+
+ use IO::Socket;
+
+ $proxy="192.74.53.1";           # the wingate ( telnet proxy )
+ $proxyport="23";                # port
+
+ $target="192.74.53.2";          # target host
+ $StartPort=1;                   # portrange we scan
+ $EndPort=100;
+
+
+ for ( $targetport = $StartPort ; $targetport <= $EndPort ; $targetport++ ){
+  print ("Port $targetport ...");
+  $s = IO::Socket::INET-> new(PeerAddr=>$proxy,
+                              PeerPort=>$proxyport,
+                              Proto=>"tcp") || die "wingate down..\n" ;
+
+  $send="$target:$targetport\n";
+  print $s "$send"; 
+
+  $a = "";
+  read $s, $a, 85 ; 
+
+  if ( $a =~ "Connected" ){
+    print " open !\n";
+  # print "$a\n"; 
+  } else {
+    print " closed\n";
+  }
+  close $s;
+ }
+
+ ----8<-----------------------------------
+
+
+ And another very common kind of proxy can be abused for scanning,
+ we only need to do a little change to the source above.
+ HTTP Proxys also allow very often everyone to connect to whatever
+ is wanted. Of course they close the connection to the target host directly,
+ after retrieving a page or banner, but this is not a problem, because we don't
+ want to send data, just to retrieve.
+
+ We scan a host, by performing a HTTP GET request to the target port, on
+ the proxy. The proxy then connects to the port, and if it is closed it will
+ directly reply with a "503 - Service unavailable" Error. If the port is open, 
+ it will connect and send us the reply of the listening server.
+ A problem is, that the proxy does not close the connection on its own,
+ so if the ports is open we need to wait until the connections from the proxy
+ to the target times out, to retrieve the banner. If we don't want to grep
+ banners, we can speed things up, by checking if we retrieve the 503 error
+ after some waiting ( 5-10 Seconds ) and if not, we close the connection and assume
+ the port is open.
+
+
+ ----8<------( cut here )-----------------
+
+ #!/usr/bin/perl
+ #
+ #
+ # This script has been tested under debian 
+ # with Squid 2.2-Stable 5 
+ # and performs a portscan over a http proxy.
+ #
+ 
+ use IO::Socket;
+
+ $StartPort=1025;               # portrange we scan
+ $EndPort=1050;
+ $target="192.74.53.1";         # our target host
+
+ $proxy="192.74.53.2";          # the http proxy
+ $proxyport="8080";
+
+
+ for ( $targetport = $StartPort ; $targetport <= $EndPort ; $targetport++ ){
+  print ("Port $targetport ...");
+  $s = IO::Socket::INET-> new(PeerAddr=>$proxy,
+                              PeerPort=>$proxyport,
+                              Proto=>"tcp") || die "proxy down..\n" ;
+
+
+ $send="GET HTTP:\/\/$target:$targetport\/ HTTP\/1.0\n\n\n\n";
+ print $s "$send"; 
+
+ read $s, $a, 30 ;
+ 
+ if ( $a !~ "503" ){             # check if we get a 503 error from the proxy
+   print " open !\n";
+   # print "$a\n";               # or the banner ( uncomment this line to see the banner )
+ } else {
+   print " closed\n";
+ }
+ close $s;
+ }
+
+ ----8<-----------------------------------
+
+
+ The only problem when using HTTP Proxies for Portscanning, is that they normally
+ don't allow to connect to every port, but to Port 80 and Ports > 1024.
+ The best fix for this problem would be to add a check in the http
+ proxy, which checks if he is really connected to a webserver.
+
+ As we see a potential attacker has a lot of different ways to retrieve
+ information about open ports and running services going undetected, because
+ of the distributed scan. And in addition to this, he also has a chance
+ to bypass firewall settings on the proxy servers as well as on other
+ servers, by choosing the proxy in the IP range, which is allowed to pass.
+
+ What can be done to prevent the abuse of this ? 
+ All those proxy protocols have an option to just let those people connect, which
+ can verify themselves with a login and password, but these kind of security
+ settings are not very often used. 
+
+ Intrusion Detection Systems should be reconfigured so that they don't rely on scans
+ coming from a single IP, but on the connection attempts to closed ports per time.
+ In my opinion distributed port scans will become more and more common, so
+ the IDS should be adopted to detect such scans. 
+
+ All tools presented here can of course be improved a lot, things like scanning with
+ multiple threads will speed up the scan, choose targets ports at random, to 
+ prevent a simple fix of IDS Systems and, maybe to choose the proxy servers at
+ random too, just to be sure.
+
+ [1] - http://www.insecure.org/nmap

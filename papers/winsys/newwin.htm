@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="keywords" content="Win32, Windows, assembler, assembly, tutorial, programming, tools"><!--Copyright Jeremy Gordon 2002-2003-->
+   
+   <style>
+   <!--
+   A {color: #0000FF; font: bold 10pt times}
+   A:Visited {color: #333399}
+   A:Hover {color: #009900}
+   -->
+   </style><title>For those new to Windows</title></head>
+
+<body><a name="top"></a>
+<center><table width="90%" cellpadding="4">
+<tbody><tr><td>
+<br><a href="http://www.godevtool.com/"><img src=".newwin_files/GoLogo50.gif" border="0" height="22" width="50">The "Go" tools</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.jorgon.freeserve.co.uk/GoasmHelp/GoAsm.htm">The GoAsm manual</a>
+<p><b><font face="Century Gothic"><font size="+3">for those new to .... </font>
+<br><i><font color="#ff0000"><font size="+4">
+<dir><dir>Windows</dir></dir></font></font></i></font></b>
+</p><p><b><font size="+1">by </font></b><font size="+1">Jeremy Gordon - </font>
+<img src=".newwin_files/mail6sblue.gif" height="13" width="93" align="top" vspace="6">
+
+</p><p>
+</p><p><i>This article is intended for those who are new to programming in Windows.</i>
+<br>It describes those elements of the Windows operating system which it is
+essential to know before you will be able to write a meaningful program.
+Of course, there is a lot more to Windows than is described here, and you
+will need a lot more information before being able to write programs.
+</p><p><b><font face="Century Gothic"><font size="+2">Windows &#8211; <font color="#ff0000">in
+control</font></font></font></b>
+</p><p>Windows takes control of the computer almost from the time it starts
+to the time it is terminated. An application can then run only with the
+permission of Windows, with the assistance of Windows and under the control
+of Windows. In this way Windows can provide the user with those greatly
+attractive qualities &#8211; predictability and consistency in the user-interface,
+the ability (apparently) to run several programs at once (<i>multi-tasking</i>)
+and robustness if an application fails.
+</p><p><b><font face="Century Gothic"><font size="+1">of the hardware ..........</font></font></b>
+</p><p>Most of the microchips which work with the central processing unit are
+programmable. For example the display card needs to be told the correct
+scan rate, resolution and colours. The printer in/out chips need to be
+told which printer port should normally be used and at what speed the data should
+be transferred. The keyboard chips need to be told what repeat rate to
+use. The actual communication with these devices needs to be controlled
+&#8211; each will have their own area of memory to use and they must be told
+what to expect and when. Windows does all these basic tasks as you would
+expect from any operating system. You, the application programmer, can
+then concentrate on the job in hand.
+</p><p>But Windows also takes total control over writing to, and reading from
+all such devices. This has important advantages to the application programmer.
+</p><p>For example, to print a document the application can merely tell Windows
+where in memory the document resides and how big it is. Windows will arrange
+for it to be printed, using the correct printer driver for the printer
+in use, and putting it in the correct position in the printer queue, which
+might also contain other print jobs from other applications. The print
+job is always performed in graphics mode. Windows tells the printer exactly
+where on the paper every single dot making up the final printed image should
+go. The advantages to the application programmer are very significant.
+He is freed from the tedious task of providing printer drivers for his
+application, and from writing graphics algorithms. He can "think graphics"
+from the outset without having to worry about the complications arising
+from this.
+</p><p>Windows does an even cleverer job with the screen display, which is
+also always in graphics mode. Here Windows probably has to cope with several
+applications at once trying to display their output on the screen. There
+may be several windows on the screen at any one time, and to the user,
+some of them appear to overlap others so that some material is invisible.
+Windows has the task, which it achieves brilliantly, of building up the
+final screen image from <i>those parts </i>of the screen output from each
+application which have a right to appear on the screen. It does this from
+its record of every window in existence at any one time, and from its knowledge
+of the priority, screen order, type and style of each window. A lot of
+your programming work will involve getting these factors right in your
+own program to ensure that Windows produces the correct screen output.
+</p><p>The necessary corollary to the control that Windows has over the peripheral
+hardware is that an application cannot (or at least should not) access
+the peripheral devices directly. But this is usually no disadvantage since
+Windows provides considerable versatility and with modern computers, sufficient
+speed for most tasks.
+</p><p><b><font face="Century Gothic"><font size="+1">.......... of all applications</font></font></b>
+</p><p>So what happens when the user clicks on the icon representing your program
+with the mouse? Firstly Windows knows exactly where the mouse click took
+place and what icon was in the field of the mouse pointer (cursor) at that
+time. It also knows from its lists of "shortcuts" and "properties" which
+program to start if that particular icon is clicked.
+<a name="#start"></a>
+</p><p>How does it start that program? Firstly Windows <i>loads</i> the program 
+by reading its file and putting it into memory.  Then quite simply Windows 
+<i>calls</i> the program. That is, the processor is told to continue execution from the
+starting address of the program. Accordingly the simplest way for the program
+to finish is simply to return back to the system with a RET instruction.
+</p><p><b><font face="Century Gothic"><font size="+1">.......... of the microprocessor</font></font></b>
+</p><p>As seen above, to start the program the processor&#8217;s EIP register is given
+the starting address of your program by Windows. Windows also has control
+over all the other register values in the processor as well. Windows keeps
+these in memory in an area of memory called the <i>register context</i>.
+Windows can and often does, stop the processor, store the then values of
+the registers, and instruct the processor to run another program instead
+for a while. So that other program is given a processor <i>time-slice</i>
+by Windows. When finished, Windows might restore the registers in your
+program which then continues to execute from where it left off, because
+it then has a time-slice.
+</p><p>This is how multitasking works under Windows. Each program running in
+the system will be given a share of the processor. To the user it may appear
+that several programs are running at once, but that is not, in fact the
+case in single processor computers. Windows decides the length of the 
+time-slice according to various
+priorities. For example a disk read or write operation will normally be
+given a very high priority and may stop other programs from running until
+the operation is finished.
+</p><p>A program can ask Windows to start another <i>thread</i>. Windows will
+then give this thread its own time-slices, and its own register values
+and stack. The new thread will appear to run at the same time as the main
+thread of the program. This is useful if a program needs to continue with
+one thing (for example a long calculation) whilst continuing to interface
+with the user. The program can therefore appear to the user to be doing
+two or more things at once.
+</p><p>This is called multi-threading.
+</p><p><b><font face="Century Gothic"><font size="+1">.......... of memory and
+data</font></font></b>
+</p><p>Your program can do much more than just manipulate data in the registers 
+in the processor. At
+any one time your program will have its own data in memory. This will be
+held either in memory which it established for direct addressing or it
+will be on the stack. How does Windows preserve this data when switching
+using the time-slice between programs?
+</p><p>The answer is that Windows keeps a <i>memory map</i> of all the program&#8217;s
+data. That is, Windows knows exactly where, in the <i>physical</i> memory
+in the computer, the program&#8217;s data is being kept at any one time. Windows
+keeps this memory map in an area of memory called the <i>memory context</i>.
+If physical memory start to run out, Windows will use the hard disk to
+keep the program&#8217;s data if necessary. This is why on low memory systems
+there is often a lot more disk activity than in higher memory systems.
+</p><p>When the program needs to access its data it must do so by using a <i>virtual
+address</i>. This means that the address of the memory area does not in
+fact correspond with the actual address of the data in physical memory.
+Windows informs the processor where the required memory areas really are.
+It does this by giving the processor in the CR3 register, the address of
+its page-mapping table for the program.
+</p><p><b><font face="Century Gothic"><font size="+1">.......... of the user-interface</font></font></b>
+</p><p>The main reason why Windows was developed in the first place was to
+provide a consistent and understood interface for the user. The idea is
+that a user will be able to move from computer to computer without problems,
+once familiar with the Windows operating system. More importantly for the
+Windows programmer, each application will interact with the user in a similar
+way, and have a familiar layout. Therefore users will have a good starting
+point when trying out a new program, reducing training and learning times
+dramatically. These aims have been achieved with great success, and there
+are now millions of computer users around the world using Windows applications
+who had previously described themselves as "computer illiterate".
+</p><p>Windows has achieved this uniformity by providing applications with
+standard components to be included in their programs. Obvious examples
+are menus which appear just under the title bar of an application, dialogs
+where the user can make choices, titled buttons which the user can click,
+scroll bars to move the contents of a window up and down, toolbar buttons
+containing little pictures and standardised help files.
+</p><p>These standard components collectively are called the "<i>Graphical
+User Interface</i>" or GUI.
+</p><p>How does an application use them? By calling an "<i>Applications Programming
+Interface</i>" or API. This is a procedure provided by Windows itself which
+can be called by your program by name. All the APIs are contained in files
+called <i>Direct Linked Libraries</i> or Dlls. Dlls are executable files
+with the extension Dll. You will see many of these in your Windows\System
+folder in your computer. They contain code for <i>export</i>, that is,
+they are available to be <i>imported</i> to your program when you want
+to use the Windows GUI.
+</p><p><b><font face="Century Gothic"><font size="+1">.......... and of files</font></font></b>
+</p><p>The Dlls are constantly being revised by the Windows developers, to
+add new APIs or change existing ones. These are distributed to the user
+in various ways, sometimes in a Windows service pack, or when you load
+a new version of a Microsoft program (a favourite method has been to include
+new versions of the Dlls with Internet Explorer). The user may not realise
+this is happening at all, and to you, the programmer it makes no difference.
+Your program will still call the same API to do the same thing, only it
+might do it a slightly different way.
+</p><p>Windows keeps a record of the whereabouts of all files which are important
+to it own operation or for driving peripheral devices. When your program
+is <i>installed</i> Windows requires that it makes appropriate records
+in the <i>registry</i>, which is a database kept by Windows about the configuration
+of the system and the applications which will run under it. Windows also
+requires a well-behaved application to place its support files in the correctly
+named folders so that they are quicker and easier to find. All this work
+is done by the use of an <i>installation program</i>, which is usually
+shipped with the program and entitled Setup.Exe.
+</p><p><b><font face="Century Gothic"><font size="+2">System &#8211; application communication</font></font></b>
+</p><p>As we have seen above the Windows system controls every important aspect
+of the computer and also of the applications running at any one time. To
+achieve this close level of control there has to be a system of <i>communication</i>
+between system and application.
+</p><p>An application will want to communicate with the system when it needs
+to know something about the GUI, for example, the size of a particular
+window or the size of a particular string of text in a particular font.
+Also when an application wishes to use the features of an API, it must
+be able to tell the API exactly how it should work.
+</p><p>The usual methods of communication from application to system are as
+follows:-
+</p><ul>
+<ul>
+<li>
+Data on the stack. Before making an API call, you PUSH data on the stack
+for the API to retrieve. The data is always dword values but it can often
+be pointers to structures containing more data, or to strings of text.</li>
+
+<li>
+Messages. You send a message to the system by calling the API SendMessage.
+The message itself is a dword value pushed on the stack, but you can also
+send up to 3 dwords of data with the message.</li>
+</ul>
+</ul>
+The system will want to communicate with the application to give it the
+results of an API call, or to inform the application that something is
+happening in the GUI or that something important is happening in the system
+itself.
+<p>The usual methods of communication from system to application are as
+follows:-
+</p><ul>
+<ul>
+<li>
+On return from an API, the system usually leaves a value in the register
+EAX, giving the result of the API call.</li>
+
+<li>
+Sometimes on return from an API the system leaves data in memory at a place
+specified by the program when it called the API. That place would have
+been specified by the application PUSHing a pointer on the stack before
+the API call.</li>
+
+<li>
+Messages to the application. This is achieved by the system <i>calling
+</i>the application. When this happens the system also sends data on the
+stack. The application will have informed the system the address in its
+code of a procedure where such calls can be made. This procedure is called
+a "<i>callback</i>" procedure, or a "<i>windows procedure</i>" or 
+"<i>WndProc</i>" for short.</li>
+</ul>
+</ul>
+
+<p><b><font face="Century Gothic"><font size="+2">Handles and device contexts</font></font></b>
+</p><p>All "objects" with which Windows works have <i>handles</i>. Such objects
+can be windows, controls, menus, dialogs, processes, threads, memory areas,
+displays, printers, files, disk drives, and even fonts, brushes and pens
+used for drawing and writing. A handle is a dword value which the application
+can ask for. The application will use the handle when it wants to communicate
+with Windows to use or change the object concerned.
+</p><p>All devices which display or produce an output have <i>device contexts</i>.
+The device context is an area of memory maintained by Windows which contains
+information about how the device should display its output. Thus a particular
+window will have a device context which will contain information about
+what font should be used in the window and in what colour anything drawn
+or written to the window should appear.  And a printer will have a device 
+context containing information about the printer's capabilities, paper
+size, available colours and so on.
+
+</p><p><b><font face="Century Gothic"><font size="+2">The types of executables</font></font></b>
+</p><p>An "executable" is a file which contains code which can be run by the
+processor. For present purposes we need only look at two of these, those
+with the file extension Exe (an application) and those with the file extension
+Dll (dynamic link library).
+</p><p>In order to qualify as a Windows executable the file must be in PE (Portable
+Executable) format. As its name suggests, this type of file is intended 
+to be portable between
+different platforms, so that it can run on a computer either with Intel,
+MIPS, Alpha, Power PC, Motorola 68000, or RISC processors and so on, provided,
+of course the Windows operating system is loaded on that computer, and
+the PE file is the correct version for those processors.
+</p><p>Windows knows that the executable is a PE file because the signature
+"PE" appears early on in the file. A non-PE file, for example a DOS executable,
+would not have this signature and Windows has to make special arrangements
+to run those.
+</p><p>A Dll is used if its code or data is to be shared by several applications.
+Windows uses Dlls to keep the code for its API. The Dll is then said to
+have <i>exports</i>. This reduces the size of the individual Exe dramatically,
+because it is known that code will be available in a Dll for use by the
+Exe. One of the important fields of the PE file is a list of <i>imports</i>.
+This is a list of functions that the Exe relies on and which it may need
+to call whilst running. This list also has the name of the Dll containing
+the function. On loading the Exe, Windows checks that all the functions
+and the Dlls are available. If not it does not run the program. You can
+test this yourself by trying to run a program intended only for Windows
+NT on Windows 98. The chances are that some of the functions or Dlls will
+be missing. This might also happen if your application calls an API which
+is only available in later versions of Windows.
+</p><p>You can avoid this problem either by providing different versions of
+your program to run on different versions of Windows, or you can ensure
+that the correct API is called at run-time to suit the Windows version.
+This is done by using the API GetVersionEx to check which version of Windows
+is running. Then you can call the correct API to suit that Windows version.
+You have to be careful not to call the API in the usual way, otherwise
+it appears in the list of imports, which might stop your program running
+in the first place. Instead you call it by using the APIs LoadLibrary (which
+loads the Dll concerned if not already loaded) and GetProcAddress (which
+finds the address in the Dll of the API concerned).
+</p><p>Just as Windows uses Dlls you can also write Dlls to ship with your
+program. You might do this if you are shipping more than one program and
+the Dll holds shared code or data. Or another reason might be to reduce
+the size of updates from time to time. Instead of updating the whole Exe
+file, you can keep all material which might have to be updated regularly
+in a Dll.
+
+</p><p></p><hr>
+<center><p>Copyright © Jeremy Gordon 2002-2003
+<br><a href="#top">Back to top</a>
+</p></center></td></tr>
+</tbody></table></center>
+</body></html>

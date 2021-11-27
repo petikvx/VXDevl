@@ -1,0 +1,330 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Macro Viruses by McAfee</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Macro Viruses<BR>
+</FONT><FONT SIZE=+1>by McAfee</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<UL>
+<P>1. <A HREF="#general">General<BR>
+</A>2. <A HREF="#word">MS-Word<BR>
+</A>3. <A HREF="#excel">MS-Excel</A></P>
+</UL>
+
+<P><A NAME="general"></A><B>Macros </B></P>
+
+<P>Macros can be used in applications such as Word or Excel to automate
+complex or repetitive tasks. Once written, macros are assigned a keystroke
+combination, toolbar button or menu item which will activate the macro.
+</P>
+
+<P>Macros are saved as a series of instructions in a language such as VisualBasic.
+Once recorded, the user can edit the macro or even add sophisticated instructions
+that are not normally recordable. This gives the knowledgeable user the
+capability to not only automate functions within the application, but to
+perform system functions such as deleting, renaming, or setting file attributes.
+</P>
+
+<P><B>Macro Viruses </B></P>
+
+<P>A Macro Virus uses the application's built-in power and functionality
+to replicate and spread. When a user receives and opens a file containing
+a viral macro, the viral macro will be either automatically run by opening
+the document or will be executed by the user by a certain key combination,
+a menu command, a toolbar button, etc. The viral macro will copy itself,
+the method depending on which application the viral macro is written for.
+The Macro Virus will now be present in files that the user opens, and can
+spread through various distribution methods. Some dangerous things a Macro
+Virus can do besides simply spreading could be to delete/change document
+contents, change settings in the Word environment, set a password, delete
+files, copy a DOS Virus to the user's system or insert harmful lines into
+the config.sys or autoexec.bat files. </P>
+
+<P><B>Applications </B></P>
+
+<P>Theoretically, a Macro Virus can be written for any application that
+stores a macro in a form that can be opened and edited using a language
+such as WordBasic or VisualBasic. In practice, most Macro Viruses discovered
+are predominantly written for Word and Excel.</P>
+
+<P>Microsoft Word v.6, 7: High Risk for Macro Virus infection. Microsoft
+Word v.'97: Moderate to High Risk at present, but number of Macro Viruses
+will increase. Microsoft Excel v.6, 7, '97 Moderate to High Risk for Macro
+Virus infection. Microsoft PowerPoint v.6, 7, '97 Minimal Risk at present,
+but risk will increase. Microsoft Access v.6, 7, '97 Minimal Risk at present,
+but risk will increase. Lotus 1-2-3 Recent Versions Minimal Risk, no known
+Macro Viruses exist &quot;in the wild.&quot; WordPerfect Recent Versions
+Minimal Risk, no known Macro Viruses exist &quot;in the wild.&quot; Ami-Pro
+Recent Versions Minimal Risk, no known Macro Viruses exist &quot;in the
+wild.&quot;</P>
+
+<P>(A virus called &quot;GreenStripe&quot; exists and is designed to spread
+in Ami-Pro, but it has not been found &quot;in the wild.&quot; </P>
+
+<P><B>Cross Platform Capability </B></P>
+
+<P>Macro Viruses can potentially spread across different platforms such
+as PC to Mac, etc. Macro Viruses exist and spread within the application
+environment, which for macros is common among the different platform versions.
+Some Macro Viruses that try to do damage to a part of the user's system
+outside of Word will not be able to do that damage on a different machine
+platform. For example, a Macro Virus that tries to edit the user's Config.sys
+file on a PC is going to have a hard time doing the same thing on a Mac,
+which has no Config.sys file. So a Macro Virus that spreads and does damage
+on one machine could spread to another type of machine and replicate but
+do no damage. It is possible for a Macro Virus to figure out what kind
+of system its running on, and change its behavior accordingly, but this
+is not common. </P>
+
+<P><A NAME="word"></A><B><FONT SIZE=+2>Macro Viruses in Microsoft Word
+</FONT></B></P>
+
+<P>Since the majority of Macro Viruses written are written for the Word
+environment, it is useful to look at Word Macro Viruses in more detail.
+</P>
+
+<P><B>Templates </B></P>
+
+<P>When a user records a macro and then saves it, it is stored in the template
+that the user has applied. If the user doesn't specify a template, then
+macros are saved in Normal.dot , the default template. Macros that are
+saved in Normal.dot are available for the user to use in any document the
+user has open, even if the user has applied another template. For this
+reason, Normal.dot is also called the Global Template. </P>
+
+<P>For a Word Macro Virus to function, it generally copies itself into
+the user's Global Template, and once there it will always be ready to perform
+its task, and spread itself to whatever documents the user opens. The virus
+can also save itself to a template in the Startup folder that Word checks
+on start-up. Any templates in the Startup folder will have their Macros
+loaded as global macros before the Global Template's macros are loaded.
+In Word 6 &amp; 7, macros are only allowed to be saved in a template. Therefore,
+in order for a macro virus to be able to copy itself to a file a virus
+must change the file type to a template. The next time the user opens an
+infected document (now converted to a template) Word will notice the file
+type &quot;template,&quot; (the file extension may still be DOC) and only
+allow the user to SAVE the file AS a template with an DOT extension into
+the User Template Directory. Word 6 will also disable the user's option
+to change the directory in which a file is stored, if that file has been
+converted to a template. </P>
+
+<P><B>Activation </B></P>
+
+<P>Macro Viruses can be activated by any number of means. If a user receives
+an infected file and opens it, the Macro Virus can and will eventually
+be activated by the user's actions, depending on how the virus writer has
+written it The Macro Virus might have a function so that it might not do
+anything yet, but may only activate after repeated use of a key combination
+or command. </P>
+
+<P><B>Automacros </B></P>
+
+<P>Automacros are macros that will be executed when the user executes a
+specific type of command. For example, the Automacro &quot;AutoOpen&quot;,
+if it is present in the Global Template or in the infected file that the
+user has just opened, will execute when the user opens a file. It is common
+for many Word Macro Viruses to save copies of themselves as Automacros
+and they are then activated whenever the user, for example, opens a document
+or performs some other task that will execute an Automacro. </P>
+
+<P>If an uninfected user has the Automacros disabled, it is impossible
+for him to be infected through an Automacro alone, but he can be infected
+through other forms of viral macros. </P>
+
+<P>These are the five Automacros that can exist in Word. </P>
+
+<CENTER><TABLE BORDER=1 WIDTH="90%" >
+<TR>
+<TD WIDTH="30%">
+<CENTER><P>Macro name</P></CENTER>
+</TD>
+
+<TD WIDTH="70%">
+<CENTER><P>When it activates</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>AutoExec</TD>
+
+<TD>When you open Word or load a global template</TD>
+</TR>
+
+<TR>
+<TD>AutoNew</TD>
+
+<TD>Every time you create a new document</TD>
+</TR>
+
+<TR>
+<TD>AutoOpen</TD>
+
+<TD>Every time you open an existing document</TD>
+</TR>
+
+<TR>
+<TD>AutoClose</TD>
+
+<TD>Every time you close a document</TD>
+</TR>
+
+<TR>
+<TD>AutoExit</TD>
+
+<TD>When you exit Word or unload a global template</TD>
+</TR>
+</TABLE></CENTER>
+
+<P><B>System Macros</B></P>
+
+<P>These are macros that are executed when the user performs a predefined
+word command such as saving a file. For example, if there is a macro present
+in the Active or Global Template called &quot;FileSave&quot; this will
+be executed whenever a user uses the built in FileSave command by using
+Menu|File|Save, by clicking the save button, or by using the keyboard command
+&quot;Control-S.&quot; A Macro Virus with this name will execute whatever
+instructions it contains on activation. For example, the FileSave macro
+could go out and perform any sort of mischief, and then as its last task
+save the file so as to trick the user into believing that it was behaving
+normally. System macros can also be used to hide commands or to trick the
+user by displaying a false dialogue box, etc. (See also STEALTH CHARACTERISTICS)
+</P>
+
+<P><B>Language Dependence</B></P>
+
+<P>When a Macro Virus is said to be language dependent, this means that
+it can only spread in a limited number of language forms of Word. For example,
+a language dependent Macro Virus written for the German language version
+of Word will spread only in the German language version. Most of the Macro
+Viruses that exist are language dependent, but it is possible to write
+a virus that spreads in multiple language versions. Language Dependence
+exists largely because all of the System Macros have different names in
+the different languages, and many Macro Viruses use System Macros to function
+properly. Automacro names are the same in all language versions, and therefore
+Automacro-based Macro Viruses are at least potentially language independent.
+</P>
+
+<P><B>Custom Macro Assignment</B></P>
+
+<P>These are macros that are defined by the user, and have unique names.
+An example might be one that a user made up to insert his or her name and
+title at the end of a letter. These can be activated by a keyboard shortcut
+(such as simply pressing the space bar), by a custom toolbar button, or
+by a custom menu item. Macro Viruses use custom macros to help hide themselves,
+because it is obvious that system or automacros that suddenly appear might
+contain a virus, and would alert someone who is used to looking for these
+kinds of macros. </P>
+
+<P>Any one of the above types or any combination of them can be used to
+spread a Macro Virus. </P>
+
+<P><B>Execute-Only Macros Option</B></P>
+
+<P>A Macro Virus writer can save his macro in a form known as Execute-Only
+which means that it cannot be edited, as that would reveal the viral code
+within the macro. The user will notice that in Tools|Macro|Macros, the
+option &quot;edit&quot; is grayed out when an execute-only macro is selected.
+</P>
+
+<P><B>Macro Virus Stealth Characteristics</B></P>
+
+<P>A Macro Virus can be called stealthy when it tries to trick the user
+into believing it is not present, or makes changes in Word in order to
+protect itself from being deleted. </P>
+
+<P>If the user believes he has a virus, he can use the Tools|Macro command
+in the menu to see what macros are present in the system, and the viral
+macros would be revealed. One not so subtle stealth technique would be
+to simply delete the command from the menu and therefore make it hidden
+and unusable. </P>
+
+<P>A Macro Virus could also simply hide the functions of the Tools|Macro
+command by making nothing happen when the user selects it </P>
+
+<P>With a macro, the virus writer can make custom dialogue boxes and can
+use this to trick the user. For example a Macro Virus could make a custom
+dialogue box appear when the user selects Tools|Macro that makes it appear
+that there are no strange macros present. </P>
+
+<P>Note: If the user notices strange behavior while trying to use a familiar
+command like Tools|Macro, the user should not keep trying to use the command.
+There could be chance that repeated attempts that could activate a damaging
+payload. </P>
+
+<P><B>Changes: Word 6 &amp; 7 to Word '97</B></P>
+
+<P>Word version '97 uses a different Macro Language. Versions 6 &amp; 7
+use WordBasic and Word '97 uses VisualBasic 5. When you open an Word 6
+or 7 document in Word '97, any Word 6 or 7 macros contained will be converted
+from WordBasic to VisualBasic. It is possible that a Macro Virus can still
+work after the conversion from Word 6 &amp; 7 to Word '97, but in some
+cases this damages the Macro Virus's ability to infect and replicate.</P>
+
+<P>A virus check is now included in the Word '97 release which will checks
+for viruses during the conversion process and stops some Concept, Wazzu,
+MDMA?NPAD? variants at the time this document was written (April 1997).
+Once converted with the to Word '97/VisualBasic 5 format, the virus will
+never again be checked by the Word conversion feature and could continue
+to spread. Some viruses which lose their ability to spread after the conversion
+may still be able to activate and perform their payload. </P>
+
+<P>As more users switch to Word '97, viruses specifically written to work
+in Word '97 will become more common. Because VisualBasic is a much more
+powerful language than WordBasic, these new Macro Virus forms can and probably
+will be more complex and potentially more dangerous than the common Word
+6 &amp; 7 Macro Viruses. </P>
+
+<P><A NAME="excel"></A><B><FONT SIZE=+2>Macro Viruses in Microsoft Excel
+</FONT></B></P>
+
+<P><B>Workbooks </B></P>
+
+<P>Excel's method of storing macros is different than that of Word. Excel
+stores macros in an Excel Workbook (*.xls) file. In order to be loaded
+globally, the Excel file containing the macro must be located in Excel's
+designated start up directory (this directory is usually called &quot;XLStart&quot;).
+</P>
+
+<P><B>Personal.XLS </B></P>
+
+<P>If a user records a macro and specifies that he/she wishes to save it
+for global use, by default Excel creates a file called &quot;Personal.xls&quot;
+in the XLStart directory and saves the macro there. The Personal.xls file
+is sometimes targeted by Macro Viruses for replication. Macro Viruses can
+also simply copy themselves to any Excel files in the XLStart directory
+or create a file there, as all the files in this directory will have their
+macros loaded globally. </P>
+
+<P><B>Activation </B></P>
+
+<P>Like Macro Viruses in Word, Macro Viruses in Excel typically use Automacros
+to replicate and/or activate. The most commonly used Automacros are AutoOpen
+and AutoClose, which activate when a user opens or closes a spreadsheet.
+Automacros can also be assigned to activate when a user activates a specific
+sheet by selecting it, or deactivates a sheet by selecting another. Other
+custom macros could also be activated by keystrokes. </P>
+
+<P><B>Changes: Excel 5 &amp; 7 to Excel '97</B></P>
+
+<P>Microsoft Excel versions 5 &amp; 7 use VisualBasic 4 as their Macro
+language, and version '97 uses VisualBasic 5. Macro Viruses present in
+a file created with version 5 or 7 will have their macros converted to
+VisualBasic 5 format, and will almost always work after the conversion.
+</P>
+
+<P>Note: It is impossible for existing viruses today to switch from Word
+6 &amp; 7 to Excel 5 &amp; 7 and vice-versa, because of the fact that they
+use different macro languages. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

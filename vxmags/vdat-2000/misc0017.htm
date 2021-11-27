@@ -1,0 +1,244 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Miscellaneous - Virus!</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="miback01.gif">
+
+<CENTER><P><FONT COLOR="#004080"><B><FONT SIZE=+3>VIRUS!<BR>
+</FONT></B><FONT SIZE=+1>Philip Zakas</FONT></FONT></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>We've spent hundreds of man-years and millions of dollars researching,
+testing and installing our software, gateways and network. As a result,
+we can exchange information with the most remote sites in the world as
+easily as with the building next door.</P>
+
+<P>In the basement of our building, scores of message and file servers
+are running 24 hours a day supporting thousands of users; despite this
+elaborate scheme, the network has never experienced an unscheduled outage
+lasting more than a few minutes.</P>
+
+<P>This high-speed and efficient operation is due wholly to good planning
+and a complicated array of redundancies. No single failure could cause
+more than a few users to be down at any time. Yet in the course of a Friday
+last fall, we were forced to shut our network down entirely.</P>
+
+<P><B>FRIDAY 9:30 A.M</B></P>
+
+<P>It began with a phone call from a technician. A computer he was preparing
+for travel use was not running properly; after he installed a software
+package onto its hard disk, the computer refused to reboot.</P>
+
+<P>We couldn't find any cross-linked files. There were no other problems
+with the computer's hard drive File Allocation Table. So we ran a virus
+scan of the hard disk's files to see if any had been infected.</P>
+
+<P>Running this scan caused the computer to hang, so we rebooted using
+a fresh DOS disk instead of the hard drive and tried again. This time,
+we were able to complete a virus scan of the hard disk. We didn't find
+any viruses.</P>
+
+<P>One thing was odd, however. The file size of the COMMAND.COM program
+was larger than normal: 49,586 bytes instead of 48,113. I copied the file
+to a diskette and took it to my computer for analysis.</P>
+
+<P><B>10:00 A.M.</B></P>
+
+<P>I ran a debugging program I wrote that allows for on-the-fly disassembly
+of programs and shows the assembly language version of the code. At the
+beginning of the program file, I saw something very suspicious. Instead
+of normal program commands executing in sequential order, there was a JMP
+instruction that pointed to code at the end of the file. This code contained
+sequences that waited in memory for executable programs typically .COM,
+.EXE and .OVR programs and attached itself to the end of all the files
+the computer was executing.</P>
+
+<P>This was clearly virus code.</P>
+
+<P>In disassembling the code further, I saw that it was a simple, memory
+resident program whose sole purpose was to spread itself. It would infect
+program and overlay files while avoiding the disk boot sector.</P>
+
+<P>But instead of infecting only programs executed in a normal DOS fashion,
+the virus would attack any file that was copied or spawned using a special
+BIOS sequence. Therefore, it didn't just target .EXE and .COM files but
+anything that appeared to be ``executed,'' including Microsoft Corp. Windows
+font and video files.</P>
+
+<P>The infection manifested itself as corrupted screens and garbled text
+in Windows. If we hadn't known we had a virus on our hands, we might have
+assumed the problem stemmed from program bugs.</P>
+
+<P><B>10:45 A.M.</B></P>
+
+<P>Within a few minutes of completing this analysis, I received news that
+two users' machines in different parts of the building were having the
+same problems as the infected computer.</P>
+
+<P>Assuming the worst-case scenario, I checked off in my mind what I knew:</P>
+
+<UL>
+<LI>A virus had infected a small number of workstations in different parts
+of the organization.</LI>
+
+<LI>The virus was undetectable using our normal virus scan program and
+caused our antivirus software to hang computers.</LI>
+
+<LI>The virus infected program files indiscriminately.</LI>
+</UL>
+
+<P>Another call confirmed another infection. I added the following to my
+checklist:</P>
+
+<UL>
+<LI>The virus was spreading rapidly.</LI>
+</UL>
+
+<P><B>11:45 A.M.</B></P>
+
+<P>We checked our antivirus software vendor's bulletin board system and
+found that the company had just released a new version of its software.
+We used it to scan the first infected workstation and found a name for
+our virus: Athens.</P>
+
+<P>However, the new software also hung when running on an infected workstation.
+We decided to hold an emergency meeting at 1:30 p.m. to discuss the findings
+and plan an attack.</P>
+
+<P><B>1:00 P.M.</B></P>
+
+<P>Just before the meeting, I went to check out one of the newly infected
+workstations. Apparently, it had managed to infect a program executable
+residing on one of our Novell, Inc. Netware 3.11 servers. This infection
+happened despite the fact that the workstation's user had only Read and
+File Scan rights to the file's directory and that the file was flagged
+Shared and Read Only.</P>
+
+<P>In addition, although we were using a network-based antivirus package
+to prevent all unauthorized writes to the file server, it failed to prevent
+the infection. Further, the program file on the server was 1,473 bytes
+larger in size than it should have been. A quick look using my debugging
+tool confirmed our suspicions: It was definitely infected. My checklist
+was growing:</P>
+
+<P>The virus was on the network and refused to obey a law we thought was
+as good as the law of gravity: You cannot change a file on a NetWare server
+that you don't have adequate rights to. This virus could fly.</P>
+
+<P><B>1:30 P.M.</B></P>
+
+<P>At the virus strategy meeting I thought about how file servers operate
+down to the hard disk mechanism and zeroed in on a memory pool known as
+``dirty cache.''</P>
+
+<P>When a program is executed on a NetWare server, the system must first
+load it into dirty cache; otherwise, processing the hundreds of transaction
+requests made by the file server would take forever.</P>
+
+<P>Files remain there for 3.3 seconds, after which the cache is flushed
+unless more calls are made to the same files. If more calls are made, the
+file is then moved to normal cache.</P>
+
+<P>In testing, we found that a file could remain in dirty cache for up
+to 30 minutes before it would be flushed. Thus, any workstations calling
+the same executable would run an infected program sitting safely in the
+server's cache and infect themselves.</P>
+
+<P>In this manner, the virus could ping-pong from workstation to file server
+to workstation until it infected every workstation. Because this cache
+area was not protected by our server-based antivirus program, the virus
+was sure to spread throughout the network in a few hours.</P>
+
+<P><B>2:00 P.M.</B></P>
+
+<P>We decided to shut down the entire network. We E-mailed all users asking
+them to log out of the network within 15 minutes.</P>
+
+<P>Unfortunately, we recalled too late that logging out of the network
+would infect LOGOUT.EXE on the servers, thus helping to spread the virus
+to even more workstations.</P>
+
+<P>While the network was down, we went to a software store and bought a
+workable network-based antivirus product that would protect the server
+cache. Then, we planned a cleanup effort and called for volunteers.</P>
+
+<P><B>4:00 P.M.</B></P>
+
+<P>The volunteers split up into two groups: a network group focused on
+cleaning up the 45 file servers (because some infected files could have
+resided in areas that were not marked Read and File Scan only) and a workstation
+group focused on finding the quickest and most effective method of cleaning
+up more than 3,500 workstations.</P>
+
+<P>The network group used a server-based antivirus product that could detect
+and clean up the virus and protect the server's cache. Because the virus
+was causing irreparable damage to files, we had to replace infected files.
+Server cleanup thus occurred nonstop, one server at a time, for the next
+14 hours.</P>
+
+<P>For workstation detection and cleanup, I created a diskette that, when
+cold-booted, would scan all files on a hard disk. If it found an infected
+file, the program would delete it, turn the screen red, display a warning
+message to the user and send a ``whoop-whoop'' sound through the PC speaker
+until someone turned the machine off.</P>
+
+<P>The whooping PC speaker would ensure that a technician walking near
+an office with an infected PC would hear the sound and clean up that workstation.</P>
+
+<P>If the workstation hard disk was clean, a green screen would appear
+along with a message that the computer had been scanned and no viruses
+had been found.</P>
+
+<P>For cleanup, I created two programs. One would allow someone to restore
+any damaged DOS system files without having to reinstall DOS on the workstation.
+The other would allow a technician to log into the network using clean
+network drivers, attach to a server-based repository of known applications
+and begin a manual replacement of deleted files.</P>
+
+<P>After replacing deleted files, the technician would reinsert the detection
+disk, cold boot the machine and leave the green screen on the monitor for
+the user.</P>
+
+<P><B>SATURDAY 1:45 P.M.</B></P>
+
+<P>We were all hungry. Two of us went to find a restaurant that offered
+carry-out. Given the fact that we were chasing the Athens virus, it was
+ironic that the only place still serving was a Greek restaurant.</P>
+
+<P><B>6:15 A.M.</B></P>
+
+<P>The team finished cleaning all the servers and was ready to go on-line
+with the new antivirus software installed. We brought the servers up. I
+finished testing and refining the workstation detection and cleanup disks.</P>
+
+<P><B>SATURDAY 8:00 A.M. TO SUNDAY 9:00 P.M.</B></P>
+
+<P>About 25 volunteers, ranging from IS staff to end users, used the workstation
+disks to detect and eliminate the virus from more than 250 workstations.
+We also detected and cleaned up 13 workstations infected with other viruses.</P>
+
+<P><B>EPILOGUE</B></P>
+
+<P>By early Monday morning, the entire organization was up and running
+as if nothing had happened. Some of us were a bit worse for wear, however,
+having caught only about eight hours of sleep in the previous 72 hours.</P>
+
+<P>Dozens of users, impressed with reassuring green screens on their monitors
+and the massive cleanup effort, sent their congratulations.</P>
+
+<P>One volunteer left a voice-mail message for another that was short and
+to the point:</P>
+
+<P>&quot;Here's something you should never forget.'' The &quot;whoop-whoop''
+sound of the PC speaker could be heard in the background.</P>
+
+<P>
+<HR WIDTH="100%"><BR>
+<p></P>
+
+</BODY>
+</HTML>

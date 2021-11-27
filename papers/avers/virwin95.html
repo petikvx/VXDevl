@@ -1,0 +1,120 @@
+<HTML>
+
+<!-- Mirrored from vx.netlux.org/texts/html/virwin95.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:17 GMT -->
+<HEAD>
+<TITLE>PC Viruses and Windows 95</TITLE>
+</HEAD>
+
+<body text=#000000 bgcolor=#ffffff>
+<H3>PC Viruses and Windows 95</H3>
+<p>
+
+Probably the biggest event of 1995 was the long awaited release of Windows 95. This new desktop PC 
+operating system from Microsoft is the successor to the highly successful Windows 3.x product line, 
+and sees yet a further move away from the relieance on DOS as the mainstay operating environment of 
+PC systems.
+<p>
+With the release of this system, support staff will inevitably be faced with many questions from users 
+ranging from basic installation and upgrading to getting the most out of the networking and multi-
+media enhancements shipped with the base product. Although having been involved in the Windows 95 beta 
+program and carried out investigative work in these areas, the issue of PC viruses and how they will 
+affect users of Windows 95 was not high on the agenda. This article however, seeks to redress the 
+balance and hopefully provide support staff with answers that can quickly be directed towards the user 
+community who are upgrading to Windows 95.
+<p>
+The emergence of Windows 95 would on the surface appear to be bad news for DOS based viruses. If 
+the desktop operating system moves away from DOS it stands to reason that the 7,000 plus DOS based 
+viruses that current anti-virus software checks for will become mere curiosities, consigned in the main 
+to the digital equivalent of an elephants graveyard. To some extent this is true, but such thinking does 
+not take into account the architecture of PCs and how Windows 95 fits in.
+<p>
+One of the main problems the developers of Windows 95 had was providing backwards compatibility 
+with the thousands of DOS based programs in use around the world. Without wishing to get down into 
+a technical discussion as to whether DOS really does exist in Windows 95 or not, the fact remains that 
+as far as DOS based viruses are concerned, the real mode DOS box is a home from home for many of 
+them.
+<p>
+As regular readers of my Edinburgh PC Virus Reviews will know, boot sector viruses account for 
+approximately 80% of all known virus infections. The bad news is that upgrading to Windows 95 will 
+not afford any protection against such viruses. Windows 95 can still be infected by any boot sector 
+virus. Like DOS, Windows 95 starts off in real mode and reads the contents of the boot sector. It also 
+allows the opportunity to load real mode drivers and TSRs from a CONFIG.SYS and 
+AUTOEXEC.BAT if they exist for backwards compatibility and for tailoring the DOS environment 
+under Windows 95 if desired. For these reasons alone PC viruses cannot be ignored. 
+<p>
+PC Boot sector viruses which trash the hard disk as their payload could do so before Windows 95 gains 
+control of the PC. If a PC virus is resident after Windows 95 is running, any particular DOS calls the 
+virus makes maybe rendered useless due to the way Windows 95 handles disk access. However, such 
+code may cause instability problems which given the fact Windows 95 is a new system, such things 
+maybe difficult to track down until more experience is gained.
+<p>
+There is no anti-virus software built into Windows 95. This problem is compounded further by the fact 
+that exisiting 16-bit anti-virus software does not operate correctly with Windows 95 and should not be 
+used. The only secure, reliable method is to upgrade to 32-bit anti-virus software which has been 
+written for use with Windows 95. This way you can be sure that the software will function correctly 
+with your environment and is designed to detect viruses which may be present.
+<p>
+For example, many of you may be running a DOS based memory resident anti-virus scanner. Such 
+devices are usually loaded from the DOS startup files and check when a file or disk is accessed. If you 
+upgraded to Windows 95, this driver has probably been left in the startup files and continues to load as 
+normal. However, such devices, due to the way Windows 95 handles all system calls, are rendered 
+useless. 
+<p>
+With the sheer number of DOS based applications around it is hardly surprising that users will continue 
+to use such programs under Windows 95 for some time to come. This means that any DOS program 
+launched under Windows 95 will be infected with any virus that was run when the PC was booted up. 
+In other words when a DOS box is invoked a copy of the DOS environment as determined at system 
+startup is run, including any real mode viruses.
+<p>
+Cold-booting a PC and scanning for viruses has often been advised as a sure way to detect all known 
+viruses. (EXEBUG of course made such things impossible but the advice is still valid in most cases). If 
+you are running Windows 95 you can still do this, but your software may not recognise the exectuables 
+that make up Windows 95. It may also have problems in handling the new long filename support, a 
+welcome and increasingly popular feature of the product.
+<p>
+If you have not upgraded your anti-virus software, are you sure that the existing software can cope 
+with disinfecting viruses and repair infected files that are part of the Windows 95 operating system?
+Has your existing software been written to run under Windows 95? In the areas of scanning, detecting, disinfecting and repairing 
+infected files in the Windows 95 environment the only safe option is to upgrade your anti-virus 
+software to one written for Windows 95.
+<p>
+The networking features of Windows 95 are quite impressive. The ability to connect to fileservers and 
+re-connect by saving mappings and passwords results in an ease of use rarely experienced in the PC 
+world. However, such ease of use comes at a price, which I believe hides potential security problems. 
+My experience is that users too often are unaware of which servers they are connected to. The peer to 
+peer facilities are also potential problems. The extent of how far a virus will infect over networks 
+depends largely on the permissions the user logged in has on the servers or workstations concerned. 
+Although this has always been the case, the ease of connection under Windows 95 will result in more 
+users being connected to more remote resources, increasing the likelihood of a wider infection should a 
+virus strike. File viruses will infect as usual under Windows 95.  Nothing has changed here. The 
+increasing likelihood of network connections gives the virus author yet another target to aim for.
+<p>
+To summarise, DOS based viruses will continue to run as normal within DOS boxes under Windows 
+95, while old memory resident scanning software may not detect them. This is down to the way that 
+Windows 95 handles DOS calls. This however may have the advantage of protecting  the disk from 
+destructive payloads. Boot sector viruses however are still an issue and may get in before Windows 95 
+takes control. Pre-Windows 95 anti-virus software may not be able to handle long filenames and fail to 
+recognise Windows 95 executables for scanning, detecting and repairing procedures. Users must 
+upgrade to Windows 95 aware anti-virus software to provide the best level of protection.
+<p>
+What of the future? I fully expect more DOS based viruses to appear throughout the year given the 
+huge number of DOS based machines in the world today. There are few Windows specific viruses, but 
+given that Windows was firmly rooted in DOS this is probably not surprising. The high profile that 
+Windows 95 is receiving is probably acting as an incentive to the virus writing community. We have 
+already seen the emergence of a couple of viruses using the Word Basic Macro language. As such tools 
+are becoming more closely integrated with the operating system, the potential for devising new 
+methods of infection are increasing. The ease of use of such systems and the willingness of users to 
+simply click on objects in order to access them - whether these be server objects or documents - hides 
+the possibility that such simple actions can set off hidden code designed to worm its way into the core 
+operating system or across established network conections. I imagine virus authors are studying the use 
+of VXDs (Virtual Device Drivers) as the natural successor to the DOS based TSR for supporting their 
+virus code. 
+<p>
+At the time of writing in February 1996, there are no know viruses specifically written for Windows 
+95. However, according to information on Solomons WWW site, virus authors are already distributing 
+source code and are actively planning producing such viruses.
+
+</BODY>
+
+<!-- Mirrored from vx.netlux.org/texts/html/virwin95.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:17 GMT -->
+</HTML>

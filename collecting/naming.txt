@@ -1,0 +1,211 @@
+                    A New Virus Naming Convention
+
+
+At a CARO meeting in 1991, a committee was formed with the objective
+of reducing the confusion in virus naming.  This committee consisted
+of Fridrik Skulason (Virus Bulletin's technical editor) Alan Solomon
+(S&S International) and Vesselin Bontchev (University of Hamburg).
+
+The following naming convention was chosen:
+
+The full name of a virus consists of up to four parts, desimited by
+points ('.').  Any part may be missing, but at least one must be
+present.  The general format is
+
+        Family_Name.Group_Name.Major_Variant.Minor_Variant[:Modifier]
+
+Each part is an identifier, constructed with the characters
+[A-Za-z0-9_$%&!'`#-].  The non-alphanumeric characters are permitted,
+but should be avoided.  The identifier is case-insensitive, but
+mixed-case characters should be used for readability.  Usage of
+underscore ('_') (instead of space) is permitted (and even
+encouraged), if it improves readability.  Each part is up to 20
+characters long (in order to allow such monstriosities like
+"Green_Caterpillar"), but shorter names should be used whenever
+possible.  However, if the shorter name is just an abbreviation of the
+long name, it's better to use the long name.
+
+1. Family names.
+
+The Family_Name represents the family to which the virus belongs.
+Every attempt is made to group the existing viruses into families,
+depending on the structural similarities of the viruses, but we
+understand that a formal definition of a family is impossible.
+
+When selecting a Family_Name, the following guidelines must be
+applied:
+
+                                "Must"
+
+1) Do not use company names, brand names, or names of living people,
+   except where the virus is provably written by the person.  Common
+   first names are permissible, but be careful - avoid if possible.
+   In particular, avoid names associated with the anti-virus world.
+   If a virus claims to be written by a particular person or company
+   do not believe it without further proof.
+
+2) Do not use an existing Family_Name, unless the viruses belong to
+   the same family.
+
+3) Do not invent a new name if there is an existing, acceptable name.
+
+4) Do not use obscene or offensive names.
+
+5) Do not assume that just because an infected sample arrives with a
+   particular name, that the virus has that name.
+
+6) Avoid numeric Family_Names like V845.  They should never be used as
+   family names, as the members of the family may have different
+   lengths.  When a new virus appears and a new Family_Name must be
+   selected for it, it is acceptable to use a temporary name like
+   _1234, but this must be changed as soon as possible.
+
+                               "Should"
+
+1) Avoid Family_Names like Friday 13th, September 22nd.  They should
+   not be used as family names, as members of the family may have
+   different activation dates.
+
+2) Avoid geographic names which are based on the discovery site - the
+   same virus might appear simultaneously in several different places.
+
+3) If multiple acceptable names exist, select the original one, the
+   one used by the majority of existing anti-virus programs or the
+   more descriptive one.
+
+                              "General"
+
+1) All short (100 bytes of code or less, messages excluded)
+   overwriting viruses are grouped under a Family_Name, called
+   Trivial.  The variants in each family are named by their infective
+   length.
+
+2) The relatively small viruses which do nothing but replicate and
+   which do not contain anything particular that can be used to name
+   them, are grouped in the following six families:
+
+   SillyC   - Non-resident viruses, which infect only COM files;
+   SillyE   - Non-resident viruses, which infect only EXE files;
+   SillyCE  - Non-resident viruses, which infect both types of files;
+   SillyRC  - Resident viruses, which infect only COM files;
+   SillyRE  - Resident viruses, which infect only EXE files;
+   SillyRCE - Resident viruses, which infect both types of files.
+
+   The variants in each family are named after their infective length.
+
+3) The trivial boot and master boot sector viruses which do nothing
+   but replicate are grouped in two families:
+
+   SillyP - Trivial master boot sector infectors
+   SillyB - Trivial DOS boot sector infectors
+
+   The variants in each family are named after the contents of the
+   2nd and the 3rd bytes of the infected boot sector in hexadecimal
+
+4) All overwriting viruses written in a high-level programming
+   language are grouped in a single family, called HLLO. The
+   particular language used in the virus doesn't matter. The names of
+   the variants in this family conform to the same rules as the Group
+   names (see below).
+
+5) All companion viruses written in a high-level programming language
+   are grouped in a single family, called HLLC.  The particular
+   language used in the virus doesn't matter.  The names of the
+   variants in this family conform to the same rules as the Group
+   names (see below).
+
+2. Group names.
+
+The Group_Name represents a major group of similar viruses in a virus
+family, something like a sub-family.  Examples are AntiCAD (a
+distinguished clone of the Jerusalem family, containing numerous
+variants), or 1704 (a group of several virus variants in the Cascade
+family).
+
+When selecting a Group_Name, the same guidelines as for a Family_Name
+should be applied, except that numeric names are more permissible -
+but only if the respective group of viruses is well known under this
+name.
+
+3. Major variant name.
+
+The major variant name is used to group viruses in a Group_Name, which
+are very similar, and usually have one and the same infective length.
+Again, the above guidelines are applied, with one major exception.
+The Major_Variant is almost always a number, representing the
+infective length, since it helps to distinguish that particular
+sub-group of viruses.  The infective length should be used as
+Major_Variant name always when it is known.  Exceptions of this rule
+are:
+
+1) When the infective length is not known, because the viruses are not
+   yet analyzed.  In this case, consecutive numbers are used (1, 2, 3,
+   etc.).  This should be changed as soon as more information about
+   the viruses becomes known.
+
+2) When an alpha-numeric name of the virus sub-group already exists
+   and is popular, or more descriptive.
+
+4. Minor variant name.
+
+Minor variants are viruses with the same infective length, with
+similar structure and behaviour, but slightly different.  Usually the
+minor variants are different patches of one and the same virus.
+
+When selecting a Minor_Variant name, usually consecutive letters of
+the alphabet are used (A, B, C, etc...).  However, this is not a very
+hard restriction and longer names can be used as well, especially if
+the virus is already known under this (longer) name, or if the name is
+more descriptive than just a letter.
+
+
+The producers of virus detection software are strongly usrged to use
+the virus names proposed here. The anti-virus researchers are advised
+to use the described guidelines when selecting names for new viruses,
+in order to avoid further confusion.
+
+If a scanner is not able to distinguish between two minor variants of
+a virus, it should output the virus name up to the recognized major
+variant. For instance, if it cannot distinguish between
+Dark_Avenger.2000.Traveller.Copy and Dark_Avenger.Traveller.Zopy, it
+should report both variants of the virus as Dark_Avenger.Traveller.
+
+If it is also not able to distinguish between the major variants, it
+should report the virus up to the recognized group name.  That is, if
+the scanner cannot make the difference between
+Dark_Avenger.2000.Traveller.* and Dark_Avenger.2000.Die_Young, it
+should report all the variants as Dark_Avenger.2000.
+
+At last, if the scanner is also unable to distinguish between the
+different groups, it should output only the family name of the virus
+(Dark_Avenger in our example).
+
+5) Modifiers.
+
+It is possible that a virus belongs to a particular family by its
+structure, but the virus writer has used some kind of concealing of
+this fact. Such concealing could be the conversion of the virus into a
+polymorphic one by linking one of the avialable polymorphic engines to
+it, or by compressing it with some executable-file compressor (e.g.,
+PKLite, LZEXE, etc.). The latter method is of concern only if the
+virus is able to spread in compressed form. Since one and the same
+virus could be concealed with different methods (or even with more
+than one method), this could cause classification confusion.
+
+Such viruses should be classified as if the concealing mechanism has
+not been used, with a modifier appended to their name. This modifier
+indicates the particular concealing mechanism used. If the concealing
+tool conforms to a naming hierarchy, it's full name (e.g., TPE.1_3)
+should be used as a modifier. When the modifier indicates a
+compression tool, only the first two characters of the name of the
+tool should be used.
+
+For instance, the Pogue virus is a member of the Gotcha family, but
+uses the MtE.0_90 polymorphic engine. Therefore, its full name should
+be "Gotcha.Pogue:MtE.0_90".
+
+It is permitted to use more than one modifier in the full name of the
+virus, if the virus uses more than one concealing mechanism, e.g.
+"Civil_War.1234.A:TPE.1_3:MtE.1_00:PK".
+
+

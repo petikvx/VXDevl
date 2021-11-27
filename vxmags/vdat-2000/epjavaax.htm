@@ -1,0 +1,207 @@
+<html>
+
+<head>
+
+<title>Java, ActiveX and the Virus Threat</title>
+</head>
+
+<body background="epback01.gif" bgcolor="#C0C0C0" text="#000000"
+link="#800000" vlink="#800000" alink="#800000">
+
+<p align="center"><font color="#004080" size="6"><b>Java, ActiveX
+and the Virus Threat</b></font> <br>
+<font size="2">[See also: </font><a href="lcindex.htm"><font
+size="2">An Examination Of The Security Risks Associated With The
+Java Platform</font></a><font size="2">]</font></p>
+
+<hr>
+
+<p><a href="#1"><b>Viruses vs. Trojans<br>
+</b></a><a href="#2"><b>Java and the Security Model<br>
+</b></a><a href="#3"><b>Java Applications<br>
+</b></a><a href="#4"><b>Java Applets<br>
+</b></a><a href="#5"><b>ActiveX<br>
+</b></a><a href="#6"><b>Preventing Infection</b></a><br>
+</p>
+
+<p>While the Internet has provided a great boon for businesses,
+it&#146;s also created a wealth of opportunity for the virus
+writer and other developers with malicious intent. New
+technologies, such as Java and ActiveX, create fresh environments
+that hackers can potentially exploit. Luckily, while there has
+been a lot of press given to potential security problems with
+these and other Internet technologies, to date there are no
+documented &quot;in-the-wild&quot; attacks based on Java or
+ActiveX. All the demonstrations have only been in the lab.</p>
+
+<p><a name="1"></a><b>Viruses vs. Trojans</b></p>
+
+<p>To understand the Java and ActiveX threat, it&#146;s necessary
+to understand the distinction between a software virus and a
+software Trojan horse. The difference between viruses and Trojan
+horses is primarily in the way they are spread. Viruses contain
+code to replicate and spread themselves without the user being
+aware of the distribution. For example, a virus may rewrite a
+section of the boot sector so that each time a user boots their
+machine, the virus copies itself into memory to intercept certain
+actions such as reading from a diskette. Subsequently, each time
+a diskette is read from, the virus will copy itself onto the boot
+sector of the diskette, enabling it to be spread to the next
+machine.</p>
+
+<p>Trojan horses, on the other hand, contain no specific code to
+replicate. They rely on the writer placing them somewhere and
+enticing the unsuspecting user to execute them.</p>
+
+<p>Since virus replication creates the potential to cause
+widespread damage, companies are concerned about protecting their
+machines. Historically, while Trojan horses have the potential to
+cause damage, their lack of replication means that the damage
+will always be in a contained environment. However, the Internet
+has changed all that by enabling widespread, quick distribution
+of potentially dangerous Java or ActiveX Trojan horses. </p>
+
+<p><a name="2"></a><b>Java and the Security Model</b></p>
+
+<p>Java and ActiveX are both technologies that are being touted
+as the best way to make Web pages interactive and more functional
+than existing technologies allow. Java, by virtue of the fact
+that it runs inside a virtual machine on the client desktop,
+contains its own security model that creates a relatively
+protected environment.</p>
+
+<p><a name="3"></a><b>Java Applications</b></p>
+
+<p>Since Java is just a programming language, a developer can
+write any kind of stand-alone application in Java. As long as the
+user runs it within a Java interpreter, the application can do
+anything that one would normally expect out of an application
+written in any other language. The security comes from the fact
+that, as any other application, the user needs to invoke the
+application from his local machine and is in control of launching
+it.</p>
+
+<p><a name="4"></a><b>Java Applets</b></p>
+
+<p>Applets are special types of Java applications that are
+designed to run within a browser, whether they are downloaded
+from the Internet or not. Downloaded applets have a different
+security policy to those that are run from the local machine,
+even if they are run within the same browser.</p>
+
+<p>Each applet, viewer or browser has a Security Manager object
+built into it that enforces the security model for that
+particular browser. Netscape and Microsoft generally follow the
+same conventions for applets that Sun recommends, but they do
+vary in implementation since each security object is
+independently developed. It&#146;s very likely that these
+policies will change as more Java applets are developed and the
+security restrictions start to limit functionality that users
+really want. In fact, Sun&#146;s JDK 1.1 applet viewer allows
+applets to read and write external files in certain
+circumstances.</p>
+
+<p>For now, downloaded applets have the following restrictions:</p>
+
+<ul>
+    <li>Applets cannot start any program on the machine
+        that&#146;s executing it. This means that applets
+        can&#146;t start rogue processes on the client machine to
+        get around the other restrictions, to write viruses to
+        the hard disk or cause other damage. </li>
+    <li>Applets cannot load libraries or define native methods.
+        Similarly, applets can use only their own Java code and
+        that provided by the virtual machine. They can&#146;t
+        load DLLs on the client machine. </li>
+    <li>Applets cannot read and write files on the machine
+        that&#146;s executing it. This is the biggest security
+        protection Java users have from virus writers since a
+        rogue applet isn&#146;t allowed to write anything outside
+        the Java sand-box on the client machine. Applets can read
+        files specified by full URLs, however. Within the virtual
+        machine, an applet can read and write, so theoretically
+        in the future, viruses could spread within a distributed
+        virtual machine that spans multiple computers. </li>
+    <li>Applets cannot make network connections except back to
+        the original host. This prevents an applet from doing
+        nasty things on a foreign host to which you&#146;ve had
+        no knowledge that you were sending information. However,
+        an applet can send information out of your computer back
+        to the host. While this is a potential privacy risk,
+        viruses can&#146;t spread onto the client. </li>
+    <li>Applets can&#146;t read certain system properties. The
+        Java virtual machine defines some system properties, some
+        of which an applet can read and some of which are
+        precluded. </li>
+    <li>Applet windows look different from applications&#146;. By
+        visually making the user aware that an applet is running,
+        Java reduces the likelihood that programs like password
+        stealers might be easily passed off as a legitimate
+        application.</li>
+</ul>
+
+<p>Downloaded applets are loaded into the virtual machine via a
+class loader, which is responsible for isolating the applet and
+running it through a bytecode verifier. The verifier checks for
+purposeful violations of Java language rules that might cause the
+virtual machine to crash and thereby give a virus access to the
+local machine.</p>
+
+<p>Applets that are loaded from the local file system from a
+directory in the user&#146;s CLASSPATH have none of the above
+restrictions! These applets have the implicit trust of the
+application that launched it. So there is a big difference
+between having an applet loaded as part of a Web page and
+downloading the applet as a file and running it locally. Running
+a downloaded applet locally is as dangerous as running any other
+random downloaded executable whose history isn&#146;t known.</p>
+
+<p><a name="5"></a><b>ActiveX</b></p>
+
+<p>ActiveX is Microsoft&#146;s original response to the Java
+juggernaut. Essentially a slimmed down version of OLE, ActiveX
+provides developers a way to download small executable objects
+that can be invoked directly on the user&#146;s machine. ActiveX
+controls (OCXs) also allow rapid development of applications
+based on &quot;reusable parts.&quot; Unlike Java, there is no
+inherent security model for ActiveX. OCXs are fully executable
+pieces of Windows code that have no restrictions placed on them
+once they reach the client machine, regardless of how they got
+there. This creates a potentially enormous hole for viruses to
+travel through as Web pages can cause the download and execution
+of an OCX with no interaction by the user.</p>
+
+<p>Microsoft&#146;s Internet Explorer offers the option of
+blocking the download of ActiveX controls and/or prompting the
+user to allow the download of each control. Additionally,
+Microsoft has created an ActiveX signing initiative called
+Authenticode where each applet is digitally signed with a
+Verisign certificate to verify the author of the control. If an
+applet is signed, the browser informs the user who the author was
+and, if they trust the author, lets them download the control.
+Unfortunately, unless the browser is set to block OCXs, an
+unsigned control passes through unchecked. Microsoft is hoping
+that all legitimate authors will sign their controls and only
+nasty controls won&#146;t be signed.</p>
+
+<p><a name="6"></a><b>Preventing Infection</b></p>
+
+<p>The most effective way to prevent infection or damage from
+unknown ActiveX or Java applets is to disable downloads in the
+browser. Many companies do block Java from coming through their
+firewall. Unfortunately, this also restricts some potentially
+useful applets as well. For users who are sophisticated enough to
+make intelligent decisions about the origins of applets, setting
+the browser to prompt on download is an alternative.</p>
+
+<p>To date, no known Java or ActiveX viruses or Trojan horses
+exist in the wild. Dr. Solomon&#146;s is currently working on
+extending our technology to scan Java applets for viruses as the
+bytecodes are being downloaded. We are also altering our existing
+OLE scanning technology to recognize ActiveX controls as they are
+written so that when the first Java or ActiveX virus is found,
+Dr. Solomon's Anti-Virus Toolkit will be there to detect it.</p>
+
+<hr>
+</body>
+</html>

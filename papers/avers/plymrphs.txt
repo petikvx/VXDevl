@@ -1,0 +1,117 @@
+
+		      Known Polymorphic Viruses
+
+			  Vesselin Bontchev
+	       Virus Test Centre, University of Hamburg
+
+
+1. Introduction.
+
+As demonstrated in [Gordon], testing and evaluating an anti-virus
+product is not a trivial task. Probably the kind of anti-virus product
+that is the easiest to test is a scanner. Yet, even scanner reviews
+that we often see published in some computer magazines are far from
+perfect and even far from good enough. In a future paper we'll try to
+present a more elaborated set of rules that have to be used when
+testing a scanner. Here we'll mention only one problem which is often
+overlooked in the magazine reviews - testing of polymorphic viruses.
+
+2. Types of Polymorphism.
+
+Polymorphic are called those viruses, which encrypt their body in a
+different way (usually - using a different key) each time they infect
+an executable object.  In order the virus to remain executable, it
+still has to be able to decrypt itself at runtime.  For this purpose,
+the encrypted part is always preceded with a short unencrypted
+routine, which performs the decryption of the rest of the virus at
+runtime.  This short unencrypted routine is often called a decryptor.
+However, with the polymorphic viruses, the decryptor is not constant -
+it also varies with each infection.  Polymorphic viruses present a
+significant problem to scanners, because there is no constant part
+from the virus body that can be used as a scan string.
+
+There are different kinds of polymorphism [Solomon].  The simplest one
+is to use a fixed set of constant decryptors.  Such viruses can be
+detected with a fixed set of scan strings - one for each possible
+decryptor.  Sometimes, such "not very polymorphic" viruses are called
+oligomorphic.
+
+The next step is to use a decryptor which uses one and the same
+instructions, but the particular implementation of these instructions
+varies with each infection.  For instance, different processor
+registers are used each time, or alternative opcodes for some of the
+instructions in the decryptor are used.  Such viruses can be detected
+with a wildcard scan string - a scan string that can specify that the
+contents of the bytes at some positions is variable and should be
+ignored.
+
+The third level of polymorphism is when a random number of random
+do-nothing instructions (like NOP, MOV BX,BX, etc.) are inserted
+between the instructions of the decryptor.  Those do-nothing
+instructions do not affect the decryption algorithm, but the result is
+that no constant scan string exists for the decryptor.	In order to
+detect such viruses, a scanner can use a more sophisticated wildcard
+scan string language - for instance, one that allows to skip any
+amount of "garbage" bytes before matching the next byte of the scan
+string.
+
+The fourth level of polymorphism involves swapping in a random way
+those instructions of the decryptor, which can be interchanged,
+without affecting the decryption algorithm. In principle, it is
+possible to detect such viruses with a set of wildcard scan strings.
+
+The most advanced level of polymorphism involves using all of the
+above steps. Depending on how much the decryptor can vary, it is
+possible to detect some viruses of this type by using a very
+sophisticated pattern matching language. However, this doesn't always
+work and in general is not worth the effort. In practice, such viruses
+are usually detected by hard-coding finite automate, the states of
+which reflect the possible ways the decryptor can vary, and which can
+recognize the grammar of all possible instances of the decryptor.
+However, this is a very difficult and time-consuming task, which
+explains why many scanners have problems to detect reliably the
+viruses of this type. A very recent and much more effective approach
+is to use some kind of generic decryption engine, like the one used in
+the latest versions of FindVirus, which uses the decryptor of the
+virus itself to decrypt the rest of the virus body, and then applies
+the usual virus recognition techniques - as if the virus is not
+encrypted.
+
+At last, there is a more particular, sixth kind of polymorphism. The
+viruses that use it are not encrypted and therefore can be detected
+using a simple scan string. However, those viruses swap around
+significant parts of their body, which represents a significant
+problem to those scanners that attempt to identify the virus exactly.
+We call such polymorphic viruses "permutating".
+
+3. Testing Scanners for Polymorphic Virus Detection.
+
+In order to test the ability of a scanner to detect reliably
+polymorphic viruses, the reviewer has to generate a large set of
+replicants of each virus. In some cases this is far from trivial.
+
+For instance, the Tremor virus infects only relatively large files
+(not below 9 Kb); the generated decryptors depend on the date on which
+the virus has been loaded in memory; the virus infects several files
+at once; and so on. That's why, many reviewers don't take the trouble
+to generate a large and comprehensive set of replicants for each
+polymorphic virus, before performing any scanner tests.
+
+Worse, often even the scanner developers don't do so. This sometimes
+leads to curious situations, like when one very popular virus scanner
+was able to detect only a single instance of the StarShip virus - the
+sample that the scanner developer has received. Sometimes the reason
+for such misunderstandings is that the reviewer or the scanner
+developper has just not noticed that a particular virus is
+polymorphic.
+
+6. References.
+
+[Gordon]  Sara Gordon, "Evaluating the Evaluators", Virus News
+	  International, 1993, 7, pp. 14-17, 8, pp. 16-19.
+
+[Solomon] Alan Solomon, "Mechanisms of Stealth", Proc.  5th Int.
+	  Comp.  Virus and Sec.  Conf., New York, March 1992, pp.
+	  232-238.
+
+

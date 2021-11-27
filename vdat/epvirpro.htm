@@ -1,0 +1,247 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Computer Viruses - Why Viruses Are And Always Will Be A Problem</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<H2 ALIGN=CENTER><B><FONT COLOR="#004080">Why Viruses Are and Always will
+be a Problem</FONT></B></H2>
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>by Richard Ford, Ph.D.</FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<P>Many people seem to believe that the virus threat can be held at bay
+by simply buying the latest and greatest scanner, holding on tight to one's
+security policy, and cleaning up when the inevitable happens. To all intents
+and purposes, the virus problem is solved, and the new challenge of the
+Internet beckons to MIS staff worldwide. Right? Wrong.</P>
+
+<P>Nineteen-ninety-five has been an extremely busy year in terms of changes
+to commonly held beliefs about viruses. Policies need to be rewritten,
+detection techniques updated. Let us take a quick tour of 1995, and then
+turn our attention to the future, and see where these developments might
+lead....</P>
+
+<P><B>Viruses and Data Files</B></P>
+
+<P>The biggest &quot;surprise&quot; of 1995 was the discovery of the Word
+Macro virus Concept in the wild. The use of quotes around surprise is quite
+intentional, as virus researchers awaited such a development for many years:
+Dr. Harold Highland pointed out this possibility in 1989 [1]. The advent
+of this virus forces users to reexamine their beliefs about viruses, and
+forces administrators to make some quick changes to their anti-virus scanning
+methods; managers have had to adjust policy to reflect the reality now
+in our midst: Macro viruses.</P>
+
+<P>The concept behind Macro viruses is very simple. Many application programs
+allow for the inclusion of certain macros within data files. As application
+software has developed, such macro languages have become increasingly powerful,
+allowing programmers to edit, delete and copy files, and even on occasion
+to invoke the DOS shell. For instance, one application package allows for
+at least 150 macro commands in each template. These commands can allow
+the programs to `do things' without user action. They can do these things
+automatically, via the embedded macros.</P>
+
+<P>Although there are several different packages that are susceptible to
+Macro viruses, currently the most effected one is MicroSoft Word. There
+are also Macro viruses for Excel and AmiPro.</P>
+
+<P>In order to better understand how these viruses function, let us examine
+the first widely-reported Macro virus, WinWord Concept, in detail.</P>
+
+<P>When the user selects an MS-WORD document and loads it, either from
+within Word, or by double-clicking just on the document icon itself, Word
+examines the document type. A standard Word document cannot contain any
+macros embedded within it, and is simply loaded into the program, ready
+for editing. However, if the loaded file is a document template file, Word
+automatically loads any macros contained within it. Should the document
+template file contain a macro named `AutoOpen,' the contents of this macro
+will be automatically executed. Concept utilizes this ability of the software
+by adding macros to existing documents. These macros, once installed, can
+add additional functionality to menu-bar operating, and allow the virus
+to infect other documents on the system. AutoOpen is not the only such
+autoexecuting macro in the Word environment. There are several others of
+which the programmer could have taken advantage. Although the Concept virus
+does not contain a trigger routine [2], the words &quot;That's enough to
+prove my point&quot; are contained within it.</P>
+
+<P>Concept is rapidly becoming a very widespread virus. The reason for
+this is twofold. First, while users rarely share executables or boot from
+diskette, a large part of their job involves the exchange of data files.
+Furthermore, many (most?) company policy and procedure manuals do not address
+the risk posed by Macro viruses whatsoever. Since there are now actual
+implementations of this threat type, policy and procedure manuals need
+to be updated. In many cases, the anti-virus product vendor can supply
+the necessary information. Second, the most widespread Macro virus, Concept,
+was accidentally distributed via CD-ROM, and via the Internet.</P>
+
+<P>The future of Macro viruses seems certain, as applications become more
+and more powerful. Thus, it is vital that we adapt our working environment
+to protect against them. In a straw poll carried out at the recent FireWalls
+conference, I asked the audience how many people had even heard of the
+dangers posed by embedded macros. Less than half those attending raised
+their hands. This scenario is unfortunately common. Time after time, administrators
+report they simply have never heard about the Macro viruses. Even more
+disturbing is the fact that many people admit that while they have heard
+of the viruses, they have not taken any protective measures, and have no
+idea whether or not they may have an infected environment.</P>
+
+<P>One of the largest dangers with the Macro viruses is that they are intimately
+involved with data files. Although the Concept virus did not intentionally
+damage files on the system, the potential existed. Since then, we have
+observed other viruses for Word, one of which attempts to modify documents,
+by adding the following string to the documents, as well as Trojan horses:</P>
+
+<P>And finally I would like to say:</P>
+
+<P>STOP ALL FRENCH NUCLEAR TESTING IN THE PACIFIC</P>
+
+<P><B>Viruses and Hardware Damage</B></P>
+
+<P>The idea that PC viruses can damage hardware has existed within virus
+folklore for a very long time. Although there is, as yet, no virus which
+physically damages a standard PC, there is now a virus which can make it
+appear that the machine has a damaged hard drive. Once again, this vulnerability
+was pointed out a long time ago [3], and a solution offered to both MicroSoft
+and IBM, although curiously, only IBM chose to implement it.<BR>
+(It should be noted that hardware can on occasion be damaged by software,
+depending upon platform and the precise hardware configuration.)</P>
+
+<P>The virus, known as Rainbow, alters the partition table located in the
+Master Boot Record of the fixed disk in such a way that, if you attempt
+to boot from a clean uninfected system disk with MS-DOS 5.x or 6.x, the
+machine hangs. This is done by creating an extended partition which points
+back to itself. Thus, when the operating system attempts to view the extended
+partition, DOS enters an endless loop. This inability to boot the machine
+from the floppy drive makes it appear rather like a hardware problem [4].</P>
+
+<P>Although this bug is fixed in IBM's PC-DOS, users of MS-DOS must either
+dabble in a little assembly-language programming, or boot the machine with
+a version of MS-DOS prior to v3.3.</P>
+
+<P><B>Viruses and the Internet</B></P>
+
+<P>Viruses and the Internet is a subject which could fill many volumes.
+While corporate MIS personnel explore the new vistas offered by the Internet,
+they can find themselves literally overwhelmed by the amount of information
+about viruses. The new connectivity increases the familiar problem: Who
+do you trust? &quot;Experts&quot; need no formal qualifications to dispense
+viral help. [5] The unwary or uninformed user can just as easily click
+on a Macro virus infected document as on a photo of his or her favorite
+vacation spot. To add to the confusion, many users are taking advantage
+of the public availability of viruses to perform &quot;tests&quot; heedless
+of the fact that many of the &quot;viruses&quot; are junk [6], and those
+which aren't pose both a company liability and a danger to their own computers.
+Not only must we be concerned with all of the expert &quot;help&quot; out
+there, but also with the intentional distribution of viruses over the Internet
+which seems to be increasing as quickly as the new challenge of the Internet
+itself.</P>
+
+<P><B>Viruses and Anti-virus software</B></P>
+
+<P>As the number and type of viruses increases, so must the effectiveness
+of the different types of anti-virus software. As always, determining which
+is the best product for your site is as tough as ever. Fortunately, there
+is a move towards developing testing methodology from a number of different
+sides. The result of this is increased protection for the user community.</P>
+
+<P>One of the biggest developments in testing anti-virus software was the
+development of the WildList (a list of viruses not found in the laboratory
+but in the wild, or real world) maintained by Joe Wells [7]. This list
+accepts contributions from over 35 researchers, including those at companies
+like Command Software Systems, S&amp;S International PLC and IBM. Thus,
+the WildList represents a very good snapshot of those viruses which are
+being reported to virus researchers worldwide. Many testing organizations
+are now adopting the WildList as the basis for a standard test-set.</P>
+
+<P>Whereas previously, many anti-virus product analyses and reviews centered
+around a product's ability to detect a large percentage of viruses from
+a &quot;Zoo&quot; collection (that is, one made up of many thousand different
+viruses, not necessarily containing viruses which are in the wild.) Newer
+tests are concerned with the product's ability to stop those viruses which
+are known to be spreading in the real world. This focusing of testing has
+dual benefits. First, the user can see at a glance which products are capable
+of providing adequate detection against the real world threat. In a purely
+zoo-based test, it would be conceivable for the top-scoring product to
+be unable to detect the most common virus in the wild. Thus, such test
+results do not necessarily measure the efficacy of the products.</P>
+
+<P>Second, the focus of the reviewing community on &quot;In the Wild&quot;
+testing has forced vendors to check and double-check for adequate detection
+of all viruses known to be in the wild. This results in products that are
+better able to deal with the real threat, as well as more advanced tests
+which concentrate on situations users are likely to encounter.</P>
+
+<P>These in the wild criteria are also being applied to all NCSA anti-virus
+product certifications done after September 1, 1995. This means that products
+certified under this new scheme should, when run in default mode, be able
+to detect all those viruses which were known to be spreading a minimum
+of 2 months before the test date. Full details of the new certification
+criteria, as well as a list of currently certified products, are given
+in [8].</P>
+
+<P><B>Closing Thoughts</B></P>
+
+<P>The new developments outlined above are only some of the recent events
+which effect the anti-virus industry. The development of Internet accessibility
+from the desktop brings with it, its own set of security problems, both
+virus-related and others. These problems are not likely to disappear with
+the adoption of Windows 95 and Windows NT. Rather, the potential for viruses,
+worms and trojans increases. It is not difficult to see how the brave new
+world envisaged by the system and application designers of today could
+end up with its own collection of back streets and traps, which will trip
+up the unwary explorer. More functionality may seem like a good thing,
+but it is always worth considering how these extra functions might be put
+to a less than glorious purpose.</P>
+
+<P>As the computing industry develops, there seems little doubt that the
+virus problem will develop with it. While we can work to design systems
+which are resilient to the effects of viruses, and educate our children
+about the wrongfulness of virus writing and distribution, I firmly believe
+that the virus problem is far from being solved. Although there is no cause
+for universal uproar, it is equally important that we do not ignore the
+new risks which are becoming apparent. Information, supplied accurately
+and without hype, is the only answer.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><I>Endnotes</I></P>
+
+<OL>
+<LI>Dr Harold Highland, &quot;A Macro Virus,&quot; <I>Computers &amp; Security</I>,
+pp.178-188 (1989).</LI>
+
+<LI>Sarah Gordon, &quot;What a (WinWord.) Concept,&quot; <I>Virus Bulletin,</I>
+September 1995, pp.8-9 (1995).</LI>
+
+<LI>Mike Lambert, &quot;Circular Extended Partitions: Round and Round with
+DOS,&quot; <I>Virus Bulletin</I>, September 1995, pp.14 (1995).</LI>
+
+<LI>Jakub Kaminski, &quot;Rainbow: To envy or to hate,&quot; <I>Virus Bulletin</I>,
+September 1995, pp.12-13. (1995).</LI>
+
+<LI>Sarah Gordon, &quot;Know your enemy - Threats on the Open Network,&quot;
+Proceedings of the 1995 Information Security Risk Management Symposium,
+the ALEA Group (1995).</LI>
+
+<LI>Vesselin Bontchev, &quot;<A HREF="epvirlib.htm">Analysis and Maintenance
+of a Clean Virus Library</A>,&quot; Virus Bulletin Conference Proceedings
+(1993).</LI>
+
+<LI>The <I>WildList </I>is a monthly electronic publication maintained
+by Joe Wells. Archived copies of the <I>WildList </I>are available from
+ftp.ncsa.com.</LI>
+
+<LI>For a regularly updated list of NCSA-certified products, see <A HREF="http://www.ncsa.com/avpdcert.html">http://www.ncsa.com/avpdcert.html</A>.</LI>
+</OL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

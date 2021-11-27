@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (WinNT; U) [Netscape]"><title>Papa Don't Preach</title></head>
+
+<body>
+&nbsp;
+<br><b><font size="+2">Papa Don't Preach</font></b>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+
+<p style="margin-bottom: 0in;"><i>Costin Raiu, &lt;<a href="mailto:craiu@gecad.ro">craiu@gecad.ro</a>&gt;</i>
+</p><div style="margin-bottom: 0in;"><i>GeCAD, Romania</i></div>
+
+<br>&nbsp;
+<br>&nbsp;
+<p><b>Prologue:</b>
+</p><p>&nbsp;There are times for the antivirus researcher when the VX scene
+is calm,&nbsp; with no terrible new viruses around, and moreover, the viruses
+known to be <a href="http://www.wildlist.org/">ItW</a> are added to the
+product a long time ago before customers are actually&nbsp; hit. However,
+sometimes we also pass hard periods of time when everything seems&nbsp;
+to go wild - a virus, especially a virus with Worm-like capabilities spreads
+around the world in a matter of days, and stopping the epidemic requires
+lots of work and attention from the AV community. In the past 2 months
+we have witnessed two such unfortunate examples: I-Worm/Happy and the recently
+encountered macro virus W97M/Melissa. Besides such cases, there are also
+similar viruses or worms, perfectly able to spread over the world and hit
+thousands and thousands computers, which are a little bit overseen because
+of the success and fame of some of their bigger brothers. Such a case is
+the Excel97 Worm X97M/Papa...
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>The history:</b>
+</p><p>&nbsp;A X97M/Papa.A dropper document was posted to Usenet a few days
+after the Melissa virus begun it's ascension. Fortunately, this document,
+sized 16896 bytes, contains an intended version of the worm. More specifically,
+an "End If" instruction is missing from the source, so the respective code
+throws an error when the document is loaded in Excel:
+</p><p><img src="papa_files/papa_a_err.gif" nosave="" height="126" width="179">
+</p><p>&nbsp;The document itself was supposed to contain a list of XXX passwords
+- instead, it contains the following text, located in the "E" column:
+</p><p><b>&nbsp;E1:&nbsp;&nbsp;&nbsp;&nbsp; http://all.net</b>
+<br><b>&nbsp;E4:&nbsp;&nbsp;&nbsp;&nbsp; For ALL the Latest XXX Passwords</b>
+<br><b>&nbsp;E5:&nbsp;&nbsp;&nbsp;&nbsp; Free!!!</b>
+</p><p>&nbsp;As mentioned above, if this original document is loaded in Excel,
+an error message box is opened, stating "Compile error: Block If without
+End If".&nbsp; At the same time, Excel opens the VBA Editor, with the worm
+source highlighted at the faulty line:
+</p><p><img src="papa_files/papa_a_err2.gif" nosave="" height="316" width="314">
+</p><p>&nbsp;Because of the missing "End If" from the code, X97M/Papa.A is
+intended. More precisely, it's an intended worm, not an intended virus,
+because except for the bug in the source, the code is designed to replicate
+from computer to computer, without infecting local files.
+</p><p>&nbsp;However, Monday 29th of March 1999, a "fixed" version was posted
+to the USENET. This new version contains a working copy of X97M/Papa, in
+the form of a file called XPASS.XLS, 17408 bytes long. The new version
+was named X97M/Papa.B, and as stated before, it's not a virus by itself,&nbsp;
+but a worm. The only important difference between the two versions, is
+that the missing "End If" from .A is now in place for .B. Other differences
+are the source of the .B strain is formatted in a different manner: 36
+empty lines have been inserted at the beginning of the macro code and that
+the source was also shifted 110 positions to the right.
+<br>&nbsp;The only reason behind these changes is probably to make inspection
+of the virus code a little bit harder. Unfortunately, they are not the
+only measure taken by the author to prevent source inspection...
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>Functionality:</b>
+</p><p>&nbsp;The virus code is stored in a function called Workbook_Open(),
+which is part of the ThisDocument module. This technique has become very
+popular since it's an easy way to prevent most users from seeing any suspicious
+macros in the Tools/Macro dialog. When a document containing the worm is
+loaded in Excel, the Workboook_Open function takes control. First, the
+code disables the CTRL+BREAK, ESC or COMMAND+PERIOD combinations which
+can be used to stop the macro from running. After that, it resets the native
+random number generator of Excel, and tries to instantiate an object of
+the type "Outlook". Needless to say, this only works if MS Outlook is installed
+in the local machine. If MS Outlook is not installed, or if the current
+system runs Outlook Express, a reduced version of Microsoft's Mail Client,
+the worm will not be able to spread. However, if MS Outlook is installed
+in the system, the worm will try to spread. First, it will try to log into
+the default Outlook profile. After that, the worm simply goes through all
+the Outlook address lists, and selects the first 60 entries. It will also
+create a new email, and add the first 60 entries of the respective address
+list to the recipients field of the newly composed message. This message
+will have the subject "Fwd: Workbook from all.net and Fred Cohen" and contains
+the following text in its body:
+</p><p>"<i>Urgent info inside.&nbsp; Disregard macro warning.</i>"
+</p><p>&nbsp;Finally, the current active workbook (including the worm macro)
+will be attached to the newly formed message, and the message is sent the
+to the Outbox queue. As stated before, the worm will send such a message
+for each Address List in the current Outlook configuration. Therefore,
+the next time Outlook is run, the respective messages can be seen in the
+Outbox. This how a worm-generated message looks like:
+</p><p><img src="papa_files/pb_mail.gif" nosave="" height="312" width="485">
+</p><p>&nbsp;After the messages including the worm host are sent, the virus
+logs out of the MAPI provider, and runs a short payload routine. The payload
+is activated on a random basis, with a one in three probability. To do
+that, the virus generates a random number between 0 and 5, and if&nbsp;
+the respective number is 2 or 4, a PING command is launched in background.
+The PING command is run with the "-t" switch: this will make it run forever,&nbsp;
+ping-ing the respective host until the process is killed in a way or another.
+Also, the PING command is run with a random packet size, from 0 to 59999
+bytes. Finally, the worm sets the ping timeout to 1 millisecond, to avoid&nbsp;
+unwanted delays. Two IP addressed are targeted by the PING commands: 207.222.214.225
+and 24.1.84.100 - those two hosts are in the ALL.NET and HOME.COM domains&nbsp;
+respectively. It is worth mentioning the ALL.NET domain is registered to
+Fred Cohen, which is same name as the one used in the subject field of
+the emails sent out by the worm. Dr. Cohen was recently involved in the
+shutdown of a VX site (related to the Caligula macro virus), decision which
+probably upset the author of the Papa worm.
+</p><p>&nbsp;According to a some reports, they got around 1000 PING's per day,
+which can be used to make an idea of how prevalent the Papa worm&nbsp;
+is (hopefully, "was"). On the other side, there are rumors that the PING's
+were not generated by the virus, but by his author(s)&nbsp; in order to
+trick the AV world in believing that the worm is
+<br>becoming widespread. Since spoofing PING source address it's very easy,
+and there are plenty of tools to do that, it's not unlikely for this to
+be true. This second hypothesis is also sustained by the fact that there
+were no Papa reports in the April <a href="http://www.wildlist.org/">WildList</a>.
+Of course, the respective ICMP&nbsp; packets could have been really generated
+by Papa, but without further information, these are only theory.
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>General Remarks:</b>
+</p><p>&nbsp; We should first note that unlike the W97M/Melissa virus, X97M/Papa
+doesn't set a marker if the macro was sent out to other users via email.
+This can be seen as a design weakness, because each time an "infected"
+workbook is opened, the worm will send itself to the first 60 recipients
+in each Outlook address list. There is really no reason to send someone
+a contaminated workbook more than once, except maybe for the hope that
+if the user doesn't run Excel to check the workbook the first time, he/she
+will eventually get bored after five or six such emails, and will open
+the worksheet to see what it does. Another interesting thing are GUID's
+in the original documents posted to the USENET. For the Melissa virus,
+they provided some useful information about the computer where the virus
+was written, as the MAC address of the network board was included in the
+GUID's. For X97M/Papa, the respective information is useless. The author
+of the Papa worm was probably familiar to this technique, as we can understand
+from a message posted to Alt.Comp.Virus, where he blames Microsoft for
+violating user's privacy via inclusion of private information in&nbsp;
+the GUID's. However, while he was overwriting the GUID's with trash (0x36),
+he also patched some fields of the VBA_PROJECT_CUR/PROJECT stream which
+resulted into a Password protected VBA Project module. Therefore, a suspicious
+user trying to inspect the document received by email, will not be able
+to see the worm source without special tools.
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>Conclusions:</b>
+</p><p>&nbsp;The Internet is starting to play an important part in our life
+- as services like email are becoming available to more and more computer
+users, the danger of getting a virus (or worm) this way is starting to
+become a reality. Cases like I-Worm/Happy and W97M/Melissa are not simple
+accidents, and we now need to educate and inform our users more than ever
+about the new threats arising at the dark rim of the Net...
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>Name:</b> X97M/Papa.A and X97M/Papa.B
+<br><b>Aliases:</b> Macro.Word97.Papa.A/B
+<br><b>Type:</b> e-mail propagated Worm, written in VBA and running in
+Excel 97+
+<br><b>Trigger/Activation date/Payload:</b> With a 1 in 3 probability it
+launches PING's directed to one of the following two IP addresses: 207.222.214.225
+or 4.1.84.100
+<br><b>Detection &amp; disinfection:</b> Use an antivirus program able
+to detect and remove the worm. An AV solution implemented in the mail router/server
+level is highly recommended.
+<br>&nbsp;
+</p></body></html>

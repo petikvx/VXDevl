@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Boot Sector Infection</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER>
+  <FONT SIZE="+2"><b><font color="#004080">Boot Sector Infection</font></b></FONT> 
+</CENTER>
+<P>
+<hr>
+<blockquote>
+  <p><FONT SIZE="+1">Chapter 5</FONT> </p>
+  <p> 5.1 <A HREF="#IntroDisk">Introduction to Disk Structure</A><BR>
+    5.2 <A HREF="#IntroSector">Introduction to Boot Sectors</A><BR>
+  </p>
+</blockquote>
+<P>
+<HR>
+<A NAME="IntroDisk"></a>
+<CENTER><FONT SIZE="+1">Introduction to Disk Structure</FONT></CENTER><BR>
+A disk (floppy disk or hard disk) is divided in 512-byte blocks called sectors. Each 512-byte block can be addressed with three values being it's sector, cylinder (also called track), and head (also called side). The first sector on the disk is at (1,0,0), sector 1, cylinder 0, head 0. The second is at (2,0,0), and so on. All the way up until the number of sectors per cylinder + 1, where it would become (1,1,0), the first sector in the second cylinder. Then the second sector in the second cylinder would be (2,1,0), and so on. All the way up until the number of cylinders per head + 1, where it would become (1,0,1), the first sector in the first cylinder in the second head, and so on. All the way up until the number of heads on the disk, which would be the last sector on the disk. The number of sectors per cylinder, cylinders per head, and number of heads on the disk can all be found with certain data structures located inside of the boot sector, and will be discussed later in the chapter.
+<P>
+<HR>
+<A NAME="IntroSector"></a>
+<CENTER><FONT SIZE="+1">Introduction to Boot Sectors</FONT></CENTER><BR>
+A boot sector (also called Boot Record) is the first code that the computer executes (besides ROM of course). On floppy disks, it is located at the first sector (1,0,0) of the disk. On hard disks however, it's location is defined by the partition table inside of the MBR (short for Master Boot Record) also located at (1,0,0). Because the partition table is located inside of the MBR, the MBR is sometimes referred to as the partition table. Depending on you CMOS settings, the BIOS will first try to load the boot sector of drive A: to 0000h:7C00h. If it fails, and there is a hard disk installed, it will check if the signature for a valid partition table, 0AA55h, is located at 01FEh in the MBR, if it is, it will load the disk's MBR to 0000h:7C00h and give it control. But, if there is no fixed disk, and the signature was not found, it will generate interrupt 18h which is supposed to execute BASIC in ROM on true IBM PCs.
+<P>
+<HR>
+<CENTER><A HREF="mphguide.htm">Contents</A></CENTER>
+
+</BODY></HTML>
+

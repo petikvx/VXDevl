@@ -1,0 +1,192 @@
+
+<HTML>
+<HEAD>
+   <TITLE>The Hot Zone</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>The Hot Zone<BR>
+</FONT><FONT SIZE=+1>by Srikumar S. Rao</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<CENTER><TABLE CELLSPACING=0 CELLPADDING=0 WIDTH="90%" >
+<TR>
+<TD>Your computers could be shut down for a day by an evil virus. How do
+you immunize yourself against this threat? IBM is applying neural networks
+to the problem. <BR>
+</TD>
+</TR>
+
+<TR>
+<TD>AT EVERY MOMENT, while the world moves on unheeding, a titanic battle
+is being fought in the far reaches of cyberspace. Each day a small number—about
+200—of computer vandals construct a half-dozen or so new viruses. Each
+day a tiny group of about 30 antivirus researchers work feverishly to analyze
+these viruses and come up with antidotes. 
+<P>Viruses range from merely pesky nuisances that flash a &quot;Gotcha!&quot;
+on the screen of a victim to malicious programs that erase valuable data
+files or render computer networks unusable. The bad guys have on their
+side a lot of idle hours and the handy Internet, over which they trade
+notes and even samples. The good guys have, besides their wits, some artificial
+intelligence on their side. They have figured out how to use so-called
+neural networks—computer programs trained to detect patterns—to spot newly
+hatched viruses that have not been seen before. </P>
+
+<P>This summer a midwestern bank with roughly 200 servers and 10,000 desktops
+was shut down for four days when a virus froze its network. It could not
+process wire transfers. Branch offices were locked out of the system. Customer
+accounts could not be accessed. An emergency visit from an antivirus firm
+cured the infection. </P>
+
+<P>An internal Forbes computer network was paralyzed for a day by a virus
+earlier this year. Reliable sources indicate that some of our competitors
+have had the same problem more recently. &quot;Security professionals know
+about these attacks,&quot; says Ralph Langham, computer service officer
+for the U.S. Trust Co. &quot;The general public does not.&quot; </P>
+
+<P>The battle between the bad guys and the good guys is about even now,
+but the good guys have to work harder to keep up. There are several reasons.
+First, the virus creators are older and more sophisticated than they were
+a decade ago. Second, they can share information more easily. &quot;In
+the past virus-writers were mostly clever teenagers who had limited resources,&quot;
+says Sarah Gordon, security analyst at Command Software Systems in Jupiter,
+Fla. &quot;These days many are in their thirties and have network access.
+They collaborate globally using the Internet and write tighter code.&quot;</P>
+
+<P>The most important reason for the proliferation of viruses is the explosive
+growth of corporate networks, often hooked to the Internet. In such an
+environment viruses spread readily, as a plague would spread through New
+York's subway system. </P>
+
+<P>&quot;Traditional methods of detecting and removing viruses depend on
+expert analysis by humans and the distribution of a cure to users,&quot;
+explains Steve R. White, a senior manager at IBM's Thomas J. Watson Research
+Center in Hawthorne, N.Y. &quot;These are orders of magnitude too slow
+to deal with viruses that spread globally within hours or minutes.&quot;
+<BR>
+ </P>
+</TD>
+</TR>
+
+<TR>
+<TD>IBM is at the forefront of virus detection and removal technology.
+Its researchers have developed one of the neater techniques, using neural
+networks, for automatic detection of the most prevalent class of viruses—so-called
+&quot;boot sector&quot; viruses. The boot sector is a small sequence of
+code stored on a diskette or hard disk that on IBM-compatible machines
+is exactly 512 bytes long and that orients your computer when you turn
+it on. Mess with this code and you can hypnotize the computer into doing
+things it shouldn't be doing—like erasing files without permission. There
+are more than 10,000 strains of viruses for IBM compatibles, and only a
+few hundred of these are boot-sector viruses. But until recently, boot-sector
+infections accounted for more than 80% of all virus incidents. (In the
+past several months, &quot;macro&quot; viruses, which spread via dirty
+spreadsheets and word processor documents, have become a severe problem.)
+
+<P>Neural networks are a form of artificial intelligence in which a computer
+simulates the way in which human brains process information. Explains IBM's
+White, &quot;A neural network learns pretty much the way a human being
+does. Suppose you say 'big' and show a child an elephant, and then you
+say 'small' and show her a poodle. You repeat this process with a house
+and a giraffe as examples of 'big' and then a grain of sand and an ant
+as examples of 'small.' Pretty soon she will figure it out and tell you
+that a truck is 'big' and a needle is 'small.' Neural networks can similarly
+generalize by looking at examples.&quot; </P>
+
+<P>Traditional computer programs use statements like &quot;if this, then
+that&quot; to instruct the computer on what it has to do. Mechanical rules
+like that are a large part of automatic virus detection: If a questionable
+piece of software includes a segment that matches the signature of a known
+virus, then the software is infected; reject it. </P>
+
+<P>The neural net is aimed at situations that are more ambiguous. It is
+designed to detect a new virus that shares subtle features with known viruses
+but does not necessarily match them line for line. </P>
+
+<P>The neural network starts with no rules built in. The rules evolve.
+You show the net a series of key measurements from an infected piece of
+software, then the measurements for a piece of clean software. Now here's
+another infected piece of code, now another clean one. On its own, the
+neural net will pick up a pattern. </P>
+
+<P>One problem: The number of training examples has to be far greater than
+the number of measurements being assessed. It is not uncommon to use tens
+of thousands, even millions, of observations to train a neural net. In
+a 1995 <I>Virus Bulletin </I>conference in Boston, a researcher presented
+a paper on why neural networks could not be used to detect computer viruses:
+There weren't enough samples to train them. <BR>
+ </P>
+</TD>
+</TR>
+
+<TR>
+<TD>Gerald Tesauro, 37, who has a Ph.D. in physics from Princeton and landed
+at IBM's Hawthorne lab in 1988, found a way to use neural nets on viruses
+nonetheless. There aren't enough samples to train the net? His solution:
+Don't feed entire viruses to the net; feed virus particles. 
+<P>Tesauro digested computer code into sequences of three bytes and extracted
+those likely to be present in viruses but not in legitimate programs. These
+triplets then became the bases of a neural net. There turned out to be
+just enough examples to train a neural network using this approach. The
+net told Tesauro how many demerits to give for each of the different suspect
+triplets found on a questionable boot sector. Enough demerits, and you
+put the questioned piece of code in quarantine. </P>
+
+<P>In these diagnostic routines it's just as important to avoid false accusations
+as to finger the guilty. If a program or file is thought to be infected
+when it is not, a company turns its network upside down in a hunt for a
+nonexistent infection. Work is disrupted, and fear of viruses spreads,
+along with distrust of the protective software. </P>
+
+<P>IBM's neural nets have virtually eliminated false positives. &quot;Our
+program is on millions of desktops and has detected about a half-dozen
+previously unknown boot viruses,&quot; says White. &quot;There have been
+only three false positives, and all of these were security programs whose
+codes share many similarities with viruses.&quot; </P>
+
+<P>&quot;We had a severe virus problem until 1992,&quot; says U.S. Trust's
+Langham. &quot;Machines would lock up. Technicians would not understand
+the problem and experiment with changing disk drives and other pieces of
+hardware. An average infection hit 50 or so desktops. Now that we have
+a good software shield in place, we have less than 1 machine infected [per
+incident].&quot; Langham uses IBM software, enhanced with neural-net technology.
+</P>
+
+<P>IBM isn't the only firm with new defenses against the virus spreaders.
+Symantec has a spider that cruises the Internet, looking at 500 known virus
+transmission sites and also randomly downloading files. These files are
+checked for viruses, using various automated analytical engines. </P>
+
+<P>But then the bad guys are getting rather creative, too. Computer vandals
+have created polymorphic viruses that mutate each time they infect a computer,
+making immunization much more difficult. They have taken to encrypting
+viral code so it cannot be detected while inactive. </P>
+
+<P>The good guys have retaliated by creating safe &quot;virtual computers&quot;
+where viruses can be tricked to deliver their payloads. They are then detected,
+analyzed and zapped. </P>
+
+<P>In a well-guarded laboratory at IBM's Hawthorne office, Jeffrey Kephart,
+manager of antivirus science and technology, demonstrates what the future
+will bring. He infects a PC with a simulated unknown virus. The protection
+program detects it instantly and captures the viral code, sending it securely
+to an analysis computer sitting a few yards away. The virus is analyzed,
+a signature extracted and an antidote developed and sent back. Elapsed
+time, less than five minutes. Sometime next year IBM aims to install a
+system like this over the Internet to its customers. </P>
+
+<P>So who's going to win this battle, the viruses or the virus hunters?
+That's too hard to predict, but here's a pretty safe forecast: Corporations
+are going to have to spend more and more money on self-defense. </P>
+</TD>
+</TR>
+</TABLE></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

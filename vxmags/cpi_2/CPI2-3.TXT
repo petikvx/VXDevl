@@ -1,0 +1,136 @@
+[2.3]
+-------------------------------------------------------------------------------
+            ______             ________            ___________
+           / ____ \           |  ____  \          |____   ____|
+          | /    \_|          | |    \  |              | |
+          | |                 | |_____| |              | |
+          | |                 |  ______/               | |
+          | |     _           | |                      | |
+          | \____/ |   /\     | |           /\     ____| |____      /\
+           \______/    \/     |_|           \/    |___________|     \/
+
+
+                    "We ain't the phucking Salvation Army."
+
+-------------------------------------------------------------------------------
+
+
+     C O R R U P T E D   P R O G R A M M E R S   I N T E R N A T I O N A L
+
+                            * * *   present   * * *
+
+         "Ok, I've written the virus, now where the hell do I put it?"
+
+                    By Ashton Darkside (DUNE / SATAN / CPI)
+
+
+*******************************************************************************
+DISCLAIMER: This text file is provided to the massed for INFORMATIONAL PURPOSES
+   ONLY! The author does NOT condone  the use of this information in any manner
+   that would be illegal or harmful. The fact that the author knows and spreads
+   this information in no way suggests that he uses it. The author also accepts
+   no responsibility  for the  malicious use of this  information by anyone who
+   reads it! Remember, we may talk alot, but we "just say no" to doing it.
+*******************************************************************************
+
+        Ok,  wow!  You've just  invented  the most  incredibly nifty virus.  It
+slices, it dices, it squshes,  it mushes (sorry Berke Breathed)  people's data!
+But the only problem is, if you go around infecting every damn file,  some cute
+software company is going to  start putting in  procedures that  checksum their
+warez each time they run, which will make life for your infecting virus a total
+bitch. Or somebody's going to come up with an incredibly nifty vaccination util
+that will wipe it out. Because, i mean,  hey,  when disk space starts vanishing
+suddenly in 500K chunks people tend to notice.  Especially people  like me that
+rarely have more than 4096 bytes free on their HD anyway. Ok.  So you're saying
+"wow, so what, I can make mine fool-proof", etc, etc. But wait! There's no need
+to go around wasting your precious time when the answer is right there in front
+of you! Think about it,  you could be putting that time into writing better and
+more inovative viruses,  or you could be  worring about keeping  the file size,
+the date & time, and the attributes the same.  With this system,  you only need
+to infect one file, preferably one that's NOT a system file, but something that
+will get run alot, and will be able  to load your nifty virus on a daily basis.
+This system also doesn't take up any disk space, other than the loader. And the
+loader could conceivably be under  16 bytes (damn near undetectable).  First of
+all, you need to know what programs to infect. Now, everybody knows about using
+COMMAND.COM and that's unoriginal anyway,  when there are other programs people
+run all the time. Like DesqView  or Norton Utilities or  MASM or  a BBS file or
+WordPerfect; you get the idea. Better still are dos commands like Format,  Link
+or even compression utilities.  But you get the point. Besides,  who's going to
+miss 16 bytes, right? Now, the good part: where to put the damn thing. One note
+to the programmer:  This could get  tricky if  your virus  is over  2k or isn't
+written in Assembly, but the size problem is easy enough, it would  be a simple
+thing to break your virus  into parts and have  the parts load each  other into
+the system so that you do eventually get the whole thing. The only problem with
+using  languages besides assembly  is that it's  hard to  break them up into 2k
+segments. If you want to infect floppys, or smaller disks, you'd be best off to
+break your file into 512 byte segments, since they're easier to hide. But, hey,
+in assembly, you can generate pretty  small programs that do alot, tho.  Ok, by
+now you've probably figured  out that we're talking  about the part of the disk
+called 'the slack'. Every disk that your computer uses is divided up into parts
+called sectors, which are (in almost all cases) 512 bytes. But in larger disks,
+and even in floppies,  keeping track of every single sector would be a complete
+bitch. So the sectors  are bunched together  into groups  called 'clusters'. On
+floppy disks,  clusters are  usually  two sectors,  or 1024 bytes,  and on hard
+disks, they're typically 4096 bytes, or eight sectors.  Now think about it, you
+have  programs on  your  hard disk,  and what are  the odds that they will have
+sizes that always end up in increments of 4096? If I've  lost you,  think of it
+this way: the file takes up a  bunch of  clusters,  but in  the last cluster it
+uses, there is usually some 'slack', or space that isn't used by the file. This
+space is between where the actual file ends and  where the actual cluster ends.
+So, potentially, you can have up  to 4095 bytes of 'slack'  on a file on a hard
+disk, or 1023 bytes of 'slack' on a floppy.  In fact, right now, run the Norton
+program  'FS /S /T'  command from your root directory,  and subtract  the total
+size of the files from the total disk space used. That's how much 'slack' space
+is on your disk (a hell of alot, even on a floppy). To  use the slack,  all you
+need to do  is to  find a  chunk of slack  big enough to  fit your  virus (or a
+segment of your virus)  and use direct disk access (INT 13)  to put  your virus
+there.  There is one minor  problem with this.  Any disk write to that  cluster
+will overwrite the slack with 'garbage' from memory. This is because of the way
+DOS manages it's disk I/O and it can't  be fixed without alot of hassles.  But,
+there is a way around even this. And it involves a popular  (abeit outdated and
+usually ineffectual) form of  virus protection called the READ-ONLY flag.  This
+flag is the greatest friend  of this type of virus.  Because if the file is not
+written to,  the last cluster is not written to, and voila!  Your virus is safe
+from mischivious accidents.  And since the R-O flag doesn't  affect INT 13 disk
+I/O, it won't be in your way. Also, check for programs with the SYSTEM flag set
+
+because that has the same Read-only effect (even tho I haven't seen it written,
+it's true that  if the  file is designated system,  DOS treats it as read-only,
+whether the R-O flag is set or not).  The space after IBMBIOS.COM or IBMDOS.COM
+in MS-DOS (not PC-DOS, it uses different files,  or so I am told; I've been too
+lazy to find out myself) or a protected (!) COMMAND.COM  file in either type of
+DOS would be ideal for this. All you have to do is then insert your loader into
+some innocent-looking file, and you are in business.  All your loader has to do
+is read  the sector into  the highest part of memory,  and do a far call to it.
+Your virus cann then go  about waiting  for floppy disks  to infect,  and place
+loaders on any available executable file on the disk. Sound pretty neet? It is!
+Anyway, have fun, and be sure to upload your virus, along with a README file on
+how it works to CPI  Headquarters so we  can check it out!  And remember: don't
+target P/H/P boards  (that's Phreak/Hack/Pirate boards) with ANY virus. Even if
+the Sysop is a leech and you want to  shove his balls down his throat.  Because
+if all the PHP boards go down (especially members of CPI), who the hell can you
+go to for all  these nifty  virus ideas?  And besides,  it's betraying your own
+people,  which  is uncool even  if you  are an anarchist.  So, target uncool PD
+boards, or your  boss's computer  or whatever,  but don't attack  your friends.
+Other than that, have phun, and phuck it up!
+
+                        Ashton Darkside
+                        Dallas Underground Network Exchange       (DUNE)
+                        Software And Telecom Applicaitons Network (SATAN)
+                        Corrupted Programmers International       (CPI)
+
+
+PS: Watch it, this file (by itself) has about 3 1/2k of slack (on a hard disk).
+
+Call these boards because the sysops are cool:
+Oblivion                (SATAN HQ)   Sysop: Agent Orange   (SATAN leader)
+System: Utopia          (SATAN HQ)   Sysop: Robbin' Hood   (SATAN leader)
+The Andromeda Strain    (CPI HQ)     Sysop: Acid Phreak    (CPI leader)
+D.U.N.E.                (DUNE HQ)    Sysop: Freddy Krueger (DUNE leader)
+The Jolly Bardsmen's Pub & Tavern
+The Sierra Crib
+The Phrozen Phorest
+Knight Shadow's Grotto
+
+And if I forgot your board, sorry, but don't send me E-mail bitching about it!
+

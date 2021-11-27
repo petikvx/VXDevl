@@ -1,0 +1,376 @@
+               Generic Methods of Anti-Virus Technology.
+                   Copyright (c) 1995, by Zvi Netiv.
+
+ABSTRACT
+
+This paper provides an introductory discussion of current generic
+methods of antivirus security. Integrity analyzers are contrasted with
+checksumming methods and several advanced generic techniques of virus
+capture and integrity analysis are introduced. These concepts are then
+applied to virus detection and system recovery with the conclusion that
+generic integrity analyzers provide the most fundamental component in an
+integrated antivirus security protocol.
+
+INTRODUCTION.
+
+Antivirus (AV) programs usually belong to one of the following
+categories: on-demand scanners, TSR scanners, activity blockers, and
+generic AV tools. While scanners and blockers are generally understood
+there is some confusion about what is meant by generic AV. For most
+users, as well as the majority of computer security experts, generic AV
+brings to mind only 'integrity checking.'
+
+However, checksumming isn't really a generic AV method. The term
+generic, from the Latin 'genus,' implies that a method is applicable to
+a group or kind, and exclusive of others. While checksumming applies to
+all viruses, it is not inclusive to ONLY viruses. The checksum of a
+file, or of a program, may change for many reasons most of which are not
+connected with virus infection. A few common, non-viral reasons for the
+changing of a file, and of its checksum, are its replacement with a
+newer version, self configuration, and corruption due to truncation and
+cross linking. There are other causes, as well.
+
+Checksumming has long been used for antivirus integrity testing since
+viruses need to change the hosts they invade in order to get executed
+and replicate. Most antivirus products now include some sort of
+integrity check. The majority use a CRC, while others use a proprietary
+checksum algorithm. Cryptographic methods like DES are used as well.
+While not yet reported, it is possible for a virus to compensate for its
+presence in a file after infecting it. A CRC algorithm is complex enough
+in order to assume that no virus writer will bother to include such an
+algorithm in the virus's code.
+
+Checksum integrity checking does not take full advantage of the
+capabilities of modern generic antivirus methods. These new technologies
+cover all aspects of antivirus protection. Some of the new capabilities
+are not possible with signature scanners and activity blockers. Generic
+techniques include virus capture, damage recovery, and advanced methods
+like correlation.
+
+GENERIC VIRUS CAPTURE.
+
+When a virus strikes, the first event to identify is that something is
+wrong. Since viruses are real programs and they have to execute their
+code somehow, then they necessarily leave traces. Virus capturing, the
+equivalent of detection in generic terminology, is based on the sensing
+of phenomena indicating the possible presence of a virus. This is
+different than finding a specific signature in memory or in a file which
+is the method used in scanners and TSR's. The range of useful phenomena
+for virus capturing is broad and includes self-baiting, self integrity
+checking, verification of memory stealing, launching bait sequences,
+sensing piggybacking or file killing, integrity checking (yes, this
+too), and the sensing of deception like the taking away of the file
+handle. It's also possible to use tunneling for capturing boot viruses,
+either by tracing the origin of certain interrupts, or with hardware
+access.
+
+All these generic methods do not require a priori knowledge of specific
+viruses, as is true with signature scanners. All viruses, if they
+conform to the definition of a virus, will disclose their presence to
+one or more of the sensing methods mentioned. This has important
+implications. Virus capturing methods can detect the activity of both
+existing and new viruses which isn't possible using known virus
+signatures.
+
+GENERIC INTEGRITY ANALYZERS.
+
+Integrity analyzers deserve special attention because they are the most
+powerful of the generic methods. A properly designed analyzer can tell
+you more about a virus, in a matter of moments, than any other tool.
+When properly used the integrity analyzer can determine the size of the
+attacking virus, whether it uses stealth, if it's full or only semi-
+stealth (there is a difference in recovering from each), and if the file
+is recoverable.
+
+To understand how integrity analyzers work it is instructive to compare
+them to integrity checkers. The latter calculates a number (CRC) that
+represents every byte in the processed file. Changing a single byte
+anywhere in the file will result in a different calculated CRC.
+
+For example, DOS's SETVER.EXE program contains the version table of
+programs written to a special section in the SETVER.EXE file. SETVER
+contains an 'internal overlay'. Entries can be added or removed from the
+SETVER table. Changes to the SETVER table are legitimate as it is the
+purpose of the program, and adding an entry or deleting an entry does
+not necessarily indicate infection. An integrity checker will detect
+changes to the SETVER table without distinguishing between changes due
+to a virus or a legitimate one. An antivirus integrity analyzer can tell
+the difference.
+
+The DOS programs that interest us are of two types, COM and EXE. There
+are other executable types, as well, such as SYS, OVL, DLL, and DRV,
+etc. Yet they are of no particular interest to us. Most of them are
+covered under the umbrella of the EXE and New EXE types. Every program
+has an entry point, this is where DOS starts reading the instructions
+and executing the program. The entry point is usually indicated by a
+'jump' or 'call' instruction at the beginning of COM files, or by a set
+of pointers, contained in the header of EXE programs. In both cases, the
+entry point is well defined and can be found from the file parameters.
+
+When a virus infects a program, it either appends, prepends, or inserts
+its code into the file and then modifies the entry pointer(s) to start
+execution from the virus code. Let's assume, for example, that we take a
+snapshot of a few bytes at the entry point of the uninfected file. If we
+compare the entry point of an original and infected file, and the bytes
+at the same relative offset to the entry point, we'll see that they have
+changed. Normally we will find three kind of changes in the infected
+file when it is compared to the uninfected one. The header (or the jump
+address at the beginning of the file) has changed, the code itself at
+the entry point has changed, and the location of the entry point has
+changed, as well.
+
+Just a few significant bytes can reveal more information about virus
+infection than a complete file CRC, or the cryptographic signature of
+the whole file. Moreover, while the latter is incapable of revealing
+whether the change was caused by a virus, the data used in generic
+integrity analysis inherently contains this capability. We need, of
+course, a few more parameters to confirm whether the change is viral, or
+due to non-viral factors such as corruption, or perhaps installation of
+a newer version of the program. A possible way to discriminate between
+the options is to include in a file's integrity database parameters that
+should NOT change as a result of infection by a virus. The presence of
+these parameters in the modified file necessarily indicate a virus
+infection, and their absence implies that the change is not viral.
+
+Let's now consider the potential of integrity analyzers for determining
+the specific file alterations and methods of operation used by a
+particular virus, and how to handle them. Many of the newer viruses use
+stealth, although not all have full stealth capability. Discriminating
+between semi- and full stealth depends upon whether an integrity checker
+can detect changes when the virus is active in memory. If no changes are
+detected, then the virus is full stealth and cooperative methods can be
+used to remove it. If changes can be seen when the virus is active in
+memory, but no change can be seen in file size, then the virus is
+semi--stealth. Some semi--stealth viruses will show a DECREASE in file
+size by exactly the length of the virus code. This is the result of an
+unsuccessful attempt to conceal their presence.
+
+The conclusion, which is perhaps surprising to some, is that CRC
+methods, and cryptographic signatures, are not the best suited for
+antivirus integrity checking. A generic integrity analyzer is better
+adapted for this purpose. It can identify changes in program files
+specific to virus presence and also potentially critical virus
+characteristics.
+
+GENERIC RECOVERY FROM VIRUS ATTACKS.
+
+Generic recovery is the restoration of infected programs to their
+original, pre-infected state. Many security experts recommend a system
+should be recovered by deleting the infected programs and replacing them
+with clean ones from backup. The main reason experts recommend
+replacement instead of restoration, is because they claim that you can't
+be sure the restoration results in a byte for byte identity with the
+original program. The fact is, however, that this can be easily
+verified. In the highly technological world in which we live, there is
+no room for superstition or speculation, certainly not if the facts can
+be verified. For a privately owned PC, or for a critical application PC,
+replacement might be the simplest course of action. But in business
+network environments, where time is of prime importance, fast recovery
+of executable programs may be imperative. Critical data files can always
+be restored from backup if there is a concern for their integrity. In
+fact, rapid program restoration can speed the process of restoring
+critical data files from backup by returning a system to operational
+status more quickly.
+
+Computer viruses are deterministic code and they function in a
+deterministic way, too. Virus names like Satan and Devil's Dance are
+just folklore and have nothing to do with unnatural powers. The
+exactness of the recovery of a program from a virus can be verified
+easily by comparing, byte for byte, a restored program to a clean one
+from backup. In case of a massive infection, generically restore a few
+infected samples and compare them to clean originals to determine
+whether complete restoration is possible. If it is, then you can be sure
+that the restoration of the rest will be complete, as well. This results
+from the deterministic nature of a specific virus's method of infection
+and the inherent logical structure of executable files.
+
+An advantage of advanced generic methods is that file integrity
+authentication and file restoration can be accomplished using the same
+database files. This capability results from the generic nature of the
+processes involved. It also further demonstrates the value of generic
+integrity analysis over CRC and cryptographically based checksummers.
+The databases of the latter do not contain the information required to
+restore infected programs. A checksum (or CRC) is just a 16, 32 or 64
+bit number. How can you restore a file with the knowledge that its
+pre-infected checksum was 1234 and when infected it is 4321? By
+contrast, when critical program file characteristics have been sampled
+and stored in databases, it is possible to use this information to
+restore files to their original condition, byte for byte.
+
+COOPERATIVE RECOVERY METHODS.
+
+A special category of generic recovery methods are the cooperative ones.
+These apply only to full stealth viruses of both the boot and file
+infector types.
+
+The principle involved is extremely simple. The recovery process takes
+advantage of the fact that a full stealth virus, either boot or file,
+will present the correct, uninfected data of the inspected sector or
+file, when the virus is active in memory.
+
+To recover from a stealthed boot infector (MBR infectors are referred to
+as "boot infectors," as well), simply copy the stealthed image of the
+infected sector and rewrite it to the same place using tunneling
+techniques. The advantage of cooperative recovery, over the undocumented
+'generic' technique known as FDISK/MBR, is that with the cooperative one
+you write EXACTLY what was there in the master boot sector in the first
+place, while in many cases you might cause more harm than good with
+FDISK. There are products that implement this cooperative recovery
+method under the name 'SeeThru' technology.
+
+Another effective file recovery technique is by cooperative integrity
+checking. A new integrity database is established while the virus is
+still active in memory. Then the computer is rebooted and the programs
+are restored from the database made when the virus was resident. This
+technique is effective only against full stealth viruses. It has been
+implemented successfully against Tremor, a common virus in Germany, and
+works against other full stealth viruses such as NATAS, Die_Hard,
+Hemlock, N8fall, Invisible Man, Uruguay, and all strains of Frodo, as
+well.
+
+VIRUS ANALYZERS.
+
+The problem that haunts security experts when they face a new, or
+modified virus, is that it usually takes days, sometimes weeks or even
+months, until antivirus developers have an algorithm available to
+restore systems from the new virus. We have seen instances when whole
+enterprises were halted for days because of attacks from new viruses.
+
+Generic methods have a lot to offer in such situations. First, generic
+recovery will allow return of systems to operational status in the
+shortest possible time. In most cases, programs can be completely
+restored using the integrity database without waiting for the
+disassembly and analysis of the virus. In the case of destructive,
+overwriting viruses, the integrity database can be used to identify
+which files need to be removed and replaced.
+
+The correlation scanner, a breakthrough in generic AV technology, can be
+used to spot infected files that were not found by the integrity
+analyzer and the source of the infection, too. Since an attacking virus
+can be of an unknown type, then no scanner will find it. The file that
+brought the infection into the system will not have a pre-infected,
+"clean" record in the database since it was already infected when the
+database for it was created. The correlation scanner will find the
+original infector, and other infected files, by similarity to an
+infected sample identified by an integrity analyzer, captured through a
+baiting process, or designated by the user. Correlation scanners have
+recently been enhanced so that a library of signatures can now be used
+with them, as well.
+
+The generic correlator identifies similarities in the processing that a
+file undergoes during infection (a virus infection is a 'process'), in
+the cryptographic model used in the virus code, and the matching of a
+signature string. The correlation scanner has proven itself effective
+with plain, encrypted, and even polymorphic viruses.
+
+The correlator may replace the scanner in many cases, and can be used to
+disinfect a computer, without needing updates, and with no delays. It is
+a tool that empowers users to restore their systems independently of
+antivirus security experts who may not always have the resources to
+respond quickly to user needs and requests.
+
+INTEGRATED ANTIVIRUS PROTECTION.
+
+Having reviewed the basics of generic antivirus technology, let's now
+discuss overall antivirus strategy. An effective antivirus defense
+should consist of several elements. Because of its broad effective
+spectrum, generic protection can and should have a pivotal role in any
+integrated AV defense strategy. It can capture a virus that passes
+through a known virus screening process and act as a buffer BEFORE
+loading an activity blocker or TSR scanner, if one is used.
+
+On-demand and TSR scanners can detect only viruses that are contained in
+their signature database. Often, this does not include all known
+viruses. Therefore, virus scanning should always be PRECEDED by running
+a generic probe and integrity analyzer, especially before scanning a
+file server. There is always the risk that a new fast infector, or even
+a known one not included or accurately detected, is active in memory.
+Signature scanning, without first performing a generic integrity
+analysis, can infect every executable inspected by the scanner.
+
+The backbone of an integrated antivirus strategy is the integrity
+analyzer. First, you need to run it regularly in order to keep its
+database up to date. Secondly, it's arguably the most effective means to
+detect an infection in its earliest stage. Thirdly, it will be the first
+to capture the presence of a fast infector BEFORE it can infect any
+significant number of programs, even if the virus is new. And lastly, it
+provides a very effective way to quickly and fully recover a system to
+its original, pre-infected condition, in the event of an infection.
+
+Virus scanners are a convenience, for scanning new software before
+installation, and for scanning floppies. They do offer some potential
+for detecting known viruses prior to executing their hosts. However, no
+scanner detects all known viruses and new viruses are produced daily, as
+well. And, it is very easy to mask existing viruses from detection so
+that even a comprehensive scanner will fail to detect them. These are
+significant practical limitations that preclude use of signature
+scanners as a primary method of AV security and defense.
+
+The core component of a comprehensive AV defense can be modeled upon the
+military equivalent of a "fail safe." A "fail safe" is a counter
+defensive process that will operate despite unknown and variable
+conditions and methods of attack.
+
+Generic methodologies best implement this concept as they function
+without regard to the specific details prevailing at the time of the
+viral attack, and use multiple, overlapping and partially redundant
+mechanisms for virus capture and, if needed, system recovery. Deliberate
+redundancy means that one or more of the generic methods will operate
+effectively despite variability in virus hosts or methods of viral
+action. In contrast, signature based antivirus can only handle known
+threats, contained in their database.
+
+Therefore, a more defensible AV strategy combines generic capture and
+restoration methods with known virus scanners. A cost effective benefit
+of this approach is that scanners will not need to be updated as
+frequently since the main purpose of updates is to detect new viruses.
+The generic methods can act as both a buffer and safety net to protect
+systems until preventative methods using scanners are possible. Since it
+can take anywhere from days to months for signature detection and
+cleaning algorithms to be made available, generic methods provide a
+highly significant "fail safe" to overall AV defense strategies. Even
+more importantly, advanced generic methods such as those presented,
+here, will provide both virus capture AND system restoration
+immediately.
+
+The use of antivirus TSR's and activity blockers is debatable. They
+always adversely and, at times, significantly impact system performance
+and available resources. They can also interfere with normal program
+operation, and conflict with other applications. Finally, they can be
+used as vectors to spread infection across all files scanned when either
+a known or new virus not detected is present. Yet there are users that
+won't give them up. Sometimes this decision is based on the mistaken
+assumption that TSR's provide protection beyond what is available from
+scanners. In fact, the latter are invariably more comprehensive and
+reliable than their respective TSR, from the same vendor.
+
+From a practical standpoint, when generic, TSR scanner, and activity
+blocking methods are used the latter two should be run AFTER completing
+the generic tests and integrity analyses. Generics and AV TSR's do not
+coexist well. The latter intercept generic probes as if they were
+viruses. This is especially true of activity blockers.
+
+After gaining some experience with the various elements of an integrated
+antivirus strategy, users will be better able to decide how important
+signature scanning, TSR's, and activity blockers are to a cost
+effective, and efficient AV defense. Past experience shows that users
+tend with time to rely on generic AV since it proves dependable, and is
+the least intrusive and obstructive to them. Users don't disable generic
+AV methods like they often do with TSR's and scanners. This is true even
+after long periods without viral incidents because the generic methods
+do not interfere with normal system operation, consume system resources,
+or negatively impact system speed and performance.
+
+When a virus does strike, then the generic AV will be in place to
+capture it, stop it, and restore the system to operational status
+quickly.
+
+
+Acknowledgements to Robert C. Casas, Ph.D., CPC Ltd, Glenview, IL, USA,
+for assistance in revising and editing the original paper which was
+published elsewhere.
+
+
+Zvi Netiv is the author of InVircible (IV), the first all-generic
+antivirus. He manages NetZ Computing, Israel, which continues
+development and production of IV.

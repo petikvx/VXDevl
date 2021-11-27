@@ -1,0 +1,1073 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Free Macro AntiVirus Techniques by Chengi Jimmy Kuo</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Free Macro AntiVirus
+Techniques<BR>
+</FONT><FONT SIZE=+2>by Chengi Jimmy Kuo<BR>
+</FONT>Director, AV Research<BR>
+McAfee Associates Inc.</FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><B><I>It has been over two years since Concept was unleashed
+upon an unsuspecting world. In that time, Word Macro viruses have become
+the most prevalent virus threat to organizations. Multitudes of &quot;buy
+my macro antivirus&quot; solutions are available. But let's start with
+things you can do for free. Ultimately, these are going to be the most
+effective since they don’t cost extra money.</I></B></P>
+
+<P><B><I>This paper will discuss the pros and cons and where and how to
+use some of the free macro antivirus techniques. The techniques to be discussed
+include: Word's own &quot;Prompt to Save Normal.dot&quot;, making your
+NORMAL.DOT read-only, using the shift keys, disabling automacros, keeping
+a backup of NORMAL.DOT and checking against it, as well as methods against
+Excel viruses. The paper ends with the author describing the methods he
+actually uses to protect himself in his day-to-day work against macro viruses.</I></B></P>
+
+<CENTER><P><B>[Bold text represent text shown on the screen or text to
+be typed in as is.]</B></P></CENTER>
+
+<CENTER><P><B>[Italicized text represent file names. Generally, this means
+you can replace the name.]</B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<P><B>1.0 Introduction to Macro Viruses</B><FONT SIZE=-1> </FONT></P>
+
+<P>Macro viruses can exist for any number of products that allow the user
+the ability to write macro code which can write to the disk to propagate
+more macros. The platform with the most viruses present is Microsoft's
+Word for Windows. Viruses spread easiest in this environment because documents
+can contain both text and macros. But by combining both text and macros,
+the user has much more power and usability features. The two go hand in
+hand. More power to the user. More potential for macro viruses. As it is
+Microsoft’s intention to do the former, we will all have to contend with
+macro viruses for a very long time.</P>
+
+<P>Excel, also by Microsoft, is afflicted similarly. Excel macro viruses
+came after the Word macro virus. The same dynamics that affect Word also
+affect Excel. Excel also uses OLE2 container files which has macros and
+all of the cell functions and data in the same file.</P>
+
+<P>When Office97 came along, all the macro languages converged upon Visual
+Basic 5 (VB5), making cross-application viruses a theoretical possibility.
+This makes the possibility of macro viruses for other platforms only a
+matter of time, especially as more and more vendors independently support
+VB5.</P>
+
+<P><B>1.1 Word Macro Viruses</B></P>
+
+<P>Viruses are defined by their ability to spread. A Word macro virus spreads
+easiest when it intercepts the macro execution path by making use of one
+or more of Word’s AUTO macros, or by using a menu replacement. Then it
+places itself into the global environment, for instance by updating the
+<I>normal.dot</I> file.</P>
+
+<P>Most of the approaches below target that scenario.</P>
+
+<P><B>2.0 Microsoft’s First Suggestions</B></P>
+
+<P>In the summer of 1995, Microsoft unleashed Concept.A upon the world.
+The world, the antivirus companies, and Microsoft were not prepared for
+this. Microsoft came forth with the following suggestions.</P>
+
+<P><A NAME="2.1"></A><B>2.1 Prompt to Save Normal Template</B></P>
+
+<P><B>Prompt to Save Normal Template</B> is an option available from within
+Word. Microsoft made this option the first macro virus prevention method
+when it suggested its use against Concept.A. To activate the option, click
+on <B>Tools</B> then <B>Options...</B> Then choose the <B>Save</B> tab.
+About the middle, on the left, check <B>Prompt to Save Normal Template</B>.</P>
+
+<P>As noted above, a virus must spread. This is most easily accomplished
+by getting into the global environment. The global environment is represented
+by the file<I> normal.dot</I>. If a virus attempts to alter <I>normal.dot</I>
+and this option is in use, Word will inform you that there is a request
+to change the Normal Template as you attempt to exit. At this time, you
+can respond that you do not wish to allow such a change. Presumably, the
+user would know of any intentional changes and presumably, know the right
+answer.</P>
+
+<P>But, even with this option in use, it is possible to open an infected
+file and infect the environment. The warning does not occur until exit
+from Word. Thus any documents opened and saved after the initial infected
+document will also be infected. </P>
+
+<P>In section <A HREF="#4.1">4.1 Read-Only<I> Normal.dot</I></A>, there
+will be further discussion on discovering that one has been infected throughout
+the day, and what to do about it. This is because the benefits derived
+from setting <B>Prompt to Save Normal Template</B> are similar to those
+of making the <I>normal.dot</I> file a read-only file. The primary differences
+between these two actions are, first, the option through Word is easy to
+turn off and many viruses have already incorporated the instruction. Second,
+this is an option from within Word and is activated prior to the attempt
+to write to <I>normal.dot</I>.</P>
+
+<P>However, no law prevents the use of both! And since they’re both free
+and don’t conflict, why not?</P>
+
+<OL>
+<P><B>PRO</B>:<BR>
+Easy to set.<BR>
+Commands required to set this feature can be automated.<BR>
+Protects against some of the most wild viruses, like Concept.A, Wazzu.A,
+and NPad.</P>
+
+<P><B>CON</B>:<BR>
+Easy for virus to turn off.<BR>
+Does not inform until AFTER infection. All documents accessed after the
+infected document in that session will be infected.<BR>
+Any benefit achieved is a subset of <A HREF="#4.1">4.1 Read-Only <I>Normal.dot</I>.</A></P>
+</OL>
+
+<P><B>2.2 Create a <I>Payload</I> macro</B></P>
+
+<P>The second suggestion supplied by Microsoft was to create a <I>Payload</I>
+macro. I’m not going to give this any further dignity by even telling you
+how to do this.</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Protects against Concept.A.</P>
+
+<P><B>CON</B>:<BR>
+Does little else.</P>
+</UL>
+
+<P>This suggestion showed that those unfamiliar with the antivirus industry
+would be doomed to repeat many of the same mistakes that were made at its
+infancy. This technique targets just one virus. The AV industry was borne
+of similar suggestions. But it soon learned this was not a viable long-term
+solution.</P>
+
+<P><B>2.3 ScanProt</B></P>
+
+<P>ScanProt is a macro package written by Microsoft. Its original intention
+was to protect against Concept.A and to provide a mechanism for users to
+be alerted if any incoming document had macros.</P>
+
+<P>The objectives were noble and have since been incorporated directly
+into the product in versions 7.0a and Word 97.</P>
+
+<P>Unintended though, was the misfortune of various ScanProt macros being
+absorbed into spreading viruses. This causes a &quot;mating&quot; scenario
+between an existing virus and ScanProt and unfortunately produces a virus
+variant.</P>
+
+<P>As AntiVirus producers, we endeavor to solve users’ problems without
+creating new ones. The scenario involving ScanProt macros and the creation
+of new viral variants makes it something we cannot recommend, even with
+its virtues.</P>
+
+<P>Another action undertaken by ScanProt is to rename macros associated
+with viruses to alternative names. As such, it makes viruses non-functional.
+It also makes them irremovable by some antivirus products.</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Protects against Concept.A.<BR>
+Alerts if any macros exist in document.</P>
+
+<P><B>CON</B>:<BR>
+ScanProt macros have been absorbed into many viruses and now spread as
+part of the virus.</P>
+</UL>
+
+<P>Note: The best features have been incorporated directly into Word 7.0a
+and Word97.</P>
+
+<P><B>3.0 Methods Provided by Word</B></P>
+
+<P>A number of things provided by Word can be used to lessen the chance
+or slow down the spread of viruses.</P>
+
+<P><B>3.1 The Shift Key</B></P>
+
+<P>The shift key (either shift key will work) allows for a file to be opened
+without allowing any AUTO* macros to execute. This will prevent viruses
+that use the AutoOpen macro in order to spread. Similarly, if held down
+at exit, the AutoClose macro will not be executed.</P>
+
+<P>In order to correctly make use of this feature, one must be holding
+down either shift key at the moment Word is activated. So, be sure to be
+holding the key down with one hand while the other hand is double-clicking
+the Word icon. It might seem obvious, but it’s not an easy thing to do,
+even if you remember to. The shift key must be held down for the duration
+of Word’s startup process. Letting go early may allow a macro to execute.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Allows opening and closing documents without activating the AutoOpen
+or AutoClose macros.</P>
+
+<P><B>CON:<BR>
+</B>Easy to forget to do.<BR>
+Only stops AUTO macros when you remember to hold down the shift key.<BR>
+All other macro replacements are still in place and will still infect.<BR>
+Requires too much coordination and constant reminder to make use of it.<BR>
+Benefits are a subset of DisableAutoMacros.<BR>
+Sometimes it doesn’t work. And when it doesn’t, you won’t know and it’ll
+be too late.</P>
+</UL>
+
+<P><A NAME="3.2"></A><B>3.2 Menu Choices within Word</B></P>
+
+<P>Macro viruses are… macros. Macros are separate from the text and are
+not seen unless one goes looking for them. The most common way to check
+for macros would be through <B>Tools</B> then <B>Macro… </B>Unfortunately,
+viruses can intercept menu items. And the most commonly intercepted function
+is… ToolsMacro. This makes it unwise in a suspect situation to use <B>Tools/Macro…
+</B>to determine if macros exist in documents. In section <A HREF="#3.4">3.4
+Customized Tools/Macro</A>, you will be shown how to create your own replacement
+to <B>Tools/Macro</B>.</P>
+
+<P>Meanwhile, it is safe for you to view macros in document files through
+the use of the Organizer function. The organizer function can be achieved
+through either <B>File/Templates/Organizer…</B> or <B>Format/Styles/Organizer…
+</B>or by creating your own following the instructions in section 3.4.</P>
+
+<P>To see if macros exist in a document file without being affected by
+them, exit and restart Word without opening any documents. If you suspect
+that the <I>normal.dot</I> file or the startup environment may be infected,
+you need to rename the file and rename all the document files in the startup
+directory to other than DOC or DOT so Word can be started in a pristine
+state. To insure that no virus affects your viewing of a suspect file,
+one must insure that Word is started in a pristine state by following the
+previous directions.</P>
+
+<P>Upon starting Word, get to the organizer via one of the previously mentioned
+methods. Choose the <B>Macros</B> tab. On the left half of the box would
+be a button labeled <B>Close File</B>. Click that button to change the
+label to <B>Open File…</B> Click on <B>Open File…</B> to get a Browse box.
+Choose the target file to investigate. (By default, Word lists the .dot
+files. If the file you wish to investigate is not so named, you should
+change the <B>Files of Type:</B> drop-down box to <B>All Files</B>.) The
+filename will be shown. If any macros exist in the file, they will be listed
+in the big box. If not, <I>normal.dot</I> will show up again with its macros.
+Practice on a file that you know has macros in it, or practice on the file
+created in <A HREF="#3.3">section 3.3</A>.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Safely determines if any macros exist in the target file.</P>
+
+<P><B>CON:<BR>
+</B>You know if there are macros. But you can’t tell if it’s a virus or
+not.</P>
+</UL>
+
+<P><A NAME="3.3"></A><B>3.3 DisableAutoMacros</B></P>
+
+<P>Earlier, we discussed the use of the shift keys. But it was listed as
+&quot;subset of DisableAutoMacros.&quot;</P>
+
+<P>DisableAutoMacros is a Word macro function to do what it says. If the
+function is invoked and turned on, no Auto functions will execute automatically
+until the function is turned off (or until the next Word session). We have
+mentioned that most macro viruses make use of an auto function. Thus removing
+the ability to automatically execute the auto functions limits those viruses
+from easily infecting your system.</P>
+
+<P>Ironically, the best way to invoke this function is through an AutoExec
+macro. However, in the following instructions, the end result will be an
+AutoExec function in its own template file, not in the <I>normal.dot</I>
+file. I recommend the template file to be placed in the default startup
+directory in order to keep the <I>normal.dot</I> file pristine. And, in
+this manner, it is easier to give the file to others and harder for viruses
+to find and remove.</P>
+
+<P>Start by making sure your <I>normal.dot</I> is writeable, and empty...</P>
+
+<P>Click on <B>Tools, Macros...<BR>
+</B>In the <B>Macro Name:</B> box, Enter <B>autoexec<BR>
+</B>Click on <B>Create.</B> <BR>
+Edit the macro to insert the DisableAutoMacros command:</P>
+
+<UL>
+<P><B>Sub MAIN<BR>
+DisableAutoMacros 1<BR>
+End Sub</B></P>
+</UL>
+
+<P>Close the editing session. Exit and save all changes.</P>
+
+<P>In the DOS environment,<BR>
+<B>copy \msoffice\templates\normal.dot \msoffice\winword\startup\<I>noauto.dot<BR>
+</I>erase \msoffice\templates\normal.dot</B></P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Disables all AUTO macros.<BR>
+Much less chance of infection.</P>
+
+<P><B>CON: <BR>
+</B>Not foolproof. <BR>
+Does not disable other intercepted macros, nor key shortcuts, etc.<BR>
+Environment is no longer pristine. May lead others to believe the macro
+you have established is suspicious and cause technical support issues.</P>
+</UL>
+
+<P><B>3.3.1 Prompt to Save Normal Template in <I>noauto.dot</I></B></P>
+
+<P>In creating <I>noauto.dot</I> in the above process, it is beneficial
+to also include the command which turns on the Prompt to Save Normal Template
+choice. This can be accomplished by using the following macro in place
+of the above:</P>
+
+<UL>
+<P><B>Sub MAIN<BR>
+DisableAutoMacros 1<BR>
+ToolsOptionsSave .GlobalDotPrompt = 1<BR>
+End Sub</B></P>
+</UL>
+
+<P>This insures that the option is set every time, should normal.dot be
+deleted, or something resets the option. This also allows the MIS director
+to distribute one file which enforces two of the ideas instead of just
+one.</P>
+
+<P><A NAME="3.4"></A><B>3.4 Customized Tools/Macro</B></P>
+
+<P>Because default menu items are often targeted by macro viruses and intercepted,
+it is important to know how to make your own menu items which will have
+the same functionality as those which would be intercepted. The following
+is the instructions to create an equivalent to<B> Tools/Macros…</B></P>
+
+<P>Make sure the <I>normal.dot</I> is writeable...</P>
+
+<P>Click on <B>Tools, Customize...</B> <BR>
+Choose the <B>Menus</B> tab<BR>
+Under <B>Categories</B> click on<B> Tools<BR>
+</B>Under <B>Commands</B> click on <B>ListMacros<BR>
+</B>For <B>Position on menu:</B> choose <B>(At bottom)<BR>
+</B>Click on <B>Rename</B>. </P>
+
+<P>Close the editing session. Exit and save all changes.</P>
+
+<P>In DOS, please remember to make <I>normal.dot</I> readonly again.</P>
+
+<P>Following this, you will have an additional choice under Tools to list
+the macros in your document.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Bypasses the need to use <B>Tools/Macro...<BR>
+</B>Not subject to virus payloads tied to <B>Tools/Macro</B>.</P>
+
+<P><B>CON:<BR>
+</B>Works until viruses start to intercept <B>Tools/ListMacros</B>.<BR>
+But, now that you know how to do this, you can create your own toolbar
+choices for such things as the Organizer function in section <A HREF="#3.2">3.2
+Menu Choices within Word</A>.</P>
+</UL>
+
+<P><B>3.5 Word 7.0a and Word97</B></P>
+
+<P>After macro viruses came along, Microsoft looked for some very basic
+and simple rules. It came upon the rule, &quot;If you don’t have macros,
+it can’t have macro viruses.&quot; And derived from this rule, &quot;If
+there are macros in the document, that could be a virus.&quot;</P>
+
+<P>Thus in Word 7.0a (available for the Windows95 platform) and in Word97,
+a new check box was added to <B>Tools/Options…/General</B>. This check
+box allows the user to be alerted if any macros exist in a document which
+is about to be opened. If such a document is encountered, the user is given
+the choice of stopping, continuing unaltered, or continuing with the macros
+disabled.</P>
+
+<P>If the user chooses to continue with the macros disabled, the file is
+opened in a read-only state and cannot be changed.</P>
+
+<P>For the average user and the home user, it is wise to have this option
+turned on. Obviously, the ones who should not use this option would be
+the ones who regularly use macros.</P>
+
+<P>An alarm system such as this is only useful if it generates few alarms.
+And when it does generate an alarm, such an alarm needs to be, reflecting
+a virus. Many alarms which turn out to not be viruses will cause the user
+to be anesthetized and he will likely disregard the next alarm or turn
+it off.</P>
+
+<P>Although seemingly perfect in its simplicity, Microsoft added some &quot;usability&quot;
+touches to it and thus created some security holes. These security holes
+have previously been documented by Vesselin Bontchev and revolve around
+certain conditions where Microsoft would expect macros to appear. Thus
+if those macros turn out to be viral, the initial warning won’t alert because
+the macros were expected to be there.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Generally effective. If there’s a macro in the document, it tells you
+so.</P>
+
+<P><B>CON:<BR>
+</B>Alerts on everything (almost).<BR>
+People are apt to turn it off.</P>
+</UL>
+
+<P><B>3.6 Read-Only Recommended for <I>Normal.dot</I></B></P>
+
+<P>In section 4, methods will be presented for the operating system to
+enforce the ReadOnly (RO) attribute of <I>normal.dot. </I>However, Word
+also allows for its own enforcement of <I>normal.dot</I> as a RO file.
+Therefore, even if the file is not RO, Word can still open it as if it
+were. Which also means, if the file is RO, this choice will be meaningless.</P>
+
+<P>At the end of this section will be instructions on how to turn on this
+option. The downside to using this option is that each time you start Word,
+it will ask you if you wish to open the file as read-only. This can become
+bothersome and lead you to turn it off quickly. Of the techniques described
+in this paper, this is the most bothersome as it will interfere with a
+message even in a clean environment. Most techniques described in this
+paper are quiet most of the time.</P>
+
+<P>To set up this option:<BR>
+Start a Word session and explicitly open the <I>normal.dot</I> file. (Normally
+found in <I>\MsOffice\Templates</I>.)<BR>
+Click on <B>Tools, Options...</B> <BR>
+Choose the <B>Save</B> tab. The instructions are the same as in section
+<A HREF="#2.1">2.1 Prompt to Save Normal Template.<BR>
+</A>At the bottom, on the left, in a box titled <B>File-Sharing Options
+for <I>normal.dot, </I></B>check <B>Read-Only Recommended.</B></P>
+
+<P>Close the editing session. Exit and save all changes.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Allows flexibility for those who would sometimes want their <I>normal.dot</I>
+to be read-only and sometimes not.</P>
+
+<P><B>CON:<BR>
+</B>Asserts a message to you each time you start Word.<BR>
+People are apt to turn it off.</P>
+</UL>
+
+<P><B>3.7 Password protect <I>Normal.dot</I></B></P>
+
+<P>Yet another offering under the <B>Save</B> tab of <B>Tools, Options…</B>,
+adjacent to <B>Read-Only Recommended</B>, is <B>Write-Reservation Password
+</B>(For Word97:<B> Password to modify</B>). If this choice is invoked,
+each time Word is started, the user will be asked for enter the password
+or open the file as read-only.</P>
+
+<P>The advantage of this is that only select people will be allowed to
+modify <I>normal.dot</I>, and only if that person knows beforehand that
+he wishes to change it.</P>
+
+<P>The disadvantage is that only select people can clean up such an infection.
+And on those occasions when <I>normal.dot</I> is allowed to be infected,
+no warning is given that it has been.</P>
+
+<P>To set up this option:<BR>
+Start a Word session and explicitly open the <I>normal.dot</I> file. (Normally
+found in <I>\MsOffice\Templates</I>.)<BR>
+Click on <B>Tools, Options...</B> <BR>
+Choose the <B>Save</B> tab. The instructions are the same as above.<BR>
+At the bottom, on the left, in a box titled <B>File-Sharing Options for
+<I>normal.dot, </I></B>type a password into the <B>Write-Reservation Password</B>
+box. You will then be asked to confirm the password. Type in that same
+password again.</P>
+
+<P>Close the editing session. Exit and save all changes.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Allows flexibility to a select few who would sometimes want their <I>normal.dot</I>
+to be read-only and sometimes not.</P>
+
+<P><B>CON:<BR>
+</B>Asserts a message to you each time you start Word.<BR>
+Only that same select few can clean up the global infection.</P>
+</UL>
+
+<P><B>3.8 (Word97) Lock VB Project for <I>Normal.dot</I></B></P>
+
+<P>As a user of Word97, there is yet another method to make <I>normal.dot</I>
+a write-protected document. This feature is to prevent modules from being
+created, viewed, or copied into the Template Project. Macro viruses, which
+would be Visual Basic modules, would fall into that class. </P>
+
+<P>However, font selections, AutoText, and other stylistic choices and
+settings do not. Thus a user could change certain default choices in <I>normal.dot</I>
+without having to overcome protections, and also not allow the standard
+macro virus to infect.</P>
+
+<P>To set this up, make sure the <I>normal.dot</I> is writeable...<BR>
+Start a Word97 session.<BR>
+Press <B>ALT-F11 </B>to open the <B>VB-Editor</B>.<BR>
+Click on <B>View, Project Explorer </B>to activate.<BR>
+Mark <B><I>Normal</I> </B>in the <B>Project Explorer</B>.<BR>
+Click on <B>Tools, <I>Normal</I> Properties…<BR>
+</B>Choose the <B>Protection</B> tab.<BR>
+Check <B>Lock project for viewing </B>and set a password.<BR>
+Click on <B>File, Save <I>Normal</I></B>.<BR>
+Close the editing session.</P>
+
+<UL>
+<P><B>PRO:<BR>
+</B>Virus cannot bypass this unless it happens to guess your password.<BR>
+Users needing to change Autotext and Toolbars won’t be affected. </P>
+</UL>
+
+<P><B>4.0 Using the Operating System to Advantage</B></P>
+
+<P><A NAME="4.1"></A><B>4.1 Read-Only <I>Normal.dot</I></B></P>
+
+<P>Probably the most effective thing one can do for oneself is to change
+the attribute of <I>normal.dot</I> to be read-only. As it is so easy to
+do and quite effective, it is also the most talked about method on the
+Internet. Hopefully, many of you already have this in place in one form
+or another.</P>
+
+<P>DOS has the concept of attribute bits. The most commonly referenced
+are the System, Read-Only (RO), Hidden, and Archive bits. The specific
+attribute bit which interests us is the Read-Only bit. If the RO bit is
+set, normal DOS system calls will refuse to write or change the file. Thus,
+in theory, if the <I>normal.dot</I> file is RO, no virus will be able to
+change it.</P>
+
+<P>As noted before, a virus generally wants to change the global environment.
+This generally causes the <I>normal.dot</I> be rewritten. However, if the
+RO bit is set, when Word opens <I>normal.dot</I>, it recognizes and stores
+this fact. When Word exits, it remembers <I>normal.dot</I> was RO and refuses
+any attempt to change it.</P>
+
+<P>If it's such a good idea to set the read-only bit, why doesn't everyone
+just do that? What's the downside?</P>
+
+<P>The most obvious consideration is, &quot;the file is read-only.&quot;
+It can’t be changed, not even if it was your intention. Thus someone who
+constantly changes one’s <I>normal.dot</I>, a RO <I>normal.dot </I>will
+severely crimp his productivity.</P>
+
+<P>While this would seem for such a user that he cannot use this technique,
+that is not true. A user of macros can still operate with a RO <I>normal.dot</I>
+if he stores all his macros in files in the default startup directory.
+So, such a user would change his normal mode of operation. Macros would
+be handled as in the way we added <I>noauto.dot</I> in section 3.3.</P>
+
+<P>Second, and a very important note, is that one doesn't realize a virus
+is active until AFTER exiting Word. The significant technical note is to
+recognize that Word informs you of the attempt to write to <I>normal.dot</I>
+when it exits. So, all during the time you are using Word, files will continue
+to be merrily infected without warning. Only on exit do you realize that
+something bad has been happening through the day.</P>
+
+<P>Yet, you will know! And you can immediately shift into &quot;virus forensics&quot;
+mode. Forensics needs as much historical information as it can muster.
+To facilitate this, we would want to make use of the Most Recently Used
+(MRU) list. </P>
+
+<P>By default, Word's MRU list is set to remember the last four files opened
+by the user. These are going to be the files of interest anyway. The files
+saved on that day are the ones to be chased down if any of them had been
+sent to anyone.</P>
+
+<P>With a default of only four, we need to increase the length of the MRU
+list. To do so, in Word, choose <B>Tools</B> then <B>Options...</B> then
+<B>General</B>. Go to the <B>Recently Used File List</B> and increase the
+number to its maximum of nine (and remember to check the item). [I use
+nine, even without the macro virus concern. It's simply more convenient
+when Word remembers the files you've been working on.]</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+System level protection.<BR>
+Slows down viral spread.<BR>
+Will know within the day, enables activity tracking.<BR>
+Viruses cannot circumvent this to infect <I>normal.dot</I> in same session.<BR>
+More files available in the MRU list. </P>
+
+<P><B>CON</B>:<BR>
+If user must constantly update his macros, productivity would be hindered.<BR>
+May create false sense of security.</P>
+</UL>
+
+<P><B>4.2 Word Viewer</B></P>
+
+<P>One of the most common infection vectors is via receiving a document
+through email, double-clicking on it and having Word automatically open
+and (without the other protections in place) getting infected. This is
+governed by one of two setups. It will be either the email program itself
+being programmed to activate Word based on whatever criteria it uses, or
+it will be based on the email program making use of the registry.</P>
+
+<P>In this section, we shall cover the steps necessary to change the default
+association of .DOC and .DOT files to Word. This affects such activities
+as double-clicking, drag-and-drop, and Explorer. [Unfortunately, I was
+unable to find how to turn off CC:Mail’s .DOC and .DOT association to Word.]</P>
+
+<P>Reminding ourselves, the purpose of this paper is to cover topics which
+will help to prevent or reduce macro virus infections. The title of this
+section is &quot;Word Viewer&quot; because if instead of using Word to
+read .DOC files, another program is used instead, one which does not support
+macros, macro viruses would be less capable of spreading. WordView or WordPad
+are such programs. WordPad supports no macros. WordView has restricted
+support of macros.</P>
+
+<P>Therefore this section covers the necessary steps to redirect the registry
+associations of .DOC and .DOT from Word to WordPad or WordView.</P>
+
+<P>Find <I>WordPad.EXE</I> (or <I>WordView.EXE</I>) on your system. Note
+the full pathname for the file.<BR>
+Find <I>REGEDIT.EXE</I> or <I>REGEDT32.EXE</I> on your system and execute.<BR>
+Under <B>HKEY_CLASSES_ROOT</B>, locate <B>.doc</B> and <B>.dot<BR>
+</B>Traverse the structure until you locate <B>Shell</B> then <B>command</B>.<BR>
+Change the associated command to the full pathname of<I> WordPad.EXE.</I></P>
+
+<P><B>HKEY_CLASSES_ROOT<BR>
+.doc<BR>
+</B>Word.Document.6</P>
+
+<P><B>Word.Document.6</B></P>
+
+<UL>
+<P><B>shell</B></P>
+
+<UL>
+<P><B>open</B></P>
+
+<UL>
+<P><B>command</B></P>
+
+<UL>
+<P><B>C:\Program Files\Windows NT\Accessories\WordPad.exe &quot;%1&quot;</B></P>
+</UL>
+</UL>
+</UL>
+</UL>
+
+<P>All the commands have to be changed: Open, New, …</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Does not support macros.</P>
+
+<P><B>CON</B>:<BR>
+WordPad is just not Word.<BR>
+Avoid macros, but doesn’t tell you they’re there.<BR>
+Some e-mail programs disregard registry! (They’re not Windows compatible,
+despite claims.)</P>
+</UL>
+
+<P>If you do not have a viewer, one can be retrieved, free from:</P>
+
+<P>http://www.microsoft.com/msword/internet/viewer/viewer97/license.htm</P>
+
+<P><B>4.3 Replace <I>Normal.dot</I> Every Time</B></P>
+
+<P>In normal DOS usage, there is the regular suggestion to boot clean before
+running antivirus programs. While there is no need to enforce a clean Word
+environment before running antivirus programs, it is still worthwhile to
+know that one’s environment is clean before each new day’s use.</P>
+
+<P>One way this is accomplished is to delete and replace one’s <I>normal.dot</I>
+file each day. We use <I>autoexec.bat </I>to force this each time the machine
+is booted. Negatively, this effectively makes <I>normal.dot</I> not a useful
+mechanism to hold changes. If changes are not moved to the archived copy,
+they are lost. And this method does not inform the user of an infection.
+Simply the infection is destroyed.</P>
+
+<P>Since that’s the normal course, I’ve added the readonly attribute to
+the file.</P>
+
+<P>To set this up, do the following:<BR>
+<B>cd \msoffice\templates<BR>
+md <I>archive<BR>
+</I>copy normal.dot <I>archive\normal.goo</I></B><I> </I>(Goo is short
+for &quot;good&quot; and presumably won’t conflict with any other extensions
+in use.)<BR>
+<B>attrib +r <I>archive\normal.goo</I></B></P>
+
+<P>Add the following to <I>autoexec.bat</I>:<BR>
+<B>pushd \msoffice\templates<BR>
+erase /f normal.dot<BR>
+copy <I>archive\normal.goo</I> normal.dot<BR>
+attrib +r normal.dot<BR>
+popd</B> [If you do not have pushd/popd, use full directory pathnames.]<BR>
+<B>endbat</B> [transition to empty <I>endbat.bat</I> file, see section
+4.6]</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Boots Word clean every day.</P>
+
+<P><B>CON</B>:<BR>
+Hassle to change any macros.<BR>
+Doesn’t tell you if anything happened.</P>
+</UL>
+
+<P><B>4.4 Check For Changes to <I>Normal.dot</I></B></P>
+
+<P>Another way to ensure a clean startup of Word, instead of forcing it
+to be replaced with a new version each day, is to check the present version
+against the known clean one which had been archived. This method differentiates
+from the previous one in its ability to alert the user of changes having
+occurred.</P>
+
+<P>To achieve this, we have to save a copy of the current (hopefully clean)
+<I>normal.dot</I> file.</P>
+
+<P>The setup:<BR>
+<B>cd \msoffice\templates<BR>
+md <I>archive<BR>
+</I>copy normal.dot <I>archive\normal.goo<BR>
+</I>attrib +r <I>archive\normal.goo</I></B></P>
+
+<P>Add the following to <I>autoexec.bat</I>:<BR>
+<B>diff \msoffice\templates\<I>archive\normal.goo</I> \msoffice\templates\normal.dot
+&gt; NUL</B></P>
+
+<P>Diff is a program similar to fc (from DOS). Fc does not return the necessary
+errorlevel for use in this manner. Ask the local guru for a copy of diff.
+He’s sure to have one.</P>
+
+<P><B>if errorlevel 1 goto changed<BR>
+</B>[continue]<BR>
+<B>goto end </B></P>
+
+<P><B>:changed<BR>
+echo normal.dot changed^G</B></P>
+
+<P>The &quot;^G&quot; represents a CTRL-G, which is &quot;hold down the
+Ctrl key, and press G.&quot; It causes a beep.</P>
+
+<P><B>pause<BR>
+:end<BR>
+endbat</B></P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Informs of any change.<BR>
+Insures clean <I>NORMAL.DOT</I> each day.<BR>
+Generally silent, no problems.</P>
+
+<P><B>CON</B>:<BR>
+Not until next bootup.<BR>
+Requires expert to setup.<BR>
+Requires expert to understand use.</P>
+</UL>
+
+<P><A NAME="4.5"></A><B>4.5 Check the Startup Directory</B></P>
+
+<P>In section 3.3, after creating <I>noauto.dot</I>, it was suggested that
+the file be placed in Word’s Startup directory. Any template file stored
+in this directory is automatically installed into Word’s environment when
+Word starts up. That also makes this directory the target of viral attacks
+as any virus could add itself to an environment by dumping a template file
+in this directory. Therefore, it is important to keep an eye on the directory
+to make sure the contents of the directory do not change.</P>
+
+<P>To make sure no viruses are added to the directory, we need to store
+a listing of the directory from a known clean state. Then, each time the
+machine is started, we make use of autoexec.bat to check that the current
+contents of the directory is not different from the list which represents
+what it should be. The code needed to make this happen can be seen below.</P>
+
+<P>To set up:<BR>
+Start Word and locate the default Startup directory.<BR>
+Click on <B>Tools</B>.<BR>
+Go to <B>Options…<BR>
+</B>Choose the <B>File Locations</B> tab.</P>
+
+<P>Look for the entry related to <B>Startup</B>. [If there are three dots
+in the directory name, double click on the entry to see the full directory
+name. Write down this directory name. Below, the code example uses <I>\msoffice\Winword\Startup</I>
+as that directory.]</P>
+
+<P><B>Cancel</B>, etc. and exit from Word.<BR>
+In DOS, continue by executing the following instruction.</P>
+
+<P><B>dir /b /a <I>\msoffice\Winword\Startup</I> &gt; <I>%TEMP%\startup.lst</I>
+</B></P>
+
+<P>This dir command creates the list which lists the current contents of
+the Startup directory and stores this list in your defined &quot;temporary&quot;
+directory. If you have an older version of DOS, it may not have some of
+the parameters that are used. To explain the instruction,</P>
+
+<DIR>
+<P>/b creates the short form of this command.<BR>
+/a includes hidden files so virus writers cannot use that to hide.<BR>
+%TEMP% is replaced by DOS with the defined &quot;temp&quot; directory.</P>
+</DIR>
+
+<P>Add the following to <I>autoexec.bat</I>:<BR>
+<B>dir /b /a <I>\msoffice\Winword\Startup</I> &gt; <I>%TEMP%\startup.chk</I>
+<BR>
+diff <I>%TEMP%\startup.lst %TEMP%\startup.chk</I> &gt; NUL<BR>
+if errorlevel 1 goto diff_startup<BR>
+</B>[continue]<BR>
+<B>goto end <BR>
+:diff_startup<BR>
+echo Word startup directory changed^G<BR>
+pause<BR>
+:end<BR>
+endbat</B></P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Informs of any change.<BR>
+Insures clean boot up each day.<BR>
+Generally silent, no problems.</P>
+
+<P><B>CON</B>:<BR>
+No warning until next boot up.<BR>
+Requires expert to setup.<BR>
+Requires expert to understand use.</P>
+</UL>
+
+<P><B>4.6<I> endbat.bat</I></B></P>
+
+<P>At the end of previous sections, <I>endbat.bat</I> is referenced. In
+the battle against macro viruses, it is important to know that many macro
+viruses have payloads which attach extra code to the <I>autoexec.bat</I>
+file. When this happens, the next time the machine is started, the code
+added by the macro virus will execute. Thus, it is important to come up
+with a method which prevents such payloads from taking effect.</P>
+
+<P>With batch files, there are two different ways to transfer control to
+another batch file. One method is to &quot;call&quot; the second batch
+file. In this way, after the completion of the second batch file, control
+is returned to the &quot;caller.&quot; The second method transfers control
+directly to another batch file. This method does not return control upon
+completion of the second batch file.</P>
+
+<P>So, first, we create an empty batch file called <I>endbat.bat</I>. And
+in the <I>autoexec.bat,</I> instead of letting it end by executing the
+last instruction, we transfer control to <I>endbat</I>, which finishes
+the startup process.</P>
+
+<P>With this setup, any code that is added by a macro virus to the end
+of <I>autoexec.bat</I> does not ever gain control. Thus, none of that code
+runs. This same setup will cause software installations which add to the
+end of <I>autoexec.bat</I> to also fail in the same way. In such situations,
+simply remove the <I>endbat</I> transfer and replace it at the end of <I>autoexec.bat</I>
+again.</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+<I>Endbat.bat</I> immunizes against the effect of viruses adding additional
+code to end of <I>autoexec.bat</I>.</P>
+
+<P><B>CON</B>:<BR>
+May interfere with software installations that write to <I>autoexec.bat</I>.
+But prior to macro viruses, that was the use for this setup.</P>
+</UL>
+
+<P><B>4.7 Rename <I>debug.com and debug.exe</I></B></P>
+
+<P>Another favored method by virus writers to deposit payloads onto users’
+machines is by way of a debug script. (A debug script is readable text
+instructions sent to the DOS utility named debug to create a binary file.)
+Usually, this is used to deliver virus programs or other binary data.</P>
+
+<P>To combat this, one can rename or remove debug from users that don’t
+normally have need for that program. (And almost all users don’t ever need
+nor know how to use debug.)</P>
+
+<P>Verify that the program is no longer available by typing &quot;debug&quot;
+on a command line. If the program still runs, the job is not yet complete.</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Users won’t be affected by the deposited payloads of viruses that use debug
+to plant such onto machines.</P>
+
+<P><B>CON</B>:<BR>
+Users don’t have the program to use. Not a problem for most users.</P>
+</UL>
+
+<P><B>5.0 Excel macro viruses</B></P>
+
+<P><B>5.1 Check the XLSTART Directory</B></P>
+
+<P>Excel has a startup directory similar to Word. Any template file found
+in this directory is automatically loaded into Excel on startup. This directory
+is the XLSTART subdirectory under where Excel exists. This behavior being
+exactly the same as Word, it means we can use the similar code as was discussed
+in section <A HREF="#4.5">4.5 Check the Startup Directory</A>.</P>
+
+<P><B>dir /b /a <I>\msoffice\Excel\XLStart</I> &gt; <I>%TEMP%\xlstart.lst</I></B></P>
+
+<P>[Please see section 4.5 for a full explanation of the command.]</P>
+
+<P>Add the following to <I>autoexec.bat</I>:<BR>
+<B>dir /b /a <I>\msoffice\Excel\XLStart</I> &gt; <I>%TEMP%\xlstart.chk</I>
+<BR>
+diff <I>%TEMP%\xlstart.lst %TEMP%\xlstart.chk</I> &gt; NUL<BR>
+if errorlevel 1 goto diff_xlstart<BR>
+</B>[continue]<BR>
+<B>goto end <BR>
+:diff_xlstart<BR>
+echo Excel startup directory changed^G<BR>
+pause<BR>
+:end<BR>
+endbat</B></P>
+
+<P>The <B>PRO</B>s and <B>CON</B>s are exactly the same as with the same
+function for Word.</P>
+
+<P><B>5.2 Create a <I>Personal.xls</I> File</B></P>
+
+<P>We should have learned not to do this by now.</P>
+
+<P>This technique is equivalent to creating a Payload macro to address
+Word macro viruses. Laroux.A checks for the existence of a file by the
+name of <I>personal.xls</I> in Excel’s <I>XLSTART </I>directory. If one
+exists, it does not infect. Thus, if we put a file by that name in that
+directory, we will be immunized from Laroux.A. As with Concept.A, Laroux.A
+is the most widespread of all Excel viruses.</P>
+
+<P>And as has happened in the Word arena, other viruses have appeared and
+other variants of Laroux now exist rendering this technique to little or
+no effect.</P>
+
+<P>To create such a file, simply take an empty Excel file and place it
+in the <I>XLSTART</I> subdirectory under where Excel is located.</P>
+
+<UL>
+<P><B>PRO</B>:<BR>
+Works against Laroux.A.</P>
+
+<P><B>CON</B>:<BR>
+Works only against Laroux.A.</P>
+</UL>
+
+<P>An interesting consequence of cleaning a Laroux infection from the system
+is that it leaves a clean file by the name of <I>personal.xls</I> (or <I>binv.xls,
+</I>etc.) in the <I>XLSTART</I> directory. Although I didn’t suggest creating
+one to thwart infection, I do recommend that the file should be left there.
+The reason for this is that 1) it has already been proven that the particular
+strain of the virus is spreading nearby. Thus a defense against it is prudent.
+And 2), removing the file is actually more work than leaving it.</P>
+
+<P><B>6.0 Author's recommendations</B></P>
+
+<P>Throughout this paper, I have made hints as to the usefulness of each
+method. But there are so many and I haven’t suggested which to use in combination.
+Still, I’m going to chicken out and not exactly recommend but rather tell
+you which I use.</P>
+
+<P>I have a read-only <I>normal.dot</I>. In addition, I use Prompt to Save
+Normal Template. In section 2.1, I made a quick comment that the two do
+not conflict and thus it’s possible to use both. Both are meant to warn
+you by the end of the day if you happened to have gotten your environment
+infected during the day.</P>
+
+<P>But, why use both? Isn’t one enough?</P>
+
+<P>The first answer is that it doesn’t hurt, so why not? The second answer
+is that some viruses try to undo one or the other. And some both. So, using
+both techniques means a virus has to attack both simultaneously to circumvent
+the protection. And if nothing is happening, both are quiet so they won’t
+disturb your everyday work.</P>
+
+<P>I also use the DisableAutoMacros template as distributed in the separate
+file <I>noauto.dot</I>. Most viruses make use of an auto macro of one sort
+or another to spread. And all the viruses in the wild do. With this macro
+in place, viruses will not automatically activate and the chance of spreading
+something, even if you come in contact with it is much smaller. Furthermore,
+as described in its section, an MIS director can create this file and send
+it to the whole company to be placed in the appropriate location. Thus
+this can have a corporate wide impact with little effort.</P>
+
+<P>In preparing this paper, I also tried out most of these techniques.
+I plan to incorporate the checking of the XLSTART directory and Word’s
+startup directory. The XLSTART directory technique is the only significant
+technique against Excel viruses. Sadly, I was infected by Laroux.A from
+within my own company recently. (Luckily, I recognized it immediately within
+a minute.) So, it’s starting to hit home. And more Word viruses seem to
+be taking advantage of the startup directory technique as well.</P>
+
+<P>Lastly, throughout all the Office97 products, each is programmed to
+alert if any macros exist in an incoming document, be that Word, Excel,
+Powerpoint, Access, or any other. The products in their default mode have
+the macro alert on. Don’t turn it off until you hit your first false alarm.
+And even then, judge how much trouble the false alarm caused. If you feel
+that it was not a problem, leave the setting on. The alert is not perfect
+(the problem scenarios have been documented in Vesselin Bontchev’s paper
+for the 1996 Virus Bulletin Conference). But until you meet a false alarm,
+it won’t have caused you any issues. And it would take effort to turn it
+off anyway. Might as well do that later than sooner.</P>
+
+<P><B>6.1 Handling Suspect Documents</B></P>
+
+<P>For the MIS director who must handle their corporation’s suspect documents,
+here are some tips.</P>
+
+<P>Use all the techniques in section 6.0. If a file is suspect, create
+a clean environment by using the process outlined in section 3.3. Examine
+the file using <B>File/Templates/Organizer</B>, before opening any other
+files. If the suspect file does not have a <B>ToolsMacro</B> entry, use
+it to rename the macros to shortened names before examining the macros.
+If it does, create your own <B>ListMacros</B> menu option and use it instead
+of <B>ToolsMacro</B>.</P>
+
+<P>Lastly, and my only plug for my own product, if you use the DOS version
+of Scan, if you scan the single file, and Scan reports &quot;Analyzed:
+1, Scanned: 0, Possibly Infected: 0&quot; then the file has no macros and
+thus cannot have a virus. If it reports &quot;Analyzed: 1, Scanned: 1,
+Possibly Infected: 0&quot; then the file does have macros. Send it to your
+favorite (or not) AV Researcher and have him or her tell you if it’s infected.</P>
+
+<P><B>6.1.1 Cleaning Infected Documents</B></P>
+
+<P>There is also the rare occasion that an MIS director must clean an infected
+document immediately so the document can be used without delay. As AV vendors,
+we recommend against this activity, but also, as AV vendors, we recognize
+that we can’t necessarily help you every minute of every day. Please use
+this technique with utmost care, and only if you can’t avoid it.</P>
+
+<P>This is best done on a stand-alone machine. But if that can’t be accomplished,
+be extra careful!</P>
+
+<P>After verifying that the virus does not have an EditCopy or EditCut
+macro, and there are no templates in the startup directory nor <I>normal.dot</I>,
+open the file while holding the shift key. (Or for the adventurous, place
+<I>noauto.dot</I> into the startup directory.)</P>
+
+<UL>
+<P>Select entire Document.<BR>
+<B>Edit/Copy</B> to Clipboard.<BR>
+<B>File/Exit</B> from Word.<BR>
+Delete <I>normal.dot</I> (or rename it) and remove all files from the startup
+directory.<BR>
+Restart Word.<BR>
+<B>File/New</B> a new empty document.<BR>
+<B>Edit/Paste</B> from Clipboard.<BR>
+<B>File/SaveAs </B>as a new document. In so doing, be sure that the file
+is not automatically being saved as a template. If so, the environment
+is infected. And assuming all the above was handled properly, pick up the
+phone and call your AV vendor.</P>
+</UL>
+
+<P><B>7.0 Acknowledgments</B></P>
+
+<P>Vesselin Bontchev, AV Research, FRISK Software Intl.</P>
+
+<P>Stefan Geisenheiner, AV Research, Amsterdam, NL., McAfee Associates.
+German translation available.</P>
+
+<P>Raymond M. Glath, Sr., President, RG Software Systems.</P>
+
+<P>Jivko Koltchev, AV Research, Santa Clara, CA, McAfee Associates.</P>
+
+<P>Akihiko Muranaka, Tokyo, Japan, McAfee Associates. Japanese translation
+available.</P>
+
+<P>Francois Paget, AV Research, Paris, France, McAfee Associates. French
+translation available.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P> </P>
+
+</BODY>
+</HTML>

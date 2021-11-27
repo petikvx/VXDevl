@@ -1,0 +1,103 @@
+
+ How to detect and remove trojans ?
+ by SnakeByte [snakebyte@kryptocrew.de]
+ http://www.kryptocrew.de/snakebyte/
+
+ The longer you are in the Internet, the higher is the 
+ possibility to get infected by trojans. That's why
+ you should check your PC for Trojans time by time. 
+
+ You can do this with several Anti-Virus & Anti-Trojan
+ programs ( TFAK, AVP, TDS) but also on your own, because
+ these programs can never find every trojan ( new ones are released
+ nearly every day ), how you can check you PC will I explain here.
+
+ 
+ + How do I know that I am infected ?
+ 
+ First you should check your Ports. This can be done with extra
+ programs ( Portcheck, Portscanning your own ports ) or with 
+ the program netstat, which ist included in MS-Windows
+
+ Just enter ( offline ) the MS-Dos Commandline and enter
+ the command 'Netstat -a'.
+
+ Then you will see something like this :
+
+  Active Connections 
+ 
+   Proto  Local Address          Foreign Address        State
+   TCP    _:31337                 0.0.0.0:45178          LISTENING
+   UDP    _:31337                 *:*
+
+ This means, that a program is listening at port 31337 for a TCP-Connection.
+ This behaviour is typical for Trojans, they wait until an attacker connects
+ and sends them some command. An experienced person knows which ports are used
+ by which trojans ( In this case 31337 = Back-Orifice )
+ The non-experienced ones, shoul run a Virusscanner. But this is a very 
+ hard indicee for the existence of a trojan !
+
+ After this you should check the running processes, but not with the
+ Windows Taskmanager ( Ctrl+Alt+Entf ) because it is possible to hide
+ Tasks from it. You better use another Taskmanager like CCTASK.
+ This Check should be done directly afer a Reboot, because we just want to
+ see those programs, which gets started with windows. If you detect something
+ suspicious, kill the Task, save the file on a special place and delete it.
+
+
+ Another Possibility to find trojans is to check the system-files,
+ for automatically started programs.
+ 
+ These are: 
+
+  Autoexec.bat - Just check this file for 'del' and 'format' commands,
+                 cause all files which get started here are dos-files.
+  Win.ini      - Here we got to check the entrys 'load=' und 'run=' 
+                 if there are just programs we want to start.
+  System.ini   - The Entry 'shell=' should normally just include
+                 a 'explorer.exe' everything else is suspicious
+  Registry     - There are several possibilities to start a file 
+                 with the help of the registry. You can check them
+                 with the windows program 'regedit.exe' :
+
+                 HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+                 HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+                 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+                 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+                 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnceEx
+                 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices
+                 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServicesOnce
+
+                 
+                 But there are 3 other entrys:
+              
+                 HKEY_CLASSES_ROOT\exefile\shell\open\command
+                 HKEY_CLASSES_ROOT\comfile\shell\open\command
+                 HKEY_CLASSES_ROOT\batfile\shell\open\command
+  
+                 Be aware, when you change these Settings !
+                 If you make faults you might be unable afterwards to start
+                 files.
+                 The default entry is : "%1" %*
+
+ Other indicees for trojans are: 
+         
+ - Strange behaviour of the PC
+ - Messageboxes with suspicious content
+ - Deleted Files
+ - PC gets slower
+
+
+ + How to remove a trojan ?
+
+  1.) Kill the task with a taskmanager
+      (important, because several trojans restore the autostart entrys !)
+  2.) Delete the autostart entrys 
+  3.) Save the file somewhere else and delete it 
+  4.) Reboot and check for the trojan again
+  5.) If there are errors restore the file and reboot
+  6.) Send the trojan to: SnakeByte@kryptocrew.de
+  7.) Change your passes, they might been stolen !
+  8.) Be happy, TFAK will be able to find this trojan soon *g*
+
+ If you follow these instructions you will detect and remove 99% of all trojans !

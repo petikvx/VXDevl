@@ -1,0 +1,2031 @@
+
+An Idiot's Guide to computer viruses       -      by Greg Miskelly
+
+                             Contents                    Line No
+
+   Foreword...................................................44
+   Definition and type........................................69
+        General perception....................................72
+   What is a computer virus..................................107
+        Trojans..............................................210
+        Program file infectors...............................350
+        Companion viruses....................................515
+        Worms................................................555
+        Boot sector infectors................................574
+        Document infecting viruses...........................841
+        Other types of infection mechanisms..................865
+   Operating Systems.........................................892
+        IBM Compatible PCs...................................898
+        Macintosh PCs........................................932
+        UNIX................................................1001
+        Novell..............................................1017
+        Others..............................................1054
+        Multi Platform Viruses..............................1070
+   Prevention, Protection and Control, A Policy Issue.......1095
+        General Overview....................................1098
+        Countermeasures in the Corporate Environment........1108
+             Cost Effective Prevention Measures.............1121
+             Cost Effective Monitoring Methods..............1167
+             Risk Analysis..................................1239
+             Funding the Protection.........................1254
+        Countermeasures in the Home Environment.............1332
+   Locating and Eradicating.................................1451
+        Commercial Anti-Virus Packages......................1462
+             TSR Monitors...................................1469
+             Scanners.......................................1495
+                  Heuristic Scanning........................1533
+             Integrity Checkers.............................1567
+             Disinfectors...................................1588
+   What to do when an infection is suspected................1619
+   Prospects for the Future.................................1742
+        The Glut............................................1745
+   The Virus Authors........................................1887
+   Conclusion...............................................2007
+
+     Foreword
+     ========
+
+This document began as a handout to accompany a presentation by
+myself to the WordPerfect User Group, Northern Ireland, on 12th
+September 1994. Since then it has been modified to suit a number
+of different requirements. This incarnation is a result of
+modifications made after the document had been posted in the
+FidoNet Virus conference. After posting the document I have
+received suggestions and modifications by Stuart Grier, Michael
+Edwards and Guy Lefrancois that I have now incorporated into the
+text. Many thanks to all three of them.
+
+This document is public domain, and may be modified and updated
+by anyone who has an interest in preventing computer virus
+infections. Obviously, that majority of the text below is written
+for a readership within the United Kingdom, and some of the
+examples may not be appropriate for other parts of the world.
+
+Please feel free to utilise this document in any way you see fit.
+I have no objections to it being modified to suit the requirements
+of other geographic locations. The only thing that I ask is that
+if you have modified the document for a particular purpose, please
+put "Modified by Your Name" on the line prior to the Contents.
+
+     Definition and Type
+     ===================
+
+General Perception
+------------------
+
+There is a general misconception that all malicious computer code
+is some form of computer virus. This is not true. Indeed, most
+malicious code is written with a specific target in mind and is
+then directed specifically at that target. I have included some
+information about all the different forms of malicious code that I
+am aware of within this document.
+
+The public at large are very badly informed about malicious
+computer programs, largely due to the methods of reporting in the
+media. The media tends to sensationalise all reporting of computer
+viruses. A major player in the Anti-Virus community, namely, John
+McAffee will no longer talk to anyone in the media because of a
+gross misrepresentation regarding the Michelangelo Virus in 1992.
+
+Other examples of the ignorance of the media include the over
+zealous reporting of the discovery of the Junkie virus by Reflex
+staff in May 1994, and a virus incident in Australia which was
+resolved by the use of the Invircible anti-virus product in early
+1995. The Junkie virus was hailed as a super virus, when in fact
+it is a run of the mill multipartite virus. The Invircible product
+was described as the only product capable of real anti-virus
+protection, when in fact the problem in Australia arose as a
+result of incompetent use of other viable anti-virus products.
+
+In the following subsections, most of the descriptions and
+examples apply more correctly to viruses written to infect IBM
+Compatible PC computers. I feel that this is reasonable on the
+grounds that most computer viruses are targeted at that type of
+machine and because IBM Compatible PCs are the most common type of
+computer system in use around the world.
+
+
+     What is a Computer Virus
+     ========================
+
+It is almost impossible to define what a computer virus is because
+new types of virus appear daily and will generally not conform to
+the existing rules.
+
+  "a program which replicates without the user's awareness and
+   co-operation.... a threat because we don't know it is there"
+
+               Alan Solomon (S&S International)
+
+I have used the definition above for convenience. The significant
+word within the definition is "replicates". Replication should be
+interpreted as being able to create a new program which will
+perform a similar action, not an exact copy of the original. Many
+new polymorphic viruses replicate in such a way that their
+'offspring' may resemble the 'parent' by only one or two bytes
+(there is a simplistic explanation of polymorphic viruses below).
+
+Computer users have often wondered why their governments have not
+provided specific legislation to protect against computer viruses
+and their authors. As it is almost impossible to define what a
+computer virus is, it is therefore nearly impossible to
+effectively prosecute the miscreants. Even if it was possible to
+define a computer virus, it would still not be possible to make
+that computer code illegal. It is entirely feasible (though it is
+very unlikely) that an author may create replicating code by
+mistake.
+
+The only thing that can effectively be prosecuted is the malicious
+intent of the person who infects a system (not necessarily the
+author). Prosecutions based on intent have been widely used in
+theft cases in the United Kingdom, so this is the best means
+available to the authorities. Much of the Misuse of Computers Act
+deals with the issue of intent.
+
+In the United Kingdom, there have been a number of attempts to
+prosecute virus authors. The most successful have been the
+prosecution against Mr Christopher Pile who was convicted of
+eleven offenses under the Misuse of Computers Act, and the
+prosecution of members of the Association for Really Cruel Viruses
+(ARCV) authoring group for stealing telephone time (known by the
+computer underground as phreaking).
+
+Mr Pile had uploaded virus infected files to a number of BBSs in
+the United Kingdom. Most BBS operators (SysOps) keep records of
+all transactions on their systems, and it was therefore possible
+for the police to discover the source of the viruses. The viruses
+in question have become known as the SMEG viruses which have
+subsequently been named Pathogen and Queeg. Mr Pile was known by
+the pseudonyme (handle) 'The Black Baron' and it is likely that he
+was the author of the Simulated Metamorphic Encryption Engine
+(SMEG). Mr Pile received an eighteen month jail sentence for his
+activities, but it should be remembered that he was not prosecuted
+for writing viruses, he was convicted of intent to perform
+malicious acts with those viruses that he had written.
+
+The prosecution in the ARCV case was successfully applied to one
+of their leaders, a juvenile, known as 'Apache Warrior'. Again, no
+attempt was made to prosecute for writing viruses, nor was there a
+prosecution for trying to infect any systems, just the theft of
+telephone time. Other members of the ARCV group have been given
+cautions by the police, most significantly, the co leader of the
+group, known as Ice-9. The nature of the telephone time theft was
+that Apache Warrior had linked his modem to a neighbour's
+telephone line and had then made numerous calls to virus
+underground BBS systems in the United States. Investigation of an
+extremely large telephone bill lead to the discovery of the
+tampering with the connection.
+
+Although the success of prosecution of active participants in the
+virus underground appears to be limited, it should be remembered
+that the United Kingdom is far in advance of most countries in
+the world in this respect. Other nations do not have the facility
+or experience to prosecute on the aspect of intent, which is long
+established in British Law.
+
+In Australia, Clinton Haines, a student at the University of
+Queensland, has been interviewed by the media and talked about
+his activities as an author of viruses, namely the Dudley and
+NoFrills viruses, both of which are in the wild (the term "in the
+wild" means that the virus is unchecked, and actively infecting
+systems belonging to ordinary people or businesses). Even though
+these viruses have infected major corporations in Australia, no
+action can be taken against this individual because Australian law
+does not provide any facility for an action of this sort.
+
+In the USA, "freedom of speech" protects virus authors against
+prosecution. One of the most common viruses in the USA, Natas, is
+generally accepted as having been written by James Gentile, yet
+no prosecution has ever taken place.
+
+In the United Kingdom, this ability to prosecute the intent of a
+malicious individual should not be regarded as an effective
+deterrent. Mr Pile uploaded his malicious code long after the
+prosecution in the ARCV case. Neither does the possibility of the
+prosecution of the miscreant detract from the possible
+prosecution under the Data Protection Legislation for inadequate
+protection of data. The target of an attack might be prosecuted
+for negligence. It is essential that vigilance is maintained and
+there is adequate legislative requirement for it.
+
+Trojans
+-------
+
+Trojans (Trojan Horse Programs) are by far the most numerous type
+of malicious programs. They are not viruses. There is no estimate
+on how many of these programs exist. There are literally
+thousands of them. They are generally designed to perform a
+single task, and as their name suggests, are hidden inside
+programs that normally perform acceptable functions. Many trojans
+are written by programmers when their employment status may be
+undermined. The program may continue to operate satisfactorily,
+long after the individual has left the company until the set
+criteria for operation of the malicious functioning is met, eg, a
+specific date or a given set of circumstances (known as the
+trigger). Trojans that have been designed by capable programmers
+who have knowledge of the target system can be devastating. An
+example of this is where the backup arrangements are known and
+are specifically interfered with for a time period which would
+reduce the restore capability to nil. At this point the main
+destructive activity (payload) would activate which would destroy
+or corrupt all of the existing data.
+
+Other types of trojans now exist that are known as droppers.
+These droppers will simply release a replicating virus into
+memory when the payload criteria have been met. The owner of the
+infected machine will then try to eradicate the virus but will
+find that it keeps reappearing without knowing which of his/her
+executable files is causing the problem. The most successful of
+these types of trojans are hidden inside computer games, or
+programs designed to break computer game passwords (crackers).
+Many users of pirated software, mostly games (known by the virus
+writing community as warez) have password cracking Terminate And
+Stay Resident (TSR) programs on their machines which will defeat
+the game password by bombardment techniques. The main problem
+with trojans is the fact that they do not specifically replicate
+and are almost impossible to find by scanners. The Anti-Virus
+vendors try to counteract the activity of some trojans by using
+Terminate and Stay Resident (TSR) monitoring programs that
+attempt to supervise activity in memory. A TSR means that the
+program is loaded during the startup process and will remain
+active throughout the session at the computer.
+
+One of the best known dropper trojans is in fact disguised within
+a hacking (the term "hacking" is not used correctly and should
+really be referred to as "cracking" ) tool known as NETCRACK.EXE.
+This program is designed to break Novell Network passwords by
+bombardment techniques. The original program has been infected
+with the Taipan.666 virus and then compressed using the PKLite
+compression application program. Therefore, the use of
+NETCRACK.EXE will also infect the target system with the virus.
+Another more famous use of a dropper trojan was the same virus,
+ie, Taipan.666 being incorporated into a program called NETCHEAT
+which is a cracker for the game known as Doom. Players of the
+game called the infection the "Doom to Death" virus.
+
+Known trojans are listed in the Hack List, a periodically
+released program originating in the Netherlands. It can be
+downloaded from BBS systems under the file name HACKLIST.Z??, or
+HACKLIST.A??, or HACKLIST.* depending on the archiving software
+that is used on the BBS system.
+
+The last, and perhaps the most serious, type of trojan is
+application code that is badly written. Many MicroSoft Windows
+users are aware that sometimes the applications that they run
+cause general protection faults. This is annoying but will
+normally only cause irritation. Also, there are many application
+programs that run under the MicroSoft Windows operating
+environment that allow resources to 'leak' into RAM thereby
+reducing available system resources.
+
+Other serious faults can exist in widely used software; perhaps
+the most famous being a bug in CHKDSK.EXE which was released with
+MicroSoft DOS Version 5.0 (DOS stands for Disk Operating System).
+This program was supposed to be a utility to rectify problems
+that can sometimes occur in the File Allocation Table (FAT) which
+is a file containing the whereabouts of other files on computer
+disks. It has an optional switch /F which will fix errors in the
+FAT. However, if the size of the hard disk was in the region of
+128 Megabytes (Mb) or multiples of 128 Mb then CHKDSK would
+overwrite areas of the hard disk that contained essential
+information for the operation of the computer.
+
+Another example of a trojan caused by a programming error was one
+line of erroneous code which brought down most of the AT&T
+Telephone Network in the USA. The code was to provide a temporary
+re-routing of traffic if the distribution point became overloaded.
+Unfortunately, the receiving site also activated the re-routing
+and an effect similar to falling dominos, ended up causing all
+telecommunication traffic to be redirected simultaneously.
+
+Application program macro languages can be used to create trojans.
+Wordperfect's macro language is very amenable to this. Another
+possibility is the use of Postscript which has potential to
+become more of a problem as more users send file attachments with
+E-Mail. Postscript code can contain file deletion functions which
+are supposed to be used for the deletion of temporary print files.
+However, competent programmers can use this facility to delete
+significant files within the operating system.
+
+A curiosity perhaps, but there is another type of trojan program
+known as an ANSI Bomb (ANSI is the acronym for American National
+Standards Institute). ANSI.SYS is a system file (TSR program)
+that can be loaded during the running of the CONFIG.SYS file (a
+file used for configuring the operating system at startup).
+Computer users are most aware of ANSI.SYS facilities for the
+purpose of providing colour to text on screen. However, ANSI.SYS
+also allows for the reassignment of keys so that the depression
+of a single key on the keyboard can activate a complete command
+string, including the carriage return. If ANSI.SYS has been
+loaded on the target machine and a text file is displayed on
+screen using the DOS TYPE command, any embedded Escape sequences
+will be acted on by ANSI.SYS as an operator instruction. Most
+ANSI Bombs are trivial in that the most malicious thing that they
+can do is probably a format of the hard disk. Appropriate backup
+facilities will reduce the effect of an ANSI Bomb to an
+irritation, rather than a nuisance.
+
+For those computer users that have a requirement to load an ANSI
+driver on their computers, there are alternatives to ANSI.SYS
+that do not permit keyboard reassignment. There are two methods
+to use. The first is to use an alternative such as PC Magazine's
+ANSI.COM which simply does not permit the keyboard reassignment,
+or a program such as PKSFANSI.COM (from PKWare) which can be
+loaded after ANSI.SYS is in memory and will filter reassignment
+instructions before they get to ANSI.SYS. This second method is
+very useful for disabled computer users who might require some
+keyboard reassignment to take place. Once the valid instructions
+have been processed by ANSI.SYS then PKSFANSI can be loaded to
+prevent unauthorised modifications.
+
+It should be noted, that almost all types of virus display trojan
+activity whenever their activation circumstances (payload
+triggers) are met. Nearly all viruses are replicating programs
+that become trojans. The virus is simply the transportation
+mechanism that delivers a trojan indiscriminately to computer
+systems. This trojan activity is generally becoming less
+destructive as the phenomenon of virus creation matures. This is a
+personal opinion which is difficult to support statistically, but
+is the result of intuition on my part.
+
+Program File Infectors
+----------------------
+
+Most non technical computer users who are aware of computer
+viruses generally believe that all viruses are of the program
+file infector type. A basic description of file infecting viruses
+is shown below. The rectangular boxes represent compiled computer
+code. The term J represents a jump instruction which is used by
+the virus.
+
+A computer program is a long list of instructions that instruct
+the computer to perform actions based on input by the user. For
+example, in a word processor, the program will place the cursor
+on screen and then wait for input. If the user inputs a character
+then the program will determine that a character key has been
+depressed and will jump to the section of the program that deals
+with this type of input. What will happen is that the character
+will be displayed on screen and the cursor is moved one place to
+the right. The program will then jump back to the wait state. Had
+the input been a function key, the program would have jumped to
+the portion of code that deals with that particular function, eg,
+printing the document, or saving the document to the hard disk.
+
+In the diagram below, the Normal Executable File is just a
+program such as a word processing program. Within it are
+considerable jump instructions to various functions that are
+performed by the program. These are not shown, because it would
+make the diagram too complicated.
+
+           ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+           ³ Normal Executable File ³
+           ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+              ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+              ³J Virus Code J³
+              ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+          ÚÄÄ>ÄÄÄÄÄÄÄJumpÄÄÄÄÄÄÄÄÄ>ÄÄ¿
+         ÚÁÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÁÄÄÄÄÄÄÄÄÄÄÄ¿
+         ³J³ Normal Executable File ³Virus Code J³
+         ÀÄÁÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÂÙ
+            ÀÄÄ<ÄÄÄÄÄÄÄÄÄÄÄJumpÄÄÄÄÄÄÄÄÄÄÄÄÄÄ<ÄÄÙ
+
+
+Generally, when the virus infects an ordinary executable file, it
+writes a small instruction at the beginning of the file that
+redirects the execution sequence to the main body of the virus
+code which is then added at the end of the file. Obviously, this
+is not always the case, but is sufficient to describe what is
+happening. Once the virus code is active in memory it will then
+perform whatever task the virus author has designed. It then jumps
+to the beginning of the ordinary code and the file will then
+perform as normal so that the user does not perceive that anything
+is wrong with the machine.
+
+The fact that user of the program is unaware of the unauthorised
+activity on the computer is the main reason why viruses can
+spread. If the user then copies this infected program to a
+diskette and then into another computer, that computer will then
+become infected, thereby starting the cycle again.
+
+In the vast majority of situations the task of the virus will be
+the process of replication. This can be performed in various ways:
+
+     the virus may seek out an uninfected executable and append a
+     representation of itself to that file;
+
+     the virus might remain in memory similar to a TSR program and
+     specifically target significant executable files as they are
+     executed, or opened;
+
+     the virus might use other more complex methods of infection.
+
+     Once the replication aspect of the virus code has been
+     completed, the virus might then test whether it's payload
+     criteria have been met, eg, is the date Friday 13th, or March
+     6th, or whatever. If the payload criteria have been met then
+     the trojan code within the virus will be activated.
+
+It is very easy therefore for anti-virus scanners to detect this
+type of virus because they only need to read the first few bytes
+of the file to determine if there is a jump instruction. If the
+jump instruction is found then the scanner will follow that
+instruction to the main body of the virus code. Once the scanner
+is within the main body of the virus code it can then identify the
+virus by known sequences of code.
+
+The problem is that virus authors are aware that a scanner can be
+used in this way, and so many authors write their viruses in such
+a way that an identifiable string can not be found by the scanner.
+The consequence of this is polymorphic viruses. A polymorphic
+virus is one where the main body of code changes during each
+incarnation of the virus. A very crude method of understanding
+this would be to evaluate the two equations below.
+
+                1 + 2 + 3 + 4 + 5 + 6 + 7 = 28
+
+                6 + 4 + 2 + 1 + 3 + 5 + 7 = 28
+
+In both cases the result of the equation is 28. However, the
+second character string is nothing like the initial one yet it
+will still produce the same outcome. Basically, the virus code
+can be shuffled during each incarnation of the virus, yet it will
+still be able to perform a similar action.
+
+Most polymorphic viruses also use other protection mechanisms to
+avoid detection. These will be discussed later.
+
+In order for a program file infector virus to be successful it
+must allow time for itself to propagate onto another machine
+before releasing its payload and identifying itself. The
+determination of the appropriate amount of time required is a
+complex problem for the virus author. The vast majority of the
+actions carried out by successful viruses are merely the
+replication aspect of their code. Viruses that do not allow the
+appropriate amount of replication time will not survive in
+ordinary operation of computers (in the wild). Even though the
+functionality of the code is viable, the author must take into
+consideration the payload criteria, if he chooses to include a
+payload. The SMEG viruses mentioned above were faulty in only
+this respect. The payload became effective too early in the
+process. It was therefore possible for the police to trace the
+original source. This was fortunate because the SMEG viruses are
+complex. Had the author managed to identify a more suitable
+payload criteria then these viruses could be much more widespread
+than they are at present. It would also have seriously diminished
+the possibility of a successful detection of their origin by the
+police.
+
+Variants of program file infectors are known as fast and slow
+infectors. A typical program file infector (such as the Jerusalem)
+copies itself to memory when a program infected by it is executed,
+and then infects other programs when they are executed.
+
+A fast infector is a virus which, when it is active in memory,
+infects not only programs which are executed, but even those which
+are merely opened. The result is that if such a virus is in
+memory, running a scanner or integrity checker can result in all
+(or at least many) programs becoming infected all at once.
+Examples are the Dark Avenger (Eddie) and the Frodo viruses.
+
+The term slow infector is sometimes used for a virus which, if it
+is active in memory, infects only files as they are modified (or
+created). The purpose is to fool people who use integrity checkers
+into thinking that the modification reported by the integrity
+checker anti-virus program is due solely to legitimate reasons. An
+example is the Darth Vader virus. The concept of the acceptable
+modification of an executable might be difficult to understand,
+but there are many executable programs that write configuration
+information to their own executable code. This will happen most
+often where overlay (.OVL) files are used in application programs.
+
+The final type of program file infector is known as a sparse
+infector which infects only occasionally, e.g. every 10th executed
+file, or only files whose lengths fall within a narrow range, etc.
+By infecting less often, such viruses try to minimize the
+probability of being discovered by the computer operator.
+
+Regardless of the nature of the file infecting method used by the
+virus, the consequence is that at least some of the executable
+programs on the machine will be come infected by the virus. Once
+these programs have been executed then the machine is in a state
+whereby control is passed to the virus. The virus may remain in
+memory, sometimes using stealth techniques to prohibit detection
+(stealth will be discussed more in the Boot Sector Infector
+section).
+
+Companion Viruses
+-----------------
+
+These are amongst the first type of viruses to be successful.
+Their mode of operation is quite simple. Instead of adding code
+to an existing executable file (.EXE executables), they merely
+wrote a copy of their code to a .COM file with the same name as
+the .EXE file. The Disk Operating System (DOS) will always execute
+a .COM file in preference to a .EXE file when presented with both
+in the same directory, eg,
+
+     C:>dir filename.*
+
+      Volume in drive C is MS-DOS_6
+      Volume Serial Number is 1C0C-869C
+      Directory of C:\DIRNAME
+
+     FILENAME.COM         3,220 10/09/94   21:18
+     FILENAME.EXE        15,833 10/08/93   21:16
+            2 file(s)         18,053 bytes
+                            60,063,744 bytes free
+     C:>_
+
+In this instance, the .COM file FILENAME.COM which is the virus
+will be executed and its code will be placed in memory. Once the
+code is in memory it will perform the instructions of the virus
+author and then look for the file FILENAME.EXE which it will then
+execute. Modern scanners have little difficulty finding this type
+of virus and they are almost extinct.
+
+A more recent concept used by companion infectors is placing a
+copy of the virus in a directory which is closer to the beginning
+of the path statement. These viruses are known as Path Companion
+Infectors. Transmission of this type of infection from one
+computer to another seems to be ineffective because very few
+computer users would have their diskette drive on the path
+statement. However, embedding this type of virus in dropper
+trojans may be an effective means of transmission. None of these
+viruses are known to be in the wild at the time of writing.
+
+Worms
+-----
+
+Worms are multi-segmented, self-propagating programs with segments
+executing on different networked machines. The term also now
+includes those self propagating programs that function through
+networks.
+
+The most successful worm was the Great Internet Worm of 1988
+(author Robert Morris Jnr, Cornell University) which was a UNIX
+based program infecting SUN and VAX systems. It used a security
+hole in sendmail (Debug Mode) to send commands to the local
+command interpreter (a program similar to COMMAND.COM on IBM
+Compatible machines). It's success was based on the fact that it
+used techniques to hide itself, one of which was deleting the
+argument list to hide its operation. The Great Internet Worm
+infected up to 6000 machines and cost damage which has been
+estimated to be in the region of $50m USA.
+
+Boot Sector Infectors
+---------------------
+
+These are by far the most successful of all types of viruses,
+especially on IBM compatibles. An explanation of the operation of
+a Boot Sector Infector (BSI) is most easily understood out by
+examining the operation of old fashioned 'diskette only' machines.
+Modern computers that contain hard disks will be dealt with later.
+
+The term "to bootstrap a computer", which means to start a
+computer comes from an old saying "to pull yourself up by your own
+bootstaps" and is a reasonable description of how computers
+actually start up. When a computer starts up, the operating system
+is the first thing that is loaded into memory (volatile memory
+which only exists while there is power available and is known as
+Random Access Memory, or RAM). The computer is an inanimate
+object, so it doesn't know which operating system to look for.
+This is why the boot sector is very important in the startup
+process for computers.
+
+Inside each diskette is a circular magnetic plate which is divided
+up into tracks and sectors. Each track is like a concentric ring
+on the diskette and each sector is similar to a pie segment.
+During the formatting process, DOS may allocate more than one
+sector to a cluster. This is due to the size of the available area
+for the File Allocation Table (FAT), a data file which is used by
+DOS to keep track of the whereabouts of user generated files on
+the diskette. This means that a file that would be stored on the
+diskette may take up three sectors even if it is less than one
+sector in length. The wastage is known as slack. Another part of
+the formatting process is the placing of essential control
+information on the diskette. This places a small executable file
+in the boot sector (at Track 0, Sector 1 ). All diskettes have
+this file. It is not visible when a directory listing is taken.
+Even though it is not normally visible to the computer user, it's
+whereabouts is always in the same place, and is determined by the
+location of the drive rotation pin hole on the diskette (turn
+over a 3.5" diskette and look to see two holes, one of which is
+used to centre the diskette and the other to rotate it in the
+drive).
+
+The file is known as the Boot Sector Loader Program (BSLP). One of
+it's functions is to provide the familiar error message:
+
+     Non System Diskette
+     Replace and press any key to continue
+
+when a data diskette has been inadvertently left in the diskette
+drive bay prior to the machine booting. Under normal
+circumstances, this is a very sensible error message to provide to
+a user. The reaction of the user is to remove the incorrect
+diskette, replace it with a bootable diskette, and press any key.
+
+Virus authors recognised the potential of this error message and
+wrote small viruses which would, in many instances, move the BSLP
+to another part of the diskette, and replace the BSLP with the
+virus, so that when the machine attempted to boot from the
+infected diskette it would execute the virus code first. Once the
+virus code was in memory, and active, it would locate the real
+boot sector code and execute it, so that the user would be unaware
+of the virus activity. On diskettes, the real BSLP was placed in
+an area of the diskette which was then marked as bad, or otherwise
+disguised, so that DOS would not attempt to overwrite the valid
+code during the normal activity that the diskette is expected to
+perform.
+
+Areas of disks being correctly marked as bad result from either
+the DOS formatting process, or normal wear and tear on the surface
+of the diskette. When formatting a diskette, DOS writes a
+character (E6 hex) to all parts of the disk and then reads back
+the information to verify that it is valid. It verifies this by
+writing a Cyclic Redundancy Check value (CRC) which acts in a
+similar way to a parity check in serial communication. When the
+read process occurs and the data is in memory, DOS will perform
+the CRC to ensure that the read operation has been successful. If
+the CRC of the read data is not the same as that listed on the
+disk DOS will give a disk read error message and then mark that
+sector/cluster as bad. As DOS expects to occasionally find bad
+sectors on disks the user is not made aware of the fact that bad
+areas exist on the disk. If a diskette has been used many times,
+it's ability to store data in all areas might be reduced.
+Therefore, when DOS attempts to read valid data from the diskette,
+the CRC indicates a failure. DOS will then report a read error.
+Utility programs such as the Norton Utilities NDD.EXE, can
+retrieve data from corrupted parts of disks, but will generally
+mark the area as bad after the retrieval operation has been
+completed.
+
+Once the virus is in memory, it will then attempt to infect any
+diskette that is placed in the drive bay and accessed (this is not
+true for more complex viruses which will test for write protection
+prior to attempting an infection thereby making themselves more
+difficult to detect).
+
+There are very few systems in use nowadays that do not have hard
+disks. When the computer has a hard disk, the above process takes
+on a much more devastating threat. Hard disks can not be write
+protected in the same way as floppy diskettes. Once a hard disk
+has been infected, then every time the machine boots, the virus
+is loaded and becomes active, infecting every diskette that it
+can.
+
+Another problem is the fact that hard disks have a mechanism
+whereby they can be partitioned. This was designed so that more
+than one operating system could be used on the same machine. Also,
+many computer operators choose to partition large hard disks for
+the purpose of storing data in a more logical way, or for the
+purpose of reducing the amount of wastage resulting from slack.
+The cluster size on hard disks is also dependant on the available
+space allotted to the FAT.
+
+Hard disks contain partition information in the Partition Sector
+at Track 0, Head 0, Sector 1. Within the Partition Sector, data
+is written in the Master Boot Record (MBR) which records the
+whereabouts of the Boot Sector that should be used during
+bootstrapping. This additional feature allows more scope for virus
+authors and further complicates the detection process. It is
+important that the infection process is understood so I will
+endeavour to explain this process in some length below, even
+though this involves some repetition of the text above.
+
+The following is the procedure used by an IBM Compatible PC during
+startup, assuming that the PC has a bootable hard disk:
+
+     Power On
+     Power On Self Test (diagnostic checking of hardware
+                         components, resulting in numerous
+                         copyright notices appearing on screen)
+          ROM BIOS now invoked
+               Keyboard test (lock lights flash)
+               Other internal checks
+               Check and Validate components recorded in CMOS
+               Check if exist Drive A: (light flash)
+               Check if exist Drive B:
+               Check if exist Drive C: (light flash)
+               Check if exist Drive D:
+               Test speaker (beep)
+               Test other stuff (whirr)
+
+At this point, if anything is wrong, you will get a "Setup
+Incorrect" message and an option to either press F1 to continue or
+F2 to enter Setup (or something of that nature).
+
+Now it is time to start up the operating system.
+
+     Check if a diskette in Drive A: (fairly big noise)
+        if yes, execute Boot Sector Loader Program (BSLP) Drive A:
+        if no, read Master Boot Record (MBR) Drive C: to locate
+           whereabouts of BSLP on hard disk then execute it.
+
+Whenever the BSLP (otherwise known as the bootstrap loader) is
+executed it will test for the existence of the hidden system files
+IO.SYS and MSDOS.SYS (or IBMBIO.COM and IBMDOS.COM) on it's own
+drive. If these files exist it will read IO.SYS into memory and
+then execute a sub program within IO.SYS known as SYSINIT. SYSINIT
+then continues the boot process. It will first look for CONFIG.SYS
+for configuration purposes. If CONFIG.SYS is not found it will use
+it's own default values. Next, SYSINIT loads MSDOS.SYS (contains
+system services). The reason for the read of the CONFIG.SYS file
+prior to loading MSDOS.SYS is so that user determined
+configurations can be provided for. Then last of all, SYSINIT
+loads COMMAND.COM (or other designated command line interpreter).
+COMMAND.COM then checks for AUTOEXEC.BAT and runs it.
+
+With the above in mind, it is possible to go through the process
+of infection by a boot sector virus. First we need to examine what
+happens when an ordinary clean non bootable diskette is left in
+Drive A:
+
+The ROM BIOS will find the BSLP and execute it. It will search for
+the system files and when it doesn't find them, display the
+message
+
+     Non System Disk
+     Replace and strike any key to continue
+
+At this point the BSLP will relinquish control back to the ROM
+BIOS. The user then has the option of removing the disk and either
+replacing it with a DOS system disk or allowing the machine to
+boot from the hard drive. Once a key has been pressed, the ROM
+BIOS will again test Drive A: first. If a floppy is found then the
+above process is repeated. If not it will read the MBR Drive C: to
+find the BSLP and then execute it.
+
+Now we can examine what happens when an infected diskette is left
+in Drive A: during boot up.
+
+Let us assume that the boot sector of the diskette has been
+infected by a previously infected machine. During the infection,
+it is likely that a copy of the original boot sector has been made
+and hidden somewhere on the diskette (this is not always
+necessary, there are other modes of operation). The BSLP has been
+overwritten by the virus. This is quite easy to do because all
+floppy diskette boot sectors are in the same place, ie, Sector 1
+track 0 side 0. All the information needed to make the diskette
+useable is located in the first few bytes of this area.
+
+Once the ROM BIOS executes what appears to be the BSLP, it has in
+fact executed the virus. Once the virus is in memory it can do a
+number of things. In many instances, it will execute the copy of
+the original BSLP that it made during the original infection
+process. This will in turn display the "Non System Disk .."
+message. The virus is now in memory but depending on the nature of
+the virus, can still be quite harmless. In some instances it may
+not infect the hard disk because it needs DOS to be loaded before
+it can perform many of its own operations (many use int 21h
+services). Again, this is not always the case, and the virus may
+be able to infect the machine without assistance from DOS. In many
+infections though, it waits for the user to remove the diskette
+and press a key. It then allows the ROM BIOS to read the MBR and
+load the BSLP of the hard disk. It might even allow operations to
+continue right up until after SYSINIT is loaded.
+
+Somewhere along this process, the virus will infect the hard disk
+of the machine. It will normally write it's own code to the Master
+Boot Record because it is this area of the hard disk that is read
+first during a hard disk bootstrap. Some viruses might only write
+to the boot sector of the hard disk though this is unusual. Either
+method will work, and will result in the virus becoming active in
+memory every time the computer is started. Once the computer is
+infected, then every diskette, without write protection, that is
+placed in Drive A: will become infected.
+
+Many BSI viruses employ stealth techniques to prevent themselves
+being discovered. Mainly this involves reporting false information
+to DOS and to utilities such as anti-virus TSR Monitoring
+programs.
+
+Stealth is a term used to describe many methods that viruses use
+to hide themselves. One of the most common is to report that the
+machine has only 639Kb of available memory. This will not be
+considered as unusual because many computers (eg, IBM PS1) retain
+1Kb memory for BASIC ROMs. Other methods include deliberately
+reporting false information to requests for DOS services. This is
+achieved by taking control of DOS interrupts and calculating the
+expected outcome of the request, or passing on the request to DOS.
+Some BSI infectors hide themselves in the High Memory Area (HMA).
+This will only be discovered if the computer operator changes the
+BUFFERS line in the CONFIG.SYS to a value than can be normally
+accepted in the HMA but actually forces the buffers into low
+memory, though it would be a knowledgeable computer user that
+would notice this. Most computer operators will not even be aware
+of the loss of memory due to any action by a virus, and will
+generally continue to use the machine without further
+investigation. We, as computer users, allow ourselves to become
+infected because of our ignorance.
+
+The most successful virus ever in the United Kingdom, Form.A, is a
+simple BSI. The main reason why it has achieved its success is
+because it was originally spread widely by a shareware company on
+infected diskettes and because it simply does not work properly.
+If a user looks into the virus encyclopedias that accompany
+anti-virus packages he/she will find that the description of
+Form.A, will tell them that the virus activates on the 18th of
+each month causing clicking noises and displaying a derogatory
+message concerning a lady named Corrinne. However, this activation
+will only take place if the virus is in a machine using a code
+page for Austria/Switzerland, ie, 38. In the UK the code page
+value that is used is 44 so these effects do not occur. The virus
+therefore continues to replicate without the user being aware of
+its existence. It effectively does not perform the trojan activity
+that it was designed to do. The fault in the information given by
+the anti-virus packages is easily excusable. The programmers that
+have taken the virus apart simply report what it is designed to
+do, then get on with the next virus. This shall be discussed later
+in the section on Glut.
+
+Document Infecting Viruses
+--------------------------
+
+These are the most recent type of viruses. They utilise the
+complex macro languages that are incorporated into modern
+application programs. Most of these application programs allow
+macros that have been embedded in documents to execute
+automatically. This is a feature which can be used to automate
+repetitive tasks. However, this feature can also be used to
+support replicating code. In the macro viruses that have been seen
+to date, the virus code overwrites the default document settings
+thereby infecting all documents that are modified or created using
+that application program.
+
+There is no reason to suspect that this will be the only method
+used to infect documents. There are probably other viable methods.
+Also, the viruses that have been written to date, are not
+particularly sophisticated. Indeed, the Winword.Nuclear virus
+attempts to drop a conventional virus into the computer, but fails
+because it is unable to escape from it's current window. A little
+more thought towards the development of this activity by the
+author might have resulted in a viable method of dropping the
+conventional virus.
+
+Other Types of Infection Mechanisms
+-----------------------------------
+
+Many viruses do not fall easily into the above categories. In
+fact, many of them cross the boundaries of the above definitions.
+A good example of this is the Tequila virus which can attack
+systems both as a program file infector and as a BSI. This type of
+virus is known as a multi-partite virus.
+
+There are viruses which are known as file system or cluster
+viruses. These viruses, eg, DIR II, and Byway, modify directory
+table entries in the FAT so that the virus is loaded and executed
+before the desired program is. Note that the program itself is not
+physically altered, only the directory entry is. Some consider
+these infectors to be a separate category of viruses, while others
+consider them to be a sub-category of the program file infectors.
+
+The experimental Whale virus can be described as all, or none of
+the above. Viruses which affect other operating systems use
+entirely different attack mechanisms to those described above. In
+general, if there is a way to get code loaded into memory that is
+not immediately perceivable by the user, then the virus author
+will try to exploit it. Not all vulnerabilities have been attacked
+though; there are still a considerable number of avenues open
+to the virus author to exploit.
+
+
+     Operating Systems
+     =================
+
+This section attempts to deal with the way in which known viruses
+infect popular operating systems.
+
+IBM Compatible PCs
+------------------
+
+These are the most common personal computers on the planet. Users
+generally have to know a bit about the operating system in order
+to make them work properly. This necessary acquisition of
+knowledge means that they are the target for most virus authors
+(who have become knowledgeable about this type of system). Many of
+the attack mechanisms have been described in the section above.
+There are known to be in excess of 7000 viruses that have been
+written for the IBM Compatible PC.
+
+One of the main reasons why this type of system has been targeted
+so much is the fact that there is generally a requirement to
+provide backward compatibility when the operating system or
+hardware is advanced. This is due to the large numbers of business
+users that require their existing software to run on more modern
+hardware. Virus authors are interested in the longevity of their
+creations, so this system is by far the most attractive target.
+
+Another reason was originally the availability of the machines to
+youths. Many viruses have been written on machines that have been
+made redundant by companies and then given out to the parents of
+the virus authors. Older IBM machines were not very powerful and
+entertaining software was either not available or was unable to
+run on the machines. Youths that became interested in the machines
+started to write viruses.
+
+Many viruses, especially the older ones, originated in Eastern
+Europe, mainly Bulgaria, which is the equivalent of Silicon Valley
+to the former Eastern Bloc nations. IBM Compatibles were really
+the only affordable type of equipment to people in these
+countries.
+
+Macintosh PCs
+-------------
+The Apple Macintosh family of computers work around the Motorola
+MC680x0 family of CPU's.  The exception being the PowerMac range,
+these are powered by the Motorola PowerPC RISC CPU.  Having a
+different CPU makes these machines resilient to the viruses which
+plague the Intel 80x86 based computers (PC's), but that doesn't
+mean viruses do not exist for Macs, they do and some are more
+virulent than those found on PC's.
+
+Executable files on the Macintosh (Mac) consist of two areas (or
+forks), the data fork and the resource fork. The resource fork
+contains a variety of resources of varying types containing a wide
+range of executable code and associated configuration information
+in a highly structured form. Examples of resources include window
+definition code, data strings, icons, patches and "init" start-up
+code.
+
+The following list indicates those Mac code resources for a
+pre-System 7 operating system that have been used by virus
+writers:
+
+     CDEF      Control Definition Function;
+     MDEF      Menu Definition Code;
+     CODE      Application Code;
+     FKEY      Function Key Code;
+     INIT      Initialisation Routine;
+     WDEF      Window Definition Function;
+     CDEV      Control Panel Device.
+
+Mac viruses can be grouped by the objects modified, and by the
+means of modification. Key objects include the system file (which
+contains the key resources comprising the operating system),
+system folder entries (containing supplementary INIT, CDEV and
+other code at start-up), desktop (containing icons, bundles and
+other information associated with active disks and folders) and
+the application resource forks themselves. The desktop was
+restructured in System 7, making desktop viruses such as WDEF and
+CDEF obsolete.
+
+This possibility of change in the operating system is a deterrent
+to a virus writer who wants his creation to exist as long as
+possible. Indeed the prospect of change may have been the major
+deterrent against the production of MicroSoft Windows specific
+viruses on the IBM Compatible, although a few are known to exist.
+
+A curiosity infection concerning the early nVIR A and nVIR B
+strains was that they would search for each other within the
+infected machine. If they found each other they would combine to
+produce a new strain of virus which will be a hybrid of the
+resources contained in each strain, containing CODE resources
+from one strain and nVIR resources from the second. At first
+glance it appears that this might be construed as procreative
+activity but this is not the case. It is simply the swapping of
+complete component parts that are viable alternatives for the
+functionality of the virus code.
+
+Many virus authors claim that their creations are artificial life.
+I do not subscribe to this point of view because viruses do not
+compete for common resources (a possible contradiction to this is
+in the section on Others below) in the same way that organisms do.
+Neither do they evolve. There have been instances of mutation and
+corruption of viruses due to particular circumstances within a
+specific computer setup. However, these mutations will generally
+render the code inoperable. No computer virus has ever shown any
+propensity for evolution. Even artificial intelligence systems
+have never shown any capability in the area of evolution;
+primarily, they do not even contain replicating elements.
+
+UNIX
+----
+
+Does malicious software exist for the UNIX platform? The answer is
+yes and no. There are research virus strains that were created by
+Fred Cohen and binary viruses by Tom Duff. Also there is the Great
+Internet Worm which was written by Robert Morris Jnr. UNIX like
+any other operating system is susceptible to virus code. The main
+reason why there is a void is because virus authors normally do
+not have the resources to run UNIX systems at home. There are
+"in house" trojans that have been found.
+
+Recently, the availability of the free Linux operating system, a
+variant of UNIX makes viruses in the UNIX environment much more
+likely. Authors now have a means to explore the operating system.
+
+Novell
+------
+
+The Novell corporation is quite secretive about how it's operating
+system works and this, along with the resource needs mentioned for
+UNIX above, has meant that very few viruses have been written
+specifically to attack it. The most notable virus that has been
+targeted at Novell systems was discovered in August/September 1994
+and is known as the No-Smoking virus. This virus uses DOS services
+to extract information regarding users from the server. It's
+payload is the sending of messages from one user to another
+namely:
+
+                Friday I'm in Love!
+
+        or      No Smoking, please! Thanks.
+
+Obviously this could create a considerable amount of confusion
+among the users of a network. There is no reason to believe that
+this virus is not the first of many, and it does create problems
+for Novell who are presently attempting to obtain both C2 and E2
+Security Classifications for the next release of Novell Netware
+Version 4.+
+
+It should also be noted that claims were made by members of the
+audience, during a Novell related seminar at the Annual Virus
+Bulletin Conference in 1994 that the execute only flag can be
+compromised. This was reported to the public at large in the
+December 1994 issue of PC Plus magazine.
+
+There is reason to believe that a number of companies that sell
+backup software for Novell systems have been able to undermine
+some of the protection within the Novell operating system. They
+have found this to be necessary because of over zealous network
+administrators who have restricted access to files to such an
+extent that the backup process can not function properly.
+
+Others
+------
+
+Amiga computers have a considerable number of viruses which are
+notable for their apparent anti-virus behaviour, where the virus
+attempts to seek out and destroy other viruses on the host
+machine. These are the only viruses that appear to compete for
+resources, yet they are long way for being classified as being
+alive. Most viruses for these machines have been written in
+Western Countries where the machines are mainly used either as
+games platforms, or professionally, for image editing.
+
+Atari computers have a boot process which is similar to IBM
+Compatible PCs and suffer the consequences of similar BSI type
+infections.
+
+Multi Platform Viruses
+----------------------
+
+One of the consequences of the development in standardisation of
+application programming interfaces (APIs) is the possibility that
+viruses can be written which can cross platforms. The second area
+of emergent standards is the application binary interfaces (ABIs).
+ABIs allow binary compatibility across platforms. An example of
+this is the ability to port Intel code to run via an emulator
+under Sun Microsystems Solaris 2.3 using the Windows ABI (WABI).
+WABI allows sophisticated Windows applications such as WordPerfect
+to be run under Solaris.
+
+Examples of emulator viruses were encountered on the Atari ST when
+running one of the prevalent Apple Mac emulators. The Aladin and
+Frankie ST viruses were detected as long ago as 1987.
+
+As stated earlier, document infecting viruses do not require a
+specific operating system on which to run. They rely on the
+environment that is provided by the application program. If the
+targeted application program can run on more than one operating
+system, then there is nothing to prevent the virus from moving
+freely between these operating systems.
+
+
+     Prevention, Protection and Control, A Policy Issue
+     ==================================================
+
+General Overview
+----------------
+
+Computer viruses do not know about the difference between private
+non-commercial computer users and corporate institutions. They
+will attack either system with the same indiscriminate ferocity.
+However, it is important to recognise that the means by which
+countermeasures are employed and the approaches used are
+considerably different in these environments.
+
+Countermeasures in the Corporate Environment
+--------------------------------------------
+
+Every organisation should have a policy or a list of procedures to
+protect their data. Part of this "policy" should include
+countermeasures to prevent attack and infection by computer
+viruses. There is an obligation in the UK under the Data
+Protection Act for holders of data on individuals to ensure that
+the data is correct and available. The activity of viruses may
+prohibit the availability or undermine the integrity of data. The
+procedures below are aimed almost entirely at IBM Compatible
+machines.
+
+  Cost Effective Prevention Methods
+
+Common sense approaches to the resolution of all problems will
+generally be the most effective and will also cost the least.
+These are mainly concerned with the utilisation of the resources
+that are already available. I have listed below, some general
+procedures which can be adopted by almost any corporate user of
+computers.
+
+1.   Check to find out whether the CMOS on the machine has a
+     setting which will permit the boot process to ignore the
+     diskette drive. If this is set, the machine will
+     automatically be immune to infection by BSI (not
+     multi-partite) viruses. This is significant in that 90% of
+     successful virus infections are all BSI. This action alone
+     will reduce potential infections by over 90%.
+
+2.   Only permit authorised software to run on the machine.
+     Authorised software means ONLY the software that is required
+     for the user to perform his/her job. This should not be
+     confused with legally licensed software. Even if the
+     organisation has a licence for software that it no longer
+     needs, remove it from the machine. Unlicensed software should
+     be removed and destroyed. All users should be made aware that
+     they will be disciplined if unauthorised software is found on
+     their machine.
+
+3.   Ensure that all machines have the BIOS "Power On" password
+     set. This will prevent access to the machines by unauthorised
+     users.
+
+4.   Format all new floppy disks coming into the company /
+     organisation using the /U (unconditional) switch. This
+     includes pre-formatted diskettes which can optionally be
+     quick-formatted using the /Q switch. Make the formatting
+     facility available as a selectable menu option or icon so
+     that it can be controlled.
+
+5.   Test hard disks for unauthorised executables during the boot
+     process, and if any are found, lock the user out of the
+     machine. Sophisticated software can be obtained to do this
+     automatically.
+
+6.   Restrict all access to the command line, or file management
+     facilities that are normally available to the user.
+
+  Cost Effective Monitoring Methods
+
+1.   Make copies of executable files, eg, copy WP.EXE to WP.CHK
+     and periodically run a file comparison between the two files,
+     ie,
+
+          FC WP.EXE WP.CHK
+
+     which will show up differences that may have been caused by
+     most virus activity.
+
+2.   Ensure that IT managers scan machines periodically with up to
+     date anti-virus software to verify that they are free from
+     infection and then take copies of the Boot Sector, Partition
+     Sector, and CMOS settings. This can be done by using either
+     Norton Utilities or Central Point's PC Tools to make a rescue
+     diskette. It should be noted that Norton Utilities for the
+     Mac can be used to create rescue diskettes for that platform.
+     Many anti-virus applications can also be used to create
+     rescue diskettes, good examples are Dr Solomon's Anti-Virus
+     Toolkit, Thunderbyte, and VET.
+
+3.   Once a machine has been verified as clean from infection, and
+     a rescue disk has been created, copy the AUTOEXEC.BAT and
+     CONFIG.SYS files to the rescue diskette (it is wise to rename
+     these files to AUTOEXEC.BAK and CONFIG.BAK to prevent the
+     rescue diskette from running programs from the hard disk
+     during an emergency bootstrap). Some DOS files should also be
+     copied when space is available on the diskette. This should
+     include a small text editor such as EDLIN.EXE (Note, DOS's
+     EDIT.COM will not work without QBASIC.EXE being present and
+     this is a large file which will occupy unnecessary space on a
+     rescue diskette), SYS.COM, FDISK.EXE, FORMAT.COM, CHKDSK.EXE,
+     ATTRIB.EXE, FC.EXE, etc. These files can be used to clear
+     viruses from an infected machine.
+
+     EDLIN.EXE may be unfamiliar to staff who have only used DOS
+     Ver 5 and above and may be too difficult to use. There are
+     many public domain editors that can be downloaded from local
+     BBS systems.
+
+4.   Rather than disposing of old computers, it would be better to
+     keep at least one of them to act as a dirty machine. This
+     machine can be used as the scanning platform for new
+     diskettes when they arrive into the office environment. When
+     selecting which old computer to keep for this process, verify
+     that the write protection pin is working on the computer.
+     This can be done by write protecting a diskette and then
+     attempting to copy a file to the diskette. If the copy
+     process fails, then the write protection pin is functioning
+     normally.
+
+5.   All computers should have their write protection pin tested
+     before authorised use. Should the need arise to boot from a
+     write protected boot diskette, and the pin is inoperable,
+     then the default is write enabled. An infection on such a
+     machine could then result in the contamination of the
+     anti-virus diskettes.
+
+6.   If the corporation is large and can afford a test machine,
+     ie, an up to date model that can run current software
+     applications, then this should be set up and controlled by
+     the appropriate member of staff. This machine should test all
+     incoming software for the maximum amount of time possible.
+     This machine should have integrity checking anti-virus
+     software installed, and this should then be run periodically
+     to validate that the software under test is not behaving in
+     an unusual manner.
+
+7.   Perform the maximum amount of scanning possible after any
+     system has been repaired by a maintenance contractor.
+
+  Risk Analysis
+
+Corporations should use Risk Analysis techniques to identify the
+possible consequences of infection on systems. If the cost of
+protection outweighs the risk then management may elect to take
+the risk. Yes, computer viruses like all other business matters
+cost money. However, the cost of protection is generally minimal
+and therefore it would be highly unusual that there would be
+systems without some form of anti-virus protection.
+
+There are many computer consultants that can provide this type of
+analysis. Even though it is a costly exercise, advice from a risk
+analysis may well save the corporation from other disasters which
+are more significant than a virus infection.
+
+  Funding the Protection
+
+If the money is available to run anti-virus software on all of the
+machines continually, a situation which I would strongly recommend
+(I would not recommend the use of the MS DOS anti-virus software
+that is free with DOS Ver 6+), then considerable thought should go
+into what anti virus products to use.
+
+Primarily, there should be a standard package which is running on
+all users machines (I use F-Prot for this task), which should be
+backed up by another reputable package (I use Dr Solomon's
+Anti-Virus Toolkit, Thunderbyte, and AVP). Both the main package
+and the backup package(s) should be easy to use from a bootable
+DOS diskette (it doesn't really matter how nice their Windows
+interface is). It is extremely important that the packages use
+similar virus names. The products I use do try to do this, but
+when new viruses appear there is generally a delay in
+standardising the name. The main reason why the naming standards
+should be the same is so that an identified infection can be
+validated. Scanning for viruses has become an extremely
+complicated process and False Positive Identifications are more
+common than infections. Also, there is the problem that the user
+may perceive an epidemic of infection if both products are
+reporting different names for the same virus.
+
+Make the time available for at least one user to learn how to use
+the software properly. This is the most expensive part of
+anti-virus protection, but it is the by far the most important.
+Not only should that user be proficient in using the software, but
+he/she will also have to identify an external expert advice
+source, in case of an emergency. A good example of the reason for
+this is to consider infections by Form.A and Ripper.A (alias Jack
+the Ripper). Both are BSI viruses, and both are in the wild in the
+UK. Both can be easily identified by any of the reputable
+anti-virus software packages. The difference is in the effects of
+both viruses. One, ie, Form.A is almost benign and causes little
+damage, the other, ie, Ripper.A is a data diddler (slowly corrupts
+data) type virus that corrupts data by changing write values about
+every one thousand disk writes. As both viruses can be removed
+easily using methods described in the disinfection section below,
+the user may believe that the infection is over, when in fact
+their lack of knowledge may permit a backup overwrite of the last
+remaining valid data backup tape.
+
+Selection of the "expert" user can be a complicated task.
+Primarily, this individual should have some expertese in the
+understanding of computer systems. Also, he/she should be a good
+communicator, and be at ease when addressing groups of people.
+This individual should ultimately provide awareness training to
+all staff in the organisation. Another role for this individual is
+the gathering and distribution of awareness posters and
+documentation. It should be remembered that the average cost of a
+virus infection is in the region of 4000 UK pounds (approx $ 6000
+USA).
+
+Another reason to obtain external advice during an infection is
+the fact that over 90% of companies that become infected by a
+virus are re-infected by the same virus within thirty days. One of
+the reasons for this is that many users keep personal information
+on their own diskettes which may not be made available during the
+clean up process. Awareness training will prevent this because
+users will be knowledgeable enough to ensure that their own
+diskettes are handed in during the clean up process.
+
+Finally, the last reason to have an "expert contact" would be to
+deal with false positive identifications.
+
+Realistically, the expert contact should be the anti-virus vendor
+that sold the anti-virus software to the corporation in the first
+place. Good vendors will keep in contact with the purchasing
+officer and will advise them about developments in the area of
+computer viruses.
+
+Finally, good control of incoming and outgoing data means that the
+users might only be expected to scan diskettes that come into
+their possession. This can again be provided as an automated
+procedure as a menu option or an icon.
+
+Countermeasures in the Home Environment
+---------------------------------------
+
+The home computer user takes on all the roles associated with the
+continuity of the operation of their computer. In most instances,
+this means a significant learning process.
+
+The following countermeasures are easy to implement by normal
+computer users without these individuals having to understand the
+complex operations involved within the operating system. I have
+only been a computer user four four years, and I do not fully
+understand all the vulnerabilities associated with computer
+systems, yet I am reasonably confident that I can protect my
+computer against virus infection.
+
+1.   Check to see if the CMOS can be set to boot from the hard
+     disk instead of the default setting of booting from the
+     diskette drive. Information on how to access the CMOS will
+     be available in the manual that was delivered along with the
+     computer system when it was purchased.
+
+     By performing this action, at least 90% of the threat to the
+     system will be eradicated. It does not provide a remedy for
+     90% of viruses, because most viruses are program file
+     infectors. It just happens that the most successful viruses
+     are boot sector infectors.
+
+2.   Prohibit or diminish the threat to the original software
+     diskettes. This means that the write protection tab should be
+     clipped to the position where there is a hole that can be
+     seen through. This can be a problem with some software, in
+     that during the installation process, some application
+     programs require a write to the diskette to prevent illegal
+     copying.
+
+     Should this be a problem, do not be persuaded to remove the
+     write protection tab as an initial solution; instead, allow
+     the installation to fail and then attempt to make a copy of
+     the diskette in question. Obviously, some diskettes have been
+     configured to prevent this action, again to prevent illegal
+     copying, but it is worthwhile attempting to perform this
+     action anyway.
+
+3.   Choose a reliable anti-virus software program and install it
+     on to the computer (do not rely on the anti-virus software
+     that comes supplied with DOS, it is not good enough quality,
+     and it is out of date). Keep this software up to date, and
+     use it to scan all incoming programs whether they be on
+     diskette, CDROM or downloaded via modem.
+
+4.   Read the anti-virus software manual carefully and make a
+     rescue diskette if the product provides this facility. Always
+     keep rescue diskettes separate from other transient diskettes.
+
+5.   Make data backups. It has become virtually impossible to make
+     complete backups of computer systems because the application
+     programs continue to grow in size. It is only a fortunate few
+     who can afford a tape backup system for a home computer.
+
+     Data backups mean that data creation should be carefully
+     considered, ie, the creation of suitable directories where
+     data can be stored.
+
+     A home computer that is used to run a small business must
+     have some form of tape or other backup device fitted to the
+     computer system whereby the complete system can be backed up.
+     Not only should this equipment be purchased and installed,
+     but the backup procedure should be carried out rigourously.
+
+6.   Once the user has become acquainted with the operation of the
+     computer, ie, knowledgable about the difference between
+     programs and data, then establish an integrity checking
+     archive using the chosen anti-virus software product.
+
+     It is preferrable that this archive is stored on a diskette
+     rather than on the machine. When considering which anti-virus
+     product to buy, ask the vendor whether this is available with
+     the product under consideration.
+
+7.   Periodically scan the computer's hard disk for viruses. This
+     involves booting from write protected clean DOS diskettes
+     prior to running the scan, which should preferably be done
+     from a write protected diskette.
+
+8.   Never be in a rush to obtain the latest software, especially
+     software that is available for download. Always allow some
+     time to elapse prior to testing software. This is especially
+     true of diskettes that accompany computer magazines. There
+     have been seven instances of viruses being distributed in
+     European computer magazines in 1994/1995.
+
+9.   Exercise some control over who has access to the computer.
+     Obviously, the system will have been bought to benefit all of
+     the family. Nevertheless, encourage children to leave all
+     diskettes that they might have traded in the school
+     playground in the scanning tray. Try not to delegate the
+     scanning task. Make it one of the rules for the right of
+     access to the system that all diskettes are validated by
+     yourself. You, as the owner of the computer are responsible
+     for it's contents, so it is you who must test and validate
+     all software that is to be loaded onto the system.
+
+10.  Try and find a contact who can be aproached at a time of
+     emergency. This is not necessarily the same person that would
+     normally be contacted after a hardware, or software
+     installation problem. Many anti-virus products are shareware
+     (even freeware for non-commercial use) and there may not be a
+     vendor to turn to in times of emergency. Freeware products
+     can not be expected to be supported.
+
+     The best place to turn to is probably the BBS SysOp should
+     advice be required. Many SysOps are probably not experts in
+     the field of computer viruses, but they are likely to be able
+     to point you in the right direction. This may involve calling
+     in someone that requires payment for a service, but by doing
+     this earlier rather than later can save considerable problems
+     later on.
+
+
+     Locating and Eradicating
+     ========================
+
+There is a considerable difference between the identification and
+the eradication of a virus infection. It should also be remembered
+that an attempted attack by a virus is not an infection. This
+section is dedicated almost solely to IBM Compatible machines.
+Other platforms have a lesser volume of viruses and consequently
+have less risk of infection. Nevertheless, the basic control over
+incoming and outgoing data is still equally important.
+
+Commercial Anti-Virus Packages
+------------------------------
+
+Most commercial anti-virus software packages have four components
+which are made up by a TSR monitor, a scanner, an integrity
+checker and a disinfector.
+
+  TSR Monitor
+
+A Terminate and Stay Resident program (a program that is generally
+loaded during startup and continues to run during the current
+session on the computer) can be used to perform a number of
+processes. These programs can check for virus like behaviour in
+memory. One of the most effective methods used by these monitors
+is to validate the contents of files as they are executed or
+copied. Indeed, they are very reliable at finding BSI infected
+diskettes. This is done by checking through data that is copied
+into RAM when a floppy disk is accessed.
+
+The Boot Sector and FAT of the diskette is copied into the memory
+area just above DOS when the diskette is being accessed. The
+monitor can then check this data and identify BSI infections on
+the diskette. It should be noted that the process of copying this
+data from the diskette by DOS will not cause an infection because
+the program in the boot sector is not executed. Viruses can only
+replicate after they have been executed. Up until they have been
+executed, the program code is just data.
+
+Many TSR monitor programs are capable of identifying the more
+common viruses in the wild. Obviously, they can not be expected to
+protect against all viruses because they would become too large,
+and that would be restrictive on the resources of the computer.
+
+  Scanner
+
+The scanner is an incredible piece of software engineering. Most
+have been written using proprietary dedicated languages which have
+been independently created by the company involved. Scanners
+generally validate themselves prior to operation, then check
+through memory to make sure that no suspicious activity is taking
+place prior to checking through the files on the disk. In many
+ways the scanner is the most important part of the package in that
+it is much more comprehensive in it's ability to detect viruses
+than the monitor program.
+
+The scanner should be used periodically on each machine and every
+diskette, including shrink wrapped software diskettes, which
+should also be scanned prior to allowing software from those
+diskettes to gain access to any machine. It is preferable that a
+scanner is used on a dirty machine as discussed above.
+
+Scanning a diskette from a clean hard disk is acceptable. However,
+periodic scanning of the hard disk should be performed by booting
+from a clean, write protected diskette. This will ensure that no
+stealth virus is in memory thereby compromising the scan.
+
+Anti-virus vendors are in a constant race against each other in
+order to keep their scanner up to date. Software comparisons in
+computer magazines always compare the detection rate of scanners
+and generally disregard the monitors and the integrity checkers.
+These reviews also seem to concentrate on the speed of the
+product. Realistically, speed comparisons should not be considered
+as a significant reason to buy one scanner as opposed to another
+product. Most scanning will be performed on diskettes, and it is
+the speed of the diskette drive that has most influence on the
+duration of the operation. Computer journalists are not experts on
+computer viruses. Indeed, their normal criteria for evaluating
+software generally concerns the analysis of the potential
+productivity of software. Anti-virus software does not fall into
+this category, and reviews are normally flawed.
+
+  Heuristic Scanning
+
+Most modern anti-virus software packages will have an option
+within the scanner that provides an heuristic analysis of the
+programs on the target diskette or hard disk. Heuristic scanning
+is basically an intelligent analysis of the machine code in
+executable files. This is different to the identification by
+comparing known portions of virus code. Many uninfected programs
+will have code that may be identified by the scanner as being
+suspicious and programs that are clean might be flagged as being
+suspicious. This can lead the user to believe that they have a
+virus infection when there is none.
+
+Where programs have been flagged as being suspicious, it is best
+to increase the useage of the integrity checking facility within
+the anti-virus software. This will validate whether an infection
+has taken place.
+
+Although the possibility of false positive identification of
+infection seems to be a greater hinderance than a help, it is a
+viable method to employ to identify previously unknown viruses.
+It's greatest benefit is in the analysis of new software coming in
+to the system. If the executables are flagged as being suspicious,
+then do not run the software. Leave it for a while until you can
+verify that the software is free of infection from another source.
+Contacting the original author of the software and explaining what
+has happened might result in the response that the software
+company is already aware of the problem and have already contacted
+the anti-virus vendor.
+
+Software houses do not want their software to be flagged as
+suspicious, so they will be very interested in any report of such
+an incident.
+
+  Integrity Checkers
+
+These programs evaluate files on the disk and write data files
+containing information about them. The data files can be similar
+to a list of CRC values (mentioned above) and in the better
+products, allow this data to be stored on a diskette. By storing
+this data on a diskette it is possible to prevent a virus from
+tampering with the integrity data.
+
+Some products base their protection on integrity checking, and in
+the final analysis, this is probably the safest form of protection
+for a computer system. However, evaluating an integrity check
+generally requires some knowledge on behalf of the user of the
+product. This may well be beyond the capability of many computer
+users.
+
+On procurement of a product, make sure that there is an integrity
+checking option available, even though this might not be used
+fully until knowledge of the operation of the system is understood
+by the user.
+
+  Disinfectors
+
+In general, all of the reputable packages are good at detecting
+viruses, particularly those viruses known to be in the wild. Most
+viruses are not in the wild for various reasons, they are badly
+written and can not really survive very well, they have not been
+lucky in distribution, etc. Once a virus has been detected, the
+disinfection part of the software comes into play. Many of the
+packages incorporate the disinfector into the scanner.
+
+Many viruses can not be disinfected properly by these programs
+because some viruses irretrievably corrupt the programs during
+infection. Sometimes, the disinfection process will not work, even
+when the disinfection is claimed by the vendor. This can happen
+because viruses are modified by other authors, and the scanner may
+have incorrectly identified the infection. It is best to find out
+as much as possible about the virus before attempting
+disinfection.
+
+Disinfection is really only acceptable for the eradication of
+boot sector infections. It is always better to restore good copies
+of infected programs from original (clean) software diskettes.
+
+Realistically, the only point where a disinfector becomes
+essential is when the computer is in transit, such as a portable
+(laptop) computer. The user of this system may not be able to
+carry around clean copies of the original software, so the quality
+of the disinfector should become a more important topic for
+consideration.
+
+
+     What to do when an infection is suspected
+     =========================================
+
+1.   Don't Panic!
+
+2.   Validate the infection using another anti-virus product, if
+     possible.
+
+3.   Evaluate the damage, if any, that has been done by the virus.
+
+4.   Report the incident to the Metropolitan Police and they will
+     tell you whether they require a sample of the virus.
+
+5.   If a sample should be taken, ask for advice or get help from
+     a knowledgable source.
+
+     Normally the user can capture the virus on diskette by
+     performing the following actions:
+
+          format a diskette using the infected system;
+
+          copy several .EXE programs to the diskette, ensuring
+          that they are programs that are used regularly, and also
+          ensuring that there is a variation in the size of the
+          programs, ie, one below 10K, one between 10K and 50K and
+          one greater than 50K in size;
+
+          copy several .COM programs to the diskette, using the
+          same criteria as the .EXE programs;
+
+          copy some .OVL files if any can be found on the system;
+
+          copy a couple of new .EXE (Windows .EXE files) on to the
+          diskette as well.
+
+6.   Look up what available information is available in the
+     anti-virus software manual (or on-line database) and decide
+     whether you are capable of dealing with the virus infection
+     independently.
+
+     If you are not happy that you can deal with the infection,
+     then obtain advice from a knowledgeable source. Do not assume
+     that a shop assistant in a computer store will be able to
+     help.
+
+7.   Prior to taking any cleansing action, try to identify the
+     source of the infection. This is very important because it
+     may well save you having to go through the whole procedure
+     again in a few weeks time.
+
+8.   Perform the disinfection ensuring that the process extends to
+     all machines and diskettes that have possibly been in contact
+     with the infected machine. This must be thorough, in many
+     instances, this process can find other infections, especially
+     in diskettes holding BSI viruses.
+
+     Disinfection is preferrably performed by replacing infected
+     programs with clean originals. Only attempt to use the
+     disinfection capability of the anti-virus software as the
+     last option available.
+
+As stated above, it may not be possible for the anti-virus
+software to adequately disinfect a machine. In many instances this
+can be very confusing for the user. The best example of this is
+BSI infections. If the infection is on a diskette then most of the
+commercial packages can remove it in an instant. This is not the
+same for infected hard disks though. It is best to check the
+information available from the manual or the anti-virus database.
+
+Should the infection be caused by an unknown virus, the anti-virus
+product might not permit a disinfection. If this is the case, then
+for program file infecting viruses, a restore from backup is the
+only option. In cases of BSI infections of the hard disk, it is
+possible to remove unknown viruses using programs that are already
+available on the original DOS diskettes.
+
+FDISK is used to create and remove partitions on the hard disk.
+Any virus that has overwritten the Master Boot Record (located in
+the partition sector) can be eradicated using FDISK. A serious
+word of warning though, if the C: drive can not be accessed after
+booting from a clean DOS diskette, do not use FDISK to attempt to
+remove the infection. Some viruses encrypt important information
+used by DOS and removal of the virus by overwriting will render
+the contents of the hard disk as being irretrievable.
+
+If C: can be accessed, change to the hard disk and validate the
+contents of the directories prior to cleansing. Some viruses have
+been known to encrypt data areas of the hard disk instead of the
+important areas used by DOS. Should this have happened, the
+utilisation of defragmentation after the machine has been booted
+with the virus in memory might be a suitable method of regaining
+access to the data.
+
+If all is well on C: then FDISK /MBR can be used to overwrite the
+infected Master Boot Record. The /MBR switch has remained as an
+undocumented feature of FDISK up until DOS Ver 6.1 so this feature
+should only be used as a last resort.
+
+The program SYS.COM can be used to eradicate infections in the
+boot sector of the infected hard disk. The command is SYS C: which
+will transfer operating system files to the hard disk and
+overwrite the boot sector with new data.
+
+A word of caution. The above paragraphs are generalisations that
+do not always apply, a good example would be an infection by the
+Exebug.A virus which writes to the CMOS thereby setting the
+machine to boot only from the hard disk. Even when booting from a
+write protected diskette, the machine is still infected. This is
+done by checking for a bootable diskette in the A: drive after the
+virus has loaded into memory. If a bootable floppy is present the
+virus instructs the boot sequence to operate from the floppy
+drive. The user then believes that the machine has booted from the
+diskette. Because of the stealth characteristics of the virus, the
+user may think that the machine is being disinfected when in
+reality it is not. This virus is discussed at length in the
+article entitled "The Death of the Clean Boot" by Iolo Davidson,
+in Virus News International, April 1993.
+
+Overall, find out as much about the virus prior to attempting to
+remove it. The manual for the chosen anti-virus product, and it's
+on board database are probably the best places to start.
+
+
+     Prospects for the Future
+     ========================
+
+The Glut
+--------
+
+The Glut is a term introduced to the field by Vesselin Bontchev in
+a paper presented to the 4th International Virus Bulletin
+Conference on the 8th September 1994. He is Bulgarian and is
+widely regarded as one of the world's foremost authorities on
+computer viruses. He has one of the largest collection of computer
+viruses in the world.
+
+The following is a brief record of the contents of his paper (some
+parts of the text are quoted directly while others are
+paraphrased):
+
+The main observable problem with virus creation is volume.
+Although, statistically speaking the curve of virus creation is no
+longer exponential there are still three or four new viruses every
+day. This volume creates a number of problems for authors of
+scanning software.
+
+1.   It is now impossible for a new anti-virus company to enter
+     the field, because, by the time it would take for them to
+     research existing known viruses there would be so many new
+     viruses that they would always be two years behind the
+     competition.
+
+ This observation has now been proven to be incorrect. AVP has
+ come to prominence in the last year.
+
+2.   A number of virus authoring packages are now widely
+     available, ie, application programs that create viruses on
+     behalf of the user (virus author).
+
+ This observation holds true.
+
+3.   Unscrupulous individuals, notably Mark Ludwig, author of the
+     Little Black Book of Computer Viruses, are selling thousands
+     of viruses on CDROMs.
+
+ It has been over a year since the CDROM became available, and
+ there is no statistical confirmation available regarding a
+ significant increase in the number of infections that can be
+ attributed to the circulation of the CDROM.
+
+4.   It is possible that a Virus Mutator application could be
+     developed. This would be an application program that could be
+     fed with existing viruses and then recreate the virus in a
+     new form. This is a natural extension to the development of
+     the authoring packages described above, and other trends.
+
+ There is no evidence to suggest that such an application program
+ is under development yet.
+
+5.   Targeted attacks on anti-virus products have become the norm.
+     Many viruses now look for the presence of known anti-virus
+     packages and perform an activity which will disable the
+     scanners, monitors, etc. These viruses are commonly known as
+     the anti anti-virus viruses.
+
+ This is the main reason why scanning should be performed from a
+ write protected diskette. It is also the reason why integrity
+ data should be held on diskette.
+
+6.   Polymorphism is reaching a stage were it is becoming very
+     difficult to detect without the scanning engines slowing down
+     considerably.
+
+ AVP has proved to be a successful product without the old
+ fashioned notion that speed is all important.
+
+7.   LAN Awareness has recently been discovered with hackers
+     producing two programs that demonstrate holes in Novell
+     Netware, eg, Knock and Hack.
+
+ This shows the need for greater awareness among system
+ supervisors for protection against virus attack.
+
+8.   Viruses being used as weapons. Some countries are reportedly
+     researching the possibility of using viruses as a weapon
+     against other countries. This is disconcerting because the
+     end product would be very much more powerful than a virus
+     cobbled together by a youth on limited resources.
+
+ All countries should probably explore all methods available to
+ protect themselves at a time of conflict. Strategic use of
+ trojans is probably a better method of inflicting damage on an
+ enemy. The replicating aspect of computer viruses always means
+ that there are methods available to discover their activity.
+
+9.   The employment of hardware level stealth as implemented in
+     the Russian virus Strange.A.
+
+ I do not know fully understand how this virus works so I am
+ unable to comment on this observation.
+
+10.  Greater use of the Commander-Bomber technique of infection is
+     easily possible. The virus author Dark Avenger has made this
+     technique available to other virus writers. It infects only
+     .COM files but instead of placing the main body of the virus
+     code at the end of the file it scrambles it through all parts
+     of the program without causing the program to crash during
+     operation. Commander-Bomber uses a high level of
+     polymorphism.
+
+ There has been no significant expansion of this technique over
+ the intervening period.
+
+11.  Slow Multi-partite Stealth Polymorphic Viruses are now being
+     produced.
+
+ The name says it all.
+
+12.  The naming of viruses itself. This may seem unusual, but if
+     you consider that the virus list must be available for the
+     purposes of identification within the scanners then this will
+     become a serious problem because all the information required
+     to perform the scanning operation will not be able to be held
+     on a single diskette.
+
+ There is evidence that the virus authors are deliberately sending
+ many viruses directly to the anti-virus community just in order
+ to keep them occupied. It is a "never mind the quality, feel the
+ width"  scenario. However, Dr Solomon's Anti-virus Toolkit is now
+ distributed on two diskettes, and this has caused no
+ deterioration in sales.
+
+The most significant event that has occurred since the seminar on
+Glut has been the occurrence of document infecting viruses. These
+probably pose more of threat than the suggestions above. At the
+time of writing, document infecting viruses have not displayed any
+significant trojan activity, but it is quite possible that these
+viruses will become destructive.
+
+The above shows that even one of the world's experts in this field
+finds it difficult to predict what will happen in the near future
+let alone the long term. Basically, virus production occurs in
+little paradigms. Virus authors tend to pick up new ideas then
+develop them to their most sophisticated state. Few virus authors
+seem to seek out new vulnerabilities, but tend to develop existing
+concepts instead.
+
+
+     The Virus Authors
+     =================
+
+Spotty kids in anoraks is the widely conceived impression that
+most computer users have of virus authors. How far from the truth
+is this, and how much will a knowledge of the virus writers help
+in the prevention of the creation of new viruses?
+
+In some instances, the above impression is correct. This is
+especially true of the Computer Underground (CU) in the United
+Kingdom. The ARCV Group mentioned earlier were basically young men
+with little to do. The main difference between them and other
+young men is that they have an interest in computers. Other young
+men hang around street corners being young men, taking part in
+occasional unruly behaviour, eg, vandalism. ARCV did not write any
+particularly interesting viruses and relied mainly on a virus
+engine supplied to them by Aristotle who ran a BBS called Black
+Axis in the USA. The timely arrest and the prosecution of Apache
+Warrior has hopefully put an end to their virus writing
+activities. As with other young men, they will grow up, get
+married, get a job and will not have the time available to write
+computer viruses.
+
+This group is not truly representative of virus authoring groups
+around the world. Most of them have an accomplished authors as
+members and a coordinator as their leader. Most have created their
+own virus engine. They tend to remain connected to their own
+groups and until recently did not mix much with other virus
+groups. This has now changed, and many groups are in constant
+contact with each other via the Internet.
+
+I have briefly outlined below some of the main virus authoring
+groups and their achievements.
+
+1.   Phalcon/Skism - This is North American based. At one time
+     this group had members in Canada, but it is now based in New
+     York, with only one Canadian member, who is known as Memory
+     Lapse. They produce a well known newsletter called 40-Hex,
+     which is widely regarded as one of the best. The leadership
+     is Garbage Heap (Gheap) and the best known author is Dark
+     Angel. Dark Angel wrote an excellent series of articles on
+     how to write viruses called "Dark Angels Phunky Virus Writing
+     Guide" and also wrote the PS-Mass Produced Code Generator
+     (PS-MPC) application program which is perhaps the best virus
+     authoring package known.
+
+2.   Nuke - North America, South Africa and Australia. Produce the
+     newsletter Nuke Infojournal. The leadership is/was Rock
+     Steady, Nowhere Man and Aristotle. A major split occurred in
+     the early nineties with factions falling under Rock Steady on
+     one side and Aristotle on the other. Rock Steady is the most
+     accomplished author. Aristotle operated/operates a BBS called
+     Black Axis. Nowhere Man attempted to steal the limelight from
+     Phalcon/Skism by producing the Virus Creation Lab (VCL)
+     engine a few weeks prior to the release of PS-MPC. The main
+     problem is that the application did not work properly. Since
+     1992 he has been working on the Nuke Encryption Device (the
+     NED) which is a polymorphic engine similar to the Bulgarian,
+     Dark Avenger Mutation Engine. The NED is the most
+     sophisticated virus creation engine known. The anti-virus
+     community have obtained a copy of the NED which was used in
+     good effect to find an outbreak of the Itshard.A virus in
+     Germany in 1994.
+
+3.   TridenT - Holland. Leadership was Masouf Khafir (name might
+     be Masud rather than Masouf) and Dark Helmet. John Tardy may
+     have became the leader prior to the demise of the authoring
+     group. Masouf Khafir wrote the Trident Polymorphic Engine
+     (TPE) and is also accredited with the virus Cruncher which is
+     a TSR that emulates compression programs such as Stacker.
+     Trident also had Dark Ray and Crom Cruach. John Tardy wrote a
+     complex polymorphic virus in 444 bytes which is a
+     considerable accomplishment. A legislative change in Holland
+     has curtailed production of viruses recently.
+
+4.   VLAD - Worldwide with members in Australia, USA, Denmark,
+     France and Luxembourg. This group is not as old as the others
+     and I am unable to give too much information about it other
+     than the perceived leadership is Australian.
+
+5.   Others - The following information was provided to me by a
+     virus author who is probably a member of VLAD:
+
+     The current virus authoring groups are:
+
+      Phalcon/Skism  - USA 3, Canada 1
+      VLAD - Australia 3, USA 2, Denmark 1, France 1,
+             Luxembourg 1 + 1
+      IR (Immortal Riot) - Sweden 6
+      Genesis - England 1, USA 1 + 1
+      NuKE - USA 4, Australia 2, South Africa 1, Argentina 1
+      FOTD - Russia 5, Sweden 1
+      TPVO - Taiwan 6
+      SVL - Slovakia 4
+      Immortal EAS - Holland 4
+
+Sara Gordon of the Computer Science Faculty at Indiana University
+is the only individual that I am aware of who has made any formal
+study of virus writers and found that most were normal male
+children doing rebellious things. She found that most develop into
+normal relationships and tend to stop writing viruses once they
+take on other responsibilities. Sadly, a few appear to grow to
+adults without developing ethical standards. I am aware that some
+virus authors disagree with this assessment and obviously, there
+where considerable constraints placed on the study, geographical,
+right of access, etc. Nevertheless, her findings have to be
+recognised until such time as a more comprehensive study can be
+performed.
+
+It seems that because most of these boys, all known virus writers
+with any influence are male, are going through a normal
+development process. It would be unwise to legislate too strongly
+against their activity. Long jail sentences would not be
+appropriate. Civil actions would be pointless as this would not
+recover the cost of the prosecution.
+
+Overall, there seems to be a well developed sub culture that
+exists. This sub culture is world wide and can not therefore be
+controlled by legislation.
+
+     Conclusion
+     ==========
+
+It seems that the computer virus problem is here to stay, for the
+next few years anyway. Certainly, all popular operating systems
+currently in use have been attacked in some way or another. On the
+other hand, as operating systems become more complex,
+vulnerabilities may not be so obvious to the malicious author, who
+will indeed require even greater skill to undermine the operating
+system than his predecessors.
+
+Another significant aspect for consideration is that fact that it
+has been the anti-virus community that has made money out of the
+virus phenomenon, not the authors. Any potential virus author with
+the required level of programming skill may well choose to apply
+for work in a software house rather than become a virus author.
+The author of Stoned.Empire.Monkey virus may well have missed out
+on a lucrative royalty income from his delvelopment of the virus.
+The method used by the virus has been studied by most of the
+anti-virus companies who have subsequently produced access control
+software using a similar principle to that employed in the virus.
+
+Regards... Greg Miskelly - gmiskelly@nicts.dnet.co.uk
+

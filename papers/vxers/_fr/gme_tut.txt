@@ -1,0 +1,285 @@
+
+                               |                     |
+               +---------------0---------------------0----------------+
+               |           moteurs de mutations génétiques            |
+               +------------------------------------------------------+
+
+
+
+1. Index:
+---------
+
+    01. Index
+    02. Introduction
+    03. Définition
+    04. Notions de base et définitions
+    05. Structure d'un gène
+    06. Structure d'un GME
+    07. Analyse des modules
+        07.01 Décrypteur de gênes
+        07.02 Vérificateur d'intégrité
+        07.03 Mutateur de gênes
+        07.04 Lecteur de gênes
+        07.05 Fabrique d'instructions
+        07.06 Crypteur de gênes
+    08. Codification des instructions dans le gêne
+    09. Conclusion
+
+2. Introduction:
+----------------
+
+Depuis quelque temps (~6 mois), je m'intéresse aux algorithmes génétiques
+et évolutionnaires appliqués aux moteurs de mutations. Depuis 2 mois, j'ai
+commencé écrire un GME, quand je me suis rendu compte que j'avais besoins
+de documents pour m'aider. Je me suis mis à chercher sur le net, mais à ma
+plus grande stupéfaction, il n'existe aucun document sérieux sur ce sujet
+à part ceux de Mark Ludwig et encore, il se borne à détailler l'évolution
+dans le monde réel en faisant de temps en temps référence aux virus.. Je
+me dois donc de combler cette lacune ;-p) Je vais essayer de vous montrer
+comment construire un tel moteur. Ne vous attendez pas à beaucoup de code,
+car cet article sera principalement théorique. Sur ce, bonne lecture...
+
+3. Définition:
+--------------
+
+D'après Mark Ludwig, un moteur de mutation génétique, ou GME, est "un moteur
+de mutation, (ME), capable de "se souvenir" des chiffrements performants". A
+mon sens, cette définition est un peu trop restrictive. Je vous propose donc
+la définition suivante:
+
+           Un GME est un ME capable non seulement de se souvenir des
+           chiffrements performants, mais aussi de la structure de la
+           routine de cryptage ainsi que des registres utilisés.
+
+4. Notions de base et définitions:
+----------------------------------
+
+On pourrait croire que ce type de ME est une sorte de régression, car il 'fixe'
+la clef de cryptage, la structure de la routine de cryptage et les registres
+utilisés. En réalité, ce n'est pas le cas. On fixe seulement 'un petit peu' tout
+ces paramètres. On ne peut donc pas baser un GME uniquement sur un générateur de
+nombre aléatoire comme c'est habituellement le cas pour les ME. Nous devons donc
+utiliser un outil plus sophistiqué que nous baptiserons "gène", et qui permettra
+à toutes les générations suivantes de ressembler à leur père. Nous appellerons ce
+phénomène de ressemblance "hérédité". Le gène contient toutes les informations
+concernant la routine de cryptage, c'est à dire:
+
+                - la clef de cryptage
+                - les registres à utiliser
+                - etc, ...
+
+Le fait d'utiliser un ME basé sur les gènes permet l'évolution darwinienne. Qu'
+entendons nous par là ? Tout simplement que les contraintes extérieures au GME
+(l'ensemble des contraintes étant appellé 'environnement') vont permettre de
+séléctionner les individus les plus aptes à survivre et à se reproduire.
+
+5. Structure d'un gène:
+-----------------------
+
+Je vais vous présenter comment je conçoit la structure d'un gène:
+
+             Début_du_gène:
+                 db FFh
+                 dd CRC32
+                 db FEh
+                 dd Clef_de_Cryptage <------------------------------+
+                 db FEh                                             |
+                 db xxh, xxh, xxh, ----------+                      | partie cryptée
+                  ..............             |                      |    du brin
+                  ..............             |                      |
+                 db xxh, xxh, xxh,           | diverses informations concernant
+                 db xxh, xxh, xxh,           |      la routine de cryptage
+                  ............               |                      |
+                  ............ --------------+ <--------------------+
+                 db FFh
+
+Notations: - les FFh sont des marqueurs de début et de fin de gène
+---------- - les FEh sont des marqueurs séparant les différents champs
+           - CRC32 est un controleur d'intégrité et la clef de cryptage/décryptage du brin
+           - Clef_de_cryptage est la clef de cryptage utilisée par la routine
+           - les 3 xxh codent une instruction:
+
+                       - l'octet de gauche représente 'l'instruction'
+                       - les octets de droite les registres sources et destinations
+
+Il est évident que vous pouvez insérer autant d'autres informations que vous le
+voulez dans le gène, mais je pense que la structure présentée est le minimum.
+De plus, le gêne est extensible. Cela veut dire que vous pouvez ajouter ou
+supprimmer des informations au cours de son évolution.
+
+6. Structure d'un GME:
+----------------------
+
+Comme un dessin vaut mieux qu'un long discours, regardez celui-ci en observant
+bien les flèches:
+
+                      +------------+
+                      |  Appelant  |<--------------------+
+                      +------------+                     |
+                             |                           |
+                             v                           |
+                +-----------------------+                |
+                |  Décrypteur de gênes  |                |
+                +-----------------------+                |
+                             |                           |
+                             v                           |
+              +----------------------------+             |
+              |  Vérificateur d'intégrité  |             |
+              +----------------------------+             |
+                             |                           |
+                             v                +---------------------+
+                  +---------------------+     |  Crypteur de gênes  |
+                  |  Mutateur de gênes  |     +---------------------+
+                  +---------------------+                ^
+                             |                           |
+                             v                           |
+                   +--------------------+                |
+                   |  Lecteur de gênes  |----------------+
+                   +--------------------+
+                      |               ^
+                      |               |
+                      v               |
+             +---------------------------------+
+             |  Fabriquation des instructions  |
+             +---------------------------------+
+
+Nous allons maintenant voir à quoi servent chacuns de ces modules.
+
+7. Analyse des modules:
+-----------------------
+
+        7.1 Décrypteur de gênes:
+        ------------------------
+
+Comme le gêne voyage sous forme partiellement cryptée, le but de cette routine est
+de décrypter la partie cryptée de celui-ci. Cela se fait avec CRC32, qui servira
+aussi à vérifier l'intégrité du gêne.
+
+        7.2 Vérificateur d'intégrité:
+        -----------------------------
+
+Une fois le gêne décrypté, le vérificateur d'intégrité calcule le CRC32 du gêne et
+le compare à celui qui est contenu au début du brin. Si les deux sont identiques,
+on continu, sinon on renvoi à l'appelant un code d'erreur.
+
+        7.3 Mutateur de gênes:
+        ----------------------
+
+Cette partie du GME est très importante. Il s'agit de changer légèrement les
+instructions codant la routine de cryptage dans notre gêne. Les mutations peuvent
+être de trois sortes:
+
+                - délétion
+                - ajout
+                - modification
+
+Le plus compliqué étant que ces mutations ne détruisent pas la routine de cryptage.
+De plus, le taux de mutations doit être très faibe.
+
+        7.4 Lecteur de gênes:
+        ---------------------
+
+Ce module se borne à lire une instruction du gêne et d'appeler la fabrique
+d'instructions pour générer celle-ci.
+
+        7.5 Fabrique d'instructions:
+        ----------------------------
+
+Ce module se charge de l'assemblage des instructions en mémoire.
+
+        7.6 Crypteur de gênes:
+        ----------------------
+
+Une fois que la rouine de cryptage est générée, le CRC32 du gêne est mis à jour,
+le gêne est recrypté, et on repasse la main à l'appelant.
+
+8. Codification des instructions dans le gêne:
+----------------------------------------------
+
+Nous allons définir ici un pseudo-assembleur qui nous servira à coder les instructions
+dans le gêne.
+
+  00h   push reg
+  01h   pop reg
+  02h   push dword ptr[reg]
+  03h   push dword ptr[reg+imm32]
+  04h   pop dword ptr[reg]
+  05h   pop dword ptr[reg+imm32]
+  06h   push imm32
+  07h   mov reg, reg
+  08h   mov reg, imm32
+  09h   mov reg, dword ptr[reg]
+  0Ah   mov dword ptr[reg], reg
+  0Bh   mov reg, dword ptr[reg+imm32]
+  0Ch   mov dword ptr[reg+imm32], reg
+  0Dh   xor reg, reg
+  0Eh   xor reg, imm32
+  0Fh   xor reg, dword ptr[reg]
+  10h   xor dword ptr[reg], reg
+  11h   xor reg, dword ptr[reg+imm32]
+  12h   xor dword ptr[reg+imm32], reg
+  13h   or reg, reg
+  14h   or reg, imm32
+  15h   or reg, dword ptr[reg]
+  16h   or dword ptr[reg], reg
+  17h   or reg, dword ptr[reg+imm32]
+  18h   or dword ptr[reg+imm32], reg
+  19h   add reg, reg
+  1Ah   add reg, imm32
+  1Bh   add reg, dword ptr[reg]
+  1Ch   add dword ptr[reg], reg
+  1Dh   add reg, dword ptr[reg+imm32]
+  1Eh   add dword ptr[reg+imm32], reg
+  1Fh   sub reg, reg
+  20h   sub reg, imm32
+  21h   sub reg, dword ptr[reg]
+  22h   sub dword ptr[reg], reg
+  23h   sub reg, dword ptr[reg+imm32]
+  24h   sub dword ptr[reg+imm32], reg
+  25h   xchg reg, reg
+  26h   xchg reg, dword ptr[reg]
+  27h   xchg reg, dword ptr[reg+imm32]
+  28h   cmp reg, reg
+  29h   cmp reg, imm32
+  2Ah   test reg, reg
+  2Bh   test reg, imm32
+  2Ch   je taille_du_saut_en_octets
+  2Dh   jne taille_du_saut_en_octets
+  2Eh   jg taille_du_saut_en_octets
+  2Fh   jle taille_du_saut_en_octets
+  30h   jmp taille_du_saut_en_octets
+  31h   call taille_du_saut_en_octets
+  32h   ret
+
+Maintenant un instruction spéciale:
+
+   90h nop
+
+Cette instruction ne sera jamais générée, mais elle nous servira pour dire de sauter
+cet octet lors de la lecture de gêne.
+
+On n'utilisera jamais toutes ces instructions, mais dans des développements ultérieurs
+il pourrais être interressant de les avoir.
+
+Voici maintenant la codification pour les registres:
+
+   00h eax
+   01h ebx
+   02h ecx
+   03h edx
+   04h esi
+   05h edi
+
+Nous coderons donc un mov eax, esi dans le gêne par:
+
+           db 07h, 00h, 04h
+
+un call Start par:
+
+           db 31h, taille_du_saut_en_octets, 90h
+
+9. Conclusion:
+--------------
+
+Et voilà, c'est terminé. J'espère que cela vous aura interressé ;-p)
+

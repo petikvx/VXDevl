@@ -1,0 +1,1690 @@
+<HTML>
+
+
+<!-- Mirrored from vx.netlux.org/texts/html/security-policy.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:11 GMT -->
+<HEAD>
+<TITLE>Elements of an Anti-Virus Security Policy</TITLE>
+</HEAD>
+
+<body text=#000000 bgcolor=#ffffff>
+<B><FONT FACE="Arial" SIZE=5>
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+</FONT><FONT FACE="Arial" SIZE=6><P ALIGN="CENTER">Developing an Anti-Virus Security Policy</P>
+
+</FONT><FONT FACE="Arial" SIZE=5><P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">by</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">Nicholas Engelman</P>
+
+<P ALIGN="CENTER">Technical Manager</P>
+
+<P ALIGN="CENTER">Cybec Pty Ltd</P>
+
+<P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">Developing an Anti-Virus Security Policy</P>
+
+</FONT><P>Introduction</P>
+
+</B><FONT SIZE=2><P>An IT Security Policy is aimed at protecting the Confidentiality, Integrity and Availability of resources, data and programs. Essentially, it will:</P>
+
+
+
+<UL>
+
+<LI>Define what you want to protect </LI>
+
+<LI>Analyse what it is you want to protect it from </LI>
+
+<LI>Explain how you intend to protect it</LI></UL>
+
+
+
+<P>To be effective, it must be both holistic and dynamic. To be achievable, it must be realistic in its goals, and (where user conformity is required) expressed in a way that is simple and short enough to ensure it is read, understood and followed.</P>
+
+<P>The overall security policy will address such areas as:</P>
+
+
+
+<UL>
+
+
+
+<UL>
+
+<LI>physical security of your data and systems </LI>
+
+<LI>access control to your data and systems </LI>
+
+<LI>data integrity and availability </LI>
+
+<LI>contingency and recovery plans (backups!!!) </LI>
+
+<LI>etcetera …</LI></UL>
+
+</UL>
+
+
+
+<P>Anti-virus issues are simply one element of such a policy - viruses are one of the risks this policy must protect against.</P>
+
+<P>The information that follows addresses this anti-virus component. To provide context, it includes considerations that would properly be covered at a higher level of an overall policy. The information presented is necessarily generic, and is not intended to be exhaustive - the content of any security policy ultimately rests with its author. However, this paper does provide a starting point for writing such a policy.</P>
+
+<P>The paper is broken into two sections:</P></FONT>
+
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=7 WIDTH=567>
+
+<TR><TD WIDTH="21%" VALIGN="TOP">
+
+      <P><FONT SIZE=2>1. <a href="#analysis">Risk Analysis</a></FONT>
+    </TD>
+
+<TD WIDTH="79%" VALIGN="TOP">
+
+<FONT SIZE=2><P>A brief look at this fundamental building block of any site security policy, concentrating only on the viral and related component of risk</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2>
+      <P>2 <a href="#policy"> Security Policy</a> 
+      </FONT></TD>
+
+<TD WIDTH="79%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Outlines how to build the security policy, using the information gathered in the Risk Analysis</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<FONT SIZE=2><P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial" SIZE=5>
+<P ALIGN="CENTER">&nbsp;</P>
+<P ALIGN="CENTER"><a name="analysis"></a>Risk Analysis - Defining Your Security 
+  Exposure</P>
+</font></B><FONT SIZE=2>
+<P>A risk analysis outlines all the threats to the viability of the business. It examines the likelihood of each threat occurring and the impact of that occurrence. This allows us to make informed decisions when assigning resources to manage our risk. We manage risk by controlling the vulnerabilities that expose us to it (if the threat is highly likely to eventuate), or planning how to recover from it (if the threat is unlikely, but must be guarded against). At its simplest, we might define nine broad levels of risk, each with an associated response, as follows:</P></FONT>
+
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=517>
+
+<TR><TD WIDTH="31%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<P ALIGN="CENTER"><FONT SIZE=2>Probability of threat occurring</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P ALIGN="CENTER">Impact to business if threat occurs</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P ALIGN="CENTER">Response to level of threat</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">ad hoc Management of Occurrences</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Draft Response Plan</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Contingency Plan in Place</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Draft Response Plan</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">General Preventative Measures &amp; Contingency Plan in Place</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Specific Preventative Measures &amp; Contingency Plan in Place</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Low</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Specific Preventative Measures</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Specific &amp; Fall-Back Preventative Measures &amp; Contingency Plan in Place</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="31%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="38%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Measures to Prevent Any Occurrences &amp; Contingency Plan in Place</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+</CENTER><p></P>
+
+
+
+<FONT SIZE=2><P ALIGN="CENTER">Figure 1: Risk/Response Table</P>
+
+<P>Obviously, response will vary according to company and resources. Some companies may aim to prevent the occurrence of any threat, regardless of its impact; others may choose to accept even high-impact threats. Similarly, different areas of the same company may define higher impacts or risks for the same threat. Finally, you may want to extend the granularity of the risk model, to define additional levels of both risk and impact, to allow a finer tuning of the assessment and responses.</P>
+
+<P>The risk analysis requires consideration of the following:</P>
+
+
+
+<UL>
+
+<LI>Operating Environment </LI>
+
+<LI>Business Systems </LI>
+
+<LI>Vulnerabilities </LI>
+
+<LI>Impact Assessment</LI></UL>
+
+
+
+<P>Each of these sections is covered in detail below.</P>
+
+</FONT><B><FONT FACE="Arial"><P>&nbsp;</P>
+
+<P>1.&#9;Operating Environment</P>
+
+</font></B><FONT SIZE=2><P>Here we define the environment within which the business operates. This allows us to assess sources of vulnerability both within and to that environment. For the purposes of this paper, our list will be limited to the computing environment, as this is where we are vulnerable to viruses. The assessment will cover both the physical elements and the "control" issues of this environment. The following lists suggest areas to be considered :</P>
+
+<P>Physical Elements</P>
+
+
+
+<UL>
+
+<LI>Platforms (Intel, DEC, Macintosh, etcetera) </LI>
+
+<LI>Operating Systems (DOS, Windows (all flavours), NetWare, UNIX, etcetera) </LI>
+
+<LI>Hardware (Dumb Terminals, Diskless Workstations, Desktop Systems, etcetera) </LI>
+
+<LI>Software (Off-the-shelf, Customised, Internally Developed, Non-business (eg games) etcetera) </LI>
+
+<LI>Communications (Network Types, Modems, other links)</LI></UL>
+
+
+
+<P>"Control" Issues:</P>
+
+
+
+<UL>
+
+<LI>Standardisation </LI>
+
+<LI>What is the level of server standardisation? </LI>
+
+<LI>What is the level of desktop standardisation? </LI>
+
+<LI>Users </LI>
+
+<LI>What is the level of user competence in terms of security issues? </LI>
+
+<LI>What controls are in place to ensure and monitor staff conformity to security policy? </LI>
+
+<LI>Externals </LI>
+
+<LI>Define our reliance on contractors, solution providers etc (for hardware and software) </LI>
+
+<LI>Define our reliance on external data and service providers (eg ISPs, stock-market feeds etc) </LI>
+
+<LI>Define what other external services and data we accept (newsfeeds, general downloads etc)</LI></UL>
+
+
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>2.&#9;Business Systems</P>
+
+</font></B><FONT SIZE=2><P>Armed with a broad overview of our system, we now turn to the specific components of our business system that need to be protected. Viruses directly threaten a company’s data and computer based services, and indirectly their reputation. Our task is thus to list all data and computer based services provided by or necessary to the company’s existence. The list will include, but not be limited to, objects from the following areas:</P>
+
+<P>Internal Records</P>
+
+
+
+<UL>
+
+<LI>databases </LI>
+
+<LI>spreadsheets and other financials </LI>
+
+<LI>documentation </LI>
+
+<LI>product and services information </LI>
+
+<LI>employee information </LI>
+
+<LI>strategic plans (by category/department) </LI>
+
+<LI>any other sensitive and/or confidential information (by category) </LI>
+
+<LI>etcetera</LI></UL>
+
+
+
+<P>Electronically Provided or Supported Services</P>
+
+
+
+<UL>
+
+<LI>Electronic order acceptance and Customer subscription services </LI>
+
+<LI>Information services </LI>
+
+<LI>etcetera</LI></UL>
+
+
+
+<P>External "Product"</P>
+
+
+
+<UL>
+
+<LI>"Data feeds" from external sources </LI>
+
+<LI>Access to external services necessary to run the business </LI>
+
+<LI>etcetera</LI></UL>
+
+
+
+</FONT><B><FONT FACE="Arial"><P>3.&#9;Vulnerabilities</P>
+
+</font></B><FONT SIZE=2><P>In this section we examine the specific vulnerabilities inherent in how we do business. The analysis is broken into a number of parts, each of which follows on from those preceding it.</P>
+
+</FONT><B><P>Threats</P>
+
+</B><FONT SIZE=2><P>A threat is a general danger to the viability of our business. As we are confining our discussion to threats associated with viruses, which primarily target our systems and data, our threats may be limited to the following:</P>
+
+
+
+<UL>
+
+
+
+<UL>
+
+<LI>Threats to data </LI>
+
+<LI>Threats to systems (software, comms, services) </LI>
+
+<LI>Threats to reputation </LI>
+
+<LI>Threats to finances </LI>
+
+<LI>Other …</LI></UL>
+
+</UL>
+
+
+
+</FONT><B><P>Vectors of Threat</P>
+
+</B><FONT SIZE=2><P>In the wider scheme of things, this is where we would list all of the ways the above areas are threatened. Thus, while our focus is on the threat to our data from viral incidents, normally we would also identify our data being vulnerable to damage by anything from a major disaster, such as a fire or flood, through more common occurrences, like a hard drive failure, faulty cable, power interruption and simple user error.</P>
+
+<P>This is also the place to identify <I>how</I> a vulnerability threatens us - i.e. its vector of attack. It is not enough to identify the susceptibility of our systems to a virus attack as a vulnerability - we also have to understand how viruses gain access to our systems, so that we can take measures to keep them out.</P>
+
+<P>Our pre-work in defining the operating environment helps us here - it limits our list of vulnerabilities to those that target that environment.</P>
+
+<P>An example list of the virus and associated vulnerabilities of a Wintel environment is shown in figure 2. Note that if it excludes, for instance, UNIX attacks such as worms etc. Similarly, a business that doesn’t use Microsoft Office would currently exclude macro viruses.</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=574>
+
+<TR><TD WIDTH="23%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<P ALIGN="CENTER"><FONT SIZE=2>Virus Type</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P ALIGN="CENTER">Vector of Infection</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P ALIGN="CENTER">Potential Sources</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot Sector Viruses</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot from infected floppy</P>
+
+<P>Execute infected file</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>Any formatted floppy diskette </LI>
+
+<LI VALUE=1>As for Executable File Viruses</font></OL>
+
+</TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Executable File Viruses</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Load and execute an infected executable file</P>
+
+<P>(Type name and Enter; click to launch etc)</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>Infected file downloaded across internet</LI>
+
+<LI>Infected file swapped between users</LI>
+
+<LI>Infected file brought from home</LI>
+
+<LI>Infected file on purchased software</LI>
+
+<LI>Infected file attached to mail message</LI>
+
+<LI>Infected file on server/intranet etcetera</font></OL>
+
+</TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Macro viruses</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Load infected Word Document or Excel Spreadsheet under relevant MS Office program</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>Infected file downloaded across internet</LI>
+
+<LI>Infected file swapped between users</LI>
+
+<LI>Infected file brought from home</LI>
+
+<LI>Infected file on purchased software</LI>
+
+<LI>Infected file attached to mail message</LI>
+
+<LI>Infected file on server/intranet etcetera</font></OL>
+
+</TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Trojans</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Run Trojan file</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>As for Executable File Viruses</LI>
+
+<LI>Trojan applet auto-downloaded and run by Web browser</font></OL>
+
+</TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Hoaxes</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Chain-Letter effect</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>Almost exclusively e-mail</font></OL>
+
+</TD>
+
+</TR>
+
+<TR><TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Logic Bombs</FONT></TD>
+
+<TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Coded into custom programs</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<OL>
+
+
+
+<FONT SIZE=2><LI>Contractor</LI>
+
+<LI>Disgruntled Employee</font></OL>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<B><FONT FACE="Arial Narrow" SIZE=2><P ALIGN="CENTER">Figure 2: Vulnerabilities and their Vectors </P>
+
+</font></B><FONT FACE="Arial Narrow"><P>&nbsp;</P>
+
+</FONT><B><P>Level of Exposure</P>
+
+</B><FONT SIZE=2><P>Here we define how exposed the business is to each of the threats identified. This is driven by an examination of the operating environment and the vectors of attack that threaten it, and is highly business specific. A sample (and cut-down) analysis is given below:</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=568>
+
+<TR><TD WIDTH="16%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<P><FONT SIZE=2>Threat</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>Vector</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>Exposure</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot Sector Virus</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot from Infected Floppy</P>
+
+<P>Run infected file</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Medium - networks, intranet and CDs have reduced the number of floppy disks in use</P>
+
+<P>Medium - Win3x environment; uncontrolled use of files from various sources, but number of such viruses considered relatively low</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Executable File Viruses</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Load and execute infected file</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>High - uncontrolled use of files from various sources.</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Macro Viruses</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Load infected Word Document</P>
+
+<P>Load infected Excel Spreadsheet </FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>High - All business units exchange Word documents internally and externally.</P>
+
+<P>Low - no exchange of Spreadsheets</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Trojans</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Run Trojan file</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Medium - uncontrolled use of files from various sources, but exposure to Trojans considered low</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Hoaxes</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Chain-letter effect</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>High - extensive use of e-mail and News</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="16%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Logic Bombs</FONT></TD>
+
+<TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Coded into custom programs</FONT></TD>
+
+<TD WIDTH="49%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Low - low use of contractors; satisfied staff</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<B><FONT FACE="Arial Narrow" SIZE=2><P ALIGN="CENTER">Figure 3: Level of Exposure</P>
+
+</FONT><P>Consequences of Threat</P>
+
+</B><FONT SIZE=2><P>Having defined the areas that are threatened, and our exposure to viruses as a vulnerability that would realise those threats, we can combine the two to list the potential consequences of a virus infection.</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=545>
+
+<TR><TD WIDTH="43%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<P><FONT SIZE=2>Threat</FONT></TD>
+
+<TD WIDTH="57%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>Vulnerability</FONT></TD>
+
+</TR>
+
+<TR><TD VALIGN="TOP" COLSPAN=2>
+
+<B></B><P><FONT SIZE=2><B>Threats to data</b></font><FONT SIZE=2>: Direct action of virus on data integrity. Downtime while infection/rumor is cleaned/investigated. Suspension of essential/useful/non-essential internal and external services. Time to restore from backups/rekey data/check data integrity:</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="43%" VALIGN="TOP">
+
+
+
+<UL>
+
+<FONT SIZE=2><LI>Data destroyed/corrupted </LI>
+
+<LI>Access to data suspended </LI>
+
+<LI>Data exposed to world</font></UL>
+
+</TD>
+
+<TD WIDTH="57%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</P>
+
+<P>All</P>
+
+<P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</FONT></TD>
+
+</TR>
+
+<TR><TD VALIGN="TOP" COLSPAN=2>
+
+<B></B><P><FONT SIZE=2><B>Threats to systems (software, comms, services): </b></font><FONT SIZE=2>Software necessary to running systems corrupted/destroyed. Downtime while infection/rumor is cleaned/investigated. Suspension of essential/useful/non-essential internal and external services.</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="43%" VALIGN="TOP">
+
+
+
+<UL>
+
+<FONT SIZE=2><LI>Systems destroyed/unreliable </LI>
+
+<LI>Access to systems suspended </LI>
+
+<LI>Systems exposed to world</font></UL>
+
+</TD>
+
+<TD WIDTH="57%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</P>
+
+<P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</P>
+
+<P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</FONT></TD>
+
+</TR>
+
+<TR><TD VALIGN="TOP" COLSPAN=2>
+
+<B></B><P><FONT SIZE=2><B>Threats to reputation: </b></font><FONT SIZE=2>External world learns of virus infection or its consequences. </FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="43%" VALIGN="TOP">
+
+
+
+<UL>
+
+<FONT SIZE=2><LI>Business seen as insecure </LI>
+
+<LI>Business seen as uninformed</font></UL>
+
+</TD>
+
+<TD WIDTH="57%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Boot Sector, File, Macro virus, Logic Bomb &amp; Trojan</P>
+
+<P>Hoaxes</FONT></TD>
+
+</TR>
+
+<TR><TD VALIGN="TOP" COLSPAN=2>
+
+<B></B><P><FONT SIZE=2><B>Threats to finances:</b></font><FONT SIZE=2> Costs associated with dealing with the threat</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="43%" VALIGN="TOP">
+
+
+
+<UL>
+
+<FONT SIZE=2><LI>Cost of cleaning infection/repairing consequential damage/recovery </LI>
+
+<LI>Cost of interruption to services </LI>
+
+<LI>Legal costs due to suspension of services, infecting clients etcetera</font></UL>
+
+</TD>
+
+<TD WIDTH="57%" VALIGN="TOP">
+
+<FONT SIZE=2><P>All</P>
+
+<P>All</P>
+
+<P>All</P>
+
+<P>All</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<B><FONT FACE="Arial Narrow" SIZE=2><P ALIGN="CENTER">&nbsp;</P>
+
+<P ALIGN="CENTER">Figure 4: Consequence of Threat</P>
+
+</font></B><FONT SIZE=2><P>Clearly, at this level the analysis will be highly dependent on the individual business. The above are simply some of the areas that need to be considered.</P>
+
+</FONT><B><FONT FACE="Arial"><P>&nbsp;</P>
+
+<P>4.&#9;Impact Assessment</P>
+
+</font></B><FONT SIZE=2><P>This is the final piece of the risk assessment. Having identified what our business areas are, and the threats to those areas, we now need to determine what impact it will have on our business if one of these areas is compromised.</P>
+
+<P>Here impact is assessed in terms of the categories of "damage" that could be done to each data set and service identified. Some of the possible "damage" categories are listed across the top of Figure 5. The actual impact assessments are purely notional - they will vary by company.</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=574>
+
+<TR><TD WIDTH="28%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<P><FONT SIZE=2>Object</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>If destroyed</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>If altered/corrupted</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>If exposed</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>If suspended</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP" BGCOLOR="#ffffff">
+
+<FONT SIZE=2><P>Other</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Customer database</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</P>
+
+</FONT><FONT SIZE=1><P ALIGN="CENTER">(restore from backups)</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</P>
+
+</FONT><FONT SIZE=1><P ALIGN="CENTER">(are backups corrupted?)</P>
+
+<P ALIGN="CENTER">(Cost if changeundetected?)</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</P>
+
+</FONT><FONT SIZE=1><P ALIGN="CENTER">(damage reputation/ market edge)</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</P>
+
+</FONT><FONT SIZE=1><P ALIGN="CENTER">(Interrupts work)</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Software Package X</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<P ALIGN="CENTER"><FONT SIZE=2>High </font><FONT SIZE=1>(if proprietary)</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Web site general info</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">NA</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Web site order entry page</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">NA</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Access to external data</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">NA</FONT></TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">High</FONT></TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">NA</FONT></TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<FONT SIZE=2><P ALIGN="CENTER">Medium</FONT></TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+<TR><TD WIDTH="28%" VALIGN="TOP">
+
+<FONT SIZE=2><P>etcetera</FONT></TD>
+
+<TD WIDTH="15%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="21%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="13%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="14%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="9%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<B><FONT FACE="Arial Narrow" SIZE=2><P ALIGN="CENTER">Figure 5: Business Impact Analysis</P>
+
+</font></B><FONT SIZE=2><P>A true risk analysis would also include some indication of the size and type of investment an object represents, and its "replaceability" should it be lost, along with the general impact assessment. The depth of analysis required for this section will be governed by the complexity and needs of the business. Where different business units come to different impact assessments on the same object, always record the highest impact.</P>
+
+</FONT><B><FONT FACE="Arial" SIZE=5>
+<P ALIGN="CENTER">&nbsp;</P>
+<P ALIGN="CENTER"><a name="policy"></a>The Anti-Virus Security Policy</P>
+</font></B><FONT SIZE=2>
+<P>Having identified the components of, and threats to, our system, our next step is to create the policies that will protect our business.</P>
+
+<P>For the purposes of this discussion the "padding" that should go with this policy (Introduction, Statement of Purpose, Background, Context Statement, Definitions, Governing Policies, etc) are assumed. The focus of this section of the paper will be exclusively on developing the anti-viral component of a Security Policy.</P>
+
+</FONT><B><FONT FACE="Arial"><P>1.&#9;Define the Security Goal</P>
+
+</font></B><FONT SIZE=2><P>Our goal will be governed by the potential business impact of each virus risk identified, and the cost of managing that risk. Some companies may not be able to risk any possibility of a virus infection, and will set extremely high anti-virus security goals; for others it may be cost-effective to deal with the infections as they arise. The key issue here is to balance the effort and cost required to keep viruses out against the business exposure to viruses and the potential impact of a virus incident identified in the risk assessment.</P>
+
+<P>Our goal will fall somewhere in the following broad spectrum:</P>
+
+
+
+<UL>
+
+<LI>No virus incidents </LI>
+
+<LI>All viruses detected and contained at the perimeter of the business environment </LI>
+
+<LI>All viruses detected and contained as soon as they enter the business environment </LI>
+
+<LI>X% of viruses detected and contained as soon as they enter the business environment; virus incidents caused by the (100-X)% that escape initial detection handled according to our security policy </LI>
+
+<LI>Viruses incidents are an accepted part of the business environment</LI></UL>
+
+
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>2.&#9;Define General Duties and Responsibilities</P>
+
+</font></B><FONT SIZE=2><P>Generally, ultimate responsibility for the anti-virus policy and implementation lies with whoever writes the security policy document, though this is not always the case. It is important that this person/department is identified and given sufficient authority to achieve the goals of the policy.</P>
+
+<P>At its most basic, the following duties and responsibilities will exist within most companies (though the actual hierarchy may differ significantly):</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=568>
+
+<TR><TD WIDTH="35%" VALIGN="TOP">
+
+<P><FONT SIZE=2>Person/Group</FONT></TD>
+
+<TD WIDTH="33%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Duty</FONT></TD>
+
+<TD WIDTH="32%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Responsible to:</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Information Security Manager</FONT></TD>
+
+<TD WIDTH="33%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Design Policy</FONT></TD>
+
+<TD WIDTH="32%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Management Team</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Information Security Department</FONT></TD>
+
+<TD WIDTH="33%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Implement Policy</FONT></TD>
+
+<TD WIDTH="32%" VALIGN="TOP">
+
+<FONT SIZE=2><P>IS Manager</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Help Desk</FONT></TD>
+
+<TD WIDTH="33%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Teach and Support Policy</FONT></TD>
+
+<TD WIDTH="32%" VALIGN="TOP">
+
+<FONT SIZE=2><P>IS Manager</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="35%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Users</FONT></TD>
+
+<TD WIDTH="33%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Follow Policy</FONT></TD>
+
+<TD WIDTH="32%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Help Desk/Security Manager</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<FONT SIZE=2><P>In the above model, the IS manager and their team select, implement and support the suite of security packages they have chosen to drive this policy, ensuring both the policy itself and the packages chosen to implement it are kept up to date. The role of the help-desk is to ensure the policy is understood, followed and supported. This is a typical approach that places responsibility with the experts and frees the users to get on with their jobs.</P>
+
+<P>(The specific responsibilities (expected actions and behaviour) of the users are discussed in section 5 of this paper)</P>
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>&nbsp;</P>
+
+<P>3.&#9;Define The Security Baseline</P>
+
+</font></B><FONT SIZE=2><P>The baseline defines our minimum security implementation.</P>
+
+<P>For simple ease of management, it would be ideal if we could define and implement a single baseline for the entire company; in practice, the number and diversity of systems and business units may make this impossible.</P>
+
+<P>The baseline will derive from the information discovered in the risk assessment, 
+  and may require changes to our operating environment. Figure 6 lists some of 
+  the areas that might be considered along with a selection of potential policy 
+  decisions, and some consideration of the gains and costs of implementing each. 
+  A more complete analysis would also list the gaps left open by the baseline.</P>
+
+<P>Please note that Figure 6 is not intended to be an exhaustive listing of security alternatives, but simply a starting point for consideration of the security alternatives available.</P>
+
+<P>It is also to be noted that both the baseline and additional security sections will give some indication of how often they should be reviewed and updated.</P></FONT>
+
+<TABLE BORDER CELLSPACING=2 CELLPADDING=7 WIDTH=933>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P><FONT SIZE=2>Area</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Selection of Potential Policy Decisions</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Gain</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>"Cost"</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Hardware</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Remove all floppy drives from users’ PCs</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Blocks one vector of boot sector viruses by preventing possibility of booting from an infected diskette</P>
+
+<P>Users can’t bring disks from home/install unauthorised software etc</P>
+
+<P>Potential to control all uploads and downloads through choke-point</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Reduced ease of uploading and downloading files </FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Remove all hard drives from users’ PCs </FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Centralises storage of software and files on the network, making management easier</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Requires extra storage space on network. Potential performance hit to network</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Ban all modems, forcing all internet connections across the network</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Allows centralised control of file download and uploads, mail etc by creating a choke-point which can be monitored</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Potential performance hit to network</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Select non-Intel based machines</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Majority of viruses rely on Intel instruction set</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Majority of systems are Wintel </FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Firmware</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Disable boot from Drive A in CMOS (and password protect)</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Blocks one vector of boot sector viruses by preventing possibility of booting from an infected diskette</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Requires visit to reenable if boot required</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Enable "Boot Sector Protection" in CMOS (and password protect):</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Blocks boot sector viruses by preventing any write to Master Boot Record (and DOS Boot Sector on some machines)</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>May interfere with OS upgrade</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Operating System</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Select a true 32-bit Operating System</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Blocks majority of executable file viruses from infecting</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>May have to upgrade hardware</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Select a network that provides secure login and access restrictions (and use same)</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Allows logical separation of data and programs. Can block file viruses from writing to executable file areas</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Increased administration; cost of hardware and OS etc</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Software</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Define and enforce company standards for desktop and servers</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Simplifies management of environment; potentially reduces virus risk (eg select non-MS Office applications to avoid current macro viruses)</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>May lose functionality/ interchangeability</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Install Vet automatic and on-demand virus protection software at the desktop</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Detects and cleans of viruses as they enter the business environment</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Cost of software</P>
+
+<P>Managing roll-out of updates</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Install Vet automatic and on-demand virus protection software at the server level</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Creates a choke-point. Detects and cleans viruses as they enter the business environment</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Cost of software</P>
+
+<P>Managing roll-out of updates</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<FONT SIZE=2><P>User Behaviour</FONT></TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Require all files and disks brought to work/downloaded etc to be checked at central point</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Creates a choke point to prevent virus entry into the business environment</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Staff to manage same</P>
+
+<P>Cost of software etc to do the checking</FONT></TD>
+
+</TR>
+
+<TR><TD WIDTH="8%" VALIGN="TOP">
+
+<P>&nbsp;</TD>
+
+<TD WIDTH="26%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Establish awareness and reporting procedures etc etc etc</FONT></TD>
+
+<TD WIDTH="43%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Creates an environment where users are actively taking steps to prevent, recognise and control virus outbreaks</FONT></TD>
+
+<TD WIDTH="23%" VALIGN="TOP">
+
+<FONT SIZE=2><P>Education and awareness campaigns Help desk to support same</FONT></TD>
+
+</TR>
+
+</TABLE>
+
+
+
+<B><FONT FACE="Arial Narrow" SIZE=2><P ALIGN="CENTER">Figure 6: Establishing an Anti-Virus Security Baseline</P>
+
+</FONT><FONT FACE="Arial"><P>4.&#9;Define Additional Security Measures</P>
+
+</font></B><FONT SIZE=2><P>Additional security measures aim at controlling the "high-risk" areas of the business identified in the risk analysis. These may address applications that have been identified as open to particular attack, business-critical units, and responses to particular types of threat. For example, VetMail, listed below, is specifically targeted at closing exposure to viruses attached to e-mail messages.</P>
+
+<P>Clearly the distinction between the security baseline and additional security measures will be highly company specific. Any of the alternatives listed in Figure 6 may be reserved as additional security measures, just as the additional controls listed below could be implemented as part of the security baseline.</P>
+
+<P>Anti-virus security products provided by Cybec include:</P>
+
+
+
+<UL>
+
+<LI>Vet for DOS, Windows 3x, Windows 95 and Windows NT workstation<BR>
+
+On demand and automatic virus checking and cleaning </LI>
+
+<LI>Vet for Windows NT Server<BR>
+
+On demand and automatic virus checking and cleaning; scheduled virus checking </LI>
+
+<LI>VetNet for NetWare 3 and NetWare 4<BR>
+
+On demand and automatic virus checking and cleaning; scheduled virus checking </LI>
+
+<LI>VetMail<BR>
+
+An e-mail filter program hosted on an NT server, that checks all mail and attachments directed through that box. (Creates a choke-point to ensure that mail and attachments entering and leaving the company are not infected)</LI></UL>
+
+
+
+<P>Vet can be implemented across the organisation, or as a perimeter solution. The latter approach uses the concept of choke-points, where all threatening items are checked before being allowed into the system. The choke-point approach may be implemented as an additional measure for high risk areas of the business, or as a security baseline.</P>
+
+<P>Potential choke-points include:</P>
+
+
+
+<UL>
+
+<LI>Connections to the outside world (force all such connections through controlled, shared modems, rather than allowing individual users their own modems) </LI>
+
+<LI>Controlling all software that comes into the company (by defining and enforcing a standardised desktop for instance)</LI></UL>
+
+
+
+<P>Some specific risks that will be managed by our additional security measures include:</P>
+
+
+
+<UL>
+
+<LI>Laptops/mobile users (unless tightly controlled exist outside the security perimeter) </LI>
+
+<LI>Contractors/Service personnel/Suppliers etc </LI>
+
+<LI>Downloaded software </LI>
+
+<LI>Disks, programs, documents brought from outside the office </LI>
+
+<LI>Unauthorised software </LI>
+
+<LI>Deliberate attack</LI></UL>
+
+
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>5.&#9;Write the Security Procedures Document</P>
+
+</font></B><FONT SIZE=2><P>While a security solution may be largely imposed through a policy driven selection and implementation of hardware and software, it will always include behavioural elements as well. The Procedures Document outlines the expected behaviour of the users within the system. As such it must be concise, simple to read, and easy to understand. Ideally it will be backed up with a comprehensive awareness campaign that delivers enough knowledge on the problem and the company’s policy and solutions to it, to ensure the users are correctly playing their role in meeting this security threat. Clearly, there may be a number of sections to the procedure document, each targeted at the next level of responsibility within the company.</P>
+
+<P>A basic procedures document will outline what users can (and cannot) do on the system, as well as the procedure to follow if they know or suspect they have a virus outbreak. It will consist of at least some of the following elements:</P>
+
+
+
+<UL>
+
+<LI>Outline of prohibited actions (eg No games, disks, modems; no altering desktop etc) </LI>
+
+<LI>Outline of required actions (eg Scan all disks, downloads etc) </LI>
+
+<LI>Outline of reporting procedures (When and what to report, and to whom) </LI>
+
+<LI>Outline of incident response and escalation strategies (What the help desk is to do if an incident, or suspected incident is reported) </LI>
+
+<LI>Review strategies (What will be done if the system fails)</LI></UL>
+
+
+
+<P>Our ultimate aim here is to turn our users into "responsible hypochondriacs". Our reporting and escalation strategy will determine how this works, but essentially what we want is that users report suspicious behavior to the appropriate source. This has the double advantage of raising the probability that virus incidents will be discovered early while preventing a flood of hoax messages, by ensuring they are forwarded to the appropriate point and nowhere else.</P>
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>6.&#9;Write the Security Awareness Plan</P>
+
+</font></B><FONT SIZE=2><P>The awareness plan will be a plan of action to raise users understanding of the risks the business is exposed to and how their actions can affect that exposure. It may include:</P>
+
+
+
+<UL>
+
+<LI>Basic introduction to how viruses work, or at least to the actions that can introduce a virus </LI>
+
+<LI>Introduction to the extended virus problem, discussing issues such as hoaxes and trojan horse attacks </LI>
+
+<LI>Explanation of the security strategy adopted by the company: </LI>
+
+<LI>the tools available to them </LI>
+
+<LI>the procedures they must follow </LI>
+
+<LI>Outline the disciplinary or corrective measures that will be taken should the above procedures be violated</LI></UL>
+
+
+
+<P>Any education program risks being simply an information dump unless there is appropriate follow-up and reinforcement of the information learned. Suggested techniques include:</P>
+
+
+
+<UL>
+
+<LI>Action Cards to be kept on users desks, which list the minimum actions a user should take if they suspect they have a virus, plus the policy points that define what they should and should not do to prevent a virus attack </LI>
+
+<LI>Regular email or memos to users advising them when their anti-virus software has been updated, and recapitulating a particular security consideration, gradually cycling through the above list of topics </LI>
+
+<LI>Analyses of any security breaches that occur, and how they can be prevented </LI>
+
+<LI>Reports of the success of the security policy - for example, a regular report of the number of viruses detected before they could make it in to the system </LI>
+
+<LI>Immediate notification of changes to the security situation (such as a new type of virus, or a new anti-virus tool). Preferably a dedicated training session to address the new threat </LI>
+
+<LI>Pre-emptive notification of hoax messages </LI>
+
+<LI>Refresher training programs </LI>
+
+<LI>Firedrills</LI></UL>
+
+
+
+<P>&nbsp;</P>
+
+</FONT><B><FONT FACE="Arial"><P>&nbsp;</P>
+
+<P>Disclaimer</P>
+
+</font></B><FONT SIZE=2><P>Cybec and the author of this paper separately and jointly make no representations about the suitability of the information contained in this White Paper for any purpose. The document is provided "as is"</P>
+
+<P>without warranty of any kind. No responsibility or liability will be accepted by the author or Cybec for any damages caused by direct or indirect use of the information or functionality described in this paper.</P>
+
+</FONT><B><FONT FACE="Arial"><P>Copyright</P>
+
+</font></B><FONT SIZE=2><P>Permission to use this document is granted, provided that:</P>
+
+<OL>
+
+
+
+<LI>this copyright notice appears in all copies and that both the copyright notice and this permission notice appear </LI>
+
+<LI VALUE=1>use of this document is for informational and non-commercial or personal use only and will not be copied or posted on any network computer or broadcast in any media</LI>
+
+<LI VALUE=1>no modifications are made to this document</LI></OL>
+
+
+
+<P>Use for any other purpose is expressly prohibited by law, and may result in severe civil and criminal penalties. Violators will be prosecuted to the maximum extent possible.</P>
+
+<P>&nbsp;</P>
+
+<P>The contents of this paper remain copyright Cybec. Suggestions and comments are welcome, and should be addressed to the author:</P>
+
+<P>email&#9;<a href="mailto:nengelman@vet.com.au">NEngelman@vet.com.au</a></P>
+
+<P>mail&#9;N Engelman</P>
+
+<P>1601 Malvern Road</P>
+
+<P>Glen Iris, Vic, Australia</P>
+
+<P>3146</P></FONT></BODY>
+
+
+<!-- Mirrored from vx.netlux.org/texts/html/security-policy.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:11 GMT -->
+</HTML>
+

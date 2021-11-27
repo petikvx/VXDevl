@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="sadmind, solaris, worm, virus, antivirus, exploit, cert, IIS, unicode, bug, hack, crack, attack, deface, PoizonBOx, USA, gov, Costin Raiu, craiu, CERT, ELF, SunOS, Sun"><title>One Sad Mind</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2">O<u>ne Sad Mind </u></font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>&nbsp;I<u>ntroduction: </u></b>
+</p><p>&nbsp;Approximately during the same period the ".X" version of the VBS
+worm VBSWG struck around the world, I received a call from a friend who
+is administering a small cluster of servers for a web development firm
+in Romania.
+<br>&nbsp;My friend was bothered by the fact that their web server was
+apparently hacked into, and had the entry page replaced by a black one,
+containing an offending message, regarding the US Government and something
+(someone?) named "PoizonBOx".
+<br>&nbsp;I paid my friend a quick visit; there, we checked the server
+logs and managed to find some suspicious entries related to an IP address
+in South America. However, the respective address seemed apparently dead,
+not responding to ICMP or TCP 'ping's, so we patched the server after identifying
+the vulnerability used to compromise it, then I went back home.
+<br>&nbsp;It took only a couple of hours until I received a forwarded CERT
+alert which cast some light over the incident I investigated at my friend's
+site. "CERT Advisory 2001-11" covers a computer worm that hacks Solaris
+systems and subsequently attacks random Microsoft IIS v4 and v5 servers
+from the Internet by replacing their root page with a custom one, stating
+the message I mentioned before, a worm they named "Sadmind".
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>T<u>he Worm </u></b>
+</p><p>&nbsp;The "Sadmind" worm is interesting combination of 6 Sparc ELF and
+10 script/text files, that travels between machines running the Sparc version
+of the Solaris operating system. Sometimes, the worm travels as 17 files
+instead of 16, because of a traditional Unix crash 'core' image file, that
+is usually present in the worm directory, which is copied along with the
+worm code during replication.
+<br>&nbsp;To replicate, the worm makes use of a very popular buffer overflow
+in "/usr/sbin/sadmind", a component of the system administration suite
+software "Solstice". The code used in the worm to exploit this bug was
+originally written by someone going by the nick "<font color="#3333ff">elux</font>",
+<font color="#3333ff">elux@synnergy.net</font>.
+However it is my belief that the respective person has nothing to do with
+the worm's author. The former one probably just took the exploit code and
+wrote the worm code around it.
+<br>&nbsp;Two ELF executables are used to break into remote systems - one
+named "brute", authored by the person named "elux", and one named "sadmindex-sparc",
+originally written by someone who calls himself "<font color="#3333ff">Cheez
+Whiz</font>". "brute" is basically a brute-force wrapper for the real exploit;
+because the buffer overflow in the "sadmind" program requires a very precise
+stack offset to work, "brute" attempts to try various offsets in order
+to find the right one. During such attempts it's quite likely for the "sadmind"
+program to crash, so attacked systems usually have entries reporting "<font color="#ff0000">Segmentation
+Fault - core dumped</font>" or "<font color="#ff0000">Bus Error</font>"
+in their syslogs.
+<br>&nbsp;Besides the above two, the worm is using another ELF executable
+to search for suitable hosts, Solaris systems for infection and MS IIS
+servers to deliver the payload. This executable, named "grabbb" is again
+written by a third party, someone going by the nick "scud", from a larger
+organization known by the name "teso". (the source of "grabbb" along with
+the other "teso" projects is available on the group's web page, which is
+<a href="http://www.team-teso.net/">http://www.team-teso.net/</a>)
+<br>This small program attempts to connect to a range of IP addresses to
+either a specific TCP/IP port, or a range of ports, and grabs the output
+(usually known as "banner") sent by the respective host(s) after the connection
+is initiated. It does this using multiple sockets at the same time, and
+is generally quite flexible, allowing a multitude of options to control
+timeouts, and so on.
+<br>&nbsp;The remaining 3 executable files, "nc", "wget" and "gzip" are
+standard and widely used utilities in the '*nix' world. "nc", short for
+"netcat" is exactly as its name suggests, a network-aware "cat" program,
+which can basically create a link between stdout/stdin and a remote system
+via the TCP and UDP protocols. "gzip" is nothing else than the popular
+"GNU ZIP" implementation, used to compress and decompress data, while "wget"
+is a simple tool which can download files from remote ftp and http servers.
+<br>&nbsp;The remaining 10 text/script files are used to propagate the
+worm and attack IIS servers. The scripts are written both in Perl and the
+standard Bourne Shell, and to be sure that the worm will run on systems
+without Perl installed, the worm takes care to download and install Perl
+5.005, from a FTP host in China - "<font color="#3366ff">bak-px.online.sh.cn</font>".
+That, along with a couple of other reasons, suggests that "Sadmind" was
+written by some Chinese hacker, same as the recent "Ramen" worm for example.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>E<u>xecution and Replication </u></b>
+</p><p>&nbsp;Whenever an infected system is restarted (or infected, see below),
+the main worm entrypoint, named "/dev/cuc/start.sh" is launched from the
+"/etc/rc2.d/S71rpc" system script. "start.sh" will first check for the
+presence of a directory named "/dev/cub", and create it if needed. This
+directory will further be used by the worm for the logs and inter-components
+communication tasks.
+<br>&nbsp;Next, "start.sh" will launch three other scripts, respectively
+"time.sh", "sadmin.sh" and "uniattack.sh". The worm will create 5 different
+instances in memory of "sadmin.sh" and "uniattack.sh", obviously, with
+the purpose of increasing the overall "attack power". Compared to the others,
+"time.sh" will only be started once, and will be responsible for two main
+tasks - first, to terminate idle sessions spawned by the worm to attack
+MS IIS servers, and secondly, to deliver the local payload of the worm.
+<br>&nbsp;The local payload is executed after the worm managed to crack
+2000 IIS servers, when all the local files named "index.html" will be replaced
+with a custom one, which looks like the following:
+</p><p><img src="sadmind_files/solhack.gif" height="511" width="414">
+<br>&nbsp;
+</p><p>"sadmin.sh" is the part of the worm responsible with the propagation
+of the worm code to other Solaris systems. In order to find other potential
+targets, the worm uses a small Perl script to generate 16 random bits which
+fill the first 2 bytes of a TCP/IP address, such as "a" and "b" in the
+generic "a.b.c.d" TCP/IP address.
+<br>&nbsp;The worm will then systematically iterate the remaining two bytes,
+checking if any of the respective addresses run the "portmap" service,
+that is, if port 111 of the remote host is open.
+<br>&nbsp;To implement the check in a reasonable fast way, the "grabbb"
+program I mentioned before is used, with settings to wait 3 seconds for
+each connection attempt, and running 25 parallel checks ("threads") at
+the same time.
+<br>&nbsp;Next, the worm will sequentially check the list of hosts that
+seemed to run the portmap service, and use the common tool "rpcinfo" to
+check for a registered
+<br>service with the index "100232", nothing else than the "sadmind" system
+administration daemon. If such a service is found, the worm attempts to
+hack it, using the "brute" pre-compiled executable. The "brute" copy present
+in the worm was probably modified by the author to deliver its payload
+on port 600 - that is, to add a root shell in "inetd.conf" with the name
+"pcserver", listening on port 600 for remote connections. Obviously, if
+the hacking attempts succeeds, the worm will continue by adding a standard
+"+ +" line to the root's ".rhosts" file, allowing anyone to freely authenticate
+with the respective machine as "root" via <b>rlogin</b>, <b>rcp</b> and
+so on.
+<br>&nbsp;Next, the worm will archive a copy of itself from "/dev/cuc/"
+using the "tar" utility, and use "rcp" to copy it to the target system.
+After that, the worm connects to the remote system on port 600, adds a
+line to "/etc/rc2.d/S71rpc" to execute "start.sh" upon each system reboot,
+gets a copy of Perl 5.005 from the Chinese site I mentioned in the first
+part, installs it using "pkgadd" and exits, but not before taking care
+to launch the worm on the remote system as well.
+<br>&nbsp;The other important script, "uniattack.sh" will similarly generate
+random IP addresses, and after checking for a HTTP daemon listening on
+port 80, it will attempt to hack them using a recent bug in MS IIS v4 and
+5 servers, which is described in the Microsoft Security Bulletin "<font color="#3366ff">MS00-078</font>".
+<br>(<a href="http://www.microsoft.com/technet/security/bulletin/MS00-078.asp">http://www.microsoft.com/technet/security/bulletin/MS00-078.asp</a>)
+<br>&nbsp;The Perl script that implements the attack is quite large, over
+700 lines of code, mainly because the worm will attempt to use 14 different
+methods to exploit the vulnerability.
+<br>&nbsp;The payload consists in replacing the entry page of the IIS server
+with one containing the same message as the one that will replace the local
+"index.html" files on the Solaris system after 2000 successful cracks.
+Interesting detail, in Netscape Navigator 4.x, the page will not always
+look as expected, that is, with big red letters on a black background -
+sometimes the page will be black font on black background, sometimes black
+font on white background. This is probably due to a bug in NN 4.x, since
+both IE and Netscape Navigator 6 seem display it correctly.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>L<u>ogs </u></b>
+</p><p>&nbsp;The worm maintains logs of both hacked Solaris systems and compromised
+IIS servers. The logs are stored in the "/dev/cub" directory, and they
+are named "result.txt" for the file that stores the compromised IIS servers,
+and "sadminhack.txt" for the file that contains the IP addresses of the
+Solaris systems to which the worm managed to replicate.
+<br>&nbsp;Besides those, the worm will also create a large amount of files
+containing results from the "grabbb" utility, also in the "/dev/cub" directory,
+with names of the form "a.b.txt", where "a" and "b" are two random bytes
+representing the upper half of the IP address classes tested by the "sadmin.sh"
+and "uniattack.sh" scripts.
+<br>&nbsp;Using the respective files, one can trace the servers infected
+by the worm, and hopefully notify their administrators about the infection.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>O<u>rigin and Authoring </u></b>
+</p><p>&nbsp;As I was saying, there are a couple of reasons that advocate the
+Chinese origin of the worm. First, from the message the worm puts into
+cracked web pages, the author didn't seem to be a fan of "<font color="#3366ff">PoizonBOx</font>".
+"<font color="#3366ff">PoizonBOx</font>" is the name of a group of pro-US
+hackers that hacks Chinese web sites and replaces their start pages with
+various statements and anti-Chinese messages.
+<br>&nbsp;For the curious, there is a pretty complete list of such sites
+hacked by the members of "PoizonBOx" at <a href="http://defaced.alldas.de/defaced.php?attacker=PoizonB0x&amp;p=1">http://defaced.alldas.de/defaced.php?attacker=PoizonB0x&amp;p=1</a>
+, and moreover, I believe the group can be contacted by e-mail at "<font color="#3366ff">poizonb0x@linuxmail.org</font>".
+<br>&nbsp;Secondly, the worm does contain a possible contact address for
+the author as "<font color="#3366ff">sysadmcn@yahoo.com.cn</font>", which
+again, is the local Chinese version of&nbsp; Yahoo.COM.
+<br>&nbsp;That, along with the usage of the Chinese FTP site "<font color="#3366ff">bak-px.online.sh.cn</font>"
+leads to the conclusion that the author had at least some strong Chinese
+connections if he wasn't himself Chinese.
+<br>&nbsp;Again, regarding the author, he probably had some average Perl
+and Bash knowledge, but wasn't by far an expert. For example, in many places
+through the worm source, he uses constructions such as the following "j=`/bin/echo
+"$j+1"|/bin/bc`" to increment a variable, instead of the usual (traditional?)
+"j=`expr $j + 1`". Add to that the fact that the whole worm replication
+is based on programs coded by other people ("elux", "scud", "Cheez Whiz")
+and you'll get an image of him/her, which is probably no better than some
+script-kiddie, compiling a couple of programs together, and launching them
+over the Internet to show his message to the whole world.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>E<u>nding </u></b>
+</p><p>&nbsp;There are a couple of conclusions we can get from the "Sadmind"
+story. First, the fact that a worm exploiting a 2-year old vulnerability
+can actually spread is yet another proof that too many users, and even
+worse, system administrators, don't really pay enough attention to security
+updates or keeping their systems patched.
+<br>&nbsp;Another bad thing is that despite the fact that many sites around
+the net have been hacked for some time, the worm-infiltrated entry page
+is still there, meaning that probably nobody cares to check those machines
+for long periods of time. Such machines are the best infection vector a
+virus author can dream about, systems just standing there with no one to
+look over, while they deliver the virus or its payload against thousand
+of other computers. Also, the recent increase in the number of worms attacking
+*nix systems is only one of the proofs that the AV world will soon have
+to be paying more attention to Linux, Solaris and the others, since I'm
+sure we haven't yet seen the worse, nor that "Sadmind" will be the last
+piece of malware designed for some *nix flavor...
+<br>&nbsp;
+</p><p><tt><b>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">Solaris/SadMind.A</font>
+(worm)</tt>
+<br><tt><b>Aliases:&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">SunOS/BoxPoison.worm</font></tt>
+<br><tt><b>Type:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; network
+propagated Sun Sparc Solaris worm</tt>
+<br><tt><b>Payload:</b>&nbsp;&nbsp;&nbsp;&nbsp; Attempts to exploit a bug
+in IIS 4 and 5 servers, and replaces</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+their index page with a custom one (see picture)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+After hacking 2000 IIS servers, replaces all local "index.html"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+files with one similar to those used in hacked servers</tt>
+<br><b><tt>Detection and disinfection:</tt></b>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<b>On Solaris systems:</b> delete "/dev/cub" and "/dev/cuc", remove the</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+worm-added line from "/etc/rc2.d/S71rpc"</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<b>On IIS servers:</b> reinstall the affected pages from backup</tt>
+<br>&nbsp;
+</p></body></html>

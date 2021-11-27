@@ -1,0 +1,1568 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+
+
+
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  
+  <meta name="GENERATOR" content="Mozilla/4.79 [en] (Win98; U) [Netscape]">
+
+  
+  <meta name="Author" content="Uzi Paz">
+
+  
+  <meta name="Description" content="Explains how to use F-Prot for DOS in any Windows operating system, and how to make it more user friendly">
+
+  
+  <meta name="KeyWords" content="security, viruses, win98, antivirus, f-prot,"><title>Living with F-Prot for DOS Antivirus program</title></head><body style="color: rgb(0, 0, 0);" alink="#ee0000" link="#0000ee" vlink="#551a8b">
+
+&nbsp;
+<h2><font color="#ff0000">Title: Living with F-Prot for DOS Antivirus</font></h2>
+
+<p><br>
+
+<b><font color="#663366">Author: </font></b><font color="#009900">Uzi
+Paz</font>
+<br>
+
+<b><font color="#663366">E-Mail:</font></b><font color="#009900"> for
+e-mail contact: user is uzi4wg and domain is uzipaz.com&nbsp;</font><img src="f-prot_files/e-mail.gif" alt="The e-mail address as a picture" nosave="" align="center" height="16" width="120">
+<br>
+
+<b><font color="#663366">First version date:</font></b><font color="#009900">
+5 October 2001</font>
+<br>
+
+<b><font color="#663366">Recent version date:</font></b><font color="#009900"> 8 February 2004</font>
+<br>
+
+<b><font color="#663366">Legal Notice:</font></b><font color="#009900">
+While as far as I know all the information here is exact and correct,
+as
+I'm giving this information as a free service, I'm taking no
+responsibility.</font>
+<br>
+
+<b><font color="#663366">Parent Page: </font></b><font color="#009900">Uzi
+Paz home page </font>on <a href="http://www.uzipaz.com/">http://www.uzipaz.com</a>
+.
+</p>
+
+<p><b><u><font color="#ff0000">1. Introduction and Overview</font></u></b>
+</p>
+
+<p>F-Prot for DOS is an antivirus program free for home noncommercial
+use.
+I'm not affiliated with <a href="http://www.f-prot.com/">Frisk Software</a>
+(the company that develops F-Prot). It is considered as a very good
+antivirus program and although it is called "F-Prot for DOS" it is
+totally
+up to date and can be used also in any home Windows operating system,
+(up to
+some non-common exception, see comment <i><font color="#006600">1a</font></i>),
+and identify and remove the most modern viruses and worms. It certainly
+is a program appropriate for modern computers.
+</p>
+
+<p>However, from the point of user interface and features, F-Prot
+for DOS certainly
+looks like the old programs - no "on access" scanning (i.e. no option
+for running the antivirus in the background for providing active
+protection). Updates of the programs
+and of the virus data (if we ignore third party solutions), can only be
+done manually, by looking from time to time at the web or FTP site to
+see
+if there are newer versions of the virus information files, and if
+there
+are, downloading them and replacing the older files in the directory
+where
+you put the program with the newer ones. All those friendly features
+that
+you can find in other antivirus programs,&nbsp; cannot be found in
+F-Prot
+for DOS (Frisk Software offers also other versions of F-Prot, which are
+user friendly, and include all the advanced features that you can find
+in products by other companies, but those are not free).
+</p>
+
+<p>We shall give here some information about how to install and handle
+it correctly, and how to make its use more user friendly. Some of the
+information below is very basic, but some is much less trivial. If you
+are not an experienced PC user, you might prefer to skip some parts in
+this document which offer some advanced features, but might be
+complicated
+to follow to a pedestrian. I have tested the instructions on my Win98,
+and I believe that it should work on other Windows operating systems as
+well. I would however, appreciate feedback about testing them on other
+versions of Windows, and of course since I offer this information as a
+free service, I take no responsibility.
+</p>
+
+<p><b><i><font color="#993366">Comments:</font></i></b>
+<br>
+
+<b><i><font color="#009900">1a.</font></i></b> If some of your hard
+disks are formatted with NTFS filesystems, and you disabled short
+filenames,
+F-Prot for DOS will not be able to read many of the files there. This
+is
+not relevant in the case of Win95/98/ME, because those operating system
+use FAT (FAT16 or FAT32) filesystem rather than NTFS. Also many (mainly
+home) WinXP systems are built with only FAT filesystem. In the case of
+those WinXP where the disks were formatted with NTFS or with Win2K
+where
+the standard filesystem is NTFS, you must enable support for short
+filenames,
+and even then, some of the files might not have a valid DOS filename,
+and thus might not be accessible by F-Prot for DOS.
+<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">2. Manual Installation and Updating of
+F-Prot</font></u></b>
+</p>
+
+<p>F-Prot and its virus definition updates can be downloaded from many
+mirror sites, and Frisk Software (the company that makes F-Prot)
+recommends
+using those mirror sites. Unfortunately, those mirror sites are too
+often
+not updated, and thus, I would still recommend to use either Frisk's
+site
+for updates, or F-Secure's site which maintains them independently.<br>
+
+The program can be found in a ZIP format in <a href="ftp://ftp.f-prot.com/pub/dos/" target="_blank">ftp://ftp.f-prot.com/pub/dos/</a>
+.
+<br>
+
+The name of the program's file is fp-***.zip where the asterisks come
+for the version number of the program.
+<br>
+
+For example, at the moment of writing this document, the latest version
+of F-Prot for DOS is 3.16a, and thus the name of the F-Prot file, is
+fp-316a.zip
+.
+<br>
+
+After downloading it, there are no specific installation programs.
+The only thing one should do, is to open a new folder, which will be
+dedicated
+to the program, and to extract the content of the ZIP file into that
+folder.
+<br>
+
+In this document, I shall assume that you opened the folder as
+"C:\F-Prot"
+but it is just to make the explanations here simpler. If you wish to
+open
+it instead in "C:\Program Files\F-Prot" that is OK, but you will have
+to
+adapt the instructions here accordingly.<br>
+
+&nbsp;
+</p>
+
+<p>After downloading the program's zip file, you should just extract
+its
+content to that folder, and you will then find in that folder, a
+file named f-prot.exe. This is the antivirus program. Just doubleclick
+on it to open the antivirus program, and you may then scan your
+computer,
+or any specific drive or folder of your wish. Please notice that
+although you may execute the
+program from Windows it is an MSDOS program, and thus once you open the
+program, navigation in its menus is done with the arrow keys, the
+"Enter"
+key, and the "Esc" key on your keyboard rather than with the mouse. I
+recommend
+you to navigate a bit through its menus and options, before using it.
+Also
+because it is basically a DOS program, when you prefer to search a
+specific
+path, you should use only the short filename of that file. This is not
+always pleasant, because it means that you sometimes have to look e.g.
+in the properties of folders or programs in order to see what are their
+short filenames (DOS filenames).
+</p>
+
+<p>On the folder where you extracted the F-Prot program, you will also
+find a few text files, which will include many instructions regarding
+usage,
+updating it, mirrors, etc. You might be interested to read them as
+well.
+</p>
+
+<p>You may, of course, wish to update the virus definition files to the
+latest ones.
+<br>
+
+You may find them in <a href="ftp://ftp.f-prot.com/pub/" target="_blank">ftp://ftp.f-prot.com/pub/</a>. The files
+are fp-def.zip and macrdef2.zip.
+<br>
+
+In the FTP folder, you can find their dates. So you may see if there
+were updates since you last updated them. It is important to note that
+the program's ZIP file itself is not updated when new definition files
+are released, so when you get fp-***.zip, it will have the same virus
+definition
+files that were released when that version of the program was first
+released.
+The practical meaning is that even if you have just got the program,
+you
+should still get the virus definition files.
+<br>
+
+The virus definition locations at F-Secure are&nbsp; <a href="ftp://ftp.f-secure.com/f-prot/updates/f-prot/dos/macrdef2.zip" target="_blank">ftp://ftp.f-secure.com/f-prot/updates/f-prot/dos/macrdef2.zip</a>
+, and <a href="ftp://ftp.f-secure.com/f-prot/updates/f-prot/fp-def.zip" target="_blank">ftp://ftp.f-secure.com/f-prot/updates/f-prot/fp-def.zip</a>
+.
+</p>
+
+<p>After downloading fp-def.zip and macrdef2.zip, you may extract their
+content to the same folder where you put f-prot.
+<br>
+
+You will have to confirm the replacement of the older versions of the
+definition files with the newer ones.
+<br>
+
+Those two zip files include three definition files: sign.def,
+sign2.def,
+and macro.def.
+</p>
+
+<p>That is practically everything for basic usage of the program.
+<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">3. Adding Shortcuts</font></u></b>
+</p>
+
+<p>You may of course create shortcuts to your F-Prot program on your
+desktop,
+or in the Start menu/Programs list.
+</p>
+
+<p>In order to create a shortcut in the desktop, rightclick on the
+program,
+and choose "copy". Then rightclick on an empty part of your desktop,
+and
+choose "Paste Shortcut".
+</p>
+
+<p>In order to create a shortcut in the Start Menu/Programs list,
+rightclick
+the F-Prot program, and choose "copy", and then open the
+"C:\WINDOWS\Start
+Menu\Programs\" folder (for Windows98/ME), and rightclick your mouse on
+an empty place in
+that folder, choose "Paste Shortcut". Then you may rightclick on the
+sohrtcut's icon and choose "rename" in order to rename it to, e.g.
+"F-Prot".&nbsp; On Windows XP, the instructions are similar but the
+location of the "programs" folder is on "C:\Documents and
+Settings\[profile]\Programs" where your user name on the computer
+should come instead of "[profile]"..<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">4. Uninstallation</font></u></b>
+</p>
+
+<p>Since the installation of the program is manual, uninstallation of
+it
+is done by just removing what you added.
+<br>
+
+i.e. removing the dedicated folder that you have opened for it, with
+its contents and subfolders (if there are any), and removing all
+shortcuts
+that you put to it. Later on we will learn how to improve a few things
+by adding some registry keys. If you do that, you will have to remove
+those
+registry keys that you added, when you decide to uninstall the program.
+<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">5. Simplifying the Updating of the Virus
+Definition Files (my script)</font></u></b>
+</p>
+
+<p>Visiting F-Prot's FTP site periodically to see if the fp-def.zip and
+macrdef2.zip files have a date newer than the one that were when you
+last
+updated them, is not a user friendly procedure. This fact may
+discourage
+people from keeping their virus definition files always updated. If you
+want your antivirus program to be effective, you should keep those
+files
+always updated. Updates are released every few days,
+and thus checking the FTP site often is recommended. You might wish to
+know if there is a way to simplify the updating of those files. For
+example,
+if you can produce a button that whenever you press it, it will check
+if
+there are updates to those files, and if one of them (or both) are
+newer
+than the ones on your PC, it will make an update automatically.
+</p>
+
+<p>The script given in this section does it. There are other
+alternative
+third party freeware programs that do it. See comment <i style="color: rgb(0, 153, 0);">5a</i> at the end of this
+section.
+</p>
+
+<p>In order for this script to work, you first need to install a
+mirroring
+program. The one that I use and recommend is WGET which is a very
+simple
+and free command line program that can easily be installed (just put it
+in
+a dedicated folder). Once you installed it, you may set a small batch
+program that
+will simplify the updating of the virus definition files.
+</p>
+
+<p>Here are the instructions:
+</p>
+
+<p>1) Get WGET from:&nbsp; <a href="http://www.cmdtools.com/files/wget.zip">http://www.cmdtools.com/files/wget.zip</a>
+. It is a freeware program.
+</p>
+
+<p>2) Get PKZIP for DOS from&nbsp; <a href="ftp://ftp.pkware.com/PK250DOS.EXE">ftp://ftp.pkware.com/PK250DOS.EXE</a>
+. As far as I understand the license, it is free for private use at
+home.
+Put the file in a subfolder that you should open in the F-Prot folder.
+Call that folder "AVDISK" (without the quotes). It is not a must to use
+this name, but it will simplify things if you wish to use AVDisk
+program
+(which is explained latter).
+</p>
+
+<p>3) Extract the content of wget.zip to a dedicated folder. In this
+document,
+I shall assume that the folder is "c:\wget", but it can be anything you
+wish, (I use c:\util\wget).
+</p>
+
+<p>4) Go to the AVDISK subfolder, and execute the PK250DOS.EXE file.
+It will set the pkzip program and more importantly, the pkunzip program
+on that folder.
+</p>
+
+<p>5) Open Notepad, (or any other text editor. Do not use a word
+processor.
+Instructions here are for Notepad). It will open a new file, and type
+the
+following three lines on that file:
+</p>
+
+<p><font color="#006600">c:\wget\wget -N
+ftp://ftp.f-prot.com/pub/fp-def.zip
+ftp://ftp.f-prot.com/pub/macrdef2.zip</font>
+<br>
+
+<font color="#006600">c:\f-prot\avdisk\pkunzip -n c:\f-prot\fp-def.zip</font>
+<br>
+
+<font color="#006600">c:\f-prot\avdisk\pkunzip -n c:\f-prot\macrdef2.zip</font>
+</p>
+
+<p>The "N" in "-N" must be a capital letter. It is assumed here that
+wget.exe
+program has been extracted to c:\wget\
+<br>
+
+and that the location you chose for F-Prot is "C:\F-Prot" but if
+not,
+then you should use the right locations of them. Please notice, that if
+the path to the files/folders includes spaces, such as in "C:\Program
+Files", you must enclose it with quotes.
+</p>
+
+<p>Choose in Notepad "save as" and in the "save as type" prompt, choose
+"all types". Then navigate to the folder of F-Prot and open a new
+subfolder
+there. Name it "scripts" (Notice that in Notepad's "save as" window,
+there
+is a button with an icon of a folder. Clicking it will open a new
+folder,
+which you can rename). After navigating to the "scripts" folder in the
+"save as" window, choose as the name of the file "fp-update.bat".
+<br>
+
+This will produce a text file with a name fp-update and an extension
+of a batch file, that will include the command to update the files.
+After
+doing this, close Notepad.
+</p>
+
+<p>6) Go to the "scripts" subfolder, and rightclick on the
+fp-update.bat
+file. Then choose "Properties".
+<br>
+
+In the Properties window, go to the "Command" menu, and in the
+"Working"
+line, type "c:\f-prot" (without the quotes. If the folder dedicated to
+F-Prot is different, then type its location instead). At the first line
+in this menu (near the icon) change the text to "FP-Update". At the
+bottom
+of this menu, you can see a button to change the icon. I would
+recommend
+changing it to some more meaningful icon. A simple icon, will be the
+satellite
+dish, that exists in the pifmgr.dll file (you are likely to see this
+icon
+when pressing the "Icon" button, in the "Program" section or the
+properties
+of the shortcut.
+</p>
+
+<p>After making those changes confirm the changes (by pressing "OK")
+and
+quit the "Properties.
+</p>
+
+<p>7) You will now find on the "scripts" subdirectory, another file
+which
+has an arrow of a shortcut. If its name is not "FP-Update" then rename
+it to that name.
+</p>
+
+<p>8) That is all. By doubleclicking the FP-Update file (the one with
+the
+arrow) you will initiate a program that checks F-Prot's FTP site, for
+updates
+and make them if necessary.
+</p>
+
+<p>You may now copy the FP-Update shortcut to any place you want. For
+example
+you may wish to put it in the
+<br>
+
+Start Menu\Programs location.
+<br>
+
+You may perhaps prefer instead of having a reference to F-Prot program
+there, to have a submenu that has two links, one for F-Prot program and
+one to the FP-Update program.
+<br>
+
+You can do this by opening a folder with the name "F-Prot" in the <br>
+
+"C:\Windows\Start
+Menu\Programs" (this is for Win98/ME. For Windows XP it should be
+"C:\Documents and Settings\[profile]\Programs"). Then put the F-Prot
+shortcut, and
+the FP-Update shortcut on that directory.
+<br>
+
+It is important to copy the shortcut that you produced, and not to
+build a new shortcut by referring the batch file.
+</p>
+
+<p><b><i><font color="#993366">Comments:</font></i></b>
+<br>
+
+<b><i><font color="#009900">5a.</font></i></b> There are a few other
+third party applications for updating F-Prot. We shall discuss a few of
+them, such as fp-check by Nikolaus Rameis, which we shall discuss in
+section 10,&nbsp; FP-UP and Art's F-Prot Updater by Art Kopp, which we
+shall discuss in section 11, or F-Prot Updater by Over Self Research,
+which is discussed in section 12.&nbsp;<br>
+
+<br>
+
+</p>
+
+<p><b><u><font color="#ff0000">6. Being Notified When a New Version is
+Released</font></u></b>
+</p>
+
+<p>The script mentioned in the former section, can only update the
+virus
+definition files. These are the ones that are more frequently updated.
+But you will probably wish to at least be notified when a new version
+of
+F-Prot is released, so that you can update it manually.
+</p>
+
+<p>Frisk Software offers you to add your e-mail address to a
+notificaiton
+list that will notify you whenever a new version of the program is
+released, as well as options for other kinds of notifications. In order
+to subscribe to this notification service, visit<br>
+
+<a target="_blank" href="http://alerts.f-prot.com/cgi-bin/mf?lang=en">http://alerts.f-prot.com/cgi-bin/mf?lang=en</a>&nbsp;
+.<br>
+
+</p>
+
+<p>Changing the ldetails of the subscription or&nbsp; signing off,
+should be done from the web page. Notice that the announcements of new
+versions are for all versions of F-Prot, not only the free F-Prot for
+DOS version.</p>
+
+<p> <b><i><font color="#993366">Comments:</font></i></b>
+<br>
+
+<b><i><font color="#009900">6a.</font></i></b> Former versions of this
+article mentioned a way to subscribe for notifications by e-mail. This
+method is now obsolete.<br>
+
+<br>
+
+<br>
+
+</p>
+
+<p><b><u><font color="#ff0000">7. Adding a Rightclick Option "Scan with
+F-Prot" to Drives, Folders, or Files - The elegant way</font></u></b>
+</p>
+
+<p>Many antivirus programs offer you the option to rightclick on a
+file,
+a drive or a folder, and choose "scan with Antivirus", which will
+result
+in scanning that specific folder, file, or drive.
+<br>
+
+Such a feature for F-Prot, would be even more useful because it saves
+you from looking for the correct short filename for those
+folders/files.
+</p>
+
+<p>This feature can be set for F-Prot, but you will have to edit the
+registry
+files in order to do that.
+<br>
+
+We will use the regedit command for that (you should already have this
+program as it comes with the basic installation of Windows).
+</p>
+
+<p>If you don't have any experience with the regedit command, then
+please
+read Appendix A, before using it.
+</p>
+
+<p>Making mistakes when changing the registry files may cause problems
+with your Windows. It is thus important to be very careful when editing
+the registry.
+</p>
+
+<p>If you hesitate to follow the instructions in this section, or
+you do
+not understand them thoroughly, you may try an alternative method,
+which
+will provide you a less friendly and somewhat less flexible option, but
+its implementation is easier to follow. It will be described in
+the next section.
+</p>
+
+<p>In the rest of this section I will assume that you are not new to
+registry
+tweaking with regedit.
+</p>
+
+<p>I have prepared a file with the name addfprot_reg.txt which
+simplifies
+the adding of registry keys that will tell Windows to add the option
+"Scan
+with F-Prot" to the rightclick menus of files, folders, and drives.
+<br>
+
+As usual, I'm taking no responsibility here. But if you prefer to
+change
+those registry keys by doubleclicking a file rather than manually with
+the use of regedit, then you can use the file that I prepared. The file
+can be downloaded from <a href="http://www.uzipaz.com/eng/addfprot_reg.txt">http://www.uzipaz.com/eng/addfprot_reg.txt</a>
+. If the path of your F-Prot folder is not "C:\F-Prot" then you should
+modify it to include the right path to the f-prot command, (notice that
+backslashes in the path should be doubled), and perhaps different flags
+(I explain this issue further in the rest of this section), and then
+you
+should rename the file to addfprot.reg and doubleclick it. This should
+add the registry keys that will enable this option in the rightclick
+menu.
+</p>
+
+<p>If for any reason you wish at a later time to uninstall F-Prot, or
+just
+to remove those right-click options, and you used the above
+addfprot_reg.txt
+file, and didn't make any changes in it besides perhaps changing the
+path
+of the program, or changing the flags for it, then you may use another
+file: <a href="http://www.uzipaz.com/eng/removefprot_reg.txt" target="_blank">http://www.uzipaz.com/eng/removefprot_reg.txt</a>
+for removing those rightclick options. Also for this file you should
+first
+change its extension to ".reg" before doubleclicking on it. Also here,
+I take no responsibility.
+<br>
+
+If you made other changes or you manually edited the registry, then
+the removal of the changes should also be manual.
+</p>
+
+<p>The instructions how to manually add "Scan with F-Prot" to the
+rightclick
+menu of folders, is
+<br>
+
+the following:
+<br>
+
+* Go to
+<br>
+
+<font color="#006600">HKEY_CLASSES_ROOT\Directory\shell</font>
+<br>
+
+<font color="#000000">and add a subkey to it. Name the subkey "F-Prot"
+(without the quotes). Adding the subkey, is done by rightclicking on
+that
+key, and choosing "New" and then "Key".</font>
+<br>
+
+<font color="#000000">* After making the new "F-Prot" subkey, mark it
+with the mouse, and modify in the
+right pane of regedit, the default's value data for that subkey to
+"Scan
+with F-Prot" (without the quotes). In order to modify the default's
+value
+data, you should mark the name "Default" in the right pane, and
+rightclick
+on it, and choose "Modify".</font>
+<br>
+
+<font color="#000000">* Add a subkey to "F-Prot" (the same way you
+added a subkey to "Directory"), and call it "command" (again, without
+the
+quotes).</font>
+<br>
+
+<font color="#000000">* Mark this "command" key, and in the right pane,
+modify the "Default" value data to:</font>
+<br>
+
+<font color="#006600">C:\F-Prot\F-Prot.exe /ARCHIVE /PACKED "%1"</font>
+<br>
+
+<font color="#000000">(The quotes around the "%1" are important).</font>
+</p>
+
+<p><font color="#000000">This tells Windows to add an option to the
+rightclick
+menu of directories (i.e. folders), to call it "Scan with F-Prot" and
+if
+you choose it, it will initiate F-Prot from the command line with the
+/ARCHIVE
+and /PACKED flags. The /ARCHIVE flag tells F-Prot to scan also inside
+archives
+(e.g. inside ZIP files), and the /PACKED flag tells F-Prot to scan also
+the files inside packed executables. This is just an example. You may
+use
+other flags as you wish. For a list of the flags available for F-Prot
+and
+their meaning, see the command.txt file which sits in the F-Prot
+directory.</font>
+</p>
+
+<p><font color="#000000">* The above instructions are how to add this
+option
+to the menu that you see when you rightclick on a folder. If you wish
+to
+add a similar option to the rightclick menu of Drives (which are
+usually
+at the "My Computer" folder), the instructions are the same, besides
+the
+fact that the relevant registry key here, is</font>
+<br>
+
+<font color="#006600">HKEY_CLASSES_ROOT\Drive\shell</font>
+<br>
+
+<font color="#000000">instead of</font>
+<br>
+
+<font color="#006600">HKEY_CLASSES_ROOT\Directory\shell</font>
+<br>
+
+<font color="#000000">(Of course you can set rightclick menus on both
+keys).</font>
+</p>
+
+<p><font color="#000000">* In order to set a similar rightclick menu
+option
+to whenever you rightclick on a file, the instructions are again
+equivalent,
+but as before, the right registry key for it is:</font>
+<br>
+
+<font color="#006600">HKEY_CLASSES_ROOT\*\shell</font>
+<br>
+
+<font color="#000000">(The asterisk is indeed a name of a subkey).</font>
+</p>
+
+<p><font color="#000000">You may find that the "shell" subkey is
+missing
+in the</font>
+<br>
+
+<font color="#006600">HKEY_CLASSES_ROOT\*</font>
+<br>
+
+<font color="#000000">key. If the "shell" subkey is missing, you will
+have to add this subkey.</font>
+</p>
+
+<p><font color="#000000">* I strongly recommend you to look at the
+various
+flags in the command.txt file, as I explained above.</font>
+</p>
+
+<p>* Please notice that unless you use the /INTER flag, the "close
+program
+on exit" must be unchecked in order to prevent the window to
+automatically
+be closed immediately after F-Prot finished its scanning, without
+giving
+you the opportunity to see the results of the scan.
+<br>
+
+To do this you should rightclick on the F-Prot program, and then choose
+"properties" and in the "program" tab you should uncheck the "close
+on exit". This will leave the MSDOS window opened after F-Prot has
+finished.
+The only place in this window, that notifies you when the program is
+finished
+is the title bar.
+<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">8. Adding Rightclick Options to Folders
+and Files - The More Basic Alternmative</font></u></b>
+</p>
+
+<p>When rightclicking on a folder, or on a file, you may see a "Send
+to"
+option, and when choosing it, you will receive a list of programs.
+Choosing
+one of them, will cause Windows to send the file or the folder to that
+program so that it can handle it. The idea is to just add F-Prot
+program
+to that list.
+<br>
+
+In order to add the F-Prot program to that list, you should simply
+put a shortcut to the F-Prot program, in the SendTo folder (on Windows
+98 it usually is <font color="#009900">C:\Windows\SendTo</font> while
+on Windows XP it usually is <span style="color: rgb(0, 153, 0);">C:\Documents
+and Settings\[profile]\SendTo</span>
+Where you should use your user's name instead of "[profile]"). The
+instructions how to make this shortcut, are described in section
+3. <br>
+
+</p>
+
+<p>After making this shortcut, please rightclick on that shortcut,
+choose
+"properties", and then on the "program" tab, verify that the "close on
+exit" option is <i>not</i> checked. I recommend you to rightclick on
+the
+icon of the shortcut, choose "Rename" and rename it to simply "F-Prot".
+</p>
+
+<p>Once you did it, you will have an option to check a file or a folder
+with F-Prot by rightclicking on it, choosing "Send to" and then
+"F-Prot".
+<br>
+
+The main advantage of this method over the one which we described in
+the former section, is that it is very easy to implement. It is also
+very
+easy to be removed, if you decide to remove F-Prot. Just delete the
+shortcut.
+No need to deal with the registry.
+</p>
+
+<p>It has, however some drawbacks over the method described in the
+former
+section:
+<br>
+
+a) Scanning with F-Prot is not done directly from the rightclick menu,
+but rather from a submenu of it.
+<br>
+
+b) This method will not add the option to logical drives.
+<br>
+
+c) In this method, the F-Prot program will run without switches. This
+means that it will not scan files with non-executable extensions, will
+not scan packed or archived files, etc.
+</p>
+
+<p>You may still be able to turn some switches (flags) in the program
+if
+you wish, but this needs some extra work. This is done by first
+deciding
+which switches you wish to use with the F-Prot program, when using it
+from
+the "Send to" menu. You may consult the command.txt file which is in
+the
+F-Prot folder, for that.
+<br>
+
+Then enter Notepad.
+<br>
+
+Now, if you wish to add the options to scan the files, including
+compressed
+executables, and archives, then type in the new file (from Notepad) the
+following line:
+<br>
+
+<font color="#009900">C:\F-Prot\F-Prot.exe /packed /archived %1</font>
+</p>
+
+<p>Of-course, you will have to use the correct path to the F-Prot
+program.
+You may also use switches different from the ones in this example.
+<br>
+
+The "%1" mark is important.
+<br>
+
+If the path to the F-Prot program, includes blank characters in it,
+you should enclose it with quotes. For example, if the F-Prot program
+is
+in C:\Program Files, then you should type something like that:
+<br>
+
+<font color="#009900">"C:\Program Files\F-Prot\F-Prot.exe" /packed
+/archived %1</font>
+<br>
+
+</p>
+
+<p>If you use Windows XP, it is recommended to also add the following
+line as the bottom of the file:</p>
+
+<p><span style="color: rgb(0, 153, 0);">pause</span><br>
+
+</p>
+
+<p>After typing this line (/these lines), choose "save as" and in the
+"save as" menu,
+choose "save as type" to "all types", and then browse to F-Prot
+program,
+and save it under the name: f-prot4sendto.bat .
+<br>
+
+Then instead of adding a shortcut to F-Prot program, to the "Send to"
+folder, you should instead add a shortcut to this batch file. Also
+here,
+you should verify that the "close on exit" is not checked, and also
+here,
+you may rename the shortcut, as explained above. You will still not be
+able to use some switches to folders, and others to files, but this
+will
+allow you to set non-default switches.
+<br>
+
+&nbsp;
+</p>
+
+<p><b><u><font color="#ff0000">9. Preparing External Antivirus Diskettes</font></u></b>
+</p>
+
+<p><font color="#000000">There are various reasons why someone would
+prefer
+to boot and run an antivirus program from an external diskette rather
+than
+from the hard-drive. You may wish to prepare such floppy disks when
+your
+computer is clean, and then, if you suspect that your computer or any
+other
+computer, is infected, you can boot from them and use them to check and
+clean the computer while knowing that no virus is active while the
+antivirus
+is acting. This prevents a situation when the fact that the virus is
+active
+makes it harder for the antivirus to clean it, or situations where an
+active
+virus prevents the antivirus from loading up, or situations, where a
+destructive
+virus causes harm while the computer is booted from the hard disk to
+use
+the antivirus from the hard disk.</font>
+</p>
+
+<p><font color="#000000">Many modern antivirus programs offer an option
+to produce such an emergency disk. F-Prot for DOS does not.</font>
+</p>
+
+<p><font color="#000000">Luckily, You can do it manually, or, even
+better, you can use the AVDISK program for that. You can also use FP-UP
+for that.<br>
+
+</font></p>
+
+<p>In subsections <span style="color: rgb(0, 153, 0); font-style: italic;">9a</span> and <span style="color: rgb(0, 153, 0); font-style: italic;">9b</span> we
+shall discuss the manual preparation of such diskettes. Doing this with
+AVDisk will be discussed in section <span style="color: rgb(0, 153, 0); font-style: italic;">9c</span>, and
+FP-UP will be discussed in
+section 11.<br>
+
+</p>
+
+<p><span style="color: rgb(255, 0, 0); text-decoration: underline;">9a.
+Manual preparation of the external F-Prot diskettes.</span><br style="color: rgb(255, 0, 0); text-decoration: underline;">
+
+</p>
+
+<p>In order to prepare these diskettes, you need to have an access to a
+clean computer with Internet connection. You
+will also need three empty diskettes in a good condition.&nbsp; In our
+instructions, at the end of the process the computer you will use will
+be restored to the way it was before you started the process, so that
+people should be relaxed that you are not changing things in their
+computer, without restoring them back after the preparation of the
+diskettes. Here are the instructions:<br>
+
+</p>
+
+<br>
+
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td style="vertical-align: top;">1.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Take either 3 or 6&nbsp; empty
+diskettes to a clean
+computer. In fact, you'll need only 3 diskettes, but you
+might prefer to make another set for backup.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">2.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">On that computer, open a new
+dedicated folder, and download the
+F-Prot program, and the updated sign.def, sign2.def and macro.def the
+way we discussed in section 2.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">3.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Put the first diskette in the
+drive, and format it as a boot diskette. This can be done by
+opening "My&nbsp;Computer" and then rightclicking on the icon of the
+floppy drive.
+Then one should choose "Format" and in the new window, one should
+choose "Quick" or "Full"
+formatting, and check the "Copy system files" before starting the
+formatting. It is also
+recommended to check the "Display summary when finished" so that you
+can see if there are
+bad sectors on that diskette.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">4.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Then copy the following files
+from the F-Prot folder to that diskette: english.tx0, f-prot.exe,
+macro.def .<br>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">5.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Open notepad, and type the
+following line as the text of a file:<br>
+
+      <span style="color: rgb(0, 153, 0);">f-prot /loaddef /hard
+/disinf /auto</span></td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">6.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">From the file menu, choose "Save
+as", and in the new window choose "Save as type"
+all, and then as the name of the file, choose "autoexec.bat". Choose to
+save the
+file in the first diskette.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">7.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Take out the first floppy from
+the drive, and write on it: "boot + f-prot + macro.def".</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">8.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Put the Second floppy to the
+drive, and copy "Sign.def" from the F-Prot folder to it.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">9.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Take out the second diskette,
+and write "sign.def" on it.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">10.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Copy sign2.def to the third
+drive, and then write on the diskette "sign2.def".</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;">11.<br>
+
+      </td>
+
+      <td style="vertical-align: top;">Write-protect the three
+diskettes.&nbsp; At the top of each diskette, you may see two small
+square windows, in which one of them is already opened. In order to
+write-protect the diskette, you should open also the second window.
+This way, it promisses that if by mistake the diskettes will later be
+exposed to an active virus, it will not be able to infect them.<br>
+
+      </td>
+
+    </tr>
+
+  
+  </tbody>
+</table>
+
+<p>You should take care to keep those diskettes away from strong
+magnetic fields. Mainly, not to keep them near a cellular phone.</p>
+
+<p>Then, you just take the floppy diskettes to the infected computer,
+verify that it is set to first try to boot from the floppy disks (this
+is a BIOS configuration, and we shall not explain it here, but in many
+cases it is already configured that way). You just put the first
+diskette in the floppy drive and boot the computer. It will instruct
+you to enter the other diskettes, and then will launch the F-Prot
+antivirus and clean the computer.<br>
+
+<br>
+
+</p>
+
+<p><span style="color: rgb(255, 0, 0); text-decoration: underline;">9b.
+Manual preparation of the external F-Prot diskettes - doing it with
+only two diskettes</span><br style="color: rgb(255, 0, 0); text-decoration: underline;">
+
+</p>
+
+In any case you need to clean your computer while&nbsp; booting from a
+clean floppy disks and assuring that no virus is active while your
+computer is being clean, you may, in fact, do it with only two
+diskettes.<br>
+
+The price is by using a dummy macro virus definition file, instead of
+the real one. Of course, this means that the external F-Prot diskettes,
+will not clean your computer from macro viruses, but since those
+viruses normally are not activated automatically upon startup, it is
+possible to clean at first only other viruses, while booting from the
+external diskettes, and only later, after booting normally, to check
+for macro viruses if necessary. In many cases, you wish to use the
+external boot, because you already know that you are infected by a
+specific virus, but you cannot get rid of it unless you use external
+clean booting. In such cases, there is no need for macro virus
+scanning, and one might prefer to use only two diskettes. The
+instruction in such a case are similar to the ones in the former
+subsection, where the only differences are that:<br>
+
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">*</span><br>
+
+      </td>
+
+      <td style="vertical-align: top;">On the first (boot) diskette,
+instead of copying macro.def, you
+should copy nomacro.def and scan2.def to the diskette. All the other
+files should be placed as in the former version.</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">*</span><br>
+
+      </td>
+
+      <td style="vertical-align: top;">You should then rename the file
+nomacro.def to macro.def (nomacro.def is the dummy macro definition
+file).</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">*</span><br>
+
+      </td>
+
+      <td style="vertical-align: top;">You should name the first
+diskette: "boot+scan.def+macro.def".</td>
+
+    </tr>
+
+    <tr>
+
+      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">*</span><br>
+
+      </td>
+
+      <td style="vertical-align: top;">you should omit the preparation
+of the third diskette.</td>
+
+    </tr>
+
+  
+  </tbody>
+</table>
+
+All the other instructions are similar to the instructions in the
+former subsection.<br>
+
+<br>
+
+<br>
+
+<span style="color: rgb(255, 0, 0); text-decoration: underline;">9c.
+Preparing External Antivirus Diskettes - AVDisk<br>
+
+</span>
+<p><font color="#000000">AVDisk is a great freeware software for
+preparing boot diskettes for various antivirus programs (F-Prot for DOS
+is included). There is no need to use a specific version of Windows,
+but of course,&nbsp; the preparation of the diskettes, should be done
+in a clean computer (it might work also if you make it when on your
+infected computer, but&nbsp; it depends on the exact nature of the
+infection).</font><font color="#000000"></font>
+</p>
+
+<p><font color="#000000">It is recommended that you prepare those
+diskettes, and routinely update
+them when you believe that your computer is clean, so that </font><font color="#000000">If your computer becomes infected (or you suspect
+it), and you cannot run the antivirus program from the infected
+computer,
+or you cannot remove the virus by running it, you can boot your PC with
+those diskettes that you have prepared when your computer was still
+clean,
+and execute your antivirus program from those diskettes.</font>
+<br>
+
+<font color="#000000">You can get the program and learn more about
+it, on its web site:</font>
+<br>
+
+<font color="#000000"><a href="http://www.avdisk.org/">http://www.avdisk.org</a>
+. If you
+automated the downloads of the virus data files, the way I explained in
+section 5, then you have already installed it.</font>
+<br>
+
+<font color="#000000">It is worthy to mention that AVDisk allows you
+to produce such diskettes also for other antivirus programs, provided
+that
+you have them on your computer, and the way it does it, the diskettes
+that
+are produced by AVDisk are sometimes much more friendly than the
+diskettes
+that are produced directly as features offered by those programs.</font>
+</p>
+
+<p><font color="#000000">Since the information on the AVDisk's site is
+very good, I will save myself from detailed instructions.</font>
+</p>
+
+<p><font color="#000000">I still wish to comment that just as we
+discussed in the folmer subsections, if you need to use
+an external clean antivirus program, and you don't already have such
+diskettes,
+it might be a good idea to use a friend's computer which is clean and
+uses Windows, and to produce an F-Prot folder in it,
+and then produce AVDisk and make those diskettes, and use them on your
+computer. Deleting everything on your friend's computer after that (if
+your</font>
+<br>
+
+<font color="#000000">friend wishes to restore its PC to the way it
+was before you downloaded AVDisk and F-Prot) is very easy.</font>
+<br>
+
+<font color="#000000">This may take the time but has a good chance
+to solve your problem.</font></p>
+
+<p><font color="#000000">Also here, it is recommended to write-protect
+the diskettes before using them on the infected computer. Even though
+when booting from the diskettes there is no reason for these diskettes
+to become infected, simply because there is no virus active, it might
+still be a good idea to write-protect them, in case you forgot to
+change the boot sequence, and the computer booted from the infected
+hard disk while one of the floppies was inserted.<br>
+
+</font></p>
+
+<p><b><u><font color="#ff0000">10. Updating the Program and the Virus
+Definition Files: FP-Check Program</font></u></b>
+</p>
+
+<p><font color="#000000">FP-Check is a freeware program for updating
+F-Prot. It can also be used for simplifying the first installation of
+F-Prot as well.&nbsp; You can find it here: <a target="_blank" href="http://www.niksoft.at/fp-check/">http://www.niksoft.at/fp-check/</a>
+.<br>
+
+Here is my review of version 8.5.12 as of February 1, 2004:</font></p>
+
+<p><font color="#000000">The program is freeware.&nbsp; It is formally
+defined as a beta version, but I found it to be stable and to work
+smoothly - at least on my&nbsp; own computer.</font></p>
+
+<p><font color="#000000">Features: The program offers you an easy way
+to update F-Prot and its virus definition files, if F-Prot is not yet
+installed, it will install it. A very easy way to install it.<br>
+
+</font></p>
+
+<p><font color="#000000">
+There is an option to start the program whenever Windows starts. You
+can use it also in a batch file or as a command line so that it makes
+it
+easier to use it with automation, such as with the use of the "Task
+Scheduler". So that it will check periodically for updates. Please
+notice that if you define it to check at times when your computer is
+not connected to the Internet, it might result in no updates.<br>
+
+You may also configure it to update from a local archive. The features
+of the programs seem to aim at being a more generic updater also for
+other types of programs, but it is initially configured for F-Prot.<br>
+
+There is an option to start AVDISK after a successful update.<br>
+
+</font></p>
+
+<p><font color="#000000">
+The installation of the program is simple, and the uninstallation is
+with the standard use of "Add/Remove programs". You may choose either
+English language or German. After the installation of the program, its
+configuration window is opened. The configuration deserves some
+attention. If you don't want the program to be opened automatically
+when Windows starts up, you should change the setting. It is enabled by
+default.&nbsp; You should define the location of the F-Prot program,
+and set the same location also for the definition files. If F-Prot is
+not yet there, it will download it at first use. It is recommended
+to look at the various options in this configuration.</font></p>
+
+<p><font color="#000000">You can start the updater from within the
+configuration window, or directly from the Start/Programs menu, on your
+computer. It doesn't&nbsp; add a shortcut to F-Prot.<br>
+
+</font></p>
+
+<p><font color="#000000">Summary:<br>
+
+The program is very simple, friendly, and well written. I strongly
+recommend it for the task of both first installation of F-Prot and for
+the task of updating the program and the virus definition files.</font></p>
+
+<p><br>
+
+</p>
+
+<p>
+</p>
+
+<p>
+</p>
+
+<p><b><u><font color="#ff0000">11. Art Kopp's FP-UP Program</font></u></b>
+</p>
+
+<p><font color="#000000">Art Kopp has been working on a (third party)
+freeware product called FP-UP,
+that should make F-Prot easier and more user friendly.</font>
+</p>
+
+<p><font color="#000000">So here is my review of the product correct
+for December 28, 2003:</font>
+</p>
+
+<p><font color="#000000">I used F-PUP.EXE taken from <a href="http://home.epix.net/%7Eartnpeg/" target="_blank">http://home.epix.net/~artnpeg/</a>
+.</font>
+<br>
+
+Version: 1.7<br>
+
+Freeware<br>
+
+</p>
+
+<p>Features:
+<br>
+
+1. Simplifies the installation of the F-Prot program.
+<br>
+
+2. Simplifies the updating of the program and the virus definition
+files.
+<br>
+
+3. Allows one to execute F-Prot from FP-UP with an interface which
+allows the use of the mouse, and allows navigating through the folders
+in order to check a specific folder.
+<br>
+
+4. Allows the creation of emergency boot disks which can be used to
+boot a computer externally without running anything from the hard
+drives,
+and then check it with F-Prot either from F-Prot's interface or from
+FP-UP's
+Interface.
+</p>
+
+<p>I have checked those abilities:
+</p>
+
+<p>F-PUP.EXE&nbsp; asks you where to install itself,&nbsp; and then it
+installs FP-UP on that folder. This will also be the place where it
+will install F-Prot, so if you already have F-Prot installed, it is
+recommended to set this same folder as the folder for FP-UP.&nbsp;
+There is nothing in the installation besides extracting the FP-UP to
+thar folder.<br>
+
+</p>
+
+<p>In order to use it, you just have to doubleclick FP-UP. It will then
+lead you to a menu which resembles a menu of a DOS program, but will
+function with the mouse keypresses. You may choose whether you wish to
+update the program/definition files, or to&nbsp; build the boot
+diskettes, or to scan your hard disks or specific folders with F-Prot.<br>
+
+If F-Prot is not yet installed, choosing "Update" will install it to
+the same folder where FP-UP was installed. <br>
+
+</p>
+
+<p>The use of FP-UP for updating F-Prot is very simple, but while you
+may configure FP-Check to automatically check and update files upon
+opening the program, in FP-UP you need to first enter the menu and then
+to choose the update. FP-UP also lacks the command line option which
+FP-Check has and which allowed FP-Check to be used in an automation.
+Hence even though FP-UP does it in a simple way, I still prefer
+FP-Check (which was discussed in section 10) for that.<br>
+
+</p>
+
+<p>The execution of F-Prot from within FP-UP interface is not so user
+friendly: although you use your
+mouse for navigation in the menus, it is still a DOS program, and the
+pointer
+does not change when you move it over a "button". The folders view
+allows you to navigate to the folder you wish
+to check. This saves you from knowing their MSDOS names, but in many
+cases it is a rather tedious work, because all the folders and
+subfolders
+are always expanded, and this makes the navigation rather slow.</p>
+
+<p>The creation of the emergency boot disks and their use works fine,
+but
+it lacks the ability that AVDisk has, to only update them.<br>
+
+All in all it works fine, but I still prefer to use AVDISK for that.<br>
+
+</p>
+
+<p>There is no uninstallation routine and no icons outside the
+installation folder. You should add those shortcuts yourself (not a
+hard
+job), and when (and if) you wish to uninstall it, simply remove it's
+files from F-Prot's folder.<br>
+
+</p>
+
+<p>Personally,&nbsp; even though it is good to know about FP-UP and I'd
+certainly keep my eyes on it, I still prefer to use FP-Check for the
+updating and first installation, AVDisk for the boot disk creation, and
+the original F-Prot 's interface for the program.<br>
+
+###(to be updater)####<br>
+
+</p>
+
+<p></p>
+
+<p>
+</p>
+
+<span style="font-weight: bold;"><br>
+
+</span><b><u><font color="#ff0000">12.&nbsp; F-Prot Updater by OverSelf
+Research</font></u></b>
+<p>The F-Prot&nbsp; Updater by Overself Research is an updater mainly
+meant for periodic updates. ####<br>
+
+</p>
+
+<p></p>
+
+<p>
+</p>
+
+<p><br>
+
+</p>
+
+<p><b><u><font color="#ff0000">Appendix A. Registry Editing with Regedit</font></u></b>
+</p>
+
+<p>In Windows operating systems, there are usually two files which are
+called "registry files". These files hold all the settings and
+definitions
+regarding the hardware of your computer, the settings of the operating
+systems and of many programs, and user preferences. Most of the changes
+that you make to the way Windows works or appears, are kept in those
+registry
+files. The registry files can be edited directly by using a registry
+editing
+program. The one which comes with Windows is called "regedit" (in
+win2000
+it is called "regedt32", in XP there is regedt32, but its functionality
+is the same as "regedit").
+</p>
+
+<p>I shall not explain here the use of regedit. Instead I refer you to
+<br>
+
+<a href="http://www.winguides.com/registry/article.php?id=1&amp;page=3" target="_blank">http://www.winguides.com/registry/article.php?id=1&amp;page=3</a>
+for that.
+<br>
+
+Yet, it is important for me to make a few comments:
+<br>
+
+The main risk with regedit, is when you are not sure of what you are
+doing. Anything you change with the use of regedit, is changed
+immediately
+and without further warnings. This causes regedit to be unforgiveful to
+mistakes. besides that, it is a rather safe program. merely opening it
+and taking a look at the different keys and values cannot harm your
+computer.
+You should double check before modifying or deleting a key or a value.
+It is important for you to know how to back-up a specific branch of
+keys
+(to export it from the "Regisry" menu. How to back up the whole
+registry,
+and how to recover your system by restoring it from backups. All these
+things are explained in the reference mentioned above.
+<br>
+
+&nbsp;
+</p>
+
+<center>
+<table bgcolor="#ffff00" border="0" cellpadding="5" cellspacing="0" width="100%">
+
+  <tbody>
+
+    <tr>
+
+      <td>
+      
+      <div align="right"><a href="http://www.uzipaz.com/eng/secind.html">Back to my main security
+page</a></div>
+
+      </td>
+
+    </tr>
+
+  
+  </tbody>
+</table>
+
+</center>
+
+
+</body></html>

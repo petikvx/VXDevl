@@ -1,0 +1,325 @@
+EddyHawk's Info List
+---
+Anti Virus
+---
+-AVAST!
+ By: ALWIL Software
+ Year: 1992 - 2001
+ V7.70 [2001]
+ Adv.:
+  external shell (sortof), TSR virscan & mem/file protor,
+   chksummer & BS saver/restorer
+  can add own signatures
+  scanner can show short info about found virus
+  can scan inside presed x (atleast PkLite and Diet)
+  checksummer can check changed files for virs and clean append/prepend/
+   not-crypt-host virs
+ Disadv:
+  no heur
+  slow signature update
+  updating = downloads the whole big signature file
+  big, slow & not unloadable TSR scanner and file protor
+  fixed chksummer's database name/place (in root directory)
+  BS util can replace BS on floppy with a new one but it only shows
+   "Don't leave floppies into diskdrive" message and also destroyed the
+   bootup code (generated with 'sys a:')
+  shareware
+  can't scan archives
+  doc in PDF format and must be downloaded separately
+
+-AVP (Anti Virus Pro)
+ by: Eugene Kaspersky / Kaspersky Lab / Central Command (Russia)
+ variant: Kaspersky Anti Virus V3.5.133.0 [2000/2001]
+ adv:
+  almost daily signature file updates, regularly every week an update is
+   compiled which includes all updates that week, after about 3-4 months
+   one big update which holds all others is provided
+  external shell
+  supports many x presor/protor
+  can scan inside archives
+  many options
+ disadv: rather big
+ DOS
+  ZRDX + wc/le
+ DOS Lite V3.0 b134 [2000]
+  prog x is x-presed with Diet
+  last? lite ver
+  not fully compatible with latest updates
+ JMT: add even not-yet-known virus
+ Thomas Monkemeier: high-precision detection
+
+-CPAV (Central Point Anti Virus)
+ by: Central Point Software
+ year: 1992?
+ note:
+  signature only?
+  part of PCTools
+
+-Flu Shot
+ note: old avir
+
+-F-Prot
+ by: Fridrik Skulason, Vesselin Bontchev/Frisk Software (Iceland)
+ variant: FSTOPW95
+ adv:
+  free for non-commercial use
+  base price = $1/year
+ disadv: for updating the whole signature file has to be downloaded
+ V2.28 [1997]
+  last 16bit ver
+  built-in virs encyclopedia
+   EdH: good doc!
+  possibility to add own signatures
+  includes resident scanner
+ V3.x
+  CWDX
+  slower than V2.x
+  smaller & good heur set
+  F-Macro's built in
+  no more vir encyclopedia :(
+ V3.07
+ V3.08c [Jan 2001]
+ V3.09 [Apr 2001]
+ Adv:
+  supports many x-presors
+  the most accurate naming of viruses
+  built-in shell
+ Disadv: unregular updates
+ Note:
+  the last to have a Win version
+  since 3.08a SIGN2.DEF is incompatible with ver. 3.08 and earlier so update
+   archives include a special SIGN2.308 file for previous versions
+  CyR: the best there is
+
+-F-Macro
+ By: Fridrik Skulason, Vesselin Bontchev/Frisk Software (Iceland)
+ Year: 1996-1998
+ V3.1
+ Adv: only for macro virs
+ Disadv: DOS ver is merged into F-Prot
+
+-Doctor Solomon's FindVirus
+ By: Dr. Solomon Software
+ V7.82(?)
+ Adv:
+  quite fast
+  few false positives
+  included both 16 and 32 bit (used DOS/4G) versions
+  supported some executable compressors and archive formats
+ Disadv:
+  shareware
+  "merged" into McAfee SCAN (a.k.a. discontinued)
+  rather large
+ Note:
+  part of DSAV (Dr. Solomon's Anti-Virus Toolkit)
+  didn't detect that I had a 386  :(
+
+-McAfee VirusScan (VirScan)
+ by: John McAfee/McAfee/Network Associates
+ Year: 1992-2001
+ variant: for Win32, Unix
+ V3+
+  no more vir.dat update for V3.x on 15 Dec 1999
+ V3.15
+ V3.2.2 (ScanPM) [17 Dec 1998]
+  WC/LE executable
+ V4+
+  vir.dat can't be used by V3.x (not compatible)
+  presed/crypted vir.dat
+  much slower than V3.x
+  heur
+  integrity executable check
+ V4.14.0 for DOS/PM [Jan 2001]
+
+-McAfee VirusShield (VSHIELD)
+ by: John McAfee/McAfee/Network Associates
+ Year: 1994-1998
+ type: TSR, 32kb upper mem, 77kb XMS, 320kb basemem
+ V3.2.0 [1998]
+  no longer updated
+  VSHEML.EXE: polymorphic.vir.emulator
+
+-PC-Cillin
+ by: Trend Micro Device
+
+-NAV (Norton Anti Virus)
+ by: Peter Norton/Symantec
+
+-TBAV (ThunderByte Anti-Virus)
+ By: Thunderbyte B.V. or ESaSS B.V.
+ Year: 1989-1998
+ Type: anti-virus toolkit
+ Desc:
+  utils to prevent, detect and recover from a virus
+   attack: runtime scanner, TSR scanner, chksummer, TSR chksum checker,
+   (disk/mem/file) protor, heur.cleaner, UI, wiper, save/restore MBR/BS/CMOS
+   and self-check BS/MBR maker
+ V8.09 [1998]
+ Adv:
+  generic TSRs (except the scanner) -> usable even today
+  world 1st heur.cleaner (?)
+  CyR: the best doc
+  scanner explains why a file triggered alarm
+  TSR scanner can use XMS or EMS
+  prot against tunneling and ANSI bombs by 'TSRs driver'
+  can log everything
+  nice heuristics
+  BS prot in MBR code which CRC-checking BS
+  the same code on floppies allows user to boot from HD if no system on
+   the FD
+  possible to set which prog can go TSR/modify executables/write to
+   disk/etc.
+ Disadv:
+  I've yet to see it find a Win virus
+  the TSR scanner doesn't find many viruses by copying (although it finds
+   them if the infected file is being executed)
+  cleaner doesn't allow wildcards
+  not possible to scan and repair at once (but is possible through Inter
+   Engineering's TBMClean utility which runs cleaner automaticly)
+  shareware
+   nag screens
+  development has ended
+ Alt: InVircible AV, V-Buster
+
+-VSP (VirScan Plus)
+ by: Ralph Roth aka ROSE/ROSE SWE (Germany)
+ V12.50 [Mar 2001]
+ Adv:
+  quite fast
+  many options
+  can search for mutated/hacked versions of viruses
+  includes additional utilities like (MBR & BS) cleaner and resident
+  answerer for virs' "Am I There?" calls
+  a lot of docs
+  heur mem scan
+ Disadv:
+  in German
+  if all heurs are enabled then many false positives
+  shareware
+  unregular updates
+ Note: meant for German market
+
+-RHBVS (ROSE's Heuristic Based Virus Scanner)
+ By: Ralph Roth aka ROSE/ROSE SWE (Germany)
+ V3.41.1 [17 Feb 2001]
+ Adv:
+  heur-based scan
+  includes a smart file renamer
+  can explain why file triggered alarm
+  free
+  can search for companion viruses
+ Disadv: no BS/MBR scanning
+
+-F_mIRC
+ By: Ralph Roth aka ROSE/ROSE SWE (Germany)
+ V2.11 [11 Mar 2001]
+ Adv:
+  for scripts (BAT, VBS, INI, JS, HTML, WBT, CS)
+  heur
+  dos/win32 dual-bound-executable (both DOS and Win32 versions in one file) and Linux version
+  free
+
+-MemScan
+ By: Ralph Roth aka ROSE/ROSE SWE (Germany)
+ V6.0.6 [04 Jan 2001]
+ Adv:
+  free
+  (fast & heur) mem scan & MBR/BS/interrupt checker
+ Disadv: for memory only
+
+-MR2S (Mr. DoubleScan a.k.a. MarxRoth TwoScanner)
+ By: Ralph Roth aka ROSE/ROSE SWE & GEGA Software
+ V1.15.01 [18 Feb 2001]
+ Adv: free
+ Disadv:
+  rather slow
+  logging all scanned files
+  scanning uses 3 different EXEs
+  prog's dir must be current (can't be exec-ed via PATH)
+ Note: includes code from both companies' AV products
+
+-ChkMem
+ by: martinko aka Martin Otto (slovakia)
+ year: 1997-1998
+ v0.5 [Feb 1998]
+  adv:
+   heur -> no database -> no need to update
+   detect heavy polymorphic & stealth virs
+   fast & small
+   beerware
+  disadv:
+   no database -> can't clean vir
+   only detect resident.vir
+ note: prog x is crypted & self-checking
+
+-ChkVir
+ by: A. Bogdanow/PTS
+ year: 1991-1992
+ V8.20 [Dec 1992]
+ adv:
+  don't bother user when he formats floppy, copy COM file or compile a file
+  possess keyboard control
+  can't be tricked by real int21h vector
+ note: part of PTSDOS
+
+-MSAV (MicroSoft Anti-Virus)
+ By: CPS (Central Point Software)
+ Year: 1992-1993
+ Adv:
+  can generate checksums
+  a special low-level verification technique for stealth viruses
+ Disadv: signature only
+ Note: part of MS-DOS 6.x (licensed to Microsoft)
+
+-VSafe
+ By: CPS (Central Point Software)
+ Year: 1991-1993
+ Type: TSR, 7kb memory, 64kB (E/X)MS
+ Adv:
+  hotkey to bring up options screen
+  prot for modification of executables and bootsector, low
+   level format, residency
+ Disadv: can't specify which files are allowed to do those things
+ Note: part of MS-DOS 6.x (licenced to Microsoft)
+
+-AIDSTEST
+ By: DialogueScience (Russia)
+ Disadv:
+  shareware
+  cmdline driven
+  discontinued
+
+-Dr.Web for DOS/32 (DrWeb)
+ By: ID Anti-Virus Lab & DialogueScience (Russia)
+ V4.19(?): 16bit program with built-in shell
+ V4.20(?): 32bit version (uses CauseWay extender)
+ V4.23 [5 Mar 2001]
+ Adv:
+  quite fast
+  supports several x-presors
+  good heur
+  frequent new vers
+ Disadv:
+  unregular updates
+  shareware
+  unregged ver can't disinfect
+  cmdline driven
+ Note: successor of AIDSTEST
+
+-NOD32 (NOD Anti-Virus System for DOS)
+ By: ESET, LCC
+ V1.75
+ Adv:
+  built-in shell
+  frequent new vers
+ Disadv:
+  shareware
+   trial ver number is often behind the official number
+    (not every new ver is put out for trial)
+  32bit (uses CauseWay extender)
+---
+MISC
+---
+1 Dec 1997, McAfee merged with other companies to form Network Associates
+McAfee/VirusScan/V3.15+/DAT/readme.txt: 300 new viruses are produced
+ each month

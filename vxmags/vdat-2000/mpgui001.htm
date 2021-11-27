@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Introduction to Viral Programming</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<CENTER>
+  <p><font size="+2" color="#004080"><b>Introduction to Viral Programming</b></font> 
+  </p>
+  <hr>
+</CENTER>
+<P> 
+<blockquote> <p><FONT SIZE="+1">Chapter 1</FONT> 
+  </p><p> 1.1 <A HREF="#Introduction">Introduction</A><BR>
+    1.2 <A HREF="#Language">Choosing a Language</A><BR>
+    1.3 <A HREF="#VirusTypes">Types of Viruses</A><BR>
+    1.4 <A HREF="#WinProbs">Problems With Windows</A> </p>
+</blockquote>
+<P>
+<HR>
+<A NAME="Introduction"></a>
+<CENTER><FONT SIZE="+1">Introduction</FONT></CENTER><BR>
+Welcome to Mephistopheles' guide to viral programming. The reason I'm writing this guide for all of you is basically that I'm tired of the lack of documentation on writing viruses... and the documentation that is out there is so hideously written that either it is incorrect or cannot be read because there is a spelling mistake every other word. I plan to cover every aspect of viral programming in this guide but I'm bound to miss a few.
+<P> This guide assumes that you have a decent knowledge of 80x86 Assembly Language. 
+  All of the examples were written by me and can easily be assembled with Turbo 
+  Assembler, as I tend to use Ideal mode often. It's also a good idea to have 
+  a debugger (such as Turbo Debugger) handy, a memory mapper if you're writing 
+  a memory resident virus (such as MapMem), or a disk editor (such as Disk Editor) 
+  if you're writing a boot-infector, as these utilities will greatly assist you 
+  in all of the inevitable problems you'll have. 
+<P>
+Another note that I think I should alert people to (although it should not have to be necessary), is that you can <B>not</B> get infected by a virus unless you run the virus (or an infected program). That means that you won't infect your system by viewing a picture on the web, by reading a mail, or even by download the virus. Only when you go out of your way to run an infected program or the virus itself will you get it. Also note, viruses can <B>not</B> do any physical damage to the computer hardware, all that they will damage is data... if they choose to (keep in mind that not all viruses cause damage, some just display a nice message once a year). 
+<P>
+<HR>
+<A NAME="Language"></a>
+<CENTER><FONT SIZE="+1">Choosing a Language</FONT></CENTER><BR>
+A virus can generally be written in any language that provides direct access to the CPU in which you're writing it for, in this case, the CPU is Intel's 80x86 line of processors. Assembly Language is not only the preferred language to write a virus in, but is undoubtedly the best language to write one in. C and Pascal have been known to spit out a few viruses here and there, but it is best that you stay away from these high level languages, as they provide a lot of unnecessary overhead code which is very bulky, slow, and not needed. Let's look over the pro's and con's of these three languages:
+<P>
+<TABLE WIDTH="100%">
+<TR>
+  <TD><B>Language</B></TD>
+  <TD><B>Pro's</B></TD>
+  <TD><B>Con's</B></TD>
+</TR>
+<TR>
+  <TD>Pascal</TD>
+  <TD>none</TD>
+  <TD>Bulky overhead code<BR>
+      Slower than Assembly</TD>
+</TR>
+<TR>
+  <TD>C</TD>
+  <TD>none</TD>
+  <TD>Bulky overhead code<BR>
+      Difficult access to CPU's registers<BR>
+      Slower than Assembly</TD>
+</TR>
+<TR>
+  <TD>Assembly</TD>
+  <TD>Small, compact code<BR>
+      Fast, efficient<BR>
+      Not as easily detected<BR>
+      Easy to modify memory, and access interrupts.</TD>
+  <TD>Takes a while to learn (as does any language)</TD>
+</TR>
+</TABLE>
+<BR>
+Perhaps I'm being a little bias, but I think that Assembly clearly has all of the advantages. Therefor, this guide will only cover viruses in this language, as I don't feel it's necessary to cover any other languages. If I receive requests to cover other languages (such as the above mentioned), I'll write a guide to cover other languages.
+<P>
+<HR>
+<A NAME="VirusTypes"></a>
+<CENTER><FONT SIZE="+1">Types of Viruses</FONT></CENTER><BR>
+Viruses are usually simple little programs that range in size from approximately 130 to 2,500 bytes. Anything smaller is probably an overwriting virus (sometimes not even considered a virus, but rather a Trojan), and anything larger is probably just not necessary. Viruses can be categorized by several specific virus characteristics:
+<P>
+<UL>
+  <LI><B>What the virus infects</B><BR>
+    <UL>
+      <LI><B>.COM Programs</B><BR>
+	The .com infecting viruses, infect .com files by simply attaching itself to the end of
+	the program to infect, and creating a jump in the beginning of the host program to jump
+	to the virus located after it. It will then restore the original beginning of the host
+	program and return control to it. So the user won't even notice a difference. It is the
+	easiest type of program to infect, and requires the least code.<P>
+
+      <LI><B>.EXE Programs</B><BR>
+	The .exe infecting viruses, are more complicated than a .com infector, but it's
+	definitely a better type of infector to have. Most of the .exe infectors do not support
+	new-format .exe file headers (for programs for Windows, etc...), and consequently may
+	render the .exe useless. A .exe infecting virus requires more code, is more difficult,
+	and more complex... so you should only start writing these when you have already grasped
+	the basics of .com infection.<P>
+
+      <LI><B>.SYS Programs</B><BR>
+	There are very few viruses that infect .sys programs, partly because there is little
+	documentation on it, and partly because there's not much need to do so. It's not really a 
+	good idea to have a virus that infects strictly .sys programs, as it will not spread to
+	other computers easily, or on the computer itself really. This should only be used when
+	you want to write a virus that will infect absolutely everything infectable out
+	there.<P>
+
+      <LI><B>Boot Sectors</B><BR>
+	Boot sector infectors infect the boot record (also called the Boot Sector) of a disk
+	drive, or the hard drive. They are the most difficult type of infector to write, and
+	especially to debug, but are well worth the fun you can have with them. Because you are
+	infecting the boot record, your virus will always be the first thing that the computer
+	runs when it boots, giving you special privileges, like being able to deny the user of
+	booting their computer, and the ease of allocating memory (because you know nothing else
+	is in memory).<P>
+
+      <LI><B>Other</B><BR>
+	The viruses that are in this category, do not infect programs, but rather source code
+	files like ".PAS" or ".C" files. These are very rare, and very interesting.<P>
+    </UL>
+
+  <LI><B>How the virus hides itself</B><BR>
+    <UL>
+      <LI><B>Stealth</B><BR>
+	Stealth viruses hide themselves from the user by employing special techniques such as
+	polymorphism, encryption, on-the-fly disinfection, etc... They require a fair amount of
+	additional code, and depending on which stealth technique you choose to have in you
+	virus, it can  make you virus rather complex.<P>
+      <LI><B>Tight Code</B><BR>
+	These viruses rely on their small size to hide itself from the user. They are usually
+	restricted a little due to them having to be so small, so they often can't afford such
+	luxuries as some stealth techniques.<P>
+      <LI><B>Other</B><BR>
+	These viruses are those that are not tightly coded, don't employ any stealth techniques,
+	or just make it too easy for the user to see that the system is infected. Viruses that
+	belong in this category are those that are overwriting, display a message or play a sound 
+	with every infection, etc...<P>
+    </UL>
+
+  <LI><B>How the virus finds programs to infect</B><BR>
+    <UL>
+      <LI><B>Runtime</B><BR>
+	Runtime viruses will search through a directory (or sometimes several directories),
+	when the infected program is ran looking for a file to infect. After it finds one, it
+ 	will infect it and search for another file to infect. These will usually only infect a
+ 	fixed number of programs in a single run, as not to infect the entire system to quickly.
+	Runtime viruses are generally slower than memory resident ones, because they need to
+	search for a file to infect.<P>
+
+      <LI><B>Memory Resident</B><BR>
+	Memory resident (or TSR, for Terminate and Stay Resident) viruses are usually smaller
+ 	than runtime viruses, due to the fact that they  don't need to search for a program to
+ 	infect. They work by allocating memory for itself, storing itself there, and intercepting
+ 	an interrupt. Whenever that interrupt is called by another program, it will actually call
+ 	your virus. The best interrupt to intercept is interrupt 21h, and function 4Bh (execute
+ 	program). This way you can infect any program that is ran.<P>
+    </UL>
+</UL>
+When choosing how you want to infect the system, and what type of programs you want to infect, keep in mind that it will determine how fast the system is infected. For example, if you make you virus infect all .exe programs that are ran (memory resident, .exe infector), then the system will probably be infected at a moderate rate. Or if you have a directory-traversal runtime virus that infects all .com and .exe files it comes across, then the system will become entirely infected at blazing speed. The reason I bring this up, is because it might be less noticeable (or more fun) if you infect the user's system slowly, or you might want to infect the system fast, and not give it a chance. Also remember that survival is the key to your virus. If you infect the system too fast, and alert the user, or if you do it too slowly, and let the virus become extinct, then your virus has died.
+<P>
+<HR>
+<A NAME="WinProbs"></a>
+<CENTER><FONT SIZE="+1">Problems With Windows</FONT></CENTER><BR>
+The Windows Operating System creates a major problem when creating a memory resident virus due to the way that it takes control over memory. It will not allow you to keep your code in memory after it terminates. There are a few ways around this dilemma, but the two most obvious (and easiest) solutions are to either write a runtime virus instead of a memory resident one, or to write a boot infector, so it will load into memory before Windows. I know that there are other solutions, but since any modern version of Windows runs in protected mode, and I only program in real mode, I can't do much until I learn some about protected mode.
+<P>
+<HR>
+<CENTER>
+  <A HREF="mphguide.htm">Contents</A>
+</CENTER>
+
+</BODY></HTML>
+

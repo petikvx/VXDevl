@@ -1,0 +1,369 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Miscellaneous - An Overview of the Seventh International Virus Bulletin Conference</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="MIBACK01.GIF">
+
+<UL>
+<DIV ALIGN=right><P>v.2.01; Oct. 21, 1997</P></DIV>
+</UL>
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+2>An Overview of The Seventh
+International<BR>
+Virus Bulletin Conference<BR>
+(VB’97). </FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<P>The conference was held  Oct.2-3, 1997 in SF. The partially accurate
+program of the conference is available on <A HREF="http://www.virusbtn.com/VB97/programme_tables.html">http://www.virusbtn.com/VB97/programme_tables.html</A>.
+</P>
+
+<P>I would like to single out the following five presentations that IMHO
+deserve attention: </P>
+
+<DIR>
+<DIR>
+<P>1. <A HREF="#1">David J. Stang: &quot;In pursuit of prevalence: a look
+at 'In the Wild'&quot;.</A></P>
+
+<P>2. <A HREF="#2">Jimmy Kuo: &quot;Free Macro Anti-virus Techniques&quot;.</A>
+</P>
+
+<P>3. <A HREF="#3">David Aubrey-Jones: &quot;Macro Attacks on Office ‘97&quot;</A>
+</P>
+
+<P>4. <A HREF="#4">Dmitry Gryaznov: &quot;Scanning the ‘Net&quot;</A></P>
+
+<P>5. <A HREF="#5">Martin Overton: &quot;FAT32 - New Problems for Anti-virus
+or Viruses?&quot;</A></P>
+</DIR>
+</DIR>
+
+<P>The most impressive was the presentation by David J. Stang. Its title
+could probably be changed to &quot;'In The Wild List' Is Dead&quot;. Although
+David diplomatically stated that &quot;This article is NOT an attack on
+the developers of any wild list&quot; it was actually a RIP for the 
+&quot;In The Wild List&quot; urban legend. IMHO this is probably the main
+result of VB’97. Better late than never ;-). I hope that after this presentation
+the new editor of the Virus Bulletin will abandon the &quot;In The Wild&quot;
+urban legend.</P>
+
+<H2 ALIGN=CENTER>Overview of the Best Presentations</H2>
+
+<H3><A NAME="1"></A>David J. Stang: &quot;In pursuit of prevalence: a look
+at &quot;In The Wild&quot;</H3>
+
+<P>I had never  listened to David before and the fact that he worked
+in NCSA in the past makes him a little bit suspect  (NCSA is the major
+proponent of the &quot;In the Wild List&quot; :-), but he gave a very good
+presentation. I believe most people connected with AV testing will (silently
+:-) agree that the  &quot;In The Wild List&quot; is unscientific (i.e.
+subjective), misleading (if used in AV scanner testing) and generally serves
+no identifiably useful purpose. It's a little bit  like the shadow
+of academician Lysenko's heritage (for those lucky souls who did not know
+about Lysenko and Lysenkoism, see the definition in the &quot;Sceptic's
+dictionary&quot; at <A HREF="http://wheel.ucdavis.edu/~btcarrol/skeptic/lysenko.html">http://wheel.ucdavis.edu/~btcarrol/skeptic/lysenko.html</A>).
+A meaningful &quot;In the wild list&quot; is just not possible due to regional
+differences. For example there is a product called V-HUNTER (<A HREF="http://ras1.dials.ccas.ru/dsav.htm#Vhunter">http://ras1.dials.ccas.ru/dsav.htm#Vhunter</A>)
+that for many years detected and disinfected only viruses that were found
+in Russia (it does not cover polymorphic viruses - they are covered by
+DrWeb, though). The list of viruses that it contains, even if we exclude
+polymorphics, has very little to do with the &quot;In the Wild List&quot;.</P>
+
+<P>IMHO the &quot;In the Wild List&quot; is an artificial mix. As such, 
+it should never be used for evaluations of the quality of the AV software.
+Often it does not include viruses that became widespread for a month or
+two (a very long period in the AV industry). At the same time it includes
+viruses which probably never managed to get into a particular country, 
+and in this sense are no different from any virus that can be found on
+&quot;Virus CDs&quot; or in collections available via the  Internet.</P>
+
+<P>Although I have publicly criticized the  &quot;In the Wild List&quot;
+several times, nobody has taken the  time  to put all the relevant
+arguments against it on paper. David's presentation does the job just fine.
+If any publication uses the &quot;In the Wild List&quot; in 1998, 
+I recommend it be viewed with great suspicion or just thrown in the garbage,
+where it probably belongs ;-).</P>
+
+<P>David Stang made a good field study of virus distribution in several
+different countries and formulated four reasons why a good wild list in
+not possible<I> (I paraphrased them as follows</I>): </P>
+
+<OL>
+<LI><B><I>The problem of scanner precision.</I></B> Scanners are so imprecise
+that for a new virus even if two scanners report the same name (which is
+seldom the case) it is unclear whether it is the same virus, two strains
+of the  virus or just two different viruses (one mistakenly misidentified
+due to bugs in one of the scanners).</LI>
+
+<LI><B><I>The problem of under-reporting and late reporting.</I></B> &quot;In
+the Wild List&quot; is not objective and relies on &quot;good will&quot; 
+i.e.   on the reports from  antivirus vendors/researchers.
+Antivirus vendors are generally reluctant to release information about
+viruses that their scanners does not detect/disinfect or does not handle
+well. That means that such cases were underreported or reported late. Not
+only AV vendors have no real incentive to report about new cases unless
+they are already incorporated into the scanner, they themselves are
+not always able to obtain reliable information from their customers about
+infections by old viruses for last month, especially if the virus is disinfected
+by a particular scanner without problems  (corporate customers are
+one important example; disclosure of such statistical information in corporations
+is often regulated).</LI>
+
+<LI><B><I>The problem of complete absence of proactive value.</I></B> Viruses
+can spread much faster that updates to the list.  So &quot;In the
+Wild List&quot; is never up to date. Often it is seriously misrepresent
+the situation. For example if a new type of virus appears it will not be
+promptly reported. As everybody know the Concept virus took the world by
+surprise. But it took  half a year before one half of the 27 respondent
+countries reported the virus to the &quot;In the Wild List&quot;, even
+though the virus was the most widespread in many or all of this countries
+during that period.</LI>
+
+<LI><B><I>The problem of limited value as a prevalence table.</I></B> Purging
+the viruses from the list is even more arbitrary than their inclusion,
+so the list cannot be used as a reliable prevalence table. Again, AV vendors
+have neither real incentives no reliable information from customers to
+report about the disappearance of a particular virus for a particular month.</LI>
+</OL>
+
+<P>Again, IMHO the main reason is that prevalence is so different between
+regions of the world that a global prevalence list make very limited sense
+after, say, a dozen most widespread viruses. See below for the discussion
+of Dmitry Grayznov's presentation about one possible alternative - &quot;In
+The Usenet List&quot;. It is an objective, but it has several serious problems
+that need to be solved before it can be viable for AV scanners testing.</P>
+
+<H3><A NAME="2"></A>Jimmy Kuo: &quot;Free Macro Anti-virus Techniques&quot;</H3>
+
+<P>For some strange reason Jimmy Kuo’s presentation was put on the technical
+track. IMHO it was the most useful for practitioners presentation at the
+conference. Jimmy did a really useful job of collecting and classifying
+the methods of improving macro virus protection in MS Word without using
+macro virus scanners of VxD. I would like to applaud Jimmy’s vendor neutral-approach
+that was used in the paper. The text of this paper is available on <A HREF="http://www.mcafee.com/support/vr/free_en.doc">www.mcafee.com/support/vr/free_en.doc</A>.
+I strongly recommend downloading and reading it. Several additional useful
+techniques should be mentioned: </P>
+
+<OL>
+<LI>Use MS Word 97, if possible. Macro viruses that have protected macros
+will NOT be converted correctly to MS Word 97 (see below);</LI>
+
+<LI>Use RTF as an alternative format for attachments.</LI>
+
+<LI>For Word 6.0 users only: Installation of SCANPROT macros in the STARTUP
+directory instead of NORMAL.DOT  (not recommended for Word 95 users
+- they need to upgrade to Word95a or, better, Word 97;  Word 97 users
+have the highest level of macro virus protection among MS Word users including
+the built-in functionality of SCANPROT).</LI>
+</OL>
+
+<P>A combination of copying the NORMAL.DOT template from a special backup
+directory, SCANPROT installation in the STARTUP directory and the use of
+RTF proves, as my own experience shows,   to be a very inexpensive
+and efficient corporate framework for fighting macro viruses. These methods
+are especially useful for organizations that are afraid of using VxD for
+stability reasons. </P>
+
+<P>As for RTF, I have had a positive experience with it in a large corporate
+environment, despite the fact that the CAP.A virus fools the user. This
+virus saves the document in native MS Word format instead of RTF even if
+the user tries to save it in RTF. At the same time, it   is very
+easy to check on the mail gateway (or in the mailbox) if the attachment
+was really converted to RTF. One only needs to check the first 5 bytes
+of the file. So the check can be really quick, much quicker than scanning
+the file for macro viruses.</P>
+
+<H3><A NAME="3"></A>David Aubrey-Jones: &quot;Macro Attacks on Office ‘97&quot;</H3>
+
+<P>This was an interesting presentation that tried to systematize macro
+virus protection features that are available in MS Word 97. Although Microsoft
+could and should do more, they have made a number of important and significant
+changes in Office 97 that makes the threat of macro virus infection less
+likely. The following features (with the exception of   No. 1) are
+generally poorly documented and communicated to the public. </P>
+
+<OL>
+<LI>A built in macro warning dialog (like SCANPROT for Word 6.0; enabled
+by default).</LI>
+
+<LI>A scanner/disinfector built in the Word Basic converter  (WWINT32.DLL).</LI>
+
+<LI>A feature that disables old Word Basic macro copying commands when
+the destination of the copy is locked for viewing (i.e. the project is
+password protected).</LI>
+
+<LI>The ability to protect projects can be applied to NORMAL.DOT, 
+making it impossible for macro viruses to infect NORMAL.DOT without the
+user supplying the password.</LI>
+
+<LI>Execute-only macros cannot infect NORMAL.DOT (the vast majority of
+macro viruses contains ‘execute-only’ or ‘protected’ macros that have some
+(primitive) form of encryption).</LI>
+</OL>
+
+<P>The last feature is probably the most important. In Word 97 only ‘projects’
+can be protected, while in Word 6 any single macro can be protected. A 
+Microsoft white paper &quot;Word Basic Migration to Visual Basic for Applications&quot;
+(available as a self extracting archive wbmigrat.exe from <A HREF="http://support.microsoft.com/support/kb/articles/q164/3/70.asp">http://support.microsoft.com/support/kb/articles/q164/3/70.asp</A>)
+lists the following four important restrictions: </P>
+
+<OL>
+<LI>Macros in protected projects cannot be copied.</LI>
+
+<LI>Macros cannot be copied into protected projects (so if you protect
+NORMAL.DOT it will be protected from viruses).</LI>
+
+<LI>The ExecuteOnly argument functionality of the Word Basic MacroCopy
+statement has been disabled.</LI>
+
+<LI>The Organizer does not list macros in a protected document.</LI>
+</OL>
+
+<P>Generally, switching to Office 97 is a pretty smart move from the point
+of view of macro virus protection. </P>
+
+<H3><A NAME="4"></A>Dmitry Gryaznov: &quot;Scanning the ‘Net’&quot;</H3>
+
+<P>VirusPatrol is a free service, provided by Dr. Solomon, to protect users
+of newsgroups from virus infections by the daily scanning of major Usenet
+newsgroups. Dmitry Gryaznov’s project was really innovative in several
+aspects and, to a certain extent, proved that Dr. Solomon is one of the
+market leaders. </P>
+
+<P>First, probably the best way for a virus author to quickly distribute
+a virus is to mail it to one or several popular USENET groups. Also, 
+files and documents that contain a particular virus (for example a resume
+that contains the CAP.A virus) are an indicator of a prevalence of the
+virus. Attached executables and documents are scanned using heuristic analysis.
+Suspicious samples are analyzed and a detection and clean-up routine is
+incorporated in FindVirus. VirusPatrol issues an alert to the newsgroup
+warning other readers not to download the infected file. In this way a
+virus outbreak may be prevented. Service is not intrusive. Readers of the
+scanned newsgroups will be aware that they are being protected by Internet
+VirusPatrol only when an alert is issued within that group. The list of
+viruses found on the scanned newsgroups over the past two months is available
+via http://www.drsolomon.com/vircen/vp/index.cfm. It is really  instructive
+reading. </P>
+
+<P>The second important aspect of this pioneering work is the ability to
+create something like an &quot;In the Usenet List&quot;. I believe that
+Dmitry should take some steps in this direction. There are several problems
+that need to be resolved, such as the posting of virus collections and
+posting viruses for distribution in provirus newsgroups. The simplest way
+is to exclude them. A second approach is to introduce a rating for each
+virus found according to the newsgroup and to use a  lower rating
+for virus distribution newsgroups. Let's briefly discuss four major objections
+mentioned above against the &quot;In The Wild List&quot;: </P>
+
+<OL>
+<LI><B><I>The problem of scanner precision. </I></B>Still valid, although
+only one scanner is used and bugs are limited to this particular scanner.
+Still not all viruses will be reported.</LI>
+
+<LI><B><I>The problem of under-reporting and late reporting.</I></B> 
+The list is objective and this problem seems to be less important.</LI>
+
+<LI><B><I>The problem of complete absence of proactive value. </I></B>Still
+true, but heuristics provide some (limited) proactive detection. 
+As virus authors try to distribute viruses via USENET, a  proactive
+value depends on the quality of the heuristics. At least some proactive
+value can be anticipated. More experience and information is needed.</LI>
+
+<LI><B><I>Problem of limited value as a prevalence table.</I></B> 
+Probably limited for the first dozen only. More experience and information
+is needed.</LI>
+</OL>
+
+<H3><A NAME="5"></A>Martin Overton, FAT32 - New Problems for Anti-virus
+or Viruses?</H3>
+
+<P>Martin Overton provided an interesting discussion of FAT32 that appeared
+in the Service Pack 2 for Windows 95 and is a preferable file system for
+today 3G+  hard drives. The paper is available on <A HREF="http://www.salig.demon.co.uk/fat32/fat32new.htm">http://www.salig.demon.co.uk/fat32/fat32new.htm.</A>  
+He demonstrated that many DOS viruses (including MBR and boot sector (DBR)
+viruses) work adequately under Windows 95 and FAT32. At the same time most
+antivirus vendors were very slow to implement proper handling of FAT32.
+</P>
+
+<P>Some of his findings appear to be completely opposite to postings by
+notable researchers on the alt.comp.virus group. The most important of
+them is that DBR  viruses<I> really</I> cannot be removed from FAT32
+partitions by non-FAT32 compatible anti-virus software. </P>
+
+<P>That means that customers with FAT32 installed, who paid for such AV
+products as AVP 3.0, F-prot Professional 3.0 and ThunderByte (as well as
+probably several others) were paying not for protection from a large subset
+of boot viruses that infect the boot sector [DBR] instead of MBR, but for
+vapor. Of those that do support FAT32, both McAfee ViruScan 3.03 and Norton
+Antivirus 3.0 constantly gave false positives after a cold-clean-boot [Virus
+found in memory]. Those that successfully support FAT32 and didn’t produce
+false alarm include: Dr. Solomon’s AVTK 7.72 and VET 9.44. Sophos Sweep
+supports FAT32, but refuses to remove FORM.A as they consider a FAT32 partition
+infected with a FAT16 boot virus a problem that requires help from their
+support desk. </P>
+
+<H3>Concluding remarks</H3>
+
+<P>IMHO one important problem was completely overlooked: the problem of
+the reliability of AV products. AV products not only add to the cost of
+ownership of  the Microsoft and Novel platforms. More often that not
+AV products, especially NLM s and VxD drivers, negatively affect the underling
+OS stability. Like other categories of consumers, AV consumers need some
+kind of consumer protection from problems like those reported by Martin
+Overton. The level of testing of AV products (QA) really needs to be improved.
+I will add just one example: </P>
+
+<UL>
+<P><TT>From: fprotman@aol.com (F PROT MAN)</TT> <BR>
+<TT>Newsgroups: alt.comp.virus</TT> <BR>
+<TT>Subject: Re: F-Prot Pro 3.0 for NT:  Very Nasty Bug</TT> <BR>
+<TT>Date: 2 Oct 1997 21:51:22 GMT</TT> </P>
+
+<P><TT>&gt;This is confirmed by me personally. We lost lots of documents,
+thank God</TT> <BR>
+<TT>&gt;for back ups. We reported this to our F-prot supplier who finally
+confirmed</TT> <BR>
+<TT>&gt;this problem yesterday ( Oct.1).</TT> <BR>
+<TT>&gt;</TT> <BR>
+<TT>&gt;Bob.</TT> </P>
+
+<P><TT>We hope to have this resolved in the next version of the software.
+Thank you</TT> <BR>
+<TT>for your interest in F-PROT Professional.</TT></P>
+</UL>
+
+<P>        ... ... ... <BR>
+  </P>
+
+<P>The author plans additional research into this subject. </P>
+
+<P>--- </P>
+
+<P>Dr. Nikolai Bezroukov <BR>
+BASF Corp. Data Security Analyst </P>
+
+<P>Copyright 1997, Nikolai Bezroukov </P>
+
+<P>Permission granted to freely copy and redistribute (including posting
+on web pages, usenet, BBS, bulletin boards of on-line service providers)
+provided this copyright notice is included.  </P>
+
+<P>Copyrighted material contained within this document is used in compliance
+with the United States Code, Title 17, Section 107, &quot;for purposes
+such as criticism, comment, news reporting, teaching&quot;</P>
+
+<P>Disclaimer: All comments or statements are solely my own, and do not
+reflect or represent any organization's that I may be associated with.</P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P> </P>
+
+</BODY>
+</HTML>

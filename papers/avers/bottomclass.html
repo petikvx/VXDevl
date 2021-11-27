@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="Class.EZ, kloop, kloop.exe, kloop.dat, pcode, source, execode, Kaspersky, Costin, Raiu, Virus Bulletin, article, Bottom of the Class, problem, missing, damaged"><title>Bottom of the Class</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<p><b><font size="+2"><u>&nbsp;Bottom of the Clas</u>s</font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>,
+&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;Prologu</u>e</b>
+</p><p>&nbsp;"Unpack the source, and look for a scanstring", they said. When
+the first Office97 macro virus was reported, a couple of years ago, the
+antivirus researchers all around the world rushed to their labs and put
+all those hacking tools out of the box once again in a quest to uncover
+the misteries of yet another virus-friendly Office platform. Those of us
+who had the chance to be able to ask the all-mighty Microsoft for some
+hints regarding the new file format got a rather informative and powerfull
+answer, which I actually used to start my article.
+<br>&nbsp;Well, because of at least two different reasons, not everyone
+followed that suggestion. For example, I was between the unlucky crowd,
+and didn't got any hint from Microsoft. That's why I first implemented
+something which nowadays might sound silly. More precisely, after looking
+at some different samples, I noticed that in all the samples the compressed
+source looked exactly the same, so I picked a scanstring from the compressed
+source and then used it to detect the respective virus. However, after
+some days of success, the method proved to be sooo wrong. I got a sample
+of the same virus, in which unfortunately the compressed source looked
+different. Right now I know that was caused by different parameters in
+the ATTRIBUTE statements of the compressed macro source, but back then
+it only ment more trouble to me. So after even more days, with a little
+bit of help, I implemented a decompressor, unpacked the source, removed
+the "ATTRIBUTE" lines, then computed a CRC on the macro. This worked like
+a charm, until another problem appeared. In order to find the offset of
+the compressed macro source inside the module, I went to offset 0xD0 in
+the macro module, read the value stored in there, then seek to that offset,
+and unpacked the data found at that location. As I was saying, another
+problem appeared when I got a sample in which the offset to the compressed
+macro source was not stored at offset 0xD0 in macro module! Again, resuming
+the hacking work, I went to the stream named "dir" inside the macro storage,
+uncompressed it using the routine I previously used to decompress the macro
+itself, as the compression algorithm was the same, parsed the contents
+of the "dir" stream and managed to obtain a reliable way of getting the
+offset to the compressed source.
+<br>&nbsp;At this point, I thought I had a pretty good detection engine,
+which was able to parse all the samples I had, including all the new things
+I was receiving, so I thought this would be the end of the story. However,
+as I should have expected, when everything seemed fine, yet another problem
+appeared. Incredible may it sound, yes, but inside Office97 files, the
+actual code that was executed by the Office Visual Basic interpreter was
+not the one from the compressed source, but something else, which looked
+very much like the opcodes of Excel95 macros, the so-called "pcode". So
+one may very well wipe the compressed macro source, and this virus (or
+the macro itself, if it is not viral) would still work. Moreover, the compressed
+source will be regenerated dinamically from the "pcode". So once again,
+my so good looking engine proved to be incomplete, more precisely it was
+not detecting the virus, but a "shadow" of itself, which may very well
+be missing from the module.&nbsp; Blessing the wisdom of the wizards from
+Richmond, I once again went to the hacking tools, gave a couple of silent
+thanks to a guy named "SEN" from Russia, and with some extra help from
+some friends I wrote a parser for the Office macro modules, managed to
+write a "pcode" parser, and eventually managed to obtain some kind of detection
+for macro viruses using the thing which seemed to be the real form of the
+macro virus, I mean the "pcode".
+<br>&nbsp;All was fine, until a couple of time ago, when an angry customer
+sent me a sample for a Laroux variant which had the "pcode" and the source
+wiped out, but still, the thing was able to drop the "pltd.xls" template
+in the Excel startup directory. So I learned that in some cases, the virus
+is not executed from the "pcode", it is not executed from the compressed
+source either, and actually what is executed (if present) is something
+called the "execodes" form of the virus, which is stored in a couple of
+streams with names of the form "__SRP_x". Again, frustrated with my current
+macro engine code and blessing the wisdom of the wizards from Richmond
+I coded a small routine to detect that particular case caused by an antivirus
+product which I will not name here, and hoped that someday I'll be able
+to implement a proper detection routine for macro viruses...
+<br>&nbsp;So, what exactly is executed after all? The answer, which as
+a friend of mine would say, it's not so simple, and is quite tricky. For
+example, given a sample of a Office97 macro virus which contains the execodes,
+when loaded in Office97 the execodes will be executed. If the respective
+sample will be loaded in Office2000, the compressed source will be the
+originator of the code which gets executed. However, if we have a sample
+without execodes, but with valid "pcode" and source, and the sample and
+the platform are directly compatible, I mean, they are both Office97 or
+Office2000, the "pcode" will get executed. Confused? You bet!
+<br>&nbsp;The main problem which results from this paradox of having 3
+totally different forms of a VBA macro is of course related to detection
+of macro viruses. For example, some antivirus products have implemented
+detection of macro viruses using the compressed source. This method had
+the advantage of compatibility, meaning that the same code can be used
+both for Office97 and Office2000 without any code changes. So far so good.
+But what if the source is trashed in a macro? Unless loaded in a different
+Office version that the one used to create it, the macro will work perfectly,
+and Office would not even report an error. So, other antivirus programs
+have implemented detection using the "pcode", which caused some slight
+compatibility problems of converting the "pcodes" from Office2000 to '97
+and so on. Now, regarding execodes, I'm currently aware of only a few products
+which are able to detect viruses this way. And all of them do this only
+for a very restricted set of viruses...
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;The Class.EZ viru</u>s</b>
+</p><p>&nbsp;Some Monday morning I received a new macro virus. Why are always
+Mondays historically associated with problems? Because this virus for sure
+looked like trouble.
+<br>&nbsp;The problem revealed itself when after replication I run my CRC
+extraction tool, and the tool reported an error while parsing the "pcode"
+in the sample. Interesting enough, the source-based CRC extraction part
+completed successfully. At this point, I had no suspicious thoughts, and
+I cursed again all those secret and undocumented opcodes which were probably
+tricking my parser. However, more trouble came ahead when I run a specific
+tool called <b>F-VBACRC</b>, which I use to report and classify new viruses
+as part of my participation on an international macro virus discussion
+forum. Out of the 10 different plug-in modules used by the tool, only 3
+of them provided some output. With some dark thoughts, I took the virus
+source which I previously briefly analyzed, and proceeded to some real
+research.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;The descriptio</u>n</b>
+</p><p>&nbsp;W97M/Class.EZ is a class infector, quite similar to thousand of
+other macro viruses I've seen before. The tricky part is however an executable
+stored inside the virus, named "kloop.exe" which is dropped during replication
+and subsequently run on the sample which is currently infected by the virus.
+If the virus itself is not very complicated, this executable took some
+considerable effort to figure out. Analyzing the samples infected with
+this virus, the first thing I've noticed was that the VBA project version
+was 0x89 in one of the samples, 0xa8 in other sample, and 0xe1 in the last
+sample. Usually, for Office97 macros, this is 0x5e, but apparently&nbsp;
+something messed this version number during the replication of the virus.
+Rather odd... Also, I've noticed that all the samples had an invalid "pcode"
+line table, which apparently looked like it was wiped with zeroes.
+<br>&nbsp;Since the executable inside the virus seemed the only reasonable
+explanation, I blew the dust off my old IDA installation, and started analyzing
+the file. The Win32 executable "kloop.exe" first attempts to open the file
+provided as a command line parameter, then it will initialize the internal
+library random number generator. Next,&nbsp; it determines the size of
+the file provided as input, allocates a chunk of memory, and reads the
+file in there. Next comes the ugly part. The "patching" component of the
+virus searches for two particular scan strings, both 4 bytes long, and
+sets a random value for the VBA project version of the document, then also
+wipes 24 bytes from the start of the "pcode" line table. Usually this is
+enough to make the "pcode" invalid, and force Office to load the source
+instead of the "pcode". Quite ugly, should I say. On the other side, the
+method used to patch the respective data structures is rather brutal -
+no parsing of the OLE2 file is performed, and the method is also likely
+to cause a lot of problems, even damaging documents during this operation.
+Eventually, the executable writes back the stream to the document, and
+exits.
+<br>&nbsp;From this point, there is less to be said about the virus. It
+doesn't even delete "c:\kloop.exe", and doesn't care to hide its tracks
+by wiping the "c:\kloop.dat" image of the macro which is used during replication.
+If it weren't for the Win32 executable inside the file this would have
+been a rather uninteresting and ordinary virus.
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b><u>&nbsp;The solutio</u>n</b>
+</p><p>&nbsp;Hopefully, nowadays many AV products have the ability to scan
+the source as well for detecting a macro virus. Also, since the virus doesn't
+wipe the entire line table, the remaining few entries can be used in order
+to extract some PCODE which can later be used to detect the virus. So from
+the detection point of view the virus will not pose a big problem for most
+of the products. However, I still wonder how was the author able to figure
+out all the informations required to write the virus, and if he really
+did this to cause problems to the scanners which happen to use the "pcode"
+in order to detect macro viruses. I mean, this kind of information
+<br>is extremely hard to obtain, and I cannot imagine a virus author figuring
+all those tricky formats all by himself. On the other side, the patching
+method is very silly, and if the author knew so many things about OLE2
+and VBA macros why didn't he use OLE functions to patch the respective
+streams instead of brute-force scanning the OLE2 file for signatures?
+<br>&nbsp;Maybe he/she dissasembled some particular macro engine, and tried
+to implement some changes in the OLE2 file to avoid detection? Lots of
+questions, very few answers...
+</p><p>(c) 2000, <a href="http://www.virusbtn.com/">Virus Bulletin Ltd.</a>
+</p></body></html>

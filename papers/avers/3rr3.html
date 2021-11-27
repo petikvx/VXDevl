@@ -1,0 +1,450 @@
+<html><head><title>Viruses, Worms and Biodiversity</title>
+
+<link rev="made" href="mailto:cpsr@cpsr.org"> 
+
+<meta name="description" content="CPSR's website devoted to
+issues such as Internet filters, encryption, digital signatures, PICS,
+ethics, NII, and privacy">
+
+<meta name="keywords" content="internet filters, pics, filtering, 
+encryption, digital signatures, ethics, nii, cpsr, privacy, global, 
+workplace, freedom of information, DNS, free speech"></head>
+<body alink="#33dd88" bgcolor="#ffffff" link="#212961" vlink="#502926">
+
+<p>
+
+<table border="0" cellpadding="2" cellspacing="5" width="100%">
+<tbody><tr>
+<td><font face="Arial" size="-1">
+<a href="http://archive.cpsr.net/index.html">
+Home</a>
+<br><a href="http://archive.cpsr.net/cpsr/org.html">
+About</a><br>
+
+</font></td>
+<td><font face="Arial" size="-1">
+<a href="http://archive.cpsr.net/cpsr/workgrps.html">Working Groups</a>
+<br><a href="http://archive.cpsr.net/publications/publications.html">
+Publications
+</a></font></td>
+
+<td><font face="Arial" size="-1">
+<!--<a href="https://swww.igc.apc.org/cpsr/sec-membership-form.html">-->
+<a href="http://cpsr.org/membership">
+Join</a><br>
+<a href="http://archive.cpsr.net/conferences/conferences.html">
+Events</a></font>
+</td>
+
+
+<td><font face="Arial" size="-1">
+<a href="http://archive.cpsr.net/program/index.html">
+Topics</a><br><a href="http://archive.cpsr.net/chapters/chapters.html">
+Chapters</a>
+<br>
+
+</font>
+</td>
+
+
+<td><font face="Arial" size="-1">
+<a href="http://archive.cpsr.net/issues/index.html">
+News</a>
+<br>
+
+<a href="http://archive.cpsr.net/search.html">
+Search</a></font>
+</td>
+
+<td align="right">
+<font size="+2">C</font>omputer
+<font size="+2">P</font>rofessionals for
+<font size="+2">S</font>ocial
+<font size="+2">R</font>esponsibility
+
+</td>
+</tr>
+</tbody></table>
+<!-- end of top.ssi -->
+
+
+<font face="Arial" size="5"><p>Viruses, Worms and Biodiversity in Computer Systems</p>
+<p>By Amy Palke, Mills College</p>
+</font><b><font size="5"></font></b></p><p><b><font size="5">Introduction: What is "biodiversity in computer systems"?</font></b></p><dir>
+
+<p>Computer systems, from hardware to operating systems to software,
+have largely been designed to work in a predictable, consistent manner
+in order to provide compatibility and ease of use. As a result, there
+are currently millions of nearly identical computer systems throughout
+the world. For example, of 39 million web sites surveyed by Netcraft,
+90% are running one of two web server applications, Apache (62.51%) or
+Microsoft Internet Information Services (27.44%) [19]. This
+consistent-and-compatible philosophy has made it easier to build
+software, but it has also made it easier to build malicious viruses and
+worms.</p>
+<p>In nature, a species without much genetic diversity is at a high
+risk for being decimated by a single disease. Since the various members
+don&#8217;t have unique defenses that could protect them, all members of the
+species may be susceptible to the same disease. In computer systems, we
+face the same problems. If a weakness or "hole" is identified in an
+application or operating system, someone can write a virus that can
+successfully attack and disrupt a massive number of computers.</p>
+<p>As huge numbers of computers all over the world have become
+networked together, it has become possible to spread a single computer
+disease throughout the world in a manner of minutes. The recent SQL
+Slammer worm took roughly 10 minutes to spread across the world, and
+infected more than 90 percent of vulnerable hosts [9]. The SQL Slammer
+epidemic is an example of the risks faced by a non-diverse application.
+</p>
+<p>One possible way to protect computer systems from succumbing to an
+attack is to introduce more diversity into the systems. If computers
+were injected with more diversity, fewer computers would share the same
+vulnerabilities, and it would be difficult to create a malicious
+program capable of widespread infestation. </p>
+<p>Diversity will add complexity, which could mean more work for
+programmers, IT personnel, and end users. This means that diversity
+will only be embraced if its costs are out-weighed by its benefits. In
+order to understand the current and potential cost of monoculture
+computer systems, we need to first understand how viruses and worms
+work, and better understand their destructive capabilities.</p></dir>
+
+<b><font size="5"></font></b><p><b><font size="5">Understanding viruses and worms</font></b></p><dir>
+
+<p>A distinction is usually made between viruses and worms. A virus is
+described as a piece of code embedded inside of an otherwise benign
+program. The virus-infected program is then either inadvertently
+distributed by users, or deliberately distributed by additional virus
+code. A worm is an independent program, which typically does not have
+to be activated by the user in order to start running. Once running,
+the worm tries to propagate itself to new host machines over the
+network.</p>
+<p>Both viruses and worms may contain intentionally destructive code,
+often called a "payload". However many contain no malicious code at
+all, their intent being simply to spread themselves. Even without
+malicious code, viruses and worms can cause great damage as they spread
+around the world, clogging up the Internet and company mail servers. To
+better understand the effects of these programs in general, we will
+examine a few of them in more detail.</p></dir>
+
+<b><font size="5"></font></b><p><b><font size="5">Notable worms and viruses</font></b></p><dir>
+
+<b><font face="Arial" size="4"><p>The first worm</p>
+</font></b><p>In 1978 at Xerox PARC, John Shoch was analyzing network
+traffic patterns, and wanted to install a program to assist him on all
+200 Altos in the network [1]. He decided to write a self-loading
+program that could seek out new hosts, to save himself the effort of
+wandering around the office, installing the program manually on each
+machine. </p>
+<p>Shoch let his worm loose one evening, and returned to work the next
+day to find all of the computers in his research center had crashed.
+When the computers were restarted, they quickly crashed again as the
+worm started up and continued its search for new hosts. Fortunately
+Shoch had added "self-destruct" code to his worm, and was able to kill
+off the worm by sending a command over the network.</p>
+<p>From their earliest incarnations, it was clear that worms had the
+potential to cause massive damage even if they contained no
+deliberately malicious payload.</p>
+<b><font face="Arial" size="4"><p>Chernobyl virus</p>
+</font></b><p>In June of 1998 a particularly malicious virus called
+Chernobyl started spreading around the world in infected Windows 95 and
+Windows 98 executable files [11]. Running an infected program caused
+the virus to begin running, first copying itself to all of the other
+.exe files on the computer. The virus code was extremely small, around
+1kB, and it attached itself to executables in such a manner that the
+size of the executable did not grow at all.</p>
+<p>Chernobyl&#8217;s initial infection often went unnoticed, but on April 28<sup>th</sup>,
+the code would become extremely destructive. First the code would
+overwrite the entire hard disk, and next it would attempt to overwrite
+the computer&#8217;s flash BIOS chip. If the flash BIOS chip were
+overwritten, the computer would not be able to boot up.</p>
+<p>Many people and several companies inadvertently spread Chernobyl
+around the world. Yamaha shipped an infected software update file for
+their CD-R400 drives, and IBM shipped a batch of infected Aptiva PCs
+during March of 1999, just one month prior to the destructive trigger
+date [11].</p>
+<b><font face="Arial" size="4"><p>Lovebug/ILOVEYOU worm</p>
+</font></b><p>Worms typically utilize a weakness in software code that
+allows the worm code to run, but in May of 2000, a worm appeared that
+took advantage of a human weakness, instead of relying on a computer
+weakness. The Lovebug worm appeared in an email that stated, "kindly
+check the attached LOVELETTER coming from me." and contained an
+attached file named "LOVE-LETTER-FOR-YOU.TXT.vbs" [11]. Hundreds of
+thousands of hopeful users double-clicked the attachment, only to find
+that instead of having a secret admirer, they were host to a malicious
+worm.</p>
+<p>The "love letter" attachment was a Microsoft Visual Basic Script,
+and if the host machine was running Microsoft Outlook, the worm sent an
+identical email with the love letter message and worm attachment to all
+email addresses in the Outlook Address Book. </p>
+<p>The worm created a huge load on office email servers, sending out
+emails and filling up mailboxes. Many large companies and institutions,
+including the US Senate, were forced to take their mail servers offline
+[18]. According to the research firm Computer Economics, the Lovebug
+virus is estimated to have cost a total of $8.75 billion for clean up
+efforts and loss of productivity [10].</p>
+<b><font face="Arial" size="4"><p>Sapphire/SQL Slammer worm</p>
+</font></b><p>On Saturday January 25th, 2003, at 5:30am GMT, the
+fastest spreading worm to date began infecting machines running
+Microsoft SQL Server or MSDE 2000 (Microsoft SQL Server Desktop Engine)
+[9]. Within 10 minutes the worm had infected 90% of vulnerable hosts,
+over 75,000 computers. At its peak, the worm was doubling the total
+number of infected machines every 8.5 seconds.</p>
+<p>The Sapphire worm took advantage of a buffer overflow vulnerability
+in SQL Server, overwriting the return address on the stack to cause
+worm code to be executed. The worm code was never written to disk, so
+rebooting the machine would eliminate the infection, but without
+repairing the underlying vulnerability the machine would continue to
+become re-infected.</p>
+<p>Although the Sapphire worm had no destructive payload, it caused
+massive worldwide problems. Soon after it started spreading, packet
+loss across the entire Internet was nearly 20%, and 5 of the 13 main
+domain name servers were down [11]. Many local area networks were
+impacted as well when one of their machines became infected, and the
+worm began to monopolize network traffic. Some 911 call centers were
+forced to use paper and pencil to track calls, and many ATMs throughout
+the world were out of commission [22].</p></dir>
+
+<b><font size="5"></font></b><p><b><font size="5">The threat of viruses and worms</font></b></p><dir>
+
+<p>After examining several specific viruses and worms, we can take a
+step back to better understand the general concepts of how these
+programs work and the potential they have for causing widespread damage.</p>
+<b><font face="Arial" size="4"><p>Monoculture computer systems </p>
+</font></b><p>Most viruses and worms can operate on only one type of
+operating system, and most take advantage of vulnerabilities in a
+particular software application. Since a single operating system or
+application may be used by millions of users, a vulnerability found on
+one system is likely to be found on millions. Therefore the task of
+writing a malicious program that could affect millions of computers is
+much more simple than if computers had to be attacked one by one.</p>
+<p>Companies tend to standardize on one specific operating system, one
+specific email program, one specific program for creating documents,
+etc. These standards are designed to reduce IT costs, and to enable
+information to spread easily within the company. However, this
+monoculture also allows viruses and worms to spread quickly and easily
+within a company.</p>
+<b><font face="Arial" size="4"><p>Rapid infestation</p>
+</font></b><p>When viruses were first developed, they had to travel
+from machine to machine via floppy disk, or later through infected
+executables downloaded from bulletin boards. It took a long time for a
+virus to spread this way, allowing time for word of the virus to
+spread, and for users to take preventative measures to avoid becoming
+infected.</p>
+<p>As computers throughout the world became networked together through
+the Internet, it became much quicker for a virus or worm to spread
+throughout the world, rapidly creating an epidemic. One infected
+machine can spread its infection to all of the machines it knows how to
+reach, and so on. To further complicate matters, the Internet has
+linked home, hobby and business computers together, all with varying
+levels of attention to security concerns and updates. </p>
+<b><font face="Arial" size="4"><p>Potential damage</p>
+</font></b><p>So far, most widespread viruses and worms have not had
+much in the way of a malicious payload. Many had no specific malicious
+intentions, but their rapid spreading caused networks to be overloaded
+and shut down.</p>
+<p>It is clear, however, that the potential for damage is huge. If the
+Lovebug worm had overwritten hard drives, or BIOS chips like Chernobyl,
+massive amounts of data would have been lost forever, and many
+computers would have been rendered useless to their owners.</p>
+<b><font face="Arial" size="4"><p>Ineffective security systems</p>
+</font></b><p>Traditional security measures, such as virus scanners and
+firewalls, have failed to provide adequate defense against many
+malicious programs. Once a virus or worm has been identified,
+virus-scanning software is updated, and software patches are created
+and applied. This prevents systems from becoming re-infected with the
+same program, and often prevents infections from similar programs, but
+it does nothing to prevent the initial outbreak. Firewalls protected
+many computers from the Sapphire worm, but firewalls are not effective
+protection if the attack is based on a public network service.</p>
+<p>With the Sapphire worm, it became clear that planning to protect yourself <i>after</i>
+an outbreak had started was unrealistic, no matter how quickly you
+could respond. Sapphire&#8217;s rapid worldwide spread (10 minutes) meant
+there was no chance that anyone could get word of the worm and take
+protective measures in time to prevent the infestation. In order to
+truly protect computers from infection, a new methodology is required.</p></dir>
+
+<b><font size="5"></font></b><p><b><font size="5">Introducing and encouraging diversity</font></b></p><dir>
+
+<p>Past experience demonstrates that viruses and worms pose a huge
+threat to the computer systems in the world. Likewise it is clear that
+the current methods employed to prevent infections simply aren&#8217;t
+working. While most security experts focus on writing better virus
+scanning software and keeping security patches up to date, a few others
+are exploring a different model for security. This model is based on
+ideas found in biology, and its goal is to create systems that may be
+immune to future infections.</p>
+<p>The key idea behind computer diversity is to avoid unnecessary
+consistency across computers. There are often many, slightly different
+ways that programs can execute at a low level while providing the same
+high-level functionality. Therefore it should be possible to create an
+application with consistent, predictable high-level behavior, while
+removing arbitrary low-level consistencies. </p>
+<b><font face="Arial" size="4"><p>Memory location protection</p>
+</font></b><p>Memory is allocated to programs in a particular,
+consistent manner, but this consistency is not mandatory for the
+programs to run successfully. The allocation strategy could be changed
+to provide randomization that would make it much harder for viruses and
+worms to take advantage of buffer overflow vulnerabilities. One
+possible change is to insert a random amount of padding in each stack
+frame, causing return addresses to be stored in unpredictable locations
+[12][17]. </p>
+<b><font face="Arial" size="4"><p>Randomized compilation techniques</p>
+</font></b><p>When a program is compiled, many arbitrary decisions are
+made. High-level code could be compiled into many different, but
+functionally identical lines of machine code. However, currently the
+same lines of high-level code will always be compiled into the same
+lines of machine code. Similarly, the order of the machine code could
+often be arranged in several ways, with identical functionality, but
+current compilers won&#8217;t arbitrarily choose different orderings. If
+compilers were changed to produce arbitrarily different, but
+functionally identical code with each compile, they could create a set
+of diverse executables with identical functionality [4][12]. </p>
+<p>This diversity would likely make it much more difficult for a virus
+or worm programmer to create a single program that could attack all of
+the different binary versions of the program. Some of the binaries
+might be immune to the attack, which would slow or halt its progress.</p>
+<b><font face="Arial" size="4"><p>Program evolution</p>
+</font></b><p>The term "security through obscurity" is often associated
+with the idea of keeping key details proprietary in order to provide
+security. The problem with this method is that once your secret is out,
+your security is gone. </p>
+<p>Obscurity can provide a good deal of security however, if the hidden
+details do not remain constant. Security expert Fred Cohen advocates
+creating operating systems and programs that constantly alter
+themselves in order to provide obscurity [4]. A self-modifying program
+could evolve or change itself slightly with each system call. This
+would make even a targeted attack against a particular machine
+difficult, as a particular vulnerability found one day might not exist
+in the same spot on the following day. </p>
+<b><font face="Arial" size="4"><p>Diverse operating systems and software</p>
+</font></b><p>In February 2003, one of the 13 DNS root servers began
+running a different name server software application. Prior to this,
+all root servers used the same application. According to the
+administrators running this root server, "the change was designed to
+increase the diversity of software in the root name server system, the
+lack of which is widely considered to be a potential vulnerability."
+[23]</p></dir>
+
+<b><font size="5"></font></b><p><b><font size="5">The problems and payoffs of diversity</font></b></p><dir>
+
+<p>Any attempt to diversify computer systems will add complexity to
+developing software and maintaining the IT systems at a company. At the
+moment, diversity is not widely viewed as cost effective. The cost
+benefits are currently hard to weigh, as most companies have not been
+tracking and budgeting the costs of recovering from virus and worm
+attacks. Likewise people may be underestimating the destructive
+capabilities of viruses and worms, thereby underestimating the cost of
+recovery.</p>
+<p>It is highly likely that a particularly deadly virus or worm will
+surface at some point. When the damage has been severe enough that the
+cost of recovering from an attack is perceived to be greater than the
+cost of preventing an attack, then perhaps more people will think
+seriously about the potential benefits of diversity. It would be
+unfortunate if a catastrophic event were required for the economic
+benefits of diversity to become apparent to all.</p>
+<p>&nbsp;</p></dir>
+
+<b><font size="5"><p>References</p>
+</font></b><p>&nbsp;</p>
+<ol>
+
+<li><a name="_Ref39119455"><font size="2">Author Unknown, "Benefits of the Computer Virus"<br>
+</font></a><a href="http://www.greyowltutor.com/essays/virus.html"><font size="2">http://www.greyowltutor.com/essays/virus.html</font></a></li>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119407"></a></li></font><a name="_Ref39119407"><font size="2">CERT Coordination Center, "CERT/CC Incident Notes"<br>
+</font></a><a href="http://www.cert.org/incident_notes/"><font size="2">http://www.cert.org/incident_notes/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119651"></a></li></font><a name="_Ref39119651"><font size="2">Cloakware Corporation<br>
+</font></a><a href="http://www.cloakware.com/"><font size="2">http://www.cloakware.com</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119624"></a></li></font><a name="_Ref39119624"><font size="2">Cohen, Frederick B., "Operating System Protection Through Program Evolution", 1992<br>
+</font></a><a href="http://all.net/books/IP/evolve.html"><font size="2">http://all.net/books/IP/evolve.html</font></a>
+<font size="2">
+<li><a name="r5"></a><a name="_Ref39119298"></a>Cohen, Frederick B., <i>A Short Course on Computer Viruses</i>. NY: Wiley &amp; Sons, 1994</li>
+</font><font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Cohen, Frederick B., "Understanding Viruses Bio-logically", 2000<br>
+</li></font><a href="http://www.all.net/journal/netsec/2000-08.html"><font size="2">http://www.all.net/journal/netsec/2000-08.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Computer Knowledge, "Computer Knowledge Virus Tutorial"<br>
+</li></font><a href="http://www.cknow.com/vtutor/vthistory.htm"><font size="2">http://www.cknow.com/vtutor/index.htm</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119526"></a></li></font><a name="_Ref39119526"><font size="2">The Cooperative Association for Internet Data Analysis (CAIDA), "CAIDA Analysis of Code-Red"<br>
+</font></a><a href="http://www.caida.org/analysis/security/code-red/"><font size="2">http://www.caida.org/analysis/security/code-red/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119285"></a></li></font><a name="_Ref39119285"><font size="2">The
+Cooperative Association for Internet Data Analysis (CAIDA), et al,
+"Analysis of the Sapphire Worm - A joint effort of CAIDA, ICSI, Silicon
+Defense, UC Berkeley EECS and UC San Diego CSE"<br>
+</font></a><a href="http://www.caida.org/analysis/security/sapphire/"><font size="2">http://www.caida.org/analysis/security/sapphire/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119513"></a></li></font><a name="_Ref39119513"><font size="2">Delio, Michelle, "Find the Cost of (Virus) Freedom," Wired News, January 14<sup>th</sup> 2002<br>
+</font></a><a href="http://www.wired.com/news/infostructure/0,1377,49681,00.html"><font size="2">http://www.wired.com/news/infostructure/0,1377,49681,00.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119037"></a></li></font><a name="_Ref39119037"><font size="2">F-Secure Corporation, Virus Description Database<br>
+</font></a><a href="http://www.f-secure.com/v-descs/"><font size="2">http://www.f-secure.com/v-descs/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119594"></a></li></font><a name="_Ref39119594"><font size="2">Forrest, Stephanie, Anil Somayaji &amp; David H. Ackley,  "Building Diverse Computer Systems", 1997<br>
+</font></a><a href="http://www.cs.unm.edu/%7Eimmsec/publications/hotos-97.pdf"><font size="2">http://www.cs.unm.edu/~immsec/publications/hotos-97.pdf</font></a>
+<font size="2">
+<li>Grimes, Roger A., "Not Your Mother's Computer Virus"<br>
+</li></font><a href="http://windows.oreilly.com/news/virus_0500.html"><font size="2">http://windows.oreilly.com/news/virus_0500.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Howstuffworks: "How Computer Viruses Work"<br>
+</li></font><a href="http://computer.howstuffworks.com/virus.htm"><font size="2">http://computer.howstuffworks.com/virus.htm</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119631"></a></li></font><a name="_Ref39119631"><font size="2">Huang, Yinrong, "Population of Diverse Executables With the Same Functionality"<br>
+</font></a><a href="http://members.rogers.com/yinrong/articles/PopulationComputing.pdf"><font size="2">http://members.rogers.com/yinrong/articles/PopulationComputing.pdf</font></a>
+<font size="2">
+<li>Karrenberg, Daniel, "k.root-servers.net Changing DNS Software at on
+19.2.2003", RIPE DNS Working Group mailing list, February 14, 2003<br>
+</li></font><a href="http://www.ripe.net/ripe/mail-archives/dns-wg/2003/msg00044.html"><font size="2">http://www.ripe.net/ripe/mail-archives/dns-wg/2003/msg00044.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119613"></a></li></font><a name="_Ref39119613"><font size="2">Kc,
+Gaurav S., Stephen A. Edwards, Gail E. Kaiser, Angelos Keromytis,
+"CASPER: Compiler-Assisted Securing of Programs at Runtime"<br>
+</font></a><a href="http://www1.cs.columbia.edu/%7Egskc/publications/casper.pdf"><font size="2">http://www1.cs.columbia.edu/~gskc/publications/casper.pdf</font></a>
+<font size="2">
+<li><a name="_Ref39119494">McDonald, Tim, "Microsoft's Monopoly on Security Flaws", August 17, 2000<br>
+</a></li></font><a href="http://www.ecommercetimes.com/perl/story/4059.html"><font size="2">http://www.ecommercetimes.com/perl/story/4059.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39201286"></a></li></font><a name="_Ref39201286"><font size="2">Netcraft, "March 2003 Web Server Survey"<br>
+</font></a><a href="http://news.netcraft.com/archives/2003/03/"><font size="2">http://news.netcraft.com/archives/2003/03/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>O&#8217;Connor, Thomas R., "Virus and Malware Prevention"<br>
+</li></font><a href="http://faculty.ncwc.edu/toconnor/495/495lect16.htm"><font size="2">http://faculty.ncwc.edu/toconnor/495/495lect16.htm</font></a>
+<font size="2">
+<li>Quarterman, John S., "Monoculture Considered Harmful", First Monday, volume 7, number 2 (February 2002)<br>
+</li></font><a href="http://www.firstmonday.dk/issues/issue7_2/quarterman/"><font size="2">http://www.firstmonday.dk/issues/issue7_2/quarterman/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119569"></a></li></font><a name="_Ref39119569"><font size="2">Record Searchlight Newspaper, "Web worm halts 911, ATMs", January 28, 2003<br>
+</font></a><a href="http://www.redding.com/news/business/past/20030128bus008.shtml"><font size="2">http://www.redding.com/news/business/past/20030128bus008.shtml</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119663"></a></li></font><a name="_Ref39119663"><font size="2">The
+Réseaux IP Européens Network Co-ordination Centre (RIPE NCC), Amsterdam
+Press release: "NSD Deployed on k.root-servers.net", February 26, 2003<br>
+</font></a><a href="http://www.pressbox.co.uk/Detailed/9810.html"><font size="2">http://www.pressbox.co.uk/Detailed/9810.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119355"></a></li></font><a name="_Ref39119355"><font size="2">Skrenta, Richard, "Various projects, past and present"<br>
+</font></a><a href="http://www.skrenta.com/"><font size="2">http://www.skrenta.com</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Seltzer, Richard, Bob Fleischer, "Diversity and vulnerability to viruses"<br>
+</li></font><a href="http://www.samizdat.com/chat102.html"><font size="2">http://www.samizdat.com/chat102.html#diversity</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Stalder, Felix, "Viruses on the Internet: Monoculture breeds parasites", October 5, 2000<br>
+</li></font><a href="http://www.heise.de/tp/english/inhalt/te/8129/1.html"><font size="2">http://www.heise.de/tp/english/inhalt/te/8129/1.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>Tobias, Daniel R., "Monoculture: Just As Bad an Idea in Computing as in Agriculture", December 15, 2002<br>
+</li></font><a href="http://dan.tobias.name/thenet/monoculture.html"><font size="2">http://dan.tobias.name/thenet/monoculture.html</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+<li><a name="_Ref39119328"></a></li></font><a name="_Ref39119328"><font size="2">Wikipedia, "Computer virus"<br>
+</font></a><a href="http://www.wikipedia.org/wiki/Computer_virus"><font size="2">http://www.wikipedia.org/wiki/Computer_virus</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>University of Nebraska-Lincoln, "Understanding Computer Viruses"<br>
+</li></font><a href="http://www.unl.edu/security/viruses/"><font size="2">http://www.unl.edu/security/viruses/</font></a>
+<font face="MS Mincho,Times New Roman" lang="JA" size="2">
+</font><font size="2"><li>University of Virginia, "Virus and Worm Propagation Studies"<br>
+</li></font><a href="http://www.cs.virginia.edu/%7Esurvive/research/virus.html"><font size="2">http://www.cs.virginia.edu/~survive/research/virus.html</font></a>
+<font size="2">
+<li><a name="_Ref39119428">Virus Bulletin, "Database of virus analyses and descriptions"</a></li></font><a name="_Ref39119428"><font face="Verdana" size="1"><br>
+</font></a><a href="http://www.virusbtn.com/resources/viruses/index.xml"><font size="2">http://www.virusbtn.com/resources/viruses/index.xml</font></a></ol>
+</body></html>

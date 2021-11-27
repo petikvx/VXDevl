@@ -1,0 +1,590 @@
+<html>
+
+<!-- Mirrored from vx.netlux.org/texts/html/security-paper.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:18 GMT -->
+<head>
+<TITLE>Security Through information</TITLE>
+</head>
+
+<body text=#000000 bgcolor=#ffffff>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">Security Through 
+        Information: Educating Users About Viruses</FONT></B></P>
+      <P><A HREF="mailto:NEngelman@vet.com.au"><FONT COLOR="#000000" FACE="Arial,Helvetica">Nicholas 
+        Engelman</FONT></A><FONT COLOR="#000000" FACE="Arial,Helvetica"></FONT>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">ABSTRACT</FONT></B></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">Should end-users be educated 
+        about viruses? When we ask them, most answer &quot;No&quot;. The prevailing 
+        attitude seems to be that both viruses and anti-virus software are intrusions 
+        into the work environment, and they should know as little about both as 
+        possible. Viruses are someone else’s problem.</FONT></I></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">Currently, most organisations 
+        appear to endorse this view. Corporate security policies invariably focus 
+        on users as part of the problem definition, rather than part of the solution. 
+        Hence their lists of &quot;thou shalt not&quot; procedures and their reliance 
+        on automated anti-virus software.</FONT></I></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">But is this attitude 
+        reasonable? As administrators continue to report, their carefully written 
+        security procedures and exhaustively evaluated Anti-Virus software aren’t 
+        preventing new virus infections. Worldwide, businesses are reviewing both 
+        strategies and software with increasing frequency, as viruses continue 
+        to escape the net. In the eleven years since Brain first appeared, the 
+        question has changed from &quot;We need to buy anti-what software?&quot; 
+        to &quot;How many anti-virus products do we have to buy before we’re secure?&quot;</FONT></I></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">This paper argues that 
+        it is in fact impossible to purchase such security; that anti-virus products 
+        can at best provide only a partial solution, and that companies must turn 
+        to their users to improve their protection.</FONT></I></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">The Viral Arms 
+        Race</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The Anti-virus industry 
+        will never put an end to the virus problem.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Despite the occasional product 
+        that claims to be a solution to viruses &quot;past, present and future&quot;, 
+        and Alan Solomon’s (presumably tongue-in-cheek) assertion that if you 
+        ‘Install on-access scanning … you can tell your users that it’s the end 
+        of the virus problem’ [1], the reality is that computer users will continue 
+        to be plagued by, and have to know how to deal with, viruses for the foreseeable 
+        future.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">It’s not for lack of resources, 
+        or talent. It’s not out of economic self-interest. The problem lies in 
+        the fact that we’re locked into an arms race. On one side we have the 
+        Virus authors - a group whose motivations are murky at best, but whose 
+        goal might be stated as &quot;wishing to propagate their viral creations 
+        across other people’s systems.&quot; On the other we have the Anti-Virus 
+        developers, whose goal is to prevent that propagation. This is a classic 
+        example of an Escalating System [2]; the success of one side drives the 
+        other side to respond. Thus a solution to &quot;in-clear&quot; viruses 
+        leads to encrypted variants; as simple encryption is solved it gives way 
+        to polymorphism; behaviour monitors lead to viral stealth; anti-emulation 
+        and anti-heuristic techniques develop in direct response to their anti-virus 
+        counterparts. Sometimes one side jumps ahead, sometimes the other - but 
+        at no time does the escalation stop.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Such a system is difficult 
+        to defuse. Unilateral or brokered &quot;disarmament&quot; are not options 
+        - the virus authors have no reason to de-escalate, while clients of Anti-virus 
+        solutions will not accept reduced protection. The chances of one side 
+        annihilating the other also seem extremely low. Neither the sheer number 
+        of viruses nor the new techniques they occasionally employ has stumped 
+        the anti-virus community. Conversely, despite the significant range of 
+        products and techniques available to detect and eradicate them, viruses 
+        continue to proliferate.</FONT>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The system would probably 
+        be self-sustaining even as stated; unfortunately two more factors conspire 
+        to make it even worse.</FONT>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The first is a fairly obvious 
+        consideration - the question of compatibility. For a virus to remain viable, 
+        it need only work on a subset of the systems it encounters. In contrast, 
+        anti-virus software must work on all the systems where that virus might 
+        occur. This requirement immediately puts the anti-virus developers at 
+        a disadvantage. Though they may produce a solution to viruses as fast 
+        as they are written, they must also ensure that solution will work in 
+        a world where adherence to standards is only to be found in text-books, 
+        along with the Phoenix, honest used-car salesmen and other mythical beasts 
+        [3].</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The second factor is more 
+        subtle, and has to do with perceptions of the role of the anti-virus industry 
+        as a whole. For a number of reasons (most of them commercial), there has 
+        been a gradual acceptance through the years of an extremely questionable 
+        assumption - that anti-virus developers and vendors have<I> prime</I> 
+        responsibility for securing systems against viruses.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This is an unreasonable 
+        requirement. Even if the anti-virus industry were<I> developing</I> the 
+        systems they are expected to protect, theory says it would be impossible 
+        for them to foresee and secure against all possible attacks. As it is, 
+        they’re trying to protect proprietary operating systems and programs produced 
+        by third parties whose goal is more often openness and useability than 
+        security. Such an environment both eases the way for new viral attacks 
+        and increases the difficulty of producing solutions. The anti-virus industry 
+        cannot hope to keep it permanently secure. At best it can provide information 
+        and tools to allow users to keep it as secure as is possible.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The development of Word 
+        macro viruses is an excellent illustration of this point. The WordBasic 
+        macro language was both trivially easy to use, and immensely powerful. 
+        Armed with example code, even non-programmers could quickly turn out a 
+        working virus. Current evidence, in the flood of variants appearing worldwide, 
+        suggests they did exactly this.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Though technically simply 
+        another parasitic file virus, this particular attack was far from trivial 
+        for the anti-virus industry. The Word file format was both convoluted 
+        and proprietary; when information on the format was finally obtained from 
+        the developers, it was less than complete. Four months after the release 
+        of Winword.Concept, the Virus Bulletin editorial bemoaned this lack of 
+        accurate information [4]; six months after that their comparative review 
+        of Word Macro virus solutions revealed that vendors were still struggling 
+        to develop a complete solution to the problem [5]. As if adding insult 
+        to injury, Microsoft then released Office97, which introduced the new 
+        Visual Basic for Applications 5<I> and</I> changed the way the macros 
+        were stored, recreating the entire issue. And though a measure of built-in 
+        protection was provided with the new product, the greater part of the 
+        burden for securing the Office Suite remained in exactly the wrong place 
+        - on the shoulders of the anti-virus industry.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This is not an isolated 
+        example. The sheer pace of development, coupled with the commercially 
+        sensitive nature of that development, will continue to create such problems; 
+        the anti-virus industry will continue to require time to solve them. In 
+        the space between, viruses will continue to slip past those anti-virus 
+        products, and potentially onto user’s systems.</FONT></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">Our Eroding 
+        Security Expectations</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Given the above situation, 
+        it is hardly surprising that security expectations are dropping. Only 
+        a handful of years ago, the goal of almost all businesses was never to 
+        see a virus in their organisation. But as product succeeded product, and 
+        still the viruses got through, that goal has been slowly revised down. 
+        While corporates may continue to demand a &quot;complete solution&quot; 
+        from Anti-Virus vendors, internal policy now accepts viral incidents will 
+        occur. The focus has changed from totally preventing such incidents to 
+        containing them, as is indicated in the following extracts:</FONT>
+      <UL>
+        <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Given the variety and 
+          pervasiveness of computer virus at present, it is impossible to completely 
+          eliminate the threat of occurrence. -------’s best approach is to ensure 
+          that virus are [sic] detected as soon as practicable, and deal with 
+          them and their source in the most appropriate manner. [6]</FONT></P>
+        <P><FONT COLOR="#000000" FACE="Arial,Helvetica">“Our goal is not to have 
+          no alerts. There is no 100% solution … [so] if our anti-virus software 
+          was generating zero alerts, we would assume it was missing viruses, 
+          rather than we had solved the problem. Our goal is to find the viruses 
+          with the minimum of damage” [7]</FONT></P>
+        <P><FONT COLOR="#000000" FACE="Arial,Helvetica">[We define a successful 
+          implementation of an anti-virus application as] … a reduction of virus-related 
+          problems from more than 85% of all help desk calls down to less than 
+          10% of all help desk calls, because the viruses are intercepted before 
+          they take residence in the computer systems [8]</FONT>
+      </UL>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Is it reasonable for corporates 
+        to aim at less than a 100% solution? Such an approach does seem reasonable 
+        in light of the difficulties they’re facing. Consider the findings of 
+        the1996 Information Security Survey [9]. Despite more than 90% using some 
+        form of virus detection software, 63% of survey respondents reported virus-related 
+        financial losses within the past two years. The same survey identified 
+        viruses as the second ranked cause of financial loss related to information 
+        security. With overall losses from dealing with viruses estimated to cost 
+        organisations between $5-$6 Billion per year [10], it might even be argued 
+        that a focus on<I> containing</I> virus incidents is simple pragmatism.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Such arguments sound convincing. 
+        But are they acceptable? A virus infection costs a company in four distinct 
+        areas:</FONT> 
+      <UL TYPE="DISC">
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The immediate physical 
+          cost, in terms of lost resources (the memory and storage space a virus 
+          occupies)</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> The longer-term physical 
+          and financial cost, in terms of lost man-hours to remove the virus and 
+          repair any damage it may have done to company systems and data.</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> The external psychological 
+          cost, in terms of the damage the virus may cause to the reputation of 
+          the business. This may be due to a failure of the business to operate 
+          as it should (due to time and information the virus may have cost it), 
+          and also to the loss of confidence that may arise if it becomes known 
+          the company was infected at all.</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> The internal psychological 
+          cost, in terms of lost user confidence in their systems and security</FONT></LI>
+      </UL>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Containment of viruses does 
+        not prevent any of the above four costs; a policy based on containment 
+        cannot even predict how much an incident will damage a company in each 
+        of the four areas. Clearly, though security expectations with regard to 
+        viruses may be dropping, security requirements remain unchanged. This 
+        creates a conflict. The interesting question is, how are we to resolve 
+        it?</FONT></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">&nbsp;Redrawing 
+        the Battle-Lines</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Our first level of defence 
+        remains unchanged. Anti-Virus products will continue to provide excellent 
+        front-line protection against viruses. There should be no doubt on this 
+        point - when kept up-to-date and used correctly they are the best method 
+        of protection available. Many products will even protect against so called 
+        &quot;future&quot; viruses that follow existing lines of attack. What 
+        they cannot provide, however, is guaranteed protection against all future 
+        attacks; nor can they guarantee a timely solution when a new attack eventuates.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This gap between the coverage 
+        provided by &quot;off-the-shelf&quot; solutions and corporate security 
+        requirements is currently being filled by a combination of policy document 
+        and Information Security Officer action. A basic policy will outline what 
+        users can (and cannot) do on the system, as well as a procedure to follow 
+        if they know or suspect they have a virus outbreak. The IS manager and 
+        their team implement and support the suite of security packages they have 
+        chosen to drive this policy. This is a typical hierarchical approach that 
+        places responsibility with the experts and frees the users to get on with 
+        their jobs.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">However, while removing 
+        responsibility from the users may be appropriate when it comes to configuring 
+        and administering such areas as the network, database, accounting, mail 
+        systems and so on, when it comes to anti-virus security it is not. Users 
+        are not just part of the virus problem - they are also part of the solution, 
+        and more must be done to encourage them to take up and work to this responsibility. 
+        This, then, is where our new battle-line must be drawn. And the method 
+        of drawing that line is to educate the end-user on how to keep the system 
+        secure and virus free.</FONT></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">Unwilling Students 
+        - Why Should End-Users Be Educated?</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">At the risk of sounding 
+        glib, &quot;A little knowledge is a dangerous thing&quot;.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Users know about viruses. 
+        They’ve read about them in the press, and seen and heard about them on 
+        the radio and television. They should have seen them mentioned in their 
+        staff or procedural manuals. However, being aware of something and having 
+        even a rudimentary understanding of it are two completely different issues. 
+        Thus, though some users respond appropriately, we still have many users 
+        formatting hard drives to get rid of both real and imagined infections, 
+        using FDISK/MBR to &quot;clean&quot; Monkey infections, and forwarding 
+        an ever increasing flood of hoax warnings, along with the perfectly valid 
+        incident and false alarm reports. Worse still, many more do nothing at 
+        all.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The central issue here is 
+        that users generally have a high degree of autonomy when using their computers. 
+        Where their access to critical network areas can be controlled from afar, 
+        it is far more difficult to so strictly regulate their use of their desktop 
+        systems. This means that their actions (and inaction) are critical to 
+        the success of any anti-virus strategy, and they must increase their involvement 
+        in security strategies if overall security is to be improved. Organisations 
+        must generate a sense of responsibility in their staff for their own security; 
+        without this, the best security policy will constitute so much paper. 
+        And they must educate their users to a level that they are able to fulfil 
+        this responsibility effectively - for without understanding, action will 
+        be at best misdirected and at worst catastrophic.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Not surprisingly, users 
+        already facing a full work load do not want to take up this responsibility. 
+        In his 1995 case study of a &quot;large South African company&quot; Paul 
+        Ducklin saw users rating themselves 2 nd in order of importance for controlling 
+        viruses inside the organisation - yet less than 5% of potential delegates 
+        attended the virus information sessions he ran [11]. This author’s own 
+        experience is similar. In a 1996 review of security policy at PrivCorp, 
+        a straw poll of the companies 1500 users saw them vote overwhelmingly 
+        to leave anti-virus security entirely in the hands of the IS Managers. 
+        If they can, they want to leave such considerations &quot;someone else’s 
+        problem&quot;.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">There are clear temptations 
+        to accepting this view. Security is already seen as an overhead, and the 
+        cost of an ongoing user education program will impact the budgetary bottom 
+        line. Managers may well be tempted to gamble that the cost of a virus 
+        incident will be less than the cost of the added security. For some this 
+        may even be a good bet - many companies have minimal exposure to the current 
+        viral threats.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Against this must be weighed 
+        the benefits to be gained by having a workforce who understand the security 
+        implications of their actions and who will act appropriately when they 
+        believe they do have a virus incident. There is ample evidence to suggest 
+        the benefits of such a workforce are high. The 1996 Information Security 
+        Survey noted that the primary causes for financial loss related to information 
+        security were ‘inadvertent errors and viruses’ [9]. The clear inference 
+        is that such losses could be prevented, or at least reduced, if we educate 
+        our users to avoid such errors, and to prevent viruses entering the system.</FONT></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">Elements of 
+        a Successful Anti-Virus User Education Program</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">To be correctly targeted, 
+        our education program must be built on top of the corporate security policy. 
+        This policy will vary from company to company, but essentially will be 
+        composed of a definition of the security threats the organisation is facing, 
+        the products and procedures they intend to employ to meet those risks, 
+        and the responsibilities of the various areas and personnel within the 
+        company in dealing with these matters.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">For the purposes of the 
+        discussion that follows, it is assumed that a hierarchical approach will 
+        be taken to system security, with an IS Officer(s) responsible for keeping 
+        up-to-date with threats and solutions, a technical team to ensure hardware 
+        and software solutions are configured correctly and kept current, and 
+        a help-desk to co-ordinate incident reports and response (It is recognised 
+        that in some organisations all of these duties may fall to the one person). 
+        In all but the smallest of organisations, the end-user will not be expected 
+        to have even a limited expertise in virus matters. What is aimed at is 
+        to deliver enough knowledge on the problem and the company’s policy and 
+        solutions to it, to ensure the end-user is correctly playing their role 
+        in meeting this security threat.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Working from this baseline, 
+        the successful user education program will include the following components:</FONT>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">1. Introduction and Problem 
+        Overview</FONT></B>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This section of the program 
+        is essentially a &quot;state of the nation&quot; address. It will outline 
+        the security threats the organisation is facing, the impact a security 
+        breach could have on the company, and the general approach the organisation 
+        is taking to meet these threats. To this end, it will be largely an introduction 
+        to the security policy outlined above. To encourage the user to &quot;buy-in&quot; 
+        to what follows, it should also appeal to them on a personal level - for 
+        instance by painting a scene where a security breach might costs them 
+        their time and work.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">2. General Description 
+        of the User’s Role and Responsibilities</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The aim of this section 
+        is to make the user realise this is a personal issue. Many of the audience 
+        will be either intimidated by or highly resistant to learning about what 
+        they see as a technical problem. They need to be made aware that their 
+        actions directly impact the security of the company, and that they are 
+        directly responsible for that impact. To this end, it must be made clear 
+        they will be expected to understand and follow the policy guidelines.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">3. Introduction to the 
+        “Enemy”</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">In this section we aim to 
+        provide users with a basic explanation of what viruses are and how they 
+        work. This helps build a context within which the security procedures 
+        may be understood; users are far more likely to comply with a requirement 
+        not to boot the machine from drive A: when they understand how this action 
+        can infect their PC. We can also use this section to debunk many of the 
+        myths and much of the mystique surrounding viruses.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This section is not intended 
+        to turn our end-users into virus experts. Rather, it is aimed at giving 
+        them the minimum knowledge they need to understand the viral threat and 
+        the role their actions play in both the problem and the solution. It is 
+        similar to the sort of training we give to a new driver. The aim is not 
+        to teach them the intimate details of how the engine works, but rather 
+        to recognise when they’re out of petrol or the tyres are flat. With this 
+        in mind, each of the topics listed should be kept at a level that the 
+        least technical of the audience will be able to understand.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This introduction will include 
+        the following topics:</FONT> 
+      <UL TYPE="DISC">
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">Definition of a virus<BR>
+          &nbsp;- What it is, and also what it is not</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Types of Virus</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Boot Sector Viruses<BR>
+          &nbsp;- Basic description of the boot process<BR>
+          &nbsp;- The Master Boot Record, DOS Boot Sector and Floppy Boot Sector<BR>
+          &nbsp;- Description of how a boot sector virus infects a system<BR>
+          &nbsp;- Demonstration of a boot sector infection and clean-up</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> File Viruses<BR>
+          &nbsp;- Basic definition of what an executable file is, and how it operates<BR>
+          &nbsp;- &quot;Runnable&quot; files and files that contain &quot;runnable&quot; 
+          components<BR>
+          &nbsp;- Description of how a file virus infects its target<BR>
+          &nbsp;- Demonstration of a file virus infection and clean-up</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Multi-Partite Viruses<BR>
+          &nbsp;- Basic definition of this type of virus and how it works, linking 
+          it to the two topics immediately above</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Macro Viruses<BR>
+          &nbsp;(While technically simply a parasitic file virus, the perceived 
+          differences between an executable file virus and a macro virus, and 
+          the current prevalence of macro viruses warrant a section dedicated 
+          to this threat)<BR>
+          &nbsp;- Basic definition of the term macro<BR>
+          &nbsp;- Description of how a macro virus infects its target<BR>
+          &nbsp;- Demonstration of a macro virus infection and clean-up</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Other &quot;Virus-Like&quot; 
+          attacks<BR>
+          &nbsp;- Definition and discussion of Trojan Horses, Worms, Logic-Bombs, 
+          Memes etc<BR>
+          &nbsp;(The aim here is to make the users aware of such risks, and of 
+          the difference between them and &quot;true&quot; viruses)</FONT></LI>
+      </UL>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">4. Discussion of Security 
+        Risks in the Organisation</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This section is aimed squarely 
+        at identifying the relative risks of various user actions and encouraging 
+        users to modify their behaviour to reduce those risks. It will link the 
+        information covered in section three to the specific environment of the 
+        organisation, as well as tying-in to the company’s security policy. Vectors 
+        of viral entry into the organisation will be discussed, along with the 
+        general tools and techniques provided to close those avenues.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">5. Procedure and Solutions</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Here the tools and procedures 
+        of the security policy are placed under the magnifying glass. This section 
+        will include a discussion of how the various tools provided to detect 
+        and remove viruses work, along with directions on how and when to use 
+        them. It will make clear how they are configured and what they are (and 
+        are not) covering, both in automated and manual operation. Once again, 
+        required user actions will be related back to vectors of viral entry and 
+        specific forms of viral attack.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This is also the point where 
+        detection and reporting procedures will be discussed and demonstrated. 
+        A report should always be generated when the anti-virus software believes 
+        it has found a virus (either automatically or by the user); in this section 
+        we will outline how and when users should report they<I> may</I> have 
+        a virus. The aim here is to turn our users into &quot;responsible hypochondriacs&quot; 
+        [12]. Our reporting and escalation strategy will determine how this works, 
+        but essentially what we want is that users report suspicious behaviour 
+        to the appropriate source. This has the double advantage of raising the 
+        probability that virus incidents will be discovered early while preventing 
+        the flood of hoax messages, by ensuring they are forwarded to the appropriate 
+        point and nowhere else.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">6. Ethics and Duty</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Anti-virus education and 
+        policy should also extend to a consideration of &quot;ethics&quot; and 
+        &quot;duty&quot;. It is not appropriate for users to be accessing virus 
+        sites and/or conducting their own tests with live viruses. Nor should 
+        they be collecting virus samples, playing with virus creation kits, or 
+        writing their own viruses. As already mentioned, there is strong empirical 
+        evidence that the current flood of macro virus variants is at least in 
+        part due to the fact that &quot;common&quot; users can (and do) examine 
+        and edit the macro viruses they have found on their system, infecting 
+        themselves and moving the new variant into the &quot;wild&quot;. It must 
+        be made clear why such behaviour is unacceptable.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">7. Hands-On</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Ideally, users will get 
+        the opportunity to experiment with what they’ve learned in a controlled 
+        environment. At a minimum they should be able to experience the messages 
+        and warnings their anti-virus products generate when they give an alert, 
+        so they understand what to expect. This is the equivalent of a fire-drill; 
+        it allows the user to tie the propositional or abstract learning of the 
+        above sections to their direct experience, thereby cementing the lesson 
+        on both levels [13].</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Such hands-on training can 
+        be extended all the way to infecting &quot;sacrificial&quot; machines 
+        with real viruses. This has the added advantage of reinforcing the message 
+        (which should have been made clear throughout) that viruses generally 
+        do not play tunes, send messages etcetera when they infect your machine 
+        at the same time it allows users to experience an infection cycle first-hand. 
+        Such an approach must only be adopted in a completely controlled and secure 
+        environment. A number of anti-virus vendors run live virus workshops for 
+        exactly this purpose.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">8. Follow-Up</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Any education program risks 
+        being simply an information dump unless there is appropriate follow-up 
+        and reinforcement of the information learned. Suggested techniques include:</FONT> 
+      <UL TYPE="DISC">
+        <LI><FONT FACE="Arial,Helvetica">Action Cards to be kept on users desks, 
+          which list the minimum actions a user should take if they suspect they 
+          have a virus, plus the policy points that define what they should and 
+          should not do to prevent a virus attack</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica">Regular email or memos to users advising 
+          them when their anti-virus software has been updated, and recapitulating 
+          a particular security consideration, gradually cycling through the above 
+          list of topics</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica">Analyses of any security breaches that 
+          occur, and how they can be prevented</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica">Reports of the success of the security 
+          policy - for example, a regular report of the number of viruses detected 
+          before they could make it in to the system</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica"> Immediate notification of changes to 
+          the security situation (such as a new type of virus, or a new anti-virus 
+          tool). Preferably a dedicated training session to address the new threat</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica">Pre-emptive notification of hoax messages</FONT></LI>
+        <LI><FONT FACE="Arial,Helvetica">Refresher training programs</FONT>
+      </UL>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">&quot;Higher&quot; 
+        Education</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The virus problem is a dynamic 
+        one. To remain successful, corporate anti-virus policy and procedures 
+        must be similarly dynamic. Thus, while the education program outlined 
+        for the end-user is focussed firmly on developing understanding of and 
+        compliance with these procedures, at the next level up it must focus on 
+        currency, to ensure these procedures remain correct and sufficient to 
+        meet each threat as soon as (or preferably before) it develops.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">This currency comes from 
+        using to the full the services provided by the anti-virus community. Specialist 
+        journals such as Virus Bulletin and Secure Computing will alert IS managers 
+        to the most recent threats, but the first source of information will often 
+        be the anti-virus vendors whose products the company has purchased. Even 
+        if these companies cannot provide an immediate software or hardware solution 
+        to a new problem, they can almost always provide a behavioural solution 
+        to fill the gap while the anti-virus tool is being developed and implemented.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Such a solution can range 
+        from something as simple as a warning not to download a particular file 
+        posted to a series of Usenet groups (as in the case of Hare Krsna, which 
+        was distributed via posts to alt.cracks, alt.crackers, alt.sex and alt.comp.shareware) 
+        to a complete paradigm shift, as was required when macro viruses first 
+        appeared (For years the anti-virus community had been reassuring users 
+        they couldn’t &quot;catch&quot; a virus from a &quot;data file&quot; such 
+        as a document or spreadsheet. The appearance of Word and Excel macro viruses 
+        made this advice incorrect. They lead to a reassessment of what could 
+        constitute a viral threat; as well as requiring an update to the anti-virus 
+        tools, they also required a change in how those tools were used - from 
+        checking executable files only to checking all files.)</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">In all cases, the corporate 
+        security policy must be modified immediately and appropriately to meet 
+        the new threat, and the changes communicated down to the end-users as 
+        quickly as possible. Without such an ongoing process, security will not 
+        be achieved.</FONT></P>
+      <P><B><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">Conclusions</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Viruses are, and for the 
+        foreseeable future will continue to be, a significant risk to computer 
+        security. Anti-virus products are at best able to reduce this risk; because 
+        of the dynamic nature of the computer industry, and the lack of adherence 
+        to standards within that industry, it is extremely likely that new viral 
+        attacks will continue to appear that circumvent existing product solutions. 
+        Recognition of this fact is not, however, an excuse for companies to drop 
+        their security expectations. This is particularly true given the unpredictable 
+        nature of the damage a virus outbreak can cause, both in measurable and 
+        less tangible areas. Companies cannot afford to gamble when the ultimate 
+        cost may be their long-term viability.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Instead, companies must 
+        accept more of the responsibility for completing their anti-virus defences. 
+        While continuing to press for complete and timely solutions from anti-virus 
+        vendors, they must also recognise that internal policy and user action 
+        (and inaction) are often responsible for a security breach, and act to 
+        address these areas.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The traditional approach 
+        of imposing and enforcing a solution from above, which has worked well 
+        in areas such as network implementation and management, has not proved 
+        successful when applied to the virus problem. This failure is largely 
+        due to the fact that many elements of the imposed security procedures 
+        can not be automatically enforced when it comes to viruses. Corporates 
+        must therefore treat users as part of the solution as well as the problem, 
+        and actively seek to engage user compliance with their procedures if they 
+        are to reduce virus incidents. The best way of securing this compliance 
+        is to educate the user on how viruses work (so that they understand the 
+        problem) and how and why the procedures will prevent them. The aim is 
+        to build sufficient understanding of both the problem and the solution 
+        that procedures will be voluntarily followed.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Finally, companies must 
+        endeavour to keep their security policies up-to-date. This can best be 
+        achieved by following the relevant journals and keeping in close contact 
+        with anti-virus experts (typically these will be the vendors from whom 
+        they have purchased their anti-virus solutions). The combination of correctly 
+        implemented anti-virus products with a current policy document and an 
+        informed and responsible user community gives the best chance of keeping 
+        computers virus free.</FONT>
+      <P><B><FONT FACE="Arial,Helvetica">References</FONT></B></P>
+      <P><FONT FACE="Arial,Helvetica">Solomon, A: &quot;The End of the Virus Problem?&quot;, 
+        Proceedings of the 1996 Virus Bulletin Conference , September 1996</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">One of 9 archetypal systems identified in 
+        the discipline of Systems Thinking. For an excellent summary of the discipline, 
+        see Senge, Peter M. The Fifth Discipline , Random House, 1992</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">An typical example of the compatibility 
+        problem was the arrival of IDE drives with capacities greater than 528 
+        MB. Such drives were not supported by existing BIOSes, and required an 
+        extension that was loaded as part of the boot process. This &quot;extension&quot; 
+        code was written to the &quot;traditionally&quot; blank sectors immediately 
+        following the Master Boot Record on track zero of the hard drive, and 
+        immediately created problems for many anti-virus software packages, by 
+        &quot;stealthing&quot; reads to the Master Boot Record through its control 
+        of interrupt 13h. The fact that the driver code tended to be damaged when 
+        a virus infected such a drive also became a problem for the anti-virus 
+        industry. For a full description of this issue, see Riordan, R. &quot;Data 
+        Security Problems Associated With High Capacity IDE Hard Disks&quot;, 
+        Proceedings of the 1995 Virus Bulletin Conference , September 1995</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Whalley, I. &quot;I could tell you, but 
+        then I’d have to kill you&quot;, Virus Bulletin , November 1995</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Comparative Review &quot;Macro Malarkey&quot;, 
+        Virus Bulletin , May 1996</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Quoted from the internal Virus Policy document 
+        of a medium sized Australian business. The company has over 1200 PCs and 
+        15 NT servers. At the request of the company, its name is not revealed. 
+        Further references within this paper shall refer to it as PrivCorp.</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Quoted from a discussion with the security 
+        head of a major government department. At the request of the department, 
+        its name is not revealed.</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Phipps, Donald L &quot;Successful Implementation 
+        of an Anti-virus Application in a Global Environment&quot;, Proceedings 
+        of the 1996 Virus Bulletin Conference , September 1996</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">&quot;Fourth Annual Information Week/Ernst 
+        and Young Information Security Survey&quot;, 1996. Results published in 
+        Information Week magazine, October 21, 1996. The survey collated responses 
+        from 1320 US and Canadian companies. The report is available from </FONT><A HREF="http://www.eycan.com/aboute&y/services/isaas/report.pdf"><FONT FACE="Arial,Helvetica">http://www.eycan.com/aboute&amp;y/services/isaas/report.pdf</FONT></A><FONT FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Figure quoted in the Information Security 
+        Survey, but based on an article Information Week magazine, April 1996. 
+        The figure includes the cost of purchasing, implementing and keeping up-to-date 
+        anti-virus measures as well as the cost of actual virus outbreaks.</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">Ducklin, P. &quot;Blessings in Disguise: 
+        Building Out of Disaster&quot; Proceedings of the 1995 Virus Bulletin 
+        Conference , September 1995</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">I simply cannot resist referencing the article 
+        &quot;Heart patients being too patient, study finds&quot; from The Age 
+        newspaper, Melbourne, March 3, 1997, which presents the astonishing statistic 
+        that 54% of Australia’s heart attack victims delay seeking treatment by 
+        six hours or more. Two reasons were discovered for this behaviour. Many 
+        of the patients failed to recognise the symptoms of the heart-attack, 
+        waiting until they were completely overwhelming before acting. The other 
+        significant reason was that victims &quot;appeared to go into denial, 
+        with even previous victims waiting to see if symptoms would go away or 
+        feeling too embarrassed to ask for help&quot;. There is a clear and direct 
+        analogy between this behaviour and that of users suffering a virus attack 
+        on their PC. The solution is the same in both cases - educate the victim 
+        to report their symptoms earlier rather than later.</FONT></P>
+      <P><FONT FACE="Arial,Helvetica">The importance of such an approach has become 
+        an axiom of education theorists. See for example Bawden, R. Learning to 
+        Become a More Effective Organisation: A Critical Systems Approach.</FONT>
+      <P>&nbsp;
+</body>
+<!-- #EndTemplate -->
+<!-- Mirrored from vx.netlux.org/texts/html/security-paper.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:18 GMT -->
+</html>

@@ -1,0 +1,254 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Mushy Mutating Macros</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Mushy Mutating Macros<BR>
+</FONT><FONT SIZE=+2>by Dave Chess</FONT></FONT></B></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<CENTER><TABLE CELLSPACING=10 CELLPADDING=0 WIDTH="90%" >
+<TR valign=top>
+<TD>Consider an eggshell. It's (surprise!) egg-shaped. Now try to change
+the shape. If you push lightly, you can bend the shell just a little, hardly
+enough to notice. If you push hard, it suddenly changes a <B>lot</B>, and
+it isn't egg-shaped anymore (<I>crack</I>). 
+<P>Now consider an egg-shaped lump of clay. It's much easier to change
+the shape; apply pressure where you will, and the clay gives, changing
+where you've pushed, but retaining the basic overall shape. An eggshell
+is brittle: any significant change breaks it. A lump of clay is mushy,
+flexible, malleable: you can make all sorts of changes, and there's no
+catastrophic breakage. </P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Brittle and mushy viruses
+</FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>In a more abstract way, computer programs written in machine language
+are also brittle; if you change some bytes, or even just a bit or two,
+there's a good chance that the resulting program won't work at all. This
+is especially true of computer viruses written in machine language, because
+they tend to be small, compactly written, with correct operation depending
+on just about every byte of the code. In particular, if changes are introduced
+into a machine language virus by copying errors, gamma rays, or whatnot,
+the result is generally not a virus any more, because it no longer spreads.
+And in order to spread effectively, a machine language virus must use copying
+methods that work just about perfectly, just about all the time. 
+<P>There are exceptions, of course. The Frodo virus, for instance, has
+a bug that causes it to randomly corrupt a small part of itself once in
+awhile. Fortunately for the virus, the corruption occurs in the payload
+routine, which is only rarely executed. So the virus spreads fine, but
+when it tries to execute its payload by overwriting the master boot record
+of the first hard drive, it just hangs the system instead. But as a rule
+machine language viruses depend on almost perfect copying almost all the
+time. </P>
+
+<P>Among other things, this makes it relatively simple to be sure that
+you're correctly detecting the virus, and to have your anti-virus program
+verify that exactly the usual virus is present before attempting repair.
+You have to deal with any <B>intentional</B> self-changing (polymorphism)
+that the virus writer has put in, but that's not generally much of a challenge.
+</P>
+
+<P>But machine language viruses are being eclipsed; the fastest-rising
+and most widespread viruses in the world today are macro viruses. Unlike
+machine language viruses, which are mostly brittle, macro viruses are significantly
+mushy. Random changes caused by copying errors often result in perfectly
+viable, but different, viruses. And macro viruses can use copying methods
+that are less complex, less predictable, and still spread successfully.
+This mushiness has consequences for detection and repair of macro viruses,
+and even for the possibility of macro virus evolution. </P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Mushy miscopying </FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>Why are macro viruses mushy? For one thing, the languages in which
+they are written are much less dense than machine language; they contain
+more redundancy, more stuff that isn't crucial to the correct working of
+the program. Macros can contain comments, for instance; corruption that
+occurs in a comment won't change the function of the virus at all. Many
+macro viruses also consist of a number of different macros, some of which
+are not essential to replication. If a non-essential macro is corrupted,
+the virus may still function correctly; in a machine language virus, on
+the other hand, essential and non-essential functions tend to be intermixed,
+and corruption that changes a non-essential function is more likely to
+hit an essential one as well. Many macro viruses also contain multiple
+copies of their spreading code, under different names, so as to be executed
+by different functions of the application that they infect. This thought
+is anathema to machine language coders, who are used to making every byte
+count; but when a macro virus does it, it makes the virus that much more
+likely to survive when one or more of its macros are damaged, lost, or
+overwritten. 
+<P>What kinds of miscopyings actually occur when macro viruses spread?
+The simplest type is just corruption. A few bytes, or a few dozen bytes,
+or an entire macro, can be overwritten with random garbage due to bugs
+or errors in the system doing the spreading. This happens surprisingly
+often to existing macro viruses, due perhaps to some bug in the relevant
+applications. Macro viruses that consist of a single small macro are generally
+destroyed by simple corruption; but larger and more redundant viruses can
+survive unscathed. Of the over 70 variants of the NPAD virus, virtually
+all were created by simple corruption; NPAD survives this because roughly
+half of its 100 lines of WordBasic code consists of rarely-executed payload,
+rather than critical spread functions. </P>
+
+<P>Macro viruses can also change by having one macro simply removed. The
+Johnny virus, for instance, contains a macro called vGojohnny that performs
+no function at all, except to carry a comment from the virus author. Because
+of the way the other macros of the virus are coded, the virus continues
+to function correctly if the vGojohnny macro is removed. So if someone
+with an infected system notices that he has some unfamiliar macros active
+in Word, decides that the &quot;vGojohnny&quot; one sounds suspicious,
+and deletes it, a new form of the virus begins to spread. Any anti-virus
+product depending on the presence of the vGojohnny macro for detection
+or verification will now have trouble with this new form. </P>
+
+<P>The DZT virus is even more interesting: it consists of two macros, each
+of which is able to spread on its own (although each will carry the other
+along if it's present). So if incomplete disinfection, system error, or
+accident removes just one of DZT's macros, the other continues to spread.
+And since DZT does its macro copying by name, if the single DZT macro arrives
+on a system that already has a macro with the same name as the missing
+viral macro, the remaining viral macro will <B>pick up</B> that innocent
+macro, and carry it along as it spreads (a process known as &quot;snatching&quot;
+in the anti-virus community). This means that macros that were originally
+perfectly innocent parts of someone's system can end up being carried around
+the world by a virus. When the macro that is &quot;snatched&quot; is in
+fact part of <B>another</B> macro virus itself, the results can be even
+more complex and peculiar. (Some variants of the Showoff virus, for instance,
+contain a macro that was originally part of the Rapi virus.) </P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>The consequences </FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>Machine language viruses hardly ever change by accident, in the field.
+When they do change, they almost always change in ways that break them,
+and they aren't viruses any more. So new machine language viruses appear
+only when some irresponsible person intentionally writes a new one, or
+changes an existing one in a way that results in something that's still
+a virus. But as we have seen, macro viruses <B>can</B> change in the field,
+and they can change into new things that are still viral. So what? 
+<P>The most obvious consequences of this are that sometimes the new virus
+will no longer be detected by some procedures, or some anti-virus programs,
+that did detect the old. This risk can be minimized by picking detection
+methods that key on the essential spreading part of the virus, rather than
+the comments or the payload. </P>
+
+<P>Anti-virus software that is careful about repair will also be inconvenienced;
+since a program can't tell the difference between random corruption and
+(for instance) an intentional new payload that the user should be warned
+about, when a good anti-virus program comes across a field-born virus variant,
+it will often not be able to repair it with confidence, and will have to
+instruct the user to send a copy to the vendor for analysis. This uses
+everyone's time, and the industry is working on ways to reduce this cost.
+</P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Evolution? </FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>More subtly, one effect of non-brittleness in complex systems is that
+<B>evolution</B> can occur. The classic system for the study of this effect
+is Tom Ray's <A HREF="http://www.hip.atr.co.jp/~ray/tierra/tierra.html">Tierra</A>
+project. In teirra, programs written in an intentionally non-brittle language
+are allowed to interact in an environment that allows for non-perfect copying.
+
+<P>The results are suprisingly complex. Tierra simulations have produced
+programs that show behaviors analogous to living systems: predation, parasitism,
+optimization, and so on. Programs in the system evolve, and over time come
+to be better at reproduction. </P>
+
+<P>Can macro viruses evolve over time, and become more effective spreaders?
+The idea is not completely absurd; in any case, they are likely to be much
+better at this than machine language viruses are. While accidental evolution
+won't work by detailed rewriting of virus code (as happens in Tierra),
+we have already seen some cruder evolutionary effects. </P>
+
+<P>Consider the DZT virus, and how it can split into two viable viruses.
+If some anti-virus program that detected only one of DZT's two macros were
+widely deployed, the DZT virus would begin to die out. But if some accident
+were to destroy the detected macro on some system, the single remaining
+macro, still viral but no longer detected, would begin to spread, and would
+no doubt do better than the full virus (until the anti-virus software was
+updated to detect that macro as well). </P>
+
+<P>Consider a hypothetical macro virus that used an AutoOpen macro to spread
+whenever a document was opened, and an AutoClose macro to display a silly
+message whenever a document is closed during March. Because of the very
+obvious payload, this virus would experience a drastic die-off in March.
+People who see the message would install and use anti-virus software to
+remove it. The virus would have little chance of long-term viability in
+the world. </P>
+
+<P>Now assume that somewhere on the planet someone who has the virus, in
+February, installs a non-viral macro package on their system, and assume
+that that package contains an AutoClose macro of its own that just sets
+some variables, or collects data for other macros in the package to use.
+If that AutoClose macro overlays the viral AutoClose macro, and if the
+viral AutoOpen macro does its macro-copying by name (as most macro viruses
+do), a new variant of the virus now exists. It still spreads when documents
+are opened, but it no longer announces itself during March (since the original
+AutoClose macro has been replaced by one that does nothing noticable).
+This new strain of the virus is likely to be more viable than the original,
+and to spread more successfully in the long run; so this is a crude case
+of natural selection acting to favor a positive mutation. Classic evolution.
+</P>
+</TD>
+</TR>
+
+<TR valign=center>
+<TD>
+<CENTER><P><FONT COLOR="#B70328"><FONT SIZE=+2>Conclusion </FONT></FONT><BR>
+</P></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>We do not expect that macro-virus evolution will play a dominant role
+in the future course of macro viruses; the most significant new viruses
+will be those created by irresponsible people writing them intentionally.
+On the other hand, the possibility for macro viruses to change and evolve
+in the field, without human intervention, means that at the very least
+there will be many <B>more</B> macro viruses than there would have been
+otherwise. This is one more annoyance for the user community, and one more
+challenge to the anti-virus industry as we build an <A HREF="epimmune.htm">immune
+system for cyberspace</A>. </TD>
+</TR>
+</TABLE></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

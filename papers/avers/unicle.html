@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en"><html><head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Costin Raiu">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+   <meta name="KeyWords" content="JS/Unicle, Unicle, I-Worm.RunFtp, Chinese, Virus, worm, mass-mailing, WildList, IE 5.0"><title>Uniquely Unicle</title></head>
+
+<body>
+&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><b><font size="+2">U<u>niquely Unicle </u></font></b>
+</p><p><i>Costin Raiu</i>, <a href="http://www.kaspersky.com/">Kaspersky Labs</a>
+<br>&lt;<a href="mailto:%20craiu@pcnet.ro">craiu@pcnet.ro</a>&gt;
+<br>&nbsp;
+<br>&nbsp;
+</p><p><b>A<u>pril 2000 </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; From most people's point of view, the story of the
+<font color="#ff0000">JS/Unicle</font> virus begins in the early spring
+days of 2000. There is one curious detail related to this, which is that
+back then, due to various reasons the <a href="http://www.wildlist.org/">WildList
+Organization Intl.</a> was unable to release its March 2000 issue. Actually,
+this is only one of the curious things related to this even more curious
+virus.
+<br>&nbsp;&nbsp;&nbsp; But anyway, the organizational problems were solved,
+and there was an April 2000 WildList, and very important, that was actually
+the first WildList to include reports of the Unicle virus.
+<br>&nbsp;&nbsp;&nbsp; Unique from this point of view, the April 2000 WildList
+is also last issue to contain reports of the Unicle virus, because ever
+since there was not even a single more <font color="#ff0000">JS/Unicle</font>
+report.
+<br>&nbsp;&nbsp;&nbsp; One can of course argue that Unicle was one of those
+fast-living viruses, which explode for a day or two, then simply die...
+To support this theory there is a
+<br>very important aspect, which is that Unicle depends on the availability
+of an Internet connection to replicate. Moreover, it also depends on a
+set of specific components being available for download at a couple of
+specific Internet locations, an idea also implemented by many other viruses.
+So, starting from the moment the components were removed from the Internet,
+the virus was no longer able to spread around the world.
+</p><p>&nbsp;&nbsp;&nbsp; Another interesting detail regarding <font color="#ff0000">JS/Unicle</font>,
+is that it is a Chinese-specific virus. Yep, that's true, by default this
+virus will only work on Traditional Chinese Windows with Traditional Chinese
+Internet Explorer 5.0 or later installed. I'll explain later the reason
+for this "compatibility" issue. Also, I believe it is worth mentioning
+that experience shows that language-specific viruses have few chances of
+surviving 'ItW'. They may cause local problems, yes, but they will never
+reach the distribution of, let's say, W97M/Melissa.A@mm, VBS/VBSWG.J or
+even W97M/Marker.C.
+<br>&nbsp;
+</p><p><b>T<u>he Virus Bulletin Tests </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; Following to <font color="#ff0000">JS/Unicle</font>'s
+inclusion in the WildList, <a href="http://www.virusbtn.com/">Virus Bulletin
+Ltd.</a>, with whom you may be familiar <font color="#00cc00">&lt;smile&gt;</font>,
+added a couple of <font color="#ff0000">JS/Unicle</font> virus samples
+to their test sets. From start, this proved to be a major problem for several
+products, which became no longer able to get the 100% perfect ItW detection
+VB Awards. In short, products which were able to detect every single sample
+from the WildCore - a collection of viruses found in the WildList mainly
+used as a reference test-set for many AV comparative reviews, were missing
+the <font color="#ff0000">JS/Unicle</font> samples from VB's test sets.
+<br>&nbsp;&nbsp;&nbsp; The mysterious reasons for the problems reported
+in the VB tests were unfortunately unavailable for quite a while, but they
+become obvious to me when
+<br>I tried to replicate Unicle, as you can see below:
+<br>&nbsp;
+</p><p><b>T<u>he Unicle virus </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; The Unicle virus arrives in a computer through an
+infected HTML e-mail, which mainly contains a short JavaScript routine
+with the purpose of dropping the virus body in the system.
+<br>&nbsp;&nbsp;&nbsp; Under normal conditions the JavaScript routine from
+the infected e-mail should not be able to do things such as writing to
+your disk, but in this case, using a known vulnerability in Internet Explorer's
+HTML processor libraries also exploited by the JS/Kak virus family, the
+routine will create a 'Scriptlet.TypeLib' (.HTA) file in the system's "Startup"
+folder. Unicle will perform a lot of tests in order to find the right name
+of the "Startup" folder - for this, it will check if the current Windows
+installation resides in the following directories: "WINDOWS","WINDOW",
+"WIN", "WIN98", "WIN95", "WINDOWS.000", "WINDOWS.001" both on the "C:"
+and "D:" drives.
+<br>&nbsp;&nbsp;&nbsp; Now, there is an interesting aspect regarding the
+routine which drops the virus in the "Startup" folder - the routine doesn't
+drop the file in the usual "%WINDOWSDIR%\Start Menu\Programs\Startup".
+Instead, it will use a construction of the form "%WINDOWSDIR%\Start Menu\Programs\&lt;UNICODE
+Sequence&gt;" where &lt;UNICODE Sequence&gt; is Traditional Chinese equivalent
+of the "Startup" folder: a 4-bytes UNICODE string containing the following
+ASCII chars: 177, 210, 176 and 202.
+<br>&nbsp;&nbsp;&nbsp; Because of this reason, the virus will only work
+on Traditional Chinese Windows Installations. Moreover, if one tries to
+manually create the respective directory and force Windows to use it as
+an alternate Startup folder, the dropping component still doesn't work.
+Apparently, Internet Explorer will refuse to create the .HTA file unless
+it is the Traditional Chinese Internet Explorer.
+</p><p>&nbsp;&nbsp;&nbsp; This detail is very important to our analysis, because
+I believe it gives an explanation on why was Unicle so problematic to AV
+products in the VB tests. Basically, for one to create the (.HTA) instance
+of the virus, both Windows 95/98 and Internet Explorer - Traditional Chinese
+are needed. As mentioned before, tweaking the path and similar tricks will
+simply not work as the IE library components will not create the Scriptlet.TypeLib
+if the path contains UNICODE chars.
+<br>&nbsp;&nbsp;&nbsp; Now, I believe some AV producers do not pay attention
+to viruses which require special, complex setups to replicate. Or, others
+simply do not have access to
+<br>the respective operating systems and tools. In this case, coupled with
+other factors such as false .HTA Unicle files being distributed in various
+antivirus collections, files which were actually the .HTM form of the virus,
+the more or less-complicated setup required to replicate Unicle prevented
+some AV developers from getting a .HTA form of the virus.
+<br>&nbsp;&nbsp;&nbsp; Because of that, products which needed special definitions
+to detect the virus in .HTA files were simply unable to detect it without
+a .HTA sample to extract a detection definition from...
+<br>&nbsp;
+</p><p><b>F<u>rom the start(up) </u></b>
+</p><p>Returning to our analysis, upon next system reboot, the file named "Microsoft
+Internet Explorer.hta" dropped by Unicle in the "Startup" folder will be
+loaded and executed as any regular .HTML file containing JavaScript code.
+When executed, yet another component is dropped, this time in the "SYSTEM"
+folder, with the name "MSIE.HTA". The virus will run itself the respective
+file after dropping it, and moreover, it will also append a line to the
+system file "WIN.INI" to execute the dropped component each time the system
+is started. After that, it will cover its tracks by deleting the file initially
+dropped into the "Startup" folder.
+<br>&nbsp;
+</p><p><b>M<u>SIE.HTA </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; This part of the Unicle virus has the main purpose
+to connect to one of a list of ten ftp sites and download the main replication
+component, found in the form of a file named "MSIE.EXE".
+<br>&nbsp;&nbsp;&nbsp; The list of the ten ftp sites used by the virus
+is: "dany777.homepage.com", "iopi999.homepage.com", "pop123.homepage.com",
+"todo888.homepage.com",
+<br>"ftp.todo.com.tw", "hammer.prohosting.com", "hammer.prohosting.com",
+"catv169.homepage.com", "catv170.homepage.com" and "todo168.homepage.com";
+<br>please note that "hammer.prohosting.com" is listed twice. Various usernames
+are used depending on the target site, randomly selected from the above
+mentioned list. For all the ftp accounts the password is the same: "995119".
+In order to connect to the respective sites, Unicle creates a simple ftp
+script file which is feed into the "ftp.exe" util using the "-s" command
+line switch.
+<br>&nbsp;&nbsp;&nbsp; At the time of speaking, all the accounts on the
+ftp sites used by the virus are not working anymore. Either the accounts
+were deleted or the passwords were changed, but in all cases, they are
+not accessible to the virus, thus the main replication component cannot
+be downloaded. The conclusion is that at the time of writing, (March 2001),
+Unicle will be unable to replicate, in any place all over the world, excepting
+lab conditions, of course.
+<br>&nbsp;&nbsp;&nbsp; Even if the Win32 binary components of <font color="#ff0000">JS/Unicle</font>
+are not available for download, back in the times when the virus was still
+able to correctly replicate without any help, many AV researchers collected
+the respective files for further analysis, which actually comes next:
+<br>&nbsp;
+</p><p><b>M<u>SIE.EXE - the archive </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; The file MSIE.EXE, obtained by Unicle from one of
+the ten custom sites is a PKZIP SFX archive which when executed, it will
+unpack two files on the disk,
+<br>named "Explorer.exe" and "MSWINSCK.OCX". "Explorer.exe", a VB5 program,
+is directly run by the virus, and will take care of the important task
+of replication. The virus will also modify "win.ini" to run this program
+upon each system startup. Using "MSWINSCK.OCX", a simple TCP/IP socket
+library module,&nbsp; "Explorer.exe" attempts to send copies of the worm
+to as many as possible email addresses, which are obtained by scanning
+the disk for files with the extensions *.SNM, *.DBX, *.NCH, then scanning
+the content of such files for addresses. These files are various mail formats
+indexes, for example *.SNM files contain email
+<br>addresses for the messages received in Netscape Messenger, *.DBX for
+Outlook, and so on.
+<br>&nbsp;&nbsp;&nbsp; To mass mail itself, Unicle uses direct SMTP access
+- it will extract from registry the address of the default SMTP server,
+connect to it, and email copies of itself to every email addresses collected
+by the brute force scan operation. Probably in order to make things simpler,
+"Explorer.exe" contains a copy of the initial HTML part of the virus, which
+is sent along with the emails.
+<br>&nbsp;&nbsp;&nbsp; Unicle also includes an "I am alive function", common
+in most of the Internet- aware viruses we are seeing nowadays. Notification
+mails will be sent to
+<br>one of following addresses: leebill_001@yahoo.com ... leebill_023@yahoo.com,
+but not to "leebill_006", "leebill_013" and "leebill_16@yahoo.com".
+<br>&nbsp;&nbsp;&nbsp; Moreover, "Explorer.exe" contains code to backdoor
+the system on which is running, another pretty common facility for today's
+malware.
+<br>&nbsp;
+</p><p><b>C<u>onclusions </u></b>
+</p><p>&nbsp;&nbsp;&nbsp; <font color="#ff0000">JS/Unicle</font> is a strange
+combination of loaders, droppers and trojan modules. Designed to run on
+Traditional Chinese Windows alone, the virus is a little
+<br>bit tricky to replicate, which I believe it's the main cause for the
+misses we've seen in previous Virus Bulletin comparative reviews. Unfortunately,
+this proves once again that every virus AV labs receive should be replicated,
+analyzed, and then properly detection should be implemented in the products.
+I have no doubt many AV companies did this with Unicle, but unfortunately
+I have no doubt some others didn't.
+</p><p><tt><b>Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">JS/Unicle@mm</font></tt>
+<br><tt><b>Aliases:&nbsp;&nbsp;&nbsp;&nbsp; </b><font color="#3366ff">W32/RunFtp@MM,
+I-Worm.Unicle</font></tt>
+<br><tt><b>Type:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail propagated
+Worm, written in JavaScript and VB5</tt>
+<br><tt><b>Detection &amp; disinfection:</b></tt>
+</p><ul>
+<li>
+<tt>Use an antivirus program able to detect and remove the worm. An AV
+solution implemented in the mail router/server level recommended.</tt></li>
+</ul>
+
+<p><br>(c) Virus Bulletin Ltd, 2001
+</p></body></html>

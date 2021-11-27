@@ -1,0 +1,358 @@
+
+<HTML>
+<HEAD>
+   <TITLE>How To Remove a Boot Virus</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>How to Remove a Boot
+Virus</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#Overview">Overview</A> <BR>
+<A HREF="#IfYouareNowCertainYouHaveaVirus">If You are Now Certain You Have
+a Virus</A> <BR>
+<A HREF="#FirstActions">First Actions</A> </FONT></P>
+</UL>
+
+<UL>
+<UL>
+<P><FONT SIZE=-1><A HREF="#BeforeyouDoaMajorScanofMachinesorCleanaBootVirusLearnMore">Learn
+More</A> <BR>
+<A HREF="#BeforeyouCleanaBootVirusBackitUp">Back it Up</A> <BR>
+<A HREF="#BootVirusesTestCleaningonYourBackupCopy">Test Cleaning on Your
+Backup Copy <BR>
+</A><A HREF="#BootVirusesTestCleaningofHardDisk">Test Cleaning of Hard
+Disk</A> </FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#RemovingANonStealthBootVirus">Removing A Non-Stealth
+Boot Virus</A> <BR>
+<A HREF="#RemovingAStealthBootVirus">Removing A Stealth Boot Virus</A>
+</FONT></P>
+
+<UL>
+<P><FONT SIZE=-1><A HREF="#StealthBootViruses">Stealth Boot Viruses</A>
+<BR>
+<A HREF="#CleaningMethods">Cleaning Methods</A></FONT></P>
+</UL>
+
+<P><FONT SIZE=-1><A HREF="#RecoveringFromDamageDoneByCleaningBootViruses">Recovering
+From Damage Done By Cleaning Boot Viruses</A></FONT></P>
+
+<P> </P>
+</UL>
+
+<DT>
+<HR WIDTH="100%"></DT>
+
+<P><A NAME="Overview"></A><B><FONT SIZE=+2>Overview</FONT></B></P>
+
+<P>A boot virus infects the boot sector of a floppy disk, and may infect
+either the boot sector of the hard disk, the master boot sector of the
+hard disk, or neither. (Some viruses, such as Brain, only infect floppy
+disks.) </P>
+
+<P>The boot sector of a floppy is located on the top of the diskette (side
+0), the outside cylinder (cylinder 0), and the first sector (sector 1).
+In this sector you will normally find code called the boot record. A boot
+record is created whenever a disk is formatted (with FORMAT), regardless
+of the switches used. It is re-written whenever the disk is SYS'ed (with
+SYS). When a machine boots from a floppy disk, the heads of the drive automatically
+seek to cylinder 0. Then the controller tells the heads of the drive to
+read the code located on side 0, cylinder 0, sector 1. When the program
+in the sector is read, the code contained in it is executed. The code might
+be a healthy boot sector, and the boot continues. Or it might be a virus,
+which will execute, have its way with your computer, then transfer the
+computer to read the sector on the floppy where it has moved the original
+boot record. </P>
+
+<P>On a hard disk, things are slightly more complicated. The hard disk
+begins to spin and the hard disk heads automatically seek to cylinder 0
+when power is supplied to the drive. The hardware BIOS (in a ROM) gives
+control to the controller, and the hard disk controller tells the hard
+disk heads to read side 0, cylinder 0, sector 1 - the master boot sector.
+Normally, this sector contains a program called the master boot record,
+which uses a small database within it called the partition table. Sometimes
+the master boot sector contains a boot virus, which loads and executes,
+and then gives control to the master boot record code, which the virus
+has moved to another sector. </P>
+
+<P>The purpose of a master boot record is to tell the computer about its
+various drives, and to transfer control to the next sector that should
+be read. This will normally be the boot record on one of the partitions.
+(Since we never partition a floppy disk into one or more drives, we do
+not need a master boot record on the floppy.) </P>
+
+<P>Boot viruses that are active in your computer's memory will generally
+infect all floppy disks placed in drive A: if the diskette has ever been
+formatted, if it is not write-protected, and if the disk is not already
+infected with that virus. Some boot viruses will only infect a particular
+capacity (eg. 1.44 Mb floppies), a particular size (eg., 3.5&quot;), a
+particular floppy drive (eg., A:), or some combination (eg., any 720K or
+1.44 Mb floppy placed in A:). </P>
+
+<P>When a virus like Stoned infects a hard disk, it follows these steps:
+</P>
+
+<UL>
+<LI>You have an infected floppy in A:, and turn your computer on. The boot
+sector contains the virus; it runs, goes into memory, examines your hard
+disk, and decides to infect it. It begins by moving the master boot record
+from side 0, cylinder 0, sector 1 to side 0, cylinder 0, sector 7. This
+sector is normally not used by the computer, and is in a region called
+&quot;slack space.&quot; It then places a copy of itself in the master
+boot sector. Your hard disk is infected. </LI>
+
+<LI>The virus now transfers control to the original boot record on the
+floppy disk, which it may have placed in the last sector of the root directory.
+The displaced boot record runs, and you either finish the boot (if it is
+a bootable disk) or see the message &quot;Non-system disk or disk error.
+Replace and press any key when ready.&quot; </LI>
+</UL>
+
+<P><A NAME="IfYouareNowCertainYouHaveaVirus"></A><B><FONT SIZE=+2>If You
+are Now Certain You Have a Virus</FONT></B></P>
+
+<P>It has been a lot of work getting to this paragraph, but if you have
+been able to prove you have a false alarm, you need not read on. </P>
+
+<P>If you are certain that you have a virus, there are some actions you
+must take. Before doing anything, consider the goals I propose below for
+your action plan: </P>
+
+<UL>
+<LI>Slow the spread of the virus with minimal impact on user productivity.
+</LI>
+
+<LI>Identify and remove all copies of the virus without damaging machines
+or files. </LI>
+
+<LI>Retain one or more samples for later study. </LI>
+
+<LI>Identify how the virus slipped past your powerful policies and procedures,
+and revise them as needed. </LI>
+</UL>
+
+<P><A NAME="QuickDiagnosticsAndIdentification"></A><B><FONT SIZE=+1>Quick
+Diagnostics And Identification</FONT></B></P>
+
+<UL>
+<P><B>Is It A Boot Virus Or A File Virus Or Both</B></P>
+
+<P><B>If A Boot Virus, Is It Stealth Or Not?</B></P>
+
+<P><B>Is The Virus Common Or Rare?</B></P>
+</UL>
+
+<P><A NAME="FirstActions"></A><B><FONT SIZE=+1>First Actions</FONT></B></P>
+
+<P>Summon the swat team. You should have already assembled on paper a group
+of virus-busting volunteers - folks happy to stay up late killing viruses.
+Perfect members of the team are energetic power users who care about your
+organization and understand users as well as corporate goals. You should
+have already figured out two or more mechanisms for summoning the Swat
+Team. For instance, if the network goes down, your e-mail system does too.
+Team members should carry the phone numbers (home and work) of other team
+members in their wallets. </P>
+
+<P>Prevent the spread of the virus. We would recommend a general announcement:
+&quot;Virus Alert: No diskette is to leave the building&quot; This previously
+prepared sign can be placed on doors. If the network is still up, send
+the same message to all network users) </P>
+
+<P>Cease use of the infected workstation(s). Hang a previously prepared
+sign on the monitor that the machine is infected and must not be used.
+This will reduce the number of files and disks and servers that become
+infected, and make removal easier. This is particularly important if the
+virus must be removed by deleting files, for every file deleted will need
+to be replaced with an uninfected copy before users can be fully operational.
+</P>
+
+<P><A NAME="BeforeyouDoaMajorScanofMachinesorCleanaBootVirusLearnMore"></A><B><FONT SIZE=+1>Before
+you Do a Major Scan of Machines, or Clean a Boot Virus, Learn More</FONT></B></P>
+
+<OL>
+<LI>Look up the virus in V-Base. </LI>
+
+<LI>What sectors does it write to? What damage should you expect? </LI>
+
+<LI>Is the virus is stealth? Does it require a clean boot to be detected?
+</LI>
+
+<LI>Does the virus infects on file open or close? If so, don't scan without
+booting clean! </LI>
+
+<LI>Is the virus polymorphic or encrypted? If so, generic tools such as
+behavior blockers might be better weapons in the war than traditional scanners.
+Most scanners do not detect all copies of most polymorphics, so simple
+scanning is likely to leave one or more infected files on the machine,
+and the infection will return shortly. </LI>
+
+<LI>Is it stealth? Does it have other properties that might interfere with
+detection or removal? </LI>
+</OL>
+
+<P><A NAME="BeforeyouCleanaBootVirusBackitUp"></A><B><FONT SIZE=+1>Before
+you Clean a Boot Virus, Back it Up</FONT></B></P>
+
+<P>Note: the advice in this section was inspired by my repeated observation
+of the failure of some products. MSAV and CPAV damaged floppies that it
+tried to remove Form from. McAfee's CLEAN v. 100 damaged hard disks that
+it tried to remove Michelangelo from... </P>
+
+<P><B>How To Backup A Boot Virus</B></P>
+
+<P>If the virus is on a floppy, write-protect the diskette, and use DISKCOPY
+to make another copy of the disk. Scan the destination disk to be sure
+the virus transferred (it should have, if you didn't do some accidental
+cleaning in the excitement.) </P>
+
+<P>If the virus is on the hard disk, then it got there from floppy, and
+should be able to find its way back on to a floppy. Simply place a formatted
+floppy in drive A: (some boot viruses won't infect B:) and access the floppy
+a few times. Then scan the floppy to be sure the floppy is now infected.
+</P>
+
+<P><A NAME="BootVirusesTestCleaningonYourBackupCopy"></A><B><FONT SIZE=+1>Boot
+Viruses: Test Cleaning on Your Backup Copy</FONT></B></P>
+
+<P>Can your product clean it at all? Take the diskette to a clean machine.
+Scan. If a virus is found, permit it to clean. Now scan again. Is it still
+infected? </P>
+
+<P>If it is no longer infected, is it still usable? Is the disk accessible
+(or do you get General Failure Error Reading...)? Is the directory structure
+ok (use DIR to learn)? Are files damaged? (use COPY to learn). </P>
+
+<P>If the diskette structure is damaged, was this caused by the virus or
+your product? If the product, get a new product and repeat this test cleaning
+before proceeding. </P>
+
+<P><A NAME="BootVirusesTestCleaningofHardDisk"></A><B><FONT SIZE=+1>Boot
+Viruses: Test Cleaning of Hard Disk</FONT></B></P>
+
+<P>Even though your cleaning of a floppy went fine, it doesn't mean that
+cleaning of a hard disk will go as smoothly. Floppies are not likely to
+be installed with doublespace, dualboot, and access control products entangled.
+Hard disks can be hard. </P>
+
+<P>If you have several machines that are infected, go to the one you care
+least about, or that has been most recently been backed up. Or do a file-by-file
+backup to tape or Bernoulli or server if possible. (Boot viruses will not
+infect tape or server, might infect Bernoulli drives, will infect backups
+to floppy). </P>
+
+<P>Boot from a clean write-protected floppy and run the remover against
+the hard disk. </P>
+
+<P>Test your work: Does it still boot? If booted clean, does your scanner
+say it is virus-free? </P>
+
+<P><A NAME="RemovingANonStealthBootVirus"></A><B><FONT SIZE=+2>Removing
+A Non-Stealth Boot Virus</FONT></B></P>
+
+<UL>
+<P><B><FONT SIZE=+1>Overview </FONT></B></P>
+
+<P><B><FONT SIZE=+1>Make Sure You Have A Backup Copy Of The Virus!</FONT></B></P>
+
+<P><B><FONT SIZE=+1>A Look At Cleaning By Standard Anti-Virus Programs</FONT></B></P>
+
+<P><B><FONT SIZE=+1>Some Troublesome Non-Stealth Boot Viruses</FONT></B></P>
+
+<P><B><FONT SIZE=+1>Bupt, Da'Boys</FONT></B></P>
+
+<P><B><FONT SIZE=+1>What To Do If The Original Sector Is Gone</FONT></B></P>
+</UL>
+
+<P><A NAME="RemovingAStealthBootVirus"></A><B>Removing A Stealth Boot Virus</B></P>
+
+<P><A NAME="StealthBootViruses"></A><B>Stealth Boot Viruses</B></P>
+
+<P>A stealth boot virus is like any other boot virus, except for one interesting
+characteristic: when you (or some software) asks the computer to examine
+a sector in which the virus is located, the virus &quot;redirects&quot;
+the software to instead view the original sector. Your anti-virus software
+believes it is examining the master boot sector, but it is actually examining
+the displaced master boot record. It doesn't find any problem, and moves
+on in its search for the virus. </P>
+
+<P>A stealth boot virus can be easily seen by anti-virus software if the
+virus is not active in memory (if you have booted clean), or if you can
+disable the copy of the virus that is in memory. </P>
+
+<P><A NAME="CleaningMethods"></A><B><FONT SIZE=+1>Cleaning Methods</FONT></B></P>
+
+<P>I will describe here many ways to clean a boot virus. I recommend that
+you only use these methods if you are sure you have a boot virus (see above.)
+</P>
+
+<P><B><FONT SIZE=+1>If C: is an &quot;Invalid Drive Specification&quot;
+when booting from A:</FONT></B></P>
+
+<P>Assuming that you do not have an access control product installed (which
+doesn't permit booting from A:), and assuming that you can boot from your
+hard disk just fine, you probably have a boot virus that has encrypted
+your master boot record. </P>
+
+<P><B><FONT SIZE=+1>If C: is Available after Booting Clean</FONT></B></P>
+
+<P>You can assume that the virus is not Monkey, Frankenstein, or some other
+virus that encrypts the master boot record. It still may be a stealth boot
+virus. </P>
+
+<P><A NAME="RecoveringFromDamageDoneByCleaningBootViruses"></A><B><FONT SIZE=+2>Recovering
+From Damage Done By Cleaning Boot Viruses</FONT></B></P>
+
+<P>If, either before or after removing a virus, you get &quot;General failure
+error reading drive...&quot; when trying to read a drive, the virus or
+anti-virus product has probably damaged the boot record of the drive. You
+can paste in a clean one with a disk editor such as Norton Utilities. Here's
+how: </P>
+
+<OL>
+<LI>From an identical drive, copy an uninfected boot sector to a file.
+Example: Your 1.44 Mb floppy disk produces the error. Take a formatted
+1.44 Mb floppy, and use Norton to write side 0, cylinder 0, sector 1 of
+this floppy to a file on the floppy or hard disk. This file will be the
+size of a sector, 512 bytes. </LI>
+
+<LI>If you are repairing a floppy, copy this file to the hard disk of the
+machine where the repair will be done, if necessary. If you are repairing
+a hard disk boot record, get the file onto a floppy that the machine can
+read. </LI>
+
+<LI>Determine the location of this file (head, cylinder, sector) using
+your sector editor. Write this information down. </LI>
+
+<LI>Now run your sector editor (with NU, you would type NU /M for maintenance
+mode) and copy the good sector to the location of the damaged boot sector.
+On a floppy, copy to side 0, cylinder 0, sector 1. On a hard disk, the
+boot record is pointed to by the partition table, and can vary in location,
+but is normally side 1, cylinder 0, sector 1. </LI>
+
+<LI>You are probably finished. Test your work by doing a directory of the
+previously damaged disk/drive. If your repair has worked, you will no longer
+see &quot;General failure error reading drive...&quot; </LI>
+</OL>
+
+<P>Don't bother with SYS. In DOS 5+ (and probably earlier versions), SYS
+only writes the hidden system files and COMMAND.COM. Your boot record will
+still be infected! </P>
+
+<DT>Don't run FDISK if you have a &quot;General failure error reading drive
+C:&quot; This error does not occur when the Master Boot Record is damaged,
+but when the boot record is damaged. You will need FDISK if you get &quot;Invalid
+drive specification.&quot; In that case, you will be running FDISK /MBR
+if you have DOS 5.+ </DT>
+
+<DT>
+<HR WIDTH="100%"></DT>
+
+</BODY>
+</HTML>

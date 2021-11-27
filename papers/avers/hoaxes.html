@@ -1,0 +1,769 @@
+<html>
+
+<!-- Mirrored from vx.netlux.org/texts/html/multi-paper.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:16 GMT -->
+<head>
+<TITLE>MULTIPLATFORM ATTACK</TITLE>
+</head>
+
+<body text=#000000 bgcolor=#ffffff>
+      <P><B><I><FONT COLOR="#000000" SIZE="+1" FACE="Arial,Helvetica">MULTIPLATFORM 
+        ATTACK - IN THE LAND OF HOAXES</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Jakub Kaminski</FONT>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">INTRODUCTION</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Before macro viruses became 
+        widely spread, viruses written in one system (one platform) had a limited 
+        area for their activity.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">PC viruses were happily 
+        infecting DOS based IBM compatibles, MAC viruses lived and replicated 
+        on Macintosh family machines; and somewhere far away worms were traveling 
+        through the Unix systems.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Some time later Windows 
+        and OS/2 infectors surfaced, but they were still limited to their own 
+        'paddocks'.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">It wasn't until the MSWord 
+        was able to access documents created on different platforms that viruses 
+        successfully overcame the limitations of differing systems. PCs and Macs 
+        working in one network (or exchanging documents) could now be infected 
+        with one and the same virus.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Even big networks with thousands 
+        of machines look tiny in comparison to the biggest 'organism' ever - the 
+        Internet. With millions of users this 'monster' links all varieties of 
+        different systems and platforms.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">It's hard to imagine the 
+        software creature endangering the integrity of all those systems but is 
+        there anything that can 'bother' all Internet users, no matter what computer 
+        and system they use?</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">At present, the answer is 
+        surprisingly obvious - YES!!!</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The vast majority of us 
+        (or maybe all?), at least once (probably more), have seen the warning 
+        against a 'completely new' and 'totally destructive' virus. The contents 
+        of such a message was almost hard to believe but behind the text stood 
+        the list of recipients, people who read the warning before and forwarded 
+        it to others, certainly taking the information seriously.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Starting with the GoodTimes 
+        through the Irina and PenpallGreetings to AOL4FREE, the hoaxes have become 
+        the integral part of the Internet reality.</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">1. VIRUSES OF MINDS</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Passing a virus can be a 
+        result of an intentional, deliberate distribution of malicious code or, 
+        as it happens more often, can be unintentional and accidental passing 
+        the viral code along with disks, documents or programs that are believed 
+        to be clean and harmless. In the case of hoaxes, the operation of resending 
+        a message is always done consciously although almost always in good faith.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">We know well the condition 
+        necessary to qualify code as viral; for a virus to be a virus, it must 
+        replicate, i.e. it must pass its code further on and infect other executable 
+        objects. Can we look at hoaxes as some specific new type of virus? Rather 
+        not, but let's stretch our imagination for a moment; let's imagine a program 
+        that, when executed, shows a detailed instruction of how to attach its 
+        code to another clean program, how to modify the selected target in order 
+        to control its execution. Would it be enough to think about such a creature 
+        as a virus? Probably not yet. What about if the displayed message is convincing 
+        enough to make every reader follow the instructions and attach the malicious 
+        code to at least one clean program. It would mean, that every time our 
+        example code is executed, someone would follow the orders, as a result 
+        every time the program was run, it would be replicated. Would it be enough 
+        to call such code a virus?</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Maybe this is enough reason 
+        to call it a virus; and how would you make someone follow the viruses’ 
+        instructions? There is a way! Trick users into thinking that they are 
+        doing something good and useful.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">When the discussion about 
+        the reality of the threat described in the Good Times hoax started, one 
+        of the participants in the alt.folklore.urban newsgroup - Clay Shirky 
+        stated: &quot;It's for real. It's an opportunistic self-replicating e-mail 
+        virus which tricks its host into replicating it, sometimes adding as many 
+        as 200,000 copies at a go. It works by finding hosts with defective parsing 
+        apparatus which prevents them from understanding that a piece of e-mail 
+        which says there is an e-mail virus and then asking them to re-mail the 
+        message to all their friends is the virus itself.&quot;</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">It seems that different 
+        users decide to re-send the hoax for different reasons; some are really 
+        scared by the potential effect, while others find references to widely 
+        known authorities a good reason to trust a whole message. Generally speaking, 
+        a hoax is passed on when a user believes that a danger is real and a warning 
+        itself helpful and worth forwarding. This has a direct impact on how we 
+        can limit the spread of hoaxes; it seems like the main problem here is 
+        how to change popular believes.</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">2. HOAXES AND THE 
+        EVOLUTION</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">When one takes a closer 
+        look at the thousands of existing viruses (or at least at the naming lists), 
+        one can quickly realise that, most of them belong to broader families 
+        or groups sharing certain common features. These can be similar code, 
+        ways of installing in memory, methods of finding targets for an infection, 
+        stealth techniques, encryption scheme or polymorphic engines applied. 
+        Looking inside one specific group we can discover the history of the code 
+        modification, e.g. in case of some file infectors, we can trace their 
+        development starting from simple direct .com infectors, through memory 
+        resident and encrypted infectors, up to stealth and polymorphic variations. 
+        The chronology and the genealogical trees of some families are not always 
+        clear and retraceable but modifications and common roots are usually easy 
+        to spot.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Fingering through the slowly 
+        growing list of the Internet hoaxes, one cannot miss an obvious analogy; 
+        introduced changes, cuts and new additions show us the way hoaxes develop 
+        and mutate. The fact that some new hoaxes are based on the previous ones 
+        is unquestionable. Although hoax modifications are unlimited in their 
+        potential numbers (in the same way as unlimited is the variation in size 
+        and contents of any ASCII text file) its functionality always stays the 
+        same. As annoying and worrisome as all hoaxes are, they remind us of a 
+        virus where modifications are solely changes to its internal text strings 
+        or displayed messages.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The Appendix A presents 
+        some of the most characteristic forms of the Good Times hoax in, what 
+        seems to be, according to Les Jones' 'Good Times Virus Hoax FAQ', the 
+        chronological order. The changes are as obvious as the common parts but 
+        the time and the sequence in which specific variations were created can 
+        only be based on dates they appeared in somebody's mailbox and were kept 
+        for further references.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The similar problem occurs 
+        when we try to compare different hoaxes; it is difficult to say anything 
+        more than they are based on the same idea.</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">3. WHEN IS A HOAX 
+        NOT EXACTLY A HOAX</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">We tend to think about hoaxes 
+        as the annoying messages with completely meaningless contents having only 
+        one goal; to be re-sent and passed on. The fact that a message speculates 
+        about nothing real is what makes a hoax a hoax.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Claims that such and such 
+        program destroys your system when executed, when the program in question 
+        can be easily checked and confirmed as being harmless, are usually classified 
+        into the category of urban legends rather than hoaxes. Problems arise 
+        when a program that is mentioned in a message can't be located or at least 
+        not in a form matching a description as it was in the case of the Budsave 
+        (alias Bud Frogs) hoax.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Another reason why some 
+        of the urban legends end up listed as hoaxes, is the large number of users 
+        that receive the same warning. Some known examples from this group of 
+        hoaxes are Ghost, Eyes and Sheep.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">All of the above accuse 
+        different legitimate and clean programs for being malicious and destructive 
+        Trojans.</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">4. LIFE IS GETTING 
+        COMPLICATED</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The first wave of the Good 
+        Times hoax started spreading at the end of 1994 and it lost its impact 
+        relatively quickly. Maybe the hoax wasn't lucky enough at that time or 
+        maybe the number of Internet users wasn't big enough to support continuous 
+        reposting. In the same time it seemed like the average Internet user, 
+        in the Internet's early years, was more technically educated and could 
+        better understand the nature of the hoax. The second wave, triggered about 
+        a year later, was much more powerful; reached more users and lasted much 
+        longer (probably still does). It became significant enough to trigger 
+        the reaction of the real virus writers. About half a year after the first 
+        copies of the hoax were posted, the electronically published VLAD magazine 
+        included the source code of a new file virus named by its author: &quot;Good 
+        Times&quot; (see Appendix B). Suddenly, the technical support staff in 
+        anti-virus companies or other computer security oriented organisations 
+        could no longer say: &quot;Don't worry, the Good Times virus don't ist&quot;. 
+        We were forced into a position where simple 'yes' or 'no' wasn't a correct 
+        answer and any more explanations didn't always clear the confusion for 
+        the anxious user.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The industry has found a 
+        way around this problem, it's been agreed to relate to the virus as GT.Spoof. 
+        Since the virus GT.Spoof has never been successfully spreading in the 
+        wild, such a solution turned out to satisfy everyone. Another milestone 
+        in the history of the Good Times hoax was a creation of a spoof of the 
+        hoax. Known as the Good Times Spoof or the Badtimes hoax (see Appendix 
+        C), it has never become a serious problem and forwarding it to others 
+        was recognised as sharing a good joke rather than a warning. Interestingly, 
+        it has found its place on the CIAC web page dedicated to Internet hoaxes.</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">5. LIFE IS GETTING 
+        EVEN MORE COMPLICATED</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">After the Good Times issue 
+        complexity, another hoax created even more confusion. When the AOL4FREE 
+        hoax surfaced and started quickly spreading through the net, it became 
+        obvious that this time, the hoax is regarded as a part, a modification 
+        or an extension of an already existing program called AOL4FREE. Written 
+        for Macintosh, the program was a malicious hack, providing users with 
+        an illegal, free access to the America Online services. At the time the 
+        hoax appeared the author of the original hack was found and he subsequently 
+        pleaded guilty. The AOL charging methods were again secured.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The following events are 
+        somehow similar to the Good Times' story; another program AOL4FREE.COM 
+        appeared and once again, the answer to the question: 'is the AOL4FREE 
+        only a hoax?' It had to be verified. This time, it turned out that the 
+        AOL4FREE.COM was a compiled form of a batch program and it was not a virus 
+        but simple (and quite malignant) trojan deleting files from drive C: on 
+        the machine it was run on. So, when in the case of the Good Times we had 
+        problems with a virus triggered by the hoax, now we are facing the problem 
+        of a trojan, based on a hoax that was based on an illegal hack. One doesn't 
+        need to mention that this confused the Internet users even more and triggered 
+        a real avalanche of questions and even bigger variety of more or less 
+        correct answers.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">One of the important things 
+        to say here, before we put the complete blame on users resending the hoax 
+        and asking the endless questions regarding all three issues of the AOL4FREE 
+        'affair', is to say that users had every right to be confused. How can 
+        we expect everyone to instantly recognise the true and the false warnings, 
+        when even some of the anti-virus authorities became victims of simpler 
+        and easier to identify hoaxes?</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;6. CAN WE HELP?</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">In the era of fast life, 
+        fast food and easy 'precooked' recipes for everything, the users and especially 
+        customers demand, and I guess, are entitled to, simple answers and quick 
+        remedies to all their worries. Can we prepare a checklist that let us 
+        identify a new hoax and separate it from other legitimate virus warnings? 
+        It seems like a simple and 100% proof rule is not possible, but there 
+        are number of signs and features that are regularly present inside the 
+        hoax messages, and identifying those will help while deciding whether 
+        to take a warning seriously or to transfer it to the trash folder. The 
+        list of common indicators of a hoax could read as follows:</FONT>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The user is encouraged to 
+        pass a message on to other users;</FONT>
+      <UL TYPE="DISC">
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The potential virus is 
+          always described as extremely disastrous;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The explanation uses 
+          incorrect terms and describes impossible events;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The description is often 
+          impossible to understand because of its quasi scientific terminology;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The warning often quotes 
+          opinions originated by widely recognised authorities;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The message uses a lot 
+          of exclamation marks and upper case characters;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The alert always claims 
+          being sent in good faith ;</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica">The user will notice 
+          a number of spelling and grammar mistakes.</FONT>
+      </UL>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">Helping users deal with 
+        their confusion and finding answers to their questions means, first of 
+        all, providing sufficient information. Chasing users with the right information 
+        and sending a message explaining the hoax to a large number of users will 
+        be as annoying as sending the hoax itself. On the other hand, making the 
+        information easily available to those in need, and directing users to 
+        other reliable sources of information will be the best move and will at 
+        least limit the scale of the hoax problem.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Every time someone 
+        recognised as an authority in the anti-virus or computer security filed, 
+        issues a misleading statement or confirms the validity of a hoax, the 
+        efforts of others trying to stop the flood are to the certain degree wasted.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;As it was mentioned 
+        in the chapter 'Viruses Of Minds', helping users to recognise a new hoax 
+        can very often lead us into trying to change some common believes. It 
+        seems obvious that in real life, as a far as faith is concerned, introducing 
+        any changes can be hard and painful (see Appendix D).</FONT></P>
+      <P><B><I><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;7. ARE WE SENTENCED 
+        TO LIFE</FONT></I></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The discussion about 
+        the virus threat, how to end it and how long it will be a part of our 
+        everyday life hasn't given us a final and conclusive answer. When we thought 
+        that we were getting somewhere, the macro viruses appeared and are currently 
+        conquering the computing world. We had to change our definitions and redefined 
+        our approach to the virus problem. It seems like old 'DOS' viruses (still 
+        growing in numbers) and especially macro viruses, given a new vehicle 
+        in the Office 97 suite programs (VBA5), will stay with us for some time.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;We know that false 
+        alarms cost us as much as lack of detection, they are much more annoying 
+        but, so far, impossible to exterminate. The hoaxes, similar in their unjustified 
+        warnings to the false positive alarms, will more than likely become another 
+        part of the Internet (and Intranets) life. Certainly we will not be able 
+        to limit the spread of hoaxes by using a method described in the Good 
+        Times FAQ:</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&quot;What's the best 
+        way to control a thought virus? Create a counter virus like this one as 
+        an antidote. To make the counter virus contagious, include instruction 
+        such as, 'The Good Times e-mail virus is a hoax. If anyone repeats the 
+        hoax, please show them the FAQ.' &quot;</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;If we were to take 
+        this approach, it would be probably more effective to convince all of 
+        the recipients of a hoax to return the same message to a sender. It could 
+        be a very effective way of limiting the spreading of the hoax and, in 
+        the same time it would teach a valuable lesson.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;With time, one would 
+        like to expect that more users will be able to identify a new hoax without 
+        alarming the rest of the community. Forwarding it only to the authorities 
+        in order to add it to the lists maintained by the different organisations 
+        and thereby making it accessible to everyone online.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Because of the extremely 
+        fast development of new platforms, and applications the ability to achieve 
+        these results can be only speculative. And, therefore it is impossible 
+        to give 100% assurance regarding a hoax; as hoaxes seem to trigger people 
+        to write malicious code that makes the hoax at least in part valid or 
+        real.</FONT>
+      <P><B><I><FONT FACE="Arial,Helvetica">REFERENCES</FONT></I></B>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[1]</FONT><A HREF="http://ciac.llnl.gov/ciac/CIACHoaxes.html"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://ciac.llnl.gov/ciac/CIACHoaxes.html</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[2] 'Good Times Virus Hoax 
+        Frequently Asked Questions', Les Jones,</FONT><A HREF="http://users.aol.com/macfaq/goodtimes.html"><FONT SIZE="-1" FACE="Arial,Helvetica">http://users.aol.com./macfaq/goodtimes.html</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[3] 'It's the End of the 
+        World (as we know it)', Graham Clueley</FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[4] http://www.drsolomon.com/vircen/aol4free.html</FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[5] http://www.mcaffee.com.support/hoax.html</FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[7]</FONT><A HREF="http://www.fcc.gov/Bureaus/Miscellaneous/Public_Notices/pnmc5036.txt"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.fcc.gov/Bureaus/Miscellaneous/Public_Notices/pnmc5036.txt</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[8]</FONT><A HREF="http://www.stiller.com/hoaxes.htm"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.stiller.com/hoaxes.htm</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[9]</FONT><A HREF="http://www.symantec.com/avcenter"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.symantec.com/avcenter</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        /</FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[10]</FONT><A HREF="http://ciac.llnl.gov/ciac/CIACHoaxes.html"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://ciac.llnl.gov/ciac/bulletin/h-05.shtml</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[11]</FONT><A HREF="http://www.av.ibm.com/BreakingNews/HypeAlert/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.av.ibm.com/BreakingNews/HypeAlert/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[12]</FONT><A HREF="http://www.ncsa.com/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.ncsa.com/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[13]</FONT><A HREF="http://www.urbanlegends.com/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.urbanlegends.com/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[14]</FONT><A HREF="http://www.kumite.com/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.kumite.com/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[15]</FONT><A HREF="http://www.soci.niu.edu/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.soci.niu.edu/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[16]</FONT><A HREF="http://www.datafellows.com/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.datafellows.com/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><FONT SIZE="-1" FACE="Arial,Helvetica">&nbsp;[17]</FONT><A HREF="http://www.vet.com.au/"><FONT SIZE="-1" FACE="Arial,Helvetica"> 
+        http://www.vet.com.au/</FONT></A><FONT SIZE="-1" FACE="Arial,Helvetica"></FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX A</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The evolution of 
+        the Good Times hoax.</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;FYI, a file, going 
+        under the name &quot;Good Times&quot; is being sent to some Internet users 
+        who subscribe to on-line services (Compuserve,Prodigy and America On Line). 
+        If you should receive this file, donot download it! Delete it immediately. 
+        I understand that there is a virus included in that file, which if downloaded 
+        to your personal computer, will ruin all of your files.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Here is some important 
+        information. Beware of a file called Goodtimes.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Happy Chanukah everyone, 
+        and be careful out there.There is a virus on America Online being sent 
+        by E-Mail. If you get anything called &quot;Good Times&quot;, DON'T read 
+        it or download it. It is a virus that will erase your hard drive. Forward 
+        this to all your friends. It may help them a lot.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Somebody is sending 
+        e-mail under the title &quot;good times&quot;. If you get anything like 
+        this, DON'T DOWNLOAD THE FILE! ! ! ! ! ! ! ! ! ! It has a virus that rewrites 
+        your hard drive, and you lose anything on your hard drive. Please be careful 
+        and forward this mail to anyone you care about, I have!</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Thought you might 
+        like to know...</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Apparently , a new 
+        computer virus has been engineered by a user of America Online that is 
+        unparalleled in its destructive capability. Other, more well-known viruses 
+        such as Stoned, Airwolf, and Michaelangelo pale in comparison to the prospects 
+        of this newest creation by a warped mentality.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;What makes this virus 
+        so terrifying is the fact that no program needs to be exchanged for a 
+        new computer to be infected. It can be spread through the existing e-mail 
+        systems of the InterNet.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Luckily, there is 
+        one sure means of detecting what is now known as the &quot;Good Times&quot; 
+        virus. It always travels to new computers the same way - in a text e-mail 
+        message with the subject line reading simply &quot;Good Times&quot;. Avoiding 
+        infection is easy once the file has been received - not reading it. The 
+        act of loading the file into the mail server's ASCII buffer causes the 
+        &quot;Good Times&quot; mainline program to initialize and execute.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The program is highly 
+        intelligent - it will send copies of itself to everyone whose e-mail address 
+        is contained in a received-mail file or a sent-mail file, if it can find 
+        one. It will then proceed to trash the computer it is running on.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The bottom line here 
+        is - if you receive a file with the subject line &quot;Good TImes&quot;, 
+        delete it immediately! Do not read it! Rest assured that whoever's name 
+        was on the &quot;From:&quot; line was surely struck by the virus. Warn 
+        your friends and local system users of this newest threat to the InterNet! 
+        It could save them a lot of time and money.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The FCC released a 
+        warning last Wednesday concerning a matter of major importance to any 
+        regular user of the InterNet. Apparently, a new computer virus has been 
+        engineered by a user of America Online that is unparalleled in its destructive 
+        capability. Other, more well-known viruses such as Stoned, Airwolf, and 
+        Michaelangelo pale in comparison to the prospects of this newest creation 
+        by a warped mentality.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;What makes this virus 
+        so terrifying, said the FCC, is the fact that no program needs to be exchanged 
+        for a new computer to be infected. It can be spread through the existing 
+        e-mail systems of the InterNet. Once a computer is infected, one of several 
+        things can happen. If the computer contains a hard drive, that will most 
+        likely be destroyed. If the program is not stopped, the computer's processor 
+        will be placed in an nth-complexity infinite binary loop - which can severely 
+        damage the processor if left running that way too long. Unfortunately, 
+        most novice computer users will not realize what is happening until it 
+        is far too late.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Here is some important 
+        information. Beware of a file called Goodtimes.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Happy Chanukah everyone, 
+        and be careful out there. There is a virus on America Online being sent 
+        by E-Mail. If you get anything called &quot;Good Times&quot;, DON'T read 
+        it or download it. It is a virus that will erase your hard drive. Forward 
+        this to all your friends. It may help them a lot.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The FCC released a 
+        warning last Wednesday concerning a matter of major importance to any 
+        regular user of the InterNet. Apparently, a new computer virus has been 
+        engineered by a user of America Online that is unparalleled in its destructive 
+        capability. Other, more well-known viruses such as Stoned, Airwolf, and 
+        Michaelangelo pale in comparison to the prospects of this newest creation 
+        by a warped mentality.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;What makes this virus 
+        so terrifying, said the FCC, is the fact that no program needs to be exchanged 
+        for a new computer to be infected.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;V I R U S - W A R 
+        N I N G</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;There is a computer 
+        virus that is being sent across the Internet.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;If you receive an 
+        email message with the subject line &quot;Good Times,&quot; DO NOT read 
+        the message, DELETE it immediately. Please read the messages below. Some 
+        miscreant is sending email under the title &quot;Good Times&quot; nationwide, 
+        if you get anything like this, DON'T DOWN LOAD THE FILE! It has a virus 
+        that rewrites your hard drive, obliterating anything on it. Please be 
+        careful and forward this mail to anyone you care about.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;WARNING!!!!!!! INTERNET 
+        VIRUS</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The FCC released a 
+        warning last Wednesday concerning a matter of major importance to any 
+        regular user of the Internet.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Apparently a new computer 
+        virus has been engineered by a user of AMERICA ON LINE that is unparalleled 
+        in its destructive capability.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;What makes this virus 
+        so terrifying, said the FCC, is the fact that no program needs to be exchanged 
+        for a new computer to be infected. It can be spread through the existing 
+        email systems of the Internet. Once a Computer is infected, one of several 
+        things can happen. If the computer contains a hard drive, that will most 
+        likely be destroyed. If the program is not stopped, the computer's processor 
+        will be placed in an nth-complexity infinite binary loop--which can severely 
+        damage the processor if left running that way too long. Luckily, there 
+        is one sure means of detecting what is now known as the</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&quot;Good Times&quot; 
+        virus. It always travels to new computers the same way in a text email 
+        message with the subject line reading &quot;Good Times.&quot; Avoiding 
+        infection is easy once the file has been received simply by NOT READING 
+        IT!</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The act of loading 
+        the file into the mail server's ASCII buffer causes the &quot;Good Times&quot; 
+        mainline program to initialize and execute. The program is highly intelligent--it 
+        will send copies of itself to everyone whose email address is contained 
+        in a receive-mail file or a sent-mail file, if it can find one. It will 
+        then proceed to trash the computer it is running on.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The bottom line is: 
+        If you receive a file with the subject line &quot;Good Times&quot;, delete 
+        it immediately! Do not read it&quot; Rest assured that whoever's name 
+        was on the &quot;From&quot; line was surely struck by the virus.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Warn your friends 
+        and local system users of this newest threat to the Internet! It could 
+        save them a lot of time and money. Could you pass this along to your global 
+        mailing list as well?</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX B</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;'No Good Times 
+        Here!' -<I> Virus Bulletin, June 1995, page 3</I></FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&quot;The latest issue 
+        of VLAD magazine (VLAD#4) contains the source code to a virus named 'Good 
+        Times' by its author, Qark. VLAD (Virus Labs And Dist magazine) is an 
+        electronic virus underground newsletter.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The major anti-virus 
+        producers have named the virus GT-Spoof in an effort to avoid Qark's attempt 
+        to muddy the waters of the Good Times affair further. A line in the source 
+        file states:</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Courier New,Courier">&nbsp;Remember to email 
+        all your friends, warning them about Good Times!</FONT>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">The virus uses a polymorphic 
+        engine called 'RHINCE', which stands for 'Rickety and Hardly Insidious 
+        yet New Chaos Engine', and its derived from its author's nickname, 'Rhincewind'. 
+        This in turn is probably derived from 'Rincewind', who is a character 
+        in the fantasy novels of Terry Pratchett.</FONT>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;GT-Spoof only infects 
+        COM and EXE files, and VB stresses that it is not connected with the mythical 
+        Good Times virus. Its effect and techniques are in no way similar to those 
+        described in warnings about the Good Times virus.&quot;</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX C</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The Good Times 
+        Hoax Spoof and the Badtimes hoax.</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Goodtimes will re-write 
+        your hard drive. Not only that, but it will scramble any disks that are 
+        even close to your computer. It will recalibrate your refrigerator's coolness 
+        setting so all your ice cream goes melty. It will demagnetize the strips 
+        on all your credit cards, screw up the tracking on your television and 
+        use subspace field harmonics to scratch any CD's you try to play.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will give your 
+        ex-girlfriend your new phone number. It will mix Kool-aid into your fishtank. 
+        It will drink all your beer and leave its socks out on the coffee table 
+        when there's company coming over. It will put a dead kitten in the back 
+        pocket of your good suit pants and hide your car keys when you are late 
+        for work.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Goodtimes will make 
+        you fall in love with a penguin. It will give you nightmares about circus 
+        midgets. It will pour sugar in your gas tank and shave off both your eyebrows 
+        while dating your girlfriend behind your back and billing the dinner and 
+        hotel room to your Discover card.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will seduce your 
+        grandmother. It does not matter if she is dead, such is the power of Goodtimes, 
+        it reaches out beyond the grave to sully those things we hold most dear.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It moves your car 
+        randomly around parking lots so you can't find it. It will kick your dog. 
+        It will leave libidinous messages on your boss's voice mail in your voice! 
+        It is insidious and subtle. It is dangerous and terrifying to behold. 
+        It is also a rather interesting shade of mauve.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Goodtimes will give 
+        you Dutch Elm disease. It will leave the toilet seat up. It will make 
+        a batch of Methanphedime in your bathtub and then leave bacon cooking 
+        on the stove while it goes out to chase gradeschoolers with your new snowblower.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Listen to me. Goodtimes 
+        does not exist. It cannot do anything to you. But I can. I am sending 
+        this message to everyone in the world. Tell your friends, tell your family. 
+        If anyone else sends me another E-mail about this fake</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Goodtimes Virus, I 
+        will turn hating them into a religion. I will do things to them that would 
+        make a horsehead in your bed look like Easter Sunday brunch.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Thought I should pass 
+        this warning on to you......</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Badtimes Virus Alert</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;If you receive an 
+        e-mail with a subject of &quot;Badtimes,&quot; delete it immediately WITHOUT 
+        reading it.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;This is the most dangerous 
+        eMail virus yet. It will re-write your hard drive. Not only that, but 
+        it will scramble any disks that are even close to your computer.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will recalibrate 
+        your refrigerator's coolness setting so all your ice cream goes melty.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will demagnetize 
+        the strips on all your credit cards, screw up the tracking on your VCR 
+        and use subspace field harmonics to scratch any CD's you try to play.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will give your 
+        ex-boyfriend/girlfriend your new phone number. It will mix Kool-aid into 
+        your fishtank. It will drink all your beer and leave its socks out on 
+        the coffee table when there's company coming over. It will put a dead 
+        kitten in the back pocket of your good suit pants and hide your car keys 
+        when you are late for work.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Badtimes will make 
+        you fall in love with a penguin. It will give you nightmares about circus 
+        midgets. It will pour sugar in your gas tank and shave off both your eyebrows 
+        while dating your current boyfriend /girlfriend behind your back and billing 
+        the dinner and hotel room to your Visa card.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It will seduce your 
+        grandmother. It does not matter if she is dead, such is the power of Badtimes, 
+        it reaches out beyond the grave to sully those things we hold most dear.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;It moves your car 
+        randomly around parking lots so you can't find it. It will kick your dog. 
+        It will leave libidinous messages on your boss's voicemail in your voice! 
+        It is insidious and subtle. It is dangerous and terrifying to behold. 
+        It is also a rather interesting shade of mauve.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Badtimes will give 
+        you Dutch Elm disease. It will leave the toilet seat up. It will make 
+        a batch of Methamphetamine in your bathtub and then leave bacon cooking 
+        on the stove while it goes out to chase grade-schoolers with your new 
+        snowblower.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;These are just a few 
+        signs... Just be very careful!</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;P.S. If you have already 
+        read this then it is too late!!!!!!!!!</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX D</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Real life example 
+        of email exchange regarding the Penpal Greetings hoax.</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;This information was 
+        received this morning from IBM, please share it with anyone that might 
+        access the Internet:</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&gt;If anyone receives 
+        e-mail entitled; PENPAL GREETINGS! please delete &gt;it WITHOUT reading 
+        it. ON NO ACCOUNT BE TEMPTED TO OPEN AND READ &gt;THE MESSAGE.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&gt;This is a warning 
+        for all Internet users. There is a dangerous &gt;virus propagating across 
+        the Internet through an e-mail message &gt;entitled &quot;PENPAL GREETINGS!&quot;. 
+        DO NOT OPEN ANY MESSAGE ENTITLED &gt;&quot;PENPAL GREETINGS!&quot;. The 
+        message appears to be a friendly letter &gt;asking you if you are interested 
+        in a penpal, but by the time you &gt;open it to read it, it is too late. 
+        The &quot;trojan horse&quot; virus will &gt;have already infected the 
+        boot sector of your</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&gt;hard drive, destroying 
+        all of the data present. It is a self-&gt;propagating virus, and once 
+        the message is read, it will &gt;AUTOMATICALLY forward itself to anyone 
+        whose e-mail address is &gt;present in YOUR mailbox.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&gt;This virus... 
+        will destroy your hard drive, and holds the potential &gt;to destroy the 
+        hard drive of anyone whose &gt;mail is in your in box, &gt;and whose mail 
+        is in their in box and so on. If this virus keeps &gt;getting passed, 
+        it has the potential to do a great deal of damage to &gt;computer networks 
+        worldwide.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;&gt;Please, delete 
+        the message entitled &quot;PENPAL GREETINGS!&quot; as soon as &gt;you 
+        see it. And pass this message along to all of your friends, &gt;relatives 
+        and the other readers of the newsgroups and mailing lists &gt;which you 
+        are on.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">'PENPAL GREETINGS' is 
+        a hoax. Please, stop posting that message to other users.</FONT></I>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;HI, During the night 
+        of 7 to 11th of April 1997, 4600+ computer systems in US, UK, ZA, AU where 
+        infected with a virus, which destroyed the boot partition of their hard 
+        drives.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;I don't know about 
+        you.. I would prefer not to open such a surprise. This report was passed 
+        on to me by IBM.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Just being helpful,</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;I have been in 
+        the anti-virus industry for over 6 years, I know how destructive they 
+        can be, but believe me the cost of people spreading hoaxes is just as 
+        significant as the cost of a virus infection.</FONT></I></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;I don't care if 
+        you got the information from IBM it is still a hoax and now that you know 
+        perhaps your should tell all the people you have been e-mailing that you 
+        were mistaken.</FONT></I></P>
+      <P><I><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;By the way, the 
+        night 7th-11th of April must have been a pretty long one no wonder so 
+        many boot sectors were corrupted:)</FONT></I></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;***</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Thank you I wish you 
+        all the best.. :-)</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX E</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Official response 
+        from the US Federal Communication Commission (FCC)</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;May 3, 1995</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Alleged &quot;Good 
+        Times&quot; Virus</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;A rumor has been circulating 
+        on the Internet and other on-line services, that the &quot;FCC&quot; released 
+        a public notice warning about an alleged &quot;Good Times&quot; computer 
+        virus. The U.S. Federal Communications Commission (U.S. FCC) did not issue 
+        such a notice.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;This rumor has recycled 
+        several times in the last few months.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The U.S. FCC does 
+        not disseminate information regarding the existence, impact, or affect 
+        of computer virus. Information regarding the alleged &quot;Good Times&quot; 
+        virus is available in:</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;DOE, CIAC Notes 95-09 
+        dated April 24, 1995 by contacting the Department of Energy (DOE), Computer 
+        Incident Advisory Capability (CIAC) at E-mail: ciac@llnl.gov or call (501)422-8193, 
+        or</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Department of Defense 
+        (DoD) users can contact Automated Systems Security Incident Support Team 
+        (ASSIST) at E-mail: assist@assist.mil or call (800) 357-4231 or local 
+        (703) 607-4700, or DSN 327-4700, reference 95-15, E-Mail Virus is a Hoax, 
+        dated April 24, 1995. One of the missions of ASSIST is to offer DoD user 
+        support in matters relating to security and vulnerability issues.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX F</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;American Cancer 
+        Society: Fraudulent Jessica Mydek Chain Letter</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Fraudulent Chain Letter</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;This statement may 
+        be copied or reprinted by online users</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The American Cancer 
+        Society is greatly disturbed by reports of a fraudulent chain letter circulating 
+        on the internet which lists the American Cancer Society as a &quot;corporate 
+        sponsor&quot; but which has in no way been endorsed by the American Cancer 
+        Society. This letter appears to have started on America Online but has 
+        now spread well beyond the online service. There are several variations 
+        of this letter in circulation. The text of the original message reads 
+        as follows:</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;LITTLE JESSICA MYDEK 
+        IS SEVEN YEARS OLD AND IS SUFFERING FROM AN ACUTE AND VERY RARE CASE OF 
+        CEREBRAL CARCINOMA. THIS CONDITION CAUSES SEVERE MALIGNANT BRAIN TUMORS 
+        AND IS A TERMINAL ILLNESS. THE DOCTORS HAVE GIVEN HER SIX MONTHS TO LIVE.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;AS PART OF HER DYING 
+        WISH, SHE WANTED TO START A CHAIN LETTER TO INFORM PEOPLE OF THIS CONDITION 
+        AND TO SEND PEOPLE THE MESSAGE TO LIVE LIFE TO THE FULLEST AND ENJOY EVERY 
+        MOMENT, A CHANCE THAT SHE WILL NEVER HAVE. FURTHERMORE, THE AMERICAN CANCER 
+        SOCIETY AND SEVERAL CORPORATE SPONSORS HAVE AGREED TO DONATE THREE CENTS 
+        TOWARD CONTINUING CANCER RESEARCH FOR EVERY NEW PERSON THAT GETS FORWARDED 
+        THIS MESSAGE. PLEASE GIVE JESSICA AND ALL CANCER VICTIMS A CHANCE.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;IF THERE ARE ANY QUESTIONS, 
+        SEND THEM TO THE AMERICAN CANCER SOCIETY AT ACS@AOL.COM.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;As far as the American 
+        Cancer Society can determine, the story of Jessica Mydek is completely 
+        unsubstantiated. No fundraising efforts are being made by the American 
+        Cancer Society in her name or by the use of chain letters. Furthermore, 
+        the email address ACS@AOL.COM is inactive. Any messages to the American 
+        Cancer Society should be instead sent through the American Cancer Society 
+        website at</FONT><A HREF="http://www.cancer.org/"><FONT COLOR="#000000" FACE="Arial,Helvetica">http://www.cancer.org</FONT></A><FONT COLOR="#000000" FACE="Arial,Helvetica"> 
+        .</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;This particular chain 
+        letter with its heartbreaking story appears to have struck an emotional 
+        chord with online users. Although we are very concerned that the American 
+        Cancer Society's name has been used to manipulate the online public, we 
+        applaud the good intentions of all who participated in this letter. We 
+        are pleased to note that there are so many caring individuals out there 
+        and hope that they will find another way to support cancer research. Jessica 
+        Mydek's story, whether true or false, is representative of that of many 
+        cancer patients who benefit daily from the efforts of legitimate cancer 
+        organizations nationwide.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX G</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Real, legitimate 
+        e-mail warning (<I> this is not a hoax</I> ).</FONT></B></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Subject: Burglary-Alert: 
+        beware software surveys/offers</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;We have been alerted 
+        to the following scam - please read and pass on to anyone that could be 
+        affected.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;There is a big scam 
+        going on where a person calls and says that they are doing a computer 
+        survey from a company. The company name that they give is usually a big 
+        well-known software company, and they usually say that they are doing 
+        the survey because they want to give out free software.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;They want to know 
+        what would be a good time for someone to come from their company and install 
+        the software on your PC. They also ask questions about income, etc. During 
+        their questioning, they (unknowingly to you) find out what time you're 
+        usually home, what kind of computer equipment you have and all sorts of 
+        other valuable information.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;At a company where 
+        a friend of mine works, a co-worker of his received one of these calls, 
+        and he was robbed the very next day (of course, when he was not home). 
+        I received a similar call yesterday afternoon.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;Fortunately, I knew 
+        about this ahead of time, and didn't provide them with any information. 
+        I want to make you all aware of the situation and the potential danger 
+        involved in giving out any information like this over the phone.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;The people sound very 
+        genuine, and very few people are going to question receiving free software. 
+        I would advise you, however, to tell the people that if they have your 
+        phone number, they should have your address, and they can mail you any 
+        free software they might be offering.</FONT></P>
+      <P><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;If you have a home 
+        computer set-up, you should be familiar with installing your own software. 
+        You may even want to tell them you don't have a home computer. Whatever 
+        you're comfortable with.</FONT></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;APPENDIX H</FONT></B></P>
+      <P><B><FONT COLOR="#000000" FACE="Arial,Helvetica">&nbsp;List of most common 
+        hoaxes</FONT></B> 
+      <UL TYPE="DISC">
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> 2400 Baud Modem</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> American Cancer Society 
+          Chain Letter</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Aol4free</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Badtimes</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Budsave (Bud Frogs)</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Death69</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Deeyenda Maddick</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Defrag</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Eyes</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> FCC Modem Tax</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Free Money</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Get Well Card</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Ghost (Halloween)</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Goblyn</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> GoodLuck Greetings</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Good Times</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Good Times Spoof</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Irina</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Join the Club</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Join the Crew</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Meeting Notice</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> MMF (Make Money Fast)</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Moment Of Silence</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Naughty Robot (Spider)</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Neiman Marcus Cookies 
+          Recipe</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Penpal Greetings</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Red Alert</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Riot</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Sheep</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> Valentine's Greetings</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> WWW</FONT></LI>
+        <LI><FONT COLOR="#000000" FACE="Arial,Helvetica"> YUKON3U</FONT>
+      </UL>
+      <P>&nbsp;
+</body>
+<!-- #EndTemplate -->
+<!-- Mirrored from vx.netlux.org/texts/html/multi-paper.html by HTTrack Website Copier/3.x [XR&CO'2003], Wed, 02 Jul 2003 18:11:16 GMT -->
+</html>

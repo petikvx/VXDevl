@@ -1,0 +1,411 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"><title>More on Shatter</title></head>
+
+<body>
+<center>
+<font size="+2">Shatter attacks - more techniques, more detail, more juicy goodness.</font><br>
+Released on 23 August, 2002<br>
+<br>
+By Foon - <a href="mailto:ivegotta@tombom.co.uk">ivegotta@tombom.co.uk</a><br>
+<br>
+<a href="http://security.tombom.co.uk/shatter.html">Shatter - the original White Paper</a><br>
+</center>
+<br>
+<br>
+<font size="+1"><u>Update: 29 May 2003</u></font><br>
+<br>
+Well, it's now official.  I'm presenting a followup paper to Shatter at <a href="http://www.blackhat.com/html/bh-usa-03/bh-usa-03-speakers.html">Black Hat</a>
+in Vegas this August. I'll be releasing Smashing, as well as a couple
+other juicy bits of code. Lots more info on the GDI systems, ways to
+find and exploit these vulns, and fun things you can do with them (that
+aren't necessarily privilege escalation, although that's covered fairly
+well). I wonder how many of the people who've mailed me about this will
+be prepared to buy me a beer..? :)
+<br>
+<br>
+<font size="+1"><u>Update: 08 February 2003</u></font><br>
+<br>
+Yeah, OK, so it's been a while since I posted an update, and Microsoft have released a <a href="http://www.microsoft.com/technet/treeview/?url=/technet/security/bulletin/MS02-071.asp">patch</a>
+that supposedly fixes the issue. Well, it doesn't even come close.
+WM_TIMER is fairly well blocked, I'll agree, but there's a lot more
+that you can do with Shatter-style attacks than just screwing with
+WM_TIMER. I'm going to be releasing another paper on the subject quite
+soon, so keep your eyes out both here and on Bugtraq.<br>
+<br>
+The main reason a response has been delayed is because I'm now working for <a href="http://www.ngssoftware.com/">NGSSoftware</a>;
+I expect to be releasing the Shatter follow-up paper from there. Hell,
+if I'm in the right mood you may even see some source code...:) The new
+paper is going to be picking apart the Microsoft patch to explain what
+it does and doesn't fix, as well as some examples of what you can still
+do just by playing silly buggers with the Win32 API. There's also a
+possibility that I'll release Smashing, my own command-line tool for
+exploiting Shatter-style flaws, since the patch is now available. Need
+to think on that one though, so don't get your hopes up. Anyway, watch
+this space...
+<br>
+<br>
+<font size="+1"><u>Update: 05 September 2002</u></font><br>
+<br>
+Microsoft have posted a <a href="http://www.microsoft.com/technet/security/news/htshat.asp">page</a> with their response to my white paper.  Go read it, then come back here.<br>
+<br>
+A few things I'd like to point out about this response...<br>1) If
+"The first Microsoft Knowledge Base article that documents this issue
+dates back to 1994", how come Microsoft have found even "a small number
+of cases in which Microsoft-developed interactive services do run with
+inappropriately high privileges"? Eight years isn't enough time to
+write secure code? Please...<br>
+2)  <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dllproc/base/interactive_services.asp">There</a> <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q115825">are</a> <a href="http://support.microsoft.com/default.aspx?scid=KB;EN-US;Q327618&amp;">four</a> <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncode/html/secure08192002.asp">links</a>
+in their response. The article dating back to 1994 actually explains,
+in detail, the various methods you can use to allow a LocalSystem
+service to interact with the desktop. Huh? Wha? I though that's what we
+were trying to avoid??!!?! The other three articles were published
+AFTER Shatter. Seems like someone decided to close the stable door
+after the horse had bolted.<br>
+3) "The situation only exists if there is a highly privileged service
+running in the interactive desktop. Microsoft has long recommended that
+interactive services should have only minimal privileges (or,
+alternatively, steps should be taken to prevent their privileges from
+being abused).". If so, why do I have exploit code for at least 4
+different processes on a default installation of Windows 2000? If MS
+can't get it right, how can anyone else?<br>
+4) "we are investigating additional code changes that we believe will
+make it more difficult - although not impossible - to exploit a highly
+privileged service running in the interactive desktop when it exists.".
+If it's not an architectural flaw, why are they trying to fix the
+architecture to make it less of a problem?<br>
+<br>
+OK, criticism over. I disagree with a lot of what they've said in that
+response, but that's the Microsoft PR spin-machine in action for you.
+Ultimately, what matters is that they "are developing patches to
+correct these services", and that they're investigating things to make
+the attacks more difficult. Finally - they've acknowledged the problem.
+I'm currently taking bets on how long it'll be before the patches are
+out - email me with the date you think they'll be out, and I'll think
+up a prize for the closest guess :)<br>
+<br>
+<br>
+<font size="+1"><u>Introduction</u></font><br>
+<br>
+Well, It's now two weeks since the release of Shatter, and my inbox has
+finally started calming down. I've tried to reply to most of the
+messages I've received, but I'm getting a lot of the same things said
+over and over and over again, and there's a fair amount of FUD going
+round about this thing. So, I've written this as a followup, to try and
+answer some of the more common questions I'm being asked, and to
+present some new Shatter techniques that I've been working on (often at
+the suggestion of others). Corrections are immediately below, followed
+by some new techniques, and then finally some explanations to common
+questions I'm being asked.<br>
+<br>
+I have working code to substantiate most of what I say in here, but
+don't expect me to release ANY of it. Don't even ask. I only wrote the
+code because a) I wanted to prove to my own satisfaction whether or not
+these things are possible, and b) because I'm a professional security
+consultant. Anything that escalates privileges is useful to me, so I'm
+using these tools for my job. When I say that something works you'll
+just have to either take my word for it or write some code yourself to
+verify it. None of my code after Shatter is ever going to be released.
+Please don't waste my time and yours by asking for it.<br>
+<br>
+The information contained in this followup is just the tip of the
+iceberg, believe me. Every time I work on Smashing (my own exploit
+code) I think of new techniques to try, new code injection mechanisms,
+and new services to exploit. These things are everywhere. There's a lot
+of ways to exploit them too - don't believe for a second that simply
+filtering WM_TIMER is going to fix this. It's not. One chap wrote an
+application to try and prove that message filtering was the solution to
+Shatter attacks. He successfully filtered WM_TIMER messages for the
+edit control in his test app, but forgot to filter the messages for the
+parent window. It took me less time to shatter his application than it
+did to write out an email explaining to him how to repeat my results.
+Smashing is now a generic exploit mechanism for these attacks, and
+adding new examples is trivial. I'm willing to bet that there are
+dozens of people around the world writing similar applications. My
+point has been proved - these vulnerabilities are everywhere, and
+they're going to keep on biting anyone trying to keep a system secure.
+Internet cafes beware.<br>
+<br>
+<br>
+<font size="+1"><u>Clarifications.</u></font><br>
+<br>
+A few things I got a little bit wrong...:)<br>
+<br>
+1.  WM_TIMER <b>DOES</b> get placed in the message queue. Yes, the
+application has the choice of whether or not to process the message.
+The problem is that unless a new handler for WM_TIMER has been
+installed, it's caught by DefWindowProc(), which conveniently jumps to
+the callback address, if specified. Yes, you can filter it out. No,
+that won't solve the problem (read on for why).<br>
+<br>
+2. X11. The information I was given on X11 was a tad incomplete.
+Controls in X11 may or may not be windows in their own right, but
+either way they don't support the same kind of "do this" messages that
+Windows does (if I understand what people have been saying). Also, they
+have a flag to say whether they're real or "synthetic" messages, ie
+generated by real input or sent by another program. Win32 lacks this.
+X11 has its own set of issues, but it doesn't suffer from these same
+attacks in the same way as Win32. If you want to know more about how
+X11 works and what security measures are built in to make things
+better, I suggest you read <a href="http://ftp.x.org/pub/R6.4/xc/doc/hardcopy/Xext/security.PS.gz">this</a>.  Please don't ask me about X11 - I really don't know it in enough detail to answer most of the questions you have...<br>
+<br>
+3.  It ain't new.  No, these are not revolutionary new ideas.  <a href="mailto:simos74@gmx.net">Simos Xenitellis</a> released <a href="http://www.isg.rhul.ac.uk/%7Esimos/event_demo/">this</a> paper, and the general concept has been discussed on SecurityFocus <a href="http://online.securityfocus.com/archive/82/280912">here</a>, <a href="http://online.securityfocus.com/archive/82/281301">here</a>, and <a href="http://online.securityfocus.com/archive/82/281991">here</a>.  Dildog from @stake released <a href="http://www.atstake.com/research/advisories/2000/a090700-1.txt">this advisory</a>
+detailing a buffer overflow in the Still Image service, exploitable
+through a WM_USER message. As far as I know, Shatter was the first
+working general exploit that relies solely on GDI messages with no
+other coding flaws in the target application; it's this proof that has
+garnered so much attention.<br>
+For every email I've received claiming that these are well-known and
+well-documented ideas, I've received 20 from people who had no idea
+about them. New they may not be, but hitherto unkown to the general
+community they most definitely ARE.<br>
+<br>
+4. It's unfixable. Well, kinda. The problem, fundamentally, is the
+Win32 API (People are gonna disagree with that one, I know, but trust
+me - I'll shoot down those arguments in a few paragraphs), much like
+the root cause of buffer overflows is the way that functions like
+strcat() and sprintf() work in the standard C library. Since the Win32
+API can't really be changed without breaking a LOT of stuff, people
+could (and will have to) be aware of these things and work around them.
+It's never going to go away though, much like buffer overflows are
+still commonplace after they've been VERY well known and VERY widely
+documented for years. The root problem cannot be fixed, but a lot of
+the symptoms can be if developers put in extra work. Personally, I
+believe that the blame should ultimately lie with Microsoft; they
+designed Windows so that it was easy to use, easy to code for, and (as
+a consequence) easy to break into. Disagree if you will, but you won't
+change my mind on that one.<br>
+<br>
+<br>
+<font size="+1"><u>New Techniques.</u></font><br>
+<br>
+I've been in two minds as to whether or not to release a lot of this
+information. But, I figured that a) most people regard local security
+on Windows as utterly shite anyway, b) a lot of this stuff was
+suggested by other people on the internet, so people are already
+thinking along similar lines, and c) I'm getting hacked off waiting for
+CERT and Microsoft to respond to my emails. The whole US-UK time
+difference means we exchange one email every 24 hours, at best. In the
+case of MS, that's 24 hours for them to stall for time by saying
+"Please give us more detail", and in the case of CERT that's 24 hours
+for them to say, well, nothing at all. So here it is - enjoy.<br>
+<br>
+<b>LocalSystem desktop windows on a default installation of Win2K</b><br>
+<br>
+Yes, it's true. Microsoft break their own rules on this score. The
+general consensus from the readers of Bugtraq / NTBugtraq / Slashdot /
+god knows where else, as well as from Microsoft, is that if you place a
+window on the desktop as LocalSystem, you're begging for trouble. Well,
+I guess Microsoft must be begging for trouble - I've found two that are
+normally there, and a third you can create.<br>
+<b>1 - NetDDE.</b> Regular DDE runs within explorer.exe as whoever is
+logged on at the time, however the network flavour has a window on the
+desktop which is running within winlogon.exe. What's that you say?
+Winlogon is a critical system process? Why yes! Critical system
+processes having windows on the desktop is a really clever thing to do!
+Wonderful!<br>
+<b>2 - "MM Notify Callback"</b> Quite frankly, I don't actually have
+the faintest clue WHAT this window does. Quite frankly, I don't care
+either. What I do care about, is that it's owned by winlogon.exe.
+What's that you say? Winlogon is a critical system process? Why yes!
+More loveliness!<br>
+<b>3 - Messenger service</b> (discovered by <a href="mailto:guninski@guninski.com">Georgi Guninski</a>).  On a default installation of Win2K pro, drop to a command prompt and type "<b>net send 127.0.0.1 hello</b>".
+A neat little window pops up that says who the message was from, at
+what time, yadda yadda yadda. Unfortunately, that window is owned by
+the Client-Server Runtime Sub-System (great acronym), AKA csrss.exe.
+Guess what? It's another critical system process, with another
+localsystem window on the desktop.<br>
+<br>
+<b>No localsystem desktop windows?  No problem!</b><br>
+<br>
+Well actually, you really don't need a window handle to a LocalSystem process.  As <a href="mailto:mduerig@eye.ch">Michael Durig</a>
+kindly pointed out, the Win32 API has a friendly little function called
+PostThreadMessage(). Enumerating processes is not a privileged
+operation, so you can get a PID for a localsystem process with no
+problems. The ToolHelp functions allow you to also enumerate the
+threads for that process (Under Win2k and XP, anyway), and even if
+you're stuck under NT4 the performance database does the same thing.
+So, you have a list of all threads running as LocalSystem on the
+machine. PostThreadMessage will send any message you like to any thread
+you like, assuming that thread has implemented a message queue. No, you
+don't have to call OpenProcess(). No, there are no privileges involved.<br>
+<br>
+Yes, I know what you're thinking, because I thought the same thing.
+"You're trying to tell me that a non-privileged user can tell
+winlogon.exe to jump to an arbitrary location in memory?". Yes folks, I
+am. You can. It works. Send enough crap WM_TIMER messages to any system
+process through PostThreadMessage, and eventually the structured
+exception handling (SEH) will fall over, the process will die, and the
+machine will bluescreen. Injecting code is a little more tricky, but
+I've certainly got it working (No, I will NOT give out my code so don't
+even ask) and I'm sure other people will too. Anyone still have any
+arguments that Shatter attacks are the fault of the people who put
+localsystem windows on the desktop? Anyone think of a way to not have
+any LocalSystem message queues on the system? Theoretically, it's
+potentially possible. I doubt it though. Looks like Microsoft are going
+to have to extend the Win32 API, and recode several very critical
+system processes. Fun fun fun.<br>
+<br>
+<br>
+<u><b>Code injection</b></u><br>
+<br>
+There's a few new ideas here as well, for ways to get your code into
+your target process. Some are easier than others, but all (in
+principle) work.<br>
+<br>
+<b>SetWindowText()</b> This function sets the caption for any window on
+the system. Or the contents of any edit box. Or the title for any
+static labels. Or the label on any button. You get the idea? Binary
+code is absolutely allowed, and you get a LOT of space to play with.
+Smashing uses SetWindowText() to inject half a megabyte of NOPs before
+my shellcode; as far as I can tell, the only limit is the stack size of
+the receiving process. Pass in a meg of NOPs and you get a stack
+overflow, although there may even be a way around that. This technique
+does have a few drawbacks, but nothing that can't be fixed with a bit
+of clever assembler. Like I said, the first version of Smashing was
+based around SetWindowText - it works reliably.
+<br>
+<b>GlobalAlloc()</b>  <a href="mailto:petera@intrinsica.co.uk">Peter Arnold</a>
+suggested using GlobalAlloc (specifying GMEM_FIXED) to grab a chunk of
+memory at a fixed location for all processes, filling it with your
+shellcode, and specifying that as your callback address within
+WM_TIMER. I've not had time to research this, but <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/memory/memman_7m2b.asp">MSDN</a>
+seems to support the idea in theory. While it clearly states that
+"Windows memory management does not provide a separate local heap and
+global heap, as 16-bit Windows does." supporting the theory of using
+shared heap-space to inject shellcode, it also says that "Memory
+objects allocated by GlobalAlloc and LocalAlloc are in private,
+committed pages with read/write access that cannot be accessed by other
+processes". Might work, might not - I'll try it when I get time and
+update this page.<br>
+<b>Other buffers</b>  As <a href="mailto:kris@koehntopp.de">Kristian Koehntopp</a>
+pointed out, you just have to get your code into the address space of
+the process - any kind of file buffer, I/O buffer or network buffer
+will do. Connect to a named pipe / network socket / whatever, send your
+shellcode, and then send the callback before you get kicked off. Should
+work nicely, assuming you don't kill the process with an SEH overload
+before you find your shellcode...<br>
+<br>
+Well, that's all for the moment on new techniques. Like I said, a
+sizeable chunk of this stuff has come from people who read the original
+paper and are thinking along similar lines; I see no problem in telling
+people what others are already thinking about / working on /
+exploiting. After all, local security on Windows is an oxymoron, isn't
+it?<br>
+<br>
+<br>
+<font size="+1"><u>FAQ.</u></font><br>
+<br>
+<b>This is not a Microsoft problem, it's a VirusScan problem.</b><br>
+<br>
+Technically, it's both. It's a VirusScan problem which exposes a
+Windows problem. To draw an analogy, consider buffer overflows. The
+standard C library contains some functions that an attacker can use to
+overflow a buffer, such as sprintf() and strcat(). These functions are
+flawed, in that they do not sanity-check their input - that's left to
+the programmer. If the programmer (either through laziness or
+ignorance) doesn't do this, then the resulting program will be
+vulnerable due to the flaws in the underlying library. This is the same
+thing. The poorly-controlled privileges on the VirusScan admin tool
+expose a flaw in the underlying Win32 API.<br>
+<br>
+<br>
+<b>So you can escalate your privileges if you're sat in front of the box.  Big deal.  Physical access == hacked box</b><br>
+<br>
+Physical access is NOT required, just a desktop. Terminal Services or
+Citrix both work perfectly, so ASPs based on either of those are in
+trouble.<br>
+<br>
+<br>
+<b>What about Window Stations and multiple desktops?</b><br>
+<br>
+Irrelevant. The whole point is that you have a requirement for an admin
+tool running on the desktop. If you want your users to interact with
+that admin tool, then it has to be on THEIR desktop within THEIR window
+station, considering that enumerating and opening desktops / window
+stations is a privileged operation.<br>
+<br>
+<br>
+<b>What if there aren't any applications running as Localsystem on the desktop?</b><br>
+<br>
+There are. There's numerous hidden windows on a standard desktop (such
+as the NetDDE server) which run as Localsystem. Microsoft break their
+own rules here - you just can't see the windows concerned. Shatter can
+talk to them though - if you enumerate the windows you'll see a whole
+load of stuff that isn't actually visible, some of which runs as
+LocalSystem. Failing that, just use PostThreadMessage to get the same
+effect.<br>
+<br>
+<br>
+<b>What about filtering messages as they go into the queue?</b><br>
+<br>
+This isn't a solution, it's a workaround. It's saying "I think this is
+bad, so I'm not going to allow it, but I'm going to allow everything
+else". Far better is to say "I know this is good, so I'm going to allow
+this but block everything else". If you want to know the difference,
+just look at how many different attacks have been found to inject
+Javascript into Hotmail - they use the former philosophy.<br>
+<br>
+<br>
+<b>So this is a privilege escalation attack, right?</b><br>
+<br>
+No - it's far more than that. It allows you to take control of another
+process on the desktop, and do what you like with it. Let's say you
+have a personal firewall that only allows Internet Explorer to access
+the network. Some malicious code shatters its way into IE, and gets IE
+to do the work for it. As far as the firewall is concerned, it's IE
+accessing the network, which is allowed. Your firewall doesn't know
+that you've contracted a virus that has infected IE; it only knows that
+IE is accessing the network, which is allowed. Hell, the virus could
+shatter its way into your firewall admin tool as well, and allow itself
+to access the internet. If you have any kind of software that controls
+access based on its own user database, you can shatter your way into
+that too, and just enable the buttons that are greyed out if you don't
+have the privs. The possibilities are endless.<br>
+<br>
+<br>
+<b>You say this is unfixable.  So why publish it?</b><br>
+<br>
+This is more or less unfixable <b>by microsoft</b>. To fix all of
+these problems in one fell swoop would require a change in the Win32
+API, which you can't do. However, the vendors can fix each specific
+problem as it arises, and write code that's inherently secure against
+these types of attack. Hence publishing the paper - if people know that
+you can do this, then people will know to code around it. NAI certainly
+didn't know about it, regardless of how well Microsoft claim to have
+documented it.<br>
+<br>
+<br>
+<b>What about Macintosh / Mac OS X / VAX/VMS / GEM / Bob's friendly windowing system?  Is that vulnerable too?</b><br>
+<br>
+No idea, but possibly. If it allows you to control other applications
+through unprivileged, un-authenticated messages, then quite possibly.
+You'd have to check it. I neither like nor use Mac OS, so please don't
+ask me about it...<br>
+<br>
+<br>
+<b>I saw your paper on *website* but there was no Shatter zipfile.  Where can I get it?</b><br>
+<br>
+A few websites have mirrored the original paper without mirroring the zipfile as well.  The original paper is at <a href="http://security.tombom.co.uk/shatter.html">http://security.tombom.co.uk/shatter.html</a> and the Shatter zipfile is linked from there.<br>
+<br>
+<br>
+<b>Do you have a PGP key / Hushmail address / other preferred encryption method?</b><br>
+<br>
+<a href="http://www.pgpi.org/">PGP</a> is the only encryption I use.  My key is <a href="http://security.tombom.co.uk/ChrisPaget.asc">here</a>.<br>
+<br>
+<br>
+<b>Your site coped remarkably well with a slashdotting.  Where's it hosted?</b><br>
+<br>
+The bandwidth, server, and webspace are provided by <a href="http://uk2.net/">uk2.net</a>.  They're great.  Give them lots of money :)  Also worthy of mention are <a href="http://www.kabix.com/">kabix.com</a> - thanks, guys :)<br>
+<br>
+<br>
+<b>&lt;snigger&gt;Nice picture.&lt;/snigger&gt;</b><br>
+<br>
+So I have a sense of humour.  Sue me :)<br>
+<br>
+<br>
+That's all for the moment, folks. Check back here every so often
+though, as I'll be updating this page with new information as and when
+it comes in.<br>
+<br>
+&lt;/foon<a href="http://security.tombom.co.uk/foo/foo.html">&gt;</a>;
+</body></html>

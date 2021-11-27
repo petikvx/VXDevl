@@ -1,0 +1,1035 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<link rel=File-List href="assembly_fichiers/filelist.xml">
+<link rel=Edit-Time-Data href="assembly_fichiers/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Mixing Visual Basic &amp; Assembly language</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>SEC</o:Author>
+  <o:LastAuthor>SEC</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>0</o:TotalTime>
+  <o:Created>2005-03-01T11:48:00Z</o:Created>
+  <o:LastSaved>2005-03-01T11:48:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>4241</o:Words>
+  <o:Characters>23328</o:Characters>
+  <o:Company>Samsung Electronics</o:Company>
+  <o:Lines>194</o:Lines>
+  <o:Paragraphs>55</o:Paragraphs>
+  <o:CharactersWithSpaces>27514</o:CharactersWithSpaces>
+  <o:Version>10.2625</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:HyphenationZone>21</w:HyphenationZone>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:System;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	mso-outline-level:1;
+	font-size:24.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+h2
+	{mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	mso-outline-level:2;
+	font-size:18.0pt;
+	font-family:"Times New Roman";
+	font-weight:bold;}
+p
+	{mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+pre
+	{margin-top:0cm;
+	margin-bottom:0cm;
+	margin-bottom:.0001pt;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Times New Roman";}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:493956244;
+	mso-list-template-ids:-388478894;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:794954162;
+	mso-list-template-ids:1567628544;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l2
+	{mso-list-id:1719819490;
+	mso-list-template-ids:1205221994;}
+@list l3
+	{mso-list-id:2108767882;
+	mso-list-template-ids:885927304;}
+@list l3:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Tableau Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]-->
+<meta name=keywords
+content="Assembly,ASM,VB DLL,Optimise VB,Visual Basic DLL,Optimise Visual Basic,VB Linker,VB ASM">
+<meta name=description
+content="How to mix Visual Basic and Assembly language, for enormous speed improvements">
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor="#F0FFE0" lang=FR link=blue vlink=blue style='tab-interval:35.4pt'>
+
+<div class=Section1>
+
+<h1><u><span lang=EN-GB style='color:blue;mso-ansi-language:EN-GB'>Mixing
+Assembly language with Visual Basic: </span></u><span lang=EN-GB
+style='mso-ansi-language:EN-GB'><o:p></o:p></span></h1>
+
+<p class=MsoNormal><span lang=EN-GB style='font-size:13.5pt;font-family:Arial;
+mso-ansi-language:EN-GB'>This tutorial will help explain the basics &amp; also
+the details needed if you want to mix assembly code with Visual Basic. </span><span
+style='font-size:13.5pt;font-family:Arial'>This tutorial will not explain how
+to use assembly language. If you need to learn that, then you can find many
+tutorials and help in other assembly related sites. The code used here is done
+with NASM 0.97, which is freely available on the internet (but help for it is
+not so common). </span></p>
+
+<p>Be warned however: Mixing assembly code with your Visual Basic programs can
+seriously make it much harder to debug and use. A mistake can easily cause the
+entire Visual Basic environment to shut-down, freeze the computer, make GPF's,
+and even restart the computer (I have found all these out the hard way!). <br>
+Not to mention that there aren't any debugging tools that you can use to fix
+the problems. In fact, if your assembly code doesn't restore everything after
+it is done, things like using the Debug window in Visual Basic will interfere,
+and cause the VB environment to shut down. </p>
+
+<p>Assembly language can be very difficult to learn and program. However, it
+can also be easier in some cases, because you get a much better understanding
+of what you are doing. <br>
+True story: <br>
+I first started programming with QBasic. After using QB for about 2 years I had
+made a 3D rotating cube. I decided to use Visual Basic after that. It took me 1
+year before I could write a 3D program in VB. Now that I know how to use it, it
+took me just 4 months to write a new version. However, it took me just about 4
+weeks altogether to learn everything necessary to be able to write a 3D program
+in pure assembly language. This is because I learned exactly what different
+functions did, so I knew exactly how to use them. <br>
+This proves that assembly language can be a lot quicker to learn, even than
+QBasic. </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=4 width="100%" align=center>
+
+</div>
+
+<h2><u><span style='font-size:12.0pt'>What you need: </span></u></h2>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list 36.0pt'><b>Visual Basic</b> (I have
+     only tried with VB5, but VB4 or above should work). If you dont have
+     Visual Basic, then you can get the Custom Control Edition for free at the
+     Microsoft site. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list 36.0pt'><b>NASM</b> (I have only
+     tried with v0.97). If you dont have NASM, then you can get it for free at
+     the NASM site. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l3 level1 lfo1;tab-stops:list 36.0pt'>A simple text editor.
+     Notepad suits me fine, but you can use whatever you want, so long as it
+     doesn't place special formatting characters into your text. </li>
+</ul>
+
+<h2><u><span style='font-size:12.0pt'>Useful Links: </span></u></h2>
+
+<p class=MsoNormal>-<a href="http://www.cryogen.com/Nasm/">Get NASM</a> (free) <br>
+-<a href="http://www.microsoft.com/">Get Visual Basic CCE</a> (free) <br>
+-<a href="http://www.chez.com/scribe/">Patrice Scribe's VBA51 site</a>. This
+site shows how to use DirectX with VB, using Patrice Scribe's Type Libraries.
+It also shows how to use assembly language DLL's in VB, mixed with DirectX, to
+get excellent, fast 3D graphics. <br>
+-<a href="http://www.flipcode.com/articles/article_vbdlls.shtml">Mixing VB and
+C++</a> (NEW). Article on writing C++ DLL's for VB. Explains how to pass VB
+arrays &amp; Strings. <br>
+<br>
+-<a href="http://www.ur.co.nz/">Unlimited Realities</a>. A site with some great
+tutorials on graphics &amp; game related programs, including tutorials on using
+a method of accessing a pictures pixels as if it was a normal array. Mixing
+this method and assembly DLL's can show great outcomes. <br>
+-<a href="http://www.vbexplorer.com/">VB Explorer</a>. A good page for learning
+VB <br>
+-<a href="http://www.vb-helper.com/">VB Helper</a>. Another good VB page with
+many tips. <br>
+-<a href="http://freespace.virgin.net/hugo.elias/">Hugo Elias' DOS ASM page</a>.
+Some graphics/game related pages. <br>
+-NASM help file (&quot;Nasmdoc.hlp&quot;) <br>
+-Newsgroups for ASM programming such as: <span style='font-family:System'><br>
+comp.lang.asm.x86 <br>
+alt.lang.asm <br>
+comp.os.ms-windows.programmer.win32 </span><br>
+-Newsgroups for VB programming such as: <span style='font-family:System'><br>
+microsoft.public.vb.winapi <br>
+microsoft.public.vb.winapi.graphics <br>
+microsoft.public.win32.programmer.gdi </span><br>
+-Search for 'assembly programming' from any search engine (such as <a
+href="http://www.lycos.com/">Lycos</a> or <a href="http://www.yahoo.com/">Yahoo</a>)
+</p>
+
+<h2><u><span style='font-size:12.0pt'>Using NASM with VB: </span></u></h2>
+
+<p class=MsoNormal>To use NASM with Visual Basic, you have to make a DLL with
+NASM, and then you can use that DLL with Visual Basic (VB3 doesn't let you use
+dll's). You can use the DLL's you made, the same way as if you where using a
+Windows system DLL, such as 'user32.dll' or 'gdi32.dll'. </p>
+
+<p>To make a DLL with NASM, there are three steps to it: <br>
+You first need to write your NASM code <br>
+Then you must compile your NASM code and link it with Visual Basic's linker. <br>
+Then you can use it with VB. </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<p class=MsoNormal><br>
+For example, here we will make a DLL to add two Long integers (DWords): <br>
+Either <a href="http://members.optusnet.com.au/%7Edraw3d/asm1.zip">click here</a>
+to download all the VB5, NASM &amp; Batch Program code for this 1st example, or
+<br>
+Save the following code in a text editor as <span style='font-family:"Courier New"'>myDLL.asm</span>
+into a new directory, such as C:\VB5\samples\ASM : (if you are going to copy
+and paste this code from here, select it from the left edge of this window,
+otherwise the carriage returns will be stuffed up.) <span style='color:#0000BF'><o:p></o:p></span></p>
+
+<pre><span style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SEGMENT code USE32<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>GLOBAL _DllMain<span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;Just a small routine that gets called.<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'>_DllMain:<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>eax, 1<span style='mso-spacerun:yes'>&nbsp; </span>;Dont worry about this.<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>retn<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>12<span style='mso-tab-count:
+1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'>;Sub addLongs (ByRef number1 As Long, ByVal number2 As Long)<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>GLOBAL addLongs<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'>addLongs:<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>enter<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>0, 0<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>eax, [ebp+8]<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>;pointer to number1<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>ecx, [eax]<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;ecx = number1<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>add<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>ecx, [ebp+12]<span
+style='mso-tab-count:1'>&nbsp; </span>;ecx = number1 + number2<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>[eax], ecx<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;number1 = number1 + number2<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>leave<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>retn 8<span
+style='mso-tab-count:3'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;return, with 8 bytes of arguments (2 DWords)<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ENDS<o:p></o:p></span></pre>
+
+<p class=MsoNormal>The first line means tells NASM that it is a 32 bit Windows
+program. This MUST be in all of your DLL's, before any code. </p>
+
+<p>The second line tells the linker that <span style='font-family:"Courier New"'>_DLLMain</span>
+will be a global name. The linker will allow that name to be called by Visual
+Basic. You must declare all your procedures as GLOBAL, otherwise they wont be seen
+by Visual Basic. </p>
+
+<p>The third line has the name (label) called <span style='font-family:"Courier New"'>_DllMain</span>,
+so that the linker knows where <span style='font-family:"Courier New"'>_DllMain</span>
+is. </p>
+
+<p>The two lines of code that _DllMain does is simply making eax equal to 1,
+removing 12 bytes for its arguments and then returning to whoever called the
+routine. This is a special routine that you dont have to worry about. </p>
+
+<p>The first line of the 2nd routine starts with a ; (semicolon) to show that
+the rest of the line is a remark statement, just like a ' (apostraphe) does in
+Visual Basic. The line is only there to show what it would be called as in
+Visual Basic. Notice that the first argument is passed by reference, while the
+other argument is passed by value. This means that the actual memory location
+of the first argument is sent, and the actual value of the second argument is
+sent. The first variable is sent by reference, so that it can be changed. The
+second variable cant be changed by this routine, because we only have its
+value, but we have the actual location of the first variable, because it is
+passed by reference. </p>
+
+<p>The second line (of the 2nd routine) shows that <span style='font-family:
+"Courier New"'>addLongs</span> is also going to be a label that Visual Basic
+will be able to see. </p>
+
+<p>The third line shows where <span style='font-family:"Courier New"'>addLongs</span>
+is. </p>
+
+<p>The fourth line will save the ebp register, and set it to point to the start
+of the call stack. (This is only necessary if you are going to use arguments).
+EBP will now point to things like the caller's memory address, and also the
+arguments that were sent. EBP+8 will point to the first argument. Since Windows
+9x is 32 bit, each argument must be 32 bits, which is 4 bytes. Since the
+arguments are one after the other, then the next argument will be at EBP+12,
+and the third argument will be at EBP+16, then at EBP+20, etc... </p>
+
+<p>The fifth line will set the EAX register to equal the first argument. Since
+the first argument was passed by reference, EAX will be equal to the location
+in memory where the first variable is stored. </p>
+
+<p>The sixth line will set the ECX register to equal the value of the first
+argument. </p>
+
+<p>The seventh line will add the value of the second argument to ECX, and so
+ECX will then hold the value of the first argument plus the second argument. </p>
+
+<p>The eigth line will set the first variable to equal ECX, which was the two
+numbers added together. Therefore 'number1', which is used by the program in
+Visual Basic, will now have 'number2' added to it. </p>
+
+<p>The second last line of the routine will undo what <span style='font-family:
+"Courier New"'>enter</span> did. It must be used in the routine if <span
+style='font-family:"Courier New"'>enter</span> was used. </p>
+
+<p>The last line of the 2nd routine marks the end of the routine, and it will
+return back to the caller (Visual Basic), and it must also show the amount of
+bytes of argument that were sent to it. </p>
+
+<p>The very last line (<span style='font-family:"Courier New"'>ENDS</span>)
+means that it is the end of all your code for the file. </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<p>Once this is all typed (names ARE case-sensitive in NASM!) and saved, it is
+ready to be compiled. </p>
+
+<p>To compile it, I made a batch file in the same directory, called
+&quot;MakeDLL.bat&quot; to automatically type in the arguments for compiling
+the DLL's, and I put the following into it: <span style='color:#0000BF'><o:p></o:p></span></p>
+
+<pre><span style='color:brown'>C:\Nasm\</span><span style='color:#0000BF'>NasmW.exe -f coff myDLL.asm<o:p></o:p></span></pre><pre><span
+style='color:brown'>C:\VB5\</span><span style='color:#0000BF'>Link.exe /dll /export:addLongs /entry:DllMain myDLL.o<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'>del myDLL.exp<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'>del myDLL.lib<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'>del myDLL.o<o:p></o:p></span></pre>
+
+<p class=MsoNormal>The first two lines are the important ones, but the last
+three lines will remove wasted files if you dont use them. </p>
+
+<p>The first line compiles your assembly code. The arguments to it say that it
+is to be compiled to the COFF format, which is the format that the Visual Basic
+linker uses. Obviously, you should replace the directory of NASM (in brown)
+with the directory where it is on your computer. If you wanted to see the
+machine code listing of your DLL, then you can also add ' -l myDLL.lst' onto
+the end of the first line. </p>
+
+<p>The second line will link your COFF format '.o' file into a '.dll' file that
+can be used with Visual Basic. The first argument '/dll' tells it to make it a
+DLL file. Without it, it will make a EXE file. After that, the
+'/export:addLongs' says that the name 'addLongs' will be visible to Visual
+Basic. You must do this for every one of your routines in the DLL, otherwise
+Visual Basic wont be able to find them. The next argument '/entry:DllMain' says
+where that there is a 'DLLMain' routine. This should always be used. The last
+argument 'myDLL.o' must always be there, to show what file to link. Obviously,
+you should replace the directory given here (in brown) with the directory of
+Visual Basic on your computer, which should have a file called 'link.exe'. </p>
+
+<p>This should compile and link your ASM file into a DLL file. Using a batch
+file like this can be very handy, because you will have to run it each time you
+make any modification to your asm code. Obviously, to use compile a different
+NASM file, you would have to change wherever it says 'myDLL' to whatever the
+new file is called, and to change the '/export' routines. </p>
+
+<p>Once you have save this batch file, you can run it. A lot of messages will
+come up onto the screen while it is compiling &amp; linking. You should get
+familiar with what it says when everything works, so you can quickly tell when
+something has gone wrong. (Dont worry if the linker says that '_DllMain' is not
+'__stdcall' with 12 bytes of arguments. I can only get rid of it by making an
+EXE file instead of a DLL file). </p>
+
+<p>You should now have a file called &quot;myDLL.dll&quot; </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<p>You can now use the DLL in Visual Basic, just like any other DLL. <br>
+Make a new EXE project in Visual Basic. Save it into the same directory as the
+DLL file you made. Type in the following: <span style='color:#0000BF'><o:p></o:p></span></p>
+
+<pre><span style='color:#0000BF'>Option Explicit<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'>Private Declare Sub </span><span style='color:brown'>addLongs</span><span
+style='color:#0000BF'> Lib </span><span style='color:black'>&quot;samples\ASM\myDLL&quot; (</span><span
+style='color:#0000BF'>ByRef </span><span style='color:brown'>number1</span><span
+style='color:#0000BF'> As Long </span><span style='color:black'>,</span><span
+style='color:#0000BF'> ByVal </span><span style='color:brown'>number2</span><span
+style='color:#0000BF'> As Long</span><span style='color:black'>)</span><span
+style='color:#0000BF'><o:p></o:p></span></pre><pre style='text-align:center'><span
+style='color:#0000BF'>
+
+<hr size=1 width="100%" align=center>
+
+</span></pre><pre><span style='color:#0000BF'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000BF'>Private Sub </span><span style='color:brown'>Form_Click</span><span
+style='color:black'>()</span><span style='color:#0000BF'><o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>Dim </span><span
+style='color:brown'>x</span><span style='color:#0000BF'> As Long</span><span
+style='color:black'>,</span><span style='color:#0000BF'> </span><span
+style='color:brown'>y</span><span style='color:#0000BF'> As Long<o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>x</span><span style='color:#0000BF'> </span><span
+style='color:black'>= 200</span><span style='color:#0000BF'><o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>y</span><span style='color:#0000BF'> </span><span
+style='color:black'>= 5</span><span style='color:#0000BF'><o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:black'>&quot;x = &quot;;</span><span style='color:#0000BF'> </span><span
+style='color:brown'>x</span><span style='color:#0000BF'><o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:black'>&quot;y = &quot;;</span><span style='color:#0000BF'> </span><span
+style='color:brown'>y</span><span style='color:#0000BF'><o:p></o:p></span></pre><pre><span
+style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>addLongs x</span><span style='color:black'>,</span><span
+style='color:#0000BF'> </span><span style='color:brown'>y</span><span
+style='color:#0000BF'><o:p></o:p></span></pre><pre><span style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:green'>'If it reached this line, then its probably perfect.</span><span
+style='color:#0000BF'><o:p></o:p></span></pre><pre><span style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:black'>&quot;Added y to x, so now x = &quot;;</span><span
+style='color:#0000BF'> </span><span style='color:brown'>x</span><span
+style='color:#0000BF'><o:p></o:p></span></pre><pre><span style='color:#0000BF'><span style='mso-spacerun:yes'>&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:green'>'The answer better be 205, otherwise you stuffed something up!</span><span
+style='color:#0000BF'><o:p></o:p></span></pre><pre><span style='color:#0000BF'>End Sub<o:p></o:p></span></pre>
+
+<p class=MsoNormal>The second line will declare the routine so that you can use
+it in your VB program. You need to do one of these declarations for each of the
+routines you use, even if they are all in the same DLL. (Here it is declared as
+a 'Private' Declaration, meaning that only this VB form will be able to access
+it. You could put it into a seperate Module ('.bas'), so that all the forms in
+your VB project can access it. If you do this, then remove the word 'Private').
+Obviously you should change the directory (relative to the VB directory) that
+it says the DLL is in, if it is somewhere different on your computer. </p>
+
+<p>This should all run perfectly, and print 205 on the screen. If it didnt work
+perfectly, then try out the troubleshooting section below. </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<h2><u><span style='font-size:12.0pt'>Doing more than a simple addition in your
+DLL:</span></u></h2>
+
+<p class=MsoNormal>(It is expected that by this point, you have got correctly
+addLongs to work perfectly. If it doesnt, then try out the troubleshooting
+section below.) </p>
+
+<p>There is obviously a lot more that you can do in your DLL than this simple
+addition. You can do almost anything that you could do in DOS, except that you cant
+use interrupts, and also bear in mind that you are programming in protected
+mode. If you havent ever programmed in protected mode asm, then dont worry. All
+you have to consider is that the segments arent 64k, they are enormous, and so
+you only ever need to use the one segment, that will give you access to
+megabytes of memory! (I didn't even realise that I was programming in protected
+mode, until I learned more about protected mode asm in DOS, that I realised
+that Windows was protected mode!). </p>
+
+<p>This means that you can do most of the things you might have done in DOS, as
+well as a few more things. </p>
+
+<p>There are many very useful things to do in an assembly DLL, where you can do
+things that VB wont let you do directly, such as: </p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Make your own modified
+     BitBlt or StretchBlt routines </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Write your own system DLL
+     routines </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Use only the lower byte of
+     an Integer </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Get the location in memory
+     of a variable </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Print/Use the binary data
+     of text or floating-point numbers instead of their ASCII values </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Perform shifts instead of
+     multiplies &amp; divides </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Optimise your code for a
+     particular type of computer </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>Optimise your inner loops </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo2;tab-stops:list 36.0pt'>much, much more ... </li>
+</ul>
+
+<p>To be able to do these, you may need some more information, so here it is: </p>
+
+<h3><span style='font-size:12.0pt'>Making a Function instead of a Sub:</span></h3>
+
+<p class=MsoNormal>If you have read about mixing assembly code with other
+programs such as C/C++ or Pascal, then you may already know that function
+values are retuned in registers. For example, if a function returns a Long
+integer, then it would be returned in the register EAX. This means that if you
+change the declaration of any Sub-routine in your DLL into a Function that
+returns a Long integer, then you will see whatever the value was in EAX when
+the routine finished. The NASM documentation has more information about this.
+Mixing VB &amp; NASM is almost the exact same as mixing VC &amp; NASM, except
+that with VB, you dont need to start your NASM routines with an underscore as
+the first letter. Therefore: <br>
+A Byte function is sent back through AL <br>
+A Integer function is sent back through AX <br>
+A Long function is sent back through EAX <br>
+A Single function is sent back through ST0 <br>
+A Double function is sent back through ST0 <br>
+A UDT function is sent back through EDX:EAX <br>
+If you want to send back more than one variable, you will have to send back a
+UDT (User-Defined-Type), which is sent ByVal through EDX:EAX. <br>
+For example: </p>
+
+<pre><span style='font-size:12.0pt;color:#0000D0'>Private Type </span><span
+style='font-size:12.0pt;color:brown'>buffer</span><span style='font-size:12.0pt;
+color:#0000D0'><o:p></o:p></span></pre><pre><span style='font-size:12.0pt;
+color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;color:brown'>num1</span><span style='font-size:12.0pt;
+color:#0000D0'> As Long<o:p></o:p></span></pre><pre><span style='font-size:
+12.0pt;color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='font-size:12.0pt;color:brown'>num2</span><span style='font-size:12.0pt;
+color:#0000D0'> As Long<o:p></o:p></span></pre><pre><span style='font-size:
+12.0pt;color:#0000D0'>End Type<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#0000D0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#0000D0'>Private Function </span><span
+style='font-size:12.0pt;color:brown'>loadBuffer</span><span style='font-size:
+12.0pt;color:#0000D0'> Lib </span><span style='font-size:12.0pt;color:black'>&quot;myDLL&quot; ()</span><span
+style='font-size:12.0pt;color:#0000D0'> As </span><span style='font-size:12.0pt;
+color:brown'>buffer</span><span style='font-size:12.0pt;color:#0000D0'><o:p></o:p></span></pre>
+
+<p class=MsoNormal>Using this example, the value of <span style='font-family:
+"Courier New"'>buffer.num1</span> will be EAX, and the value of <span
+style='font-family:"Courier New"'>buffer.num2</span> will be EDX. However, if
+you try using a different combination of variables, things start getting
+confusing. The important thing to remember is that the entire User-Defined-Type
+comes out of EDX:EAX. Therefore, you cant send back more than 8 bytes worth of
+data. If you tried using three Long integers, then you will get a VB error
+saying 'bad DLL calling convention', because all the data can only come from
+EDX:EAX, and so the third Long integer cant be passed. Be aware that if you put
+a Single or a Double variable into your UDT, then you wont get the number from
+ST0, but instead, you will still get the value from EDX:EAX. You can do things
+like make a UDT of 2 Integers, and 4 Bytes (or even an array of 4 Bytes),
+because that will all fit into the 8 bytes of EDX:EAX. However, you cant make a
+number from both EDX and EAX. In other words, a UDT of an Integer, a Long
+integer and another Integer, will add up to 8 bytes, but it wont work, because
+the Long integer will have to access from both EDX and EAX. Because of this, if
+you try something like a UDT of an Integer and then a Long integer, VB will
+align it so that the Integer will access AX, and the Long integer will access
+EDX. </p>
+
+<p>Therefore, if you want to fill a UDT with values in the DLL, then you must
+first create a variable of a UDT, then pass that variable (by reference) to the
+DLL, so the DLL can fill its values up with its information. <br>
+For example: <span style='color:#0000D0'><o:p></o:p></span></p>
+
+<pre><span style='color:#0000D0'>Private Type </span><span style='color:brown'>buffer</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>num1</span><span style='color:#0000D0'> As Double<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>num2</span><span style='color:#0000D0'> As Byte<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>num3</span><span style='color:black'>(</span><span
+style='color:#0000D0'>1 to 4</span><span style='color:black'>)</span><span
+style='color:#0000D0'> As Single<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>num4</span><span style='color:#0000D0'> As Single<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'>End Type<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'>Private Declare </span><span style='color:brown'>loadBuffer</span><span
+style='color:#0000D0'> Lib </span><span style='color:black'>&quot;myDLL&quot; (</span><span
+style='color:#0000D0'>ByRef </span><span style='color:brown'>myBuffer</span><span
+style='color:#0000D0'> As Double</span><span style='color:black'>)</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre style='text-align:center'><span
+style='color:#0000D0'>
+
+<hr size=1 width="100%" align=center>
+
+</span></pre><pre><span style='color:#0000D0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000D0'>Private Sub Form_Click </span><span style='color:black'>()</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim </span><span
+style='color:brown'>myBuffer</span><span style='color:#0000D0'> As </span><span
+style='color:brown'>buffer</span><span style='color:#0000D0'><o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:brown'>myBuffer</span><span style='color:black'>.</span><span
+style='color:brown'>num4</span><span style='color:#0000D0'><span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:green'>' &lt;-- Is empty</span><span style='color:#0000D0'><o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>loadBuffer myBuffer</span><span style='color:black'>.</span><span
+style='color:brown'>num1</span><span style='color:#0000D0'><o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:brown'>myBuffer</span><span style='color:black'>.</span><span
+style='color:brown'>num4</span><span style='color:#0000D0'><span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:green'>' &lt;-- Will now have a value</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'>End Sub<o:p></o:p></span></pre>
+
+<p class=MsoNormal>Notice that to pass the UDT as an argument, you pass it a
+reference to the first variable in the UDT, because that will be where the UDT
+starts, and then the next variables will be right after that. <br>
+For example, the following could go into your NASM DLL: </p>
+
+<pre><span style='font-size:12.0pt;color:#2020A0'>;Sub loadBuffer (ByRef myBuffer As Double)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>GLOBAL loadBuffer<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'>loadBuffer:<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>enter<span
+style='mso-tab-count:1'> </span>0, 0<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>PUSH<span
+style='mso-tab-count:1'>&nbsp; </span>EBX<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>ebx, [ebp+8]<span style='mso-tab-count:
+1'> </span>;EBP+8 points to myBuffer<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx], eax<span style='mso-tab-count:
+1'>&nbsp; </span>;EBX points to myBuffer.num1<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+8], bl<span style='mso-tab-count:
+1'> </span>;EBX+8 points to myBuffer.num2<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+9], ebx<span style='mso-tab-count:
+1'> </span>;EBX+9 points to myBuffer.num3(1)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+13], ecx<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;EBX+13 points to myBuffer.num3(2)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+17], edx<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;EBX+17 points to myBuffer.num3(3)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+21], esi<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;EBX+21 points to myBuffer.num3(4)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>[ebx+25], edi<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>;EBX+25 points to myBuffer.num4<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>leave<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt;color:#2020A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>retn<span
+style='mso-tab-count:1'>&nbsp; </span>4<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;4 bytes of arguments (1 DW)<o:p></o:p></span></pre>
+
+<p class=MsoNormal>Note: The exact same applies for passing arrays. You pass it
+the first item in the array, by reference. For example: <span style='color:
+#0000D0'><o:p></o:p></span></p>
+
+<pre><span style='color:#0000D0'>Private Sub </span><span style='color:brown'>passArray</span><span
+style='color:#0000D0'> Lib </span><span style='color:black'>&quot;myDLL&quot; (</span><span
+style='color:#0000D0'>ByRef </span><span style='color:brown'>anArray</span><span
+style='color:#0000D0'> As Byte</span><span style='color:black'>)</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre style='text-align:center'><span
+style='color:#0000D0'>
+
+<hr size=1 width="100%" align=center>
+
+</span></pre><pre><span style='color:#0000D0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000D0'>Private Sub Form_Click </span><span style='color:black'>()</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Dim </span><span
+style='color:brown'>myArray</span><span style='color:black'>(1 to 5)</span><span
+style='color:#0000D0'> As Byte<o:p></o:p></span></pre><pre><span
+style='color:#0000D0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:brown'>passArray myArray</span><span style='color:black'>(1)</span><span
+style='color:#0000D0'><span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+style='color:green'>' &lt;-- This will send a reference to myArray</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Print </span><span
+style='color:brown'>myArray</span><span style='color:black'>(4)</span><span
+style='color:#0000D0'><o:p></o:p></span></pre><pre><span style='color:#0000D0'>End Sub<o:p></o:p></span></pre>
+
+<h3><span style='font-size:12.0pt'>Using internal variables in your DLL:</span></h3>
+
+<p class=MsoNormal>You can have your own set of variables inside your DLL
+routines. For example, you can have variables that are accessible by all of
+your routines, and they will stay the same value between calls (like 'Global'
+&amp; 'Static' variables of VB). </p>
+
+<p>You can also have local variables, that are only accessible within the one
+routine, and are destroyed after each call. To use local variables, you can
+either 'push' and 'pop' them, or you can set space in the stack directly, by
+changing the 'enter 0, 0' command. You can read the help that comes with NASM,
+on doing this. </p>
+
+<p>If you want to use the 'global' internal variables, then this is what you do:
+(It is the same as for DOS) <span style='color:#0000A0'><o:p></o:p></span></p>
+
+<pre><span style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[SECTION .data]<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myByteData:<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>db 12, 34, 'a', 0xF3, 'Numbers and Strings in one variable!'<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myWordData:<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>dw 12, 1234, 0xAB12<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myDWordData:<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>dd 12, 0x12345678, 12345678<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>[SECTION .bss]<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myByteVariable:<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>resb 1<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myWordVariable:<span style='mso-tab-count:1'> </span><span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>resw 1<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myDWordVariable:<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>resd 1<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>myDWordArray:<span style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>resd 5<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SEGMENT code USE32<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'>.... all your routines ....<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'>;Function getLowerByte (ByVal number1 As Long) As Long<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>GLOBAL getLowerByte<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>getLowerByte:<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>enter<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>0, 0<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>eax, dword 0<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>;clear eax<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>al, [ebp+8]<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>;ebp+8 points to number1<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;eax = lower Byte of number1<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>leave<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>retn<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>4<span style='mso-tab-count:
+2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;4 bytes of arguments (1 DW)<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'>;Function getmyWordData () As Long<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>GLOBAL getmyWordData<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'>getmyWordData:<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>enter<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>0, 0<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>eax, dword 0<span
+style='mso-tab-count:1'>&nbsp;&nbsp; </span>;clear eax<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mov<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>ax, [myWordData] ;eax = lower word of myWordData (= 12)<span
+style='mso-tab-count:4'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>leave<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>retn<span
+style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp; </span>4<span style='mso-tab-count:
+2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>;4 bytes of arguments (1 DW)<o:p></o:p></span></pre><pre><span
+style='color:#0000A0'><o:p>&nbsp;</o:p></span></pre><pre><span
+style='color:#0000A0'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ENDS<o:p></o:p></span></pre>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<h3><span style='font-size:12.0pt'>Using interrupts:</span></h3>
+
+<p class=MsoNormal style='margin-bottom:12.0pt'><b>You can't use interrupts in
+Windows, no matter what language you use.</b> <br>
+If you wanted to use DOS / BIOS / Interrupts, then you will have to find out
+how to do what you want in Visual Basic first, and then when that is working,
+you could write a DLL function that quickly prepares the data for VB to use. <br>
+For example, if you want to write some data to a file, then instead of using
+DOS interrupts, you could write an Assembly function to store all of the data
+you want to save into an array, then save that array in Visual Basic. <br>
+I don't know much about other hardware related operations such as directly
+accessing I/O ports or the Printer port, etc. I think these still work the same
+in Windows, but I'm not sure. <br>
+If you know something is possible to be done in Windows in another language
+(such as VB, VC++, etc), then it should be possible with assembly language, but
+handy things like interrupts aren't allowed in the Windows operating system. </p>
+
+<div class=MsoNormal align=center style='text-align:center'>
+
+<hr size=2 width="100%" align=center>
+
+</div>
+
+<h1><u><span style='font-size:12.0pt'>Troubleshooting: </span></u></h1>
+
+<p class=MsoNormal>There can be many different problems that happen when you
+are using your own assembly DLL's. However, luckily a lot of the problems can
+cause warning messages, that can help you find out what went wrong. The following
+are some guidelines, about what various error messages mean (in order of what
+you should check): </p>
+
+<h2><span style='font-size:12.0pt'>1: NASM.exe won't compile your assembly
+code: </span></h2>
+
+<p class=MsoNormal>This means that you misspelt some of your NASM code, or more
+likely: you used a command wrong. For help with these problems, you can find
+help from other sources, because it will be the same problem if you were
+writing a DOS program. For example, you might have forgotten to specify if
+something was a Byte or a Word or DWord. </p>
+
+<h2><span style='font-size:12.0pt'>2: LINK.exe won't link your assembly file: </span></h2>
+
+<p class=MsoNormal>This is unlikely to happen often. If it wont link correctly,
+first check to make sure that NASM did compile it. If NASM wont compile it,
+then LINK wont be able to link it either, and so the '.dll' file will also be
+deleted, and VB wont run your program. <br>
+The only other likely problem with LINK not linking is if you have done
+something such as not declared a label as 'GLOBAL' in your assembly code. If
+LINK says that it cant find a specific label to export (such as <b>un-resolved
+externals</b>), then first check your assembly code to make sure that there is
+a statement saying 'GLOBAL ' and the label name, and also check the batch file
+you are using, to make sure that it has an argument that says '/export:' and
+the label name (without any spaces inbetween). <br>
+If LINK cant find your file, then dont forget to check if NASM compiled it
+correctly first, then check the batch program to make sure the directories are
+correct. </p>
+
+<h2><span style='font-size:12.0pt'>3: VB says it can't find your DLL:</span></h2>
+
+<p class=MsoNormal>This is annoying, because VB takes the current directory as
+the directory that VB is in, and so if the DLL file is in another directory, it
+usually cant find it. This doesn't happen if you make an EXE file from your
+Visual Basic program, and the DLL is in the same directory. It only happens in
+the Visual Basic environment. There are three ways to fix this: </p>
+
+<ol start=1 type=1>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo3;tab-stops:list 36.0pt'>If you are only going to
+     use the DLL on your hard-drive, you will obviously know the full path to
+     the DLL. You can type the entire path name for all of your VB
+     declarations. This is handy while you are working on it, and then you can
+     change it later. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo3;tab-stops:list 36.0pt'>You can always keep the DLL
+     in the Windows system directory. When you declare a DLL in VB, it first
+     looks in the current directory (the VB directory), then the Windows
+     directory, then the Windows System directory. Therefore, you dont even
+     have to specify the entire path, because it will search the system
+     directory automatically. Then when you distribute the program, you can
+     always move the DLL into the Windows System directory. </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l2 level1 lfo3;tab-stops:list 36.0pt'>My preferred choice is to
+     leave the DLL in the same directory as its VB program, and use the first
+     option, of naming the full path directory whenever you declare it in VB,
+     and before you distribute it, simply delete the full path, leaving just
+     its name. This way you can have the DLL simply in the same directory as
+     the program, and if you want other programs to use the same DLL, then you
+     can move it into the Windows System directory. </li>
+</ol>
+
+<h2><span style='font-size:12.0pt'>4: VB says it 'Can't find DLL entry point'
+in your DLL:</span></h2>
+
+<p class=MsoNormal>This means that you have declared a routine from that DLL
+that it cant see. There are two possible reasons for this: </p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo4;tab-stops:list 36.0pt'>The routine does not exist.
+     </li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l1 level1 lfo4;tab-stops:list 36.0pt'>You haven't added the
+     routine to the exports in the batch file for the linker. You should check
+     the batch file (or the commands you are using) to make sure that the
+     linker has the argument '/export:' and the name of the routine (without a
+     space between the two). </li>
+</ul>
+
+<h2><span style='font-size:12.0pt'>5: VB says that the routine has a 'bad DLL
+calling convention':</span></h2>
+
+<p class=MsoNormal>This gave me a lot of trouble at first, until I started
+realising what it meant. It means that your assembly routine is doing something
+wrong, such as not returning using the right amount of bytes for arguments. The
+problem is that there are so many possible causes to give this error message.
+Here are the possible causes that I know about: </p>
+
+<h3><span style='font-size:12.0pt'>You have </span><span style='font-size:12.0pt;
+font-family:"Courier New"'>retn</span><span style='font-size:12.0pt'> with the
+wrong number of arguments:</span></h3>
+
+<p class=MsoNormal>For example, if you have a routine that takes 8 bytes of
+arguments, and at the bottom of the routine, you say 'retn' or 'retn 4' or
+'retn 9' or anything other than 8, then you will get this message. </p>
+
+<h3><span style='font-size:12.0pt'>You have modified an important register,
+without restoring it:</span></h3>
+
+<p class=MsoNormal>If you are lucky, you can also get this message if you
+modify an important register such as EBP, ESP, EDI, ESI, EDX, or even EBX,
+without restoring them. (If you are unlucky, then say VB will be replaced by
+GPF's :) <br>
+Dont get too worried. You can modify these registers, so long as you restore
+them to their original state. The good thing is that you may not have to save
+them all. Some times, you dont have to save most of them, but it all depends on
+what VB decides to use. Here are some things that I found: <br>
+-EBP MUST ALWAYS BE RESTORED! <br>
+-I havent played around with ESP (I'm not that crazy) <br>
+-EDI, ESI, EDX &amp; EBX behave differently if you are using it in the VB
+environment, or if it is in a compiled EXE. I have forgot which ones need
+restoring when, but to be on the safe side, you should always restore all these
+registers, and when you are finished with the project, you can start deleting
+each restoration, one by one, checking to see if it still works. (You may have
+to test the routines several times to makes sure that it works perfectly). </p>
+
+<h3><span style='font-size:12.0pt'>You have the wrong number of arguments in
+your VB declaration:</span></h3>
+
+<p class=MsoNormal>You can get this if you use the wrong number of arguments in
+the VB declaration. Check with your asm code to make sure that you haven't
+forgotten something. </p>
+
+<h3><span style='font-size:12.0pt'>You have passed an argument that isn't
+32-bits:</span></h3>
+
+<p class=MsoNormal>Since VB 4+ are 32bit, just like Windows 9x, you have to
+pass EVERYTHING using 32-bits. This means you cant have an Integer argument,
+because that is only 16-bit, you cant have a Double argument, because that is
+64-bit, and you cant pass a Byte argument, because that is only 8-bit. You must
+pass arguments either as a Long integer, or pass it by reference (so that it
+still uses a Long integer to represent it's location). <br>
+For example, the following applies to arguments: </p>
+
+<pre><span style='font-size:12.0pt'>(ByVal X as Byte) must be converted to:<span
+style='mso-tab-count:2'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(ByRef X As Byte)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X as Integer) must be converted to:<span
+style='mso-tab-count:1'> </span>(ByRef X As Integer)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X as Long) will work<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X as Single) will work<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X as Double) must be converted to:<span
+style='mso-tab-count:1'>&nbsp; </span>(ByRef X As Double)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X() as Long) must be converted to:<span
+style='mso-tab-count:1'>&nbsp; </span>(ByRef X As Long)<o:p></o:p></span></pre><pre><span
+style='font-size:12.0pt'>(ByVal X(5) as Long) must be converted to:<span
+style='mso-tab-count:1'> </span>(ByRef X As Long)<o:p></o:p></span></pre>
+
+<p><br>
+If you have any problems, questions or comments, you can <a
+href="mailto:Draw3D@optusnet.com.au">E-mail me</a> at 'Draw3D@optusnet.com.au'.
+<br>
+by Shervin Emami </p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="http://www.geocities.com/emami_s/D3D3/Draw3D.html">Back to my Draw3D
+Homepage (a good example of the speed of assembly DLL's mixed with VB.)</a></p>
+
+<p class=MsoNormal><br>
+<br>
+<br>
+<span style='mso-spacerun:yes'>&nbsp;</span></p>
+
+</div>
+
+</body>
+
+</html>

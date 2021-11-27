@@ -1,0 +1,155 @@
+
+A Method of Detecting and Eradicating Known and Unknown Viruses
+
+Dr. Dmitry Yu. Mostovoy
+
+DialogueScience, Inc., Vavilov 40, Room No.103-a, Moscow, Russia,
+tel. (+7-095)137-0150, 
+e-mail: dmost@dials.msk.su, dim@lotos.kiam1.rssi.ru
+
+
+Abstract
+First, virus detection and removal methods which identify and remove 
+almost all of the as-yet-unknown file and boot infectors are outlined.  
+These methods are then shown to be implemented in the "ADinf" package and  
+its curing  companion  "ADinf Cure" module  widely  used  in Russia and 
+former USSR republics.
+
+
+
+
+1. INTRODUCTION
+
+The PC virus problem has assumed formidable dimensions in Russia and the 
+former Soviet republics [2,  3] as a result of several unfortunate factors 
+such as large-scale software piracy, lack of punitive laws to suppress virus 
+writing, easy access to computing systems, the high skill of programmers, 
+inadequate working places, etc.  They eventually triggered the so-called 
+"Russian virus explosion" whose splinters are encountered even in the West.
+
+Besides the growth of innumerable simple infectors known as "student" 
+viruses, sophisticated stealth and polymorphic viruses designed to dodge 
+detection are being launched into the computer world.   Furthermore, 
+certain special packages, which provide tools for designing and propagating 
+PC viruses have added to the growth rate of new infectors.
+
+In the last two years the virus situation has changed radically. 
+Formerly, only few viruses migrated around the world, breaking  out at one  
+place or the other.   Theses were viruses such as "Dark  Avenger",  
+"Black Friday", "Falling letters",  etc  [1].   But  today,  owing  to  
+modern detection and eradication tools and  to the users'  deeper knowledge, 
+viruses  no longer threaten on  an epidemic scale.   The last outbreak  
+was the "DIR-II" epidemic  in August-September  1991. Today,  most attacks 
+in Russia are highly localized confined  to the limits of a city,  or 
+sometimes even within the four walls of an institution or a company.
+
+
+2. DEVELOPMENT OF ANTIVIRUS TOOLS
+
+This situation has complicated the fight against virus invasion. 
+While one or two antivirus tools were adequate to solve the problem, 
+today there  is, as a rule, no single package able to kill every new 
+infector. Therefore some novel approaches based on modern programming 
+techniques are needed today to cope up with the avalanche of new 
+infectors. These approaches fall into three categories.
+
+The first consists of accumulating knowledge about every new virus.   
+This policy is adopted by most  of the antivirus  packages.   
+There are  two variants  of this policy: the  creation  of  an  
+antivirus  program with a constantly updated database (as with 
+"DOCTOR" by E.Kaspersky, Russia, the "Norton Anti-Virus", USA) 
+or constantly  upgraded  program  (as with "Aidstest"  by  
+D.Lozinsky, Russia,  which  is  upgraded  twice  a  week).   
+The demerits of these policies are obvious:  first these programs  
+always lag behind the emergence  of new viruses and  second they 
+are  incapable of quickly suppressing the local epidemics arising 
+in locations remote from the cities where the antivirus programs are 
+maintained.
+
+The second approach is the policy of "prevention is  better than  
+cure" known as a "resident sentry".  But an ingeniously tailored 
+virus can easily dodge a resident sentry. Therefore an effective 
+shield can be provided only by a combination of  software  and  
+hardware  techniques. Several such systems are now commercially 
+available, for example, "Sheriff" by Yu. N. Fomin (Russia) is the  
+best today.  It includes a card to control the addressing of the 
+hard disk at port level and is successful at providing data security 
+and virus protection at many companies and banks in Russia.  
+
+This approach, too, is not free from drawbacks. First, it utilizes 
+computer resources (e.g. one of the hardware interrupts) and restrict 
+the user's freedom, but this is less of a drawback in companies and 
+banks, in which they are acceptable.
+
+But what can be done for the rest of the PC world? They must rely on 
+a third approach, namely, the use of universal antivirus programs. 
+The number of new viruses is potentially infinite but the size of 
+the antivirus program is limited. Consequently, "Advanced Diskinfoscope" 
+(ADinf) was developed which stores a finite volume of vital information 
+about each  logical disk [4].  ADinf determines the address of Int 13h 
+handler  in  BIOS  and  analyzes  the  information, reading a disk 
+sector-by-sector by directly addressing BIOS without the assistance 
+of the operating  system and thus it identifies hiding stealth viruses.  
+At the first start, it stores the images  of the master boot  sector, 
+boot sectors  of logical disks,  a list of bad clusters,  tree 
+structures  of directories  and subdirectories, vital information  
+(CRC, size,  time and  date of  creation) of all files  under  its  
+control.  At  subsequent  starts,  it checks the integrity  of  this  
+information  and  compiles  a report about all changes in  them. It  
+pays special  attention to  the changes  that might have  been induced  
+by virus  activity, and  prints a warning message of, for example, a 
+change in the size or CRC of a file without any alteration  in the date 
+and time of its creation or file creation time with seconds greater 
+than 58 or the year set  at a number greater than the current  value.    
+Furthermore, ADinf instantly notifies any slightest modification in 
+files marked as  "stable", i.e., files where alteration is permitted.  
+It always makes a note of the newly created or deleted directories 
+(subdirectories), newly created and deleted, renamed and moved files, 
+newly created bad clusters, integrity of the boot sectors and information 
+about many other vital parameters.   
+
+ADinf also incorporates an algorithm for searching stealth 
+viruses based on their hiding capability. The dodging technique 
+of a stealth virus is paradoxically the weakest spot in the hiding 
+algorithms and can be led to betray their presence.  It is sufficient 
+to compare the size or CRC of an infected file given by DOS and its actual 
+value; any discrepancy between them is a symptom of stealth virus infection. 
+
+
+What is the underlying principle of the universal virus removal method?  
+Despite the various types of viruses, there are only few methods used 
+by viruses to inject itself into a file. This is the basic strategy 
+of ADinf Cure Module. In its routine checks,  ADinf reports to its 
+curing companion a list of files that have been changed since the 
+last checking session.  ADinf Cure Module scans these files and 
+stores those changes in its diskinfo tables that may be needed 
+in restoring damaged files.   On detecting a virus attack, ADinf 
+alerts the user and, when he opts for curing, hands over the control 
+to its curing companion. ADinf Cure Module, after scanning the infected 
+file(s) and comparing with the information stored in the diskinfo tables, 
+restores the original status of the file(s).  If ADinf Cure Module, 
+after curing a file, reports that a file has been "successfully restored";  
+it means that the restored file is an exact copy of the original file.
+
+The tables  containing disk  information needed  in restoring files take  
+about  200-250  kb  space  on  a  40Mb  disk. An algorithm is presently 
+under development to compress this space to 90 kb.
+
+ADinf Cure Module does not, of course, eradicate every virus 
+but appears to achieve a 97% success rate.
+
+
+REFERENCES
+
+1. Gary H. Anthes, Viruses continue to wreak havoc at many US companies, 
+ComputerWorld- Moscow", No. 34, September 15, 1993  (Russian ed.).
+
+2. N. N. Bezrukov, Computer viruses, Nauka, Moscow, 1991 (in Russian).
+
+3. N. N. Bezrukov, Computer virology, Ukrainskaya Sovietskaya Entsiklopediya, Kiev, 1991 
+    (in Russian).
+
+4. DialogueScience Anti-Virus Kit, User's Guide, Moscow, 1993.
+
+
+

@@ -1,0 +1,978 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Glossary</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="back001.gif">
+<p><!--SecurityDLL=openit--></p>
+<p><!--SecurityLevel=20002--></p>
+<p><!--SecurityAlternate=noaccess.htm--> </p>
+
+<CENTER><P><IMG SRC="glossary.gif" HEIGHT=92 WIDTH=292></P></CENTER>
+
+<CENTER><P>
+<HR WIDTH="100%"><p></P></CENTER>
+
+<CENTER><TABLE BORDER=1 WIDTH="80%" >
+<TR>
+<TD WIDTH="33%"><A HREF="#appending">Appending Virus</A></TD>
+
+<TD WIDTH="33%"><A HREF="#armoring">Armoring</A></TD>
+
+<TD WIDTH="33%"><A HREF="batchvr1.htm">Batch File Viruses</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#behavblock">Behaviour Blocking</A></TD>
+
+<TD><A HREF="#bootsectorvirus">Boot Sector Virus</A></TD>
+
+<TD><A HREF="#cavity">Cavity Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#companion">Companion Virus</A></TD>
+
+<TD><A HREF="#virus">Computer Virus</A></TD>
+
+<TD><A HREF="#directaction">Direct Action</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#traversal">Directory Traversal</A></TD>
+
+<TD><A HREF="#dropper">Dropper</A></TD>
+
+<TD><A HREF="#encryption">Encryption</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#fastorslow">Fast Infector</A></TD>
+
+<TD><A HREF="#fat">FAT</A></TD>
+
+<TD><A HREF="#fdisk">FDISK/MBR</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#filejumper">File Jumper</A></TD>
+
+<TD><A HREF="#goat">Goat File</A></TD>
+
+<TD><A HREF="epheurs1.htm">Heuristic Scanning</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#hllvirus">HLL Virus</A></TD>
+
+<TD><A HREF="#hole">Hole</A></TD>
+
+<TD><A HREF="#infectionm">Infection Marker</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#integrity">Integrity Checking</A></TD>
+
+<TD><A HREF="#intended">Intended Virus</A></TD>
+
+<TD><A HREF="#linkvirus">Link Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#logicbomb">Logic Bomb</A></TD>
+
+<TD><A HREF="#macrovirus">Macro Virus</A></TD>
+
+<TD><A HREF="#mbr">Master Boot Record</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#mbs">Master Boot Sector</A></TD>
+
+<TD><A HREF="#multipartite">Multipartite</A></TD>
+
+<TD><A HREF="#multiplatform">Multi-platform Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#polymorphism">Oligomorphic</A></TD>
+
+<TD><A HREF="#overwriting">Overwriting Virus</A></TD>
+
+<TD><A HREF="#appending">Parasite Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#partition">Partition Table</A></TD>
+
+<TD><A HREF="#payload">Payload</A></TD>
+
+<TD><A HREF="#piggybacking">Piggybacking</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#polymorphism">Polymorphism</A></TD>
+
+<TD><A HREF="#retrovirus">Retro Virus</A></TD>
+
+<TD><A HREF="#directaction">Runtime Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#signature">Signature Scanning</A></TD>
+
+<TD><A HREF="#fastorslow">Slow Infector</A></TD>
+
+<TD><A HREF="#companion">Spawning Virus</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#stealth">Stealth</A></TD>
+
+<TD><A HREF="#trigger">Trigger</A></TD>
+
+<TD><A HREF="#trojan">Trojan Horse</A></TD>
+</TR>
+
+<TR>
+<TD><A HREF="#tunneling">Tunneling</A></TD>
+
+<TD><A HREF="#glut">Virus Glut</A></TD>
+
+<TD><A HREF="#worm">Worm</A></TD>
+</TR>
+</TABLE></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<UL>
+  <PRE><A NAME="virus"></A><B><FONT SIZE=+1>COMPUTER VIRUS 
+</FONT>(also see <a href="misc0042.htm">Trojan Horse, Virus or Worm?</a>)<FONT SIZE=+1>
+
+</FONT></B>COMPUTER VIRUS: a sequence (or set of sequences) of symbols
+which, when executed or interpreted under certain conditions or in
+certain environments, will make a possibly altered, functionally
+similar copy of this sequence (or set of sequences) and will place
+this copy where it will intercept execution or interpretation at a
+later time under certain conditions.  This is called &quot;REPLICATION,&quot;
+and the copy retains AT LEAST the capability to recursively
+replicate further.  A virus may also have an additional function (or
+functions) not related to replication, sometimes called a &quot;payload&quot;,
+but this is NOT necessary for something to be a virus.
+
+Comments on the above definition:
+
+1.   This definition is not tied to any specific machine or operating
+system.  The phrase &quot;sequence of symbols&quot; is used rather than &quot;sequence
+of instructions&quot; or &quot;program&quot; to help keep the definition as generic as
+possible.
+
+2.   A computer virus may not be restricted to a single sequence of
+symbols, but may consist of two or more sequences that individually do
+not constitute a virus, but working together satisfy the criteria of
+being a virus.
+
+3.   The phrase &quot;intercept execution or interpretation&quot; refers to the
+fact that a computer virus must somehow be placed on a host machine where
+it will be executed or interpreted in order to survive.  This is done by
+forcing the host machine to execute or interpret the virus before,
+during, after, or instead of some other sequence of symbols on that
+system; in other words, &quot;intercept execution or interpretation.&quot;
+
+4.   &quot;Replication&quot; (or &quot;spreading&quot;), as defined above, is the key point
+in defining a computer virus.  A sequence of symbols which does not
+replicate cannot be a virus.  Likewise, every virus must replicate, or it
+is not a virus.  On the other hand, the inclusion of a &quot;payload&quot;
+is not essential for something to be a computer virus.
+
+<A NAME="trojan"></A><B><FONT SIZE=+1>TROJAN HORSE
+</FONT>(also see <a href="misc0042.htm">Trojan Horse, Virus or Worm?</a>)<font size=+1></font>
+<FONT SIZE=+1>
+</FONT></B>TROJAN HORSE: a generic term describing a set of computer instructions
+purposely hidden inside a program. Trojan horses tell programs to do
+things you don't expect them to do.
+Generally Trojan Horses pose as and are named like legitimate programs
+eg. editors or hacks to new commercial software. They come packaged
+with authentic looking documents and help files. The often malicious
+purpose of Trojan Horses is to create havoc on the computer of the
+unsuspecting user.
+Effects range from harddisk erasure to damaging of program and datafiles.
+Since Trojan Horses do not replicate they are not considered computer
+viruses. Combinations of Trojan Horses and computer viruses with a
+Trojan Horse having a computer virus as its payload and setting it of
+in a computerare known. The payload of a computer virus is often
+considered to be a Trojan Horse because of its effects and the lack
+of user interactivity.
+The term Trojan Horse comes from the legendary battle in which the
+ancient city of Troy received a large wooden horse to commemorate a
+fierce battle. The &quot;gift&quot; secretly held enemy soldiers in its belly
+and, when the Trojans rolled it into their fortified city, ....
+
+<A NAME="polymorphism"></A><B><FONT SIZE=+1>POLYMORPHISM
+
+</FONT></B>POLYMORPHIC:   &quot;Having many or various forms, stages&quot;
+POLYMORPHISM:  &quot;State of...&quot;
+OLIGOMORPHIC:  &quot;Having few or little forms, stages&quot;
+
+POLYMORPHIC are called those viruses, which encrypt their body in a
+different way (usually - using a different key) each time they infect
+an executable object.  In order the virus to remain executable, it
+still has to be able to decrypt itself at runtime.  For this purpose,
+the encrypted part is always preceded with a short unencrypted
+routine, which performs the decryption of the rest of the virus at
+runtime.  This short unencrypted routine is often called a decryptor.
+However, with the polymorphic viruses, the decryptor is not constant -
+it also varies with each infection.  Polymorphic viruses present a
+significant problem to scanners, because there is no constant part
+from the virus body that can be used as a scan string.
+
+There are different kinds of polymorphism:
+
+1. The simplest one is to use a fixed set of constant decryptors.
+Such viruses can be detected with a fixed set of scan strings - one
+for each possible decryptor.  Sometimes, such &quot;not very polymorphic&quot;
+viruses are called <B>oligomorphic</B>.
+
+2. The next step is to use a decryptor which uses one and the same
+instructions, but the particular implementation of these instructions
+varies with each infection.  For instance, different processor
+registers are used each time, or alternative opcodes for some of the
+instructions in the decryptor are used.  Such viruses can be detected
+with a wildcard scan string - a scan string that can specify that the
+contents of the bytes at some positions is variable and should be
+ignored.
+
+3. The third level of polymorphism is when a random number of random
+do-nothing instructions (like NOP, MOV BX,BX, etc.) are inserted
+between the instructions of the decryptor.  Those do-nothing
+instructions do not affect the decryption algorithm, but the result is
+that no constant scan string exists for the decryptor.  In order to
+detect such viruses, a scanner can use a more sophisticated wildcard
+scan string language - for instance, one that allows to skip any
+amount of &quot;garbage&quot; bytes before matching the next byte of the scan
+string.
+
+4. The fourth level of polymorphism involves swapping in a random way
+those instructions of the decryptor, which can be interchanged,
+without affecting the decryption algorithm. In principle, it is
+possible to detect such viruses with a set of wildcard scan strings.
+
+5. The most advanced level of polymorphism involves using all of the
+above steps. Depending on how much the decryptor can vary, it is
+possible to detect some viruses of this type by using a very
+sophisticated pattern matching language. However, this doesn't always
+work and in general is not worth the effort. In practice, such viruses
+are usually detected by hard-coding finite automate, the states of
+which reflect the possible ways the decryptor can vary, and which can
+recognize the grammar of all possible instances of the decryptor.
+However, this is a very difficult and time-consuming task, which
+explains why many scanners have problems to detect reliably the
+viruses of this type. A very recent and much more effective approach
+is to use some kind of generic decryption engine, like the one used in
+the latest versions of FindVirus, which uses the decryptor of the
+virus itself to decrypt the rest of the virus body, and then applies
+the usual virus recognition techniques - as if the virus is not
+encrypted.
+
+6. At last, there is a more particular, sixth kind of polymorphism.
+The viruses that use it are not encrypted and therefore can be
+detected using a simple scan string. However, those viruses swap
+around significant parts of their body, which represents a significant
+problem to those scanners that attempt to identify the virus exactly.
+We call such polymorphic viruses &quot;permutating&quot;.
+
+See also shortcut menu:
+- <A HREF="miscella.htm#polyinvir">Polymorphism in Computer Viruses
+
+<A NAME="fastorslow"></A></A><B><FONT SIZE=+1>FAST OR SLOW
+
+</FONT></B>        One of the questions while writing your virus is how quickly
+you want it to spread.  The easy answer is &quot;As fast as possible&quot; but
+this is not always the best answer.  If a virus moves slowly, it will
+take much longer before somebody notices hard drive space disappearing,
+he/she will notice fewer changes to the file dates, and all other
+symptoms will be lessened.  However, this does provide longer for
+anti-virus people to discover the virus.  This issue ties directly
+into the issue of activation, short or long. Since the issues are
+virtually identical, I will cover both together, because they are so
+closely tied.
+
+                           The Case For Fast
+                           =================
+
+        Viri should spread as quickly as possible.  This allows as
+little time as possible for the makers of antivirus programs to come
+up with an antidote before the virus is widely spread.  This should
+be tied with a short activation period to cause as many problems as
+possible before detection is possible. Because fewer copies are
+generated before activation, each copy may be larger. This allows for
+more extensive anti-anti-viral tactics, which are becoming increasingly
+more important as the number of anti-viral products rises.
+
+                           The Case For Slow
+                           =================
+
+        Viri should spread slowly, because this is less obtrusive,
+and therefore users are less likely to notice a change in the system.
+This should be coupled with a long activation period as to have
+maximum penetration before the virus activates.  A slow-spreading
+virus will circulate to more virus programmers who will be able to
+modify the program for specific needs or to adapt to antiviral tactics.
+On a purely academic note, slow spreading viri must be smaller, as
+more copies must be generated.  This means that viri must be programmed
+better, which is good for the general community.
+
+                          The Case Against Fast
+                          =====================
+
+        Fast spreading of viri is likely to draw attention.  Once a
+virus has been caught, in most of the cases, it is dead and useless.
+A virus should infect the greatest area in the shortest time before
+the anti-virus people inevitably catch up to the virus.  However,
+because of the necessity of a short activation time, this virus has
+a lesser range than a slow-spreading virus.  The programmer must rely
+on either (a) the quick distribution of the virus along at least a
+regional level --or-- (b) the ability of other virus programmers to
+obtain and modify either the source code or dissassemble and modify the
+distributed virus.  If possible, the source should be distributed along
+trusted channels.  There should be as little chance as possible of an
+antiviral researcher obtaining a copy of the sourse for your masterpiece.
+
+                          The Case Against Slow
+                          =====================
+
+        A slow spreading virus is much more likely to get caught by
+antiviral people prior to its necessarily long pre-activation period.
+There will be more defenses out against the virus before it has spread
+much.  However, if the virus is well-done, it will have spread far
+before it is caught.
+
+<A NAME="stealth"></A><B><FONT SIZE=+1>STEALTH
+
+</FONT></B>Interrupt interceptions can be used very successfully to hide the
+presence of a virus actively once it has gained control of the PC.
+DOS applications mostly use software interrupts to communicate with
+the operation system. The jump addresses are stored in the interrupt
+table located at the beginning of memory. This is set up by the
+operating system to point to the correct addresses depending on
+the DOS version. When an application issues a request (an interrupt)
+to the operating system, a jump occurs to a predetermined address.
+If a virus changes (&quot;hooks&quot;) one or more of these addresses, any
+jump to the operating system can be routed via de virus, which
+can then decide what to do with the request. The fact that such
+a modification of the interrupt table is possible has led to the
+emergence of &quot;stealth&quot; viruses, which are characterised by a highly
+effective ability to hide themselves.
+
+Some &quot;stealth&quot; features:
+
+- In the case of a boot sector virus when asked to read the boot
+  sector, the virus will intercept the interrupt and return the
+  clean boot sector image which it saved elsewhere on the disk.
+
+- When the DIR command is executed the resident &quot;stealth&quot; virus will
+  subtract the increase in file size from any infected file so the
+  user is not alerted to this.
+
+- Some resident &quot;stealth&quot; viruses disinfect files &quot;on-the-fly&quot; when
+  applications try to look at them and re-infect them afterwards.
+
+- A very basic &quot;stealth&quot; feature, incorporated in almost every new
+  virus, is the technique to hide any change in the &quot;timestamp&quot; of
+  a file when an infected file is written back (closed) to disk by
+  the virus.
+
+- When attempting a &quot;warm boot&quot; (CTL-ALT-DEL) some viruses survive
+  by intercepting keyboard interrupts.
+
+See &quot;<A HREF="#tunneling">Tunneling</A>&quot; and &quot;<A HREF="epstalkg.htm">Stalking The Stealth Viruses</A>&quot;.
+
+<A NAME="tunneling"></A><B><FONT SIZE=+1>TUNNELING
+
+</FONT></B>Related to &quot;Stealth&quot;, &quot;tunneling&quot; is a technique used by both virus
+and anti-virus programs. To protect from viruses anti-virus programs
+will place resident traps at certain potentially dangerous system calls.
+Called activity monitors or &quot;behaviour blockers&quot; the programs will alert
+the user that a program is trying to execute a critical, mostly
+nonstandard system function and it will give the user the option to
+intervene. Viruses using &quot;tunneling&quot; will look for these activity
+monitors and trace through (tunnel) their traps to the original system
+call and execute them instead. This will basically render the
+anti-virus program ineffective.
+Similarly a resident virus will be rendered harmless by an anti-virus
+program using &quot;tunneling&quot; to trace through the virus traps.
+
+See also:
+<A HREF="miscella.htm#TUNNEL">Tunneling Shortcuts</A></PRE>
+  <PRE><A NAME="behavblock"></A><B><FONT SIZE=+1>BEHAVIOUR BLOCKING
+
+</FONT></B>To protect from viruses certain anti-virus programs will place resident
+traps at certain potentially dangerous system calls.
+Called activity monitors or &quot;behaviour blockers&quot; the programs will alert
+the user that a program is trying to execute a critical, mostly
+nonstandard system and other suspicious activities and it will give the
+user the option to intervene.
+Often these anti-virus programs leave the user the option to edit a list
+of legitimate programs that use non standard and system critical calls as
+to limit the number of &quot;false alarms&quot;.
+These behaviour limiting programs, based on detecting a potential
+dangerous instruction sequence, are reasonably effective against new or
+unknown viruses but will have an increased number of &quot;false alarms&quot;.
+
+<A NAME="encryption"></A><B><FONT SIZE=+1>ENCRYPTION
+
+</FONT></B>Encryption or scrambling of the virus code is used by some viruses in
+order to make them appear different in each infected application. This
+is designed to make the extraction of a fixed search pattern (signature)
+more difficult, since the majority of the virus code changes on every
+infection. Before the virus code can be executed, it must be decrypted
+in order to become a meaningful sequence of instructions. The decryption
+routine must be unencrypted and it usually contains about 10 or 20 bytes
+which are identical and common to every infected executable. An
+encrypted virus will look identical only when it uses the same
+encryption key to encrypt its code. Many anti-virus programs scan for
+the signature of the decryption routine which is the only part of
+the virus that is not encrypted and therefore constant.
+Although encryption algorithms in current viruses are simple and the keys
+are straightforward, the possibilities for introducing complications are
+practically endless. For example, a virus can use two stages of
+encryption, where the key for encrypting the second stage is stored in
+an encrypted form in the first stage. Such techniques make dissassembly
+of the virus more difficult and even viruses using simple techniques can
+be tricky to dissassemble.
+A follow-on on the encryption technique is polymorphism and the rise
+of the polymorphic virus.
+
+<A NAME="signature"></A><B><FONT SIZE=+1>SIGNATURE SCANNING
+
+</FONT></B>One of the oldest techniques of finding viruses is looking for that part
+of the virus that stays the same in every infected file, the so-called
+signature. The simple and unsofisticated virus that does not rely on
+encryption, polymorphism or other advanced techniques is rather simple
+to detect as long as it's signature is known to the anti-virus program.
+Most anti-virus programs contain an often encrypted signature definition
+file which is used to compare known signatures to a scanned file. Due to the
+increasing number of variants and new viruses being released every week,
+the size of these signature files is getting bigger and bigger, resulting
+in slower scanning performance of the anti-virus program. Virus writers
+will sometimes try to decrypt the signature files of the popular
+anti-virus programs. They then produce variants of known viruses that
+will not be detected due to slightly altered signatures.
+Sometimes competing anti-virus programs will produce a false alarm
+on the competition's signature file if that has not been encrypted properly.
+
+<A NAME="appending"></A><B><FONT SIZE=+1>APPENDING VIRUS
+
+</FONT></B>Also known as parasite or parasitic viruses, appending viruses will add
+their own code to an existing file without damaging it.
+Appending viruses will add their code to the end of the file and change
+the file header to include a jump to the beginning of the virus code
+which will in turn include a jump to the beginning of the original file
+leaving the ability to run this file without disclosing the presence of
+the virus.
+Prepending viruses will add their whole code to the beginning of the
+target file but have to change the system parameters (FAT) to point to
+the beginning of the virus as the new file start. Target files should
+still run normally when infected by a prepending virus.
+
+<A NAME="overwriting"></A><B><FONT SIZE=+1>OVERWRITING VIRUS
+
+</FONT></B>The simplest way to establish a virus in a system is to overwrite the
+target file with its own code. If the virus is located at the beginning
+of the original file the virus will start when the target file is
+executed but since the infection sequence will physically damage
+the target file, the infection will become immediately apparent to
+the user. There is no way of recovering the original target file
+after infection.
+Know variants of the overwriting virus look for &quot;empty&quot; space in the
+target file big enough for the virus code. It will copy itself in this
+space and attempt to introduce a jump command at the beginning of the
+target file. This method will keep the size of the target the same
+without using &quot;stealth&quot; techniques.
+Overwriting viruses almost always create irrecoverable damage to the
+target file and due to the unsofisticated nature of the virus most
+virus writers consider them immature and not worth any effort.
+
+<A NAME="companion"></A><B><FONT SIZE=+1>COMPANION VIRUS
+
+</FONT></B>A companion or spawning virus uses a MS-DOS feature that determines
+in what sequence to run programs with certain extensions. When a user
+enters a command DOS will initially check for any internal commands
+(like DIR, COPY etc). If it can not find anything there it will look
+for a the command name with the extensions .COM, .EXE and .BAT in that
+order. The file PGM.COM will be executed before PGM.EXE if the user
+enters PGM at the prompt.
+Companion/spawning viruses when executed will look for a .EXE file and
+create a hidden .COM file with the same name but containing nothing but
+the virus code and then run the original .EXE file. The next time the
+user commands the start of the original .EXE file, the virus .COM will
+start initially infecting some other file before transferring back to
+the .EXE file.
+Instead of putting its body in a file in the same directory, but with
+an extension that is searched earlier than the original one, a virus
+could simply put its body in a file with any executable extension, but
+in a directory that comes earlier in the PATH variable than the
+directory of the original file.  This will have the same effect - when
+the user types the name of the file, the virus will be executed first.
+Such viruses are called PATH companions.
+Disinfection is simple. Just erase all hidden .COM files with a
+corresponding .EXE file.
+
+<A NAME="multipartite"></A><B><FONT SIZE=+1>MULTIPARTITE VIRUS
+
+</FONT></B>Multi-partite viruses combine the capabilities of parasitic and boot
+sector viruses increasing the chances of replication. Disadvantages
+of multi-partite viruses are their size and their complexity. Their
+larger size increases the chance of detection while their increased
+complexity tend to make them &quot;buggier&quot;.
+Fully multi-partite viruses have to capability to let the boot sector
+part infect .COM an .EXE files and other boot sectors while the .COM
+and .EXE files are able to infect .COM and .EXE files and boot sectors.
+Partially multi-partite viruses will not have the capability to
+cross infect and will only allow infection between boot sectors and
+between .COM/.EXE and .COM/.EXE files.
+
+<A NAME="piggybacking"></A><B><FONT SIZE=+1>PIGGYBACKING
+
+</FONT></B>Piggybacking is an effect found during scanning for viruses. The
+opening and closing of files that the anti-virus program has to perform
+to scan for viruses will, depending on the scanner, allow resident
+viruses to tag along during the process and infect the files scanned
+by the anti-virus program. This will allow for a complete harddisk
+infection within one virusscan depending on the scan pattern.
+Most anti-virus programs are programmed with anti-piggybacking
+techniques.
+
+<A NAME="traversal"></A><B><FONT SIZE=+1>DIRECTORY TRAVERSAL
+
+</FONT></B>Directory traversal is the capability of viruses to infect files outside
+the directory where the original infected file was located. Without this
+capability the infections will be limited unless the original directory
+was the root directory. One of the techniques used is the &quot;dot-dot&quot;
+method (C&gt;\..) which will traverse the directories back towards the root
+directory.
+
+<A NAME="payload"></A><B><FONT SIZE=+1>PAYLOAD
+
+</FONT></B>The payload is one of the reasons viruses are made: to deliver a certain
+effect or message to the &quot;world outside&quot;, a kind of electronic graffiti.
+This same payload is the one thing that will get the virus noticed,
+hunted and killed though.
+Payloads are generally triggered by logic bombs and often produce
+graphical, musical or destructive effects. A lot of viruses with
+destructive side effects are not even intentionally destructive but are
+the result of poor programming skills.
+The most successful virus from a infecting point of view is the virus
+without a payload, it will not attract attention to itself through any
+side effect.
+
+<A NAME="retrovirus"></A><B><FONT SIZE=+1>RETRO VIRUS
+
+</FONT></B>Virus written with specific anti anti-virus routines. These viruses
+can be specifically aimed at a particular anti-virus program or have
+generic routines that will work against more anti-virus programs.
+For an in depth analysis see paper '<A HREF="retrovir.htm">How Viruses Fight Back</A>'
+
+<A NAME="logicbomb"></A><B><FONT SIZE=+1>LOGIC BOMB
+
+</FONT></B>A logic bomb is a programming feature which causes the execution of some
+program code when a certain condition is fulfilled. That condition can be
+a wide range of things. Basically a big IF/THEN statement it is especially
+popular among writers of Trojan Horses and viruses.
+The logic bomb is often used as a trigger to execute or release the payload
+of a virus or Trojan Horse, but is also used to determine if and when to
+infect a particular target file.
+
+Examples of logic bomb conditions:
+
+-  Time condition: eg. at 1200 noon release payload
+                   eg. IF TIME=1200-1800 release payload
+-  Date condition: eg. on August 12 release payload
+                   eg. IF DATE=January do not release payload
+-  System condition: eg. IF CPU=Pentium =&gt; release payload
+-  Combined condition:  eg. at 1200 noon on August 12 release payload on
+                        Pentiums.
+
+<A NAME="dropper"></A><B><FONT SIZE=+1>DROPPER
+
+</FONT></B>A dropper is an executable file, without infecting capabilities used to
+establish a virus or Trojan Horse on a system. Examples are known of
+files masquerading as legitimate programs (Trojan Horse) which will
+insert or drop a virus on a system by infecting eg. the boot sector. The
+initial file is harder to detect since it does not contain a &quot;clean&quot; copy
+of the virus but just the commands to create one.
+
+<A NAME="worm"></A><B><FONT SIZE=+1>WORM
+</FONT>(also see <a href="misc0042.htm">Trojan Horse, Virus or Worm?</a>)<font size=+1></font>
+<FONT SIZE=+1>
+</FONT></B>Worms are similar to viruses, but replicate in their entirety, creating
+exact copies of themselves, without needing a &quot;carrier&quot; program. Worms
+are normally found on computer networks and multi-user computers, and use
+inter-computer or inter-user communications (E-mail) as the transmission
+medium.
+
+<A NAME="linkvirus"></A><B><FONT SIZE=+1>LINK VIRUS
+
+</FONT></B>These viruses try to rearrange/link file allocation pointers/directory
+entries to point at the virus. The user will not notice anything out of the
+ordinary as long as the virus is resident since it will reroute
+file pointers but as soon as the virus is removed from memory, either by
+cleaning or clean-booting, the system will be unable to find certain files.
+
+<A NAME="hllvirus"></A><B><FONT SIZE=+1>HLL VIRUS
+
+</FONT></B>Most virus writers start with a limited programming knowledge and start
+of with the language that is most suitable to program viruses: assembly
+language. This language will get you the most versatility to access the
+in depth system calls.
+Some virus writers with prior programming experience in High Level
+languages tried their luck writing viruses in languages such as C+ or
+PASCAL. The viruses they produced tend to be complex and big. They present
+only a small part of the total number of known viruses.
+
+<A NAME="armoring"></A><B><FONT SIZE=+1>ARMORING
+
+</FONT></B>Armoring is a technique used by both virus programmers and anti-virus
+programmers. The technique is used to prevent the opposition from reverse
+engineering a certain piece of software. Specific code is added to prevent
+any disassembling or debugging.
+
+<A NAME="bootsectorvirus"></A><B><FONT SIZE=+1>BOOT SECTOR VIRUS
+
+</FONT></B>Boot sector viruses are viruses that infect executable code found in
+certain system areas on a disk which are not ordinary files. On DOS
+systems, there are ordinary boot-sector viruses, which infect only the
+DOS boot sector, and MBR viruses which infect the Master Boot Record on
+fixed disks and the DOS boot sector on diskettes. Such viruses are always
+memory resident viruses. Boot viruses are the most common form of viruses
+in the world, accounting for as much as 70% of all infections.
+
+
+Boot sector viruses and different operating systems
+---------------------------------------------------
+Since the startup process of PC computers is handled by their own
+internal BIOS, it is independent of the operating system. This makes
+it possible for boot sector viruses to infect computers that do not
+use DOS at all. Most of them do so indiscriminately, with no regard to
+the computer's operating system. If the operating system is not DOS,
+though, the viruses are usually unable to function normally.
+
+When viruses infect a hard disk that does not contain DOS at all, they
+find themselves suddenly in the middle of an unfamiliar environment.
+The consequences are dependent on the virus in question: the virus may
+just get stuck in the boot sector and be unable to spread further, it
+may render the hard disk inaccessible, or crash the computer during
+next startup.
+
+Operating systems such as OS/2, Windows NT or the various versions of
+Unix, do not offer the interrupt services the viruses need in order to
+spread themselves. However, this does not prevent the virus code from
+being executed every time the computer is started. For example, the
+fact that the Michelangelo virus is unable to spread itself further in
+an unfamiliar system does not prevent it from overwriting the hard
+disk every sixth of March.
+
+Non-System Disk
+---------------
+All formatted diskettes have a short program in their boot sectors.
+The boot sector program contains information about the diskette's
+type. When a computer is booted from a diskette, this program attempts
+to execute DOS system files at the beginning of the diskette. If it
+does not find the files, it displays the following message:
+
+        Non-System disk or disk error
+        Replace and strike any key when ready
+
+The wording of the message varies between different DOS versions. If
+the diskette has been contaminated by a boot sector virus, the virus
+has already infected the hard disk by this time.
+
+Since all diskettes contain the boot sector program, empty ones may
+carry an infection as well as system diskettes. A common way for the
+infection to spread is that a user forgets a contaminated diskette in
+drive A when he turns the computer off. If the diskette is still in
+the drive when the computer is turned back on, the virus infects the
+hard disk, the user will get a &quot;Non-System&quot; error, remove the diskette
+and boot again, now from an infected hard disk.
+
+<A NAME="directaction"></A><B><FONT SIZE=+1>DIRECT ACTION
+
+</FONT></B>Contrary to a resident virus, a direct action virus is one that acts
+immediately and only when you run an infected program. Sometimes
+called non-resident because it does not remain in memory after having
+its way with your machine. Also known as a runtime virus.
+
+<A NAME="mbr"></A><B><FONT SIZE=+1>MASTER BOOT RECORD
+
+</FONT></B>This is the program located in the master boot sector which tells the
+computer how a hard disk is organized. The master boot record contains
+some basic information on the drive, and contains the partition table.
+The master boot record is normally created by FDISK, a DOS utility. To
+remove a virus from this sector you can boot from an uninfected floppy
+and type &quot;FDISK/MBR&quot;. If a master boot record already exists, the command
+FDISK (without the /MBR parameter) only edits the partition table.
+
+<A NAME="mbs"></A><B><FONT SIZE=+1>MASTER BOOT SECTOR
+
+</FONT></B>This is the very first sector of a hard disk, located on side 0,
+cylinder 0, sector 1. Each sector is 512 bytes in size in the world of
+MS-DOS. In versions of MS-DOS beyond 2.0, the remaining sectors on side
+0, cylinder 0 are normally empty (or &quot;slack&quot;). A virus that positions
+the start of its code in the master boot sector will normally first
+move the master boot record that was located there to another sector,
+often one located in the slack space. (For instance, Stoned-16 will move
+the MBR to side 0, cylinder 0, sector 16 on a hard disk, then write
+itself to the master boot sector.
+
+<A NAME="fat"></A><B><FONT SIZE=+1>FILE ALLOCATION TABLE
+
+</FONT></B>The FAT (or File Allocation Table) is a database of information on
+what clusters are used by each file. DOS reads the FAT whenever it is
+instructed to read, write, copy, run or delete a file. The initial FAT
+entry for a file is pointed to by a part of the file's entry in a
+directory. There are more copies of the FAT, which should be identical.
+The FAT is created whenever the disk is formatted.
+
+<A NAME="partition"></A><B><FONT SIZE=+1>PARTITION TABLE
+
+</FONT></B>The partition table is a small database stored at the end of the
+master boot sector and read by the master boot record. Created by
+FDISK, this database defines where each of the logical drives or
+partitions begin and end on a physical hard disk. It also tells the
+master boot record where to instruct the drive heads to move to read
+the boot record. Each logical drive (C:, D:, etc) will have a boot
+record created when that logical drive is prepared with FORMAT. One
+of these will be used in the boot process and marked &quot;Active&quot; with
+
+<A NAME="fdisk"></A><B><FONT SIZE=+1>FDISK/MBR
+
+</FONT></B>    It seems that there is much confusion about the difference between a
+partition sector (Master Boot Record is another name for it) and a boot
+sector among many PC users. If you are already familiar with the
+organization of a typical hard disk, you can skip the rest of this
+section; otherwise, please read on.
+    The very first sector on a typical hard disk stores the partition
+information for the disk. Within the partition sector, a 64-byte area
+contains enough information to locate all physical partitions on the disk,
+and shows which partition is the active partition. The active partition is
+used to boot the computer. There can be four physical partitions on
+a disk. The partition sector is located outside of any partition
+boundaries and has enough code to determine the active partition, load
+the boot sector in that partition and transfer control to it. The code
+in the partition sector does not care which operating system it is
+loading. In fact, one reason for having partitions is to allow
+coexistence of multiple operating systems on one hard disk. FDISK
+program that comes with DOS is used to manipulate the partition table.
+    Each partition has a boot sector. The boot sector holds certain
+information about that partition (in an area called BIOS Parameter Block
+or BPB) such as the number of sectors and number of FATs (file allocation
+table).
+In the case of the active partition, it also contains some code that loads
+the operating system. DOS partitions can be either primary or extended
+(extended partitions were added in DOS 3.3). The extended partition can
+be further subdivided into logical drives.
+    FORMAT program with the /S option is used to make the active DOS
+partition bootable by setting up the necessary operating system files.
+FORMAT must also be run on every partition to be able store files. This is
+called high-level formatting. Floppy disks do not have partition sectors,
+they only have a boot sector. That's one reason low-level and high-level
+formatting is combined into one procedure in the case of floppy diskettes.
+    Since the partition sector contains vital information to access the
+drive, it is important that this information be protected. If you lose
+your partition sector, you might have to wipe out the MBR, and repartition
+the disk. Of course, this operation would make all files inaccessible.
+Fortunately, it is hardly ever necessary to take such an extreme step.
+    Nevertheless, if you cannot reconstruct the partition table so that
+you can backup your files, or if you just want to get rid of a virus
+residing in the MBR, you should know a few important facts.
+    1.   A complete low level format of the entire hard disk is not
+necessary. Using a low level disk editor, you can write zeroes over the
+contents of the MBR and repartition the disk. This will get rid of the
+virus. In fact, certain types of hard drives, namely IDE, are not designed
+to be low level formatted by the end-user. Low level format is necessary
+on brand new drives that do not come pre-formatted from the manufacturer.
+Getting rid of an MBR virus is just a matter of removing its code from MBR
+and putting a fresh copy of the standard MBR code.
+    2.   FDISK will not put a fresh copy of the MBR code if the disk is
+already partitioned; therefore, an MBR virus can survive repartitioning by
+standard FDISK. This might surprise you, but it is a fact so dangerous to
+ignore. Worse yet, FDISK will destroy the boot records and FATs of any
+modified partitions. For example, if you repartition a drive with exactly
+the same parameters, you will still lose access to your files.
+
+   *** MS/PC DOS 5.0 and higher includes an improved version of the FDISK
+       program. It can replace the MBR code only, while leaving the
+       partition table intact. Unfortunately, the DOS technical
+       documentation did not mention this capability until recently.
+       The command is:
+
+                   FDISK   /MBR
+
+
+   Following diagram illustrates the organization of a typical hard disk.
+
+     .-----------------------------------.
+     |  Master Boot Record               | Sec 1, Cyl 0, Head 0
+     .-----------------------------------.
+     |                                   |
+     .-----------------------------------.
+     |  Active Partition Boot Sector     |
+     .-----------------------------------.
+     |  File Allocation Table 1 (FAT#1)  |
+     .-----------------------------------. Partition 1
+     |  File Allocation Table 2 (FAT#2)  |
+     .-----------------------------------.
+     |  Root Directory                   |
+     .-----------------------------------.
+     |                                   |
+     |       Data Area for files         |
+     |                                   |
+     .-----------------------------------.
+     |  Other Partition Boot Sector      |
+     .-----------------------------------.
+     |  FAT#1                            |
+     .-----------------------------------.
+     |  FAT#2                            | Partition 2
+     .-----------------------------------.
+     |  Root Directory                   |
+     .-----------------------------------.
+     |                                   |
+     |    Data Area for files            |
+     |                                   |
+     '-----------------------------------'
+
+See also: <A HREF="epplumbd.htm">Plumbing The Depths</A></PRE>
+  <PRE><A NAME="integrity"></A><B><FONT SIZE=+1>INTEGRITY CHECKING
+
+</FONT></B>INTEGRITY CHECKERS or MODIFICATION DETECTORS compute a small &quot;checksum&quot; or
+&quot;hash value&quot; (usually CRC or cryptographic) for files when they are
+presumably uninfected, and later compare  newly calculated values with the
+original ones to see if the files have been modified.  This catches unknown
+viruses as well as known ones and thus provides *generic* detection.  On
+the other hand, modifications can also be due to reasons other than
+viruses. Usually, it is up to the user to decide which modifications are
+intentional and which might be due to viruses, although a few products give
+the user help in making this decision.  As in the case of scanners,
+integrity checkers may be called to checksum entire disks or specified files
+on demand, or they may be resident, checking each program which is about to
+be executed (the latter is sometimes called an INTEGRITY SHELL).
+A third implementation is as a SELF-TEST, i.e. the checksumming code is
+attached to each executable file so that it checks itself just before
+execution. Examples: Fred Cohen's ASP Integrity Toolkit (commercial), and
+Integrity Master and VDS (shareware), all for the PC.
+
+<A NAME="macrovirus"></A><B><FONT SIZE=+1>MACRO VIRUS
+
+</FONT></B>A new kind of virus written using a macro language, e.g. Microsoft Word
+Macro Language. These viruses do not infect executables but documents by
+using the advanced template system. These viruses multiply fast since
+people exchange many documents and mostly do not expect them to be infected
+with a virus and therefore do not scan these files. Recent virus scanners
+have been updated to find and even clean these viruses.
+
+See also shortcut menu:
+- <A HREF="miscella.htm#macrovir">Macro Viruses
+
+<A NAME="infectionm"></A></A><B><FONT SIZE=+1>INFECTION MARKER
+
+</FONT></B>Multiple infections of the same file will increase the chance of detecting
+a virus. To avoid this authors of many viruses use an infection marker
+in infected files. Before attempting to infect viruses use this marker
+to determine if the intended victim is already infected. Some markers
+commonly used are:
+                   - Sequence of bytes (text or binary designator usually
+                     at a specific location)
+                   - Timestamp (date, seconds etc.)
+                   - Selfpresence detection.
+                   - File size
+                   - Attribute (eg. ReadOnly set)
+
+<A NAME="glut"></A><B><FONT SIZE=+1>VIRUS GLUT
+
+</FONT></B>Rapid increase in numbers of known viruses causing higher workloads for
+anti virus researchers, increased sizes of virus signature files use by
+scanners and slower scan rates.
+This phenomenon is mostly caused by increased media coverage and
+the execessive use of virus creation tools.
+
+<A NAME="multiplatform"></A><B><FONT SIZE=+1>MULTI PLATFORM
+
+</FONT></B>A multi platform virus is a virus that will function (execute and multiply)
+on more than one platform/system.
+A virus that works on a IBM compatible computer will generally not work
+on an Apple computer. When a virus overcomes this barrier it is considered
+a multi platform virus.
+The only known multi platform viruses are the macro viruses that
+appeared in the autumn of 1995. Most of these viruses were written using
+the macro language available in MS Word which is an application used on
+both IBM compatible and Apple computers. Rumours on an Excel .XLS and a
+Lotus 1-2-3 .WK1 virus were going around at the end of 1995.
+
+<A NAME="goat"></A><B><FONT SIZE=+1>GOAT / BAIT FILE
+
+</FONT></B>A file, often part of a set of files with increasing but fixed lengths,
+used to isolate viruses in a controlled environment. The fixed length will
+allow the researcher to find the virus length by noting the files size
+after infection. The set of increased lengths will show if the virus
+infects any target regardless of file length or that it contains a
+threshold value on what files to infect.
+The most primitive goat file is a file containing nothing but &quot;do-nothing&quot;
+(NOP) instructions to create a specific file length, followed by a return
+to the operating system.
+
+See <A HREF="essays.htm">Essays &amp; Papers</A> on '<A HREF="epgoatfl.htm">The Problem in Creating Goat Files by Igor Muttik</A>'.
+
+<A NAME="cavity"></A><B><FONT SIZE=+1>CAVITY VIRUS
+
+
+</FONT></B>A cavity virus is a virus that will check the victim file for an &quot;open
+spot&quot;, a series of constant bytes, usually zeros or nulls, large enough
+to accomodate an image of itself. By placing itself inside a file, over-
+writing the series of nulls, the victim's functionality will be preserved
+and the victim's length will not increase. Some viruses will look for a
+similar space in the EXE-header which is 512 bytes by default but not
+always used to the last byte.
+
+<A NAME="intended"></A><B><FONT SIZE=+1>INTENDED VIRUS
+
+</FONT></B>One of the most important features of a computer virus is it's capability
+to replicate. If this feature, for whatever reason (bad programming,
+wrong O/S, wrong CPU) does not function, the virus is not considered a
+real virus but an intended virus. Some virus scanners, like Kaspersky's
+AVP will discriminate between &quot;real&quot; and &quot;intended&quot; viruses.
+
+<A NAME="filejumper"></A><B><FONT SIZE=+1>FILE JUMPER
+
+</FONT></B>A virus that removes itself from an infected file just before it is
+opened or executed (keeping an image of itself in memory) and re-attaches
+itself when a program is closed or terminated. This technique is very
+effective against many scanning and validation schemes, because the
+scanner will see a &quot;clean&quot; file and think it's OK.</PRE>
+  <PRE><A NAME="trigger"></A><B><FONT SIZE=+1>TRIGGER
+
+</FONT></B>The trigger is some event that a virus writer has programmed the virus to 
+watch for, such as a date, the number of days since the infection occurred, 
+or a sequence of keystrokes. When the trigger activates the virus, it dispenses
+its <A HREF="#payload">payload</A>. </PRE>
+  <PRE><A NAME="HOLE"></A><B><FONT SIZE=+1>HOLE</FONT></B> (as in a &quot;hole&quot; in system memory)
+
+When DOS is starting, it begins allocating areas of memory below 640 K, which 
+are used to store information. There are some places where there are gaps in 
+the allocated memory. These gaps are unallocated and unused and are considered 
+to be a &quot;hole&quot; in system memory. 
+
+A hole in system memory may also be created in DOS because as DOS loads programs, 
+it often rounds off the amount of memory allocated to the program. For example a 
+program needs 1025 Bytes (1K + 1 Bytes). When DOS loads this program, it may 
+allocate 2 K of memory for the program. Thus 1023 Bytes are actually unused. 
+The unused portion may be considered a &quot;hole&quot;. </PRE>
+</UL>
+
+<PRE>
+<HR WIDTH="100%">
+</PRE>
+
+</BODY>
+</HTML>

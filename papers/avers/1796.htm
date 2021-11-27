@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="1796_files/new_SFPS_style.css"><title>Detecting Worms and Abnormal Activities with NetFlow, Part 1</title></head><body style="margin: 5px;" bgcolor="#ffffff">
+<!-- start header -->
+
+<!-- end header -->
+
+<table border="0" cellpadding="5" cellspacing="0" width="600">
+	<tbody><tr>
+	<td>
+<div id="article">
+	<span class="headline">Detecting Worms and Abnormal Activities with NetFlow, Part 1</span><br>
+	<span class="author">Yiming Gong</span>, 
+	<span class="source"></span> 
+	<span class="date"></span><br>
+	<p class="firstParagraph">
+		
+	</p>
+	<span class="body">
+		<table border="0" cellspacing="0" width="100%">
+
+
+<!-- This paper discusses the use of NetFlow, a traffic profile monitoring technology available on many
+routers, for use in the early detection of worms, spammers, and other abnormal network activity in large 
+enterprise networks and service providers. -->
+
+<tbody><tr>
+<td class="text">
+<!-- OAS -->
+<table width="100%"><tbody><tr><td class="rightcolumn">Editor's note: a French translation of this article (PDF) is <a href="http://www.athias.fr/jerome/DOC/NetFlow1_FR.pdf" target="_blank">also available</a>.</td></tr></tbody></table>
+<p class="text">
+Enterprise networks are facing ever-increasing security threats from
+worms, port scans, DDoS, and network misuse, and thus effective
+monitoring approaches to quickly detect these activities are greatly
+needed. Firewall and intrusion detection systems (IDS) are the most
+common ways to detect these activities, but additional technology such
+as NetFlow can be a valuable enhancement.
+</p><h2>1.	NetFlow overview</h2>NetFlow is a traffic profile
+monitoring technology developed by Darren Kerr and Barry Bruins at
+Cisco Systems, back in 1996. As a de facto industry standard, NetFlow
+describes the method for a router to export statistics about the routed
+socket pairs, and it's now a built-in feature for most Cisco routers as
+well as Juniper, Extreme and some other vendor's routers and switches.
+<p class="text">When a network administrator enables the NetFlow
+export on a router interface, traffic statistics of packets received on
+that interface will be counted as "flow" and stored into a dynamic flow
+cache. </p><h3>1.1	What is "flow"?</h3>
+Flow is defined as a unidirectional sequence of packets (which means
+there will be two flows for each connection session, one from the
+server to client, one from the client to server) between two endpoints.
+A flow can be identified by seven key fields: source IP address,
+destination IP address, source port number, destination port number,
+protocol type, type of services, and the router input interface. Any
+time after receiving a packet, a router will look for these seven
+fields and then make a decision: if the packet belongs to an existent
+flow, traffic statistics of the corresponding flow will be increased,
+otherwise a new flow entry will be created.
+<p class="text">According to Cisco, as new flow is continuously
+created, the expired flow records will be exported by means of a UDP
+packet to a user-specified monitoring station if one of the following
+conditions occurs. The conditions are:
+</p><p class="text">
+</p><ul>
+<li>The transport protocol indicates that the connection is completed
+(TCP FIN), and there is a small delay to allow for the completion of
+the FIN acknowledgment handshaking.</li>
+<li>Traffic inactivity exceeds 15 seconds.</li>
+<li>For flows that remain continuously active, flow cache entries
+expire every 30 minutes to ensure periodic reporting of active flows.</li>
+</ul>
+<p class="text">
+A number of network hardware vendors have implemented their version of
+NetFlow, but Version5 is now the most common. For a V5 datagram, every
+single UDP datagram contains one flow header and thirty flow records.
+Every flow record is made up of several fields, which include: the
+source and destination IP address, next hop address, input and output
+interface number, number of packet in the flow, total bytes in the
+flow, the source and destination port, the protocol, ToS, source and
+destination AS number, and TCP flags (Cumulative OR of TCP flags). </p><p class="text">
+On the collection station, a flow file analyzer is needed to process
+the exported flow data in real time. It can be either commercial
+software/hardware or a station created with open source tools. </p><h3>1.2	NetFlow versus intrusion detection systems</h3>
+Looking through a flow record, you will find that there is no packet
+payload information in the flow field. This is one of the major
+differences with NetFlow as compared to a traditional IDS. A flow
+record doesn't contain any high-layer information, it just contains
+traffic profiles. As a result, this makes NetFlow lose the ability to
+dig deeply into packets and do any packet analysis work, yet there is
+still enough information to make some valuable conclusions from the
+data. The advantage to this approach is its high speed. Paying no
+attention to packet payloads greatly reduces the processing overhead
+and makes NetFlow an extraordinarily good fit for busy, high-speed
+network environments. In addition, this characteristic makes NetFlow
+very useful in zero-day or "mutant attack" detection in cases where
+signature-based intrusion detection systems would fail.
+<p class="text">Because flow data is coming directly from the router,
+a core element of any large network, NetFlow is capable of providing a
+unique view on the entire traffic of a network at the infrastructure
+level. It also proactive detection of network infrastructure security
+events.
+</p><p class="text">If analyzed properly, NetFlow records will be very
+suitable for early worm and other abnormal network activity detection
+in large enterprise networks and service providers. In this paper, I
+will discuss some flow-based analysis methods on network security.
+</p><h2>2.	Flow-based analysis methods</h2>
+
+<h3>2.1	Top N and Baseline</h3>A baseline is a model describing what
+'normal' network activity is according to some historical traffic
+pattern; all traffic that falls outside the scope of this established
+traffic pattern will be flagged as anomalous.
+<p class="text">Trend and baseline analysis reports, commonly referred
+to as Top N and Baseline Analysis, is the most common and basic method
+of doing flow-based analysis. With this approach, attention is paid to
+flow records which have some "special high volume" characteristics,
+especially the value of those flow fields that deviate significantly
+from an established historical baseline.
+</p><p class="text">
+Normally there are two ways to make use of Top N and Baseline methods: Top N sessions and Top N data.
+
+</p><h3>2.1.1 Top N session</h3>A Top N session means a single host
+produces an abnormally high volume of connection requests to a single
+destination or block of destinations, and the volume departs from the
+established baseline. The most likely reason for these activities are
+the presence of new worms, DoS/DDoS attacks, network scans or certain
+kinds of network abuses.
+<p class="text">Normal clients connecting to the Internet should keep
+a relatively normal connection frequency to the outside. But if a host
+is infected with a worm, it will absolutely act different. It will
+always launch a large number of connection requests to the outside for
+its attempts to infect the next batch of victims, and as a result, the
+connection request numbers sent out will be significantly high. </p><p class="text">
+For the same reason, when a lesser-skilled "script kiddie" is scanning
+a large block of addresses for certain vulnerable services, we will see
+especially high volume sessions sent out by that single IP address. </p><p class="text">
+We can also use Top N session methods to detect many kinds of network
+abuses, such as checking the flow records for port 25 connection
+requests sent out by every single host in real time. In a given
+duration, for any host, if the statistics of port 25 requests are above
+a 'normal' value, it could be considered to be a spammer or someone
+infected with some kinds of email worm. It would be better for the
+Internet as a whole if service providers started using this technology
+and shut down the spammers upon detection.
+</p><h3>2.1.2 Top N data</h3>A second method of using Top N and
+Baseline methods is with Top N data. This can be defined as a
+consistantly large amount of network data transferred in a certain
+period of time between two network nodes or from a single node to a
+block of addresses.
+<p class="text">The Top N hosts that transfer traffic data to or from
+the outside in an enterprise should be ranked into relatively fixed
+groups. If this pattern changes, and a new host suddenly appears in the
+Top N hosts matrix, an alert should be triggered.
+</p><p class="text">Here is a example demonstrating Top N data methods
+that were used to track down a network security problem. One day, one
+of our customers reported a network bandwidth usage and congestion
+problem. We quickly enabled NetFlow on their upstream router's
+interface to collect egress traffic from their network, and had the
+flow data sent to our monitoring station. A few minutes later, a flow
+file was created. We analyzed the file with our flow-tools to generate
+a usage report for the top 20 hosts, sorted by octets. When the result
+displayed on console, we noticed that a host now siting in first place
+had abnormally high communication octets. A further examination of the
+flow records showed that the host sent out a huge number of requests to
+destination port 1434, so we now had the answer. The host was infected
+with the SQL slammer worm, and it almost ate up all their available
+bandwidth. After the customer patched the vulnerable machine, their
+network connection situation recovered.
+</p><h2>2.2	 Pattern Matching</h2>Pattern matching is another method
+we can use to identify abnormal network activities when doing
+flow-based analysis. With this method, the flow records will be
+searched and those hosts associated with flow fields that seem
+"suspicious" based on our criteria will be flagged.
+<p class="text">All the flow fields in a flow record can be used to do
+a pattern match, but the source and destination IP addresses, and the
+source and destination port numbers, are the most commonly used.
+</p><h3>2.2.1 Port matching</h3>Generally speaking, in order to launch
+an attack almost every attack should target a specific, functional
+port. For example, the SQL Slammer worm works on port 1434, the Netbus
+Trojan works on port 12345. Administrators can filter out all the flow
+records whereby the destination ports are equal to some specific ports,
+in order to find the corresponding attacks. This method is very easy to
+implement and can be used in most cases, although it may also produce
+false positives. <h3>2.2.2 IP address matching</h3>
+IP address matching is another method that can be used for security
+purposes with NetFlow analysis. There are several ways to make an IP
+address match, such as the following:
+<p class="text">
+</p><ul>
+<i><b>(A) Match IANA reserved addresses</b></i>
+<p class="text">The IANA has reserved large blocks of Internet address
+space which should not be used for global routing. If we find any flow
+record containing IANA reserved addresses, an alert should be
+triggered. </p><p class="text">
+An important fact that the administrator must realize when performing
+IANA reserved address matches is that he can't trace back the potential
+host within the flow record if it is using spoofed IP addresses. At
+this point another flow field, Ifindex, should be used. We could check
+the corresponding router Ifindex number in the flow records to find the
+actual router interface where the flow comes from. </p><p class="text">
+I've experienced an interesting case in which one of our customer's
+NetFlow records were appearing strange; the flow records showed a large
+number of connections whereby the source ports were all 80, the source
+addresses were 127.0.0.1, and the TCP flags of these flow records were
+all RST/ACK. </p><p class="text">
+The following is an output example of flow-tools: 
+</p><p class="text"></p></ul><pre><font size="-2">Sif  SrcIPaddress DIf  DstIPaddress     Pr SrcP DstP Pkts Octets StartTime         EndTime           Active  B/Pk  Ts  Fl
+0059 127.0.0.1    005b 219.140.194.174  06 50   4f3   1   40     0721.21:58:00.593 0721.21:58:00.593 0.000   40    00  14
+0059 127.0.0.1    005b 219.148.205.228  06 50   6ef   1   40     0721.21:57:56.533 0721.21:57:56.533 0.000   40    00  14
+</font></pre><ul>
+We can see that the source port (SrcP) is 50 in HEX, which equals 80 in
+decimal. And TCP flag (Fl) is 14 in HEX, and in the binary system it
+means 010100, which is TCP RST/ACK. Since the source IP address
+(SrcIPaddress) is a spoofed 127.0.0.1, where is the attacker coming
+from?
+<p class="text">Using the router Ifindex (Sif) field in the flow
+records, the router interface where these packets came from was quickly
+identified. I informed the administrator who was in charge of the
+network on that interface, and after a little while he responded to me
+with the answer: a PC in his domain was broken in and had a DoS program
+installed. The program was designed to launch TCP port 80 DoS attacks
+with spoofed source IP addresses against a security website located in
+Guangdong, China, but the DNS A record of the website had been changed
+to 127.0.0.1. Thus, the attack packets were received by the PC itself,
+then reset to the spoofed source IP addresses.
+</p><p class="text">
+<i><b>(B). Match a special IP or IP list</b></i>
+</p><p class="text">There are always some default rules for any
+enterprise or ISP when performing flow-based abnormal detection. Some
+of those rules are based on:
+</p><p class="text">
+</p><ul>
+<li>outbound traffic
+<p class="text">For an enterprise or ISP, any flow record where the IP
+source address is not part of their network domain for outbound traffic
+should be considered as abnormal.
+</p><p class="text">
+</p></li><li>Inbound traffic
+<p class="text">For an enterprise or ISP, any flow record where the IP
+source addresses are part of their domain for inbound traffic should be
+considered abnormal.
+</p><p class="text">
+</p></li><li>Fixed addresses
+<p class="text">Some kinds of abnormal activities may have one or more
+fixed IP addresses that contact is made with. For example, when the
+W32/Netsky.c worm spreads, it will send a DNS query to the following
+DNS servers, </p><p class="text">
+145.253.2.171, 151.189.13.35, 193.141.40.42, 193.189.244.205,
+193.193.144.12, 193.193.158.10, 194.25.2.129, 194.25.2.129,
+194.25.2.130, 194.25.2.131, 194.25.2.132, 194.25.2.133, 194.25.2.134,
+195.185.185.195, 195.20.224.234, 212.185.252.136, 212.185.252.73,
+212.185.253.70, 212.44.160.8, 212.7.128.162, 212.7.128.165,
+213.191.74.19, 217.5.97.137, 62.155.255.16
+</p><p class="text">Therefore, any flow record in which the
+destination address is found to be in this list and the destination
+port is also UDP 53 should raise an alert, and future analysis is then
+needed.
+</p></li></ul>
+</ul>
+
+<h2>3.0 Concluding part one</h2>This concludes the first of our
+two-part series. Check back in two week's time where we'll continue the
+discussion of NetFlow. In part two, we'll look at how to filter our
+flow results via TCP flags, we'll discuss some ICMP issues, and then
+discuss some of the various tools that exist to help implement and
+analyze our NetFlow solution. Stay tuned. <br><br>
+</td>
+</tr>
+
+<!-- If you have relevant links, remove the comment tag below it -->
+
+<tr>
+<td class="rightcolumn" valign="top">
+ <img src="1796_files/pixel.htm" alt="" height="1" width="110">
+ <div class="rightcolumn">
+<span class="text"><b>About the author</b><br></span>
+<p>
+<a href="mailto:yiming@security.zz.ha.cn">Yiming Gong</a> has worked for China Telecom for more than 5 years as a
+senior system administrator, and now he works as a Technical Manager in
+China Telecom System Integration Co.Ltd. He also has a 
+<a href="http://security.zz.ha.cn/" target="_blank">personal homepage</a>
+focusing on network/system security.</p>
+
+
+ </div>
+</td>
+</tr>
+
+<!-- If you have relevant links, remove the comment tag above it -->
+<tr><td>
+
+<p><br>Comments on this article can be sent to the <a href="mailto:content-editor@securityfocus.com">editor</a>.</p>
+
+</td></tr>
+</tbody></table>
+
+	</span>
+</div>
+	</td>
+	</tr>
+</tbody></table>
+
+			<!-- End Content -->
+<br>
+<p style="color: rgb(102, 102, 102); font-size: 8pt;" align="center"><a href="http://www.securityfocus.com/privacy">Privacy Statement</a><br>Copyright 2005, SecurityFocus</p>
+
+</body></html>

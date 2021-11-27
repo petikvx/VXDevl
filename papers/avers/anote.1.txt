@@ -1,0 +1,79 @@
+
+    Attached is a recent report off the Internet on the Mutating Engine:
+    Part 1/4
+                 *************************************
+
+
+   -----------------------------------------------------------------------
+                                 22 Jun 92
+
+                            Mutation Engine Report
+
+
+            Copyright (c) 1992 by  VDS Advanced Research Group
+                           All Rights Reserved
+
+                             P.O. Box 9393
+                          Baltimore, MD 21228
+                            (410) 247-7117
+
+                              prepared by
+
+                             Tarkan Yetiser
+
+
+      This report is provided to satisfy the curiosity of the
+      public. We were approached by some third parties to perform an
+      analysis on MtE. We would like to share the results of our
+      analysis with everyone. If you find an error or inaccuracy in
+      this report, please feel free to contact us. All constructive
+      criticism is welcome.
+
+
+                               TABLE of CONTENTS
+
+I.  Mutation Engine and Viruses. . . . . . . . . . . . . . . . . . . 1
+
+II.   How to Catch Viruses and MtE-based Viruses . . . . . . . . . . 2
+
+III.  Mutation Types and Detection Algorithms. . . . . . . . . . . . 3
+
+IV.   Live Tests and Results . . . . . . . . . . . . . . . . . . . . 5
+           A. Comments on Test Results . . . . . . . . . . . . . . . 5
+
+V.    A Simple Message . . . . . . . . . . . . . . . . . . . . . . . 6
+
+
+                  I. Mutation Engine and Viruses
+
+      We have analyzed the so-called MtE (Mutation Engine by a "Dark
+Avenger" from Bulgaria), and sample viruses based on it; namely,
+Pogue and Dedicated. We have also conducted tests to examine what
+kind of a potential this miscreant has, and collected empirical
+data on how popular scanners deal with the MtE. We have also implemented a
+little program (CatchMTE) that can recognize MtE-based code using an
+algorithmic technique. The program in executable form is available free of
+charge as a service to the public. Due to possible misuse, the source code
+and a more detailed (at the opcode and bit-mask level) analysis with
+decryptor samples and algorithms necessary to detect MtE will be made
+available in a limited fashion. Under no circumstances, actual virus
+samples will be provided; except the missed samples can be sent to known
+anti-viral product developers who wish to enhance their programs.
+
+      For those who are not familiar with the MtE, some preliminary
+info will be presented first:
+
+      MtE is NOT a virus per se, but an object module that can be
+linked into a virus to give it polymorphic capabilities. MtE
+expects to be called as a routine that can encrypt a certain
+portion of code and can generate a suitable decryption routine. It
+uses a random number generator to vary each mutation so that it
+will not be possible to recognize the new variant by using simple
+scanning techniques. The random number generator is not part of the
+MtE object module. A sample pseudo-random number generator is
+included with the archive Dark Avenger distributes. A virus writer
+could also supply his own random number generator.
+
+TO BE CONTINUED ....
+
+

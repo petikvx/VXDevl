@@ -1,0 +1,504 @@
+1    HEURISTIC ANTI-VIRUS TECHNOLOGY
+
+Generally speaking, there are two basic methods to detect viruses - specific and generic. 
+Specific virus detection requires the anti-virus program to have some pre-defined
+information about a specific virus (like a scan string).  The anti-virus program must be
+frequently updated in order to make it detect new viruses as they appear.  Generic
+detection methods however are based on generic characteristics of the virus, so
+theoretically they are able to detect every virus, including the new and unknown ones.
+
+Why is generic detection gaining importance?  There are four reasons: 
+
+1)   The number of viruses increases rapidly.  Studies indicate that the total number of
+     viruses doubles roughly every nine months.  The amount of work for the virus
+     researcher increases, and the chances that someone will be hit by one of these
+     unrecognizable new viruses increases too.
+
+2)   The number of virus mutants increases.  Virus source codes are widely spread and
+     many people can't resist the temptation to experiment with them, creating many
+     slightly modified viruses.  These modified viruses may or may not be recognized
+     by the anti-virus product.  Sometimes they are, but unfortunately often they are
+     not.
+
+3)   The development of polymorphic viruses.  Polymorphic viruses like MTE and TPE
+     are more difficult to detect with virus scanners.  It is often months after a
+     polymorphic virus has been discovered before a reliable detection algorithm has
+     been developed.  In the meantime many users have an increased chance of being
+     infected by that virus.
+
+4)   Viruses directed at a specific organization or company.  It is possible for
+     individuals to utilize viruses as weapons.  By creating a virus that only works on
+     machines owned by a specific organization or company it is very unlikely that the
+     virus will spread outside of the organization.  Thus it is very unlikely that any virus
+     scanner will be able to detect the virus before the payload of the virus does its
+     destructive work and reveals itself.
+
+Each of these scenarios demonstrates the fact that virus scanners can not recognize a virus
+until the virus has been discovered and analyzed by an anti-virus vendor.
+
+These same scenarios do not hold true for generic detectors, and therefore many people
+are becoming more interested in generic anti-virus products. Of the many generic
+detection methods, heuristic scanning is currently becoming the most important.
+
+2    HEURISTIC SCANNING
+
+One of the most time consuming tasks that a virus researcher faces is the examination of
+files.  People often send files to researchers because they believe the files are infected by
+a new virus.  Sometimes these files are indeed infected, sometimes not.  Every researcher
+is able to determine very quickly what is going on by loading the suspected file into a
+debugger.  A few seconds is often enough, and many researchers must have asked
+themselves: "How can I determine this so quickly"?
+
+One time I demonstrated this effect to the audience on an international conference. I
+showed the first page of the assembly listing of a MTE-infected file, and within about a
+second, Vesselin Bontchev came with the correct answer.  How is this possible?
+
+2.1  ARTIFICIAL INTELLIGENCE
+
+Some of the many differences between viruses and normal programs is that normal
+programs typically start searching the command line for options, clearing the screen, etc. 
+Viruses however never search for command line options or clear the screen.  Instead they
+start with a search for other executable files, by writing to the disk, or by decrypting
+themselves.
+
+A researcher who has loaded the suspected file into a debugger can notice this difference
+in only a glance.  Heuristic scanning is an attempt to put this experience and knowledge
+into a virus scanner.  
+
+The word 'heuristic' means (according to a Dutch dictionary) 'the self finding' and 'the
+knowledge to determine something in a methodic way'.
+
+A heuristic scanner is a type of automatic debugger or disassembler.  The instructions are
+disassembled and their purposes are determined. If a program starts with the sequence
+MOV AH,5 INT 13h which is a disk format instruction for the BIOS, this is highly
+suspected, especially if the program does not process any command line options or interact
+with the user.
+
+2.2  SUSPECTED ABILITIES
+
+In reality, heuristics is much more complicated.  The heuristic scanners that I am familiar
+with are able to detect suspicious instruction sequences, like the ability to format a disk,
+the ability to search for other executables, the ability to remain resident in memory, the
+ability to issue non-standard or undocumented system calls, etc.  Each of these abilities
+has a value assigned to it. The values assigned to the various suspicious abilities are
+dependant on various fact. A disk format routine doesn't appear in many normal programs,
+but often in viruses. So it gets a high value. The abilities to remain resident in memory
+are found in many normal programs, so despite of the fact that they also appear in many
+viruses it doesn't get a high value. If the total of the values for one program exceeds a
+predefined threshold, the scanner yells "Virus!".  A single suspected ability is never
+enough to trigger the alarm.  It is always the combination of the suspected abilities which
+convince the scanner that the file is a virus.
+
+2.3  HEURISTIC FLAGS
+
+Some scanners set a flag for each suspected ability which has been found in the file being
+analyzed.  This makes it easier to explain to the user what has been found.
+
+TbScan for instance recognizes many suspected instruction sequences. Every suspected
+instruction sequence has a flag assigned to it:
+
+2.4  FLAG DESCRIPTION
+
+F  = Suspicious file access.  Might be able to infect a file. 
+R  = Relocator.  Program code will be relocated in a suspicious way. 
+A  = Suspicious Memory Allocation.  The program uses a non-standard way to search
+     for, and/or allocate memory.
+N  = Wrong name extension.  Extension conflicts with program structure. 
+S  = Contains a routine to search for executable (.COM or .EXE) files. 
+#  = Found an instruction decryption routine.  This is common for viruses but also for
+     some protected software.
+E  = Flexible Entry-point.  The code seems to be designed to be linked on any location
+     within an executable file.  Common for viruses. 
+L  = The program traps the loading of software.  Might be a virus that intercepts
+     program load to infect the software. 
+D  = Disk write access.  The program writes to disk without using DOS. 
+M  = Memory resident code.  This program is designed to stay in memory. 
+!  = Invalid opcode (non-8088 instructions) or out-of-range branch. 
+T  = Incorrect timestamp.  Some viruses use this to mark infected files. 
+J  = Suspicious jump construct.  Entry point via chained or indirect jumps.  This is
+     unusual for normal software but common for viruses. 
+?  = Inconsistent exe-header.  Might be a virus but can also be a bug. 
+G  = Garbage instructions.  Contains code that seems to have no purpose other than
+     encryption or avoiding recognition by virus scanners. 
+U  = Undocumented interrupt/DOS call.  The program might be just tricky but can also
+     be a virus using a non-standard way to detect itself. 
+Z  = EXE/COM determination.  The program tries to check whether a file is a COM or
+     EXE file.  Viruses need to do this to infect a program. 
+O  = Found code that can be used to overwrite/move a program in memory. 
+B  = Back to entry point.  Contains code to re-start the program after modifications at
+     the entry-point are made.  Very usual for viruses. 
+K  = Unusual stack.  The program has a suspicious stack or an odd stack.
+
+TbScan would for instance output the following flags:
+
+     VIRUS                    HEURISTIC FLAGS
+
+     Jerusalem/PLO            FRLMUZ
+     Backfont                 FRALDMUZK
+     Minsk_Ghost              FELDTGUZB
+     Murphy                   FSLDMTUZO
+     Ninja                    FEDMTUZOBK
+     Tolbuhin                 ASEDMUOB
+     Yankee_Doodle            FN#ELMUZB
+
+The more flags that are triggered by a file, the more likely it is that the file is infected by
+a virus.  Normal programs rarely trigger one flag, while at least two flags are required to
+trigger the alarm.  To make it more complicated, not all flags carry the same 'weight'.
+
+3    FALSE POSITIVES
+
+Just like all other generic detection techniques, heuristic scanners sometimes blame
+innocent programs for being contaminated by a virus. This is called a "False Positive" or
+"False Alarm".
+
+The reason for this is simple. Some programs happen to have several suspected abilities. 
+For instance, the LOADHI.COM file of QEMM has the following suspected abilities
+(according to an older, yet obsolete version of TbScan):
+
+ A = Suspicious Memory Allocation.  The program uses a non-standard way to search
+     for, and/or allocate memory.
+ M = Memory resident code.  This program may be a TSR but also a virus. 
+ U = Undocumented interrupt/DOS call.  The program might be just tricky but can also
+     be a virus using a non-standard way to detect itself. 
+ Z = EXE/COM determination.  The program tries to check whether a file is a COM or
+     EXE file.  Viruses need to do this to infect a program. 
+ O = Found code that can be used to overwrite/move a program in memory.
+
+All of these abilities are available in LoadHi, and the flags are enough to trigger the
+heuristic alarm.  As LoadHi is supposed to allocate upper memory, load resident programs
+in memory, move them to upper memory, etc., all these suspected abilities can easily be
+explained and verified.  However, the scanner is not able to know the intended purpose
+of the program, and as most of these suspected abilities are often found in viruses, it just
+describes the LoadHi program as "a possible virus".
+
+3.1  HOW SERIOUS IS THE ISSUE OF FALSE ALARMS?
+
+If a heuristic scanner pops up with a message saying: "This program is able to format a
+disk and it stays resident in memory", and the program is a resident disk format utility,
+is this really a false alarm?  Actually, the scanner is right. A resident format utility
+obviously contains code to format a disk, and it contains code to stay resident in memory.
+The heuristic scanner is therefore completely right! You could name it a false suspicion,
+but not a false positive. The only problem here is that the scanner says that it might be
+a virus. If you think the scanner tells you it has found a virus, it turns out to be a false
+alarm. However, if you take this information as is, saying 'ok, the facts you reported are
+true for this program, I can verify this so it is not a virus', I wouldn't count it as a false
+alarm. The scanner just tells the truth. The main problem here is the person who has to
+make decisions with the information supplied by the scanner. If it is a novice user, it is
+a problem. More about that later.
+
+
+
+
+3.2  AVOIDING FALSE POSITIVES
+
+Whether we call it a false positive or a false suspicion doesn't matter. We do not like the
+scanner to yell every time we scan. So we need to avoid this situation. How do we
+achieve this?
+
+  1) Definition of (combinations of) suspicious abilities
+
+     The scanner does not issue an alarm unless at least two separate suspected program
+     abilities have been found.
+
+  2) Recognition of common program codes
+
+     Some known compiler codes or run time compression or decryption routines can
+     cause false alarms.  These specific compression or decryption codes can be
+     recognized by the scanner to avoid false alarms.
+
+  3) Recognition of specific programs
+
+     Some programs which normally cause a problem (like the LoadHi program used
+     in the example) can be recognized by the heuristic scanner.
+
+  4) Assumption that the machine is initially not infected
+
+     Some heuristic scanners have a 'learn' mode, i.e. they are able to learn that a file
+     causing a false alarm is not a virus.
+
+3.3  DEALING WITH FALSE POSITIVES
+
+Some false positives are not easily avoided.  So, the user has to deal with a certain
+amount of false alarms, and must make the final decision as to whether a file is infected
+or not.
+
+Ok, you may say, how do we know whether a suspicious program is a virus or innocent.
+There is no way to find out, that is what most people believe. Actually there is a way to
+find out, but this depends on the scanner.
+
+
+The scanner has to explain to the user the reasons why the program is suspect. 'This file
+might contain a virus' actually doesn't say much to the user. It is always right. Every file
+MIGHT contain a virus, but MAY also be clean. We actually use a scanner to find out!
+What is the user supposed to do with this information?
+
+However, if the scanner says that some program is able to remain resident in memory and
+able to format a disk, the user can more easily figure out what is going on.  If a word
+processor gives such an alarm, it is extremely likely that the program carries a virus,
+because word processors generally are not able to format disks and remain resident in
+memory.  However, if the suspected file is a resident disk formatting utility, then all of
+the suspected abilities can be explained by the intended purpose of the program.
+
+     Reason for suspicion: memory resident and disk formatting abilities.
+
+     PROGRAM                  PROBABLY
+
+     Resident disk formatter  No Virus (innocent)
+     Word processor           Malicious (virus)
+
+     Both programs cause the same heuristic alarms, but the final conclusion is different.
+
+Naturally, it requires an advanced user to draw a conclusion for the question "infected or
+not?".  However, my opinion is that judging the results of any scanner (also conventional
+scanners) is a task for an advanced user only.  If the scanner has a 'learn' mode, i.e. is
+able to remember which programs cause a false alarm, the initial scan should be
+performed by an advanced user, but the subsequent scans (when the possible false
+positives have been eliminated) can be performed by a novice user.  This is already
+common practice in most organizations.
+
+Anyway, it isn't as bad as it seems, as all other detection methods (including signature
+scanning) are known to cause some false alarms as well.  Heuristics however has the
+advantage that it is able to supply you with enough information to establish for yourself
+whether a suspected file is likely a virus or not.
+
+4    HOW DOES HEURISTIC SCANNING PERFORM?
+
+Heuristics is a relatively new technique and still under development. It is however gaining
+importance rapidly.  This is not surprising as heuristic scanners are able to detect over
+90% of the viruses without using any predefined information like signatures or checksum
+values. The amount of false positives depends on the scanner, but a figure as  low as
+0.1% can be reached easily.
+
+TbScan 6.02 used on the large virus collection of Vesselin Bontchev showed the following
+results:
+
+     SCANNING            7210           DETECTION
+     METHOD              FILES          PERCENTAGE
+
+     Conventional        7056           97.86%
+     Heuristics          6465           89.67%
+
+A false positive test however is more difficult to perform so there are no independent
+results available.
+
+
+5    COMBINATION OF CONVENTIONAL AND HEURISTIC SCANNING
+
+Some people think heuristic scanning is a replacement for conventional scanning.  In my
+opinion it is not.  Heuristic scanning serves a very useful purpose when used in
+combination with conventional scanning.  The results of both scanning methods can be
+validated by each other, thereby reducing false positives and also false negatives.
+
+Combined result of analysis:
+
+     HEURISTICS       CONVENTIONAL      PROBABILITY
+
+     clean            clean             very probably clean
+     clean            virus             might be a false positive
+     virus            clean             might be a false negative
+     virus            virus             very probably infected
+
+
+     fn: 10%          fn: 1%            combined false negatives: 0.1%   
+     fp: 0.1%         fp: 0.001%        combined false positives: 0.00001%
+
+
+The chances of both the heuristic scanner and the conventional scanner failing is minimal. 
+If both scanning methods have the same results, the result is almost certain.  In the few
+cases that the results don't agree with each other additional analysis is required.
+
+TbScan 6.02 used on the large virus collection of Vesselin Bontchev showed the following
+results:
+
+     SCANNING         7210              DETECTION
+     METHOD           FILES             PERCENTAGE
+
+     Conventional     7056              97.86%
+     Heuristics       6465              89.67%
+     Combined         7194              99.78%
+
+6    WHAT CAN BE EXPECTED FROM IT IN THE FUTURE?
+
+->   THE DEVELOPMENT CONTINUES
+
+Most anti-virus developers still do not supply a ready-to-use heuristic analyzer.  Those
+who have heuristics already available are still improving it.  It is however unlikely that
+the detection rate will ever reach 100% without a certain amount of false positives.  On
+the other hand it is unlikely that the amount of false positives will ever reach 0%.
+
+Maybe you wonder why it isn't possible to achieve 100% correct results. There is a large
+grey area between viruses and non-viruses. Even for humans it is hard to describe what
+a virus is or not, an often used definition of a computer virus is this: "A virus is a
+program that is able to copy itself". According to this definition the DiskCopy.Com
+program is a virus...
+
+->   REACTION OF VIRUS WRITERS
+
+An important issue is the effect on virus writers. It is likely that they will try to avoid
+detection by heuristic scanners.  Until now the goal was to avoid detection by signature
+scanners, and this was very easy to do, as it was sufficient to modify only a small part of
+an existing virus.  Teenagers with some basic understanding of programming could do so
+easily . Avoiding heuristic scanners however requires a lot more knowledge, if even
+possible at all.
+
+Fortunately, this detection-avoiding method of programming makes detection by
+conventional anti-virus products easier because it means that the programmer can not use
+very tight and straight code. The virus writer will be forced to write more complex
+viruses.
+
+7    THE PRO'S AND CON'S OF HEURISTIC SCANNING
+
+     ADVANTAGES       Can detect 'future' viruses
+                      User is less dependant on product updates
+
+     DISADVANTAGES    False positives are possible
+                      Judgement of the result requires some basic knowledge
+
+8    HEURISTIC CLEANING
+
+Before we can discuss heuristic cleaning, it is important to know how a virus infects a
+program. The basic principle is not difficult.  A virus - a program by itself - adds itself
+to the end of the program.  The size of the program increases due to this addition of the
+viral code.  Appending a virus program to another program is however not enough, the
+virus code should also be executed.  To make this happen, the virus overwrites the first
+bytes of the file with a 'jump' instruction, which makes the processor jump to the viral
+code.  The virus now gains control when the program is invoked, and it will finally pass
+control to the original program. Since the first bytes of the file are overwritten by the
+jump instruction, the virus has to 'repair' these bytes first.  After that the virus just jumps
+to the beginning of the original program, and most often this program works as usual.
+
+ORIGINAL PROGRAM                                 INFECTED PROGRAM
+
+                                        100:
+
+
+
+
+
+
+                                        2487:         Virus!p     
+                                                           r     
+                                                     jmp 100     
+To clean an infected program, it is of vital importance to restore the bytes being
+overwritten by the jump to the virus code.  The virus has to restore these bytes also, so
+somewhere in this virus code these original bytes are stored.  The cleaner searches for
+those bytes, puts them back in their original location, and truncates the file to the original
+size.
+
+
+8.1  HOW DOES A CONVENTIONAL CLEANER WORK?
+
+A conventional cleaner has to know which virus to remove.  Suppose your system is
+infected with the Jerusalem/PLO virus.  You invoke your cleaner and it proceeds like this:
+
+"Hey, this file is infected with the Jerusalem/PLO virus.  OK, this virus is 1873 bytes in
+size, and it overwrites the first three bytes of the original program with a jump to itself. 
+The original bytes are located at offset 483 in the viral code.  So, I have to take those
+bytes, copy them to the beginning of the file, and I have to remove 1873 bytes of the file. 
+That's it!"
+
+8.2  SHORTCOMINGS OF CONVENTIONAL CLEANSERS
+
+The cleaner has to know the virus it has to remove.  It is impossible to remove an
+unknown virus.
+
+The virus should be the same as the virus known to the cleaner. Imagine what would
+happen if the virus used in the example was modified and now 1869 bytes in size instead
+of 1873... the cleaner would remove too much!  This is not an exception, but it happens
+quite often since there are so many mutants.  For instance, the Jerusalem/PLO family now
+contains more than 100 mutants!
+
+Many polymorphic viruses have variable lengths and maintain the original instructions
+encrypted.  Most conventional cleaners are therefore unable to clean MTE infected
+programs.
+
+8.3  THE VIRUS WILL REMOVE ITSELF BEFORE ACTUAL EXECUTION
+
+We have seen above how a virus works. The interesting part is that when the virus passes
+control to the original program it restores the original bytes at the beginning of the
+program and jumps back to start the program. Every virus is able to repair the original
+program in order to keep it functional (except for overwriting viruses, but these can't be
+cleaned anyway).
+
+8.4 LET THE VIRUS DO THE DIRTY WORK
+
+The idea is: why not let do the virus the dirty work?  The basic principle of heuristic
+cleaning is simple.  The heuristic cleaner loads the infected file and starts emulating the
+program code.  It uses a combination of disassembly, emulation and sometimes execution
+to trace the flow of the virus, and to emulate what the virus is normally doing.  When the
+virus restores the original instructions and jumps back to the original program code, the
+cleaner stops the emulation process, and says 'thank you' to the virus for its cooperation
+in restoring the original bytes.  The now repaired start of the program is copied back to
+the program file on disk, and the part of the program that gained 'execution' will be
+chopped off.  An additional analysis of the cleaned program file will be performed to be
+on the safe side.
+
+Note that the cleaner is actually removing the unknown from the unknown.  No predefined
+information about the virus or infected file is necessary.
+
+The process of emulation is just like hitchhiking. The emulator convinces the viral code
+that it is actually executing, and it hitchhikes to the point where the virus passes control
+to the original program.
+
+However, the actual process is very complicated.  As with hitchhiking, many things can
+go wrong:
+
+->   Driver takes you to the wrong place
+     The virus does not intend to execute the original program, but it starts doing
+     completely different things.  As the purpose of the emulation is to restore the
+     original program, we never reach our goal.
+
+->   Driver won't let you out
+     If the viral code performs an endless loop, the original program will never be
+     restored so the cleaner might wait forever.
+
+->   Driver leaves the car
+     A potentially dangerous situation is that the cleaner is too ambitious in its task to
+     emulate everything, and that the virus gets control inside the emulated environment
+     and finally escapes from it.
+
+->   Driver hits a tree and kills you too
+     Many viruses are badly programmed.  If they crash inside the emulator, chances
+     are that the emulator crashes too.
+
+Heuristic cleaners are so complicated that there is only one available right now.  However,
+the great potential of heuristic cleaning make it likely that there will be more heuristic
+cleaners soon.
+
+8.5  THE PRO'S AND CON'S (OF HITCHHIKING)
+
+     ADVANTAGES       No need to recognize mutants
+                      No problems with polymorphic viruses
+                      Can clean 'future' viruses
+                      User is less dependant on product updates
+
+     DISADVANTAGES    No exact copy of the original
+                      It cleans everything: even clean files!
+
+Being the author of the first heuristic cleaner I have received many reactions to it.  Most
+people were surprised that my cleaner was able to remove MTE viruses before my scanner
+was even able to recognize them.  This is especially interesting as most anti-virus
+products are still not able to remove MTE infections.
+
+Of course everybody wants to know how many viruses can be removed this way.  I can't
+show a reliable figure, as testing a cleaner is extremely tedious and time consuming task. 
+However, a figure of 80% is a rough estimate.  Many conventional cleaners do not even
+come close to this percentage.
+
+8.6  WHAT CAN BE EXPECTED FROM IT IN THE FUTURE?
+
+Heuristic cleaning needs additional improvements.  Some viruses use anti-debugger
+features that also make an emulator fail.  It is also still possible that a virus detects that
+it is being emulated, and it can simply refuse to cooperate.  The better the emulator
+performs, the less likely this is.  Major improvements however are more likely to show 
+up after multiple heuristic cleaners are available and some competition occurs.
+
+
+This text is copyright Dr. Frans Veldman, ESaSS B.V. 1994-1995 and is
+reproduced with permission.  
+
+Requests for reproduction in part, or whole may be addressed on the 
+Internet to: veldman@esass.iaf.nl, or by telephone in 
+North America to: 1-800-667-8228 x331, Europe: +31 8894 22282.
+
+

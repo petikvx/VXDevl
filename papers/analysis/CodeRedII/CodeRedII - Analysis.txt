@@ -1,0 +1,201 @@
+The following is an analysis of CodeRedII (CodeRed Version 2.0) worm.
+eEye Digital Security (www.eeye.com)
+Security Focus (www.securityfocus.com)
+
+We first were contacted about this worm by the  Security Focus ARIS Incident Analysts.  While they were monitoring various attacks from around the globe they started to see a new attack pattern, and after a handful of packet captures they saw there was a new worm on the loose. So they called up eEye Digital Security to allow us to perform an analysis of this new worm.
+
+There is in fact a completely brand new worm loose on the net right now. It uses the same injection vector as the first CodeRed worm, however this second worm has a completely different payload than the first worm. Therefore this second worm is _NOT_ a variant of the first CodeRed worm. This is an entirly new worm.
+
+This analysis is broken up into 3 sections: 1. Infection 2. Propagation 3. Trojan
+
+You can "follow along" in this analysis by loading the worm binary in IDA and then following the seg locations.
+
+This worm, like the original Code Red worm, will only exploit Windows 2000 web servers because it overwrites EIP with a jmp that is only correct under Windows 2000. Under NT4.0 etc... that offset is different so, the process will simply crash instead of allowing the worm to infect the system and spread.
+
+Analysis by Ryan Permeh (ryan@eeye.com) and Marc Maiffret (marc@eeye.com) of eEye Digital Security (www.eeye.com). Ryan has once again generously taken the time to comment all of the assembly code for better understanding of the worm.
+
+The fix that has been talked about for Code Red is still the same fix for this new worm. INSTALL THE MICROSOFT SECURITY PATCH: http://www.microsoft.com/technet/treeview/default.asp?url=/technet/security/bulletin/MS01-033.asp
+
+To check if your system has been infected or not look for the existance of the files, c:\explorer.exe or d:\explorer.exe. Also check your IIS scripts folder and msadc folder to see if the file root.exe exists. If it does then you have most likely been infected with this worm. Note: An older sadmin unicode worm also would rename cmd.exe to root.exe so you could have a bit of cross over there.
+
+To download this analysis and all disassembly files then goto http://www.eeye.com/html/advisories/coderedII.zip
+
+Infection
+================
+
+1st infection:
+
+A. The first thing the worm does is setup a jump table so that it can get to all of its needed functions.
+seg000:000001D0
+
+B. The worm then proceedes to get its local IP address. This is later used to deal with subnet masks (propagation) and to make sure that the worm does not reinfect the local system.
+seg000:000001D5
+
+C. Next, the worm gets the local System Language to see if the local system is running Chinese (Taiwanese) or Chinese (PRC).
+seg000:000001F9
+
+D. At this point the worm checks if we've executed before, and if so, then the worm will procede to the propagation section. (See the propagation section)
+seg000:0000021A
+
+E. Next, the worm will check to see if a CodeRedII atom has been placed (GlobalFindAtomA). This functionality allows the worm to make sure not to re-infect the local machine. If it sees that the atom exists then it sleeps forever.
+seg000:00000240
+
+F. The worm will add a CodeRedII atom. This is to allow the worm the functionality to check to see if a system has already been infected with the worm.
+seg000:0000027D
+
+G. The worm now sets its number of threads to 300 for non-Chinese systems. If the system is Chinese then it sets it to 600.seg000:00000286
+
+H. At this point the worm spawns a thread starting back at step A. The worm will spawn threads according to the number set from G. Each new thread will be a propagation thread.
+seg000:000002BA
+
+I. This is where the worm calls the trojan functionality. You can find an analysis of the trojan mechanism down below in the Trojan System section.
+seg000:000002C4
+
+K. The worm then sleeps for 1 day if the local system is not Chinese, 2 days if it is.
+seg000:000002DA
+
+L. Reboot Windows.
+seg000:000002E1
+
+Propagation
+================
+
+This is used to spread the worm further.
+seg000:000002EB
+
+A. Setup local IP_STORAGE variable. This is used for worm propagation functionality and to make sure not to re-infect the local system.
+seg000:000002EB
+
+B. Sleep for 64h miliseconds
+seg000:000002F1
+
+C. Get local system time.  The worm checks to see if it the year is less than 2002 or if the month is less than 10. If the date is beyond either of those, then the worm reboots the local system. That basically limits the worm to 10/01 for its spreading (In a perfect world.)
+seg000:000002FD
+
+D. Setup SockAddr_in.  This will reference the GET_IP section.
+seg000:0000031A
+
+E. Setup Socket:  This performs a Socket(), stores the handle, then makes it a non-blocking socket (this is important for speed dealing with connect() calls)
+seg000:00000337
+
+F. Connect to the remote host, if it returns a connect right away, goto H.
+seg000:00000357
+
+The following is how the worm generates the IP address for the next host to connect to:
+
+GET_IP:                                 ; CODE XREF: sub_1C4+168p
+
+call    GET_OCTET       ; load 4th octet (this is in reverse ordwer due to
+byte ordering)
+mov     bh, al
+call    GET_OCTET       ; get 3rd octet
+mov     bl, al
+shl     ebx, 10h        ; shift bx to the top of ebx
+call    GET_OCTET       ; get 2nd octet
+mov     bh, al
+call    GET_OCTET       ; 1st
+mov     bl, al
+call    GEN_OCTET       ; get first octet
+and     eax, 7          ; and it by 7
+call    CHECK_ADDR_MASK ; ecx has eip
+
+For each octet, generate a psuedo random byte between 1 and 254, next get a random octet between 1 and 254 and mask it by 7
+finally, use this last byte to gen a 1st octet.
+
+most pertinent bit is CHECK_ADDR_MASK
+
+this specifies the following:
+dd 0FFFFFFFFh           ; 0 - addr masks
+dd 0FFFFFF00h           ; 1
+dd 0FFFFFF00h           ; 2
+dd 0FFFFFF00h           ; 3
+dd 0FFFFFF00h           ; 4
+dd 0FFFF0000h           ; 5
+dd 0FFFF0000h           ; 6
+dd 0FFFF0000h           ; 7
+
+This mask is applied to the local systems IP address, and matched to the generated IP Address. This makes a new ip with 0,1 or 2 bytes of data with the local ip.
+
+For instace, the worm will 1/8th of the time generate a random IP not within any ranges of the local IP Address.
+1/2th of the time, it will stay within the same class A range of the local IP Address
+3/8th of the time, it will stay within the same class B range of the local IP Address
+
+Also note that if the IP the worm generates is 127.x.x.x, 224.x.x.x, or the same as the local systems IP address then the worm will skip that IP address and generate a new IP address to try to infect. 
+
+The way the worm generates IP addresses allows it to find more possible IIS web servers quicker then the other CodeRed worms that have previously been released. This new worm is also going to cause a lot more data to be zig zaged across networks.
+
+G. Do a select to get the handle. If no handle is returned, then goto K.
+seg000:000003B6
+
+H. Set socket to Blocking. This is so select isn't required after the connect.
+seg000:000003C5
+
+I. Send a copy of the worm.
+seg000:000003E4
+
+J. Do a recv. this is not actually used anywhere.
+seg000:000003FC
+
+K. Close the socket and loop to A.
+
+Trojan System
+================
+
+This portion of the worm is designed to dump root.exe (root.exe is cmd.exe) into msadc and scripts, and create a trojan on the local drive.
+
+seg000:00000804
+
+A. Get System directory, this gets the native system directory (ie, c:\winnt\system32)
+seg000:00000810
+
+B. Append cmd to the system directory string (c:\winnt\system32\cmd.exe)
+seg000:00000828
+
+C. Set drive modifier to c:
+seg000:0000082D
+
+D. copy cmd.exe to /scripts/root.exe (Actual path: Drivemodifier:\inetpub\scripts\root.exe)
+seg000:00000831
+
+E. copy cmd.exe to /msadc/root.exe (Actual Path: DriveModifier:\progra~1\common~1\system\MSADC\root.exe)
+seg000:00000863
+
+F.  Intitialize area for explorer.exe
+seg000:000008A2
+
+G. Create Drive/explorer.exe (drive is c, then d)
+seg000:00000E83
+
+H. The worm now writes out explorer.exe. There is an embedded binary within the worm that will be written out to explorer.exe.  It has the property that if an embedded byte is 0xFC, it geplaced by 20h 0x00 bytes instead of the regularbyte. For more on what the trojan explorer.exe binary does then goto the Explorer.exe Trojan section. Also the way NT works is that when a user logs into the local system it has to load explorer.exe (desktop, task bar etc...) however NT looks for explorer.exe first in the main drive path c:\ which means the trojan explorer.exe is going to be loaded the next time a user logs in... therefore keeping the system trojaned over and over and over.
+seg000:00000EC8
+
+I. close explorer.exe
+seg000:00000ED5
+
+J. Change drive modifier to D, then the worm goes back to the code in step D. After it is done then it goes back to step k of the infection process.
+seg000:00000EDD
+
+Explorer.exe Trojan
+================
+explorer.exe quick overview:
+
+1. Get local systems windows directory.
+2. Execute explorer.exe from within the local systems windows directory.
+3. The worm now goes into the following loop:
+
+while(1)
+{
+set SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SFCDisable to 0FFFFFF9Dh, which basically disables system file protection.
+set SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\Scripts to ,,217
+set SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\msadc to ,,217
+Set SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\c to c:\,,217
+Set SYSTEM\CurrentControlSet\Services\W3SVC\Parameters\Virtual Roots\d to d:\,,217
+sleep for 10 minutes
+}
+
+Basically the above code creates a virtual web path (/c and /d) which maps /c to c:\ and /d to d:\. The writer of this worm has put in this functionality to allow for a backdoor to be placed on the system so even if you remove the root.exe (cmd.exe prompt) from your /scripts folder an attacker can still use the /c and /d virtual roots to compromise your system. The attacks would basically look like:
+
+http://IpAddress/c/inetpub/scripts/root.exe?/c+dir (if root.exe was still there) or:
+http://IpAddress/c/winnt/system32/cmd.exe?/c+dir Where dir could be any command an attacker would want to execute.
+
+As long as the trojan explorer.exe is running then an attacker will be able to remotely access your server.

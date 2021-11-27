@@ -1,0 +1,541 @@
+<html>
+<head>
+<title>Bill Lambdin's Fourth test of IV</title>
+</head>
+<body bgcolor="#FFFFFF" text="#000000">
+
+
+<FONT SIZE=-1 FACE="helvetica">
+Current Location:
+<A HREF="/index.shtml">Claws and Paws</A>
+&gt;
+<A HREF="/virus/index.shtml">Anti-Virus Resources</A>
+&gt;
+<A HREF="/virus/papers/index.shtml">Papers</A>
+<P>
+</FONT>
+
+
+
+<pre>
+-----BEGIN PGP SIGNED MESSAGE-----
+
+                     Bill Lambdin's Fourth test of IV.
+
+                 InVircible 6.10c tested February 13, 1996
+
+This is my fourth  test of InVircible called IV. later in this
+document Unfortunately; IV has failed again. Pay close attention to
+the results dealing with Jerusalem.antiscan, Lehigh, Pinky.952, and
+Tremor.
+
+IV combines a combination of a virus scanner (IVscan), and
+generic A-V routines (IVB, IVINIT, IVTEST, and others. After
+testing, I am unable to recommend IV as either a scanner, or
+Generic A-V software in good conscience because of security
+flaws.
+
+I will NOT recommeend IV until passes my test. I do not recommend A-V
+software lightly..
+
+                Some insisted this report contain everything I did. If
+                you find this too boring. Please skim down to the
+                section "VIRUSES USED", then read this boring part later.
+
+This test was performed on a 33 MHZ 486 computer with 4 MEG of RAM.
+and a 170 MEG IDE hard drive. See FINAL COMMENTS below.
+
+I started by performing the following tasks.
+
+        a. backing up the hard drive.
+
+        b. Preparing a bootable diskette with the necessary programs I
+        would need during this test.
+
+
+        c. Placed the viruses to be used during the test on a second
+        diskette
+
+        d. placed bait files to be used during this test on a third
+        diskette.
+
+        e. formatted the hard drive with a minimum DOS 6.2 on the hard
+        drive.
+
+        f. wrote minimum CONFIG.SYS. and AUTOEXEC.BAT files.
+
+                CONFIG.SYS
+
+                FILES=30
+                BUFFERS=30
+
+                AUTOEXEC.BAT
+
+                PATH=C:\
+
+                I run this test on this type of a system because there
+                is less to clean up, and save a lot of time..
+
+
+        g. Install InVircible 6.10C to the hard drive.
+
+        h. copied bait files to the hard drive.
+
+        i. Had IV prepare the ResQdisk for the system I was testing IV
+        on.
+
+                IV complained SYS.COM was not present in the path. I
+                rebooted from a system diskette and copied SYS.COM to
+                the hard drive. then rebooted from the hard drive and
+                had IV prepare the Rescue diskette.
+
+        j. archived the files on the hard drive to a diskette. This is
+        a backup so I could restore the files on the hard drive quickly.
+
+        k. Ran CHK-SAFE to calculate MD5 Hash values for the files
+        prior to infection so I could determine whether IV detected
+        all infected files, and repaired the files to the byte as IVB
+        and IVSCAN claim to do.
+
+
+                        VIRUSES USED IN THE TEST.
+
+
+        Cascade.1701.b.
+
+                This virus was selected because it is a simple
+                resident appending virus.
+
+                IVINIT.EXE reported
+
+                        "WARNING! activity of a memory resident virus
+                        detected!.
+
+        After successfuly reporting this virus active in RAM. I booted
+        clean from the rescue diskette, and ran IVB to detect the
+        infected files.
+
+                (A clean boot is to turn off the computer. Insert a
+                bootable diskette in A: like the system diskette that
+                comes with DOS. Turn on the computer, and boot from
+                this diskette.)
+
+        I Run IVB /R to remove the virus from the files. IVB reported
+        the infected files had been restored to their original status.
+
+        I Calculated new MD5 Hash values for the files after
+        infection, & removal, then compared these hash values to the
+        ones I had prepared earlier. The Hash values matched.
+
+                Success
+
+
+
+        Emmie.2823
+
+                This virus was selected because it is a resident, and
+                partialy stealthed, appending infector of .COM files.
+                It doesn't modify the entry point of files. The virus
+                puts a JMP to it's body not at the beginning of the
+                file; but at the place where the initial JMP at the
+                beginning of the file points to.
+
+                IVINIT.EXE reported
+
+                        "Warning! activity of a memory resident virus
+                        detected"
+
+        After successfuly reporting this virus active in RAM. I booted
+        clean from the rescue diskette. Ran IVB to detect infected
+        files. IVB correctly detected the infected file.
+
+        I ran IVB /R to remove the virus from the infected files. IVB
+        reported the files had been restored to their original status.
+
+        I Calculated new MD5 Hash values for the files, then compared
+        these to the hash values prepared prior to infection. The Hash
+        values matched.
+
+                Success
+
+
+
+        Frodo.Frodo.A
+
+                This virus was selected because it is a resident,
+                appending, fully stealthed virus.
+ 
+                IVINIT.EXE reported
+
+                        "Warning! a stealthy virus is active"
+
+        After successfuly reporting this virus active in RAM. I booted
+        clean from the rescue diskette, and. Ran IVB from the rescue
+        diskette. IVB reported four infected files.
+
+        I ran IVB /R to remove the virus. and IVB reported these four
+        files had been cleaned.
+
+        I Calculated new  MD5 Hash values for the files, then compared
+        these to the hash values prepared prior to infection. The Hash
+        values matched.
+
+                Success
+
+
+
+        Jerusalem.Antiscan
+
+                This virus was selected because it is a resident. COM
+                and .EXE file infector. It Prepends on .COM files and
+                appends on .EXE files.
+
+                IVINIT.EXE reported
+
+                        "Activity of a memory resident virus detected"
+
+        After successfuly reporting this virus active in RAM. I booted
+        clean from the rescue diskette. I ran IVB to detect the
+        infected files. IVB reported the infected files, and reported
+        that IVINIT grew in size by 1609 bytes.
+
+        The IV modules are supposed to detect infection and repair
+        themselves if infected to prevent piggybacking.
+        
+        I ran IVB  /r, and IV reported the files had been restored to
+        their original status.
+
+
+                partial failure (because IVINIT.EXE was infected, and
+                did not report this infection or clean itself to
+                prevent piggybacking.)
+
+
+
+        Lehigh.A
+
+                This virus was selected because it is a resident
+                infector of COMMAND.COM. The virus is written to a
+                cavity inside COMMAND.COM. There is no filesize
+                increase to COMMAND.COM.
+
+        when running amother file after this virus was run; the system
+        hangs.
+
+        I re-boot the computer (from the hard drive).
+
+        At Bootup IVINIT.EXE reported
+
+                The COMSPEC data has changed. this might indicate an
+                infection."
+
+                "Do you accept the change? Please confirm! [Y/N]?
+
+
+        After successfuly reporting this virus. I booted clean from
+        the rescue diskette. I ran IVB, and it reported "COMMAND.COM
+        was modified, not necessarily by a virus".
+
+        I ran IVB /R to remove the virus. IVB reported "COMMAND.COM
+        changed in size by 0 bytes. COMMAND.COM is restored to it's
+        original status."
+
+        I calculated new  MD5 Hash values for the files after
+        infection, & removal to the ones on file. The Hash values did
+        not match.
+
+                Before infection by Lehigh
+
+COMMAND.COM     54619  09-30-93  06:20  c98e0df201047722fec01cfda0db3ce0
+
+                After infection by Lehigh
+
+COMMAND.COM     54619  09-30-93  06:20  71612f0eea595e731c544185c1e6831b
+
+                Partial failure (on detection) IV did not properly
+                label this change to COMMAND.COM due to a virus.
+
+                failure (on removal) The virus was reportedly removed;
+                but the  file was NOT returned to the original
+                uninfected status. The "clean" file was a somewhat
+                corrupted file that should not be trusted.
+
+
+
+        Pinky.952
+
+                This virus was selected because it is a resident
+                companion infector.
+
+                IVINIT.EXE reported
+
+                        "Warning! a companion virus to this program
+                        was found!"
+
+
+        After successfuly reporting a companion virus. I boot clean
+        from the rescue diskette. and run IVB. IVB mindlessly added
+        file signatures for the additional 952 byte .COM files, to the
+        integrity datafile and reported. "All file(s) match their
+        recorded signature(s)"
+
+        IV reports companion infectors that use the same name of an IV
+        module. but disregards the othres.
+
+                Partial Failure.
+
+
+
+        Tremor
+
+                This virus was selected because it is a resident,
+                appending, polymorphic, fully stealthed, and Tunneling
+                virus. This virus is in the wild.
+
+                IVINIT.EXE reported
+
+                        "No virus activity detected in memory!"
+
+                IVTEST.EXE reported
+
+                        "No virus activity detected at this time!"
+
+                IVB.EXE reported
+
+                        "All file(s) match their recorded
+                        signature(s)."
+
+        Since none of these report anything (while Tremor
+        was active in RAM. the users would incorrectly
+        assume there is no virus activity while Tremor
+        continued to infect their programs.
+
+        Since IV's Modules were unable to detect Tremor active in RAM
+        or on infected files while Tremor is active. Users of IV are
+        very succeptable to this and other similar viruses.
+
+        The only way IV  can find Tremor is to boot clean and run IVB
+        from the secured rescue diskette mentioned earlier. After I
+        booted clean. and IV was in a position to take control; IV
+        found Tremor easily.
+
+        How are users supposed to know there is anything wrong, and
+        know to boot clean from a secured diskette?
+
+                Failure.
+
+
+                                FINAL COMMENTS.
+
+IVTEST runs bait files to entice viruses to infect them. There are 
+	seven problems with this.
+
+        a. Not all viruses will infect the same bait files.
+        b. The bait files are too small. 8 Tunes refuses
+           to infect any files smaller than 9216 bytes. Tremor refuses
+	   to infect any files smaller than 10240 bytes, and there are
+	   other viruses that refuse to infect anything smaller than
+	   30720 bytes.
+        c. Icelandic.saratoga only infects every 10th .EXE file run.
+           if the .EXE file were appropriate for Icelandic.Saratoga to
+           infect, there is only a 1 in 10 chance of Saratoga infecting
+           the bait file.
+        d. These bait files still do not detect companion infectors.
+	e. These bait files will not detect path companion infectors.
+        f. IVtest can not detect non resident file infectors. as
+           demonstrated with the Trivial.45.A virus.
+        g. boot sector viruses do not infect files.
+
+IV still doesn't detect Tremor in RAM or on infected files When Tremor
+        is active. Tremor hooks INT 21h, and steals 4228 bytes of RAM.
+
+IVB still doesn't detect many companion infectors.
+
+IVB doesn't detect path companion infectors.
+
+IVB still doesn't check the entire file, but only gathers a small signature
+        from file areas likely to be modified by a virus. This is flawed
+        technology at best; and does fail to detect several types of
+        viruses.
+
+IVB Still doesn't give the users an option to check the
+        integrity of all files. Many viruses also infect
+        files regardless of extension as they are loaded and
+        executed with DOS function call 4Bh when accessed
+        through INT 21h. Two good examples of executable
+        files with non executable extensions are the small
+        programs in Side Kick, and PC-Tools Desktop.
+
+IVB still places the integrity data files on the hard drive, leaving
+        them open to attack from viruses. There are several viruses
+        that delete integrity datafiles used by CPAV, MSAV, NAV, NOVI,
+        and others. Users can Rename the integrity Datafiles used
+        by IVB, and the hypertext online manual suggests for users to
+        rename the integrity datafiles. But a virus would only need
+        to check the filenames in directories, and when it encounters
+        the same filename in multiple directories, and delete these
+        files.
+
+        In my honest opininion: generic A-V software should use one of
+        the two options below.
+
+        1. Place all integrity datafiles on a secure diskette.
+        2. Place all integrity data in one data file, and allow users
+        to rename this integrity datafile.
+
+IVB still names all integrity data files the same. Any virus could be
+	modified to delete these integrity data files.
+
+If the integrity data files are corrupted or deleted, the generic
+        detection, and generic removal capabilities are rendered
+        non functional.
+
+If the integrity datafiles are deleted, IVB generates a new
+        integrity data file for the directory. I might add
+        this new integrity data file is generated AFTER
+        infection. so IV can't detect or remove the virus
+        because IV doesn't have a file signature that was
+        generated before infection.
+
+
+I wish Zvi would close these security problems in IV. I have been
+complaining about many of these same security problems since version
+5.07; thyat I tested in August 1994.
+
+For anyone wishing to duplicate any portion of this test;
+Here are the contents of the archive tested.
+
+- ----------------------------------------------------------------------
+Searching ZIP: INVBFREE.ZIP
+
+ Length  Method   Size  Ratio   Date    Time    CRC-32  Attr  Name
+ ------  ------   ----- -----   ----    ----   -------- ----  ----
+   3719  DeflatN   1524  60%  01-24-96  00:04  826edb7b --w-  AGENTS.LST
+    548  DeflatN    368  33%  01-24-96  00:34  d4ff2a53 --w-  AVEXTRA.TXT
+    548  DeflatN    368  33%  01-24-96  00:34  d4ff2a53 --w-  EXPIRY.TXT
+    250  DeflatN    207  18%  01-24-96  00:32  fa3237da --w-  FILE_ID.DIZ
+  14999  DeflatN  14560   3%  11-17-95  06:10  c19a8e1a --w-  FIND-SIG.EXE
+   1421  DeflatN    698  51%  01-24-96  00:20  e4104d71 --w-  FIXBOOT.DOC
+  16365  DeflatN  15878   3%  01-23-96  06:10  21c5cf52 --w-  FIXBOOT.EXE
+  13468  DeflatN  13029   4%  11-17-95  06:10  ac6e0f9e --w-  GET-HD.EXE
+  27156  DeflatN  10228  63%  11-17-95  11:52  7536c6ed --w-  HISTORY.TXT
+  39400  DeflatN  38058   4%  01-01-96  06:10  c39b1331 --w-  INSTALL.EXE
+  35729  DeflatN  34706   3%  01-01-96  06:10  16fe57d8 --w-  IV.EXE
+   2608  DeflatN    415  85%  09-03-95  06:10  eb8bb52c --w-  IV.ICO
+    545  DeflatN    159  71%  09-17-95  17:23  3bdda439 --w-  IV.PIF
+  13691  DeflatN   5403  61%  01-24-96  00:17  59dffb10 --w-  IV4WIN95.TXT
+  69090  DeflatN  68945   1%  01-24-96  00:07  fa6d6d9f --w-  IV4WIN95.ZIP
+  39892  DeflatN  38653   4%  01-24-96  00:35  7f901cf7 --w-  IVB.EXE
+    924  DeflatN    728  22%  01-01-96  14:50  95fa9116 --w-  IVB.NTZ
+  22197  DeflatN  21591   3%  09-03-95  06:10  6baa5a14 --w-  IVHELP.EXE
+  41676  DeflatN  21197  50%  11-17-95  11:45  a3c44ccb --w-  IVHELP.H!
+  28572  DeflatN  27785   3%  01-01-96  06:10  5f717488 --w-  IVINIT.EXE
+  18938  DeflatN  18385   3%  01-01-96  06:10  607086ea --w-  IVLOGIN.EXE
+  91007  DeflatN  90907   1%  01-24-96  00:18  d40e8621 --w-  IVMANUAL.ZIP
+  53118  DeflatN  51550   3%  01-01-96  06:10  fee1db81 --w-  IVSCAN.EXE
+  21201  DeflatN  20615   3%  01-01-96  06:10  dc0656c4 --w-  IVTEST.EXE
+  34292  DeflatN  33304   3%  01-01-96  06:10  0a6393e3 --w-  IVX.EXE
+ 167148  DeflatN  78309  54%  12-28-95  02:13  7db38f14 --w-  MANUAL.H!
+   5678  DeflatN   5477   4%  11-17-95  06:10  e70ab8aa --w-  NOCMOS.EXE
+   5527  DeflatN   2496  55%  10-02-95  21:07  cf6a54d6 --w-  README.1ST
+   3349  DeflatN   1341  60%  01-24-96  00:16  09cb6c9b --w-  REGISTER.TXT
+  40653  DeflatN  39406   4%  01-01-96  06:10  1f3f146d --w-  RESQDISK.EXE
+   5259  DeflatN   2292  57%  10-25-95  17:57  59ab5b5d --w-  UPGRADE.TXT
+   2386  DeflatN   1131  53%  11-17-95  12:10  d15a80b9 --w-  WHATSNEW.10C
+ ------          ------  ---                                  -------
+ 821354          659713  20%                                       32
+- ----------------------------------------------------------------------
+
+
+                                  GLOSSARY
+
+        Appending: These viruses are tacked onto the end of the file and
+                modify a .JMP instruction at the beginning of the file
+		that runs the virus, then returns to the host file.
+
+        Bait files: These are small do nothing programs that attempt to
+                entice viruses to infect them.
+
+        Boot Sector Virus: These viruses infect the boot sector of
+                diskettes, and the Master Boot Record, or boot sector
+                of hard drives.
+
+	Cavity virus: This is an area in files where there will be a
+		series of bytes. 00, 20, 90 etc This usually represents
+		an internal buffer for the program.	
+
+        Companion Infectors: These viruses generaly create small .COM
+		files with the same name of an .EXE files (These .COM
+		files are placed in the same directory). If you do not
+		specify an extension, DOS tries to load a .COM file with
+		the same filename first. The .COM file contains the
+		virus with a link to run the .EXE file after the virus
+		has run.
+
+        Data file: These are small files (created by A-V software) that
+                contain information about the files on the computer, and
+		other data about the file.
+
+        Fully stealthed File infectors: The virus will temporarily 
+		disinfect infected host files when the infected host 
+		files are opened for any reason, then reinfect the 
+		file when the file is closed.
+
+        Overwriting Virus: These viruses overwrite the beginning of .COM
+                files generaly (trivial.vootie.66.a overwrites the
+		beginning of all files in the currect directory). The
+		host file is corrupted and will no longer run.
+
+        Path Companion Infectors: PATH companions do not rely on
+		the existence of an EXE file and do not necessarily 
+		put their body in a file with a COM extension. They 
+		just copy themselves in a directory which is listed 
+		earlier in the PATH than the directory of the attacked
+		file - and copy themselves in a file with the same 
+		name as the name of the attacked file; the extension 
+		doesn't matter.
+
+        Polymorph: The virus mutates on every infection, so the virus
+		never looks the same twice. A simple scan string to
+		detect the virus is useless.
+
+        Prepending: A prepending virus is a virus which inserts itself 
+		at the beginning of the file, shifting the original 
+		file backwards.
+
+        Resident: Hook Interrupts and remain active in RAM.
+
+	Stealthed Boot sector viruses: These intercept the call to
+		access the MBR, then displays the uninfected copy of the
+		MBR. An example a stealthed Boot Sector Virus is NO-INT.
+
+        Trojan: This is a program that appears to do something useful,
+		but is slyly doing something destructive.
+
+        Tunneling: Tunneling is a technique used by viruses to bypass
+                resident software that monitors or attempts to stop
+                disk access.
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+Comment: CS-251.ZIP (CHK-SAFE) is on the Metaverse, and Simtel mirrors.
+
+iQCVAwUBMTSsZksggM2nhQQZAQGtdgP/SRqkX8YAJfMbsO9fevp36VH2h0t51dme
+E5FWN/RCVDV7utlflnpEDh0Agi646xo6f1gCJgxRtfPQ/T9zVMLCPXkfEaG6ZfKC
+orgSV5WMrGzSSQ6/5n+B3uuGzQIQG3nXnwCLbq4X4xKxvXIxaOh3yjvYNHtUjqwe
+X/24unsBk8c=
+=y9Et
+-----END PGP SIGNATURE-----
+
+
+	Bill Lambdin
+
+---------------------------------------------------------------------------
+vfreak@skn.net                     PGP fingerprints 9C CD 47 F3 C7 65 CA 33
+102524.2206@compuserve.com                          C7 7D 69 8B 26 0C F8 08
+
+</pre>
+
+</body>
+</html>

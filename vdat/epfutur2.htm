@@ -1,0 +1,336 @@
+
+<HTML>
+<HEAD>
+   <TITLE>The Future of Viruses on Internet</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<H1 ALIGN=CENTER><FONT COLOR="#004080">The Future of Viruses on the Internet</FONT></H1>
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+1>By David Chess</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>This paper was originally presented at the Virus Bulletin International
+Conference in San Francisco, California, October 1-3, 1997. </P>
+
+<H4>Lots of Little Tremors, a Few Big Quakes</H4>
+
+<P>There are many different phenomena, both natural and man-made, that
+come in different sizes. In many cases, the small things come quite often,
+and the big things only rarely. Small earth tremors are much more common
+than large earthquakes. Slight rises in the level of a river are much more
+common than floods. Virus incidents that involve only a few machines are
+much more common than major outbreaks involving hundreds of systems. </P>
+
+<P>When the distribution of incidents is skewed in this way, we tend to
+get good at handling the small incidents; they become routine and expected,
+and our solutions will be efficient and well-tested. Large incidents, since
+they happen rarely, are handled on a more ad hoc basis; maybe we know who
+will be on the Crisis Team (assuming that someone's remembered to update
+the list as people changed jobs), but exactly what the team will do once
+it's assembled will be determined on the fly to fit the case. That's why
+the Crisis Team has to contain some of the best people we have available.
+</P>
+
+<P>Conditions change. If the probability of a large incident increases
+rapidly, we can be caught unawares, and the number of large incidents can
+easily overwhelm an ad hoc crisis-based approach that depends on large
+problems being few and far between. On the other hand, if we can see the
+change coming, we have a chance to develop methods that can handle the
+majority of large incidents as smoothly as we already handle the small
+ones. </P>
+
+<P>How will the continued growth of the Internet change the pattern of
+virus spread and similar threats? Is our current paradigm of virus containment
+sufficient for the future? </P>
+
+<H4>Viruses and the Internet</H4>
+
+<P>At present, computer viruses are a constant low-level annoyance. Every
+company knows that it ought to have anti-virus software, and that virus
+protection is a cost of doing business, just like backup and fire insurance.
+Small virus incidents are common and routine. In organizations that do
+centralized incident management and reporting and have anti-virus software
+well deployed, most incidents involve only one or two systems; the virus
+is caught before it can spread farther than that [1]. </P>
+
+<P>When new viruses are discovered, anti-virus software is updated to deal
+with them on a cycle of weeks or months. Anti-virus vendors generally offer
+monthly updates, and in a typical corporate environment new updates are
+installed every one to six months. Because it takes a typical new virus
+many months, or even a few years, to become widespread, this is reasonable.
+The recent rise of macro viruses, which can become widespread in just a
+few months, has put some downward pressure on these time-scales, but not
+changed their general magnitude. It is still feasible to deal with new
+viruses through a largely manual process: a customer finding a new virus
+sends it in to a vendor, the vendor analyses it by hand and returns detection
+and repair information to the customer, and other customers get the information
+over the next months, in their regular updates. </P>
+
+<P>The Internet currently plays a comparatively small role in the spread
+of viruses. No common virus today is network-aware; all of them require
+help (generally accidental help) from users in order to spread. So the
+Concept virus spreads over the Net only when someone mails an infected
+document to someone else, or makes one available on their Web site. Virus
+authors have taken advantage of the ease of anonymous posting to distribute
+copies of their viruses via Usenet News, but since the viruses themselves
+do not make use of Usenet to spread further, this is a one-time &quot;planting&quot;
+event, not a continual spread. Since all these network transmission methods
+rely on manual action, manual responses have been adequate to deal with
+them. </P>
+
+<H4>New Systems</H4>
+
+<P>There are two major trends in Internet technology that will have an
+impact on virus spread in the next few years: one is the increasing ubiquity
+and power of integrated mail systems, and the other is the rise of mobile-program
+systems. </P>
+
+<P>Integrated mail systems such as Lotus Notes and Microsoft Outlook make
+it very simple to send anything to anyone, and to work with objects that
+you receive. They also support application programming interfaces (such
+as MAPI and the Notes API) that allow programs to send and process mail
+automatically. To the extent that these systems increase the rate at which
+people intentionally share programs (including documents with embedded
+macros), the rise of these systems will increase the rate at which manual
+virus spread of the kind that we're used to occurs. As these systems, and
+standards such as MIME, make it easier to send compound objects across
+the Internet, rather than just within one's local workgroup, the possible
+range of manual spread also increases. We will consider other implications
+of these systems in a moment. </P>
+
+<P>Mobile-program systems are systems that are designed to allow programs
+to move on their own from one system to another. The most widely-hyped
+examples today are Java and ActiveX. At the moment, this technology is
+used almost exclusively to allow a program to move from a Web server to
+a browser client and execute there; but with the integration of Java into
+Lotus Notes, and ActiveX into Microsoft's mail systems, this is already
+changing. Unlike traditional mail systems, mobile-program systems are generally
+designed with some sort of security in mind: some idea that a program that
+arrives from somewhere else should not always be trusted and obeyed the
+same way a program launched from the local desktop would. </P>
+
+<P>On the other hand, mobile-program systems are complex, and both Java
+and ActiveX have been found to have security bugs which allowed untrusted
+mobile programs to do things they should not have been able to do. There
+is no reason to think that the last bug has been found; we will continue
+to see security bugs uncovered in these systems, and it would be foolish
+to assume that they will continue to be found by the good guys before the
+bad guys get around to using them. These bugs may be exploited in direct
+attacks against particular sites, or to manually install traditional viruses
+on many machines at once. They may also enable entirely new network-aware
+viruses and worms. (There is no firm theoretical line between a virus and
+a worm. In general a virus is a fragment of code that embeds itself in
+some pre-existing file that gets passed around later on, while a worm actively
+sends itself from place to place; but as the network becomes more powerful
+and more ubiquitous, this distinction becomes less useful. We will use
+the term &quot;virus&quot; to refer to any replicating attack.) </P>
+
+<H4>New Quakes</H4>
+
+<P>What determines how large a virus incident is? Only two factors are
+relevant: the birth rate (how fast new systems become infected by the virus)
+and the death rate (how quickly an infected system can be disinfected,
+and prevented from infecting others). </P>
+
+<P><B>Figure 1:</B> the number of infected machines over time in a simple
+simulation. The top curve reflects the course of infection when the birth
+rate is greater than the death rate. The lower curve, expanded in the detail,
+shows the virus dying out quickly when the birth rate is less than the
+death rate. </P>
+
+<P>Figure 1 illustrates the importance of the birth and death rates in
+a simple simulation of virus spread. When the birth rate is at least as
+large as the death rate, a virus can become established in a population;
+when the death rate is higher, the virus quickly dies out. The point where
+birth and death rates are equal is known as the &quot;epidemic threshold&quot;.
+</P>
+
+<P>Our experience suggests that as long as new systems become infected
+only by manual transmission of programs from one system to another, the
+birth rate remains low enough for manual containment to work; judicious
+use of conventional anti-virus software can keep an organization below
+the epidemic threshold. </P>
+
+<P>But what happens if network virus spread becomes automatic? We have
+experience with a few examples. </P>
+
+<P>In 1988, the Internet Worm spread to thousands of systems in a matter
+of days[2]. It did so by exploiting a number of Unix bugs and features
+that allowed it to send a copy of itself to another machine, and have that
+copy begin to execute as soon as it arrived. This is the fastest kind of
+automatic spread. Note that it is also the paradigm underlying mobile-program
+systems; this is one reason that security in these systems is so important.
+The Worm spread so fast that it overwhelmed many of the communication channels
+by which the experts combating it would normally have cooperated. Eventually,
+though, the Internet's best hackers got the attack under control, working
+long hours over many days to finally understand and eliminate the Worm.
+This is a classic example of ad hoc Crisis Team problem solving, and it
+worked very well. But it is not an approach that scales well; if attacks
+like the Internet Worm were to happen once a month, or once a week, much
+faster and more efficient countermeasures would be needed. </P>
+
+<P>A program bent on spreading itself does not have to execute on arrival
+in order to succeed. In December of 1987, the CHRISTMA EXEC program spread
+to thousands of computers connected to EARN, BITNET, and IBM's internal
+VNET. Unlike the Internet Worm, CHRISTMA could spread only if a recipient
+received the program (which was disguised as a traditional &quot;Christmas
+Card&quot; displayer) and intentionally executed it. This meant that the
+program's birth rate was orders of magnitude lower than the Internet Worm's,
+but it was obviously fast enough. Again, the problem was solved only by
+the tireless efforts of the most skilled network experts available, working
+long hours over the holiday. So a network-aware threat can become widespread
+very quickly, even if it does rely on user action for one step of its life
+cycle. </P>
+
+<P>We have seen a similar effect more recently: the ShareFun virus, like
+the CHRISTMA EXEC, spreads via the mail system when a user intentionally
+uses an infected object that has come in the mail[3]. Unlike CHRISTMA,
+which required the user to run a program, ShareFun requires only that the
+user open an embedded document in Microsoft Word. On the other hand, ShareFun
+requires an obsolete version of Microsoft Mail to spread, and its implementation
+is brittle and often fails. But in at least one company that had widely
+deployed the particular mail system that ShareFun requires, the virus became
+very widespread very quickly, and required expert intervention to clean
+up. </P>
+
+<P>Is the threat of network-aware viruses like Sharefun growing? Yes. A
+competently-coded version of Sharefun that exploited a more modern version
+of the mail system would have a good chance of becoming very widespread
+very quickly, and again requiring us to call out the experts to work around
+the clock to deal with it. A virus six months from now, exploiting a bug
+in some widely-deployed mobile-program system, might get itself &quot;pushed&quot;
+to thousands of systems before it was even noticed. </P>
+
+<H4>Rising Birth Rates</H4>
+
+<P>A number of different network-aware software systems are being deployed
+widely on intranets and the Internet. To what extent do these particular
+systems have features that might allow a network-aware virus to spread,
+and to what extent do they offer protection against that actually happening?
+</P>
+
+<P>We have examined some of the most popular office and mail systems available
+for modern personal computers, including Lotus Notes, Microsoft Exchange
+and Outlook, Netscape Navigator, and Microsoft Internet Explorer (the latter
+two are usually thought of as Web browsers, but both include mail and news
+clients as well). We will present some general observations here; we will
+avoid specific details both because all of these systems are still rapidly
+evolving (so the details will have changed by the time you read this),
+and because we don't want to provide any blueprints to the bad guys. </P>
+
+<P>All of these systems allow an embedded program to execute when the user
+opens an attachment, if only because they all allow the use of Microsoft
+Word as the viewer for Word documents, and Word documents can contain macros
+(including viral macros). Most of them allow programs to execute when a
+piece of mail is simply opened, either because Word can be used as a viewer
+for the mail itself, or because mail can contain programs in some other
+language (Java and JavaScript for Navigator and Explorer, Java and LotusScript
+for Notes, and to some extent ActiveX objects for Outlook). We have not
+found any features in the current versions of these systems that allow
+a program embedded in mail to execute immediately on arrival, before the
+user even opens it, but as CHRISTMA EXEC has shown us, this ability is
+not necessary for a worm to spread. </P>
+
+<P>There is considerable variation in what the systems allow embedded programs
+to do and what sort of security is provided, although we are starting to
+see hints of convergence. Word macros are completely unrestricted, and
+can do anything that a normal application program can do, including reading,
+writing, and altering files and sending mail. ActiveX objects also have
+unrestricted access to the system, at an even lower level. Embedded Java
+and JavaScript programs, on the other hand, are currently restricted from
+the most dangerous actions, such as accessing the file system or opening
+network connections. This is good for security, of course, but it is bad
+for function; as users come to expect more from their systems, these restrictions
+are being eased in various ways. </P>
+
+<P>Some versions of Microsoft Word and the Microsoft Mail API provide a
+rudimentary protection by warning the user that a document contains macros,
+or a piece of mail contains attachments, and asking for confirmation before
+proceeding. While this simple protection may be effective in some environments,
+we anticipate that in environments where innocent macros and attachments
+are common, it will be widely disabled (the interface makes it simple to
+tell the system never to present the warning again). </P>
+
+<P>ActiveX and the most recent versions of Java both provide a somewhat
+richer protection by allowing embedded programs to be digitally signed.
+This enables the user who receives a program over the net to determine
+with some certainty who created the program. In ActiveX, the user can use
+the signature information only to decide whether or not to allow the program
+to execute at all. Java, as embodied in the most recent Java Development
+Kit and a forthcoming version of Lotus Notes, will allow users to configure
+their systems to allow programs signed by different authors to have different
+degrees of access to the system. </P>
+
+<P>Digital signatures offer a certain amount of protection against malicious
+&quot;Trojan horses&quot; sent by untrusted parties, since the system will
+not allow programs from untrusted authors much access to important resources.
+They offer less protection, however, against viruses and worms. Because
+replicating attacks tend to spread along existing channels of communication,
+the people you are most likely to receive viral programs from are roughly
+the same people you are most likely to have in your trust database. Viruses
+tend to spread along established communication channels, in the normal
+course of business. </P>
+
+<P>The lesson so far is that our current virus-containment strategies require
+ad hoc expert intervention to deal with cases where a network-aware virus
+actively spreads itself through mail or mobile-program systems. On the
+other hand, modern systems are making that sort of spread more and more
+likely. We need to be prepared for a world in which this sort of attack
+is common, by employing security systems that can deal with them routinely
+and automatically, reducing them to the level of &quot;little tremors&quot;,
+so that we can free up our experts to deal with whatever Big Quakes are
+coming down the wire behind them. </P>
+
+<H4>Pumping up the Death Rate</H4>
+
+<P>If emerging technology is making it possible for viruses to have birth
+rates far beyond what we are used to, how can we respond? Cold mathematics
+says that our only possible response is to increase the death rate accordingly.
+This means detecting infected systems, and preventing them from continuing
+to spread the virus, very quickly. A monthly update cycle will be far from
+sufficient. Turnaround times of a week, or even a day, will not be enough
+to keep a network-aware virus in check. </P>
+
+<P>What will be needed is a system which can detect an anomaly in real
+time, analyze the threat and produce detection and removal data in hours
+or minutes, and distribute that data to the original infected machine *as
+well as* other machines that may be in the path of the virus. Even automatic
+protection that protects a single machine is not sufficient; network-aware
+viruses attack a set of network-connected machines as a whole, as if they
+were cells in a single body. The effective response to such threats, as
+we have written elsewhere [4], will be analogous to the response of a biological
+immune system to attack by disease. </P>
+
+<P>To return to our original analogies, just as buildings in earthquake-prone
+regions are built with structural stability in mind, and just as our bodies
+have sophisticated systems for dealing with routine attack by replicating
+invaders, the network of the future (even the near future) will need to
+have automatic defenses to handle the rapidly-spreading attacks that are
+likely to become routine. </P>
+
+<H3>References</H3>
+
+<P><FONT SIZE=-1>[1]Jeffrey O. Kephart and Steve R. White, &quot;Measuring
+and modeling computer virus prevalence&quot;, In Proceedings of the 1993
+IEEE Computer Society Symposium on Research in Security and Privacy, May
+1993, pages 2-15. </FONT></P>
+
+<P><FONT SIZE=-1>[2]Spafford, E. H., &quot;The Internet Worm Program: An
+Analysis&quot;, ACM Computer Communication Review, 19(1), pp. 17-57, Jan
+1989. </FONT></P>
+
+<P><FONT SIZE=-1>[3]For more information on the ShareFun virus, see http://www.av.ibm.com/BreakingNews/Newsroom/97-03-03/.
+</FONT></P>
+
+<P><FONT SIZE=-1>[4]For more information on the ShareFun virus, see http://www.av.ibm.com/BreakingNews/Newsroom/97-03-03/.
+May 1993, pages 2-15. </FONT></P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

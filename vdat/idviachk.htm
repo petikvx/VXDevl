@@ -1,0 +1,144 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Virus Identification Via Checksum</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="VirusIdentificationViaChecksum"></A><B><FONT COLOR="#004080"><FONT SIZE=+3>Virus
+Identification Via Checksum</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%">Nearly everyone in the anti-virus community today will
+agree that in order to correctly and safely remove viruses from infected
+programs and disks, we must first positively identify the virus. A few
+years ago, when there were few virus variants, identification was a fairly
+simple task. As long as your scan string was long enough, you could be
+reasonably sure of the identity of the virus found. </P>
+
+<P>Today, however, the number of variants of common viruses bas grown beyond
+our wildest imaginations. At this point, I believe that I have identified
+over sixty individual Jerusalem strains. Clearly, the second-rate virus
+authors find it easier to modify an existing virus than to write a new
+one, meaning that we'll soon see more such variations. Unless we pick our
+scan strings for the future with an inordinate amount of care and spent
+enormous time doing so, we will be unable to distinguish among the different
+strains using scan strings. If we are unable to distinguish among strains,
+we will certainly run into difficulty in removing the different strains
+over time. With inaccurate identification, destruction of your files will
+be as likely as removal of the virus. </P>
+
+<P>Without storing samples of each and every virus on the planet within
+our and-virus tool, the easiest way to accomplish our goal of precise identification
+seems to be the use of a cryptographic checksum. By storing only a checksum
+and related information, we can be both precise and efficient. Several
+of the top anti-virus products now incorporate this approach. </P>
+
+<P><A NAME="TheProcess"></A><B><FONT SIZE=+2>The Process</FONT></B></P>
+
+<P>The algorithm that I have selected for my Virus Description Language
+(VDL) comes from EICAR and is a 32-bit extension of the CCITT algorithm.
+Relevant portions of our implementation are included here in Pascal, though
+it should be trivial to port to C or Assembly. Note that the code is designed
+to checksum byte ranges, which will come in handy when trying to solve
+the variable-virus question. </P>
+
+<P>The biggest criticism of checksum identification is that few viruses
+remain constant between iterations. Though it's clearly a valid criticism,
+it's a problem that is not as difficult to solve as one might think. </P>
+
+<P>The solution to the problem lies, as most solutions do, in a bit of
+hard work. In this case, the work involves disassembling the virus to determine
+which parts of the code remain constant and which are dynamic. When we
+compute our checksum, we will only include static portions of the code
+(those that never change between virus iterations). As a general rule,
+we will exclude all data areas and any other variable portions of the virus,
+such as padding, in our checksum. In addition, polymorphic viruses and
+variably viruses will need to be handled in a slightly different way. Depending
+on the extent of polymorphism, we may be able to use the algorithm on a
+subset of the virus, or, we may have to find the key within the virus and
+decrypt before we checksum. </P>
+
+<P>Once we determine which byte ranges to use, we can simply pass them
+along to the checksum algorithm and receive back a 32-bit checksum. Then
+we can store the checksum and information about which byte ranges were
+used, and have a positive virus identification. In the future, once a scanner
+identifies a virus approximately, using a scan string approach, it can
+re calculate our checksum on the sample using the same byte ranges as before.
+If the two checksums match, it has made a positive identification and can
+proceed with surgical virus removal. </P>
+
+<P>Because there is no committee which convenes daily to argue over which
+bytes to checksum in a given virus, there will be differences of opinion
+among researchers as to which ranges should or should not be used, thus
+producing different checksums for the virus-even though the same algorithm
+might have been used. </P>
+
+<P>This should not be a problem, however, because each researcher will
+share the information about the byte ranges they used. If each researcher
+or research organization is consistent in their use of the checksum, the
+fact that they have different checksums for the same virus is irrelevant.
+As long as they can positively identify a virus to their own satisfaction,
+the system works. </P>
+
+<P><A NAME="NutsandBolts"></A><B><FONT SIZE=+2>Nuts and Bolts</FONT></B></P>
+
+<P>The largest hurdle in writing the implementation of the checksummer/VDL
+combination was in determining the relative position of the bytes to checksum.
+Because, as noted before, viruses are not always constant, we must have
+a way to determine where in the virus the checksum bytes are to be found.
+Because of variable portions within the virus, we cannot use an absolute
+file offset to find a specific point in the virus, even if we start with
+known clean samples. Therefore, we must have a relative offset to some
+point in the file. </P>
+
+<P>Our solution includes a rather hefty scan string, which is then used
+to provide a relative starting point far our calculations. Our automated
+tools are able to determine the position of the scan string within any
+given file, then do the necessary calculations and pass the byte ranges
+in absolute form to the checksummer. </P>
+
+<P>Our implementation of the checksummer, called CRYPTO (Cryptographic
+Checksum) is available free of charge from the ICSA. This is a rudimentary,
+though stable, implementation that any researcher is free to use. Note
+that it reads two files from the command line: one containing byte pairs
+(absolute start/end bytes), the other containing the file with the virus.
+For simple viruses with known clean goat files, this will be enough to
+calculate your checksums. Far more complicated viruses and unknown goats,
+however, you will have to provide CRYPTO with the byte ranges in absolute
+terms via some other program. This necessary conversion was the rationale
+for reading the byte ranges from a file, rather than the command line.</P>
+
+<DL>
+<DD><TT><FONT COLOR="#800000">{This code will calculate the checksum for
+1 byte}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">{For byte ranges, call this routine multiple
+times from a loop}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">B1 := B1 shl 24; {Shift left 24 bits}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">For CrcCount := 0 to 7 Do {8x loop}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">Begin; {For}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">If ((EicarCrc XOR B1) and $80000000) </FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">0thenEicarCrc := (EicarCrc shl 1) XOR $10211021</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">elseEicarCrc := EicarCrc shl 1;B1 := B1 shl
+1;</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">End; {For}</FONT></TT></DD>
+
+<DD><TT><FONT COLOR="#800000">End; {EicarCalc}</FONT></TT> </DD>
+</DL>
+
+<P>Figure 1. Checksum Algorithm in CRYPTO.EXE </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

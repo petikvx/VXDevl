@@ -1,0 +1,1236 @@
+<HTML>
+<HEAD>
+   <TITLE>Anti-virus - VTC University of Hamburg AntiMalware Product Test "1999-09"</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="back001.gif">
+<p align="center"> <font color="#004080" size="+3"><b>VTC University of Hamburg 
+  <br>
+  AntiMalware Product Test "1999-09"</b></font></p>
+<hr>
+<br>
+<p><b>Contents</b>:</p>
+<blockquote> 
+  <p> <a href="#1"><font size="-1">Background of this test; Malware Threat</font></a><font size="-1"><br>
+    <a href="#2">VTC Testbeds used in VTC test "1999-09"</a><br>
+    <a href="#3">Development of DOS AV product detection rates</a> <br>
+    <a href="#4">Performance of DOS AV products on ZOO testbeds, including Polymorphic 
+    and VKIT virus detection</a><br>
+    <a href="#5">Performance of DOS scanners on ITW testbeds </a><br>
+    <a href="#6">Performance of DOS scanners by virus classes </a><br>
+    <a href="#7">Detection of packed viral objects needs improvement</a><br>
+    <a href="#8">False Positive avoidance (DOS/Win-NT)</a> <br>
+    <a href="#9">Detection of File/Macro Malware (DOS/Win-NT)</a> <br>
+    <a href="#10">File/Macro virus detection under Win-NT</a><br>
+    <a href="#11">Several W-32 scanners perform equally on W-98/W-NT</a><br>
+    <a href="#12">Malware detection under Windows 98/NT</a> <br>
+    <a href="#13">Conclusion: Searching for the "Perfect AV/AM product</a><br>
+    <a href="#14">Availability of full test results</a><br>
+    <a href="#15">Copyright, License, and Disclaimer </a><br>
+    <br>
+    <b>Tables</b>:<br>
+    <br>
+    Table ES0: <a href="#T1">Development of viral/malware threats</a><br>
+    Table ES1: <a href="#T2">Content of VTC test databases in test 1999-09</a><br>
+    Table ES2: <a href="#T3">List of AV products in test 1999-09</a><br>
+    Table ES3: <a href="#T4">Development of DOS scanners from 1997-02 to 1999-09</a><br>
+    Table ES4: <a href="#T5">Development of W-NT scanners from 1997-07 to 1999-09</a></font></p>
+</blockquote>
+<p> <b><font size="+1"><a name="1"></a></font></b></p>
+<p><b><font size="+1">1. Background of this test: Malware Threats:</font></b></p>
+<p>Malicious software (malware) including viruses (=self-replicating malware), 
+  trojan horses (=pure payload without self-replication), <br>
+  virus droppers and network malware (e.g. worms and hostile applets), are regarded 
+  as serious threats to PC users esp. when connected <br>
+  to Intranetworks and Internet.<br>
+  <br>
+  The development of malicious software can well be studied in view of the growth 
+  of VTC testbeds. The following table summarizes, for previous and actual VTC 
+  tests (indicated by their year and month of publication), the size of virus 
+  and malware (full = "zoo") databases (indicating each the different viruses 
+  and number of instantiations of a virus or malware and having in mind that some 
+  revisions of testbeds were made):<br>
+</p>
+<p align="center"><b><a name="T1"></a></b></p>
+<p align="center"><b>Table ES0: Development of threats as present in VTC test 
+  databases:</b><br>
+</p>
+<blockquote>
+  <PRE>
+    ===================================================================
+
+             = File viruses= = Boot Viruses= =Macro Viruses= == Malware ==
+     Test#   Number Infected Number Infected Number Infected Number Malware
+             Viruses objects viruses objects viruses objects  file   macro
+    -----------------------------------------------------------------------
+    1997-07:  12,826  83,910    938   3,387     617   2,036     213     72
+    1998-03:  14,596 106,470  1,071   4,464   1,548   4,436     323    459
+    1998-10:  13,993 112,038    881   4,804   2,159   9,033   3,300    191  
+    1999-03:  17,148 128,534  1,197   4,746   2,875   7,765   3,853    200
+               +   5 146,640  (VKIT+4*Poly)
+    1999-09:  17,561 132,576  1,237   5,286   3,546   9,731   6,217    329
+               +  7  166,640  (VKit+6*Poly)
+    -----------------------------------------------------------------------
+    Remark:   Before test 1998-10, an ad-hoc cleaning operation was applied
+              to remove samples where virality could not be proved easily.
+              Since test 1999-03, separate tests are performed to evaluate
+              detection rates of <a href="creatrs2.htm#VKIT">VKIt</a>-generated and selected polymorphic 
+              file viruses.              
+</PRE>
+</blockquote>
+<p> With annual deployment of more than 5,000 viruses and several 100 Trojan horses, 
+  many of which are available from Internet, and in the absence of inherent protection 
+  against such dysfunctional software, users must rely on AntiMalware and esp. 
+  AntiVirus software to detect and eradicate - where possible - such malicious 
+  software. Hence, the detection quality of AntiMalware esp. including AntiVirus 
+  products becomes an essential prerequisite of protecting customer productivity 
+  and data. <br>
+  <br>
+  Virus Test Center (VTC) at Hamburg University´s Faculty for Informatics performs 
+  regular tests of AntiMalware and esp. AntiVirus Software. VTC recently tested 
+  actual versions of on-demand scanners for their ability to identify PC viruses. 
+  Tests were performed on VTCs malware databases, which were frozen on their status 
+  as of *** March 31, 1999 *** to give AV/AM producers a fair chance to support 
+  updates within the 8 weeks submission period. <br>
+</p>
+<p>The main test goal was to determine detections rates, reliability (=consistency) 
+  of malware identification and reliability of detection rates for submitted or 
+  publicly available scanners. Special tests were devoted to detection of multiple 
+  generations of 6 polymorphic file viruses (Maltese.Amoeba, Mte.Encroacher.B, 
+  Natas, Tremor Tequila and One-Half) and of viruses generated with the "VKIT" 
+  file virus generator. It was also tested whether viruses packed with 4 popular 
+  compressing methods (PKZIP, ARJ, LHA and RAR) would be detected (and to what 
+  degree) by scanners. Moreover, avoidance of False Positive alarms on "clean" 
+  (=non-viral and non-malicious) objects was also determined. <br>
+  <br>
+  Finally, a set of selected non-viral file and macro malware (droppers, Trojan 
+  horses, intended viruses etc) was used to determine whether and to what degree 
+  AntiVirus products may be used for protecting customers against Trojan horses 
+  and other forms of malware. <br>
+  <br>
+  VTC maintains, in close and secure connection with AV experts worldwide, collections 
+  of boot, file and macro viruses as well as related malware ("zoo") which have 
+  been reported to VTC or AV labs. Moreover, following the list of "<a href="misc0004.htm">In-The-Wild 
+  Viruses</a>" (published on regular basis by Wildlist.org), a collection of viruses 
+  reported to be broadly visible is maintained to allow for comparison with other 
+  tests; presently, this list does not report ITW Malware.<br>
+  <br>
+  <b><font size="+1"><a name="2"></a></font></b></p>
+<p><b><font size="+1">2. VTC Testbeds used in VTC test "1999-09":</font></b></p>
+<p align="left"> The actual sizes of VTC testbeds (developped from previous testbed 
+  through inclusion of new viruses and malware and some revision) is given in 
+  the following table:</p>
+<p align="center"> <b><a name="T2"></a></b></p>
+<p align="center"><b>Table ES1: Content of VTC test databases</b>:</p>
+<blockquote>
+  <PRE> =================================================================
+ "Full Zoo":17,561 File Viruses   in 132,576 infected files,
+            60,000 Instantiations of 6 polymorphic file viruses
+            10,706 Variations of file viruses generated with VKIT
+             3,691 different File Malware in 6,217 file objects
+             3,300 Clean Files used for False Positive Detection
+             1,237 System Viruses in   5,286 infected images,
+             3,546 Macro Viruses  in   9,731 infected documents,
+               167 different Macro Malware in 242 macro objects
+               242 Clean macro objects used for False Positive test
+            -----------------------------------------------------
+ "ITW Zoo":     46 File Viruses   in   1,489 infected files,
+                42 System Viruses in     524 infected images, and
+                59 Macro Viruses  in     506 infected documents
+ ==================================================================
+ Remark: The organisation which collects worldwide information on 
+         viruses "in-the-Wild" has reorganized its "in-the-Wild"
+         database early 1999; consequently, the number of ITW
+         viruses is significantly smaller than in previous tests. 
+
+ (For detailed indices of VTC testbeds, see file "a3testbed.zip") 
+</PRE>
+</blockquote>
+<p> Concerning quality of viral testbeds, it is sometimes difficult to assess 
+  the "virality" (=ability of a given sample to replicate at least twice under 
+  given constraints) of large "viral zoo" databases, esp. as some viruses work 
+  under very specific conditions. We are glad to report, that colleagues such 
+  as Dr. Vesselin Bontchev, Fridrik Skulason, Igor Muttik and Righard Zwienenberg 
+  (to name only some) helped us with critical and constructive comments to establish 
+  viral testbeds, the residual non-viral part of which should be very small. We 
+  also wish to thank "WildList Organisation" for supporting us with their set 
+  of In-The-Wild viruses; the related results may support users in comparing VTC 
+  tests with other ITW-only tests. <br>
+  <br>
+  For test "1999-03", the following *** 27 *** AntiVirus products (adressed in 
+  subsequent tables by a 3-letter abbreviavion) under DOS, Windows-98 or Windows-NT 
+  were tested: </p>
+<p align="center"><b><a name="T3"></a></b></p>
+<p align="center"><b>Table ES2: List of AV products in test "1999-09&quot; </b></p>
+<blockquote>
+  <PRE>    
+    =========================================================
+    Abbreviation/Product/Version        Tested under Platform
+    ---------------------------------------------------------
+    ANT/AN5 =H+BEDV AntiVir CLI/GUI 1.11.2 DOS, W-98, W-NT
+    AVA = AVAST v7.70 (28) May 99          DOS, W3.x
+          AVAST32 v3.0 (132) May 99        W-98, W-NT
+    AVG = AVG 5.0                          DOS, W-98, W-NT
+    AVK = AVK 8.07                         DOS, W-98, W-NT                
+    AVP = AVP 3033                         DOS, W-98, W-NT
+    AVX = AVX Version 4.1                  DOS, W-98, W-NT
+    CMD = Command Software AV 4.54 SP      DOS, W-98, W-NT
+    DRW = DrWeb 4.10                       DOS, W-98, W-NT 
+    DWW = DrWeb for Win32 4.10             DOS, W-98, W-NT   
+    FPR = FProt 3.05                       DOS, W-98, W-NT
+    FPW = FProt FP-WIN 3.05                DOS, W-98, W-NT
+    FSE = FSAV 4.03a                       DOS, W-98, W-NT
+    FWN = FWin32 v. 1.82f                             W-NT
+    INO = Inoculan 4.50/4.21 5.14.99       DOS, W-98, W-NT
+    MR2 = MR2S v.098 Gegamarx+SWE          DOS, W-98, W-NT
+    NAV = NAV 3.03/Sig May 1999            DOS, W-98, W-NT
+    NOD = NOD32 v. 3.17                    DOS, W-98, W-NT 
+    NVC = NVC (GUI/CLI) 4.70               DOS, W-98, W-NT
+    PAV = PAV 99.01/PAV 32 May 99          DOS, W-98, W-NT
+    PRO = Protector 6.6.A01                W-3, W-98, W-NT 
+    RAV = RAV 7 v. 1.00b                   DOS, W-98, W-NT
+    SCN = NAI VirusScan 4.0.2              DOS, W-98, W-NT
+    SWE = Sweep v. 3.21                    DOS, W-98, W-NT
+    TSC = TScan 1.81                       DOS, W-98, W-NT
+    VSP = VSP 11.75.01                     DOS, W-98, W-NTT
+   -----------------------------------------------------------
+   For details of AV products including options used to determine
+   optimum detection rates: see A3SCNLS.TXT. For scanners where
+   results are missing: see 8problms.txt.
+</PRE>
+</blockquote>
+<p> In general, AV products were either submitted or, when test versions were 
+  available on Internet, downloaded from respective ftp/http sites. Few scanners 
+  were not available either in general (TNT) or for this test, some of which were 
+  announced to participate in some future test. One AV manufacturer (Sophos UK) 
+  requested that their product shall not be tested against VTCs malware database; 
+  as VTC regards non-viral malware as essential threat to customers whose detection 
+  shall be measured in VTC tests, and as VTC is not willing to accept any requests 
+  for special treatment of products in test, this AV product was not admitted 
+  to this tests. Finally, very few AV producers answered VTCs bids for submitting 
+  scanners with electronic silence.<br>
+  <br>
+  The following paragraphs survey essential findings in comparison with last VTC 
+  tests (performance over time), as well as some relative "grading" of scanners 
+  for detection of file and macro viruses, both in full "zoo" and "In-The-Wild" 
+  testbeds, of file and macro malware, as well as detection of ITW file and macro 
+  viruses in objects packed with ARJ, LHA, ZIP and RAR. Finally, the ability of 
+  AV products to avoid False Positive alarms is also analysed. <br>
+  <br>
+  Detailed results including precision and reliability of virus identification 
+  and of results for boot/MBR infectors are described in overview tables "6a-sumov.txt" 
+  and the related tables for DOS (boot+file+macro), Win-98 and Win-NT (file+macro) 
+  detection. An additional test was performed to measure the ability of AV products 
+  to detect all polymorphic instantiations of 4 selected polymorphic file viruses, 
+  and one more test was devoted to detect any of 10,706 file virus variations 
+  generated with the virus development kit "<a href="#CREATRS2.HTM#VKIT">VKIT</a>" 
+  detected in fall 1998.<br>
+  <br>
+  A rather detailed evaluation of test results including progress and shortcomings 
+  is given in 7EVAL.TXT.</p>
+<p><b><a name="3"></a></b></p>
+<p><b>3. Summary #1: Development of DOS scanner detection rates:</b></p>
+<p>Concerning performance of DOS scanners, a comparison of virus detection results 
+  in tests from "1997-02" until present test "1999-09" shows how scanners behave 
+  and how manufacturers succeed in adapting their products to the growing threat 
+  of new viruses. The following table lists the development of detection rates 
+  of scanners (most actual versions in each test), and it calculates changes ("+" 
+  indicating improvement) in detection rates.<br>
+  <br>
+  For reasons of fairness, it must be noted that improvement of those products 
+  which have yet reached a very high level of detection and quality (say: more 
+  than 95%) is much more difficult to achieve than for those products which reached 
+  lower detection rates. Some products have incorporated new engines (esp. for 
+  32-bit platforms) and included formerly separate scanners (e.g. on macro viruses) 
+  which lead to improved performance. Generally, changes in the order of about 
+  +-1.5% are less significant as this is about the growth rate of new viruses 
+  per month, so detection depends strongly upon whether some virus is reported 
+  (and analysed and included) just before a new update is delivered.</p>
+<p align="center"><b><a name="T4"></a></b></p>
+<p align="center"><b>Table ES3 lists developments for detection of file and macro 
+  viruses;</b></p>
+<blockquote> 
+  <pre>for details as well as for boot virus detection, see result tables
+(6b-6g) as well as overview (6asumov.txt) and Evaluation (7eval.txt).
+
+
+Table ES3: Improvement of DOS scanners from 1997-02 to 1999-09:
+===============================================================
+   ------- File Virus Detection ------- ------ Macro Virus Detection --------                                              
+SCAN 9702 9707 9802 9810 9903 9909 DELTA  9702 9707 9802 9810 9903 9909  DELTA                          
+NER    %    %    %    %    %    %    %     %     %    %    %    %    %     %
+------------------------------------------------------------------------------
+ALE  98.8 94.1 89.4   -    -    -    -    96.5 66.0 49.8   -    -    -     -      
+AVA  98.9 97.4 97.4 97.9 97.6 97.4 -0.2   99.3 98.2 80.4 97.2 95.9  94.6 -1.3
+AVG  79.2 85.3 84.9 87.6 87.1 86.6 -0.5   25.2 71.0 27.1 81.6 82.5  96.6 14.1
+AVK    -    -    -  90.0 75.0   -           -     -   -  99.7 99.6    -    -
+AVP  98.5 98.4 99.3 99.7 99.7 99.8  0.1   99.3 99.0 99.9 100% 99.8  100%  0.2
+ANT  73.4 80.6 84.6 75.7   -    -    -    58.0 68.6 80.4 56.6   -     -    -
+DRW  93.2 93.8 92.8 93.1 98.2 98.3  0.1   90.2 98.1 94.3 99.3 98.3    -    -
+DSS  99.7 99.6 99.9 99.9 99.8   -    -    97.9 98.9 100% 100% 100%    -    -
+FMA    -    -    -    -    -    -    -    98.6 98.2 99.9   -    -     -    -
+FPR  90.7 89.0 96.0 95.5 98.7 99.2  0.5   43.4 36.1 99.9 99.8 99.8  99.7 -0.1
+FSE    -    -  99.4 99.7 97.6 99.3  1.7     -    -  99.9 90.1 99.6  97.6 -2.0
+FWN    -    -    -    -    -         -    97.2 96.4 91.0 85.7   -     -    -
+HMV    -    -    -    -    -         -      -    -  98.2 99.0 99.5    -    -
+IBM  93.6 95.2 96.5   -    -    -    -    65.0 88.8 99.6   -    -     -    -
+INO    -    -  92.0 93.5 98.1 94.7 -3.4     -    -  90.3 95.2 99.8  99.5 -0.3
+IRS    -  81.4 74.2   -  51.6   -    -      -  69.5 48.2   -  89.1    -    -
+ITM    -  81.0 81.2 65.8 64.2   -    -      -  81.8 58.2 68.6 76.3    -    -
+IVB   8.3   -    -    -  96.9   -    -      -    -    -    -    -     -    -
+MR2    -    -    -    -    -  65.4   -      -    -    -    -    -   69.6   -
+NAV  66.9 67.1 97.1 98.1 77.2 96.0 18.8   80.7 86.4 98.7 99.8 99.7  98.6 -0.9
+NOD    -    -    -  96.9   -  96.9   -      -    -    -    -  99.8  100%  0.2
+NVC  87.4 89.7 94.1 93.8 97.6   -    -    13.3 96.6 99.2 90.8   -   99.6   -
+PAN    -    -  67.8   -    -    -    -      -    -  73.0   -    -     -    -
+PAV    -  96.6 98.8   -  73.7 98.8 25.1     -    -  93.7 100% 99.5  98.8 -0.7
+PCC    -    -    -    -    -    -    -      -  67.6   -    -    -     -    -
+PCV  67.9   -    -    -    -    -    -      -    -    -    -    -     -    -
+PRO    -    -    -    -  35.5   -    -      -    -    -    -  81.5    -    -
+RAV    -    -    -  71.0   -    -    -      -    -    -  99.5 99.2  -0.3   -
+SCN  83.9 93.5 90.7 87.8 99.8 97.1 -2.7   95.1 97.6 99.0 98.6 100%  100%  0.0
+SWP  95.9 94.5 96.8 98.4   -  99.0   -    87.4 89.1 98.4 98.6   -   98.4   -
+TBA  95.5 93.7 92.1 93.2   -    -    -    72.0 96.1 99.5 98.7   -     -    -
+TSC    -    -  50.4 56.1 39.5 51.6 12.1     -    -  81.9 76.5 +59.5 69.6 10.1 
+TNT  58.0   -    -    -    -    -    -      -    -    -    -    -     -    -
+VDS    -  44.0 37.1   -    -    -    -    16.1  9.9  8.7   -    -     -    -
+VET    -  64.9   -    -  65.3   -    -      -  94.0 97.3 97.5 97.6    -    -
+VRX    -    -    -    -    -    -    -      -    -    -    -    -     -    -
+VBS  43.1 56.6   -  35.5   -    -    -      -    -    -    -    -     -    -
+VHU  19.3   -    -    -    -    -    -      -    -    -    -    -     -    -  
+VSA    -    -  56.9   -    -    -    -      -    -  80.6   -    -     -    -
+VSP    -    -    -  76.1 71.7  79.6 7.9     -    -    -    -    -    0.1   -
+VSW    -    -  56.9   -    -    -     -     -    -  83.0   -    -     -    -  
+VTR  45.5   -    -    -    -    -     -    6.3   -    -    -    -     -    -
+XSC  59.5   -    -    -    -    -     -     -    -    -    -    -     -    -
+-------------------------------------------------------------------------------
+Mean 74.2 84.8 84.4 85.4 81.2  90.6 +5.0% 69.6 80.9 83.8 89.6 93.6  88.2 +1.7% 
+-------------------------------------------------------------------------------
+Remark: for abbreviations and details of products present only in previous
+        tests, see related parts of VTC test report.
+
+
+  ****************************************************************
+   Results  #1:   DOS zoo detection rates need improvement,
+                  esp. concerning macro virus detection!
+   ****************************************************************
+   Results  #1.1) Under DOS, good news is that those scanners whose
+                  ability to properly detect file viruses have been 
+                  significantly improved in comparison with last test;
+                  from last test´s low mean value (81.2% mean detection
+                  rate), file viruses in VTCs large collection ("zoo")
+                  are now detected much better (90.6%). While most
+                  products remain on their detection levels, PAV and
+                  NAV were significantly improved to again reach
+                  their previous high detection rates. No product 
+                  presently detects ALL file zoo viruses. Concerning
+                  In-The-Wild file viruses, 12 (out of 18) products
+                  reach the level "perfect" (100% detection).
+
+            #1.2) On the other side, the ability of scanners to 
+                  detect macro viruses has slightly decreased
+                  (from last time´s 93.6% to now 88.2%). While those
+                  (11) scanners which also participated in last test
+                  improved their detection rates in-the-mean by 1.7%,
+                  one must observe that some major products behave
+                  less favourable. Again, two products (DSS/now SCN, 
+                  and NOD) reached 100% detection of the full macro 
+                  virus "zoo". And 13 (out of 18%) detect all
+                  In-The-Wild viruses.
+                  
+            #1.3) Summarizing the DOS situation, there is still need
+                  to improve both file and macro virus detection.      
+   ******************************************************************
+</pre>
+</blockquote>
+<p> <font size="+1"><b><a name="4"></a></b></font></p>
+<p><font size="+1"><b>4. Summmary #2: Performance of DOS scanners on zoo testbeds:</b></font></p>
+<p> Concerning rating of DOS scanners, the following grid is applied to classify 
+  scanners:<br>
+</p>
+<blockquote> 
+  <pre>     - detection rate   =100.0% : scanner is graded "perfect"
+     - detection rate above 95% : scanner is graded "excellent"
+     - detection rate above 90% : scanner is graded "very good"
+     - detection rate of 80-90% : scanner is graded "good enough"
+     - detection rate of 70-80% : scanner is graded "not good enough"
+     - detection rate of 60-70% : scanner is graded "rather bad"
+     - detection rate of 50-60% : scanner is graded "very bad"
+     - detection rate below 50% : scanner is graded "useless"
+</pre>
+</blockquote>
+<p> To assess an "overall grade" (including file and macro virus detection), the 
+  lowest of the related results is used to classify resp. scanners. If several 
+  scanners of the same producer have been tested, grading is applied to the most 
+  actual version (which is, in most cases, the version with highest detection 
+  rates). Only scanners where all tests were completed are considered; here, the 
+  most actual version with test completed was selected. (For problems in test: 
+  see 8problms.txt).<br>
+  <br>
+  The following list indicates those scanners graded into one of the upper three 
+  categories, with file and macro virus detection rates in unpacked forms, and 
+  with perfect ITW virus detection (rate=100%):<br>
+</p>
+<blockquote> 
+  <pre>                                  (file/macro zoo; file/macro ITW) 
+                                   --------------------------------
+"Perfect" DOS scanners:     NONE                                  Change:
+                                                                  -------
+"Excellent" DOS scanners:   AVP     ( 99.8% 100.0%; 100.0% 100.0%)  (=)
+                            FPR     ( 99.2%  99.7%; 100.0% 100.0%)  (+)
+
+"Very Good" DOS scanners:   
+                            SWP     ( 99.0%  98.4%; 100.0% 100.0%)  (+)
+                            FSE     ( 99.3%  97.6%; 100.0% 100.0%)  (=)
+                            PAV     ( 98.8%  98.8%; 100.0% 100.0%)  (+)
+                            CMD     ( 98.4%  99.5%; 100.0% 100.0%)  (+)
+                            NOD     ( 96.9% 100.0%; 100.0% 100.0%)  (=)
+                            SCN     ( 97.1% 100.0%; 100.0% 100.0%)  (+)
+                            NAV     ( 96.0%  98.6%; 100.0% 100.0%)  (+)
+                             
+
+
+   ****************************************************************
+   Results #2:    Quality of best DOS scanners not yet perfect
+                  Excellent DOS scanners: AVP and FPR  
+   ****************************************************************
+   Results #2.1)  The overall virus detection quality of best DOS 
+                  scanners has reached a very acceptable level 
+                  both for file and macro viruses which are not 
+                  "in-the-wild".
+           #2.2)  2 DOS scanners - AVP, FPR - are almost perfect.
+           #2.3)  7 products are "very good", 5 of which new in 
+                  this category: SWP, PAV, CMD, SCN and NAV. 
+   **************************************************************
+</pre>
+</blockquote>
+<p><a name="5"></a> </p>
+<p><font size="+1"><b>5. Summary #3: Performance of DOS scanners on ITW testbeds:</b></font></p>
+<p> Concerning "In-The-Wild" viruses, a much more rigid grid must be applied to 
+  classify scanners, as the likelihood is significant that a user may find such 
+  a virus on her/his machine. The following grid is applied:<br>
+</p>
+<blockquote> 
+  <pre>
+       - detection rate is 100% : scanner is "perfect"
+       - detection rate is &gt;99% : scanner is "excellent"
+       - detection rate is &gt;95% : scanner is "very good"
+       - detection rate is &gt;90% : scanner is "good"
+       - detection rate is &lt;90% : scanner is "risky"
+</pre>
+</blockquote>
+<p> 100% detection of In-the-Wild viruses is now an absolute requirement. The 
+  following 10 DOS products reach 100% for boot, file and macro virus detection 
+  and are rated "perfect" in this category (alphabetically ordered):<br>
+</p>
+<blockquote> 
+  <pre>
+                                        ( File    Macro   Boot)
+                                        -----------------------
+"Perfect" DOS ITW scanners:     AVA     (100.0%  100.0%  100.0%)   (+)
+                                AVP     (100.0%  100.0%  100.0%)   (=)
+                                CMD     (100.0%  100.0%  100.0%)   (+)
+                                FPR     (100.0%  100.0%  100.0%)   (=)
+                                FSE     (100.0%  100.0%  100.0%)   (=)
+                                NAV     (100.0%  100.0%  100.0%)   (+)
+                                NOD     (100.0%  100.0%  100.0%)   (=)
+                                PAV     (100.0%  100.0%  100.0%)   (+)
+                                SCN     (100.0%  100.0%  100.0%)   (+)
+                                SWP     (100.0%  100.0%  100.0%)   (+)
+                                        ------------------------
+                       
+
+   **************************************************************
+   Results  #3:  High ITW detection rates and implied risks.  
+   **************************************************************
+   Results #3.1) 10 DOS scanners "perfect" for ITW viruses:
+                    AVA,AVP,CMD,FPR,FSE,NAV,NOD,PAV,SCN and SWP.
+           #3.2) In-The-Wild detection of best DOS scanners has
+                 been significantly improved since last test.
+                 Number of perfect scanners (in this category)
+                 has jumped from 8 to 10.
+           #3.3) But the concentration of some AV producers to 
+                 reach 100% In-The-Wild detection rates does NOT
+                 guarantee high detection rates of "zoo" viruses. 
+   ************************************************************** 
+</pre>
+</blockquote>
+<p> <font size="+1"><b><a name="6"></a></b></font></p>
+<p><font size="+1"><b>6. Summary #4: Performance of DOS scanners by virus classes.</b></font></p>
+<p> Some scanners are specialised on detecting some class of viruses (either in 
+  deliberately limiting themselves to one class, esp. macro viruses, or as that 
+  part is significantly better than other parts). It is therefore worth notifying 
+  which scanners perform best in detecting file, boot and macro viruses. <br>
+  <br>
+  Compared to the last test (1999-03), the number of "excellent" macro virus detectors 
+  has significantly grown (as has the class of "good" ones which is not listed 
+  here); in contrast, "standard" file (and even more: boot) viruses seem to be 
+  comparably less carefully handled in product upgrading.<br>
+  <br>
+  Two special tests of file viruses were also performed to determine the quality 
+  of AV product maintenance. One test was concerned with almost 11,000 viruses 
+  generated from the VKIT virus generator. Some AV products count every of the 
+  potential 15,000 viruses as new variant while others count all VKIT viruses 
+  just as ONE virus. Fortunately, a high proportion of tested products detects 
+  these viruses (see 4.5), although reliability of detection is significantly 
+  less than normally (see 6BDOSFIL.TXT).<br>
+  <br>
+  Another special test was devoted to the detection of 10,000 polymorphic generations 
+  each of the following polymorphic viruses: Maltese.Amoeba, MTE.Encroacher.B, 
+  NATAS, TREMOR, One-Half and Tequila. Detection rates were "almost perfect". 
+  <br>
+  <br>
+  Products rated "perfect" (=100%), "excellent" (&gt;99%) and "very good" (&gt;95%) 
+  are listed.<br>
+</p>
+<blockquote>
+  <pre>
+    4.1 Grading the Detection of zoo file viruses: 
+    ---------------------------------------------- 
+    "Perfect" DOS scanner:          === NONE ===    (=)
+    
+    "Excellent" DOS scanners:       AVP  ( 99.8%)   (=)   
+                                    FSE  ( 99.3%)   (+)
+                                    FPR  ( 99.2%)   (+)
+                                    SWP  ( 99.0%)   (+)
+
+    "Very Good" DOS file scanners:  PAV  ( 98.8%) 
+                                    CMD  ( 98.4%)   (+)
+                                    DRW  ( 98.3%)   (=)
+                                    AVA  ( 97.4%)   (=)
+                                    SCN  ( 97.1%)   (-)
+                                    NOD  ( 96.9%)   (=)
+                                    NAV  ( 96.0%)   (+)
+                                    
+                                  
+
+    4.2 Grading the Detection of zoo macro viruses: 
+    -----------------------------------------------
+    "Perfect" DOS macro scanners:   AVP  (100.0%)   (+)
+                                    NOD  (100.0%)   (+)
+                                    SCN  (100.0%)   (=)
+        
+    "Excellent" DOS macro scanners: FPR  ( 99.7%)   (=)
+                                    NVC  ( 99.6%)   (+)
+                                    CMD  ( 99.5%)   (+)
+                                    INO  ( 99.5%)   (=)
+                                    
+    "Very Good" DOS file scanners:  PAV  ( 98.8%)   (+)
+                                    NAV  ( 98.6%)   (=)
+                                    SWP  ( 98.4%)   (+)
+                                    FSE  ( 97.6%)   (=)
+                                    AVG  ( 96.6%)   (+)
+
+
+     4.3 Grading the Detection of zoo boot viruses:
+     ----------------------------------------------
+    "Perfect" DOS scanner:          === NONE === 
+    
+    "Excellent" DOS scanners:       AVP  ( 99.9%)   (+)   
+                                    SCN  ( 99.9%)   (=)
+                                    FSE  ( 99.7%)   (=)
+                                    SWP  ( 99.1%)   (+)
+
+    "Very Good" DOS file scanners:  NOD  ( 98.5%)   (-)
+                                    PAV  ( 98.5%)   (-)
+                                    AVA  ( 97.8%)   (=)
+                                    DRW  ( 97.3%)   (+)
+                                    FPR  ( 97.3%)   (+)
+                                    NVC  ( 97.0%)   (=)                     
+                                    NAV  ( 96.4%)   (+)
+
+
+     4.4 Grading of Poly-virus detection:
+     ------------------------------------
+     Based on the detection data (see 6BDOSFIL.TXT, table FDOS.FA),
+     and with additional conditions, that 
+            1) all infected objects for all viruses were detected
+            2) with full reliability of identification and detection,
+     the following products can be rated as "perfect" Poly-detectors:
+
+     "Perfect" Poly-detectors:       AVG  (100.0)   (=)
+                                     AVP  (100.0)   (=)
+                                     DRW  (100.0)   (=)
+                                     FSE  (100.0)   (=)
+                                     NAV  (100.0)   (=)
+                                     NOD  (100.0)   (=)
+                                     PAV  (100.0)   (=)
+
+     The following products are "almost perfect" as they reach 100%
+     detection rate (exactly) but with less precise identification 
+     precision:
+     
+          "Almost Perfect" Poly detectors: 
+                    CMD (+), FPR (-), INO (=), NVC (=) and SWP (+).
+                                     
+
+     4.5 Grading of VKit virus detection:
+     ------------------------------------
+     Based on detection data (see 6BDOSFIL.TXT, table FDOS.FB),
+     and with additional conditions, that 
+            1) all infected objects for all viruses were detected
+            2) with full reliability of identification and detection,
+     NO product was "perfect" but several detected almost all samples
+     (rounded to 100.0%) but with some unreliability of identification:
+
+                    "Perfect" VKIT-detectors:        NONE   (=)
+
+
+    The following products are "almost perfect" as they reach 100%
+    detection rate (exactly) but with less precise identification 
+    precision:
+   
+
+            "Almost Perfect" VKIT detectors:
+                    AVP (=), FSE (=), MR2 (+), PAV (=) and SCN (=). 
+   
+                          
+   ****************************************************************
+   Results #4: Performance of DOS scanners by virus classes:
+               ---------------------------------------------
+               Perfect scanners for macro zoo: AVP, NOD, SCN
+               Perfect scanners for Polymorphic virus set:
+                                AVG, AVP, DRW, FSE, NAV, NOD, PAV. 
+               NO perfect scanner for boot, file and VKit zoo.          
+   ****************************************************************
+   Results #4.1) Specialised scanners (esp. those specialising
+                 on macro viruses) are not superior to best overall
+                 scanners, even concerning large collections such 
+                 as VTCs "zoo" testbeds.
+   ****************************************************************</pre>
+</blockquote>
+<p> <font size="+1"><b><a name="7"></a></b></font></p>
+<p><font size="+1"><b>7. Summary #5: Detection of viruses in packed objects under 
+  DOS:</b></font></p>
+<p> Detection of file and macro viruses within packed objects becomes essential 
+  for on-access scanning, esp. for incoming email possibly loaded with malicious 
+  objects. It seems therefore reasonable to test whether at least ITW viral objects 
+  compressed with given popular methods (PKZIP, ARJ, LHA and RAR) are also detected. 
+  <br>
+  <br>
+  Tests are performed only on In-The-Wild viruses packed once (no recursiive packing). 
+  As last test showed that AV products are rather far from perfect detection of 
+  packed viruses, testbed has essentially bee unchanged to ease comparison and 
+  improvement.<br>
+  <br>
+  Results (see 6BDOSFIL.TXT, 6DDOSMAC.TXT) are rather AGAIN DISAPPOINTING, esp. 
+  as we have to report major problems of products in scanning the whole testbed 
+  (although not very large), as reported in 8PROBLMS.TXT.<br>
+  <br>
+  A "perfect" product would detect ALL packed viral samples (100%) (file AND macro) 
+  for all packers:</p>
+<blockquote>
+  <pre>            "Perfect" packed virus detector: FSE
+</PRE>
+</blockquote>
+<P>
+        Two products are "perfect" detectors for packed macro viruses
+        but failed in file virus detection:
+</P>
+<blockquote>
+  <PRE>
+            "Perfect" packed macro virus detector: PAV and SCN.
+</PRE>
+</blockquote>
+<P>        
+        An "very good" product would reach 100% detection
+        of packed viral samples (file and macro) for at least 3 packers:
+</P>
+<blockquote>
+  <PRE>
+            "Very good" packed macro virus detector: NOD
+</PRE>
+</blockquote>
+<P> 
+        A "good" product would detect viral samples (ITW file and macro)
+        for at least 2 packers:
+</P>
+<blockquote>
+  <PRE>
+            "Good" packed macro virus detector: CMD, FPR
+ 
+   ********************************************************************
+   Results  #5: Detection of packed viral objects needs improvement 
+                Perfect packed file/macro virus DOS detector: FSE
+                Packed macro virus only: "Very Good" detector: NOD
+                                         "Good" detectors:  CMD, FPR
+   ********************************************************************
+   Results  #5.1) Only one product = FSE = can be rated "perfect"
+                  concerning detection of infected packed objects,
+                  at least on the level of ITW file and macro viruses.
+            #5.2) Only 3 products have reached an acceptable
+                  level of detecting viruses in packed infected 
+                  objects with 2 or 3 compression methods. Signi-
+                  ficant investment of work is needed here.
+   ********************************************************************
+</PRE>
+</blockquote>
+<P> <b><font size="+1"><a name="8"></a></font></b></P>
+<P><b><font size="+1">8. Summary #6: False-Positive avoidance of DOS and Win-NT 
+  scanners: </font></b></P>
+<P>Regarding the ability of scanners to avoid FP alarms, the following AV products 
+  running under DOS reported NO SINGLE False Positive alarm BOTH in file and macro 
+  zoo testbeds and are therefore rated "perfect": </P>
+<blockquote>
+  <PRE>
+    FP-avoiding "perfect" DOS scanners: 
+
+                FPR (+) and SCN (=)                 </pre>
+</blockquote>
+<p> Several DOS scanners gave NO FP alarm EITHER on clean files or macros:<br>
+</p>
+<blockquote> 
+  <PRE>    Perfect FP-avoidance on DOS clean file testbed:
+            AVP (=), CMD (+), FPR (=), FSE (=), NAV (=), 
+            PAV (=), SCN (=), SWP (+) and TSC (=)            
+
+    Perfect FP-avoidance on DOS clean macro file testbed:  
+            AVA (=), FPR(+), SCN (+) and VSP (+).
+</pre>
+</blockquote>
+<p> In comparison to DOS results, an analysis of FP-avoidance for Windows-NT based 
+  scanners is slightly more promising. Concerning avoidance of ANY FP-alarm BOTH 
+  for file and macro viruses, 2 products are rated "excellent": <br>
+</p>
+<blockquote> 
+  <PRE>
+    FP-avoiding "perfect" W-NT scanners:   FPW and SCN
+</pre>
+</blockquote>
+<p> Several more W-NT scanners also gave NO FP alarm EITHER on clean files <br>
+  OR on clean macros:<br>
+</p>
+<blockquote> 
+  <PRE>
+    Perfect FP-avoidance under Win-NT for clean file objects:
+            AVK (=), AVP (=), FPW (+), FSE (=), NAV (=), 
+            PAV (=), PRO (=), SCN (=) and SWP (+).           
+
+    Perfect FP-avoidance under Win-NT for clean macro objects: 
+            AVA (=), FPR (+), FPW (+), FWN (+), 
+            PRO (+), SCN (=) and VSP (+).
+</pre>
+</blockquote>
+<p>As in last test, avoidance of false-positive alarms is LESS advanced for macro 
+  viruses (see 6DDOSMAC.TXT, table FDOS.M4). Moreover, some products (which were 
+  well rated in last test) showed serious problems during testing.<br>
+  <br>
+  Concerning avoidance of False-Positive alarms BOTH under DOS AND Windows-NT, 
+  only 2 products can be rated as "perfect": <br>
+</p>
+<blockquote> 
+  <PRE>
+    "Perfect" FP-avoiding scanner both under DOS and W-NT:  
+              FPR/FPW and SCN!
+
+(Remark: direct comparison of 16-bit scan engines for DOS and 32-bit scan 
+engines for W-NT is not possible. The argument concerning an "overall 
+perfect product" applies more to the suite of software than to single
+products. Indeed, FPW and FPR are different engines in Frisk Software 
+suite, as SCN engines are in NAIs suite).
+
+   ****************************************************************     
+   Results  #6: Avoidance of False-Positive Alarms is insufficient!
+                FP-avoiding perfect DOS scanners:   FPR and SCN
+                FP-avoiding perfect W-NT scanners:  FPW and SCN
+   ****************************************************************
+   Result   #6.1) VERY FEW products reliably avoid ANY False
+                  Positive alarm on clean file and macro objects,
+                  either under DOS and Win-NT. 
+            #6.2) Only 2 products avoid ANY false-positive alarm
+                  BOTH under DOS and Windows-NT: !FPR/FPW and SCN! 
+            #6.3) Overall, the quality of FP-avoidance has dege-
+                  nerated since last test:  the number of false-
+                  positive alarms is significantly LARGER compared 
+                  to the last test, whereas the testbed was 
+                  deliberately NOT CHANGED. 
+            #6.4) AV producers should intensify work to avoid
+                  FP alarms.
+   *****************************************************************
+</pre>
+</blockquote>
+<p><b><font size="+1"> <a name="9"></a></font></b></p>
+<p><b><font size="+1">9. Summary #7: Detection of File and Macro Malware (DOS/Win-NT):</font></b></p>
+<p> Since test "1997-07", VTC tests also the ability of AV products to detect 
+  non-viral malware. An essential argument for this category is that customers 
+  are interested to be warned and protected not only about viruses but also about 
+  other malicious objects such as trojans etc, the payload of which may be disastrous 
+  to their work (e.g. stealing passwords). <br>
+  <br>
+  Regrettably, consciousness of AV producers to protect their users against related 
+  threats is still underdevelopped. Manifold arguments are presented why AV products 
+  are not the best protection against non-viral malware; from a technical point, 
+  these arguments may seem conclusive but at the same time, almost nothing is 
+  done to support customers with adequate AntiMalware software. On the other side, 
+  AV methods (such as scanning for presence or absence of characteristic features) 
+  are also applicable - though not ideal - to detect non-viral malware.<br>
+  <br>
+  Since VTC test "1999-03", malware detection is a mandatory part of VTC tests, 
+  both for submitted products and for those downloaded as free evaluation copies. 
+  <br>
+  As in last test, still NO product can be rated a "perfect AM detector". Compared 
+  to last test, only 1 product (formerly 4, one of which "left" the mmarket) can 
+  now be rated "very good". Developments for file malware (e.g. trojans stealing 
+  passwords) is disappointing as detection rates are generally decreasing, whereas 
+  detection of macro malware (which is well defined in VTCs "List of Known Macro 
+  Viruses/Malware") is improving: </p>
+<blockquote> 
+  <blockquote>
+    <PRE>                                          ===== Malware Detection =====
+                                          = under DOS == = under W-NT =
+                                          (File/Macro-mw;File/Macro-mw)
+                                    -----------------------------------
+  "Perfect" DOS/W-NT mw scanners:   NONE
+                                    -----------------------------------
+  "Excellent" DOS/W-NT scanners: SCN   (96.1% 100.0%;  95.2%  99.4%)  (=)
+                                    ----------------------------------- 
+</pre>
+  </blockquote>
+</blockquote>
+<p> With special view on file malware detection, there is only one product worthwhile 
+  to mention as "very good": SCN. No other product detects at least 90% of file 
+  malware, either under DOS or W-NT.<br>
+  <br>
+  Concerning macro malware detection, the situation is better: there is one product 
+  which is rated "perfect": NOD, and several more which reach perform on a "very 
+  good" level, as the following table indicates (which is sorted by macro malware 
+  detection rates, but also includes - for comparison - the respective file malware 
+  detection rates):</p>
+<blockquote> 
+  <blockquote>
+    <PRE>      
+                                          ===== Malware Detection =====
+                                          = under DOS == = under W-NT =
+                                          (File/Macro-mw;File/Macro-mw)
+                                    -----------------------------------
+    "Perfect" macro mw (DOS/W-NT):  NOD   (64.6% 100.0%;  67,1% 100.0%)  (+)
+                                    -----------------------------------
+    "Excellent" macro mw scanners:  SCN   (96.1% 100.0%;  95.2%  99.4%)  (=)
+                                    AVP   (85.9%  99.4%;  87.3%  99.4%)  (=)
+                                    CMD   (83.7%  99.8%;  83.6%  98.8%)  (+)
+                                  FPR/FPW (84.8%  98.8%;  86.2%  98.8%)  (=)
+                                    PAV   (84.5%  96.4%;  86.6%  97.6%)  (-)
+                                    INO   (82.3%  96.4%;  82.3%  96.4%)  (=)
+                                    FSE   (84.3%  94.6%;  95.7% 100.0%)  (=)
+                                    NAV   (62.6%  94.0%;  83.8%  94.0%)  (=)
+                                    SWP   (76.8%  94.0%;  77.3%  94.0%)  (+)
+                                  NVC/NVN (  -    91.0%;  67.8%  91.0%)  (=)
+                                    -----------------------------------
+
+
+   **************************************************************
+   Results #7:    AntiMalware detection under DOS/W-NT improving
+                     No "perfect" file/macro malware detector
+                     "Excellent" file/macro malware detector: SCN
+                     "Perfect" Macro malware detector only: NOD.
+   **************************************************************
+   Result  #7.1:  The ability of AV products to detect also
+                  non-viral malware is only improving for macro
+                  malware while the ability to detect file malware
+                  decreased since last tests. 
+           #7.2:  Concerning file and macro malware, only 1 product
+                  can be rated "excellent": SCN (1999-03: 4 products).
+                  Concerning macro malware detection, 
+                         1 product is "perfect": NOD
+                        10 products are rated "excellent": 
+                                  SCN, AVP, CMD, FPR/FPW, PAV, 
+                                  INO, FSE, NAV, SWP and NVC/NVN.
+           #7.3:  With continuing growth of malware testbeds and
+                  growing threats to customers, AV producers MUST 
+                  improve their products also in this area.          
+   *************************************************************          
+</pre>
+  </blockquote>
+</blockquote>
+<p> <b><font size="+1"><a name="10"></a></font></b></p>
+<p><b><font size="+1">10. Summary #8: File/Macro virus detection under Windows-NT:</font></b></p>
+<p> The number of scanners running under Windows NT is still small, though growing. 
+  Significantly less products were available for these tests, compared with the 
+  traditional DOS scene.<br>
+  <br>
+  The following table summarizes results of file and macro virus detection under 
+  Windows-NT in last 4 VTC tests:</p>
+<p align="center"><b><a name="T5"></a></b></p>
+<p align="center"><b>Table ES4: Comparison: File/Macro Virus Detection Rate in 
+  last 4 VTC tests under Windows NT:</b><br>
+</p>
+<blockquote>
+  <blockquote> 
+    <PRE>===========================================================
+Scan  ==== File Virus Detection ====  === Macro Virus Detection ===
+ ner   97/07 98/02 98/10 99/03 Delta  97/07 98/02 98/10 99/03 Delta
+-------------------------------------------------------------------
+ANT    88.9  69.2  91.3    -     -    92.2    -   85.7    -     -
+ANY      -     -   69.7    -     -      -     -   70.5    -     -
+AVA      -   97.4  96.6  97.1  +0.5     -   91.9  97.2  95.2  -2.0   
+AVG      -     -     -   87.3    -      -     -     -   82.5    -
+AVK      -     -   99.6  90.2  -9.4     -     -   99.6  99.6   0.0
+AVP      -     -   83.7  99.9 +16.2     -     -  100.0  99.2  -0.8
+AVX      -     -     -   74.2    -      -     -     -   98.9    -
+AW       -   56.4    -     -     -      -     -   61.0     -    -
+DRW      -     -     -   93.3    -      -     -     -   98.3    -
+DWW      -     -     -     -     -      -     -     -   98.2    -
+DSS    99.6  99.7  99.9  99.3  -0.6   99.0 100.0 100.0 100.0   0.0
+FPR/FMA  -   96.1    -   98.7    -      -   99.9  99.8  99.8   0.0
+FSE      -   85.3  99.8 100.0  +0.2     -     -   99.9 100.0  +0.1
+FWN      -     -     -     -     -      -     -   99.6  99.7  +0.1
+HMV      -     -     -     -     -      -     -   99.0  99.5  +0.5
+IBM    95.2  95.2  77.2    -     -    92.9  92.6  98.6    -     -
+INO      -   92.8    -   98.1    -      -   89.7    -   99.8    -
+IRS      -   96.3    -   97.6    -      -   99.1    -   99.5    -
+IVB      -     -     -     -     -      -     -   92.8  95.0  +2.2
+NAV    86.5  97.1    -   98.0    -    95.6  98.7  99.9  99.7  -0.2
+NOD      -     -     -   97.6    -      -     -     -   99.8    -
+NVC    89.6  93.8  93.6  96.4  +2.8   96.6  99.2    -   98.9    -
+PAV    97.7  98.7  98.4  97.2  -1.2   93.5  98.8  99.5  99.4  -0.1
+PRO      -     -     -   37.3    -      -     -     -   58.0    -
+RAV      -   81.6  84.9  85.5  +0.6     -   98.9  99.5  99.2  -0.3
+RA7      -     -     -   89.3    -      -     -     -   99.2    -
+PCC    63.1    -     -     -     -      -   94.8    -     -     -  
+PER      -     -     -     -     -      -   91.0    -     -     -
+SCN    94.2  91.6  71.4  99.1 +27.7   97.6  99.1  97.7 100.0  +2.3
+SWP    94.5  96.8  98.4    -     -    89.1  98.4  97.5    -     -
+TBA      -   93.8  92.6    -     -    96.1    -   98.7    -     -
+TNT      -     -     -     -     -      -     -   44.4    -     -
+VET    64.9    -     -   65.4    -      -   94.0    -   94.9    -
+VSA      -   56.7    -     -     -      -   84.4    -     -     -
+VSP      -     -     -   87.0    -      -     -     -   86.7    -
+-------------------------------------------------------------------
+Mean:  87.4% 88.1% 89.0% 89.2% +4.0%  94.7% 95.9% 91.6% 95.3% +0,1%
+-------------------------------------------------------------------
+</pre>
+  </blockquote>
+</blockquote>
+<p><br>
+  Generally, the ability of W-NT scanners to detect file zoo viruses "in the mean" 
+  is stable but on an insufficient level (89.2%), but those scanners present in 
+  last test pushed detection rates by 4.0% (mean). On the side of macro viruses, 
+  "mean" detection rate has strongly been improved (+2.7%) to an acceptable level 
+  (95.3%); here, products having participated in last VTC tests succeed in following 
+  the growth by keeping detection rates on high levels, from where spectacular 
+  improvements are less easy. <br>
+  <br>
+  The same grid as for the DOS and W-98 classification is applied to grade scanners 
+  according to their ability to detect file and macro viruses under Windows NT. 
+  <br>
+  <br>
+  As under DOS and W-98, NO product reached 100% detection rate for both file 
+  and macro (zoo) viruses and falls therefore under category "Perfect W-NT scanner". 
+  3 scanners reach grade "Excellent" (&gt;99% detection), and 9 scanners are rated 
+  "very good" (&gt;95%):<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+                                   (file/macro zoo; file/macro ITW) 
+                                   --------------------------------
+    "Perfect" W-NT scanners:    NONE
+                                   --------------------------------       
+    "Excellent" W-NT scanners:  FSE ( 99.9% 100.0%; 100.0% 100.0%)   (-)   
+                                AVK ( 99.8% 100.0%; 100.0% 100.0%)   (+)  
+                                AVP ( 99.8% 100.0%; 100.0% 100.0%)   (=)
+                                SCN ( 99.8% 100.0%; 100.0% 100.0%)   (=)
+                                PAV ( 99.6%  99.7%; 100.0% 100.0%)   (+) 
+                                FPR ( 99.4%  99.7%; 100.0% 100.0%)   (+)   
+                                NVN ( 99.0%  99.5%; 100.0% 100.0%)   (+)
+                                SWP ( 99.0%  98.4%; 100.0% 100.0%)   (+)
+                                    -------------------------------
+     "Very Good" W-NT scanners: CMD ( 98.4%  99.6%;  98.7% 100.0%)   (+)
+                                DWW ( 98.3%  98.8%; 100.0% 100.0%)   (=)
+                                NOD ( 98.2% 100.0%;  98.7% 100.0%)   (=)
+                                INO ( 98.0%  99.7%; 100.0% 100.0%)   (=)  
+                                NAV ( 97.6%  98.7%; 100.0% 100.0%)   (=)
+                                    -------------------------------
+</pre>
+  </blockquote>
+</blockquote>
+<p> For detection of macro viruses under Windows NT, the following 16 scanners 
+  detect at least 95% of zoo macro and 100% of ITW viruses:<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>         "Perfect"   (100% 100%): AVK, AVP, FSE, NOD and SCN 
+         "Excellent" (&gt;99% &gt;99%): FPR, INO, PAV, CMD and NVN
+         "Very Good" (&gt;95% &gt;95%): DWW, FWN, AVX, NAV, SWP and AVG
+    
+   **************************************************************
+   Results  #9: Virus detection rates under W-NT on high level
+                No "perfect" Windows-NT zoo scanner
+                But 8 "excellent" scanners: 
+                    FSE, AVK, AVP, SCN, PAV, FPR, NVN, SWP
+                Macro-only "perfect" products: AVK,AVP,FSE,NOD,SCN
+   **************************************************************
+   Result   #9.1: Detection rates for file and esp. macro viruses
+                  for scanners under Windows NT have reached a 
+                  fairly high level, similar to W-98:
+                      Perfect scanner    (100%):  0   (1999-03:1)
+                      Excellent scanners (&gt;99%):  8   (1999-03:3)
+                      Very Good scanners (&gt;95%):  5   (1999-03:9)
+            #9.2: AV producers should invest more work into file
+                  virus detection, esp. into VKIT virus detection
+                  (where results are not equally promising) as
+                  well as detection of viruses in virus detection
+                  in compressed objects (essential for on-access
+                  scanning).
+   **************************************************************
+</pre>
+  </blockquote>
+</blockquote>
+<p> <b><font size="+1"><a name="11"></a></font></b></p>
+<p><b><font size="+1">11. Summary #9: File/Macro Virus detection under 32-bit 
+  engines:</font></b></p>
+<p> Concerning 32-Bit engines as used in Windows-98 and Windows-NT, it is interesting 
+  to test the validity of the hypothesis that related engines produce same detection 
+  and identification quality. (For details see 6HCOMP32.TXT).<br>
+  <br>
+  When comparing results from related tests, good news is that 32-bit engines 
+  growingly behave equally well on W-98 and W-NT platforms:<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>        Equal detection of zoo file viruses:   12 (of 21) products
+                        of ITW file viruses:   18 (of 21) products
+                        of zoo macro viruses:  16 (of 22) products
+                        of ITW macro viruses:  20 (of 22) products
+
+   *****************************************************************
+   Results  #10: Several W-32 scanners perform equally on W-98/W-NT
+   *****************************************************************
+   Result   #10.1: The assumption that 32-bit engines in scanners
+                   produce the same detection rate for different
+                   instantiations of 32-bit operating systems 
+                   (esp. for Windows-98 and Windows-NT) is now
+                   correct for the majority of scanners.
+            #10.2: Analysis of ITW detection rates is NOT sufficient 
+                   to determine the behaviour of 32-bit engines and 
+                   does not guarantee equal detection rates for 
+                   different W-32 platforms (esp. W-98/W-NT).
+   *****************************************************************
+</pre>
+  </blockquote>
+</blockquote>
+<p> <b><font size="+1"><a name="12"></a></font></b></p>
+<p><b><font size="+1">12. Summary #10: Malware detection under Windows 98/NT:</font></b></p>
+<p> With Windows 98 and Windows-NT often used for downloading potentially hazardous 
+  objects from Internet, it is interesting to measure the ability of AntiVirus 
+  products to also act as AntiMalware products.<br>
+  <br>
+  The same grid is applied as to grading of DOS AM products. Similar to DOS, NO 
+  AV products can presently be graded as "Perfect" (all rates 100.0%) and only 
+  2 scanners perform as AM products with grade "Excellent" (&gt;90%), both for 
+  W-98 and W-NT. This significant loss in malware detection quality is esp. related 
+  to significantly lower detection rates of many products (esp. of those 4 products 
+  which dropped from "excellent" to "very good"). <br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>                                          ===== Malware Detection =====
+                                          == File malw == Macro malw == 
+                                           (W-98  W-NT ;  W-98  W-NT)
+                                    -----------------------------------
+  "Perfect" DOS/W-NT mw scanners:   NONE
+                                    -----------------------------------
+  "Excellent" DOS/W-NT mw scanners: FSE   (95.7%  95.7%; 100.0% 100.0%)  (=)
+                                    SCN   (95.7%  95.2%; 100.0%  99.4%)  (=)
+                                    -----------------------------------
+</pre>
+  </blockquote>
+</blockquote>
+<p> Detection of macro malware is evidently better supported than file malware 
+  detection, as several more AV products detect macro malware under W-98 (14 products) 
+  and W-NT (16 products). As no products was rated "perfect", the following products 
+  reached a "very good" level of macro malware detection under both Win-98 and 
+  Win-NT: </p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+
+            Detection of macro malware under W-98/W-NT
+            --------------------------------------------
+            "Perfect":    FSE, NOD       (100.0% 100.0%)  
+            "Excellent":  SCN            (100.0%  99.4%)  
+                          AVK, AVP       ( 99.4%  99.4%)   
+                          CMD, FPR       ( 98.8%  98.8%)
+                          PAV            ( 97.6%  97.6%)
+                          RAV            ( 96.4%  99.9%)
+                          FWN            ( 95.8%  95.8%)
+                          AVX            ( 95.2%  95.2%)
+             -------------------------------------------
+</pre>
+  </blockquote>
+</blockquote>
+<p> It is also interesting to observe that malware detection is less platform 
+  dependent as DOS, W-98 and W-NT detection rates are often consistent.<br>
+  <br>
+  Generally, some AV products are able to help protecting users by detecting file 
+  and macro-related malware at a significant level. Fortunately, related products 
+  also show good to excellent results in detecting viral malware.<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+   ***************************************************************
+   Results  #10: AntiMalware quality of AV products is developping
+                 No "perfect" AM product for W-98 and W-NT for
+                 file and macro malware but 2 "excellent" products:
+                       FSE, SCN.
+                 Concerning macro malware detection under W-98/W-NT:
+                       2 products are "perfect":     FSE, NOD
+                       9 products are "excellent":   SCN, AVK, AVP,
+                                   CMD, FPR, PAV, RAV, FWN and AVX.
+   ***************************************************************
+   Result   #11.1: Some AntiMalware producers help customers 
+                   detecting also non-viral malware under 32-bit
+                   operating systems, esp. Win-98 and Win-NT. 
+            #11.2: The ability to detect macro malware is
+                   more developped than detection of file malware.
+            #11.3: Much more work must be invested to reliably
+                   detect file and macro malware and protect
+                   customers from downloading trojans etc.
+   ***************************************************************
+</pre>
+  </blockquote>
+</blockquote>
+<p> <b><font size="+1"><a name="13"></a></font></b></p>
+<p><b><font size="+1">13. Final remark: Searching the "Perfect AV/AM product"</font></b></p>
+<p> Under the scope of VTCs grading system, a "Perfect AV/AM product" would have 
+  the following characteristics: </p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+
+   Definition: A "Perfect AntiVirus (AV) product"
+    ----------------------------------------------
+            1) Will detect ALL viral samples "In-The-Wild"
+                 AND in at least 99% of zoo samples,
+                 in ALL categories (file, boot and script-based
+                 viruses), with always same high precision 
+                 of identification and in every infected sample,
+            2) Will detect ALL ITW viral samples and in at least
+                 99% of zoo samples, in compressed objects,
+                 with at least all (4) popular packers, and
+            3) Will NEVER issue a False Positive alarm
+                 on any sample which is not viral.
+
+    Definition: A "Perfect AntiMalware (AM) product"
+    ------------------------------------------------
+            1) Will be "Perfect AntiVirus product", 
+               That is: 100% ITW detection
+                        AND &gt;99% zoo detection
+                        AND high precision of identification
+                        AND high precision of detection
+                        AND 100% detection of ITW viruses 
+                            in compressed objects,
+                        AND   0% False-Positive rate,
+            2) AND it will also detect essential forms
+               of malicious software, at least in unpacked
+               forms, reliably at high rates (&gt;90%).
+
+
+    *************************************************************
+    In VTC test "1999-09", we found *** NO perfect AV product ***
+                       and we found *** No perfect AM product ***
+    *************************************************************
+</pre>
+  </blockquote>
+</blockquote>
+<p> But some products seem to approach our definition on a rather high level (taking 
+  into account the highest value of "perfect" defined on 100% level and "Excellent" 
+  defined by 99% for virus detection, and 90% for malware detection):<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+
+    Test category:        "Perfect"           "Excellent"
+    -------------------------------------------------------------
+    DOS zoo tests:           ---              AVP,FPR
+    DOS ITW tests:      AVA,AVP,CMD,FPR,FSE,
+                        NAV,NOD,PAV,SCN,SWP                          
+    DOS pack-tests:     FSE                   PAV,SCN,NOD
+    FP avoidance DOS:   AVP,CMD,FPR,FSE,NAV      
+    FP avoidance W-NT:  FPr,SCN                  
+    W-NT zoo tests:         ---               FSE,AVK,AVP,SCN,
+                                              FPR,NVC,SWP
+    W-32 uniformity:    FSE                   AVP
+    -------------------------------------------------------------
+    Malware NT/DOS:          ---              SCN   
+    Malware W-98/W-NT:       ---              
+    -------------------------------------------------------------    
+</pre>
+  </blockquote>
+</blockquote>
+<p> In order to support the race for more customer protection, we evaluate the 
+  order of performance in this test with a simple algorithm, by counting the majority 
+  of places (weighing "perfect" twice and "excellent" once), for the first places 
+  (also indicating changes in places versus last test 1999-03):<br>
+</p>
+<blockquote> 
+  <blockquote> 
+    <PRE>
+    ************************************************************
+    "Perfect" AntVirus product:     NONE       
+    "Excellent" AV products:
+        1st place:                  FSE (=)      (9 points)
+        2nd place:                  FPR (+)      (8 points)     
+        3rd place:                  AVP (=)      (7 points)
+        4th place:                  SCN (-)      (6 points)
+    ************************************************************
+    "Perfect" AntiMalware product:  NONE
+    "Excellent" AntiMalware product:
+        1st place:                  SCN (=)      (7 points)
+     ************************************************************
+</pre>
+  </blockquote>
+</blockquote>
+<p> Generally, we hope that these rather detailed results help AV producers to 
+  adapt their products to growing threats and thus to protect their customers. 
+</p>
+<p><b><font size="+1"><a name="14"></a></font></b></p>
+<p><b><font size="+1">14. Availability of full test results:</font></b></p>
+<p> Much more information about this test, its methods and viral databases, as 
+  well as detailed test results are available for anonymous FTP downloading from 
+  VTCs HomePage (VTC is part of Working Group AGN): </p>
+<blockquote>
+  <p><a href="ftp://agn-www.informatik.uni-hamburg.de/vtc">ftp://agn-www.informatik.uni-hamburg.de/vtc</a></p>
+</blockquote>
+<p> Any comment and critical remark which helps VTC learning to improve our test 
+  methods will be warmly welcomed. The next comparative test is planned for May 
+  to July 1999, with viral databases frozen on March 31, 1999. Any AV producer 
+  wishing to participate in forthcoming test is invited to submit related products. 
+  <br>
+  <br>
+  On behalf of the VTC Test Crew: Dr. Klaus Brunnstein (September 30,1999) <br>
+  <br>
+  <b><font size="+1"><a name="15"></a></font></b></p>
+<p><b><font size="+1">15. Copyright, License, and Disclaimer:</font></b><br>
+  <br>
+  This publication is (C) Copyright 1999 by Klaus Brunnstein and the Virus Test 
+  Center (VTC) at University of Hamburg, Germany.<br>
+  <br>
+  Permission (Copy-Left) is granted to everybody to distribute copies of this 
+  information in electronic form, provided that this is done for free, that contents 
+  of the information are not changed in any way, and that origin of this information 
+  is explicitly mentioned. It is esp. permitted to store and distribute this set 
+  of text files at university or other public mirror sites where security/safety 
+  related information is stored for unrestricted public access for free. <br>
+  <br>
+  Any other use, esp. including distribution of these text files on CD-ROMs or 
+  any publication as a whole or in parts, are ONLY permitted after contact with 
+  the supervisor, Prof. Dr. Klaus Brunnstein or authorized members of Virus Test 
+  Center at Hamburg University, and this agreement must be in explicit writing, 
+  prior to any publication. <br>
+  <br>
+  No responsibility is assumed by the author(s) for any injury and/or damage to 
+  persons or property as a matter of products liability, negligence or otherwise, 
+  or from any use or operation of any methods, products, instructions or ideas 
+  contained in the material herein.<br>
+  <br>
+  Prof. Dr. Klaus Brunnstein<br>
+  University of Hamburg, Germany<br>
+  (September 30, 1999)</p>
+<hr>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</BODY>
+</HTML>

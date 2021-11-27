@@ -1,0 +1,557 @@
+ 
+                                      January 28, 1991 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+        ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+ 
+ 
+ 
+        (Establishing Computer Emergency Response Teams, CERT's) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                                    Alan Fedeli, Manager 
+                                    Inter-Enterprise Systems 
+                                    IBM Corporation 
+                                    1311 Mamaroneck Avenue 
+                                    White Plains, N.Y. 10605 
+ 
+                                    FEDELI@RHQVM14.IINUS1.IBM.COM 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+        ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+        (Establishing Computer Emergency Response Teams - CERT's) 
+ 
+ 
+        OVERVIEW 
+        This document describes how IBM has learned to cope with viruses 
+        and related threats.  It is based on two years' experience 
+        establishing and operating corporate-wide CERT's. 
+ 
+        The process of organizing corporate-wide defenses starts 
+        with the realization that viruses and harmful code are 
+        real problems, and the problems aren't going to go away if 
+        ignored.  Unfortunately, the realization for most corporations 
+        starts with a costly incident or two.  Then a central group 
+        develops an understanding of what viruses are, how they differ 
+        from worms and Trojan horses, and why they can't simply be 
+        prevented by conventional security practices.  The implementation
+
+        then comprises incident reporting/response, user education, 
+        tools deployment, infection containment and follow-up, and 
+        policy revision/communication. 
+ 
+        WHAT IS A COMPUTER VIRUS 
+        A computer virus is a program which is able to spread copies of 
+        itself within other programs.  The virus infects the first 
+        program it chooses, and then when the infected program is run, 
+        the virus seeks to infect another program.  In addition to 
+        spreading itself around, the virus may choose to create unusual 
+        screen effects, make a statement, or erase files. 
+ 
+        PREREQUISITE READING 
+        For an understanding of the problem of viruses and for 
+        suggestions about their prevention, detection, control, 
+        and recovery, the following document should prove useful: 
+ 
+             COPING WITH COMPUTER VIRUSES AND RELATED THREATS 
+             IBM Publication G320-9913-00 
+ 
+        CERT ORIGINS 
+        In workshops held in August, 1989 and June, 1990, the 
+        National Institute of Standards and Technology, NIST, 
+        and Carnegie Mellon's Software Engineering Institute, SEI, 
+        presented the concepts and model of CERT's for incident 
+        management and response.  The IBM CERT system was based on 
+        model presented at those workshops.  This document describes 
+        how IBM implemented the CERT concept to achieve central 
+        reporting and control of incidents occurring within IBM. 
+ 
+ 
+
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+ 
+ 
+ 
+ 
+                      CONTENTS 
+ 
+ 
+        Determining the Scope of the Problem.................4 
+ 
+        Establishing Organizational Ownership................5 
+ 
+        Gaining Executive Concurrence........................6 
+ 
+        You've Got a Head Start..............................7 
+ 
+        Computer Emergency Response Teams....................8 
+ 
+        Central Reporting / Response.........................9 
+ 
+        Developing Satellite CERT's.........................10 
+ 
+        Selecting Anti-Virus Tools..........................11 
+ 
+        Educating End Users.................................12 
+ 
+        Focus Areas: Servers, Acquisition Policy............13 
+ 
+        External Networking Considerations..................14 
+ 
+        Summary, Conclusions................................15 
+ 
+ 
+
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+DETERMINING THE SCOPE OF THE PROBLEM 
+ 
+Before launching into a corporate-wide anti-virus effort, it was useful 
+for us to determine the scope of the problem for our corporation.  The 
+first question we asked was whether the focus of the activity should 
+include micros, minis, and mainframes, or be limited to only the 
+"afflicted" environment, the microprocessor environment for now. 
+We have built our process around the microprocessor activity, but 
+geared it for handling mini and mainframe episodes.  Our anti-virus 
+process recognizes the impact of network spread of harmful code, 
+providing for quicker emergency handling of episodes with a network 
+component. 
+ 
+Next, we assessed whether there was vulnerability to harmful code 
+due to our company's acquisition and handling of software.  Wherever 
+we allowed anyone to bring software in from the outside, wherever we 
+distributed software externally, wherever there was a high degree of 
+software sharing and transporting, we were at greater risk of becoming 
+infected or infecting someone else. 
+ 
+Finally, it was useful to assess the impact to our business of one 
+of the following occurrences: 
+     o  Critical systems getting infected causing the loss of valuable 
+        information or loss of productivity during recovery. 
+     o  Harmful code spreading rapidly through our networks, 
+        tying up system and people resources. 
+     o  Press reports indicating that viruses were rampant within 
+        our company. 
+     o  Accusations that our company infected some other company 
+        or individual with whom we do business. 
+ 
+With these assessments and evaluations, we had a better assessment 
+of the scope of the problem, we identified areas of highest risk, 
+and knew the degree of urgency with which the problem should be 
+addressed.  We knew that we couldn't absolutely prevent one or more 
+of the above from happening, but we know we could reduce the likelihood 
+of those occurrences by employing appropriate virus countermeasures. 
+
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+ESTABLISHING ORGANIZATIONAL OWNERSHIP 
+ 
+Once we accepted that the problem of harmful code needed to be 
+addressed, and that preventive measures were preferable to reacting 
+to incidents after the fact, we needed to assign the responsibility 
+for managing the problem to the right organization.  If this were 
+more a mainframe or network problem, it would have been more natural 
+to assign ownership to the Information Systems (I/S) organizations 
+throughout the company.  But since the dominant infections were to be 
+found in the PC environment, it wasn't clear that I/S owned the problem. 
+ 
+I/S deals with microprocessors and minis differently in different 
+corporations, and even differently within the same corporation. 
+The "p" in personal computing leads many to view PC virus problems 
+as end user problems.  I/S centers will initially assert that end-users 
+themselves, or separate end-user support organizations are the ones 
+responsible, not the I/S computing center. 
+ 
+We determined that the I/S computing center should take a lead role 
+in anti-virus incident management and control.  What is needed for 
+incident management is central coordination and control, not the 
+decentralized operation which is effective for other personal computer 
+and miniprocessor functions.  Given the corporation has many large 
+I/S centers, perhaps one at each major site and one or more in major 
+countries, these large I/S computing centers were asked to: 
+ 
+    1) identify focal point personnel for reporting suspected harmful 
+       code whether in the micro, mini, or mainframe environment. 
+    2) make these people known to the users of their systems, and 
+       establish an easy means of locating them (eg. thru help desks). 
+    3) be prepared to confirm suspected incidents, and report them 
+       to the corporate central support group. 
+    4) manage the containment of infections, tracing to the source, and 
+       the cleanup of harmful code incidents. 
+ 
+There were other functional organizations which could have taken on 
+this responsibility, but we felt I/S should take the leadership role. 
+Dealing with viruses requires the programming and systems expertise 
+found in I/S organizations.  Two other candidate infrastructures 
+which were considered were the security chain of command and end-user 
+computing.  The security chain of command has an active interest in 
+this subject, but it did not have sufficient technical depth to deal 
+adequately with the management of virus incidents.  Besides, we view 
+virus contamination more a quality issue than a security problem. 
+End-user computing is a logical place for this responsibility to be 
+placed, especially while viruses are largely a microprocessor issue. 
+In some cases it is a moot point, since end-user computing is 
+within I/S.  In other cases, end-user computing is fairly separate 
+from the I/S organization.  The advantage to keeping the I/S focus 
+on the problem is to treat the broader problem of harmful code in 
+all platforms, and not just limit the topic to microprocessors. 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+GAINING EXECUTIVE CONCURRENCE 
+ 
+Responding to the likelihood of viruses within the corporation 
+takes resource, time, and attention.  If the corporation goes into 
+prevent mode, it takes one level of resource- educating users, 
+establishing focal points, central reporting, etc.  If the company 
+does nothing, there is a reactive level of resource which is 
+probably greater than the prevent level in most cases.   For this 
+reason it is important to get executive understanding and backing 
+for the anti-virus efforts.  An ounce of prevention may pay off. 
+ 
+In order for executives in a corporation to authorize anti-virus 
+activities, they must be convinced that: 
+    1) there is a problem 
+    2) the problem is likely to affect their company 
+    3) preventive measures are cost effective 
+ 
+In order to make a cogent argument stating that viruses are a problem 
+and the likelihood of numerous incidents is fairly high, one would like 
+to have access to the incident statistics of other similar companies. 
+Unfortunately, most companies are reluctant to share their incident 
+rates with others for fear of damaging the firm's reputation and 
+loss of customer confidence.  This is especially true for banks, other 
+financial institutions, and companies in the computer industry. 
+The fact is that most businesses are seeing an increasing number 
+of virus incidents, but they can't easily share the alarm or the 
+data with others. 
+ 
+In any event, once executive management understands the nature 
+of the problem and the vulnerability, it is helpful to have 
+specific directives which you want them to initiate, and specific 
+support that you will require.  Some specific directives could be: 
+ 
+       1) a letter from executive management requiring all PC users 
+          to take anti-virus measures, including scanning for known 
+          viruses and following guidelines which reduce the risk 
+          of being infected (see Coping with Computer Viruses and 
+          Related Threats, referenced in the overview). 
+       2) an I/S directive establishing focal points in I/S centers 
+          which can deal with suspected virus incidents. 
+       3) a directive to all employees for the reporting of 
+          confirmed incidents centrally. 
+ 
+The specific support required includes staffing the central group and 
+getting commitment from each I/S center.  The cost of anti-virus 
+tools should be considered, as well as the cost to deploy the tools 
+on a regular basis. 
+
+ORGANIZING A CORPORATE ANTI VIRUS EFFORT 
+ 
+YOU'VE GOT A HEAD START 
+ 
+Up to now this sounds like action in which corporate headquarters comes 
+to the rescue of the entire corporation.  That would be very unrealistic,
+
+and that wasn't our experience.  Long before corporate became aware of 
+the problem, the technical community was involved and doing something 
+about it. This isn't so much a corporate criticism as it is an indication
+
+that just as certainly as there are viruses spreading around, there are 
+people who have already started to deal with the problem.  The idea is 
+to discover who these people are, and leverage their activity. 
+ 
+In our company we found that a handful of researchers in the U.S., and 
+several employees from our European sites had already been active in 
+anti-virus efforts.  They had been tuned to external sources, they had 
+analyzed viruses, and they had written anti-virus tools.  The people 
+involved were involved more out of commitment to anti-virus efforts 
+rather than because of formal job description.  We respected their 
+insights and took their guidance on anti-virus matters.  We then 
+institutionalized a process around the head start these technical 
+researchers had given us. 
+ 
+
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+COMPUTER EMERGENCY RESPONSE TEAMS - CERT's 
+ 
+The nerve system of a corporate anti-virus operation is the CERT 
+team organization at each major I/S site.  The people anointed 
+to do this must be technically "confident," and willing to learn 
+during a crisis.  The CERT team needn't be dedicated staff; it 
+almost never is.  Instead, the team should be composed of the best 
+technical people in the disciplines likely to be needed. 
+ 
+The currently active CERT skill these days is the PC expert.  Since 
+we are dealing with a series of PC virus incidents, he will be the 
+most frequently called person today.  The team should include people 
+with mini, mainframe, and network skills as well.  These people 
+should be well connected to site security, and of course to the 
+corporate central team. 
+ 
+The site CERT advertises itself to the constituent users of computing 
+resource at that site.  He is known to the help desk, and he publishes 
+communiques which identify him as the local CERT contact point.  He 
+will ask to be informed of all suspicious cases of harmful code.  He 
+will also make tools and aids available at his site to assist in the 
+education of end users and their ability to detect viruses. 
+ 
+There will be times when end-users report directly to the central CERT 
+rather than their local CERT.  The central CERT will want to respond 
+to an emergency, but it will be careful not to bypass the necessary 
+involvement of the local CERT.  We permit direct end-user reporting to 
+the central CERT, but always tie in the local CERT immediately. 
+ 
+We have found the key to effective CERT activity is to build CERT skill 
+at the site level to maximize the investment of incident management 
+experience. 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+CENTRAL REPORTING AND RESPONSE 
+ 
+Central coordination is vital to the anti-virus effort.  Without 
+a central reporting mechanism, a company would never know whether 
+it was dealing with many incidents or just a few.  When incidents 
+occurred, it wouldn't be clear whether the infections were isolated 
+or related.  Without central expertise and response, anti-virus 
+efforts would be haphazard, inefficient, and even dangerous. 
+ 
+The central group should be technical enough that they could lead 
+a major infection cleanup.  The staff should be "hands on" types 
+who like to swing into action.  They also should be dedicated enough 
+to be willing to respond at strange hours of the night, and monitor 
+the situation nights and weekends, from a home terminal if possible. 
+At the same time, the central CERT should understand that they have 
+to manage most incidents through others, so they must learn to be 
+patient with the system. 
+ 
+If a confirmed incident is reported, the central group should get 
+hot on the trail.  They should provide quick and expert advice, but 
+electronically copy the local CERT if the report was from an end-user. 
+In this way, the local CERT participates and improves its experience. 
+Our process includes sharing incident reports and responses with our 
+Research organization.  Research is able to watch the action without 
+being on the hook to respond.  In effect, they were watching for the 
+very unusual scenario which might have necessitated their involvement. 
+ 
+Initially our central reporting was to a hotline, but we moved to an 
+E-mail arrangement with an ID actually called VIRUS.  It worked much 
+better since it allowed for accurate documentation of incidents, and 
+easy sharing amongst the technical team. 
+ 
+Of course, each incident must be handled with diplomacy, sensitivity, 
+and the confidentiality needed for each situation. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+DEVELOPING SATELLITE CERTS 
+ 
+Our CERT plan was to have central control with decentralized skill. 
+We worked to develop the CERT's at each of the remote/satellite I/S 
+centers.  We gave them the information, guidance, support, and most 
+important, we gave them the ball on incidents.  If the skill isn't 
+there, they will resist at first.  Once the central team coaches them 
+through a few successes, they will gain confidence and control of 
+their territory.  We kept our expectations of the satellite CERT's high, 
+kept them informed, well-connected, and well-supported, and they did 
+a job that central couldn't do.  They have two big advantages: 
+there are more of them and they are closer to the infection. 
+ 
+Once again, we had some natural advantages here.  Some CERT's were 
+fighting viruses long before corporate got involved.  We tried not to 
+get too bureaucratic for these groups.  A second advantages is that 
+in every site that had gotten burned by a virus episode, the attention 
+and skill is very strong indeed.  The trick is to get the attention 
+and participation of sites which haven't been burned, so that they can 
+minimize the harm from their first incidents. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+SELECTING ANTI-VIRUS TOOLS 
+ 
+A company looking for a panacea for computer viruses might wish to 
+start with the tools first, then worry about policy, education, and 
+even tools deployment.  While good anti-virus tools are important, 
+they are useless in uneducated hands or if improperly deployed.  It 
+is fundamental to assess what the user community is capable of doing 
+to protect itself from viruses. 
+ 
+For the general population of users, there are two basic types of 
+tools used to defend against the known viruses.  They are scanners 
+and active monitors.  Scanners search users' disks for the signatures 
+of known viruses; active monitors are run when a user powers up, 
+watching for patterns of known viruses.  Both require frequent update 
+as new viruses are discovered.  Both are valuable anti-virus tools. 
+Scanners are easier to deploy and refresh, but they depend on the 
+user's diligence (eg scan frequently).  Active monitors are harder 
+to deploy because they must be installed in the user's autoexec, 
+but once installed, the user doesn't have to remember to do anything 
+except keep it updated. 
+ 
+Deployment of the proper selection of tools is the crux of the matter. 
+Remembering that we don't want the cure to be worse than the illness, 
+we want to get reasonable defenses into the users' hands with minimal 
+cost.  Cost includes price of the anti-viral software and time spent 
+distributing, installing, educating, and refreshing.  Since there may 
+be hundreds or thousands of PC users in one company, the time spent/ 
+wasted per user becomes a big productivity factor.  Ideally, the plan 
+would be to integrate dissemination and education for the tools 
+through the "common denominator" system, such as the E-MAIL or Office 
+system.  Simple techniques to download and install onto the workstation 
+would be helpful.  Attention must be paid to the different environments 
+(eg host session emulators, download programs, PC configurations) so 
+that generalized instructions are defect free. 
+ 
+Finally, the anti-virus distribution process should itself be as virus 
+resistant as possible.  The tools themselves should have virus resistant 
+features and the roll out process should avoid distributing infected 
+tools. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+EDUCATING END USERS 
+ 
+We can't reduce the disruptive effects of computer viruses without 
+the cooperation of educated users.  Indeed, one of our problems is that 
+there is a substantial population of PC users who are not well educated 
+in the use of their PC's, merely using them as a means to an end.  In 
+their case, somebody set up their environment; they merely push buttons. 
+These users present a special vulnerability.  They probably don't have 
+a good discipline for backing up vital data, they wouldn't be able to 
+recognize the difference between a program bug, user error, or a possible
+
+virus.  It is also very difficult to describe to this type of user what 
+a virus is and how it spreads.  Yet, getting an appropriate message 
+across to all users is vital to stemming the problem of viral spread. 
+The more sophisticated users can be taught more easily, and by their 
+understanding of the problem, they should take the necessary safeguards. 
+ 
+There are two time frames for reaching the naive users described above. 
+You can try to reach them in advance, getting their attention by trying 
+to explain what the problem and risk is, and giving them some preventive 
+steps.  The other time frame is when that user is himself infected, or 
+someone very near to him (same dept) is infected.  It is wise to plan 
+for both education time frames. 
+ 
+Policy disciplines can help educate users to take preventive steps. 
+They can be taught to take more frequent backups.  They can be directed 
+to acquire software from a central official source.  They can be 
+taught to write protect diskettes which contain files which should 
+never change.  They can develop better computer hygiene habits. 
+ 
+There is another approach to anti-virus education.  That is, educating 
+the user's system rather than the user.  If the right vaccine could be 
+easily rolled out to all PC's, and easily refreshed, then the need 
+for user education is diminished. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+FOCUS AREAS: SERVERS, SOFTWARE ACQUISITION POLICY 
+ 
+Microprocessor viruses are generally slow spreaders unless the 
+infection gets into the "drinking water."  We want to keep the 
+sources from which many users "drink" virus free.  Extra protection 
+and care should be given to LAN servers and software libraries or 
+repositories.  Once these have infected programs, the spread of 
+infection becomes dramatic. 
+ 
+The way to "purify" LAN servers and software repositories is through 
+a combination of procedure/policy and scanning.  Not everyone should 
+have the ability to put programs up on servers or repositories.  By 
+controlling update access, you limit the exposure of getting infected 
+in the first place.  Scanning of LAN's and distribution libraries should 
+be vigorous.  Daily scanning makes a great deal of sense. 
+ 
+In order to reduce the risk of picking up a virus from "outside," 
+a corporation may wish to tighten its software acquisition policy 
+and rules.  For a variety of reasons, most companies insist that 
+software used on the job be acquired centrally and dispensed by 
+"the PC store."  This has economic and control advantages.  However, 
+if the PC store is bureaucratic and has built in delays, people will 
+bypass the store and acquire software any way they can. 
+ 
+If you can centralize the acquisition of ALL software, then the central 
+group can institute scanning measures to ensure software is virus free. 
+This should be done for formally purchased "shrink wrapped" software 
+as well as software acquired by other means.  In order to encourage 
+central acquisition, policy should be strict, but service should also 
+be good.  It is easier to gain cooperation if the PC store acts quickly 
+on reasonable requests. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+EXTERNAL NETWORKING CONSIDERATIONS 
+ 
+One of the quickest means of entering an organization's systems 
+and networks is through its connections to the outside.  Such 
+"inter-enterprise system connections" help organizations to become 
+more productive when dealing with customers and suppliers, but 
+they open new avenues of exposure.  We think of the network worms 
+which were unleashed in recent years with great reach and heavy 
+press coverage.  The Internet worm might not have been a virus in 
+the strictest sense of the definition, but by affecting 6,000 systems 
+so quickly, it underscores the potential of harmful code in inter- 
+connected networks. 
+ 
+Corporations should have a policy and discipline for the manner in 
+which connections are made to the outside.  Connections to other 
+companies' networks and systems, to third party data bases, or to 
+the public via dial access, should be weighed carefully.  These 
+connections can be controlled as to WHO and WHAT is authorized across 
+those links.  For instance, you might not accept dial-ins without 
+callback, and you might not permit the transfer of executable code 
+across an E-MAIL gateway. 
+ 
+ORGANIZING A CORPORATE ANTI-VIRUS EFFORT 
+ 
+SUMMARY, CONCLUSIONS 
+ 
+Every company that depends on computers is going to have to deal with 
+the problem of harmful code.  If the company depends on an environment 
+or platform in which viruses already exist, such as PC's, there may be 
+a greater sense of urgency.  Even if the dominant environment of that 
+company has been virus free up to now, we know of no environment which 
+enjoys a natural immunity to viruses.  The problem isn't going to go 
+away, so it shouldn't be ignored.  On the other hand, the problem isn't 
+so serious or difficult that it defies effective countermeasures. 
+We can deal with the problem.  We can prevent infection by known viruses,
+
+and we can reduce the risk of infection by new viruses. 
+ 
+We decided to get organized to deal with the phenomenon of harmful code, 
+and we decided to do it in a way that would prepare us for handling 
+today's incidents while building the process and procedure for dealing 
+with newer classes of harmful code in the future.  Of course we prefer 
+to see the problem get no worse, but we would rather be poised for 
+an unpredictable escalation. 
+  
+ 

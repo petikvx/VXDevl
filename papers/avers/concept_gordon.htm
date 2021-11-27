@@ -1,0 +1,170 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>New Page 1</title>
+<meta name="Microsoft Theme" content="tidepool 111, default">
+<meta name="Microsoft Border" content="tl, default">
+</head>
+
+<body background="_themes/tidepool/tidbkgde.jpg" bgcolor="#6699FF" text="#000000" link="#330099" vlink="#336633" alink="#FFCC00"><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica">
+
+<p align="center"><img border="0" src="_borders/_derived/top.htm_txt_top.ht1.gif"></p>
+<!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica"><p><a href="index.html">Home</a>&nbsp;&nbsp;&nbsp;&nbsp; <a href="papers.htm">Papers </a>&nbsp;&nbsp;&nbsp;
+<a href="press.htm">Press </a>&nbsp;&nbsp;&nbsp; <a href="photo.htm">Photos</a>
+<a href="philosophy.htm">Philosophy</a>  <a href="favorite.htm">FavoriteSites&nbsp;
+</a><a href="faq.htm">FAQ</a><a href="greetz.htm">&nbsp;&nbsp;&nbsp; Greetz&nbsp;</a>&nbsp;
+<a href="conferences.htm">Conferences&nbsp;</a></p>
+<p style="line-height: 100%"><a href="lifefaith.htm">About my life &amp; faith</a> </p>
+<p>&nbsp; </p>
+<p><font size="4"><a href="palmcam.htm"><img border="0" src="dancingpalm.gif" width="69" height="76"></a>click
+to visit the palmcam</font> </p>
+<p><font face="Arial, Helvetica, sans-serif" color="#000000" size="2"><a href="index.html" webbot-href="--WEBBOT-HOME--"><img src="http://www.time.com/time/digital/images/hotzone2.gif" width="83" height="57"></a></font> </p>
+<p>&nbsp; </p>
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica">
+
+<p>What a (Winword.)Concept<br>
+<br>
+Sarah Gordon<br>
+<br>
+<br>
+Winword.Concept is a remarkably friendly virus, which happily infects across platforms. Yes, that’s right, Macintosh, MS-DOS, Windows NT -- if it runs MS<br>
+Word, it can be infected. Thus, people using mail interfaces which make use of the Word application can get a virus by reading electronic mail. The statement 'You<br>
+cannot get a virus by reading your mail' is no longer true. You can.&nbsp;<br>
+<br>
+Perhaps calling the techniques used by this virus a ‘new concept’ is not totally accurate. We knew this type of vulnerability in a macro language would be exploited<br>
+sooner or later. Perhaps we can consider ourselves fortunate that the virus has no destructive payload: its only obvious problem is an inability, in some cases, to save<br>
+work - it could be worse.&nbsp;<br>
+<br>
+Apparently non-malicious in intent, Winword.Concept nevertheless introduces us to a new threat. In the past, we have seen fast infectors, polymorphics, stealth. This<br>
+virus merely uses incredibly simple techniques to replicate and hide from the user, once a file is infected.&nbsp;<br>
+<br>
+The appearance of this virus presents anti-virus product developers with a challenge in implementing detection, as, rather than spreading by infecting more traditional<br>
+types of 'executable' code, it adds itself as a small macro to Word templates. This allows the virus to infect and spread utilising files with any extension; as long as<br>
+they are in Word format.&nbsp;<br>
+<br>
+An Operating System by Any Other Name<br>
+<br>
+As applications become increasingly complicated, they have begun to resemble mini-operating systems, supporting their own little file system and command set. MS<br>
+Word has its own programming language, WordBasic, which, as the name implies, is reminiscent of 'real' BASIC. Although program-ming with WordBasic is not<br>
+described in the Word manual, further information can be obtained by using the on-line help facilities, or by ordering the MS Word Developer's Kit.&nbsp;<br>
+<br>
+Thus, every document has the potential to carry code which represents 'executable' instructions in the Word environment. However, this still doesn't explain how<br>
+these instructions come to be run. After all, even if a document contains a set of macros, they have to be explicitly run, right?&nbsp;<br>
+<br>
+Wrong.&nbsp;<br>
+<br>
+AutoOpen = AutoInfect<br>
+<br>
+In its default configuration, whenever Word opens a document, it searches for the presence of a macro named AutoOpen and executes its contents. This is carried<br>
+out without asking or alerting the user, and so is usually a completely transparent process. The user is aware only that he has successfully opened another document;<br>
+another triumph of the computer age!&nbsp;<br>
+<br>
+In general, the AutoOpen macro will set up the working environment required by the document or the user. However, Word has no concept of privilege and allows<br>
+the macro to make permanent changes to the way it functions. This is a powerful and useful feature, and one which is open to a great deal of misuse.&nbsp;<br>
+<br>
+In the case of Winword.Concept, the AutoOpen macro first checks to see if the virus is already active on this computer, by searching the environment for the<br>
+presence of a macro named 'PayLoad'. If this is present, execution aborts.&nbsp;<br>
+<br>
+A second check is made for the presence of a macro named 'FileSaveAs'; if found, the virus sets an internal flag, and again aborts infection. The internal flag used by<br>
+the virus to signify this is called 'TooMuchTrouble', possibly indicating that if the user already has a macro named 'FileSaveAs', it is simply too much trouble to<br>
+continue and infect the system.&nbsp;<br>
+<br>
+If these tests are passed, the virus adds four new macros to the user's 'global document template'. This is stored in a file named NORMAL.DOT, and is a general<br>
+purpose template for any document.&nbsp;<br>
+<br>
+To quote from the Word manual: 'Unless you select another template when you create a new document, Word will base the document on the Normal template.' The<br>
+four new macros are AAAZAO, AAAZFS, PayLoad and FileSaveAs (the contents of the FileSaveAs macro are simply copied from the virus' macro AAAZFS).&nbsp;<br>
+<br>
+The virus displays a dialog box upon infection, containing what appears to be an infection counter, but which displays the number '1' no matter how many infections<br>
+you generate. On examination of the macro code, it is observed that this is due to sloppy programming on the virus author's part.&nbsp;<br>
+<br>
+Once this message box is clicked on, the virus is resident, and execution of its 'bootstrap' macro finishes. Once resident, the virus code is activated whenever the<br>
+user attempts to save a file using 'File/Save As', as this function has been ‘enhanced’ by the addition of a FileSaveAs macro. Whenever the user selects this option,<br>
+the virus creates an AutoOpen macro in the new document, and copies the contents of the macro AAAZAO into it. The macros AAAZFS, AAAZAO and<br>
+PayLoad are also created and copied into the new document.&nbsp;<br>
+<br>
+Thus, the virus code is added to all those documents which are stored using File/Save As, and it is ready and waiting to spread when that document is sent to<br>
+another unsuspecting user. There are two things worth noting: the macro called 'PayLoad' is never executed, and it contains only the following text:&nbsp;<br>
+<br>
+Sub MAIN<br>
+REM That's enough to prove my point<br>
+End Sub&nbsp;<br>
+<br>
+The name of this macro is not an empty threat: examination of the virus code and the WordBasic language shows that it would require a trivial alteration to make the<br>
+PayLoad macro active and to give it a wide variety of different functions.&nbsp;<br>
+<br>
+Detection and Removal<br>
+<br>
+Checking whether a copy of Word already contains the virus is trivial. Start the program, and select the Macro option under the Tools menu, choosing Macros<br>
+Available in 'All Active Templates' option.&nbsp;<br>
+<br>
+This displays a list of macros currently installed on the computer; if AAAZAO, AAAZFS, FileSaveAs, and PayLoad are present, the machine is infected. Highlight<br>
+each of the virus' macros in turn and select the Delete option. This removes the virus, but does not solve the problem of the infected files on the system.&nbsp;<br>
+<br>
+There are other ways to detect this virus in files. One is to add user-defined virus strings to anti-virus programs which have this feature. The user can add '3A 41 41<br>
+41 5A 41 4F' and/or '3A 41 41 41 5A 46 53', scanning all files. These scan strings are the hex representation of the ASCII strings ':AAAZAO' and ':AAAZFS',<br>
+and will be found in any document containing that text.&nbsp;<br>
+<br>
+Since .DOT and .DOC files are not typically scanned, it is important to remember to add them to the list of file types to be scanned. If you suspect you have this<br>
+virus, you may want to scan all files, as your users may have changed the filename extensions after saving the files.&nbsp;<br>
+<br>
+Alternatively, you can search every document on your system for the strings (and the rest of the virus) using a disk editor. This could prove a lengthy process and is<br>
+not recommended.&nbsp;<br>
+<br>
+If you find these strings in a Word document, further checks must be made. Unfortunately, these are difficult, as the virus is composed entirely of plain text, making it<br>
+difficult for someone without knowledge of Word to decide whether even a Word document which contains these text strings is the virus itself, or a message warning<br>
+of the virus' presence.&nbsp;<br>
+<br>
+One definitive way to determine whether the document is infected is to open it using Word, though this is counterproductive. My suggestion is that if you find the<br>
+macros listed above active within Word, call your anti-virus software vendor, who should be able to talk you through a fix.&nbsp;<br>
+<br>
+You can restore infected documents to their pre-infected state manually. To do this, with your infected document loaded, do the following:&nbsp;<br>
+<br>
+     use Edit/Select All to mark the whole document; then Edit/Copy to copy the document to the clipboard&nbsp;<br>
+     create a new, untitled document using File/New&nbsp;<br>
+     using Edit/Paste, place the contents of the clipboard into the new document&nbsp;<br>
+     close the original document using File/Close&nbsp;<br>
+     if you are certain that the new document is identical to the old, except for the missing virus macros, use File/Save (not File/Save As) to save the new document<br>
+     over the old&nbsp;<br>
+     if you are not certain the new document is identical to the old, use File/Save to save the new document with a new name, keeping the infected document<br>
+     isolated in a safe place until you are sure you no longer need it&nbsp;<br>
+<br>
+Manual removal of the virus via other methods is best performed by someone experienced in Word document structure.&nbsp;<br>
+<br>
+Automated detection and removal of the virus is offered by several vendors, including Command Software Systems ; its fix, Wvfix.zip is available free of charge from<br>
+the Command/F-Prot library section of the NCSA Anti-Virus vendor forum on CompuServe, or via anonymous FTP from ftp.commandcom.com<br>
+(questions/comments may be mailed to winword@commandcom.com, and will probably end up in my mailbox).&nbsp;<br>
+<br>
+The Problem; the Solution<br>
+<br>
+The techniques used by this virus are so simple that any idiot could use them to construct similar viruses. If history is an indicator, we can expect to see more of this<br>
+type of virus.&nbsp;<br>
+<br>
+While a short-term fix is available, the ease of creation and modification means that we must find a long-term solution to this general threat. As far as I can see, the<br>
+most likely way will be to alert the user to any changes made to his global settings. While this will not prevent such a virus from spreading, it will provide users with<br>
+some warning before their application is reconfigured.&nbsp;<br>
+<br>
+Security is no longer the realm of the OS developer; application programmers should keep a careful eye on the possible misuse of the extra functionality they are<br>
+providing.&nbsp;<br>
+<br>
+<br>
+<br>
+                                                  Winword.Concept<br>
+<br>
+Aliases:&nbsp;<br>
+     Word prank macro.&nbsp;<br>
+Infection:&nbsp;<br>
+     MS Word documents.&nbsp;<br>
+Self-recognition in MS Word documents:&nbsp;<br>
+     Searches for a macro named 'PayLoad'.&nbsp;<br>
+Trigger:&nbsp;<br>
+     None.&nbsp;<br>
+Removal:&nbsp;<br>
+     See text. 
+
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table></body>
+
+</html>

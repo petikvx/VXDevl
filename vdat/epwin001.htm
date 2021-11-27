@@ -1,0 +1,156 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Viruses in Windows (Data Fellows)</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Viruses in Windows<BR>
+</FONT><FONT SIZE=+2>(Data Fellows)</FONT></FONT></B>
+<HR WIDTH="100%"></P></CENTER>
+
+<P>It has taken surprisingly long for the first Windows specific viruses
+to appear. The main reason for this is the difficulty of Windows programming,
+which is much more demanding than DOS programming. In addition, the Windows
+file structure is more complex than that of normal DOS files. It will be,
+however, only a matter of time before virus programmers gain sufficient
+knowledge on Windows programming. The first Windows viruses have, in fact,
+already been found. </P>
+
+<P>Windows is more vulnerable to viruses than OS/2 because the functional
+parts of a DOS virus do not have to be modified for the virus to work under
+Windows. Under OS/2, the code would have to be written practically from
+scratch. The only parts of a DOS virus that have to be changed to work
+under Windows are the infection mechanism and activation routine. </P>
+
+<P><B>The Structure of Windows Applications </B></P>
+
+<P>Windows and DOS programs have a different internal structure. Both begin
+with MS-DOS&iuml;s MZ header that enables DOS to read and execute the program.
+In Windows applications, the MZ header consists of a short reference to
+a routine that is run when the program is executed from MS-DOS. (&quot;This
+program requires Microsoft Windows&quot;) The header also includes the
+disk address for the Windows header (NE header). </P>
+
+<P>The Windows NE header (New Executable) is actually same as the one used
+for OS/2 applications. The NE header does not have a set location in a
+program file. Instead, its location is given in the MZ header. </P>
+
+<P>Windows also supports other kinds of headers: </P>
+
+<UL>
+<PRE>o       LE - linear executable (for instance. *.386 device drivers)
+o       W3 - WIN386.EXE
+o       PE - portable executable (Win32 ja NT)</PRE>
+</UL>
+
+<P>A Windows application gives a virus better hiding places than DOS applications.
+One example is ordinary dynamic libraries that can be given any kind of
+file name extension. The files that can contain executable code (and viruses
+on the side, of course) can no longer be recognized by their extensions.
+In addition to the ordinary EXE files, a virus can infect also font files
+or display drivers. </P>
+
+<P><B>The Execution of an Application and Interrupts </B></P>
+
+<P>Under Windows, the execution of an application is done by calling the
+WinExec()-function. The function generates the following interrupt call:
+</P>
+
+<UL>
+<PRE>INT 21h AH=4BH (EXEC)
+</PRE>
+</UL>
+
+<P>The same interrupt is used in MS-DOS. An MS-DOS application that is
+watching the interrupts does not see the interrupt, however. Instead the
+following interrupt is seen: </P>
+
+<UL>
+<PRE>INT 21h AH=3DH (OPEN)
+</PRE>
+</UL>
+
+<P>What is the reason for this? </P>
+
+<P>Windows is a DOS extender that functions in protected mode. It uses
+Int 21h calls in protected mode. Due to the fact that DOS can not execute
+protected mode applications Windows&iuml; DOS extender (WIN386.EXE or DOSX.EXE)
+provides its own implementation of the EXEC. The EXEC of the extender uses
+DOS file services to read an application to memory. </P>
+
+<P><B>Kernel </B></P>
+
+<P>The Windows environment is at its most vulnerable during the bootstrap
+process. The Windows kernel does not have its own file management functions
+and uses DOS services (Int 21h). </P>
+
+<P>The kernel manages the Windows bootstrap even if it has an NE header.
+The process is as follows: </P>
+
+<UL>
+<PRE>o       The execution of the stub code that is located in the MZ-header
+o       The application file is opened (the kernel itself)
+o       The NE address is retrieved from the MZ header
+o       The correct start address is retrieved from the NE header (CS:IP)
+o       The value 'OK' (4B4Fh) is written to the AX register
+o       The CS:IP is pushed to the stack and a RETF is executed
+o       BOOTSTRAP is executed
+o       BOOTSTRAP executes the DPMI services
+o       The old interrupt vectors are saved along with the DPMI
+        exception vectors. The vectors are replaced with new ones that
+        Windows will use.
+o       The rest of the Windows system is loaded
+</PRE>
+</UL>
+
+<P><B>The Functional Mechanisms of Viruses in Windows </B></P>
+
+<P>It has taken a long time for the first Windows specific viruses to be
+written. There have, however, been several DOS viruses that infect Windows
+applications. The most probable result of such an infection is that the
+Windows application can not be executed any more. </P>
+
+<P>The reason for this is that the virus writer has not taken into account
+the possibility of an abnormal header. Some of the more advanced viruses
+have been able to infect the MS-DOS stub. The execution of a Windows application
+infected with such a virus results in the activation of the virus. This
+works only when an attempt has been made to execute the Windows application
+from MS-DOS. </P>
+
+<P>Even a virus of this kind would not spread under Windows. It would function
+only in MS-DOS. </P>
+
+<P>The writing of a direct action virus for Windows is technically more
+challenging than writing a similar MS-DOS virus. Unfortunately, a Windows
+virus can be built by modifying the infection mechanism of an existing
+DOS virus. The structure of the NE header will have to be taken into account,
+of course, which makes the programming of a Windows virus a little more
+difficult. The first virus like this was found in September 1992 (WinVir).
+</P>
+
+<P>The programming of a Windows virus functioning as background process
+(the equivalent of a DOS TSR) is much more difficult. The Windows memory
+protection scheme makes it harder for programs to modify memory areas reserved
+for other applications. Protections like this do not exist in MS-DOS at
+the moment. </P>
+
+<P>Memory protection gives no shelter against viruses because very few
+virus writers have used techniques like this even in DOS. </P>
+
+<P>A special development toolkit exists for the designing of device drivers.
+DDK (Device Driver Kit) gives the programmer free reign in the computer
+with no limitations. The most dangerous Windows viruses will probably be
+written with the DDK. </P>
+
+<P>The use of OLE (Object Linking and Embedding) generates interesting
+possibilities on virus infection. With OLE it is possible to include executable
+code in documents. This means that we will some day have to check documents
+for viruses as well as programs. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

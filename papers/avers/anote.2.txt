@@ -1,0 +1,100 @@
+    Continuing with recent report off the Internet on the Mutating Engine:
+    Part 2/4
+                 *************************************
+                                 22 Jun 92
+
+                            Mutation Engine Report
+            Copyright (c) 1992 by  VDS Advanced Research Group
+                           All Rights Reserved
+
+      Though all this may sound ordinary, MtE got so much attention
+not because it is just another encryptive virus but because it can
+provide even simple viruses with a feature that makes it difficult
+to scan for them. MtE is just like a library routine that you link
+into your virus and call when needed. It is a little over 2K in an
+object module named MTE.OBJ. A person who calls himself "Dark
+Avenger" claims to have developed MtE, and distributes it by
+uploading to BBSes in Bulgaria. The archive contains a fairly
+detailed documentation on how to use MtE, and even includes a
+demonstration virus, a non-resident COM infector known as
+"Dedicated". Shortly after MtE made its appearance, a modified copy
+of this virus called "Fear" is also seen. Why this person is
+engaged in such potentially harmful activity, or how he/she gets
+away with it is not something we know about. Curious individuals
+who would like to learn more about the history of virus production
+in Bulgaria and other social as well as technical issues are
+invited to read an excellent paper written by anti-virus researcher
+Mr. Vesselin Bontchev of Virus Testing Center, University of
+Hamburg. The paper is titled "Bulgarian Virus Factory", and it is
+available via anonymous FTP. It provides insight into some of the
+cultural aspects of the virus underground in Bulgaria. Mr.
+Bontchev's contribution to anti-virus research is much appreciated;
+otherwise, we probably would have never known what goes on inside
+the Bulgarian virus factories.
+
+            II. How to Catch Viruses and MtE-based Viruses
+
+      Scanning for many  known viruses is usually a trivial task.
+You disassemble a sample, extract a sequence of bytes that would
+exist in each infected executable object, put it into a pattern
+matching engine, and then look for that pattern in executable
+objects that that virus is known to target. This method proved to
+be quite useful in fighting many viruses seen in the wild. Assuming
+a carefully chosen scan string, you can find the virus easily
+without too many false positives. Not so for polymorphic viruses.
+      These viruses try to defeat common scanning methods. They keep
+their body encrypted to defy analysis, and encrypt the new copy
+inserted into an executable object using a different key so that it
+will "look" as if a different virus infection has occurred.
+However, even these viruses require a plaintext code that will
+decrypt the rest of the virus. Scanners can use strings extracted
+from the plaintext portion of the virus to identify them. It is
+usually necessary to include wildcard bytes (don't-care bytes) to
+be able to deal with the varying parts of the decryption routine.
+Naturally, false alarms are more likely to occur. MtE is more
+advanced than such viruses seen before.
+      We would like to emphasize that the contents of each mutation
+and the corresponding decryption routine MtE generates is far too
+variable to extract a simple (or even wildcard) scan string. It is
+necessary to analyze the MtE itself as well as many sample
+mutations. After that, certain characteristics of the code MtE
+generates can be used as telltale signs to detect its presence.
+Avoiding false positives while maintaining 100% detection ratio is
+quite difficult.
+      Armed with an 80x86 instruction set guide (we used Turbo
+Assembler 3.0 Quick Reference Guide), and a good disassembler (we
+used Mr. Zandt's DIS86 available via anonymous FTP), and a few
+known viruses based on MtE (Pogue and Dedicated with payload
+removed), we analyzed the MtE code, and the mutations generated.
+Tests were conducted on a 40Mhz 386 with a 100 meg HD and MS-DOS
+5.0, and a 4.77Mhz IBM/XT with a 30 meg HD and PC-DOS 3.3
+installed. A simple program that generated decoys (small, fully
+functional programs) was used to create a large number of samples.
+In the case of Pogue, the virus was allowed to remain resident and
+infect each decoy program as it is created. Since the Dedicated
+virus is not resident, it was necessary to create decoys first and
+then infect them by running the virus (infects in the current
+directory). After the tests, we archived the samples and stored
+them on floppy diskettes, and removed them from the hard drives of
+the test machines.
+      In the Intel 80x86 architecture, it is possible to express a
+computation in very dissimilar ways. This is possible because
+certain registers can be substituted in place of another one and
+still achieve the same result. For example, you can index an array
+by using SI, DI, BP or BX registers. Or you could XOR a certain
+value at a given memory location by loading that value in AX, BX,
+CX or DX first, and performing the XOR on that register, and then
+putting the result back into memory, etc. Even other possibilities
+exist. When stepping through elements in an array, you can
+increment the index register by ADDing to it, INCing it, or ADDing
+and then SUBtracting from it. It should be clear that such
+flexibility helps MtE significantly. Of course, variability is
+something string scanners do not handle too well, since there are
+many combinations to search for.
+      MtE goes even further than that. The size of the decryption
+routine is also variable, making it infeasible to assume certain
+things that would hold for many polymorphic viruses. It also sets
+up a lengthy sequence of redundant instructions before the
+decryptor enters the decryption loop.
+
+

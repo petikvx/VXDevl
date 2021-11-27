@@ -1,0 +1,310 @@
+
+<HTML>
+<HEAD>
+   <TITLE>The Problems of Detection</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="epback01.gif">
+
+<CENTER><P><A NAME="TheProblemsofDetection"></A><B><FONT COLOR="#004080"><FONT SIZE=+3>The
+Problems of Detection</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>Most of the procedures outlined in <B>Preventing Infection</B> are good
+but imperfect. When several are combined, our risk of infection is reduced.
+But completely eliminating the risk of infection is probably not cost&shy;effective.
+The &quot;perfect fix&quot; to the virus problem might be putty. Just buy
+a can of putty and pack it in your disk drive doors, packing a bit onto
+the connectors on the back of the machine, and you will have prevented
+the introduction of a virus. Now, if there was no virus in your machine
+when you applied the putty, you are safe. But software sharing is a necessity
+of life. We must share software to share information. Putty won't do. </P>
+
+<P>This section assumes you won't buy putty, and will continue to share
+software. It assumes that you will follow the advice in the section on
+preventing viruses, to the best of your ability. </P>
+
+<P>Because a computer is a machine designed to run software, and viruses
+are software, a computer is a machine that is fundamentally designed to
+run viruses. And viruses are being designed today to run in your machines.
+</P>
+
+<P>Even with perfect policy, we must be concerned about perfect implementation.
+Without the procedures, policy fails. And even with perfect procedures,
+a lapse in our vigilance opens a window of potential vulnerability. As
+a result, the micros in our offices are now forever at risk. </P>
+
+<P>I recommend a combination strategy to detection. I recommend use of
+an effective scanner before introducing new software to a system. Because
+a scanner cannot identify viruses that were unknown at the time the scanner
+was produced, I recommend regular use of a checksum approach to looking
+for virus-induced changes in programs. And because users will not always
+use the above tools at the correct moment (if at all), I also recommend
+installation of some memory-resident program to monitor for virus activity
+and/or check for viruses during the copy process, and/or examine files
+for viruses before they are run. </P>
+
+<P>The old scanning paradigm is falling farther behind in dealing with
+the virus problem. Here are some minimal requirements: </P>
+
+<UL>
+<LI><FONT SIZE=-1>The new paradigm must be able to prevent viruses from
+infecting boot areas and files, and prevent them from gaining control of
+the machine. The adage about an ounce of prevention is still true.</FONT>
+</LI>
+
+<LI><FONT SIZE=-1>The new paradigm must not require any user intervention.
+Background, transparent operation is critical for users who do not have
+the time to do a daily (or hourly!) scan.</FONT> </LI>
+
+<LI><FONT SIZE=-1>The new paradigm must not slow the user or the machine.
+Today's computers are used in business, where time is money.</FONT> </LI>
+
+<LI><FONT SIZE=-1>The new paradigm must be able to remove all viruses without
+necessarily resorting to prior knowledge of the specific nature of the
+virus. This is a requirement because it will be increasingly likely, in
+the future, that the virus in your machine is not a virus that your vendor
+has ever seen.</FONT> </LI>
+
+<LI><FONT SIZE=-1>The new paradigm must provide automatic recording of
+events and automatic notification of the organization's virus response
+team.</FONT> </LI>
+</UL>
+
+<P>These requirements point to a proactive, preventive solution which includes
+artificial intelligence, behavior blocking (dynamic code analysis) and
+static code analysis.</P>
+
+<P>Computer viruses have been around since 1986. Since then, four distinct
+phases have emerged, each with a different impact on anti-virus scanners:
+</P>
+
+<P><B>Phase 1: Simple, Static Viruses.</B> </P>
+
+<P>In 1986, there were 8 viruses, all written in what I will term &quot;the
+traditional approach&quot;. That is to say each virus was written with
+static code, resulting in every copy of the virus looking the same. The
+traditional approach to detecting these viruses was to search for static
+code with a scanner and alarm when a match was found. The key to scanning
+is to have a &quot;scan string&quot; which identifies each virus. These
+scan strings can only be extracted if the anti-virus vendor has a sample
+of the virus. And the goal of scanning is to detect a virus that has already
+infected a file or a boot sector. </P>
+
+<P><B>Phase 2: Encryption</B> </P>
+
+<P>In 1987, virus authors began writing encrypted viruses, such as Cascade
+in an attempt to defeat scanners. In Cascade, all but the first 35 bytes
+of the virus are encrypted, with each copy being different. This difference
+was accomplished by an encryption algorithm that used the original file
+size as the key, the the actual number of different copies of it (except
+for the first few bytes) is the number of different file sizes available.
+Scanner developers solved such problems by scanning for those 35 static,
+stable bytes. This feat was manageable and soon all scanners detected all
+copies of Cascade. </P>
+
+<P><B>Phase 3: Encryption with Variable Junk in Decryption Algorithm</B>
+</P>
+
+<P>In the late 1980's, virus authors came up with another method of defeating
+scanners: by inserting variable bytes in various places, replacing the
+static code reminiscent of 1986. The best of such viruses placed these
+variable bytes in the decryption algorithm itself. Scanner developers solved
+this new problem this way: define scan strings that contain markers for
+variable bytes, develop scanning algorithms to find some bytes, skip some
+variable number of bytes, and search for a match on the next bytes. For
+instance, to detect the fully encrypted virus Sverdlov (also known as Hymn
+of the USSR, USSR.1962, etc. and written in September, 1991), a scanner
+could use a scan string such as &quot;FE EB 02 ?? ?? 83 EE 08&quot;. Using
+this method, scanning was slowed, but the scanners could still &quot;win&quot;.
+</P>
+
+<P><B>Phase 4: Polymorphics Roam the Earth</B> </P>
+
+<P>In 1990, the beginning of the fourth and current phase, virus authors
+began writing polymorphic viruses, in which the stable bytes the decryption
+algorithm became shorter and shorter, and in which a number of different
+encryption algorithms were nested. Some viruses, such as Whale (August,
+1990), were also able to be encrypted in memory, meaning that a traditional
+scan of memory might not identify them any better than a traditional scan
+of files. Some scanner vendors responded with large additional chunks of
+code in their scanner engines code that was able to decrypt a specific
+polymorphic virus. Other vendors responded initially with more brute force
+in the scan string approach. For example, to detect the 32 morphs of Whale,
+Norton Anti-Virus version 1.5 provided 32 scan strings. </P>
+
+<P>This approach seemed to work for a time, but then polymorphic engines
+came on the scene, including the Cybertech Mutation Technology, Dark Avenger's
+Mutation Engine (<A HREF="engine1.htm#MTE">MtE</A>), Simulated Metamorphic
+Encryption Generator (<A HREF="engine2.htm#SMEG">SMEG</A>), Trident Polymorphic
+Engine (<A HREF="engine2.htm#TPE">TPE</A>), Virus Creation Laboratory (<A HREF="creatrs2.htm#VCL">VCL</A>)
+and more. Such engines take a non-polymorphic virus as input and then output
+the virus with polymorphic qualities. The availability of such engines
+has obviously made the task of writing a polymorphic virus straightforward.
+With these engines, virus authors no longer need to write their own polymorphic
+code. This cuts down on their production cycle and as a result, the number
+of polymorphics has doubled about every 8 months, rather than the 8.5 month
+doubling time for viruses in general. Today, over 200 viruses are known
+to use a polymorphic engine, and another 50 polymorphic viruses exist that
+do not use any &quot;off-the-shelf&quot; engine. Quite understandably,
+scanners have a difficult time detecting such polymorphic viruses. </P>
+
+<P>It is difficult to estimate how many different polymorphic viruses exist:
+</P>
+
+<UL>
+<LI><FONT SIZE=-1>Scanners have trouble detecting all copies of a single
+polymorphic much less discriminating between two viruses that use the same
+engine. Thus all viruses written with MTE are likely to be identified by
+a scanner as &quot;MTE&quot;. If car buyers could only distinguish cars
+based on engine manufacturer, they would not think they had much to choose
+from.</FONT> </LI>
+
+<LI><FONT SIZE=-1>No one seems to be able to agree on exactly what a polymorphic
+virus is. We could say that it was a virus that never had more than a string
+of <I>n</I> constant, consecutive bytes in common across copies of itself.
+But then we would need to define <I>n</I>. If <I>n</I> is less than a certain
+size, scanners will sometimes false alarm. If the position of these bytes
+is variable, the false alarm rate goes up. If the bytes are bytes in common
+with many other uninfected programs (eg., &quot;(c) Microsoft&quot;) then
+false alarms would be inevitable.</FONT> </LI>
+</UL>
+
+<P>Some of these engines make the viruses highly polymorphic and difficult
+to detect using a traditional scanner. For instance, Girafe which uses
+the Trident Polymorphic Engine (TPE) is able to create 16<FONT SIZE=-2>16</FONT>
+different copies of itself about 18,446,774,000, 000,000,000 different
+morphs! Anti-virus vendor response was predictable: try to reverse engineer
+a polymorphic virus, then try to detect its engine. However, vendor success
+has been limited. Some products such as Central Point Anti-Virus seem unable
+to detect any polymorphic viruses whatsoever (see <I>Virus Bulletin</I>,
+July, 1994). Few products are able to detect all copies of such polymorphic
+viruses as Natas or Satan Bug, and no product is able to detect all copies
+of Commander Bomber. </P>
+
+<P>Another characteristic of the fourth phase the large numbers of new
+viruses being produced augments the strain on scanners due to the sheer
+number of scan strings that must be produced. In the past 5 years, the
+total number of viruses has doubled about every 8.5 months. As of the January
+1, 1995, there may have been 7,198 or so different viruses. If this number
+is correct, and the doubling rate is 8.5 months, then at this writing there
+would be about 16,000 different viruses. Surely this number exceeds the
+discrimination power of scanners. </P>
+
+<P>There are many reasons for this glut of new viruses. </P>
+
+<P>There is ample help for doing so in published books, journals (such
+as &quot;<I>Computer Virus Developments Quarterly</I> (which published
+source code for a Windows 95 virus two months before Windows 95 shipped),
+virus authoring software, and heavily commented source code. Virus Exchange
+BBSs (VXBBSs) are electronic bulletin boards, to which hackers connect
+in order to communicate electronically and exchange files and viruses.
+VXBBSs typically stock the source code for 1,000 or more viruses, along
+with samples of viruses which a budding author can disassemble and study.
+Virus authors believe in sharing their virus-writing skills and therefore
+provide their source code for others to revise and/or adapt. </P>
+
+<P>In contrast, not everyone can write an anti-virus product. The effort
+required to write a product that stops all viruses is far greater than
+the effort required to write a single virus that gets past some anti-virus
+products. There is no published help for doing so, either. Vendors strive
+to be profitable and so don't share source code for their products. </P>
+
+<P>With perhaps 500 active virus authors in the world, and only about 50
+active anti-virus vendors, the stage is set for overtaking products with
+problems. Over the past 4 years, viruses have emerged at a faster rate
+than scanner detections have improved. Where once a scanner could detect
+100% of the world's viruses, today few scanners detect more than 80%, and
+some, such as MSAV/MWAV with DOS 6.22, may only detect about 25%. (MSAV/MWAV
+in DOS 6.22 is exactly the same program that shipped with DOS 6.00, and
+only detects 1,404 viruses - about 25% of those that some other products
+can detect.) In relative terms, scanners have gotten worse. </P>
+
+<P><A NAME="Timing"></A><B><FONT SIZE=+1>Timing</FONT></B></P>
+
+<P>The most important aspect of detection is not what we detect, or how
+we detect, but <I>when</I> we detect. If you turn your machine on in the
+morning, and check for viruses, it is not likely that you will find any
+that have been installed by the night cleaning crew. What you'll find,
+if anything, is a virus that has been roaming through your system since
+sometime after the last time you checked for viruses. Viruses do not pop
+up in your machine through spontaneous generation. They get there when
+you run new programs or boot from a new disk. They are introduced through
+the floppy drive or (less commonly) the modem. The only intelligent time
+to check for viruses, therefore, is when you introduce new software. A
+disk from your office mate should be checked for viruses just before you
+run any program on it. Any file downloaded from a bulletin board should
+be checked before running. </P>
+
+<P>Timing is important, because running just one infected file can mean
+that every file in the directory is infected. Change directories, and perhaps
+every file in the new directory is infected. With boot sector viruses,
+just one boot from an infected disk can infect memory, and every disk placed
+in the machine today (and tomorrow and the day after... ) will become infected.
+One virus doesn't just become two. One can become dozens and dozens. A
+virus can spread through an office like wildfire. Sites that find one infected
+file or disk are likely to find hundreds and hundreds more, with only a
+few days between first introduction of the virus and first detection. </P>
+
+<P><A NAME="TheKindsofAntiVirusSoftware"></A><B><FONT SIZE=+1>The Kinds
+of Anti-Virus Software</FONT></B></P>
+
+<P>Generally, a prevention plan includes using anti-virus software, most
+often a scanner. Before rushing off to buy one, though, you should know
+that there are four popular kinds of software commonly used for coping
+with computer viruses: </P>
+
+<UL>
+<LI><I>Integrity checkers</I> or <I>checksum programs</I> can determine
+if any file has changed since the last run of the checksum program. Any
+infection by a virus will change the infected program, and if the virus
+is not in memory, the checksum program should be able to detect the change.
+</LI>
+
+<LI><I>Scanners</I> are used to identify a virus, if any, in an infected
+file, or to establish that a program is not infected. Unlike the checksum
+approach, a scanner can detect a virus in new software <I>before </I>it
+is run. Scanners are the most widely used. </LI>
+
+<LI><I>TSR</I>s (Terminate and Stay Resident programs) and <I>device drivers</I>
+can be installed to monitor for viruses or virus action, and report on
+(or prevent) suspicious activities. </LI>
+
+<LI><I>Cleanup programs</I> can delete infected files when found, or can
+remove the virus from them. </LI>
+</UL>
+
+<P>If you plan to use a scanner, you must both install and use the product
+correctly if you hope to achieve success in detecting viruses. After you're
+sure that you've performed your installation flawlessly, follow these steps:
+</P>
+
+<OL>
+<LI>Cold boot the machine to be scanned from a writeprotected floppy disk.
+Because a virus cannot get past the write protection mechanism of a floppy
+drive, you are thus assured that no virus has moved into memory, from whence
+it can defeat your scanner. </LI>
+
+<LI>Run the scanner from the disk you just booted from, and do so before
+running any other programs -- especially programs that are on a drive other
+than the one you just booted from. Any device driver called by your hard
+disk's <I>CONFIG.SYS</I> can contain a virus. </LI>
+
+<LI>Scan the disk you just booted from, to ensure that it is not infected.
+</LI>
+
+<LI>Watch your screen carefully during the scanning process, if your scanner
+does not pause when it detects a virus. </LI>
+
+<LI>Follow the instructions for your scanner carefully. Failure to issue
+the correct command line may result in a partial scan, and you might inadvertently
+skip the scanning of a directory which contains a virus. </LI>
+</OL>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

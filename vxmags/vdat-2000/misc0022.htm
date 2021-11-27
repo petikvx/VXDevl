@@ -1,0 +1,372 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Miscellaneous - Zhengxi</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="miback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>Zhengxi family</FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>This is the family of very dangerous, polymorphic and stealth parasitic
+viruses. These viruses are more that 7k of length, very complex, maybe
+the most complex DOS viruses. These viruses infect EXE, OBJ and LIB files,
+and append COM droppers to ZIP, ARJ, HA, and RAR archives. The viruses
+contain the text strings: </P>
+
+<UL>
+<P><B>Abnormal program termination<BR>
+The Virus/DOS 0.54 Copyright (c) 1995 Zhengxi Ltd<BR>
+Warning! This program for internal use only! </B></P>
+</UL>
+
+<P><B><U>Installation </U></B></P>
+
+<P>The virus code receives the control from different points depending
+on the infection way, but in all cases the destination is the polymorphic
+decryption routine. In EXE files (appending) the decryption routine receives
+the control immediately when EXE file is loaded into the memory for execution;
+in EXE files (inserting), from the loader code (see EXE infection); in
+the files linked with infected OBJ/LIB files, from a call instruction (see
+OBJ/LIB infection); the COM droppers have a jmp instruction at their beginning,
+which brings the control to the decryption routine. </P>
+
+<P>Being decrypted, the virus installation routines receives the control.
+The virus hooks int 1 (one step tracing), and traces int 21h. While tracing,
+the virus looks for some specific code within the int 21h handler (that
+code is present in DOS 5.x and DOS 6.x). If such code is found, the virus
+checks several conditions, and terminates installation in some cases. These
+cases are the ones below: </P>
+
+<UL>
+<LI>Microsoft Windows is installed</LI>
+
+<LI>Boot drive is A: or B:</LI>
+
+<LI>Int 8, 13h, 28h point to the same segment (to exit installation if
+any antivirus monitor is installed?)</LI>
+
+<LI>Host file's day (date and time stamp) is the same or near the current
+day (if the two highest bits of current day number xored with the file
+day is equal to zero) </LI>
+</UL>
+
+<P>Then the virus allocates the block of the system memory for the virus
+TSR copy, stores in its body 11 bytes from the address of the int 21h handler
+and patches int 21h code with a far call instruction (2f ff 1e ?? ??),
+which brings the control to the int 25h handler (absolute disk read). Then
+the virus stores the first five bytes of int 25h handler and writes there
+other five bytes, which become the far jmp to the virus code. The result
+looks like follows: </P>
+
+<PRE>                                                                
+      int 21h handler:
+              ...              ...
+   .--------- 2e ff 1f ????    call far cs:int_25h
+   |          c7 06            ????                 ; Magic word?
+   | int_25h: ???? ????        ???? ????            ; Far addr of int 25h
+   |          ...              ...
+   |
+   '&gt; int 25h handler:
+   .--------- ea ???? ????     jmp far virus_handler
+   |          ...              ...
+   '&gt; virus handler:
+              2e 8f 06 ...     pop cs:caller_ip
+              ...              ...
+</PRE>
+
+<P>As result, the virus has the same handler to intercept both int 21h
+and int 25h calls. To separate these calls, Zhengxi checks the address
+of the caller (the caller_ip). If the call goes to the int 21h handler,
+the virus passes the control to its int 21h handler routine; in another
+case, the virus int 25h handler receives the control. </P>
+
+<P>The installation routine is complete, but the virus can move its code
+to other memory blocks (see int 21h handler analysis). So, the TSR copy
+of the virus does not occupy the same blocks of the system memory, but
+may move itself to other addresses, including UMB ones. </P>
+
+<P>Then the virus returns the control to the host program. There are three
+different variants of such return, and they depend on the infection me-
+thod. In case of a COM dropper the virus just displays this message: </P>
+
+<UL>
+<P><B>Abnormal program termination </B></P>
+</UL>
+
+<P>And returns to DOS with the terminate function (int 21h, ah=4ch). In
+case of the EXE-appending infection method the virus restores the original
+file header by using its polymorphic engine (generates the polymorphic
+decryption routine, and executes it for restoring the original header (see
+EXE infection below). In case of the EXE-inserting way the virus just returns
+to the host program because the virus loader inserted into the file restores
+the original code itself. In case of being an OBJ/LIB file the virus also
+just returns to the host (see OBJ/LIB infection below). </P>
+
+<P><B><U>Int 21h handler </U></B></P>
+
+<P>Zhengxi intercepts 18 int 21h functions: </P>
+
+<PRE>   3dh, 6ch      - Open/create file
+   3eh           - Close file
+   3fh           - Read file
+   42h           - Lseek
+   4bh           - File execution
+   41h           - Delete file
+   11h, 12h      - Findfirst/findnext FCB
+   4eh, 4fh      - Findfirst/findnext ASCII
+   00h, 4ch      - Terminate
+   31h           - Terminate and stay resident
+   67h           - Set handle count
+   48h, 49h, 4ah - Memory managing functions (allocate, free, resize)
+</PRE>
+
+<P>The set handle count, file execution and memory managing functions are
+used by the virus to hide its code into the system memory (Zhengxi manipulates
+MCB blocks to remain invisible on the memory map while using memory browsing
+utilities). </P>
+
+<P>While intercepting terminate, TSR and free memory DOS functions, Zhengxi
+moves its code to a new address in the system memory. The virus allocates
+a new memory block (may be a conventional or UMB memory block), and copies
+itself there. So, while installing, the virus does not affect UMB blocks
+to place its TSR copy, but then it may move into UMB, and hide itself there.
+</P>
+
+<P>While file opening the virus performs several different calls. First,
+the virus checks the opening mode, and if the file is opened for writing,
+the virus disinfects the file. </P>
+
+<P>Before disinfection the virus checks the file is being accessed, and
+the program that is accessing that file (the caller). The virus compares
+the name of this program or caller with a name list (see below), and does
+not disinfect the accessed file if the caller name is found in that list.
+</P>
+
+<PRE>                                                        
+   UUENCODE.EXE, PKLITE.EXE, LZEXE.EXE, NDD.EXE, DIET.EXE, AFD.EXE, SD.EXE
+   SPEEDDSK.EXE, DEFRAG.EXE, TLINK.EXE, LINK.EXE
+</PRE>
+
+<P>In case of the ah=3d00h function (open read-only) the virus performs
+some strange actions. It scans the caller code and patches it. It looks
+like patching some antivirus scanner. Fortunately, the virus has a bug,
+and that branch is never executed. </P>
+
+<P>While opening the file, the virus also brings the control to its stealth
+routine: it replaces the file length with the original one. </P>
+
+<P>While reading from a file, Zhengxi calls the stealth routine. In case
+of reading from the header of the infected file the virus reads, decrypts
+and copies the original header into the reading buffer. </P>
+
+<P>In case of the lseek function the virus brings the control to other
+of its stealth routines: it doesn't allow to seek out of the original file
+length. </P>
+
+<P>While deleting an infected file, the virus disinfects it. </P>
+
+<P>While looking for files with findfirst/findnext, Zhengxi replaces the
+file length with the original one if the file is infected. </P>
+
+<P>Findfirst/findnext ASCII calls are also used by the virus to catch files
+for infection. The virus saves the name of any file that is accessed with
+the findfirst function, and approximately each 5th file (with probability
+3/16) accessed with the findnext function. The virus has only one buffer
+for the file name, so every next name overwrites the previous one. </P>
+
+<P>While closing any file the virus checks and infects it with the name
+that that is stored in the buffer. The virus also infects the file that
+is being closed, but is does it with probability 1/4 (by the result of
+its random generator). </P>
+
+<P><B><U>Infection </U></B></P>
+
+<P>Before infecting a file, Zhengxi checks several conditions: </P>
+
+<UL>
+<LI>The file is not &quot;just created&quot;, by comparing the current
+day number with the file date and time stamp (as while installing itself)</LI>
+
+<LI>The file is local, and not on A: or B: drive</LI>
+
+<LI>The file name is not *.?V? (*.OVL)</LI>
+
+<LI>There is enough free disk space (it checks this with int 21h, ah=36h)
+</LI>
+</UL>
+
+<P>If all this is ok, the virus reads the file header and checks it for
+EXE, OBJ, LIB and archives stamps. </P>
+
+<P><B><U>Infecting EXE files </U></B></P>
+
+<P>Zhengxi infects EXE files by using three different infection methods:
+appending, inserting, and infecting archives in self-extracting files.
+</P>
+
+<P>At first, the virus checks the file structure, and if it is a self-extracting
+EXE file (created by ZIP2EXE, for instance), Zhengxi infects it using the
+same method it uses when infecting archives (ZIP, ARJ, HA, RAR) that is,
+creating a COM dropper and adding it to the archive contents. </P>
+
+<P>Then the virus checks the file length, and doesn't infect files with
+a length lesser than 400h (1024) bytes. If the length of the loadable modudule
+(note: not the file length) is larger that 32k, Zhengxi inserts its own
+loader int the middle of the file. In other case, it infects the file by
+the appending method. </P>
+
+<P>While infecting files by the appending method, Zhengxi reads file header,
+encrypts and saves it to the end of the file. Then it runs its polymorphic
+generator, and saves the encrypted virus body and the polymorphic loops
+to the end of the file. For finishing the file infection, Zhengxi increases
+the file length to a value that divided by 9dh gives 25h as rest (this
+is the virus ID stamp, its infection mark), and modifies the EXE header
+fields (registers and module length). </P>
+
+<P>Note: Zhengxi encrypts the original host header with the polymorphic
+encryption loop, and that loop is different that the routine it uses for
+encrypting the virus body. Then, the virus calls its polymorphic engine
+twice: while encrypting the original EXE header, and while encrypting the
+main body. </P>
+
+<P>While executing an infected EXE file, the decryption loop restores the
+main virus body, but not original file header. To return to the host, the
+virus has to decrypt the host data, but the engine generates random loops
+with random selected encryption functions. To solve that problem, Zhengxi
+stores the initial random generator values while encrypting the host data,
+and runs the polymorphic generator with the same values while decrypting
+those data. As result, the generator brings the same code which was used
+for encrypting the host header, and being executed, that routine decrypts
+it. </P>
+
+<P><B><U>Infecting EXE Files (inserting) </U></B></P>
+
+<P>If the file length is above 32k, the virus seeks to the beginning of
+the EXE main module (just after EXE header), reads 6k of code, and looks
+for C/Pascal routines there. Usually C/Pascal routines begin from the same
+&quot;header&quot; that saves the BP register, and moves the stack pointer
+to BP. </P>
+
+<P>Zhengxi scans the code for those &quot;headers&quot; and, if such code
+is found, the virus scans the next 54h bytes of code for a ret or a call
+far instruction to prevent an overlap of the next subroutine, or relocated
+address. If such code (ret or call far) is found, the virus exits from
+its infection routine. </P>
+
+<P>Then the virus reads 54h bytes of that routine, overwrites it with the
+code of its loader, and then encrypts the main virus body with its polymorphic
+engine, and saves it to the end of the file. Then Zhengxi encrypts with
+a simple sub function the original subroutine code and the second part
+of the loader, and saves it to the end of the file. Then the virus writes
+the random data to the end of the file in the same way as in the &quot;appending&quot;
+infection method. </P>
+
+<PRE>    Not infected         Infected
+    ------------         --------
+   .--------------.     .--------------.
+   |EXE header    |     |EXE header    |
+   .--------------.     .--------------.
+   |Main EXE code |     |Main EXE code |
+   .--------------.     .--------------.
+   |C/Pascal subr .--.  |Virus loader  | Part 1, 52h bytes, not encrypted
+   .--------------.  |  .--------------.
+   |              |  |  |Main EXE code |
+   |              |  |  |(continued)   |
+   '--------------'  |  .--------------.
+                     |  |Virus         | Encrypted with polymorphic loops
+                     |  .--------------.
+                     |  |Virus loader  | Part 2, encrypted with sub
+                     |  .--------------. 70h bytes
+                     '-&gt;|Saved code    | Original code of the patched subr,
+                        .--------------. 52h bytes, encrypted with sub
+                        |Random data   | File length/9dh, the rest is 25h
+                        '--------------'
+</PRE>
+
+<P>Being executed, the loader looks for the host file name by using the
+PSP fields, opens the file, seeks to the file end, then reads, decrypts
+and executes the second part of the dropper. This part restores the patched
+subroutine, allocates system memory (conventional or UMB), reads the main
+virus body, and passes the control to the decryption polymorphic loop.
+That loop decrypts the virus body, and passes the control to Zhengxi's
+installation routine. </P>
+
+<P>This is a very insidious infection way. The virus code is hidden in
+the file, and there is no direct entry to the virus code from the file
+header. The subroutine replaced with virus loader may be a &quot;seldom-executed&quot;
+one. For instance, a subroutine which displays an error message. So the
+virus may &quot;sleep&quot; in such files for a long time, and then jump
+out and infect the system under some limited conditions. </P>
+
+<P><B><U>Infecting archives </U></B></P>
+
+<P>In case of having to infect an archive, Zhengxi builds in memory the
+infected COM dropper image, and appends it to the archive. Those COM droppers
+always begin with a jmp instruction followed by random data, the encrypted
+virus code and the decryption polymorphic loop. The jmp instruction brings
+the control to this decryption loop. </P>
+
+<P>The name of the COM dropper is random selected and finished with a .COM
+extension, for instance: </P>
+
+<PRE>                                      
+   HAIF.COM, UCM.COM, DOO.COM, VLG.COM, and so on.   
+</PRE>
+
+<P>While processing the archive fields, Zhengxi does not use any external
+utility, but fills by itself all the necessary fields. The virus does not
+pack the dropper: it uses the &quot;stored&quot; method (the virus is stored
+in the archive &quot;as is&quot;). While infecting, Zhengxi checks the
+contents of the archives, and does not infect them twice. </P>
+
+<P><B><U>Infecting OBJ and LIB files </U></B></P>
+
+<P>While infecting OBJ/LIB modules, Zhengxi checks the fields of the file,
+creates, and inserts there a new object record which contains the viral
+code, encrypted with two polymorphic loops. </P>
+
+<P>While scanning object files, the virus checks the code of these files
+for a C/Pascal subroutine &quot;header&quot; as well as while inserting
+into EXE files, and infects the files only if that code is found. But if
+the OBJ or the LIB module doesn't contain such code, the virus does not
+drop the loader code there, but overwrites a C/Pascal header with a call
+instruction. </P>
+
+<P>Being linked to an executable file, that call brings the control to
+the virus polymorphic decryption loop. That loop decrypts the viral code
+and passes the control to the virus installation routine. </P>
+
+<P>As well as in EXE files (inserting), that call may never receive the
+control, so Zhengxi may sleep for a long time. But under some conditions
+the virus may jump out and infect the system. </P>
+
+<P><B><U>Int 25h handler </U></B></P>
+
+<P>This handler carries out the stealth routine on int 25h level. While
+accessing to the directory entries, the virus substitutes the file length
+with the original one. While reading the header of an infected file, the
+virus restores and brings it in its original form. </P>
+
+<P>The virus doesn't stealth 100% on int 25h level, of course. There are
+several ways to bypass this stealth routine. But if some antivirus program
+reads the file contents via int 21h DOS functions, then it reads the directory
+structure and then the file contents by absolute int 25h calls, and Zhengxi
+remains completely invisible. </P>
+
+<P><B><U>Trigger routine </U></B></P>
+
+<P>If while processing a ZIP file Zhengxi finds some record packed with
+the &quot;stored&quot; method, it checks the ZIP file date and time stamp.
+If the year of last modification of that file is 1996 or above, Zhengxi
+will look for all the files of all the directories on all the disks (from
+C: till Z:), and delete them (the files and whole subdirectory tree). </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+</BODY>
+</HTML>

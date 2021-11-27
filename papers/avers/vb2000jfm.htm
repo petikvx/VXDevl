@@ -1,0 +1,855 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 9">
+<meta name="Originator" content="Microsoft Word 9">
+<link rel="File-List" href="http://www.research.ibm.com/antivirus/SciPapers/VB200JFM_files/filelist.xml">
+<link rel="Edit-Time-Data" href="http://www.research.ibm.com/antivirus/SciPapers/VB200JFM_files/editdata.mso">
+<link rel="OLE-Object-Data" href="http://www.research.ibm.com/antivirus/SciPapers/VB200JFM_files/oledata.mso"><!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]--><title>Can Cryptography Prevent Computer Viruses</title><!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>janet savage</o:Author>
+  <o:LastAuthor>janet savage</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>1</o:TotalTime>
+  <o:Created>2000-10-10T17:57:00Z</o:Created>
+  <o:LastSaved>2000-10-10T17:57:00Z</o:LastSaved>
+  <o:Pages>18</o:Pages>
+  <o:Words>4984</o:Words>
+  <o:Characters>28409</o:Characters>
+  <o:Company>IBM</o:Company>
+  <o:Lines>236</o:Lines>
+  <o:Paragraphs>56</o:Paragraphs>
+  <o:CharactersWithSpaces>34888</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:RelyOnVML/>
+  <o:AllowPNG/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DoNotHyphenateCaps/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>6 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>6 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>3</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+
+
+
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Helv;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-alt:Arial;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+ /* Page Definitions */
+@page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:-2;
+	mso-list-type:simple;
+	mso-list-template-ids:1894778104;}
+@list l0:level1
+	{mso-level-start-at:0;
+	mso-level-text:*;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l0:level1 lfo1
+	{mso-level-number-format:bullet;
+	mso-level-numbering:continue;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	mso-level-legacy:yes;
+	mso-level-legacy-indent:.25in;
+	mso-level-legacy-space:0in;
+	margin-left:0in;
+	text-indent:0in;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style></head>
+
+
+<body lang="EN-US" style=""><a href="#main"><img src="VB2000JFM_files/clear.html" height="1" border="0" width="1" alt="Skip to main content"></a>
+
+<div class="Section1">
+
+<p class="MsoNormal" style=""><b><span style="font-size: 16pt; font-family: Arial;">Can
+Cryptography Prevent Computer Viruses?<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><b><span style="font-size: 10pt; font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style="">John F. Morar, David M. Chess</p>
+
+<p class="MsoNormal" style="">IBM Thomas J. Watson Research Center</p>
+
+<p class="MsoNormal" style="">Hawthorne, NY, USA</p>
+
+<p class="MsoNormal" style=""><i>morar@us.ibm.com</i>, <i>chess@us.ibm.com</i></p>
+
+<p class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Helv; color: black;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></p>
+<a name="main"></a>
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">Abstract<o:p></o:p></span></i></b></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></i></b></p>
+
+<p class="MsoNormal" style="">The relationship between cryptography and virus prevention
+is anything but simple.<span style="">&nbsp; </span>Since the
+beginning of the computer virus problem, people have proposed solutions
+involving some form of cryptography; but cryptography plays only a minor role
+in the solutions we actually use today.<span style="">&nbsp;
+</span>Encryption can also make virus prevention more difficult, by providing
+viral hiding places inside the objects that it protects.<span style="">&nbsp; </span>This paper will provide an overview of the
+ways that encryption technology impinges on virus protection and related
+security efforts, and provide some understanding of how encryption can help, or
+hurt, the efforts of the good guys.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">Cryptography
+Explained<o:p></o:p></span></i></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">For centuries, cryptography has been used to keep
+secrets.<span style="">&nbsp; </span>In traditional symmetric
+single-key cryptography, a message (the "plaintext") is transformed
+using a key, into another form (the "ciphertext") from which the
+plaintext cannot be recovered without knowing the key (or, in reality, from
+which it is very difficult to recover the plaintext without knowing the
+key).<span style="">&nbsp; </span>Two people who both know the key
+can communicate securely even through an insecure channel as long as the key is
+kept secret; an attacker intercepting a ciphertext message cannot determine its
+plaintext content, lacking the key.<span style="">&nbsp;
+</span>Converting a plaintext message into the corresponding ciphertext is
+called "encryption".<span style="">&nbsp;
+</span>Converting ciphertext into plaintext by use of the key is
+"decryption".<span style="">&nbsp; </span>Converting
+ciphertext into plaintext <b>without </b>using the key is part of
+"cryptanalysis", the science of code-breaking.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">A related use of cryptography is the production of
+modification-detection codes, also known as cryptographic checksums or
+cryptographic hashes.<span style="">&nbsp; </span>A
+modification-detection code is a small number (typically between 16 and 128
+bits long) which is derived by an algorithm from a large dataset, in such a way
+that it is very difficult to find another different dataset for which the
+algorithm produces the same small number.<span style="">&nbsp;
+</span>One important use of modification-detection codes, as suggested by the
+name, is to determine whether or not a file has changed, without having to
+maintain a complete copy of the file for later comparison.<span style="">&nbsp; </span>By storing only the much smaller
+modification-detection code corresponding to the original state of the file, it
+is possible to verify (with high probability) that the file is unchanged at a
+later time, by re-executing the algorithm and verifying that the result is the
+same as the stored value.<span style="">&nbsp; </span>Verifying
+that a dataset has not changed is often referred to as verifying the "integrity"
+of that data.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">In recent years, asymmetric cryptographic algorithms have
+appeared, in which different keys are used for encryption and decryption, and
+someone knowing only the decryption key cannot feasibly determine the
+encryption key.<span style="">&nbsp; </span>This has made digital
+signature technology possible: if I generate a pair of keys, keep the
+encryption key to myself, and reveal the decryption key to the world, I can now
+produce a message, encrypt it with the secret encryption key, and publish it.<span style="">&nbsp; </span>Others can verify that the message was
+indeed produced by me (or at least by someone who knows my secret encryption
+key), by using the publicly-available decryption key to decrypt the
+message.<span style="">&nbsp; </span>(In practice, asymmetric
+cryptographic algorithms are very slow, and real digital-signature systems
+usually involve computing a cryptographic hash of the message and encrypting
+that smaller piece of data using the asymmetric encryption key; but that is a
+detail.)<span style="">&nbsp; </span></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">For a good, and often amusing, survey of modern
+cryptographic algorithms and how they are used in various popular communication
+protocols, see [1].<span style="">&nbsp; </span>The best-known
+asymmetric cryptosystem, used for both secrecy and digital signing, is probably
+PGP, described in [2].</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">As the Net and the Web move into more central positions in
+the life of the world, the functions that cryptography provides (including
+secrecy, integrity, and digital signatures) become more important, and
+cryptographic functions can be found in more places, doing more things.<span style="">&nbsp; </span>Bruce Schneier writes in [3]:</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="margin: 0in 0.25in 1e-04pt;">From e-mail to cellular communications, from secure
+Web access to digital cash, cryptography is an essential part of today's
+information systems. Cryptography helps provide accountability, fairness,
+accuracy, and confidentiality. It can prevent fraud in electronic commerce and
+assure the validity of financial transactions. It can prove your identity or
+protect your anonymity. It can keep vandals from altering your Web page and
+prevent industrial competitors from reading your confidential documents.<span style="">&nbsp; </span>And in the future, as commerce and
+communications continue to move to computer networks, cryptography will become
+more and more vital. </p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Cryptographic functions have always been present in
+computer systems, but they have usually been relegated to a few obscure utility
+programs, function calls, or extra-cost add-ons.<span style="">&nbsp; </span>We are now starting to see rich cryptographic functions
+incorporated into end-user operating systems and widely-deployed applications.<span style="">&nbsp; </span>What are the implications of the increasing
+power and ubiquity of cryptography for the battle against computer
+viruses?<span style="">&nbsp; </span>How do viruses use
+cryptography, how do anti-virus programs use it, and what role does it play in
+the design of present and future security systems that can help us make our
+computers resistant to viruses and related threats?<span style="">&nbsp; </span>These are the questions we intend to address in the rest of this
+paper.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">Cryptography
+in Computer Viruses</span></i></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Some computer virus authors have made use of cryptography
+themselves, in attempts to make their creations more difficult to detect or
+more difficult to analyze, or as part of the destructive or annoying payloads
+they carry.<span style="">&nbsp; </span>While cryptography does not
+play a key role in most of the viruses currently responsible for the virus
+problem, the issue of cryptography in computer viruses is worth at least a
+passing glance.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">The most common use of encryption in computer viruses is
+as part of polymorphism.<span style="">&nbsp; </span>A polymorphic
+virus is one that changes form as it spreads, so that two different files
+infected with the virus will not necessarily have any significant byte-strings
+in common.<span style="">&nbsp; </span>In machine-language viruses,
+polymorphism is usually achieved by splitting the virus into three different
+sections: a short piece of decryptor code, a cryptographic key, and the main
+functional part of the virus.<span style="">&nbsp; </span>When the
+virus creates a new copy of itself, it selects a new cryptographic key, encrypts
+the main functional part of itself with that key, and generates (using any of a
+variety of methods) a new implementation of the decryptor code.<span style="">&nbsp; </span>When the virus executes, the decryptor code
+runs and uses the key to decrypt the main functional part, which then receives
+control.<span style="">&nbsp; </span>Because changing the key
+changes the bytes in the encrypted body, and because the decryptor code and the
+key vary with each copy of the virus, two different instances of the virus will
+contain very different byte-strings.</p>
+
+<img src="VB2000JFM_files/fig1.html" alt="fig1">
+
+<p>
+
+</p><p class="MsoNormal" style="">Note that this technique of encryption for polymorphism is
+using cryptography only to transform data, not to keep a true secret.<span style="">&nbsp; </span>Since the decryption key is stored within
+each instance of the virus, a virus analyst can always find the contents of the
+main virus body, simply by doing the decryption directly, using the stored key
+(and in fact this is the most common way that anti-virus programs detect this
+kind of polymorphic virus).</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">A few viruses use encryption in a more powerful way, by
+encrypting parts of themselves and <b>not</b> including the decryption key
+within the virus.<span style="">&nbsp; </span>Without the
+decryption key, a human analyst cannot determine what that part of the virus
+would do if it were to be decrypted and executed.<span style="">&nbsp; </span>Of course, without the decryption key the virus itself cannot
+decrypt the hidden code, either!<span style="">&nbsp; </span>To be
+effective, such a virus must have a way of eventually finding the key, and
+recognizing that it has found it.<span style="">&nbsp; </span>An
+early DOS virus, for instance, searched the filesystem for a filename having a
+certain checksum, and when that filename was found it was used as a decryption
+key to decrypt a certain piece of its own code, which was then executed.<span style="">&nbsp; </span>Because the encryption was weak and the
+checksum algorithm easy to reverse-engineer, anti-virus workers were able to
+determine that the filename used as the key was associated with a particular
+Bulletin Board program, and the encrypted code would alter the program's
+configuration files to introduce a security hole.<span style="">&nbsp; </span>This sort of encryption can in theory make parts of a virus
+opaque to analysis; in practice however the technique has not had any
+significant impact on the world.<span style="">&nbsp; </span>(See
+[4] for a theoretical treatment of the technology.)</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">A more significant use of encryption in viral payloads
+involves using encryption <b>as</b> payload. <span style="">&nbsp;</span>Some macro viruses for Microsoft Word, for instance, will on a
+certain date, or with a certain probability, save the infected document with a
+password that is not known to the user.<span style="">&nbsp;
+</span>This is similar in effect to simply erasing the file (since the user no longer
+has access to its contents), but is psychologically more frustrating, since the
+user has the feeling that they data is all still there, if only the password
+could be found.<span style="">&nbsp; </span>Some viruses use a
+fixed password (so the user can in fact recover the data after reading a
+sufficiently-detailed description of the virus), while others use a
+randomly-generated password (so recovering the data requires cryptanalysis of
+the encrypted document; this cryptanalysis is in fact often possible in earlier
+versions of Word, but more modern versions use stronger encryption).<span style="">&nbsp; </span>In machine-language viruses, the One-Half
+virus gradually encrypts parts of the hard drive on an infected machine, and
+while the virus is in memory it dynamically decrypts any encrypted sectors that
+are read.<span style="">&nbsp; </span>Removing the virus from the
+hard disk without undoing the encryption can result in a computer that is
+disinfected, but whose hard disk contains some garbled data.<span style="">&nbsp; </span>For thoughts on similar uses of cryptography
+in viruses and malicious code, see [5]. </p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">The last use of encryption by malicious software that we
+will mention involves Remote Access Trojan horse programs, sometimes called
+"back doors".<span style="">&nbsp; </span>A Remote Access
+Trojan horse is a non-viral malicious program which, once the user has been
+tricked into executing it or the attacker has otherwise arranged for it to be
+installed on the target machine, listens to the network for queries and
+commands from the attacker.<span style="">&nbsp; </span>Some of
+these Trojan horses use encryption on the communication channel between the attacker
+and the listening program, for the traditional reasons of secrecy (see for
+instance David Dittrich's analysis of the "Satcheldraht" program in
+[6]).<span style="">&nbsp; </span>When the communication channel is
+encrypted, it is more difficult to automatically recognize traffic flowing
+between an attacker and a compromised host.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">Cryptography
+and Virus Prevention</span></i></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Cryptography is difficult to get right.<span style="">&nbsp; </span>As Schneier points out in [3], even if I
+have a perfect cryptographic algorithm that no one alive can beat, turning that
+algorithm into a working system involves multiple layers of architecture,
+design, coding, and user interface, and a mistake anywhere along the way can
+render the resulting system completely insecure, despite the soundness of the
+basic algorithm.<span style="">&nbsp; </span>As we analyze the
+usefulness of various cryptographic techniques in the prevention of computer
+viruses, we will generally assume that all the hard work has been done right:
+that the systems are not only based on sound cryptographic algorithms, but are
+correctly and securely designed and implemented.<span style="">&nbsp; </span>Needless to say, if that is not true and the systems are in fact
+insecure, their usefulness in virus prevention will be significantly reduced!</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Arial;">Cryptography as a
+roadblock<o:p></o:p></span></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">We will first consider a class of cases in which cryptography
+is a barrier to effective virus prevention.<span style="">&nbsp;
+</span>As outlined in [7], there are a number of situations in which encryption
+of potentially-infected data prevents that data from being examined for the
+presence of viruses.<span style="">&nbsp; </span>In particular,
+whenever encryption has been used to restrict the ability to read a dataset to
+some set of entities, and the entity attempting to check the dataset for
+viruses is not in that set, the encryption will prevent the virus check.<span style="">&nbsp; </span>Some of the most common cases of this are:</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="margin-left: 0.25in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: Symbol;">·<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-stretch: normal; font-size-adjust: none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><!--[endif]-->A virus scanner in a network gateway or firewall unable
+to check encrypted traffic,</p>
+
+<p class="MsoNormal" style="margin-left: 0.25in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: Symbol;">·<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-stretch: normal; font-size-adjust: none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><!--[endif]-->A virus scanner in a mail gateway unable to check
+encrypted mail for infected attachments,</p>
+
+<p class="MsoNormal" style="margin-left: 0.25in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: Symbol;">·<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-stretch: normal; font-size-adjust: none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><!--[endif]-->A virus scanner in a mail gateway unable to check
+encrypted attachments for infection,</p>
+
+<p class="MsoNormal" style="margin-left: 0.25in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: Symbol;">·<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-stretch: normal; font-size-adjust: none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><!--[endif]-->A virus scanner on a file server unable to check
+encrypted files stored on the server,</p>
+
+<p class="MsoNormal" style="margin-left: 0.25in; text-indent: -0.25in;"><!--[if !supportLists]--><span style="font-family: Symbol;">·<span style="font-family: &quot;Times New Roman&quot;; font-style: normal; font-variant: normal; font-weight: normal; font-size: 7pt; line-height: normal; font-stretch: normal; font-size-adjust: none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><!--[endif]-->A virus scanner on a client machine unable to check
+encrypted files stored locally.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">There are a number of measures available to address this
+problem.<span style="">&nbsp; </span></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Users making use of encryption may be required to have
+up-to-date real-time virus scanning in place on the client machine, where it
+has the best chance of seeing the to-be-encrypted objects while they are still
+plaintext.<span style="">&nbsp; </span>It is notoriously difficult,
+especially with the proliferation of mobile users and laptop computers, to
+track all the client systems that might be attached to your enterprise intranet
+and ensure that certain software is always installed and active, although
+various commercially-available enterprise anti-virus solutions take some steps
+in that direction.<span style="">&nbsp; </span>On the other hand,
+having good anti-virus software on client systems is desirable in any case, so
+most enterprises already have such a requirement, however well or badly they
+are able to enforce it.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Cryptographic facilities in the enterprise may be
+configured to always include a particular enterprise administrative key when
+encrypting a dataset, and virus-scanning processes may be given that key.<span style="">&nbsp; </span>But not all cryptographic facilities include
+such a feature (the Windows 2000 recovery key has a similar but not directly
+applicable function, and recent enterprise versions of PGP apparently have a
+related feature), and the risk posed by the possible theft of that
+administrative "read everything" key may be too high to bear.<span style="">&nbsp; </span></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">End-to-end encryption may simply be forbidden in an
+enterprise, with all traffic checked for viruses before it leaves the trusted
+intranet, and encrypted afterward for travel outside (via for instance a
+Virtual Private Network).<span style="">&nbsp; </span>But enforcing
+such a ban will in practice be difficult.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">It's worth noting here that access control methods besides
+encryption have similar problems; in Microsoft Windows NT, for instance, it is
+possible to set a file's permissions so that not even an administrator can read
+the file in the normal way.<span style="">&nbsp; </span>But users
+generally want such files to be backed up, and administrators want such files
+to be scanned for viruses.<span style="">&nbsp; </span>So the operating
+system file-access routines include the notion of "backup semantics",
+which allow accessing even files which are normally not readable except by a
+particular user, and most commercial anti-virus programs use this feature in
+virus checking.<span style="">&nbsp; </span>The tradeoff here is
+similar: it is desirable to let certain processes (backup programs, virus
+scanners) access even data that is nominally readable only by a small set of
+users, but doing so has certain security implications; if an administrative
+account that can use backup semantics is compromised, or if the enterprise
+administrative key is stolen, an attacker can access everything in the system,
+just as the virus-scanner can.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><span style="font-family: Arial;">Cryptography as a
+resource</span></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">We have seen that cryptography can be used by viruses, and
+can interfere with virus prevention measures, but surely we can also derive
+some <i>benefit</i> from cryptographic techniques in our efforts to prevent
+computer viruses?</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">A virus cannot infect what it cannot see.<span style="">&nbsp; </span>This would suggest that encrypting our
+programs and our program-carrying objects (such as Microsoft Office documents)
+might help protect them against viruses: if a virus cannot read the plaintext
+of a file, it will presumably not be able to alter the file in order to infect
+it.<span style="">&nbsp; </span>Facilities to automatically encrypt
+everything written to disk have been available in various forms for many
+years.<span style="">&nbsp; </span>With Windows 2000, Microsoft now
+offers a simple point-and-click method of encrypting some or all of the
+filesystem (see figure 2).</p>
+
+<img src="VB2000JFM_files/fig2.html" alt="fig2">
+<p>
+</p><p class="MsoNormal" style="">In practice, though, the most successful viruses infect
+objects that are actually in use (programs that are being executed, documents
+that are being edited), and those objects must be present in decrypted
+form.<span style="">&nbsp; </span>If the user is able to access the
+plaintext of a file to work with it, a virus running with the user's privileges
+is likely to be able to access it to infect it.<span style="">&nbsp; </span>So encryption of files in the filesystem has not been, so far, an
+important part of virus prevention.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Encryption is traditionally used on communication
+channels, to prevent anyone intercepting traffic on the channel from reading
+the contents of messages.<span style="">&nbsp; </span>Encryption of
+communication should similarly prevent programs and program-carrying objects
+from becoming infected in transit.<span style="">&nbsp; </span>On
+the other hand, infection-in-transit has never been a significant part of the
+virus problem; secrecy, rather than virus protection, is by far the strongest
+reason to encrypt communications.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">If encryption for secrecy is not a promising resource in
+the battle against viruses, perhaps we can get some mileage out of modification
+detection codes.<span style="">&nbsp; </span>As long ago as 1987,
+Pozzo and Gray proposed [8] a system in which a cryptographic checksum is used
+to verify that a program has not been changed since it was installed, and to
+forbid execution of any program that fails that test.<span style="">&nbsp; </span>No such system is currently in widespread use.<span style="">&nbsp; </span>This may be simply because the makers of the
+few widespread virus-bedeviled operating systems have not chosen to implement
+the function; on the other hand actually implementing such a system involves
+solving some tricky problems.<span style="">&nbsp; </span>In the
+home environment, there must be a simple and convenient mechanism whereby an
+unskilled user can install a new program, or upgrade an existing program; on
+the other hand, that mechanism must somehow be protected so that a virus cannot
+use it to install itself.<span style="">&nbsp; </span>In the
+enterprise environment, while there may be a more skilled IT department
+competent to bring in and "bless" new programs, the process of distributing
+these new programs while again preventing viruses from similarly distributing
+themselves, presents a challenge.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Anti-virus programs have made more limited use of
+modification detection codes in detecting modifications to the anti-virus code
+itself.<span style="">&nbsp; </span>Most anti-virus programs will
+detect, at some level, when the anti-virus code itself has been altered, and
+will warn the user and in some cases refuse to run.<span style="">&nbsp; </span>This is useful, of course, only when the anti-virus program
+contains or consists of files of the same type that the active virus
+infects.<span style="">&nbsp; </span>An anti-virus program that
+consists of binary executables will never detect in this way a virus that only
+infects office documents.<span style="">&nbsp; </span>Anti-virus
+self-checking is a useful precaution, but it is not a major weapon in the
+battle.<span style="">&nbsp; </span>Similarly, Windows 2000
+contains a System File Checker, which apparently uses a modification detection
+code to detect changes to certain operating system files, and restore the
+original from a backup or CD-ROM when a change occurs.<span style="">&nbsp; </span>This function does deter certain viruses,
+but that was not its primary purpose, and since it monitors only a small
+fraction of the executables on a typical computer, it provides only a little
+protection.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Close in idea-space to forbidding any program from running
+if it has been modified, is forbidding any program from running unless it is on
+a list of programs that are known (or at least believed) to be uninfected.<span style="">&nbsp; </span>Cryptography is involved again, because the
+only feasible way of accomplishing this is to keep a list of the cryptographic
+checksums of each of the approved programs, and to allow execution of a program
+only if its checksum matches one in the list.<span style="">&nbsp;
+</span>We know of no currently-available security package that does this for
+programs of all types; again there are significant administrative issues
+involved in the creation and distribution of the approved list, as well as in
+preventing a virus from adding the checksum of an infected program to the
+list.<span style="">&nbsp; </span>But in the limited field of
+Office macros, there are at least two offerings that provide this function:
+both Symantec's Macro Virus Protection [9] and F-Secure's Macro Control [10]
+allow the user (or administrator) to prevent the execution of any office macro
+that is not on the approved list.<span style="">&nbsp; </span>While
+this should provide very complete protection against macro viruses, neither
+product seems to have been very successful in the marketplace.<span style="">&nbsp; </span>Either customers simply don't know what they
+really need, or the administrative overhead involved in creating and maintaining
+approved-macro lists outweighs the increased protection against viruses.<span style="">&nbsp; </span>(Both products come with a list of common
+clean macros known to the manufacturer, but of course many enterprises have
+their own extensive libraries of macros that would have to be added.)</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">If deciding which programs should be allowed to run on a
+case-by-case basis is too much work, perhaps we can simplify things using
+digital signature technology.<span style="">&nbsp; </span>Can we
+prevent viruses by only accepting programs (or program-carrying objects) from people
+that we trust?<span style="">&nbsp; </span>Anti-virus software
+(such as the Digital Immune System from Symantec) has begun to use digital
+signatures to ensure that what seems to be an anti-virus update is actually
+coming from a trusted source; can we use this ability in the wider anti-virus
+arena?</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Microsoft Word 2000 contains a set of features that allow
+the macros in an Office document to be signed, and allows a user to specify
+that no macros should be allowed to run unless they are signed by someone who
+appears on a list of trusted signers (see figure 3).<span style="">&nbsp; </span></p>
+
+<img src="VB2000JFM_files/fig3.html" alt="fig3">
+
+<p class="MsoNormal" style="">Again, the idea here seems promising, but it is not clear
+how widely used or effective it will be in practice.<span style="">&nbsp; </span>See [11] for a brief analysis of some of the limitations of the
+Office 2000 macro-signing features.<span style="">&nbsp; </span>In
+particular, if you elect to trust one or more people who are not sufficiently
+careful themselves and become infected with a macro virus, nothing in the
+macro-signing system will prevent at least the payload of the virus from
+executing on your system.<span style="">&nbsp; </span>This is a
+general problem with the idea of judging the cleanliness or trustworthiness of
+a program by the identity of the agency signing it: if that agency makes just
+one mistake, there will be a malicious piece of software out there with the
+agency's signature on it, and unless the signature infrastructure allows
+by-object revocation ("if you receive the object with checksum X, treat it
+as unsigned even though it appears to be signed by A"), the only
+alternative is to revoke the agency's signing key entirely and start over from
+scratch, redistributing a new set of objects signed by the so-far-mistake-free
+key.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Deciding who to trust is clearly important in any system
+based on digital signatures.<span style="">&nbsp; </span>Left to
+themselves, individual users will make poor trust decisions now and then.<span style="">&nbsp; </span>When presented with a dialog whose options
+are essentially "Continue with what you were doing by trusting person
+X" or "Cause the current operation to fail", users almost
+invariably choose the former, because it lets them get on with whatever they
+were doing, and because in practice it only rarely has negative
+consequences.<span style="">&nbsp; </span>Still, such casual trust
+decisions happening all over a company can be expected to quickly dilute
+whatever security the signature scheme originally offered.<span style="">&nbsp; </span>To avoid this, administrators will want to
+have control over the trust-lists of their users.<span style="">&nbsp; </span>There are unsolved problems here, though, as well.<span style="">&nbsp; </span>If only a few signers are trusted, then
+those signers will quickly become the bottleneck in application development;
+either they will be overloaded with new programs to sign and therefore slow
+down the development process, or people who might have taken advantage of the
+programmability of modern systems will be put off by the signing process, and
+continue to do things in inefficient manual ways rather than writing new
+programs or macros.<span style="">&nbsp; </span>On the other hand,
+if many signers are trusted, the odds that one of them will be careless and
+become infected increases, and of course such an infection will be able to
+spread despite the security system.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">The Office 2000 macro-signing system, as well as the
+security offered by Microsoft ActiveX, depend on an all-or-nothing approach to
+security.<span style="">&nbsp; </span>If you give a macro or
+ActiveX control permission to run at all, it runs with your full privileges,
+and can do anything that any program run by you can do.<span style="">&nbsp; </span>The same applies to a script received as an
+attachment to a mail message; if you allow it to run at all rather than simply
+deleting it, it can do anything that you can do, including erasing your files,
+sending hundreds of copies of itself in email under your name, and so on.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Rather than allowing any program that runs to do anything
+it wants to do, might we derive some advantage from limiting in a more fine-grained
+way what some programs can do?<span style="">&nbsp; </span>Can we
+use cryptography-based digital signatures to determine who vouches for a
+program, and then use that to determine what it should be allowed to do?<span style="">&nbsp; </span>Perhaps most programs don't require any but
+the most benign functions, and therefore don't need to be signed, and the
+programs that do require special privileges and powers will be few enough that
+they will not overload a central signing authority.<span style="">&nbsp; </span></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Stepping back for a moment to look at the problem from
+afar, this seems like just what we want.<span style="">&nbsp;
+</span>Viruses and other Trojan horses work by exploiting trust
+relationships.<span style="">&nbsp; </span>In a discretionary
+access control system (which the vast majority of security systems currently in
+use are), I am permitted to read certain files because I am trusted not to
+abuse or wantonly distribute the information I find there.<span style="">&nbsp; </span>I am permitted to write to certain files
+because I am trusted not to implant any dangerous or destructive code there.<span style="">&nbsp; </span>But of course within the computer I cannot
+do anything directly myself, I can only run programs.<span style="">&nbsp; </span>If one of those programs is malicious, and is able to run with my
+full privileges, it can exploit the trust that has been placed in me.<span style="">&nbsp; </span>It can steal secrets that I would never
+steal, by executing <i>as</i> me.<span style="">&nbsp; </span>It
+can plant copies of itself in programs that I would never sabotage, by doing so
+<i>as</i> me.<span style="">&nbsp; </span>If we can break the
+ability, in at least most circumstances, for malicious code to run as though it
+were me, we should be able to go at least some way toward preventing viruses
+and related threats.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">So are there any systems that allow this kind of granular
+program control available today?</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Both Lotus Notes and Sun's Java allow for a considerable
+degree of this kind of control (see figures 4 and 5).</p>
+
+<img src="VB2000JFM_files/fig4.html" alt="fig4">
+
+<p>
+</p><p class="MsoNormal" style="">In Lotus Notes, each client system is governed by an
+execution control list, which specifies which kinds of activities are allowed
+to scripts and agents signed by which signers.<span style="">&nbsp;
+</span>The example in figure 4 shows that for the default signer (that is, for
+scripts signed by signers not explicitly listed in the execution control list),
+no actions whatever are allowed by default.<span style="">&nbsp;
+</span>Notes also allows the administrator to specify whether or not a user
+should be able to allow an action that is not allowed by default; if the
+administrator turns on this ability, the user will get a dialog asking if the
+action should be allowed this once, or if this signer should be added to the
+execution control list as permitted to do all actions of this type.<span style="">&nbsp; </span>See [12] for more details on the granular
+security features in Notes.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Java 2, the most recent version of Sun's Java family of
+products, offers similar granular execution control.<span style="">&nbsp; </span>A user can specify, for each kind of activity that the Java
+runtime environment controls, which Java programs should be allowed to carry
+out those activities; the programs can be specified by signer, by codebase
+(i.e. by where on the Web the program is loaded from), or both (see figure 5).</p>
+
+<img src="VB2000JFM_files/fig5.html" alt="fig5">
+
+<p>
+</p><p class="MsoNormal" style="">Because there are no native Lotus Notes or Java viruses
+active in the wild, it's hard to judge how well this sort of granular execution
+control actually does in preventing viruses.<span style="">&nbsp;
+</span>There are difficult problems that the current systems have just begun to
+address; again, users will tend to be impatient with complex configuration
+tasks (or even simple configuration tasks), and will tend to press whichever
+button seems most likely to let them get on with their current activity.<span style="">&nbsp; </span>The original Java 2 implementation required
+users to use the policy tool (illustrated in figure 5), or to manually edit a
+security policy file in order to authorize programs signed by a new signer to
+take otherwise-prohibited actions on their systems.<span style="">&nbsp; </span>It is suggestive that in a later release of Java 2, Sun added an
+additional security policy which bypasses all the complexity and power of the
+granular system, and simply asks the user at runtime "should this program
+signed by this signer by given full run of the machine?".<span style="">&nbsp; </span>The fact that Sun felt the need to introduce
+this very simple, but arguably much less secure, path into the system suggests
+strongly that we still do not know how to make a system that is sufficiently
+trivial to use that users will actually tolerate it, while at the same time not
+offering a simple "bypass security entirely?" button for them to
+push.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">We believe that the technology of granular execution
+control, backed by strong cryptographic digital signatures, will go a long way
+toward increasing the security of our systems in general, and that such
+security is vitally needed in a world where code is increasingly mobile and
+increasingly likely to reach systems other than the one on which it was
+written.<span style="">&nbsp; </span>If we had had functioning
+granular execution control the LoveLetter virus would not have spread, because
+a piece of code signed by a stranger in the Philippines would not have been
+allowed to send out hundreds of copies of itself in electronic mail.<span style="">&nbsp; </span>Similarly, a Win32 Trojan horse arriving at
+a victim's system would fail to install, since a random program signed by a
+stranger, or not signed at all, would not be allowed to alter the registry, or
+install itself in the TCP/IP stack.<span style="">&nbsp; </span>On
+the other hand, a granular execution control system in which the majority of
+users have at some point in the past pushed the "trust absolutely everyone
+to do absolutely everything" button, just to get rid of those annoying
+security popups, will do us little good at all.<span style="">&nbsp; </span>Finding a way to do the former without falling into the latter is
+a challenge that we are just beginning to face.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">Note that we don't mean to imply that granular execution
+control, if we figure out how to do it right, will completely eliminate the
+virus problem.<span style="">&nbsp; </span>Sometimes I will still
+unknowingly run a<span style="">&nbsp; </span>malicious program
+with just a little too much privilege, and it will begin to spread as viruses
+always have along the existing lines of trust.<span style="">&nbsp;
+</span>We will still need known-virus scanning, and we will still need an
+immune system.<span style="">&nbsp; </span>But, complementing those
+facilities, we believe that granular execution control systems built on
+cryptographic signatures will play an important role in making our systems
+secure into the future.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">Conclusion</span></i></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">We have briefly surveyed the uses of cryptography in
+viruses, in anti-virus software, and in general security systems as they apply
+to viruses and related threats.<span style="">&nbsp; </span>While
+cryptographic techniques alone are only tools, far removed from the finished
+working systems that we need to build, they are potentially useful tools.<span style="">&nbsp; </span>In some cases cryptography can actually make
+virus protection more difficult; we have tried to outline those cases and the
+various methods that can be used to overcome that difficulty.<span style="">&nbsp; </span>In some cases cryptography is irrelevant to
+virus protection.<span style="">&nbsp; </span>But in some cases,
+digital signatures in particular, we believe that cryptography will play an
+important role in the way our systems are secured in the future, both against
+viruses and against the more general class of emerging threats.</p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;">References</span></i></b></p>
+
+<p class="MsoNormal" style=""><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></p>
+
+<p class="MsoNormal" style="">[1] Charlie Kaufman, Radia Perlman, and Mike Speciner,
+"Network Security: Private Communication in a Public World,"
+Prentice-Hall, 1995.</p>
+
+<p class="MsoNormal" style="">[2] Simson Garfinkel, "PGP: Pretty Good
+Privacy", O'Reilly, 1994.</p>
+
+<p class="MsoNormal" style="">[3] Bruce Schneier, "Why Cryptography is Harder Than
+it Looks", on the Web at <span style="color: black;">"http://www.counterpane.com/whycrypto.html".</span></p>
+
+<p class="MsoNormal" style="">[4] James Riordan and Bruce Schneier, "Environmental
+Key Generation Towards Clueless Agents", in G. Vinga (Ed.), Mobile Agents
+and Security Springer-Verlag, Lecture Notes in Computer Science No.1419, 1998.</p>
+
+<p class="MsoNormal" style="">[5] Adam Young and Moti Yung, "Cryptovirology:
+Extortion-Based Security Threats and Countermeasures", Proceedings of the
+1996 IEEE Symposium on Security and Privacy, pp. 129-140, May 6-8, IEEE
+Computer Society Press, 1996.</p>
+
+<p class="MsoNormal" style="">[6] David Dittrich, "The 'stacheldraht' distributed
+denial of service attack tool", 31 December 1999, on the Web at
+"http://staff.washington.edu/dittrich/misc/stacheldraht.analysis.txt".</p>
+
+<p class="MsoNormal" style="">[7] David Aubrey-Jones, "Combining Encryption with an
+Anti-Virus Strategy", Proceedings of the Eighth International Virus
+Bulletin Conference, October 1999, pp 205-234 (slide presentation).</p>
+
+<p class="MsoNormal" style="">[8] Maria Pozzo and Terence Gray, "An Approach to
+Containing Computer Viruses," Computers and Security v6n4, 1987, pp.
+321-331.</p>
+
+<p class="MsoNormal" style="">[9] Symantec's Macro Virus Protection, described on the
+Web at "http://www.symantec.com/education/var/modules/m5tab5i.html".</p>
+
+<p class="MsoNormal" style="">[10] F-Secure Macro Control, described on the Web at
+"http://www.Europe.F-Secure.com/news/1998/19980316.htm".</p>
+
+<p class="MsoNormal" style="">[11] Paul Ducklin and Philip Hannay, "Microsoft
+Office 2000 and digital macro signatures", revision of April 2000, on the
+Web at "http://www.sophos.com/virusinfo/whitepapers/office2000.html".</p>
+
+<p class="MsoNormal" style="">[12] Martin Overton, "Viruses and Lotus Notes: Have
+
+Virus Writers Finally Met Their Match?", in Proceedings of the Ninth International
+Virus Bulletin Conference, 1999, pp 149-174.</p>
+
+<p class="MsoNormal" style=""><b><i><span style="font-size: 14pt; font-family: Arial;"><!--[if !supportEmptyParas]-->&nbsp;<!--[endif]--><o:p></o:p></span></i></b></p>
+
+</div>
+
+<p>&nbsp;
+</p><p>&nbsp;
+<a href="http://www.research.ibm.com/antivirus/SciPapers.htm">back</a>
+
+</p></body></html>

@@ -1,0 +1,696 @@
+s en ligne le 4 Mars 2002]
+[Mis à jour le 19 Mai 2002] 
+
+Petite analyse de Viguard et attaques possibles
+
+
+Index Résumé 
+1. Deux ou trois choses à savoir
+     1.1. Avant-propos
+     1.2. Versions
+     1.3. Les fichiers de Viguard
+ Un antivirus universel ne peut pas exister, le reste n'est que du bluff marketing. Présentation des fichiers du répertoire de Viguard et idées d'attaques. 
+2. Attaques simples
+     2.1. Introduction et méthode
+     2.2. Désactiver Viguard, méthode douce naturelle
+     2.3. Désactiver Viguard, méthode violente aux hormones
+     2.4. Exécuter n'importe quoi sans désactiver Viguard
+     2.5. Exécuter n'importe quoi dans tous les cas
+     2.6. Juste pour rire
+ Plusieurs méthodes pour désactiver Viguard, ou exécuter ce que l'on veut avec Viguard actif, avec exemples. 
+3. Fausses alertes
+     3.1. Exécutable PE: "Fichier exécutable viral"
+     3.2. Script: "Le programme a tenté d'accéder à des fichiers sensibles"
+     3.3. Script: "Script dangereux détecté"
+ Plusieurs types de fausses alertes que vous pouvez tester, qui donnent un aperçu des routines de détection primitives de Viguard. 
+4. Tests avec des vrais virus
+     4.1. Méthode
+     4.2. Un virus compagnon: Win32.Pilsen
+     4.3. Un virus compagnon: Win32.Parrot
+     4.4. Un virus compagnon: Win32.Companion.HLLC.4096
+     4.5. Un virus compagnon: Win32.Eclipse.8192
+     4.6. Un virus compagnon: Win32.Emotion.4608
+     4.7. Un virus compagnon: Win32.StupRed.HLLC.321536
+     4.8. Un virus stealth et résident: Win95.Craddle_Of_Filth
+     4.9. Un virus stealth et résident: Win95.Zerg
+     4.10. Un virus résident: Win98.Dammit
+     4.11. Interlude: pourquoi Viguard certifie des virus?
+ Viguard non seulement ne reconnait aucun virus compagnon, mais en plus les certifie sans vous demander votre avis.
+
+Viguard se fait avoir par les routines stealths ("furtives") de certains virus, qui infectent sans problème et sans alerte. 
+5. Ce que j'aime bien chez Viguard
+     5.1. La surveillance du boot
+     5.2. L'extraction des macros  Une ou deux routines utiles. 
+6. Suggestions pour améliorer Viguard [pas fini]
+ Tentons d'être positif. 
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+1. Deux ou trois choses à savoir
+
+--------------------------------------------------------------------------------
+
+
+
+
+     1.1. Avant-propos
+Ce document n'est certainement pas une étude exhaustive de Viguard. Pour dire les choses simplement, la communication ridiculement outrancière de l'éditeur Tegam, qui a même réussi en 1999 à faire rire l'équipe de ce journal relativement sérieux et respecté qu'est Virus Bulletin ("analyse intelligente", "bloque tous les virus", "pas de mise à jour", "protection totale", "Good Luck, le super-trojan du futur que nous sommes les seuls à pouvoir arrêter", "Guillermito le terroriste connu du FBI", "Roland Garcia l'escroc", etc...) parfois reprise sans recul et sans compétence technique par des journalistes, a fini par m'agacer, et j'ai voulu montrer que ce produit n'a rien d'invulnérable, et est au contraire bien moins fiable qu'un anti-virus "classique" si utilisé seul. Il utilise des méthodes génériques pour détecter les codes malveillants, et ne s'aide pas d'une base de données de signatures. Ces méthodes étaient déjà appliquées par d'autres des années avant que Tegam n'existe. 
+
+Tous les anti-virus modernes utilisent une batterie de méthodes génériques, sommes de contrôle, behavior blocker, etc, très souvent bien mieux implémentées que dans Viguard, mais surtout analyse heuristique et émulation qui sont des procédés complexes et très puissants pour détecter des virus ou trojans inconnus. Ils ont en plus une base de données de signature, qui permet une identification précise des codes malveillants, et donc une désinfection à l'octet près. Viguard a donc moins de fonctionnalités qu'un anti-virus classique. L'opposition artificielle "Viguard contre anti-virus à signatures" n'est qu'un leurre commercial. Tout le monde est d'accord pour dire que l'utilisation de signatures n'est pas la panacée, mais cela reste néanmoins une partie extrêmement importante d'une solution anti-virale. 
+
+Je n'ai pas le temps de décortiquer le programme et son fonctionnement de A à Z. Désassembler, débuguer et appliquer des méthodes de reverse engineering sur un programme est un processus long et complexe, et j'ai autre chose à faire. Je ne regarde donc très subjectivement que ce qui m'intéresse ici, avec une approche particulière sur les possibilités d'attaques de Viguard. 
+
+Tous les anti-virus sans exception laissent passer des virus, ou peuvent s'attaquer d'une façon ou d'une autre - la vraie difficulté étant de trouver des méthodes générales qui fonctionnent avec tous - mais certains sont relativement résistants. Ce n'est pas le cas de Viguard. Les attaques que je présente ici sont particulièrement triviales. Si personne ne les a publiées avant, c'est tout simplement parce que Viguard représente une très faible partie des logiciels anti-virus installés, et presqu'uniquement sur le marché francophone. Les auteurs de virus seraient enchantés que ce pourcentage augmente. 
+
+Je rappelle que Fred Cohen, l'inventeur des virus informatiques, a démontré mathématiquement qu'un anti-virus universel ne peut pas exister: "One of the few solid theoretical results in the study of computer viruses is Cohen's 1987 demonstration that there is no algorithm that can perfectly detect all possible viruses" (David Chess, Steve White, IBM). 
+
+Je ne travaille pas pour une compagnie d'anti-virus, ni de près ni de loin. Je ne suis pas administrateur système, je n'ai aucun intéret dans les logiciels de sécurité informatique. D'ailleurs, je ne suis même pas informaticien, mais chercheur en biologie moléculaire. Je considère donc que mes opinions sont à peu près indépendantes. Vous avez le droit d'avoir un autre avis. 
+
+Une dernière chose: il m'arrive (souvent) de me planter. De faire des erreurs. Vous êtes donc chaleureusement invités à répéter vous-même tout ce que je raconte pour vérifier, et à conduire vos propres tests pour aller plus loin. Les sources (en assembleur 32 bits, codé pour TASM32) de tous les programmes utilisés ici sont fournies. Toutes mes expériences sont reproductibles. Si vous voyez une erreur, merci de m'envoyer un mail, et je corrigerai. Tous les commentaires sont aussi, bien sûr, les bienvenus. 
+
+     1.2. Versions
+Puisqu'aucune version de test n'est disponible sur le site web de Tegam (un cas unique chez les anti-virus), tous ces tests ont été réalisés avec les cinq versions de Viguard en ma possession, certaines trouvées sur le Net en warez, d'autres aimablement prêtées pour la durée de mes tests par des internautes sympathiques, dans l'ordre chronologique: 
+
+- Viguard 9 25b9 Pro
+- Viguard 9 25e9 Perso
+- Viguard 2002 b Pro
+- Viguard 2002 d Perso
+- Viguard 2002 e Pro (février 2002)
+
+
+[Note: si vous avez des versions plus récentes - cliquez sur les trois points à droite du logo Viguard et regardez le numéro de version, sans oublier la lettre en gris en bas à gauche du cadre - vous pouvez me contacter, de façon à ce que je reste au courant de l'évolution du produit. Merci!] 
+
+Il est à noter que les versions Pro et Perso sont en fait les mêmes programmes, même si la première est vendue pour un prix double de la seconde. On peut passer facilement de l'une à l'autre en changeant deux octets dans le fichier de configuration "bvd.cfg". [Note: je ne fournis pas de programme pour faire cela, puisque c'est du piratage et c'est donc illégal] 
+
+Une table résumant les différentes options entre les versions Pro et Perso (ou démo valide 15 jours): 
+
+
+
+ Version Perso ou Démo  Version Pro  
+Menu
+"Sécurité"  1. Certifier fichiers (PC-Pass)
+2. Fichiers en quarantaine
+3. Restaurer macros éliminées par Viguard
+ 1. Certifier fichiers (PC-Pass)
+2. Fichiers en quarantaine
+3. Restaurer macros éliminées par Viguard
+4. Analyse du démarrage système (ViStartup)
+5. Fichiers auto-réparables (Vi-Repair)
+6. Anti chevaux de Troie et espionnage Internet (AntiSpy)
+ 
+Menu
+"Options"  1. Protections
+2. NetTrap
+3. Divers
+ 1. Protections
+2. NetTrap
+3. Divers
+4. Administration
+5. Automatisation
+6. Documents
+7. Exécutables
+8. Scripts
+ 
+
+La machine sur laquelle ont été faits ces tests est un très classique Windows 98. La plupart ont été confirmés sur Windows 95 et NT4. 
+
+     1.3. Les fichiers de Viguard
+Jetons un oeil sur quelques fichiers installés par Viguard. 
+
+"bvd.cfg" Ce fichier de configuration, présent dans le répertoire de Viguard, est très simplement crypté en XOR avec apparemment une suite fixe de 15 octets, mais je propose un petit programme appelé "dec_bvd_cfg" qui peut le décrypter, ce qui permet de jeter un oeil à son contenu avec un éditeur héxadécimal. Le contenu de ce fichier est en cours d'analyse. Il contient des valeurs binaires et du texte (par exemple, les extensions des fichiers à scanner ou les noms de fichiers à bloquer - ce qui donne immédiatement une idée d'attaque), ainsi que la configuration de toutes les options disponibles. Par exemple, encore une fois, on peut faire sauter le mot de passe administrateur en changeant deux octets dans ce fichier (d'ailleurs, concernant ce mot de passe, une mauvaise implémentation fait que majuscules et minuscules sont considérées identiques, ce qui divise par deux le travail si l'on voulait tenter une attaque en force brute avec dictionnaire). [Note: je ne fournis pas de programme pour faire cela, puisque ça pourrait être considéré comme illégal] 
+
+Les cinq premiers octets ne sont pas cryptés. Les quatres premiers sont une somme de contrôle: un simple XOR du fichier double mot par double mot successif, c'est a dire une valeur de 32 bits. Cet algorithme trivial de somme de contrôle, extrêmement simple a ajuster, est utilisé très souvent dans Viguard. 
+
+Ce fichier n'est ni surveillé ni protégé. 
+
+"certify.bvd" Ces petits fichiers à l'attribut "caché", créés par Viguard dans chaque répertoire, contiennent des informations de "certification" sur les programmes, documents ou scripts de ces répertoires: sommes de contrôle, morceaux de code, utilisés pour détecter des changements dans les fichiers après infection, et tenter de les reconstruire si besoin est. 
+
+Ces fichiers sont aussi cryptés en XOR avec une chaine fixe de 30 ou 35 octets. Il ont été analysés complètement. Je fournis un programme appelé "dec_certify_bvd" qui va les décrypter, et en plus créer un listing présentant de manière simple toutes les informations contenues. On y trouve des informations intéressantes sur la façon dont Viguard fonctionne, et les informations qu'il conserve sur chaque fichier du répertoire. Là encore, les quatre premiers octets sont une somme de contrôle XOR 32 bits, aisément ajustable par un programme malveillant, puisque pratiquement rien n'empêche de modifier ces fichiers de certification. Ou de les effacer tout simplement, attaque triviale et connue depuis des années contre les vérificateurs d'intégrité, qui utilisent maintenant - protection minimale - des noms semi-aléatoires. 
+
+[Citation: "This is probably the easiest, silliest, and the most often used attack against integrity checkers. It consists of simply locating and deleting the database(s) where the anti-virus program stores the checksums of the protected objects. Many integrity checkers that suffer from a bad design will fail to notice anything unusual and will simply re-create the database(s) of checksums - this time of the already infected files." Vesselin Bontchev, "Vircing the Invircible", 1995] 
+
+
+Il est à noter que si le nom "certify.bvd" est modifiable, cette option n'est proposée qu'après l'installation (même "personnifiée") et le premier scan des disques durs, c'est à dire quand des milliers de fichiers nommés "certify.bvd" ont déjà été créés. Si on change ce nom à ce moment-là, Viguard crée de nouveaux fichiers avec le nouveau nom. 
+
+A noter encore que ces fichiers se logent dans *tous* les répertoires par défaut, y compris dans les répertoires (versions anglophones de Windows):
+
+C:\WINDOWS\Start Menu\Programs\StartUp\
+C:\WINDOWS\Desktop\
+
+C'est à dire qu'au boot, l'éditeur par défaut va afficher le contenu de certify.bvd (\StartUp), et qu'un de ces fichiers va apparaitre sur le bureau (\Desktop). Pour des fichiers "cachés", ils sont plutôt visibles. 
+
+Ces fichiers ne sont ni surveillés ni protégés. 
+
+"vistart.ini" et "viundo.ini" Ces simples fichiers de texte sont créés lors de l'installation de Viguard dans le répertoire par défaut de Windows (généralement "C:\windows"). Le premier contient la liste de tous les programmes qui se lancent au boot par divers moyens (ligne dans autoexec.bat, config.sys, clef dans le registre, alias dans le dossier "StartUp", etc...), puisque de nombreux trojans utilisent cette méthode pour se lancer à chaque fois que l'ordinateur est allumé. Le second contient ceux qui ont été supprimés du précédent par Viguard, pour pouvoir revenir en arrière. 
+
+Ces fichier ne sont ni cryptés, ni surveillés ni protégés. Une attaque possible est donc évidente pour faire ce que l'on veut au prochain boot, par exemple désactiver Viguard et lancer un programme de notre choix. 
+
+"pcpass.def" La liste brute des hashs MD5 des fichiers que l'utilisateur certifie, et sans doute un certain nombre déjà présents par défaut. Si le hash d'un trojan est présent dans ce fichier, il sera exécuté sans problème. Encore une attaque possible. Notez la taille de ce fichier par défaut. Il a un header de 5 octets, puis liste les hashs MD5 (16 octets) avec un double octet d'information en plus pour chacun. Dans Viguard 9b, il fait 30479 octets, ce qui représente (30479-5)/(16+2) = 1693 MD5 de fichiers à exclure de toute vérification. Dans Viguard 2002e, ce fichier fait 85181 octets, soit 4732 fichiers a exclure. C'est probablement la méthode Tegam pour réduire le nombre de fausse alertes: exclure les programmes de toute surveillance. Un boulevard grand ouvert pour auteurs de trojans ou de virus. 
+
+"pcpass.idx" L'index des fichiers certifiés par l'utilisateur, avec là encore leur hash MD5. Cet index semble être utilisé juste pour afficher la liste des fichiers certifiés et leur hash, mais pas pour la vérification. 
+
+"sdmain32.exe" Le scanner principal de Viguard. Il s'agit d'un programme codé en Delphi et compressé avec Neolite. Pour pouvoir jeter un oeil a l'intérieur du programme sans l'exécuter (un programme compressé est compressé sur le disque, mais pas en mémoire), il suffit d'en dumper une version non-compressée avec un utilitaire de type ProcDump, UnPack ou W32Intro. On y trouve plein de chaines de caractères amusantes et intéressantes pour des tests, comme la liste des noms de macros qu'il va chercher dans les documents (AUTO_OPEN, AUTO_CLOSE, etc, en anglais et francais, pour Word et Excel), les clefs du registre utilisées, et, encore plus amusant, des strings qui n'apparaissent que dans des virus de macros bien connus ("DMV", "DMV.XLS", "Laroux", "Robocop", "TMARE JOKER [SLAM]", "INFECTED BY LEGEND!", "LAURIE VIRUS", "ANAKIN98"). S'ils utilisent ça comme signature, c'est vraiment le niveau zéro, puisque ce genre de strings sont les premières à être modifiées par les script-kiddies. 
+
+"sdload32.exe" Le module résident. Toujours en Delphi et compressé avec Neolite. Les chaines de caractères présentes sont, à vue de nez, identiques avec le programme précédent. Ils semblent assez similaires au niveau des données qu'ils contiennent. 
+
+"radar.386" et "loginx.dll" Le VxD et la librairie qui permettent les opérations de bas niveau quand le moniteur s'installe. Ils détournent les 5 APIs suivantes du kernel32 en insérant à leur adresse un appel (5 octets modifiés) vers leur code:
+
+           - CreateFileA
+           - CreateFileW
+           - CreateProcessA
+           - CreateProcessW
+           - OpenFile
+
+
+Je n'ai pas encore eu trop le temps de tester le fonctionnement de ces routines de bas niveau. 
+
+"Copy.exe" L'exécutable PE "appât", codé en Visual C++, que le module résident de Viguard vérifie assez souvent pour détecter s'il est modifié. 
+
+
+
+
+--------------------------------------------------------------------------------
+
+2. Attaques simples
+
+--------------------------------------------------------------------------------
+
+
+
+
+     2.1. Introduction et méthode
+Le but du jeu est de prendre un virus ou un trojan, et de l'exécuter tranquillement, tout en ayant Viguard installé et actif sur l'ordinateur. Viguard ne reconnait pas quantité de programmes dangereux, ce n'est donc pas la peine de chercher loin. En cas de virus simple, il détectera les changements après infection, et ce sera trop tard. Pour m'éviter de mettre des trojans ou des virus en téléchargement, et pour éviter au lecteur de faire mumuse avec des vrais programmes dangereux, voici ma solution. 
+Nous allons utiliser un faux positif, c'est à dire un programme tout à fait normal et inoffensif, mais qui va déclencher une alarme de Viguard. En effet, Viguard ne scanne pas vraiment les programmes exécutables. Si vous connaissez un peu la structure d'un exécutable PE de Windows, c'est simple: si le point d'entrée est supérieur ou égal à l'offset de la dernière section, Viguard lance une alerte au scan ou quand vous tentez d'exécuter le fichier, je cite: "Fichier exécutable viral, Viguard a détecté dans ce fichier un code viral appartenant à la famille Virus de fichiers Exécutables". En fait il n'a rien détecté du tout, et surtout pas du code suspect. Quelques programmes sains ont un point d'entrée qui a cette particularité. Beaucoup de virus n'ont pas cette caractéristique. Utiliser seulement cela pour déterminer froidement si un programme est un virus ou pas montre une certaine incompétence des programmeurs de Viguard dans le domaine des virus exécutables. Les bons détecteurs de virus inconnus combinent intelligemment cette caractéristique avec d'autres, jusqu'à atteindre un seuil à partir duquel la probabilité que le programme inconnu est un virus devient significative. 
+
+[Citation: "Even today many viruses can be detected with the simplest possible PE file heuristic [...]. The heuristic checks if the entry point of the PE file points into the last section of the application. This heuristics can cause false positives [...]. There are various ways to avoid infecting the last section." Peter Szor, "Attacks on Win32 - Part II, Virus Bulletin Conference 2000] 
+
+
+Nous allons utiliser un de ces faux positifs très simple pour nos tests, en faisant semblant que ce programme est dangereux. Vous pouvez télécharger ce faux positif ici. Ce programme se contente d'ouvrir une fenêtre avec un message, puis quitte. Essayez de le lancer avec le moniteur de Viguard actif, il sera bloqué. Scannez-le avec le scanner de Viguard, il sera détecté aussi. Vous pouvez vérifier sa source, le débuger ou le désassembler pour être sûr que je ne mens pas. Le but est de l'exécuter en trompant Viguard. Voici plusieurs méthodes simples, utilisant des trous de sécurité divers et variés de Viguard. Le mieux est de deécompresser les démos dans un répertoire temporaire pour les tester tranquillement. 
+
+Voir les commentaires dans les sources pour plus de détails techniques et un résumé pas à pas de ce que font les démos fournies. 
+
+     2.2. Désactiver Viguard, méthode douce naturelle
+Il est très facile de désactiver le moniteur résident de Viguard alors qu'il est en train de surveiller l'ordinateur. Il y a plein de méthodes tordues pour bidouiller la mémoire des programmes actifs. On va faire dans le simplissime: simuler programmatiquement un utilisateur qui désactive le moniteur en cliquant sur les bons boutons. Plus techniquement, il s'agit juste d'identifier les bonnes fenêtres, puis d'injecter le message adéquat dans la queue du programme qui contrôle cette fenêtre. 
+
+Le programme de démonstration qui fait cela s'appelle "VG_desactive_doux". Il fonctionne avec Viguard 9 et 2002. Pour que la démo soit visible à l'oeil, j'ai laissé un petit délai avant le clic final. De cette façon on peut voir les fenêtres s'ouvrir et se fermer toutes seules. Il aurait été simple de les rendre invisibles pour plus de discrétion. 
+
+     2.3. Désactiver Viguard, méthode violente aux hormones
+En cas d'urgence, on peut forcer n'importe quel programme qui tourne sous win32 à quitter sans condition. Il suffit d'utiliser la fonction "TerminateProcess". Ce n'est généralement pas conseillé, parce que l'arrêt est brutal, les fichiers et les threads ouverts restent en suspens, la mémoire n'est pas réinitialisée, etc. C'est une méthode "sale" à réserver aux cas extrêmes, qui rend souvent l'ordinateur instable. 
+
+Le programme fourni ici s'appelle "VG_desactive_dur" [Note: lancer ce programme va rebooter votre PC], et désactive le moniteur résident de Viguard de cette façon. L'ordinateur devient alors instable, les applications qui ouvrent des fichiers commencent à crasher puisque les APIs détournées pointent désormais vers le néant. Juste avant de forcer un reboot, puisque plus rien ne surveille l'ordinateur, on peut quand même extraire le faux positif, et on modifie le registre pour qu'il s'exécute au boot suivant, en prenant soin, puisqu'on est dans le registre, de modifier la clef qui lance Viguard au boot. On se retrouve donc avec un ordinateur sans aucune protection et ouvert à tous vents, qui va lancer ce que l'on veut. 
+
+Note: Pour que les changements effectués soient visibles, je laisse le registre en l'état. Pour remettre les choses en place, ça prend une seconde, il suffit juste de modifier deux petites choses dans le registre. Allez dans la clef:
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run
+
+- enlevez le "x" au début du nom de Viguard
+- enlevez la clef "XXXXXXX" qui pointe sur "VG_faux_positif.exe" 
+
+     2.4. Exécuter n'importe quoi sans désactiver Viguard
+Viguard permet de "certifier" les fichiers exécutables en calculant un hash cryptographique MD5 du fichier, et en le stockant sous un format simple dans une base unique nommée "pcpass.def" qui se trouve dans le répertoire de l'antivirus. Cette base de données n'est pas protégée. A chaque fois qu'il détecte un exécutable suspect, Viguard calcule son MD5 en appelant une fonction de la bibliotheque "bvdc.dll", et le compare a tous les MD5 présents dans le fichier "pcpass.def". S'il trouve une égalité, il laisse le programme s'exécuter tranquillement. Notre programme nommé "VG_pcpass" (Note: la routine de calcul du MD5 a été piquée dans le programme Filecheck écrit par Lucifer48 [Phrozen Crew]) va utiliser ce gouffre de sécurité en calculant le MD5 d'un faux trojan qui devrait être détecté par Viguard, en l'ajoutant a "pcpass.def" de façon temporaire, puis en lançant ce faux trojan qui s'exécute alors sans problème. 
+
+C'est un peu comme si vous utilisiez PGP pour crypter vos emails, et que vous laissiez le mot de passe qui protege votre clef privée sur un post-it a coté de l'écran. La solidité d'un protocole cryptographique ne dépend pas que de la force de l'algorithme. C'est amusant parce que les publicités de Tegam se gargarisent de l'utilisation de, je cite, "l'algorithme RSA Data Security MD5 pour signer les éléments autorisés de façon infalsifiable", alors que leur mauvaise implémentation du hash offre un des plus gros trous de sécurité de leur produit. Je leur conseille d'ouvrir un livre de cryptographie pour apprendre la différence essentielle entre un hash et une signature. Tout le monde peut calculer un hash; une seule personne peut créér une signature infalsifiable. 
+
+La même attaque est valable pour les macros, cette fois le MD5 est ajouté au fichier présent dans chaque répertoire, par défaut "certify.bvd". Vous pouvez télécharger un petit texte explicatif et des exemples ici. 
+
+     2.5. Exécuter n'importe quoi dans tous les cas
+Suite à une remarque dans fr.comp.securite.virus à propos de mes démos qui ne fonctionneraient pas quand on change la configuration pour empêcher l'exécution de tout nouveau programme (pas uniquement vérifier un nouveau programme puis l'exécuter s'il est propre, non, carrément tout bloquer, et demander à l'utilisateur de certifier ou pas - en quelque sorte c'est à l'utilisateur de prendre une décision - dans le genre "je ne me mouille pas"). A noter que la configuration que j'utilise est celle par défaut. 
+
+Bon, il est facile de passer outre cette protection supplémentaire. Il suffit de piocher dans les divers trous de sécurité, puis d'adapter une stratégie en fonction de ce que l'on veut faire. En l'occurence, on va utiliser la démo ci-dessus (trou de sécurité du stockage des MD5 dans PC-PASS) plus deux autres gros problèmes: 
+
+- Viguard ne surveille pas les fichiers batch. Il est pourtant connu depuis les temps immémoriaux du DOS que l'on peut faire beaucoup de choses avec un fichier .bat, y compris lire et écrire sur le disque. Tragique erreur.
+
+- Les fichiers de certification "certify.bvd" ne sont pas surveillés et sont librement manipulables par n'importe quel programme. Leur format est facile à deviner. De plus, ils sont très faiblement cryptés par un XOR fixe, et non pas, par exemple, signés par un administrateur, ce qui signifie que ceux qui sont sur mon disque dur sont valables pour n'importe qui. Dommage Eliane.
+
+Vous me voyez venir. On met l'exécutable de la démo ci-dessus et le fichier de certification qui lui correspond dans un fichier batch. On les extrait dans un nouveau répertoire par l'intermédiaire classique d'un script pour debug (ici "c:\zobi", vous n'aurez qu'à l'effacer par la suite), puis on lance la démo. Viguard vérifie le programme et voit qu'il y a dans ce répertoire un fichier de certification valide (la seule façon pour lui de discriminer entre un programme "nouveau - à bloquer" et un programme "déjà sur le disque dur - à ne pas bloquer". Et donc laisse le programme s'exécuter. Et voilà pour la méga-protection. Dans un élan poétique matinal, j'ai appelé cette démo VGTotalBaise.
+
+
+Il est à noter que même si vous rajoutez manuellement les fichiers .bat dans la liste des fichiers à bloquer (ils n'y sont pas par défaut), cette démo marche parfaitement, comme cela a été confirmé indépendamment dans le forum fr.comp.securite.virus. 
+
+Note: Pour remettre votre ordinateur tel qu'il était avant, effacez le répertoire "c:\zobi"
+
+
+     2.6. Juste pour rire
+Pourquoi faire compliqué quand on peut faire simple? Attention, ca va être court. Prenez mon faux positif ou le virus ou trojan exécutable de votre choix. Transformez son extension de ".exe" à ".bat". Lancez-le. Riez un bon coup. A noter que contrairement à la démo ci-dessus, ce petit truc ne marche pas si on rajoute à la main l'extension ".bat" dans les fichiers à bloquer. 
+
+
+
+--------------------------------------------------------------------------------
+
+3. Fausses alertes
+
+--------------------------------------------------------------------------------
+
+
+
+
+     3.1. Exécutable PE: "Fichier exécutable viral"
+On a déjà vu cette alerte lorsque le point d'entrée d'un exécutable PE est égal ou supérieur à la dernière section. Si vous êtes amateur de mp3 et de réseaux peer2peer, c''est la raison pour laquelle Viguard considère les programmes Kazaa.exe et Morpheus.exe comme des virus. Rien à voir avec les spyware présents (pas dans l'exécutable, de toute façon), c'est juste une fausse alerte de plus. Très facile à tester avec le faux positif fourni, qui ne contient strictement aucun code viral. Le texte exact de l'alarme bidon est: "Fichier exécutable viral, Viguard a détecté dans ce fichier un code viral appartenant à la famille Virus de fichiers Exécutables". 
+
+     3.2. Script: "Le programme a tenté d'accéder à des fichiers sensibles"
+Encore plus simple à tester. Ouvrez Notepad, créez un fichier texte dans lequel vous tapez n'importe quoi (ou même rien du tout), puis tentez de le sauvegarder avec une extension ".shs" ou ".vbe". Impossible, et le message d'alerte immédiat est le suivant (j'ai corrigé les fautes de français): "Le programme a tenté d'accéder à des fichiers sensibles. ViGUARD a interdit l'opération pour protéger votre disque dur.". Evidemment, notre petit fichier texte n'a jamais tenté d'accéder à quoi que ce soit, d'ailleurs, il n'est même pas encore sauvegardé. Et puis ça marche aussi avec un fichier de longueur nulle, preuve définitive de la superbe "analyse intelligente" de Viguard: dans ce cas, il ne fait qu'"analyser" l'extension du fichier! 
+
+     3.3. Script: "Script dangereux détecté"
+Je me demandais comment Viguard avait détecté le script du virus "I Love You", leur plus haut fait de guerre, signe indiscutable d'après eux de leur supériorité technique. Je pensais qu'il lançait très basiquement une alarme sur les doubles extensions ou les extensions ".vbs" reçues par email (ce qui n'aurait pas été stupide, d'ailleurs - j'ai moi-même demandé à nos admins qu'ils bloquent ce genre de fichier au niveau du serveur mail: solution gratuite et qui tient en une ligne du fichier de configuration du serveur). 
+
+J'ai donc récupéré le code de ce virus simple sur le Net, et je me suis amusé avec. Ce n'est pas sur l'extension que Viguard lance une alarme, mais sur la présence de diverses chaines de caractères considérées comme suspectes. Ca reste donc primitif comme méthode, il n'y a aucune analyse du code pour savoir si celui-ci est fonctionnel. Et bien sûr, il y a des risques de fausses alertes. Ceci est vrai pour tous les types de fichiers que Viguard considère comme "script": VBS, JS, WSH, HTA, HTM?, CSS, NWS... 
+
+A vue de nez (tests simples et rapides en modifiant la source de ILoveYou, sans aucun désassemblage, donc je peux passer à côté de certaines choses), Viguard considère que certaines chaines de caractères sont plus suspectes que d'autres: 
+
+Il suffit d'une seule occurence des chaines suivantes: "ScriptFullName", "AddressEntries.Count" pour qu'il y ait alerte. 
+
+Il suffit de deux occurences des chaines suivantes: "Outlook", "mIRC", "$nick", "FileSystemObject", "CreateObject" pour qu'il y ait alerte. 
+
+D'autres chaines de caractères ont un degré de suspicion plus faible, comme "Regedit", "Run", "AddressEntries", ".Attachments.Add", "infect", "virus", "AddressLists", ".Send" 
+
+Un petit coup de SoftIce, et voici la liste entière des 48 chaines de caractère suspectes tirées de la mémoire de Viguard (en couleur, celles que j'avais détectées "à la main": il semble donc qu'elles soient plus ou moins dans un ordre décroissant de suspicion): 
+
+
+
+"VIRUSPROTECTION"
+"SAVENORMALPROMPT"
+"MACROVIRUSPROTECTION"
+"ENABLEMACROVIRUSPROTECTION"
+"OPTIONS6"
+"NORMALTEMPLATE.VBPROJECT.VBCOMPONENTS.IMPORT"
+"ADDFROMSTRING"
+"COUNTOFLINES"
+"DISABLEAUTOMACROS"
+"MACROCOPY"
+"*.COM"
+"*.EXE"
+"*.SYS"
+"VIEWVBCODE"
+"LINES"
+"ADDRESSENTRIES.COUNT"
+"AUTOEXEC.BAT"
+"SCRIPTFULLNAME"
+"AUDIO/X-WAV"
+"READONLYRECOMMENDED"
+"CREATEOBJECT"
+"ACTIVEXOBJECT"
+"$NICK"
+"FILESYSTEMOBJECT"
+"C:\"
+"MIRC"
+"WSCRIPT"
+"OUTLOOK"
+".COPYFILE"
+"ADDRESSENTRIES"
+"ADDRESSLISTS"
+"INFECT"
+"VIRUS"
+"WORM"
+"COUNTMACROS"
+"WDFORMATTEMPLATE"
+".ATTACHMENTS.ADD"
+".SEND"
+"REGEDIT"
+".FORMAT = "
+"CONFIRMCONVERSIONS"
+"GLOBALDOTPROMPT = "
+"ORGANIZERCOPY"
+".IMPORT"
+"DESTINATION"
+"STARTUPPATH"
+"RUN"
+"CODEMODULE"  
+
+Si vous voulez tester vous-même cette fausse alerte, ouvrez Notepad, tapez quelques-unes des commandes ci-dessus au hasard, par exemple "run mirc virus" ou juste "ScriptFullName" ou "Options6", et tentez de sauver le fichier texte sous une extension de script, par exemple ".vbs". 
+
+Le texte exact de la fausse alerte lors d'un scan est "Script dangereux détecté. Ce script contient des commandes dangereuses qui peuvent accèder et modifier des données sur votre disque! A moins d'avoir écrit ce script vous-même, vous ne devez pas l'utiliser!". 
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+4. Tests avec des vrais virus
+
+--------------------------------------------------------------------------------
+
+
+
+
+     4.1. Méthode
+Le disque dur est formaté. Je crée deux partitions. Sur la partition bootable, j'installe Win98 à partir d'un CD Microsoft, quelques programmes, LiteStep comme shell, puis ViGuard 2002e avec les options par défaut. Viguard me crée une disquette de secours [En passant, un truc pénible qui avait déjà été noté dans un test d'InfoWorld en 1998, et apparemment toujours pas corrigé, il est impossible de créer cette disquette une fois que Viguard est installé]. Je scanne plusieurs fois avec Viguard pour avoir des certify.bvd à jour dans chaque répertoire. Puis je copie un fichier image de cette partition sur la seconde, ce qui me permettra de repartir facilement d'un système propre quand j'en aurai besoin. J'ai quelques disquettes qui me permettent de booter sainement, la disquette de secours de ViGuard, plus quelques utilitaires sous DOS, et F-Prot pour DOS 3.12 (un des meilleurs anti-virus, gratuit, et qui tient sur deux disquettes) pour vérifier la présence de virus. Et j'ai sous la main une petite collection de virus exécutables PE pour win32. A noter que F-Prot ne reconnait pas (identification ou heuristique) tous les virus de ma collection, ce qui montre une fois de plus l'évidence, c'est à dire qu'aucun anti-virus n'est infaillible. Bien sûr, Viguard arrête quelques virus avant qu'ils n'infectent. Pour être franc, plus que je ne le pensais. Mais pas tous, comme tout anti-virus. Exemples, non pas pour démontrer que Viguard est un mauvais anti-virus (je reste persuadé malgré tout que ce programme peut être utile dans certains cas, voir partie 5), mais juste pour enfoncer la porte ouverte suivante: il ne détecte pas 100% des virus. 
+
+     4.2. Un virus compagnon: Win32.Pilsen
+Il faut savoir qu'un virus compagnon ne modifie pas les programmes qu'il infecte, mais change leur extension de façon à ce qu'il soit exécuté à la place du programme infecté, et se reproduit de cette manière. Une méthode simple et très ancienne, qui date des temps héroïques du DOS. 
+
+Win32.Pilsen, non-résident en mémoire, cherche dans le répertoire courant les fichiers exécutables, par exemple "programme.exe", les renomme en "programme.com", puis se copie lui-même sous le nom "programme.exe". Ce qui fait que la prochaine fois que vous exécutez, souvent indirectement, ou par un alias, "programme.exe", vous exécutez en fait le virus, qui fait son petit travail, puis lance le programme original. 
+
+Le module résident de Viguard, pourtant présent et actif, ne détecte rien du tout. Le virus infecte tous les programmes du répertoire. Démonstration avec F-Prot: 
+
+
+
+Virus scanning report - 27. April 2002 19:20
+
+F-PROT 3.12
+SIGN.DEF created 18. March 2002
+SIGN2.DEF created 18. March 2002
+MACRO.DEF created 14. March 2002
+
+Scanning C:
+C:\TMP\PILSEN.EXE Infection: W32/Pilsen.4096
+C:\TMP\FRHED.EXE Infection: W32/Pilsen.4096
+C:\TMP\PILSEN.COM Infection: W32/Pilsen.4096
+C:\TMP\HEXPERT.EXE Infection: W32/Pilsen.4096
+C:\TMP\FILEMON.EXE Infection: W32/Pilsen.4096  
+
+Puisque, après infection, les fichiers ".exe" sont complètement changés, je m'attendais à ce que Viguard, qui garde une empreinte de ces fichiers dans certify.bvd, lance une alerte du genre "Attention, fichier modifié". Ben non. Non seulement il ne dit rien, mais il re-certifie silencieusement les programmes modifiés, c'est à dire les virus. Un extrait de certify.bvd avant et après infection, vu par le petit programme Dec_Certify_Bvd": 
+
+Avant infection, "frhed.exe" est un éditeur hexadécimal de 58 Ko: 
+
+
+
+              Taille section: 01a5h [0421d]
+                Type fichier: 0028h [PE w32 exec]
+             Taille nom long: 09h [009d]
+                    Nom long: FRHED.EXE
+Taille nom DOS (0 si pareil): 00h
+              Taille fichier: 0000e600h [0000058880d]
+Debut PE header (word a 3ch): 0080h
+   Taille PE+Section headers: 0170h
+ 
+
+
+
+Après infection, "frhed.exe" est devenu le virus Pilsen de 4 Ko, et ViGuard ne dit rien: 
+
+
+              Taille section: 01d1h [0465d]
+                Type fichier: 0028h [PE w32 exec]
+             Taille nom long: 09h [009d]
+                    Nom long: FRHED.EXE
+Taille nom DOS (0 si pareil): 00h
+              Taille fichier: 00001000h [0000004096d]
+Debut PE header (word a 3ch): 0100h
+   Taille PE+Section headers: 0198h
+ 
+
+     4.3. Un virus compagnon: Win32.Parrot
+Ce virus qui parle et chante (il contient des sons en mp3, assez amusant comme effet) nous vient de Belgique. Il a été programmé par Gigabyte, une codeuse de 17 ans, dans un langage de haut niveau, C++ probablement. Même genre que le précédent, sauf qu'il renomme les programmes originaux en .prt, et qu'au lieu de se contenter du répertoire courant, il infecte directement dans le répertoire Windows, plus une copie dans la racine, sans doute pour sa routine d'IRC-Worm. Viguard détecte les deux changements dans la base de registre qui vont lancer au prochain boot le mp3 et un script vbs, mais tous les programmes infectés, là encore, passent inaperçus, et ViGuard re-certifie les virus. Bilan, 58 fichiers infectés. 
+
+
+
+C:\PARROT.SCR Infection: W32/HLLC.52260
+C:\WINDOWS\HWINFO.EXE Infection: W32/HLLC.52260
+C:\WINDOWS\MPLAYER.EXE Infection: W32/HLLC.52260
+C:\WINDOWS\CLSPACK.EXE Infection: W32/HLLC.52260
+C:\WINDOWS\DOSREP.EXE Infection: W32/HLLC.52260
+C:\WINDOWS\DRWATSON.EXE Infection: W32/HLLC.52260
+C:\WINDOWS\EXTRAC32.EXE Infection: W32/HLLC.52260
+[...]  
+
+
+
+Ce qui donne un répertoire Windows assez original dans l'explorer, juste pour le fun: 
+
+
+
+
+ 
+Au moment d'éteindre l'ordinateur, Viguard détecte le changement de "rundll32.exe", et le restaure à partir de sa copie sauvegardée dans le répertoire "\ViRepair". Mais il y a toujours plus de cinquante fichiers infectés. Un boot avec la disquette de secours et scan du disque avec Viguard pour DOS m'indique que les fichiers infectés ont été modifiés, que c'est une opération normale de mise à jour, et les virus sont re-certifiés. 
+
+     4.4. Un virus compagnon: Win32.Companion.HLLC.4096
+Encore un virus compagnon très simple, qui renomme à chaque fois un .exe du répertoire en .com. Je le lance deux fois, et mes deux fichiers tests sont infectés sans alerte. Encore une fois, le moniteur résident de Viguard re-certifie les virus sans rien me dire. Si je fais l'expérience sans le moniteur, mais uniquement avec le scanner, pareil. Si je tente de détecter les changements en bootant avec la disquette de secours et le scanner sous DOS, j'ai deux fois le message suivant: "Ce fichier exécutable a été modifié, apparemment par une opération normale (telle que la mise à niveau de ce programme). Vous pouvez Accepter la modification afin que le fichier soit re-certifié dans son état actuel (tapez sur une touche)". Pas de choix. De toute façon, il serait incapable de les réparer puisqu'il ne sauvegarde qu'une toute petite partie des exécutables (en gros, le header PE et les 16 premiers octets de code au point d'entrée), et dans ce cas une "réparation" signifierait la destruction du fichier. Je suis donc obligé de certifier les virus, qui sont toujours là: 
+
+
+C:\TMP\FRHED.EXE Infection: W32/HLLC.4096.A
+C:\TMP\TEST.EXE Infection: W32/HLLC.4096.A
+ 
+
+
+
+
+     4.5. Un virus compagnon: Win32.Eclipse.8192
+Toujours un compagnon. Celui-là renomme tous les .exe du répertoire en .bin. Et toujours la même histoire: Viguard, moniteur résident ou scanner, ne voit rien et re-certifie silencieusement les virus. Le scanner sous DOS de la disquette de secours me ressort l'étrange message comme quoi la modification est normale et vient d'une mise à jour. Je tente même d'appuyer sur la touche "R" pour "Restaurer", même si l'option n'est pas proposée, en pensant qu'ils ont peut-être oublié de proposer le choix, mais qu'il est toujours accessible. Rien à faire: le virus est toujours là: 
+
+
+C:\TMP\FRHED.EXE Infection: Blackclipse.8192
+C:\TMP\RCRAWLER.EXE Infection: Blackclipse.8192
+C:\TMP\CHECKME.EXE Infection: Blackclipse.8192
+C:\TMP\TEST.EXE Infection: Blackclipse.8192  
+
+     4.6. Un virus compagnon: Win32.Emotion.4608
+Et encore. Crescendo dans la capacité d'infection: celui-là renomme les .exe en .bin dans le répertoire courant, mais aussi dans le répertoire Windows. Et toujours le même scénario: Viguard ne voit rien, moniteur ou scanner, et 62 fichiers sont infectés: 
+
+
+C:\WINDOWS\HWINFO.EXE Infection: W32/Emotion.4608.A
+C:\WINDOWS\MPLAYER.EXE Infection: W32/Emotion.4608.A
+C:\WINDOWS\CLSPACK.EXE Infection: W32/Emotion.4608.A
+C:\WINDOWS\DOSREP.EXE Infection: W32/Emotion.4608.A
+C:\WINDOWS\DRWATSON.EXE Infection: W32/Emotion.4608.A
+[...]
+C:\TMP\TEST.EXE Infection: W32/Emotion.4608.A
+C:\TMP\RCRAWLER.EXE Infection: W32/Emotion.4608.A
+C:\TMP\FRHED.EXE Infection: W32/Emotion.4608.A
+C:\TMP\CHECKME.EXE Infection: W32/Emotion.4608.A  
+
+Au moment où je quitte Windows pour booter avec la disquette de secours, Viguard m'annonce que deux des fichiers qu'il surveille un peu plus que les autres par défaut (voir la liste dans Options / Exécutables / Auto-Réparation) ""explorer.exe" et "rundll32.exe" dans le répertoire Windows ont été modifiés. Je les restaure sans problème, puisque Viguard conserve ces fichiers en entier dans son répertoire "\ViRepair". Après boot sur la disquette de secours, le scanner DOS m'annonce qu'une poignée (je n'ai pas compté, mais bien moins que les 60 qui auraient dû être détectés) d'exécutables ont été modifiés, que c'est normal, et comme d'habitude ne me propose aucun choix. Air connu: les virus sont toujours là. 
+
+     4.7. Un virus compagnon: Win32.StupRed.HLLC.321536
+Toujours pareil. Ce virus énorme parce que codé en langage de haut niveau (les auteurs de virus sont tombés bien bas) change les .exe en .rav dans le répertoire courant. Pour éviter de répéter toujours la même chose, on va faire court: Viguard ne voit rien, et mes quatre exécutables de test sont infectés: 
+
+
+C:\TMP\TEST.EXE Infection: W32/HLLC.321536
+C:\TMP\RCRAWLER.EXE Infection: W32/HLLC.321536
+C:\TMP\FRHED.EXE Infection: W32/HLLC.321536
+C:\TMP\CHECKME.EXE Infection: W32/HLLC.321536  
+
+     4.8. Un virus stealth et résident: Win95.Craddle_Of_Filth
+Un virus russe, plus complexe que les précédents, il agit en Ring0, infecte rapidement, en ajoutant une section, tous les exécutables, drivers et librairies qui sont chargés en mémoire, au moment de leur fermeture. Sa routine stealth ("furtive" en français, encore une vieille technique venant directement de l'époque du DOS) masque les changements qu'il produit dans les fichiers, par exemple quand on regarde sa taille dans l'explorer (elle augmente, mais on ne le voit pas car le virus contrôle les accès de bas niveau au disque et renvoie la taille avant infection). ViGuard se laisse avoir par cette routine et ne détecte strictement rien tant que le virus est en mémoire. 
+
+Après exécution du virus et une utilisation normale de l'ordinateur pendant quelques minutes, plus de cinquante fichiers sont infectés, y compris le scanner de ViGuard lui-même, qui pourtant continue à fonctionner à peu près normalement, ce qui indique qu'il n'a probablement pas de routine d'auto-vérification: 
+
+
+
+C:\WINDOWS\EXPLORER.EXE Infection: W32/Craddle.1030
+C:\WINDOWS\CALC.EXE Infection: W32/Craddle.1030
+C:\WINDOWS\NOTEPAD.EXE Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\IAC25_32.AX Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\AVIFIL32.DLL Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\BROWSELC.DLL Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\CABINET.DLL Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\COMCTL32.DLL Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\DCIMAN32.DLL Infection: W32/Craddle.1030
+[...]
+C:\ZIQUE\WINAMP\WINAMP.EXE Infection: W32/Craddle.1030
+C:\ZIQUE\WINAMP\PLUGINS\IN_MP3.DLL Infection: W32/Craddle.1030
+C:\ZIQUE\WINAMP\PLUGINS\OUT_WAVE.DLL Infection: W32/Craddle.1030
+[...]
+C:\PROGRA~1\VIGUARD\SDMAIN32.EXE Infection: W32/Craddle.1030
+C:\PROGRA~1\VIGUARD\LOGINX.DLL Infection: W32/Craddle.1030
+C:\PROGRA~1\VIGUARD\COPY.EXE Infection: W32/Craddle.1030
+ 
+
+Je finis ma session et éteins mon ordinateur. Puis reboote. Au boot, Viguard m'annonce que l'explorer a été modifié. Je lui demande de réparer, ce qu'il fait. Puis Viguard lance des alertes en chaine sur diverses librairies du système. L'affreuse fenêtre rouge revient toutes les secondes malgré mes clicks, l'ordinateur est inutilisable. Je ne peux rien faire d'autre que de l'éteindre. 
+
+Comme je fais confiance à mon antivirus, je reboote avec la disquette de secours de Viguard, et lui demande de tout me réparer. 
+
+Après ce grand nettoyage qui me parait efficace, je reboote la machine sur une disquette système pour vérifier avec F-Prot. Surprise: les exécutables et les librairies ont été correctement nettoyées, mais Viguard a oublié de réparer des drivers audio, des codecs et autres fichiers PE aux extensions non classiques: 
+
+
+
+C:\WINDOWS\SYSTEM\IAC25_32.AX Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\IMAADP32.ACM Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\MSADP32.ACM Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\MSGSM32.ACM Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\TSSOFT32.ACM Infection: W32/Craddle.1030
+C:\WINDOWS\SYSTEM\MSG711.ACM Infection: W32/Craddle.1030
+C:\PROGRA~1\COMMON~1\MICROS~1\TEXTCONV\WRITE32.WPC Infection: W32/Craddle.1030
+ 
+
+Apparemment, ces bibliothèques (qui ont un format PE similaire à des exécutables normaux, donc peuvent parfaitement être infectées) ne sont pas surveillées par Viguard. Comme il ne sauve pas d'information à leur sujet, il est incapable de les réparer, et le virus est toujours là. Au boot suivant, vous pensez avoir nettoyé votre disque, puis vous lancez Wordpad, WinAmp ou le MediaPlayer, et vous êtes infectés à nouveau. 
+
+Donc, un message amical au programmeur de Viguard (puisqu'il ne veut pas me contacter par e-mail pour discuter technique): dans la prochaine version, n'oubliez pas de surveiller par défaut aussi les fichiers .ax, .acm et .wpc, et probablement d'autres. Encore mieux, comme F-Prot ou n'importe quel anti-virus moderne, ne vous basez pas sur les extensions et analysez le format réel des fichiers. Il s'agit là d'un gros trou de sécurité. Message aux utilisateurs de Viguard maintenant: pour augmenter la sécurité, ajoutez à la main dans "Options / Exécutables" les extensions citées ci-dessus. 
+
+     4.9. Un virus stealth et résident: Win95.Zerg
+Ce petit bijou, efficacement codé et stable, nous vient de Taiwan, comme CIH. Il a été codé par Dark Slayer, et a été publié dans le magazine 29A numéro 4 (Mars 2000, c'est à dire il y a 2 ans, une éternité en terme de techniques virales). Il agit en Ring0, et fonctionne parfaitement sous Win95 et Win98. Il modifie la dernière section des exécutables PE et change le point d'entrée pour pointer sur le code viral. 
+
+Je le lance: aucune alerte de Viguard. Rien. Je me promène un peu sur mon ordinateur, lance quelques applications. Toujours rien. Tout fonctionne impeccablement. Je lance le scanner de Viguard, vérifie le disque dur en entier, toujours rien. J'éteins le PC, me fais un café, reboote. Rien de rien. Tout marche bien, aucun ralentissement perceptible, aucune alerte. Je commence à me demander si j'ai vraiment exécuté un virus. Peut-être ai-je confondu deux binaires? Les programmes que je lance, vus dans l'explorer ou avec un éditeur, ne changent ni de taille ni de contenu. Je re-éteins le PC. Vérifie avec F-Prot. Surprise: 154 fichiers infectés. Voilà un virus comme je les aime: silencieux, discret, efficace. Du joli travail. Viguard n'a strictement rien vu, se faisant avoir par la routine stealth (le virus, contrôlant les accès au disque du système - et de Viguard - renvoie des images de fichiers propres alors qu'ils sont infectés). Amusante ironie, on note que même l'exécutable "appât" créé par Viguard dans son répertoire et particulièrement surveillé (COPY.EXE) est infecté: 
+
+
+
+C:\WINDOWS\HWINFO.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\MPLAYER.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\CLSPACK.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\EXPLORER.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\EXTRAC32.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\FONTVIEW.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\HH.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\JVIEW.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\MSNMGSR1.EXE Infection: W32/Zerg.3469
+C:\WINDOWS\PIDSET.EXE Infection: W32/Zerg.3469
+[...]
+C:\PROGRA~1\VIGUARD\COPY.EXE Infection: W32/Zerg.3469
+C:\LITESTEP\_THEME1\LITESTEP.EXE Infection: W32/Zerg.3469
+C:\LITESTEP\LSPAWN\LITESP~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\WINAMP\WINAMP.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\WINAMP\WINAMPA.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\AUDIOC~1\UNINST~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\AUDIOC~1\AUDIOC~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\CDEXTR~1\CDEX.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\ALARM\ALARMS~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\SIDPLAY\SIDPLAYW.EXE Infection: W32/Zerg.3469
+[...]
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~1.EXE Infection: W32/Zerg.3469 C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~2.EXE Infection: W32/Zerg.3469 C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~3.EXE Infection: W32/Zerg.3469 [...]
+ 
+
+Donc, Viguard ne lancera jamais d'alerte en cas d'infection par Win95.Zerg, et l'utilisateur ne se méfiant pas, n'utilisera probablement pas la disquette de secours. Mais faisons l'essai tout de même. Je reboote avec la disquette de secours créée par Viguard. A ce moment-là, le virus n'est plus en mémoire puisqu'on est sous DOS, donc plus de routine stealth, donc les infections deviennent apparentes. On va voir si Viguard nettoie ma machine correctement. 
+
+Je demande un nettoyage complet. Viguard sous DOS s'arrête sur la majorité des fichiers infectés, me dit qu'ils sont modifiés, je les restaure. Parfait. Et puis, surprise. Pour certains, Viguard ne me propose pas de les restaurer. Il me dit juste qu'il a détecté un "code viral", et ne me donne aucun autre choix que de continuer. Ca veut dire quoi? Qu'il a nettoyé? Restauré? Effacé? Il fait ça sur une poignée d'exécutables. Je ne comprends pas. Tous les fichiers sont infectés par le même virus, la réaction de Viguard devrait être la même: proposer la restauration. Je finis le scan, puis vérifie avec F-Prot. Surprise encore. Une vingtaine de fichiers sont toujours infectés: 
+
+
+
+C:\LITESTEP\LSPAWN\LITESP~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\AUDIOC~1\UNINST~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\AUDIOC~1\AUDIOC~1.EXE Infection: W32/Zerg.3469
+C:\ZIQUE\ALARM\ALARMS~1.EXE Infection: W32/Zerg.3469
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~1.EXE Infection: W32/Zerg.3469
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~3.EXE Infection: W32/Zerg.3469
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~4.EXE Infection: W32/Zerg.3469
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~5.EXE Infection: W32/Zerg.3469
+C:\CODE\SYST-U~1\KK\VERIFY~1\VERIFY~6.EXE Infection: W32/Zerg.3469
+[...]
+ 
+
+Je ne sais pas pourquoi Viguard n'a pas nettoyé ces fichiers. Il aurait dû. Il avait normalement toutes les informations pour le faire. Il semble que le scanner DOS qui est copié sur la disquette de secours ait des comportements un peu étranges. Je creuserai la question plus tard, si j'ai le temps. Il reste qu'un utilisateur normal se serait fait avoir en beauté par ce virus. 
+
+     4.10. Un virus résident: Win98.Dammit
+Ce virus est résident sous windows 98. Il n'est pas stealth mais, contrairement à Craddle_Of_Filth, il infecte sans rajouter de nouvelle section dans les programmes. Je le lance, il ne se passe rien. Puis je lance le Notepad: alarme de Viguard "Virus Intercepté!". Comme je suis un utilisateur paranoïaque, j'arrête immédiatement l'ordinateur, tout en me félicitant d'avoir un si bon anti-virus. Je vérifie le disque avec F-Prot. Malgré l'alarme, Notepad a bel et bien été infecté: 
+
+
+
+C:\WINDOWS\NOTEPAD.EXE Infection: W32/Dammit.1624  
+
+
+
+Je reboote avec la disquette de Viguard, et lui demande de restaurer mon système. Il scanne, s'arrête sur Notepad, et là, un message surprise: "Notepad.exe: Ce fichier exécutable a été modifié, apparemment par une opération normale (telle que la mise à niveau de ce programme). Vous pouvez Accepter la modification afin que le fichier soit re-certifié dans son état actuel (tapez sur une touche)". Pas de choix à disposition, du genre "Certifier / Effacer / Restaurer". Je finis le scan, teste avec F-Prot, le virus est toujours là. 
+Comme Viguard me dit que je n'ai pas de virus, je reboote normalement. Un peu inquiet, je lance le scanner de Viguard, quand même. Qui, surprise, s'arrête un quart de seconde sur Notepad infecté et le re-certifie silencieusement. 
+
+     4.11. Interlude technique: pourquoi Viguard certifie des virus?
+J'avoue ne pas comprendre pourquoi Viguard certifie des programmes complètement changés (dans le cas des virus compagnons), ou des programmes modifiés après infection. Il y a là une logique qui m'échappe. Après tout, un vérificateur d'intégrité, même très basique, devrait hurler dès que l'on change un seul bit dans un programme. J'ai donc poussé la recherche un peu plus loin, et voici quelques résultats préliminaires (attention, ça va devenir technique, mais je vais essayer d'expliquer en douceur la procédure, que tout le monde peut répéter). 
+Viguard vérifie l'intégrité d'un exécutable windows 32 bits à travers au moins trois paramètres, qu'il sauve dans le fichier "certify.bvd". On peut voir cela grâce au petit programme Dec_Certify_Bvd" qui analyse ces fichiers, les décrypte et en extrait un listing lisible facilement. 
+
+Ces trois paramètres sont: le header PE, la taille du programme, et le contenu de chaque section (à travers un XOR double mot par double mot). 
+
+Je vais donc prendre mon petit programme habituel de test de 4 Ko qui affiche une fenêtre. Je le copie/colle à l'identique sept fois. Puis je change les noms en fonction des changements futurs que je vais faire (par exemple, un changement dans le header PE, ou encore deux changements, la taille et le contenu). Je lance le scanner de Viguard pour qu'il me crée un "certify.bvd". Ce fichier contient donc les paramètres nécessaires à la restauration de huit programmes originaux identiques à part leurs noms. 
+
+Ensuite, je modifie les sept versions de mon programme de test avec un éditeur hexadécimal (je joue le rôle d'un virus, si vous voulez), en fonction du nom. Ces modifications n'empêchent pas le programme de fonctionner, et sont les suivantes:
+
+- PE header: je change la version du linker de 0219h à 0333h.
+- contenu: je change le texte affiché dans la fenêtre (section no2 .data).
+- taille: je rajoute 16 octets à la fin du programme.
+
+Je crée toutes les combinaisons possibles: un seul changement (trois possibilités), deux changements en même temps (trois possibilités), les trois changements en même temps. Ce qui nous fait sept modifications, plus le programme original non modifié. Tout est dans le fichier zip VG_test_certification. J'y ai mis aussi le certify.bvd original, de façon à ce que tout le monde puisse faire le test: il suffit de tout décompresser dans un répertoire temporaire et de scanner avec Viguard. Pour ceux qui n'ont pas Viguard, j'ai inclu aussi les dumps de certify.bvd avant et après le scan [Note for myself: pourquoi il y a deux programmes en moins dans le certify_après? - Voir ça]. 
+
+Donc il n'y a plus qu'à scanner. On voit que Viguard ne produit que trois alertes sur les sept programmes modifiés. En analysant le certify.bvd après le scan, je comprends pourquoi Viguard certifie des virus. Voici le résultat: 
+
+
+
+
+Modification  Ce que dit Viguard  Mon commentaire  
+Une seule modification 
+Contenu changé  Pas d'alerte, certify.bvd n'est pas mis à jour  Etrange pour un vérificateur d'intégrité,
+mais à mon avis peu dangereux - à moins d'un virus qui soit en même temps Cavity et EPO.  
+Taille changée  "Fichier Modifié!"
+Choix entre restauration ou certification  Normal  
+PE header changé  "Fichier Modifié!"
+Choix entre restauration ou certification  Normal  
+Deux modifications 
+PE header changé
+Taille changée  "Fichier Modifié!"
+Choix entre restauration ou certification  Normal  
+PE header changé
+Contenu changé  Pas d'alerte
+Mise à jour silencieuse de certify.bvd  DANGER
+(cavity infectors par exemple)  
+Taille changée
+Contenu changé  Pas d'alerte
+Mise à jour silencieuse de certify.bvd  DANGER
+(Entry Point Obscuring par exemple)  
+Trois modifications
+(idem avec un programme totalement différent) 
+PE header changé
+Taille changée
+Contenu changé  Pas d'alerte
+Mise à jour silencieuse de certify.bvd  DANGER
+(tous types, dont compagnons)  
+
+
+
+
+Résumé de la détection d'intégrité des exécutables PE: si la taille du fichier ou son header PE changent, il y a une alerte normale; mais si en plus le contenu du programme change, Viguard n'alerte plus, considérant probablement qu'il s'agit là d'une mise à jour légitime du programme. J'ai du mal à saisir ce choix des programmeurs, à moins qu'il ne s'agisse d'une méthode pour réduire les fausses alertes, mais au prix d'un trou de sécurité énorme. En effet, on l'a vu un peu plus haut au cours des tests utilisant de vrais virus, Viguard a re-certifié silencieusement plus d'une fois des programmes infectés. 
+
+En d'autres termes: ajoutez un octet à un programme, il y a une alerte; modifiez complètement ce même programme, il n'y a plus d'alerte. 
+
+Cela vous donne une idée de l'algorithme simple - et à mon avis assez peu logique d'un point de vue de la sécurité - de détection des changements par Viguard. Je pense qu'il ne devrait jamais re-certifier silencieusement des programmes modifiés, mais toujours proposer un choix clair restauration / certification. 
+
+Après une petite recherche, j'ai trouvé un texte sur le site d'In-Defense (la version américaine de Viguard il y a quelques années, peut-être plus maintenant, mais le texte en question date de 2000, et le contenu "anti-scanner" - ainsi que le fonctionnement de leur logiciel - ressemble à vue de nez à de la dialectique Tegam), qui explique leur approche erronée, qui oublie les virus compagnons et d'autres types de virus qui modifient les fichiers exécutables de façon non traditionnelle. Les commentaires en rouge sont de moi: 
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+5. Ce que j'aime bien chez Viguard
+
+--------------------------------------------------------------------------------
+
+
+
+
+     5.1. La surveillance du boot
+Une routine simple mais utile (appelée "ViStartUp"), à réserver à ceux qui connaissent un peu le fonctionnement de leur ordinateur. Viguard surveille constamment les quatre ou cinq endroits (autoexec.bat, registre, répertoire "\startup", config.sys, system.ini...) qui permettent de lancer un programme silencieusement au prochain démarrage. Une méthode amplement utilisée par les trojans ou certains virus non résidents, mais aussi par des spywares ou même des programmes tout à fait normaux. J'ai horreur que l'on modifie ma configuration sans me demander mon avis, de toute façon, et c'est sans doute pour cela que j'aime bien cette routine de Viguard. Si un programme modifie ces fichiers, Viguard demande l'avis de l'utilisateur (conserver / enlever). 
+
+Evidemment, cette routine a été implémentée sans penser à la sécurité, et possède des failles qui ne résistent pas une seconde à une attaque ciblée anti-Viguard. J'en ai déjà parlé dans le chapitre 1.3: les fichiers qui gardent une image de ce qui se lance au boot sont aisément modifiables. Si on les efface, la routine ne sert plus à rien. 
+
+Néanmoins, cette option me plait suffisamment, et si j'ai le temps, je programmerai peut-être un petit utilitaire gratuit et Open-Source qui fera la même chose, sans les trous de sécurité, et de taille beaucoup plus réduite. 
+
+     5.2. L'extraction des macros
+Comme précédemment, il s'agit encore d'une propriété très utile pour qui est capable de lire un programme source en Visual Basic et qui sait comment fonctionne son ordinateur. Quand Viguard lance une alarme sur un document Excel ou Word contenant des macros (il ne détecte pas vraiment les virus macros, mais plutôt toute macro automatique), il donne la possibilité de jeter un oeil sur le code source des macros présentes, extraites à la demande sous forme de texte (et d'un fichier Vba.log dans le répertoire). 
+
+Il s'agit d'une routine intéressante pour ceux qui aiment analyser les codes de virus, sans pour autant les exécuter (dans ce cas, les ouvrir dans Word ou Excel). Ca me rapelle un peu les possibilités d'extraction de macros de certains anciens programmes comme HMVS. 
+
+
+
+
+
+--------------------------------------------------------------------------------
+
+6. Suggestions pour améliorer Viguard
+
+--------------------------------------------------------------------------------
+
+
+
+[Plus tard] 
+
+
+--------------------------------------------------------------------------------
+
+
+Stay tuned for more
+
+Guillermito  
+
+
+
+
+
+
+[Back on my Homepage]
+
